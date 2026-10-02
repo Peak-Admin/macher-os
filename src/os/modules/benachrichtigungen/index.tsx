@@ -5,7 +5,7 @@ import { Button, Dialog, Seite } from '@ui/index';
 import { beispielBenachrichtigungen, benachrichtigenAutomation } from './daten';
 import { BenachrichtigungsListe } from './Liste';
 
-/** Overlay „Benachrichtigungen“ – die Glocke in der Topbar */
+/** Overlay „Benachrichtigungen“ – in der Seitenleiste unter „Suchen oder fragen“ */
 function GlockenOverlay() {
   const { offen, schliessen } = useOverlay('benachrichtigungen');
   const navigate = useNavigate();

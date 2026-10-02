@@ -3,7 +3,7 @@ import { db, zeitstrahl, zuruecksetzen } from '@core/db';
 import { emit, on } from '@core/events';
 import { messpunkte } from '@core/messung';
 import { portalzugaenge } from '@modules/kundenbereich/daten';
-import { angebotSenden, erkanntAlsPosition, geoeffnetAm, kundeSichern, portalGeoeffnet, schnellAngebotAnlegen, titelAus } from './erstwert';
+import { angebotHtml, angebotSenden, erkanntAlsPosition, kiModus, kiModusZuruecksetzen, positionenAusText, geoeffnetAm, kundeSichern, portalGeoeffnet, schnellAngebotAnlegen, titelAus } from './erstwert';
 
 describe('Angebot in drei Minuten', () => {
   beforeEach(() => {
@@ -74,5 +74,26 @@ describe('Angebot in drei Minuten', () => {
     expect(geoeffnetAm(a.id)).toBeUndefined();
     // ohne registriertes Modul passiert beim Event nichts Schlimmes
     emit({ typ: 'portal.geoeffnet', daten: { kundeId: k.id } });
+  });
+
+  it('E-Mail enthält das Angebot (Positionen, Summe, Knopf) und maskiert Eingaben', () => {
+    const k = kundeSichern({ name: 'Familie <Hoffmann>', kontakt: 'h@example.de' });
+    const a = schnellAngebotAnlegen(k.id, [{ ...erkanntAlsPosition({ roh: 'Steckdose', menge: 2 }), einzelpreis: 6900 }]);
+    const html = angebotHtml(a, 'https://x.example/os/k/t?angebot=1');
+    expect(html).toContain('Familie &lt;Hoffmann&gt;');
+    expect(html).toContain('164,22');
+    expect(html).toContain('Angebot ansehen und annehmen');
+    expect(html).not.toContain('<Hoffmann>');
+  });
+
+  it('KI-Demo ohne Schlüssel: Katalog-Abgleich, als Demo gekennzeichnet', async () => {
+    db.leistungen.create({ name: 'Steckdose setzen inkl. Dose', einheit: 'Stk', preis: 6900, aktiv: true });
+    kiModusZuruecksetzen();
+    const f = vi.fn(async () => new Response(JSON.stringify({ ki: false }), { headers: { 'content-type': 'application/json' } }));
+    expect(await kiModus(f as unknown as typeof fetch)).toBe('demo');
+    const e = await positionenAusText('zwei Steckdosen', { demoPauseMs: 0 });
+    expect(e.quelle).toBe('demo');
+    expect(e.positionen[0]).toMatchObject({ menge: 2, einzelpreis: 6900 });
+    kiModusZuruecksetzen();
   });
 });

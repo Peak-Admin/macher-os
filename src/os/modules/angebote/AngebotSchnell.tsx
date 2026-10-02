@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cloudAktiv } from '@core/cloud';
+import { useEmailUeberServer } from '@core/cloud-versand';
 import { db } from '@core/db';
 import { euro, heute, plusTage, relativ } from '@core/format';
 import { useDarf } from '@core/session';
@@ -27,6 +28,7 @@ interface Kopf {
 export function AngebotSchnell() {
   const geld = useDarf('geld');
   const darfSenden = useDarf('veroeffentlichen');
+  const emailServer = useEmailUeberServer();
   const navigate = useNavigate();
   const toast = useToast();
   const [beginn, setBeginn] = useState(() => Date.now());
@@ -56,7 +58,7 @@ export function AngebotSchnell() {
 
   const kanal = kontaktArt(kunde.kontakt);
   const summe = angebotSummen({ positionen, rabattProzent: kopf.rabattProzent });
-  const lokal = !cloudAktiv();
+  const lokal = kanal === 'email' ? !emailServer : !cloudAktiv();
   const sendenLabel = !lokal ? 'Angebot senden' : kanal === 'sms' ? 'In der SMS-App öffnen' : 'Im Mailprogramm öffnen';
 
   const pruefen = () => {
@@ -159,7 +161,9 @@ export function AngebotSchnell() {
             ) : (
               <Meta>Trag oben Telefon oder E-Mail ein – dahin geht das Angebot mit Link zum Annehmen.</Meta>
             )}
-            {lokal && <Meta>Dein Konto ist noch nicht verbunden: Macher öffnet dein {kanal === 'sms' ? 'SMS-Programm' : 'Mailprogramm'} mit fertigem Text und Link. Du drückst dort auf Senden.</Meta>}
+            {lokal && kanal === 'sms' && <Meta>SMS verschickt Macher noch nicht selbst: Deine SMS-App öffnet sich mit fertigem Text und Link. Du drückst dort auf Senden.</Meta>}
+            {lokal && kanal !== 'sms' && <Meta>E-Mail-Versand ist noch nicht eingerichtet: Macher öffnet dein Mailprogramm mit fertigem Text und Link. Du drückst dort auf Senden.</Meta>}
+            {!lokal && kanal === 'email' && <Meta>{db.betrieb.get('betrieb')?.email ? `Absender ist dein Betrieb, Antworten gehen an ${db.betrieb.get('betrieb')?.email}.` : 'Absender ist dein Betrieb. Trag unter Betrieb deine E-Mail ein, damit Antworten bei dir landen.'}</Meta>}
             {!darfSenden && <Meldung ton="neutral">Deine Rolle darf nichts an Kunden senden. Frag im Büro nach.</Meldung>}
             <div className="mm-zeile" style={{ gap: 8, flexWrap: 'wrap' }}>
               <Button icon={kanal === 'sms' ? 'chat' : 'mail'} onClick={senden} laedt={sendet} laedtText="Wird gesendet …" disabled={!darfSenden}>

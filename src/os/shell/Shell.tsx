@@ -1,6 +1,7 @@
 /**
  * App-Rahmen: genau vier feste Hauptbereiche (Heute · Aufträge · Planen · Betrieb).
- * Desktop: schmale Seitenleiste, mobil: untere Navigation. Keine Unterbäume, kein globales „Neu“,
+ * Desktop: nur die Seitenleiste, keine Topbar. Oben darin ein gemeinsames Feld „Suchen oder fragen“
+ * (Suche und Macher in einem), darunter die Benachrichtigungen. Mobil: schmaler Kopf + untere Navigation. Keine Unterbäume, kein globales „Neu“,
  * kein Plus, kein Hamburger-Menü. Lokale Navigation (höchstens vier Ziele) steht im Inhaltsbereich.
  * Unter den vier Bereichen höchstens drei persönliche Favoriten (ausgewählt im Modulverzeichnis unter „Betrieb“),
  * mobil im Profilmenü.
@@ -76,6 +77,10 @@ export function Shell({ children }: { children: ReactNode }) {
             Macher <strong>OS</strong>
           </span>
         </Link>
+        <div className="mm-leiste-werkzeuge">
+          <SuchenOderFragen />
+          <Glocke />
+        </div>
         <nav className="mm-nav" aria-label="Hauptbereiche">
           {STRUKTUR.map((b) => (
             <Link key={b.id} to={b.pfad} className={`mm-nav-haupt ${aktiv === b.id ? 'mm-nav-haupt--aktiv' : ''}`} aria-current={aktiv === b.id ? 'page' : undefined}>
@@ -92,25 +97,10 @@ export function Shell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="mm-hauptbereich">
-        <header className="mm-topbar">
-          <span className="mm-topbar-titel mm-nur-mobil">{titelMobil}</span>
-          <button type="button" className="mm-topbar-suche" onClick={() => oeffne('suche')} aria-label="Suchen">
-            <Icon name="suche" />
-            <span className="mm-nur-desktop">Suchen</span>
-            <kbd className="mm-nur-desktop">Strg K</kbd>
-          </button>
-          <div className="mm-topbar-aktionen">
-            <button type="button" className="mm-btn mm-btn--tertiaer mm-nur-desktop" onClick={() => oeffne('macher')}>
-              <Icon name="macher" />
-              <span>Macher fragen</span>
-            </button>
-            <span className="mm-nur-desktop">
-              <Glocke />
-            </span>
-            <span className="mm-nur-mobil">
-              <Profil />
-            </span>
-          </div>
+        <header className="mm-kopf-mobil">
+          <span className="mm-kopf-mobil-titel">{titelMobil}</span>
+          <SuchenOderFragen kompakt />
+          <Profil />
         </header>
         <main id="inhalt" className="mm-inhalt" tabIndex={-1}>
           <OfflineHinweis />
@@ -153,17 +143,36 @@ function useUngelesen() {
   return db.benachrichtigungen.where((b) => !b.gelesen && (!b.fuerMitarbeiterId || b.fuerMitarbeiterId === ich?.id)).length;
 }
 
-function Glocke() {
-  const ungelesen = useUngelesen();
+/** Ein Einstieg für beides: Treffer in deinen Daten oder eine Frage an Macher (Strg K). */
+function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
+  if (kompakt)
+    return (
+      <button type="button" className="mm-iconbtn" aria-label="Suchen oder Macher fragen" onClick={() => oeffne('suche')}>
+        <Icon name="suche" />
+      </button>
+    );
   return (
-    <button type="button" className="mm-iconbtn mm-glocke" aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} ungelesen` : ''}`} onClick={() => oeffne('benachrichtigungen')}>
-      <Icon name="glocke" />
-      {ungelesen > 0 && <span className="mm-glocke-zahl">{ungelesen > 9 ? '9+' : ungelesen}</span>}
+    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K" title="Suchen oder Macher fragen (Strg K)">
+      <Icon name="suche" size={18} />
+      <span className="mm-leiste-suche-text">Suchen oder fragen</span>
     </button>
   );
 }
 
-/** Zurückhaltender Utility-Zugang: Benachrichtigungen, Macher fragen, Mitarbeiter wechseln (Vorführung) */
+function Glocke() {
+  const ungelesen = useUngelesen();
+  return (
+    <button type="button" className="mm-leiste-zeile" aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} ungelesen` : ''}`} onClick={() => oeffne('benachrichtigungen')}>
+      <span className="mm-nav-haupt-icon mm-glocke">
+        <Icon name="glocke" />
+        {ungelesen > 0 && <span className="mm-glocke-zahl">{ungelesen > 9 ? '9+' : ungelesen}</span>}
+      </span>
+      <span className="mm-leiste-zeile-text">Benachrichtigungen</span>
+    </button>
+  );
+}
+
+/** Profil: Mitarbeiter wechseln (Vorführung). Mobil zusätzlich Benachrichtigungen und Favoriten. */
 function Profil({ oben }: { oben?: boolean }) {
   const ich = useIch();
   const alle = db.mitarbeiter.use((m) => m.aktiv);
@@ -195,9 +204,6 @@ function Profil({ oben }: { oben?: boolean }) {
               <>
                 <button type="button" onClick={() => (setOffen(false), oeffne('benachrichtigungen'))}>
                   <Icon name="glocke" /> Benachrichtigungen{ungelesen ? ` (${ungelesen})` : ''}
-                </button>
-                <button type="button" onClick={() => (setOffen(false), oeffne('macher'))}>
-                  <Icon name="macher" /> Macher fragen
                 </button>
                 {/* Monteur-App: keine Wege in Betrieb-Einstellungen */}
                 {!istMonteurRolle(ich) && (

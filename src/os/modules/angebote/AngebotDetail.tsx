@@ -10,6 +10,7 @@ import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { PositionenEditor, PositionenTabelle } from './Positionen';
 import { ABLEHN_GRUENDE, alsNachgefasstMarkieren, STATUS_TEXT, STATUS_TON, ablehnen, angebotSummen, annehmen, istAktuelleVersion, laeuftBaldAb, nachfassenFaellig, nachfassenTage, neueVersion, optionalSumme, ustSatz, versenden, versionen } from './daten';
 import { cloudAktiv } from '@core/cloud';
+import { useEmailUeberServer } from '@core/cloud-versand';
 import { kontaktArt, versandText } from '@modules/start/daten';
 import { angebotSenden } from './erstwert';
 
@@ -268,7 +269,8 @@ export function VersandDialog({ angebot, onSchliessen }: { angebot?: Angebot; on
   const [sendet, setSendet] = useState(false);
   const ziel = an || kunde?.email || kunde?.telefon || '';
   const kanal = kontaktArt(ziel);
-  const lokal = !cloudAktiv();
+  const emailServer = useEmailUeberServer();
+  const lokal = kanal === 'email' ? !emailServer : !cloudAktiv();
   const anders = () => {
     if (!angebot) return;
     if (angebot.status === 'entwurf') versenden(angebot.id, 'anders');

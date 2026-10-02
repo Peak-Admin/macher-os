@@ -73,3 +73,24 @@ Reaktion auf `portal.geoeffnet` und `team.eingeladen`.
   dort selbst testet, löst „Kunde hat geöffnet“ aus. Die Erfolgsseite sagt das ehrlich.
 - **KI-Erkennung:** `ANTHROPIC_API_KEY` im Vercel-Projekt `macher-os` eintragen.
 - Die Pakete Setup und Gewohnheit liegen noch auf der alten Struktur (`os/…`) und müssen beim Zusammenführen ebenso nach `src/os/` umziehen.
+
+## Dritte Runde: E-Mail über Resend, KI-Demo
+
+- **E-Mail über Resend:** `src/app/api/senden/route.ts` (GET → `{ email }`, POST → Versand). Der Browser nutzt sie über
+  `src/os/core/cloud-versand.ts` (`mitServerVersand`, beim Start von Modul `start` eingerichtet, solange kein Backend die Cloud setzt).
+  Absender = Name des Betriebs, Antworten an die Betriebs-E-Mail, das Dokument steht gestaltet in der Mail (`start/emailHtml.ts`:
+  Briefkopf, Positionen, Summen, Knopf zum Kundenbereich), XRechnung als Anhang. SMS bleibt beim SMS-Programm.
+  Ohne `RESEND_API_KEY` oder bei Fehler des Dienstes: Mailprogramm, mit Grund in der Meldung. Knöpfe heißen nur dann
+  „Angebot senden“ / „Rechnung senden“, wenn der Server wirklich versendet.
+- **Einrichten:** Vercel → Projekt `macher-os` → Settings → Environment Variables: `RESEND_API_KEY` (Production + Preview), danach
+  neu deployen. Ohne eigene Domain sendet Resend nur an die eigene Konto-Adresse (Absender `onboarding@resend.dev`) – für die Demo
+  ausreichend. Für echte Kunden: Domain in Resend bestätigen und `RESEND_ABSENDER` (z. B. `angebote@deine-domain.de`) setzen.
+  Optional `RESEND_ERLAUBTE_EMPFAENGER` (z. B. `@deine-domain.de, test@example.de`) für eine geschlossene Demo.
+- **Schutz, solange es keine Anmeldung gibt:** nur Aufrufe von derselben Seite (Origin), höchstens 30 E-Mails je IP und Stunde,
+  Größenlimits, Kopfzeilen-Einschleusung ausgeschlossen, nur E-Mail. Das ist kein Ersatz für eine Anmeldung – vor dem echten
+  Betrieb gehört der Versand hinter das Konto (Paket Fundament). Die Mengenbegrenzung gilt je Server-Instanz.
+- **KI-Demo:** `GET /api/ki/positionen` → `{ ki }`. Ohne `ANTHROPIC_API_KEY` erkennt die Demo (Katalog-Abgleich) Positionen und ist
+  sichtbar als „KI-Demo“ beschriftet; mit Schlüssel arbeitet automatisch Claude. Knopf „Erkennen“ statt „Übernehmen“.
+- Tests: `src/app/api/senden/route.test.ts` (Versand, Absender, Anhang, Schutzregeln, Mengenbegrenzung, Fehlertexte),
+  `core/cloud-versand.test.ts`, KI-Demo und E-Mail-HTML in `angebote/erstwert.test.ts`. 630/630 grün.
+- Offen: „Kunde hat geöffnet“ für E-Mails (Resend-Webhook) braucht eine Datenbank auf dem Server (Fundament).

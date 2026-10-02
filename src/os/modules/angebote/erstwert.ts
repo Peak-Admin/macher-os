@@ -12,9 +12,12 @@ import type { Angebot, Bezug, Einheit, ID, Kunde, Leistung, Position } from '@co
 import { aktiverZugang, portalLink, zugangErzeugen } from '@modules/kundenbereich/daten';
 import { positionenErkennen, satzAnfang, type Erkannt } from '@modules/start/sprache';
 import { dokumentVersendet, sendenMitRueckfall, type SendeErgebnis } from '@modules/start/daten';
+import { absenderVon, dokumentHtml, zeilenAus } from '@modules/start/emailHtml';
 import { angebotSummen, neuesAngebot, positionAusArtikel, positionAusLeistung, versenden } from './daten';
 
 // ------------------------------------------------------------------ Positionen aus Text/Sprache
+
+const KI_PFAD = '/api/ki/positionen';
 
 export function erkanntAlsPosition(e: Erkannt): Position {
   if (e.leistung) return positionAusLeistung(e.leistung, e.menge);
@@ -22,9 +25,28 @@ export function erkanntAlsPosition(e: Erkannt): Position {
   return { id: neueId('p'), art: 'pauschal', text: satzAnfang(e.roh), menge: e.menge, einheit: e.einheit ?? 'Stk', einzelpreis: 0 };
 }
 
-export type Erkennung = { positionen: Position[]; quelle: 'ki' | 'katalog' };
+/** ki = Claude · demo = KI-Demo ohne Schlüssel (lokaler Katalog-Abgleich, sichtbar beschriftet) · katalog = offline */
+export type Erkennung = { positionen: Position[]; quelle: 'ki' | 'demo' | 'katalog' };
 
-const KI_PFAD = '/api/ki/positionen';
+let kiStand: Promise<'ki' | 'demo' | 'aus'> | undefined;
+/** Einmal beim Server nachfragen: echte KI, Demo (kein Schlüssel) oder gar nicht erreichbar */
+export function kiModus(f: typeof fetch | undefined = globalThis.fetch): Promise<'ki' | 'demo' | 'aus'> {
+  kiStand ??= (async () => {
+    if (!f) return 'aus' as const;
+    try {
+      const r = await f(KI_PFAD, { method: 'GET' });
+      if (!r.ok || !r.headers.get('content-type')?.includes('json')) return 'aus' as const;
+      return ((await r.json()) as { ki?: boolean }).ki ? ('ki' as const) : ('demo' as const);
+    } catch {
+      return 'aus' as const;
+    }
+  })();
+  return kiStand;
+}
+export const kiModusZuruecksetzen = () => (kiStand = undefined);
+
+const pause = (ms: number) => new Promise((ok) => setTimeout(ok, ms));
+
 
 /**
  * Optional besser über Claude (Server-Funktion `os/api/ki/positionen.ts`). Ohne Schlüssel antwortet sie 501,
@@ -57,15 +79,20 @@ export async function kiErkennen(text: string, leistungen: Leistung[], ms = 4000
   }
 }
 
-/** Erst KI (falls verbunden), sonst lokal gegen den Katalog */
-export async function positionenAusText(text: string, opts: { ki?: boolean } = {}): Promise<Erkennung> {
+/**
+ * Erst echte KI (falls eingerichtet). Ohne Schlüssel: KI-Demo – derselbe Katalog-Abgleich, als Demo beschriftet.
+ * Ohne Server (offline, lokale Entwicklung ohne API): Katalog-Abgleich.
+ */
+export async function positionenAusText(text: string, opts: { ki?: boolean; demoPauseMs?: number } = {}): Promise<Erkennung> {
   const leistungen = db.leistungen.where((l) => l.aktiv);
-  if (opts.ki !== false) {
+  const modus = opts.ki === false ? 'aus' : await kiModus();
+  if (modus === 'ki') {
     const ki = await kiErkennen(text, leistungen);
     if (ki) return { positionen: ki, quelle: 'ki' };
   }
+  if (modus === 'demo') await pause(opts.demoPauseMs ?? 600);
   const artikel = db.artikel.where((a) => a.aktiv);
-  return { positionen: positionenErkennen(text, leistungen, artikel).map(erkanntAlsPosition), quelle: 'katalog' };
+  return { positionen: positionenErkennen(text, leistungen, artikel).map(erkanntAlsPosition), quelle: modus === 'demo' ? 'demo' : 'katalog' };
 }
 
 // ------------------------------------------------------------------ Kunde
@@ -150,6 +177,34 @@ export function angebotNachricht(a: Angebot, kanal: Versand['kanal']): { betreff
   };
 }
 
+/** Das Angebot direkt in der E-Mail – Briefkopf, Positionen, Summen, Knopf zum Kundenbereich */
+export function angebotHtml(a: Angebot, link?: string): string {
+  const k = db.kunden.get(a.kundeId);
+  const b = db.betrieb.get('betrieb');
+  const s = angebotSummen(a);
+  const ust = b?.kleinunternehmer ? 0 : (b?.ustSatz ?? 19);
+  const name = k?.ansprechpartner[0]?.name ?? k?.name;
+  return dokumentHtml({
+    betrieb: b,
+    titel: a.titel,
+    daten: [
+      ['Angebot', `${a.nummer}${a.version > 1 ? ` · Version ${a.version}` : ''}`],
+      ['Datum', datum(a.datum)],
+      ['Gültig bis', datum(a.gueltigBis)],
+    ],
+    absaetze: [`Guten Tag${name ? ' ' + name : ''},`, a.einleitung || 'vielen Dank für Ihre Anfrage. Gerne bieten wir Ihnen folgende Leistungen an:'],
+    zeilen: zeilenAus(a.positionen),
+    summen: [
+      ...(s.rabatt > 0 ? ([[`Rabatt ${a.rabattProzent} %`, `− ${euro(s.rabatt)}`]] as [string, string][]) : []),
+      ['Summe netto', euro(s.netto)],
+      [ust ? `zzgl. ${ust} % USt.` : 'Keine USt. (Kleinunternehmer, § 19 UStG)', euro(s.ust)],
+      ['Gesamtbetrag', euro(s.brutto), true],
+    ],
+    link: link ? { label: 'Angebot ansehen und annehmen', url: link } : undefined,
+    schluss: ['Möchten Sie den Auftrag erteilen oder haben Sie Fragen? Antworten Sie einfach auf diese E-Mail.', 'Viele Grüße', b?.name ?? ''],
+  });
+}
+
 /** Link zum Kundenbereich – vorhandenen Zugang nutzen oder neuen erzeugen (Modul Kundenbereich) */
 export function kundenLink(kundeId: ID, angebotId?: ID): string {
   const z = aktiverZugang(kundeId) ?? zugangErzeugen(kundeId);
@@ -166,7 +221,7 @@ export async function angebotSenden(angebotId: ID, an: string, kanal: Versand['k
   const link = kundenLink(a.kundeId, a.id);
   const { betreff, text } = angebotNachricht(a, kanal);
   const bezug: Bezug = { typ: 'angebote', id: a.id };
-  const r = await sendenMitRueckfall({ an: an.trim(), kanal, betreff, text, link, bezug });
+  const r = await sendenMitRueckfall({ an: an.trim(), kanal, betreff, text, link, bezug, html: kanal === 'email' ? angebotHtml(a, link) : undefined, absender: absenderVon(db.betrieb.get('betrieb')) });
   if (r.status === 'fehler') return r;
   if (a.status === 'entwurf') versenden(a.id, kanal === 'email' ? 'email' : 'anders');
   const wie = kanal === 'sms' ? 'SMS' : kanal === 'whatsapp' ? 'WhatsApp' : 'E-Mail';
