@@ -22,7 +22,7 @@ export function BestellungenListe() {
     <Seite titel="Bestellungen" aktion={<Button icon="plus" to="/betrieb/bestellungen/neu">Bestellung anlegen</Button>}>
       <Stapel>
         {zuSpaet.length > 0 && (
-          <Meldung ton="achtung" titel={`${zuSpaet.length} ${zuSpaet.length === 1 ? 'Lieferung ist' : 'Lieferungen sind'} überfällig`}>
+          <Meldung ton="gefahr" titel={`${zuSpaet.length} ${zuSpaet.length === 1 ? 'Lieferung ist' : 'Lieferungen sind'} überfällig`}>
             Frag beim Lieferanten nach – oder buche den Wareneingang, falls die Ware schon da ist.
           </Meldung>
         )}
