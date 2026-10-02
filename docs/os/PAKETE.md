@@ -58,7 +58,7 @@ Verlinke immer mit `pfadZu({ typ, id })` – **nie** Pfade anderer Pakete hart k
 
 ## Querschnitt-Verträge
 
-**Overlays** (`oeffne(name)` aus der Topbar):
+**Overlays** (`oeffne(name)` aus der Seitenleiste):
 - `schnell` → Paket heute (`schnell-erfassen`, rendert `alleSchnellAktionen()`), optional `payload: { auftragId }`
 - `suche`, `macher`, `benachrichtigungen` → Paket macher
 

@@ -42,6 +42,11 @@ const SYSTEM = [
 
 const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8' } });
 
+/** Ist echte KI eingerichtet? Ohne Schlüssel zeigt der Browser die KI-Demo (lokaler Katalog-Abgleich). */
+export function GET() {
+  return json(200, { ki: !!process.env.ANTHROPIC_API_KEY });
+}
+
 export async function POST(req: Request): Promise<Response> {
   const schluessel = process.env.ANTHROPIC_API_KEY;
   if (!schluessel) return json(501, { fehler: 'nicht verbunden' });

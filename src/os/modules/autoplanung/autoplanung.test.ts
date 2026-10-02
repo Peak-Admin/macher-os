@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   allesVorplanen,
   einzuplanen,
@@ -12,6 +12,14 @@ import { naechsteArbeitstage } from '@core/kalender';
 import { planKontext } from './basis';
 import { auftragStunden, freieFenster, verfuegbar } from '../verfuegbarkeit/daten';
 import { auftrag, ctx, ma, MO, nachweis, ort, termin } from './testhilfe';
+
+// „heute“ im Testkontext ist MO; für heute plant die Autoplanung erst ab der echten Uhrzeit.
+// Uhr auf MO früh morgens festhalten, sonst hängen die Ergebnisse von der Tageszeit ab.
+beforeAll(() => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date(`${MO}T06:00:00`));
+});
+afterAll(() => vi.useRealTimers());
 
 const DI = '2026-10-06';
 const MI = '2026-10-07';
