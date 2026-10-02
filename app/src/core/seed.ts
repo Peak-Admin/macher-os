@@ -118,7 +118,14 @@ export function beispieleEntfernen() {
 function beispielDaten(chef: Mitarbeiter, qualiIds: ID[], artikelIds: ID[]) {
   const B = { beispiel: true };
   const t = heute();
-  const ist = (tage: number, uhr: string) => zeitpunkt(plusTage(t, tage), uhr);
+  // „morgen“ = nächster Werktag, „gestern“ = letzter Werktag (keine Beispieltermine am Wochenende)
+  const werktag = (tage: number) => {
+    let d = plusTage(t, tage);
+    const richtung = tage < 0 ? -1 : 1;
+    while ([0, 6].includes(new Date(d + 'T12:00:00').getDay())) d = plusTage(d, richtung);
+    return d;
+  };
+  const ist = (tage: number, uhr: string) => zeitpunkt(tage === 0 ? t : werktag(tage), uhr);
 
   // ---- Team
   const team = [

@@ -85,11 +85,14 @@ export function hinweisErledigen(id: ID) {
   db.hinweise.update(id, { status: 'erledigt', erledigtAm: new Date().toISOString() });
 }
 
-/** Ein live berechneter Hinweis wurde bewusst ausgeblendet */
+/** Ein live berechneter Hinweis wurde bewusst ausgeblendet (bei gebündelten Hinweisen alle zum selben Objekt) */
 export function hinweisAusblenden(schluessel: string, tage = 7) {
   const bis = new Date(Date.now() + tage * 86_400_000).toISOString();
-  setzeEinstellung(`hinweis.aus.${schluessel}`, bis);
+  for (const k of gebuendelt.get(schluessel) ?? [schluessel]) setzeEinstellung(`hinweis.aus.${k}`, bis);
 }
+
+/** Schlüssel → alle Schlüssel der Bündelung (aus der letzten Berechnung) */
+const gebuendelt = new Map<string, string[]>();
 
 function ausgeblendet(schluessel: string) {
   const bis = einstellung<string | undefined>(`hinweis.aus.${schluessel}`, undefined);
@@ -99,6 +102,41 @@ function ausgeblendet(schluessel: string) {
 export interface OffenerHinweis extends HinweisVorschlag {
   /** gesetzt, wenn gespeichert (dann über `hinweisErledigen` schließbar) */
   hinweisId?: ID;
+  /** weitere Hinweise zum selben Objekt, die in diesen gebündelt wurden */
+  weitere?: OffenerHinweis[];
+}
+
+/**
+ * Mehrere Module melden oft dasselbe Objekt (z. B. „Auftrag ohne Termin“ aus Akte, Plan und Autoplanung).
+ * Der Mensch soll es nur einmal sehen: Hinweise mit gleichem Bezug werden zu einem gebündelt –
+ * der wichtigste führt, Aktionen werden zusammengeführt (ohne doppelte), der Rest steht in `weitere`.
+ */
+export function buendeln(liste: OffenerHinweis[]): OffenerHinweis[] {
+  const sortiert = [...liste].sort((a, b) => b.gewicht - a.gewicht);
+  const nachBezug = new Map<string, OffenerHinweis>();
+  const ergebnis: OffenerHinweis[] = [];
+  for (const h of sortiert) {
+    const key = h.bezug ? `${h.bezug.typ}:${h.bezug.id}:${h.fuerMitarbeiterId ?? ''}` : undefined;
+    const fuehrend = key ? nachBezug.get(key) : undefined;
+    if (!fuehrend) {
+      const kopie = { ...h, weitere: [] as OffenerHinweis[] };
+      if (key) nachBezug.set(key, kopie);
+      ergebnis.push(kopie);
+      continue;
+    }
+    fuehrend.weitere!.push(h);
+    const vorhanden = new Set((fuehrend.aktionen ?? []).map((a) => a.aktion + '|' + a.label));
+    const neu = (h.aktionen ?? []).filter((a) => !vorhanden.has(a.aktion + '|' + a.label) && !(fuehrend.aktionen ?? []).some((x) => x.label === a.label));
+    fuehrend.aktionen = [...(fuehrend.aktionen ?? []), ...neu.map((a) => ({ ...a, primaer: false }))].slice(0, 4);
+    if (h.art === 'problem' && fuehrend.art !== 'problem') fuehrend.art = 'problem';
+  }
+  gebuendelt.clear();
+  for (const h of ergebnis) {
+    const alle = [h.schluessel, ...(h.weitere ?? []).map((w) => w.schluessel)];
+    for (const k of alle) gebuendelt.set(k, alle);
+    if (!h.weitere?.length) delete h.weitere;
+  }
+  return ergebnis;
 }
 
 /** Alles, was einen Menschen braucht – sortiert nach Gewicht (Pain-Score) */
@@ -120,7 +158,7 @@ export function offeneHinweise(fuer?: { rolle?: Rolle; mitarbeiterId?: ID }): Of
     }));
   const live = alleHinweisVorschlaege();
   const schluessel = new Set(gespeichert.map((h) => h.schluessel));
-  return [...gespeichert, ...live.filter((h) => !schluessel.has(h.schluessel))]
+  const gefiltert = [...gespeichert, ...live.filter((h) => !schluessel.has(h.schluessel))]
     .filter((h) => !ausgeblendet(h.schluessel))
     .filter((h) => {
       if (!fuer) return true;
@@ -128,8 +166,8 @@ export function offeneHinweise(fuer?: { rolle?: Rolle; mitarbeiterId?: ID }): Of
       if (h.fuerRollen && fuer.rolle) return h.fuerRollen.includes(fuer.rolle);
       // ohne Zielgruppe: Chef und Büro
       return !fuer.rolle || fuer.rolle === 'chef' || fuer.rolle === 'buero';
-    })
-    .sort((a, b) => b.gewicht - a.gewicht);
+    });
+  return buendeln(gefiltert);
 }
 
 // ------------------------------------------------------------------ Benachrichtigungen

@@ -18,7 +18,8 @@ export function Hub({ bereich }: { bereich: Exclude<Bereich, 'macher'> }) {
   const sichtbar = moduleIn(bereich).filter((m) => !m.rollen || !ich || m.rollen.includes(ich.rolle));
   const widgets = sichtbar.filter((m) => m.hubWidget);
   const titel = BEREICHE.find((b) => b.id === bereich)!.titel;
-  const links = sichtbar.filter((m) => m.routen?.length && m.navigation !== 'versteckt');
+  // Module mit eigenem Widget brauchen keine zusätzliche Kachel (keine doppelte Information)
+  const links = sichtbar.filter((m) => m.routen?.length && m.navigation !== 'versteckt' && !m.hubWidget);
 
   return (
     <Seite titel={titel} untertitel={UNTERTITEL[bereich]} breit>
