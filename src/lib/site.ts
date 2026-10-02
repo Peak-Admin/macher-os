@@ -1,7 +1,7 @@
 import type { IconName } from "@/components/ui/Icon";
 export const site = {
   name: "Macher OS",
-  claim: "Dein Betrieb. Eine Software.",
+  claim: "Dein Betrieb. Einfach im Griff.",
   description:
     "Macher OS ist das Betriebssystem für Handwerksbetriebe von Mission Mittelstand: Aufträge, Mitarbeiter, Planung und Büroarbeit in einer einfachen Software – für Büro und Baustelle.",
   url: "https://macher-os.de",

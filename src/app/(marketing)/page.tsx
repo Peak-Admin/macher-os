@@ -35,7 +35,7 @@ import type { ObjektSchluessel } from "@/lib/objekte";
 import { cta, herausgeber, site } from "@/lib/site";
 
 export const metadata = {
-  title: { absolute: `${site.name} – Dein Betrieb. Eine Software.` },
+  title: { absolute: `${site.name} – Dein Betrieb. Einfach im Griff.` },
   description: site.description,
   alternates: { canonical: "/" },
 };
