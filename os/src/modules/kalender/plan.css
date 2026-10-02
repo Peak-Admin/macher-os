@@ -1,0 +1,71 @@
+/* Minimales Layout für Kalender & Plantafel (Paket Plan). Optik kommt zentral über --mm-*-Tokens. */
+
+.pl-kopfleiste { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; }
+.pl-kopfleiste > .mm-feld { min-width: 200px; flex: 0 1 260px; }
+.pl-navi { display: flex; align-items: center; gap: 4px; }
+.pl-zeitraum { font-weight: 600; color: var(--mm-black); margin: 0 8px; white-space: nowrap; }
+
+/* Woche / Monat: 7 Spalten */
+.pl-woche { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.pl-tag { display: flex; flex-direction: column; gap: 8px; min-height: 160px; padding: 8px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); background: var(--mm-surface); min-width: 0; }
+.pl-tag--heute { border-color: var(--mm-brand); box-shadow: inset 0 3px 0 var(--mm-brand); }
+.pl-tag--frei { background: var(--mm-canvas); }
+.pl-tagkopf { display: flex; justify-content: space-between; align-items: baseline; gap: 4px; font-size: 14px; }
+.pl-tagkopf strong { color: var(--mm-black); }
+.pl-tagkopf button { border: 0; background: none; padding: 0; font: inherit; color: var(--mm-link); cursor: pointer; text-align: left; }
+
+.pl-termin {
+  display: flex; flex-direction: column; gap: 2px; width: 100%; padding: 6px 8px; text-align: left;
+  border: 1px solid var(--mm-border); border-left: 4px solid var(--pl-farbe, var(--mm-brand)); border-radius: var(--mm-radius-control);
+  background: var(--mm-surface); color: var(--mm-text); font: 14px/18px var(--mm-font); text-decoration: none; cursor: pointer; min-width: 0;
+  transition: background-color var(--mm-motion-fast) ease-out;
+}
+.pl-termin:hover { background: var(--mm-hover); }
+.pl-termin:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.pl-termin strong { color: var(--mm-black); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-termin .mm-meta { font-size: 13px; line-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-termin--abgesagt { opacity: 0.6; text-decoration: line-through; }
+.pl-termin--konflikt { border-color: var(--mm-danger); }
+
+.pl-monat { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.pl-monat-kopf { font: 600 13px/20px var(--mm-font); color: var(--mm-text); padding: 0 4px; }
+.pl-monatstag { display: flex; flex-direction: column; gap: 2px; min-height: 96px; padding: 6px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); text-align: left; font: 13px/16px var(--mm-font); color: var(--mm-text); cursor: pointer; min-width: 0; }
+.pl-monatstag:hover { background: var(--mm-hover); }
+.pl-monatstag:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.pl-monatstag--fremd { background: var(--mm-canvas); opacity: 0.7; }
+.pl-monatstag--heute { border-color: var(--mm-brand); }
+.pl-monatstag span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Plantafel: Mitarbeiter × Tage */
+.pl-tafel-rahmen { overflow-x: auto; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); background: var(--mm-surface); }
+.pl-tafel { display: grid; min-width: 880px; }
+.pl-tafel-kopf { padding: 8px; font: 600 14px/20px var(--mm-font); color: var(--mm-black); border-bottom: 1px solid var(--mm-border); background: var(--mm-canvas); }
+.pl-tafel-kopf--heute { color: var(--mm-brand-text); box-shadow: inset 0 -3px 0 var(--mm-brand); }
+.pl-tafel-name { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-bottom: 1px solid var(--mm-border); position: sticky; left: 0; background: var(--mm-surface); z-index: 1; }
+.pl-zelle { display: flex; flex-direction: column; gap: 4px; padding: 6px; min-height: 88px; border-bottom: 1px solid var(--mm-border); border-left: 1px solid var(--mm-border); min-width: 0; transition: background-color var(--mm-motion-fast) ease-out; }
+.pl-zelle--abwesend { background: var(--mm-canvas); }
+.pl-zelle--ziel { background: var(--mm-soft-green); }
+.pl-zelle--waehlbar { cursor: pointer; }
+.pl-zelle--waehlbar:hover { background: var(--mm-soft-green); }
+.pl-einplanen {
+  display: flex; align-items: center; justify-content: center; gap: 4px; min-height: 32px; margin-top: auto;
+  border: 1px dashed var(--mm-border-dark); border-radius: var(--mm-radius-control); background: transparent;
+  color: var(--mm-brand-text); font: 600 13px/16px var(--mm-font); cursor: pointer;
+}
+.pl-einplanen:hover { background: var(--mm-soft-green); }
+.pl-einplanen:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+
+/* Wer ist wann da */
+.pl-anwesend { display: grid; min-width: 760px; }
+
+/* Öffentliche Buchungsseite */
+.pl-buchen { min-height: 100vh; background: var(--mm-canvas); padding: 24px 16px 64px; }
+.pl-buchen-inhalt { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+.pl-slots { display: flex; flex-wrap: wrap; gap: 8px; }
+
+@media (max-width: 767px) {
+  .pl-kopfleiste > .mm-feld { flex: 1 1 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pl-termin, .pl-zelle { transition: none; }
+}

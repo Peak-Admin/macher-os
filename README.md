@@ -22,7 +22,30 @@ Handwerker sollen sich auf ihr Handwerk konzentrieren können, nicht auf Zettelw
 
 Gestaltung und Tonalität folgen dem [Brand & Software Design Playbook](docs/design/brand-playbook.md).
 
-## Entwicklung
+## Struktur
+
+| Ordner | Inhalt |
+|---|---|
+| `os/` | **Macher OS – die Software** (React + Vite): 81 Module in den Bereichen Heute · Aufträge · Plan · Betrieb, plus Macher (Assistenz & Automation) |
+| `src/` | Marketing-Website (Next.js) |
+| `docs/` | Design-Playbook, Produkt-Modulliste (`docs/produkt/module.md`), Website-Struktur |
+
+## Macher OS (Software) entwickeln
+
+```bash
+cd os
+npm install
+npm run dev        # http://localhost:5173 → Onboarding unter /willkommen
+npx tsc -b && npx vitest run && npx vite build
+```
+
+Architektur und Regeln: [`os/MODULE.md`](os/MODULE.md) (Modul bauen, Kern-APIs), [`os/PAKETE.md`](os/PAKETE.md)
+(Pakete, Verträge zwischen Modulen). Grundsatz: **jedes Objekt existiert genau einmal** (`os/src/core/objects.ts`),
+Module sind nur Sichten darauf und hängen sich über `defineModul` automatisch ein. Daten liegen derzeit lokal im
+Browser (IndexedDB); die Datenschicht ist für ein späteres Backend (z. B. Supabase) geschnitten. Je Modul liegt eine
+Pain-Point-Analyse in `os/src/modules/<modul>/PAINPOINTS.md`.
+
+## Marketing-Website entwickeln
 
 Die Marketing-Website ist eine Next.js-App. Siehe `CLAUDE.md` für Struktur und Regeln und `docs/marketing-website-struktur.md` für die Informationsarchitektur.
 
@@ -33,4 +56,4 @@ npm run dev
 
 ## Status
 
-🚧 Das Projekt steht ganz am Anfang.
+🚧 Erste vollständige Fassung der Software (lokal im Browser lauffähig) und der Marketing-Website.

@@ -1,0 +1,49 @@
+/* Minimales Layout für Pipeline und Phasenleiste – nur Tokens, keine eigene Optik. */
+.akte-pipeline {
+  display: flex;
+  gap: var(--mm-space-3);
+  overflow-x: auto;
+  padding-bottom: var(--mm-space-2);
+}
+.akte-spalte {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mm-space-2);
+  flex: 1 1 0;
+  min-width: 176px;
+  padding: var(--mm-space-2);
+  border-radius: var(--mm-radius-card);
+  background: var(--mm-hover);
+}
+.akte-spalte--leer { flex: 0 0 112px; min-width: 112px; }
+.akte-spalte-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--mm-space-2);
+  padding: var(--mm-space-1) var(--mm-space-1) 0;
+  font-weight: 700;
+  color: var(--mm-black);
+}
+.akte-karte-titel { font-weight: 600; color: var(--mm-black); overflow-wrap: break-word; hyphens: manual; }
+.akte-spalte .mm-karte { padding: 12px; overflow-wrap: break-word; font-size: 14px; line-height: 20px; }
+.akte-spalte .mm-karte .akte-karte-titel { font-size: 15px; line-height: 20px; }
+
+.akte-phasen {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: var(--mm-space-1);
+}
+.akte-phase { display: flex; flex-direction: column; gap: var(--mm-space-1); font-size: 13px; line-height: 18px; color: var(--mm-text); }
+.akte-phase::before { content: ''; display: block; height: 6px; border-radius: 3px; background: var(--mm-border); }
+.akte-phase--fertig::before { background: var(--mm-brand); }
+.akte-phase--jetzt::before { background: var(--mm-brand-deep); }
+.akte-phase--jetzt { color: var(--mm-brand-text); font-weight: 700; }
+.akte-phase--fertig { color: var(--mm-text); }
+@media (max-width: 767px) {
+  .akte-phase span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+.akte-info { display: flex; flex-direction: column; gap: var(--mm-space-1); min-width: 0; overflow-wrap: anywhere; }
