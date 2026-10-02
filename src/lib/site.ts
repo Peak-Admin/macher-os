@@ -20,7 +20,7 @@ export const herausgeber = {
   beschreibung: "Beratung für Handwerk und Mittelstand",
   logo: {
     hell: "/bilder/mission-mittelstand/logo-hell.webp",
-    /** Weißes Original-Logo von mission-mittelstand.de für dunkle Flächen */
+    /** Weiße Fassung des Original-Logos (Schwarz → Weiß, Grün bleibt) für dunkle Flächen */
     dunkel: "/bilder/mission-mittelstand/logo-dunkel.webp",
   },
   /** Echtes Foto von Team, Bühne oder Veranstaltung (Querformat, ca. 3:2). */
