@@ -88,7 +88,7 @@ export function DatanormImport() {
     >
       <Stapel>
         {ergebnis && (
-          <Meldung ton="erfolg" titel="Fertig" aktion={<Button klein variante="sekundaer" to="/betrieb/artikel">Zu den Artikeln</Button>}>
+          <Meldung ton="erfolg" titel="Fertig" aktion={<Button klein variante="sekundaer" to="/betrieb/katalog/material">Zu den Artikeln</Button>}>
             {ergebnis.neu} Artikel angelegt, {ergebnis.aktualisiert} aktualisiert{ergebnis.deaktiviert ? `, ${ergebnis.deaktiviert} deaktiviert` : ''}.
           </Meldung>
         )}

@@ -8,8 +8,8 @@ export function DetailKarte({ detail, label }: { detail: DetailVisual; label: st
     <div role="img" aria-label={label} className="relative">
       <div aria-hidden className="absolute -inset-3 -z-10 rotate-2 rounded-xl bg-sand" />
       <div className="overflow-hidden rounded-lg border border-ink/10 bg-white shadow-xl shadow-ink/10">
-        <div className="flex items-center justify-between gap-3 border-b border-line bg-paper px-5 py-3">
-          <span className="text-[0.7rem] font-semibold font-tagline uppercase tracking-wider text-muted">{detail.kopf}</span>
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-line bg-paper px-5 py-3">
+          <span className="min-w-0 text-[0.7rem] font-semibold font-tagline uppercase tracking-wider text-muted">{detail.kopf}</span>
           {detail.status && (
             <span className={`rounded-md px-2.5 py-0.5 text-xs font-semibold ${tonEtikett[detail.status.ton]}`}>
               {detail.status.text}
@@ -17,14 +17,14 @@ export function DetailKarte({ detail, label }: { detail: DetailVisual; label: st
           )}
         </div>
         <div className="px-5 pb-2 pt-4">
-          <p className="font-display text-xl font-bold leading-tight">{detail.titel}</p>
+          <p className="font-display text-xl font-bold leading-tight [overflow-wrap:anywhere]">{detail.titel}</p>
           {detail.sub && <p className="mt-1 text-sm text-muted">{detail.sub}</p>}
         </div>
         <dl className="px-5 pb-4">
           {detail.zeilen.map((z) => (
             <div key={z.label} className="flex items-baseline justify-between gap-4 border-b border-dashed border-line py-2.5 last:border-0">
               <dt className="text-sm text-muted">{z.label}</dt>
-              <dd className={`text-right text-sm font-semibold tabular-nums ${z.hervor ? "text-signal-dark" : ""}`}>{z.wert}</dd>
+              <dd className={`min-w-0 text-right text-sm [overflow-wrap:anywhere] font-semibold tabular-nums ${z.hervor ? "text-signal-dark" : ""}`}>{z.wert}</dd>
             </div>
           ))}
         </dl>

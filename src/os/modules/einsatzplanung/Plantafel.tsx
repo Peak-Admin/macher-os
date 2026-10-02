@@ -23,6 +23,7 @@ import { aufZelleVerschieben, vorbelegung } from './daten';
 import { geordnet, gespeicherteReihe, planReihen, reiheSpeichern, reiheZuruecksetzen, verschoben } from './reihenfolge';
 import { AussehenDialog, ProjektMarke, projektAussehen, projektFarbe } from './aussehen';
 import { useInfokarte } from './infokarte';
+import { MitMacherVorbereiten } from '@modules/macher-fragen/MitMacher';
 import { laeufe, spuren, zusammenfassen, ZOOM, ZOOM_STANDARD, type Spanne } from './zeitleiste';
 import '../kalender/plan.css';
 import './plantafel.css';
@@ -1120,9 +1121,12 @@ export function Plantafel() {
               ton="aktiv"
               titel={`${auftrag.titel} einplanen`}
               aktion={
-                <Button variante="sekundaer" klein onClick={() => setze({ auftrag: undefined })}>
-                  Fertig
-                </Button>
+                <>
+                  <MitMacherVorbereiten bezug={{ typ: 'auftraege', id: auftrag.id }} zweck="einplanen" klein />
+                  <Button variante="sekundaer" klein onClick={() => setze({ auftrag: undefined })}>
+                    Fertig
+                  </Button>
+                </>
               }
             >
               {rest != null ? (rest > 0 ? `Noch ${zahl(rest)} h einzuplanen. ` : 'Die geschätzten Stunden sind verplant. ') : ''}

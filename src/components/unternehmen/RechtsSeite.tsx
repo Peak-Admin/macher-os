@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from "react";
-import { Breadcrumbs, Container, Icon } from "@/components/ui";
+import { Breadcrumbs, Container, Icon, zone } from "@/components/ui";
 import { type RechtsAbschnitt } from "@/content/unternehmen";
 
 /** Hebt Platzhalter wie „[Firmenname]“ sichtbar hervor. */
@@ -58,7 +58,7 @@ export function RechtsSeite({
 }) {
   return (
     <>
-      <section className="border-b border-line bg-paper">
+      <section {...zone("beige")}>
         <Container size="narrow" className="py-12 sm:py-16">
           <Breadcrumbs items={[{ label: titel }]} />
           <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">{titel}</h1>
@@ -71,7 +71,7 @@ export function RechtsSeite({
           </div>
         </Container>
       </section>
-      <section className="bg-white py-12 sm:py-16">
+      <section {...zone("weiss", "py-12 sm:py-16")}>
         <Container size="narrow">
           {inhaltsverzeichnis && abschnitte.length > 3 && (
             <nav aria-label="Inhalt" className="mb-10 rounded-lg border border-line bg-paper p-5">

@@ -9,6 +9,9 @@ import { csvExport, herunterladen, saldoText, stunden } from './daten';
 import { freigabeZuruecknehmen, freigeben, lohnCsv, monatsAuswertung, monatsGrenzen } from './regelwerk';
 import { BuchungDialog, RegelnDialog } from './RegelDialoge';
 import { ZeitenNav } from './ZeitenNav';
+import { arbeitsmodelle } from './modell';
+import { ZeitraumStreifen } from './ZeitraumStreifen';
+import { zeitraumSumme } from './zusammenfassung';
 
 const monatsName = (monat: string) => new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' }).format(new Date(`${monat}-15T12:00:00`));
 
@@ -49,6 +52,7 @@ export function MonatSeite() {
   const luecken = zeilen.reduce((s, z) => s + z.w.tageOhneZeit.length, 0);
   const summe = (f: (w: (typeof zeilen)[number]['w']) => number) => zeilen.reduce((s, z) => s + f(z.w), 0);
   const imAktuellen = monat === heute().slice(0, 7);
+  const uebersicht = zukunft ? undefined : zeitraumSumme(leute, grenzen.von, grenzen.bis, { zeiten, abw: db.abwesenheiten.all(), modelle: arbeitsmodelle.all() });
 
   const monatFreigeben = () => {
     const n = freigeben(offen);
@@ -101,17 +105,18 @@ export function MonatSeite() {
         <Leer titel="Dieser Monat hat noch nicht begonnen" icon="kalender" aktion={<Button onClick={() => setzeMonat(vormonat)}>Zum letzten Monat</Button>} />
       ) : (
         <Stapel abstand={16}>
+          {uebersicht && <ZeitraumStreifen summe={uebersicht} titel={`${monatsName(monat)} im Überblick`} wer={`Ganzes Team · bis ${datum(grenzen.bis)}`} />}
           {offen.length > 0 ? (
             <Meldung
               ton="achtung"
-              titel={`${offen.length === 1 ? '1 Zeit ist' : `${offen.length} Zeiten sind`} noch nicht freigegeben`}
+              titel={`Zu prüfen: ${offen.length === 1 ? '1 Zeit' : `${offen.length} Zeiten`}`}
               aktion={
                 <Button klein onClick={monatFreigeben}>
                   Monat freigeben
                 </Button>
               }
             >
-              Prüf die Wochen kurz, dann geht alles geprüft ins Lohnbüro.
+              Noch nicht freigegeben. Prüf die Wochen kurz, dann geht alles geprüft ins Lohnbüro.
             </Meldung>
           ) : (
             zeilen.some((z) => z.w.gearbeitet > 0) && <Meldung ton="erfolg">Alle Zeiten im {monatsName(monat)} sind freigegeben.</Meldung>
@@ -123,9 +128,8 @@ export function MonatSeite() {
             </Meldung>
           )}
           <Raster min={170}>
-            <Kennzahl label="Gearbeitet" wert={stunden(summe((w) => w.gearbeitet))} hinweis={`Soll ${stunden(summe((w) => w.soll))}`} />
+            <Kennzahl label="Gearbeitet mit Fahrt" wert={stunden(summe((w) => w.gearbeitet))} hinweis={`Soll ${stunden(summe((w) => w.soll))}`} />
             <Kennzahl label="Überstunden" wert={stunden(summe((w) => w.ueberstunden))} hinweis="im Monat, alle zusammen" />
-            <Kennzahl label="Fahrtzeit" wert={stunden(summe((w) => w.jeArt.fahrt))} hinweis={`Baustelle ${stunden(summe((w) => w.jeArt.baustelle))}`} />
           </Raster>
           <Tabelle
             zeilen={zeilen}

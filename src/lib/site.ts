@@ -2,7 +2,7 @@ import type { GlasIconName } from "@/os/ui/glas";
 
 export const site = {
   name: "Macher OS",
-  claim: "Dein Betrieb. Eine Software.",
+  claim: "Dein Betrieb. Einfach im Griff.",
   description:
     "Macher OS ist das Betriebssystem für Handwerksbetriebe von Mission Mittelstand: Aufträge, Mitarbeiter, Planung und Büroarbeit in einer einfachen Software – für Büro und Baustelle.",
   url: "https://macher-os.de",
@@ -184,6 +184,7 @@ export const mainNav: NavItem[] = [
             { label: "Blog", href: "/wissen/blog", icon: "blog" },
             { label: "Webinare", href: "/wissen/webinare", icon: "webinar" },
             { label: "Macher Akademie", href: "/wissen/akademie", icon: "akademie" },
+            { label: "Video-Anleitungen", href: "/wissen/videos", icon: "bildschirm" },
           ],
         },
         {
@@ -233,6 +234,7 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
       { label: "Preise", href: "/preise" },
       { label: "Demo", href: "/demo" },
       { label: "App", href: "/app" },
+      { label: "Was ist neu?", href: "/neu" },
       { label: "Kostenlos testen", href: app.einrichten() },
     ],
   },

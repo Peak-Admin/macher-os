@@ -75,7 +75,7 @@ export function WissenArtikel() {
                 {leistungen.length > 0 && (
                   <Liste>
                     {leistungen.map((l) => (
-                      <ListenZeile key={l!.id} to={`/betrieb/leistungen/${l!.id}`} titel={l!.name} />
+                      <ListenZeile key={l!.id} to={`/betrieb/katalog/leistungen/${l!.id}`} titel={l!.name} />
                     ))}
                   </Liste>
                 )}

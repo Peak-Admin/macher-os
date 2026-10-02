@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Container, Icon, IconTile, type IconName } from "@/components/ui";
+import { Container, Icon, IconTile, zone, type IconName, type ZonenTon } from "@/components/ui";
 import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import type { BildKey } from "@/content/bilder";
 
@@ -51,7 +51,7 @@ export function BildKarten({
   karten: { bild: BildKey; titel: string; text: string; href?: string }[];
 }) {
   return (
-    <section className="bg-ink py-16 text-white sm:py-24">
+    <section {...zone("dunkel", "py-16 sm:py-24")}>
       <Container>
         <DunkleHeadline eyebrow={eyebrow} gruen={gruen} rest={rest} intro={intro} />
         <ul className="mt-12 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -149,7 +149,7 @@ export function DunklerAbschnitt({
   className?: string;
 }) {
   return (
-    <section id={id} className={`relative isolate overflow-hidden bg-ink py-16 text-white sm:py-24 ${className}`}>
+    <section id={id} {...zone("dunkel", `py-16 sm:py-24 ${className}`)}>
       <Container>{children}</Container>
     </section>
   );
@@ -173,12 +173,12 @@ export function BildText({
   /** Optional über dem Foto, z. B. ein Handy-Mock. */
   overlay?: ReactNode;
 }) {
-  const tones = { white: "bg-white text-ink", paper: "bg-paper text-ink", ink: "bg-ink text-white", beige: "bg-beige text-ink" };
+  const boxen: Record<typeof tone, ZonenTon> = { white: "weiss", paper: "weiss", ink: "dunkel", beige: "beige" };
   const rechts = seite === "rechts";
   // Ohne Foto und ohne Produktansicht keine Bildfläche: der Text steht allein, ruhig und lesbar.
   if (!fotoVorhanden(bild) && !overlay) {
     return (
-      <section className={`relative ${tones[tone]}`}>
+      <section {...zone(boxen[tone])}>
         <Container className="relative py-14 sm:py-20 lg:py-24">
           <div className="max-w-3xl">{children}</div>
         </Container>
@@ -186,7 +186,7 @@ export function BildText({
     );
   }
   return (
-    <section className={`relative isolate overflow-hidden ${tones[tone]}`}>
+    <section {...zone(boxen[tone])}>
       <div
         className={`relative h-72 sm:h-96 lg:absolute lg:inset-y-0 lg:h-auto lg:w-1/2 ${rechts ? "lg:right-0" : "lg:left-0"}`}
       >

@@ -15,7 +15,7 @@ export function PreiseAnpassen() {
   const prozent = prozentAus(prozentText);
   const auswahl = leistungen.filter((l) => !kategorie || (l.kategorie || 'Ohne Kategorie') === kategorie);
   const vorschau = prozent != null && prozent !== 0 ? preisVorschau(auswahl, prozent, rundung) : [];
-  const zurueck = { to: '/betrieb/leistungen', label: 'Leistungen' };
+  const zurueck = { to: '/betrieb/katalog/leistungen', label: 'Leistungen' };
 
   if (!geld)
     return (

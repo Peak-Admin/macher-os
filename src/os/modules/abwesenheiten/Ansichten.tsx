@@ -10,7 +10,7 @@ import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { ART_LABEL, STATUS_LABEL, arbeitstage, kollisionen, tageImJahr, tageText, urlaubskonto, zeitraumText } from './daten';
 import { AbwesenheitForm } from './AbwesenheitForm';
-import { entscheiden } from './logik';
+import { entscheiden, offeneAntraege } from './logik';
 import type { Ton } from '@core/modul';
 
 const statusTon: Record<Abwesenheit['status'], Ton> = { beantragt: 'aktiv', genehmigt: 'erfolg', abgelehnt: 'neutral' };
@@ -52,13 +52,52 @@ export function AbwesenheitZeile({ a, mitName = true }: { a: Abwesenheit; mitNam
   );
 }
 
+/**
+ * Offener Antrag mit Genehmigen/Ablehnen – auch in Arbeitszeiten („Offene Urlaubsanträge“) genutzt.
+ * Zeigt Tage, Resturlaub danach, Notiz und Termine im Zeitraum.
+ */
+export function AntragKarte({ a }: { a: Abwesenheit }) {
+  const toast = useToast();
+  const alle = db.abwesenheiten.all();
+  const m = db.mitarbeiter.get(a.mitarbeiterId);
+  const k = m ? urlaubskonto(m, alle, Number(a.von.slice(0, 4))) : undefined;
+  const tage = arbeitstage(a.von, a.bis, a.halbtags);
+  const betroffen = kollisionen(a, db.termine.all());
+  const entscheide = (ja: boolean) => {
+    entscheiden(a.id, ja);
+    toast(ja ? `${ART_LABEL[a.art]} genehmigt. ${m?.vorname} bekommt Bescheid.` : 'Abgelehnt. Der Mitarbeiter bekommt Bescheid.');
+  };
+  return (
+    <Karte kompakt titel={`${personName(m)} · ${ART_LABEL[a.art]}`} oberzeile={zeitraumText(a)}>
+      <Stapel abstand={8}>
+        <Meta>
+          {tageText(tage)}
+          {a.art === 'urlaub' && k ? ` · Rest danach ${String(k.rest - tage).replace('.', ',')} Tage` : ''}
+          {a.notiz ? ` · „${a.notiz}“` : ''}
+        </Meta>
+        {betroffen.length > 0 && <Status ton="achtung">{betroffen.length === 1 ? '1 Termin im Zeitraum' : `${betroffen.length} Termine im Zeitraum`}</Status>}
+        <Zeile>
+          <Button klein icon="check" onClick={() => entscheide(true)}>
+            Genehmigen
+          </Button>
+          <Button klein variante="sekundaer" onClick={() => entscheide(false)}>
+            Ablehnen
+          </Button>
+          <Button klein variante="tertiaer" to={`/betrieb/abwesenheiten/${a.id}`}>
+            Details
+          </Button>
+        </Zeile>
+      </Stapel>
+    </Karte>
+  );
+}
+
 /** Startansicht: Antrag in Sekunden, eigenes Konto, offene Anträge (Chef), wer ist wann weg */
 export function AbwesenheitenSeite() {
   useDatenstand();
   const ich = useIch();
   const personal = useDarf('personal');
   const buero = istBuero(ich);
-  const toast = useToast();
   const [params] = useSearchParams();
   const [filter, setFilter] = useState<'demnaechst' | 'vergangen'>('demnaechst');
   const t = heute();
@@ -66,7 +105,7 @@ export function AbwesenheitenSeite() {
   const alle = db.abwesenheiten.all();
   const teamSicht = buero || personal;
   const sichtbar = alle.filter((a) => teamSicht || a.mitarbeiterId === ich?.id);
-  const offen = personal ? alle.filter((a) => a.status === 'beantragt' && a.bis >= t).sort((a, b) => a.von.localeCompare(b.von)) : [];
+  const offen = personal ? offeneAntraege(alle, t) : [];
   const kommend = sichtbar.filter((a) => a.bis >= t && a.status !== 'abgelehnt' && !offen.includes(a)).sort((a, b) => a.von.localeCompare(b.von));
   const vergangen = sichtbar.filter((a) => a.bis < t || a.status === 'abgelehnt').sort((a, b) => b.von.localeCompare(a.von));
   const konto = ich ? urlaubskonto(ich, alle, jahr) : undefined;
@@ -74,11 +113,6 @@ export function AbwesenheitenSeite() {
   const artParam = params.get('art');
   const vorgabeArt = artParam === 'krank' || artParam === 'frei' || artParam === 'schule' || artParam === 'sonstiges' ? artParam : 'urlaub';
   const vorgabeMa = params.get('ma') ?? undefined;
-
-  const entscheide = (a: Abwesenheit, ja: boolean) => {
-    entscheiden(a.id, ja);
-    toast(ja ? `${ART_LABEL[a.art]} genehmigt. ${db.mitarbeiter.get(a.mitarbeiterId)?.vorname} bekommt Bescheid.` : 'Abgelehnt. Der Mitarbeiter bekommt Bescheid.');
-  };
 
   return (
     <Seite titel="Urlaub & Krankheit" untertitel="Antrag in Sekunden. Der Chef entscheidet mit einem Tap.">
@@ -95,35 +129,9 @@ export function AbwesenheitenSeite() {
             {offen.length > 0 && (
               <Stapel abstand={8}>
                 <strong>Wartet auf deine Entscheidung</strong>
-                {offen.map((a) => {
-                  const m = db.mitarbeiter.get(a.mitarbeiterId);
-                  const k = m ? urlaubskonto(m, alle, Number(a.von.slice(0, 4))) : undefined;
-                  const tage = arbeitstage(a.von, a.bis, a.halbtags);
-                  const betroffen = kollisionen(a, db.termine.all());
-                  return (
-                    <Karte key={a.id} kompakt titel={`${personName(m)} · ${ART_LABEL[a.art]}`} oberzeile={zeitraumText(a)}>
-                      <Stapel abstand={8}>
-                        <Meta>
-                          {tageText(tage)}
-                          {a.art === 'urlaub' && k ? ` · Rest danach ${String(k.rest - tage).replace('.', ',')} Tage` : ''}
-                          {a.notiz ? ` · „${a.notiz}“` : ''}
-                        </Meta>
-                        {betroffen.length > 0 && <Status ton="achtung">{betroffen.length === 1 ? '1 Termin im Zeitraum' : `${betroffen.length} Termine im Zeitraum`}</Status>}
-                        <Zeile>
-                          <Button klein icon="check" onClick={() => entscheide(a, true)}>
-                            Genehmigen
-                          </Button>
-                          <Button klein variante="sekundaer" onClick={() => entscheide(a, false)}>
-                            Ablehnen
-                          </Button>
-                          <Button klein variante="tertiaer" to={`/betrieb/abwesenheiten/${a.id}`}>
-                            Details
-                          </Button>
-                        </Zeile>
-                      </Stapel>
-                    </Karte>
-                  );
-                })}
+                {offen.map((a) => (
+                  <AntragKarte key={a.id} a={a} />
+                ))}
               </Stapel>
             )}
             <Stapel abstand={12}>

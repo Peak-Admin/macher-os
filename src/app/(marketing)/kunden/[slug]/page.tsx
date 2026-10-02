@@ -12,6 +12,7 @@ import {
   IconTile,
   Section,
   SectionHeading,
+  zone,
 } from "@/components/ui";
 import { Foto } from "@/components/ui/Foto";
 import { gewerkBild, kundenBild } from "@/content/bilder";
@@ -73,7 +74,7 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
   return (
     <>
       {/* 1. Hero – Fallstudie: Foto, Betrieb, Ergebnis */}
-      <section className="relative isolate overflow-hidden bg-ink text-white">
+      <section {...zone("dunkel")}>
         <div className="absolute inset-0 -z-10">
           <Foto bild={kundenBild(k.slug)} preload sizes="100vw" ersatz={null} />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/40" />
@@ -116,14 +117,11 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
             </aside>
           </div>
         </Container>
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-brand" />
       </section>
-      <Container className="pt-8">
-        <BeispielHinweis className="max-w-3xl" />
-      </Container>
 
       {/* 2. Betrieb + 3. Vorher */}
       <Section tone="white">
+        <BeispielHinweis className="mb-12 max-w-3xl" />
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
             <SectionHeading eyebrow="Der Betrieb" title="Wer ist das?" />

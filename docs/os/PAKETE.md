@@ -47,12 +47,12 @@ Verlinke immer mit `pfadZu({ typ, id })` – **nie** Pfade anderer Pakete hart k
 | `mitarbeiter` | mitarbeiter | `/betrieb/mitarbeiter/:id` |
 | `abwesenheiten` | abwesenheiten | `/betrieb/abwesenheiten/:id` |
 | `qualifikationen` | qualifikationen | `/betrieb/qualifikationen/:id` |
-| `artikel` | artikel | `/betrieb/artikel/:id` |
+| `artikel` | artikel | `/betrieb/katalog/material/:id` |
 | `lieferanten` | lieferanten | `/betrieb/lieferanten/:id` |
 | `betriebsmittel` | werkzeuge (alle Arten, Liste filtert) | `/betrieb/werkzeuge/:id` |
 | `rechnungen` | rechnungen | `/betrieb/rechnungen/:id` |
 | `belege` | belege | `/betrieb/belege/:id` |
-| `leistungen` | leistungen | `/betrieb/leistungen/:id` |
+| `leistungen` | leistungen | `/betrieb/katalog/leistungen/:id` |
 | `dokumente` | dateien | `/auftraege/dateien/:id` |
 | `nachrichten` | nachrichten | `/auftraege/nachrichten` (Thread je Auftrag/Kunde) |
 

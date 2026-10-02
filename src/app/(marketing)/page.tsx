@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AppVorschau, PhoneMock, PlanBoardMock, VorschauRahmen } from "@/components/mocks";
+import { PhoneMock, PlanBoardMock, VorschauRahmen } from "@/components/mocks";
 import {
   Ablauf,
   Alltag,
@@ -10,7 +10,7 @@ import {
   KundenCard,
   PlanCards,
   MissionMittelstand,
-  TrustRow,
+  StartHero,
 } from "@/components/sections";
 import {
   ArrowLink,
@@ -36,7 +36,7 @@ import type { ObjektSchluessel } from "@/lib/objekte";
 import { cta, herausgeber, site } from "@/lib/site";
 
 export const metadata = {
-  title: { absolute: `${site.name} – Dein Betrieb. Eine Software.` },
+  title: { absolute: `${site.name} – Dein Betrieb. Einfach im Griff.` },
   description: site.description,
   alternates: { canonical: "/" },
 };
@@ -179,44 +179,11 @@ export default function HomePage() {
     <>
       {/* Alle Abschnitte sind Boxen im Wechsel dunkelgrün · beige · weiß (nach Peak One). Der Glas-Kopf liegt auf dem Hero. */}
 
-      {/* 1. Hero – volle Höhe, rechts die klickbare Vorschau der Software */}
-      <Zone ton="dunkel" label="hero-titel" className="zone-hero">
-        <div className="mx-auto grid h-full max-w-[90rem] items-center gap-10 px-5 pb-10 pt-28 sm:px-10 sm:pb-14 sm:pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-12 lg:pb-10 lg:pt-28 xl:px-14">
-          <div className="max-w-xl">
-            <p className="mb-5 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
-              Von {herausgeber.name} · Das Betriebssystem für Handwerker
-            </p>
-            <h1
-              id="hero-titel"
-              className="font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-balance sm:text-6xl xl:text-7xl"
-            >
-              Dein Betrieb.
-              <br />
-              <span className="text-accent">Eine Software.</span>
-            </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-on-dark sm:text-xl">
-              Aufträge, Termine und Rechnungen an einem Ort. Für dich und dein Team.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href={cta.primary.href} size="lg">
-                {cta.primary.label}
-              </ButtonLink>
-              <ButtonLink href={cta.secondary.href} variant="light" size="lg">
-                <Icon name="play" className="size-4" /> {cta.secondary.label}
-              </ButtonLink>
-            </div>
-            <TrustRow dark className="mt-6" />
-          </div>
-          <div className="min-w-0">
-            <VorschauRahmen hinweis="Klick dich durch – alles Beispieldaten.">
-              <AppVorschau className="lg:h-[min(36rem,calc(100svh-17rem))]" />
-            </VorschauRahmen>
-          </div>
-        </div>
-      </Zone>
+      {/* 1. Hero – Text mittig, Einstieg per Google oder E-Mail, darunter fünf Kernelemente und die Software; rechts Matthias Aumann */}
+      <StartHero />
 
       {/* 2. Dein Alltag – 3D-Karten mit Blick in die App */}
-      <Alltag />
+      <Alltag nachUeberhang />
 
       {/* 3. Ablauf – vier klickbare Schritte */}
       <Ablauf />
@@ -419,9 +386,7 @@ export default function HomePage() {
       </Zone>
 
       {/* 11. Von Mission Mittelstand */}
-      <Zone ton="dunkel">
-        <MissionMittelstand />
-      </Zone>
+      <MissionMittelstand />
 
       {/* 12. Einrichtung */}
       <Zone ton="beige">
@@ -469,7 +434,7 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 12b. Bedenken – die fünf Kernängste als Karten, die übrigen Einwände zum Aufklappen (docs/produkt/einwaende.md) */}
+      {/* 12b. Bedenken – die fünf Kernängste als Karten, die nächsten fünf zum Aufklappen, alle unter /bedenken (docs/produkt/einwaende.md) */}
       <Zone ton="dunkel" id="bedenken">
         <Section tone="transparent">
           <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Bedenken</p>
@@ -504,6 +469,9 @@ export default function HomePage() {
           <div className="mt-6">
             <Faq items={weitereEinwaende} dark />
           </div>
+          <ButtonLink href="/bedenken" variant="light" className="mt-6">
+            Alle Bedenken ansehen und durchsuchen
+          </ButtonLink>
         </Section>
       </Zone>
 

@@ -12,11 +12,12 @@ import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uh
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
 import type { Angebot, Bezug, Datum, ID, Phase, Rechnung, Termin } from '@core/objects';
-import { frage as gatewayFrage, type AbsichtDef, type Plan, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal, type OeffnenLink } from '@core/gateway';
+import { frage as gatewayFrage, type AbsichtDef, type Plan, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal, type OeffnenLink, type Vorgabe } from '@core/gateway';
 import { zeitraumAus, type Zeitraum } from './zeit';
 import { rechnungsVorschau } from '../rechnungen/logik';
 import { AKTIONS_ABSICHTEN } from './aktionen';
 import { MEHR_ABSICHTEN, auftragEintrag } from './absichten';
+import { VORBEREITEN_ABSICHTEN } from './vorbereiten';
 import { FRAGE, LAUFEND, findeAuftrag, findeKunde, findeMitarbeiter, gross, klein, planAntwort, schritte, stand, woerter } from './hilfen';
 
 export { FRAGE, LAUFEND, findeAuftrag, findeKunde, findeMitarbeiter, gross, klein, planAntwort, schritte, stand };
@@ -653,6 +654,8 @@ export const ABSICHTEN: Def[] = [
   },
   // Aktionen in anderen Modulen (Senden, Verschieben, Kunden schreiben …) – vor den Fragen geprüft
   ...AKTIONS_ABSICHTEN,
+  // „Mit Macher vorbereiten“ am Objekt – nur mit Vorgabe (Absicht + Objekt), ohne Texterkennung
+  ...VORBEREITEN_ABSICHTEN,
   {
     id: 'job.finish',
     titel: 'Auftrag fertig melden (mehrere Schritte)',
@@ -791,10 +794,19 @@ export function beantworte(frage: string, k: Kontext): Antwort {
   return def.beantworte(frage, { absicht: def.id, sicherheit: 1, lane: 0 }, k, {});
 }
 
-/** Der Weg für die Oberfläche: Text oder Sprache → Gateway → Antwort (protokolliert). */
-export async function fragen(text: string, k: Kontext, kanal: Kanal = 'text'): Promise<{ antwort: Antwort; modell: string }> {
+/**
+ * Vermutete Absicht vor der Antwort (nur Regeln, ohne Protokoll) – damit der Orb schon beim Fragen den passenden
+ * Zustand zeigt („Macher sucht …“, „Macher schreibt …“).
+ */
+export function vermuteteAbsicht(text: string, k: Kontext): string | undefined {
+  if (!text.trim()) return undefined;
+  return ABSICHTEN.find((a) => a.erkenne?.(text, k))?.id;
+}
+
+/** Der Weg für die Oberfläche: Text oder Sprache → Gateway → Antwort (protokolliert). Mit `vorgabe` aus „Mit Macher vorbereiten“. */
+export async function fragen(text: string, k: Kontext, kanal: Kanal = 'text', vorgabe?: Vorgabe): Promise<{ antwort: Antwort; modell: string }> {
   if (!text.trim()) return { antwort: LEER, modell: 'Regeln' };
-  const g = await gatewayFrage<Antwort>(text, { ...k, kanal });
+  const g = await gatewayFrage<Antwort>(text, { ...k, kanal }, vorgabe);
   return { antwort: g.ergebnis ?? abgelehnt(g), modell: g.modell };
 }
 

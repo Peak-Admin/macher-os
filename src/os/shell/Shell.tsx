@@ -83,9 +83,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <aside className="mm-sidebar" aria-label="Hauptnavigation">
         <div className="mm-leiste-kopf">
           <Link to="/heute" className="mm-logo" aria-label="Macher OS, zu Heute" title={eingeklappt ? 'Macher OS' : undefined}>
-            <span className="mm-logo-zeichen" aria-hidden>
-              M
-            </span>
+            <img className="mm-logo-zeichen" src="/os/icons/icon-192.png" alt="" width={32} height={32} />
             <span className="mm-leiste-text">
               Macher <strong>OS</strong>
             </span>

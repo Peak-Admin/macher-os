@@ -36,7 +36,7 @@ export function Stundensatz() {
   const set = (k: keyof RechnerFelder) => (e: React.ChangeEvent<HTMLInputElement>) => setFelder({ ...f, [k]: e.target.value });
   const ergebnis = stundensatzBerechnen(rechnerEingabe(f));
   const ausgefuellt = Object.values(f).every((v) => v.trim());
-  const zurueck = { to: '/betrieb/leistungen', label: 'Leistungen' };
+  const zurueck = { to: '/betrieb/katalog/leistungen', label: 'Leistungen' };
 
   if (!geld)
     return (

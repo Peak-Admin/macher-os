@@ -104,6 +104,15 @@ export function rechnungsSummen(r: RechnungX, b: Betrieb | undefined = betrieb()
   };
 }
 
+/**
+ * Betrag einer Rechnung für Listen: brutto = Zahlbetrag (nach gezahlten Abschlägen und Einbehalt),
+ * netto = Nettosumme abzüglich der verrechneten Abschläge (netto).
+ */
+export function listenBetrag(r: RechnungX, art: 'brutto' | 'netto', b: Betrieb | undefined = betrieb()): Cent {
+  const s = rechnungsSummen(r, b);
+  return art === 'netto' ? s.netto - s.abzugNetto : s.zahlbetrag;
+}
+
 export interface SummenZeileDaten {
   label: string;
   wert: Cent;

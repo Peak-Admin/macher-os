@@ -1,0 +1,20 @@
+/* Gemeinsame Listenbausteine: „Zuletzt bearbeitet“ und Finanzfilter (Angebote, Rechnungen). Nur Tokens. */
+
+/* Sekundäre Meta – auf dem Handy ausgeblendet */
+.mm-zuletzt { display: block; overflow-wrap: anywhere; }
+@media (max-width: 767px) { .mm-zuletzt { display: none; } }
+
+.mm-finanzfilter { display: flex; flex-direction: column; gap: var(--mm-space-3); min-width: 0; }
+.mm-finanzfilter-zeile { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--mm-space-3) var(--mm-space-4); min-width: 0; }
+.mm-finanzfilter-zeile > * { min-width: 0; }
+.mm-finanzfilter-suche { flex: 2 1 280px; }
+.mm-finanzfilter-zeile > .mm-feld { flex: 1 1 200px; }
+/* Brutto/Netto: heller Umschalter in natürlicher Breite */
+.mm-finanzfilter-zeile > .mm-feld:last-child { flex: 0 0 auto; }
+@media (max-width: 479px) {
+  .mm-finanzfilter-zeile > *, .mm-finanzfilter-zeile > .mm-feld:last-child { flex: 1 1 100%; }
+}
+
+/* Summenzeile unter Finanzlisten */
+.mm-listensumme { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--mm-space-1) var(--mm-space-4); color: var(--mm-text-secondary); font-size: 14px; line-height: 21px; }
+.mm-listensumme strong { color: var(--mm-black); font-weight: 600; font-variant-numeric: tabular-nums; }
