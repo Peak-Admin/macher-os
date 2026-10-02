@@ -125,7 +125,7 @@ export function Verlauf({ filter, kundeId: kundeIdProp }: { filter: VerlaufFilte
           ))}
         </ul>
       ) : (
-        <Leer titel="Noch keine Nachrichten" text={kunde ? 'Schreib dem Kunden oder dem Team. Alles bleibt hier am Auftrag gesammelt.' : 'Schreib dem Team. Alles bleibt hier gesammelt.'} icon="chat" />
+        <Leer skizze titel="Noch keine Nachrichten" text={kunde ? 'Schreib dem Kunden oder dem Team. Alles bleibt hier am Auftrag gesammelt.' : 'Schreib dem Team. Alles bleibt hier gesammelt.'} icon="chat" />
       )}
       <form
         className="mm-stapel"

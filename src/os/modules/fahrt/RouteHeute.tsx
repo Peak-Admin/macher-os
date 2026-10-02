@@ -64,7 +64,7 @@ export function RouteHeute() {
         </Zeile>
 
         {!route || !route.stopps.length ? (
-          <Leer icon="route" titel={`Keine Einsätze am ${datumKurz(tag)}`} text="Sobald für diesen Tag Einsätze geplant sind, steht hier die Route." />
+          <Leer skizze icon="route" titel={`Keine Einsätze am ${datumKurz(tag)}`} text="Sobald für diesen Tag Einsätze geplant sind, steht hier die Route." />
         ) : (
           <>
             <Karte kompakt>

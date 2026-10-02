@@ -69,7 +69,7 @@ export function ErtragSeite() {
           ]}
         />
         {!z.length ? (
-          <Leer
+          <Leer skizze
             titel="Noch keine Daten"
             text={
               e.ohneRechnung || e.laufend

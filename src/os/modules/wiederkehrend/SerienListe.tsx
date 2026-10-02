@@ -42,7 +42,7 @@ export function SerienListe() {
           alle.length ? (
             <Leer titel={filter === 'aktiv' ? 'Keine laufenden Serien' : 'Keine beendeten Serien'} icon="wiederholen" />
           ) : (
-            <Leer
+            <Leer skizze
               titel="Noch keine wiederkehrenden Termine"
               text="Lege eine Serie an – z. B. die jährliche Heizungswartung oder die monatliche Sichtprüfung. Die Termine landen automatisch im Kalender."
               aktion={<Button to="/plan/wiederkehrend/neu">Serie anlegen</Button>}

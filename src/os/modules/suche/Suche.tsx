@@ -248,6 +248,7 @@ function OhneSuchbegriff({
       )}
       {!geoeffnet.length && !letzte.length && (
         <Leer
+          skizze
           icon="suche"
           titel="Was suchst du?"
           text="Tippe einen Namen, eine Auftrags- oder Rechnungsnummer, einen Ort oder ein Stichwort. Oder stell Macher eine Frage, zum Beispiel „Welche Rechnungen sind offen?“."

@@ -70,7 +70,7 @@ export function ErfassenSeite() {
 
         <section className="mm-heute-block" aria-label="Heute von dir erfasst">
           <h2 className="mm-heute-blocktitel">Heute von dir erfasst</h2>
-          <Liste leer={<Leer titel="Heute noch nichts erfasst" text="Ein Foto vom Zählerschrank oder deine Arbeitszeit – ein Tipp reicht." icon="kamera" />}>
+          <Liste leer={<Leer skizze titel="Heute noch nichts erfasst" text="Ein Foto vom Zählerschrank oder deine Arbeitszeit – ein Tipp reicht." icon="kamera" />}>
             {zuletzt.map((x) => (
               <ListenZeile key={x.id} titel={x.titel} untertitel={[x.art, x.auftrag, relativ(x.zeit)].filter(Boolean).join(' · ')} />
             ))}

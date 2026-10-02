@@ -11,6 +11,7 @@ import {
   Checkbox,
   Dialog,
   Eingabe,
+  FensterSkizze,
   FormRaster,
   Karte,
   Leer,
@@ -100,6 +101,9 @@ export function Terminbuchung() {
 
       <Karte titel="Dein Buchungslink" oberzeile="Für Website, E-Mail-Signatur und WhatsApp">
         <Stapel abstand={12}>
+          <span className="mm-fenster" aria-hidden>
+            <FensterSkizze icon="kalender" rahmen="handy" />
+          </span>
           <Meta>Über diesen Link sehen Kunden freie Termine und buchen selbst. Neue Kunden legt Macher automatisch an, bekannte erkennt es an Telefon oder E-Mail.</Meta>
           <code style={{ wordBreak: 'break-all', fontSize: 14 }}>{link}</code>
           <Zeile>

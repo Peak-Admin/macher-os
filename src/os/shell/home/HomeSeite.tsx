@@ -67,7 +67,7 @@ function Home({ ich }: { ich: NonNullable<ReturnType<typeof useIch>> }) {
           defs={defs}
           ich={ich}
           leer={
-            <Leer
+            <Leer skizze
               titel="Dein Home ist leer"
               text="Du hast alle Widgets ausgeblendet. Hol dir zurück, was dir hilft."
               icon="heute"

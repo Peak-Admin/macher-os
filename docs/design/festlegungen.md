@@ -51,12 +51,70 @@ Aktionsgrün auf dem Glas, weiß auf der hinteren Form. Keine Kachel dahinter. I
   Mega-Menü 36 px
 - Software: `ThemenIcon` in Modulkacheln, Auswahl- und Start-Karten, Verzeichnis, Home- und News-Kacheln und
   Leerzuständen; die Kachelfläche entfällt, sobald ein Glas-Icon darin steht
-- Wo ein Objektbild (`MacherAsset`, `docs/design/visual-assets.md`) vorgesehen ist, bleibt das Foto; das Glas-Icon
-  ist die Form für alle übrigen Themen
+- In der Software stehen statt Objektfotos seit Oktober 2026 Fenster-Skizzen (siehe „Fenster-Skizze“); auf der Website
+  bleiben Objektfotos (`Objekt`). Das Glas-Icon ist die Form für alle übrigen Themen
 - Mega-Menü: Icons nur an den Einträgen, nicht zusätzlich an den Gruppenüberschriften (keine doppelten Motive)
-- Bedien-Icons (Pfeile, Schließen, Menü, Plus im Button, Haken im Button, Status) und alles unter 32 px bleiben
-  Strich-Icons in Textfarbe – ebenso die Sidebar-Navigation
+- Bedien-Icons (Pfeile, Schließen, Menü, Plus im Button, Haken im Button, Status) und alles unter 24 px bleiben
+  Strich-Icons in Textfarbe
+- **Navigation (Software, Oktober 2026):** Seitenleiste, Benachrichtigungen, untere Leiste am Handy und Monteur-Tabs
+  zeigen Glas-Icons (28 px), die Favoriten 24 px – immer mit Text daneben. Suchen, Leiste einklappen und Menüs bleiben
+  Strich-Icons
 - Neue Motive in `glas.tsx` ergänzen und in den Zuordnungen (`IconTile` bzw. `glasFuer`) eintragen
+
+### Skizzen und UI-Ebenen für Funktionen (Oktober 2026)
+Wo eine Karte eine **Funktion kurz erklärt**, steht oben eine abstrakte Zeichnung statt Icon oder Foto – nach den kleinen
+Prozess-Illustrationen von Mission Mittelstand (ruhiger Grüngrauton). Zwei Formen, je Raster nur eine davon:
+
+- **Skizze** (`Skizze`, `src/components/ui/Skizze.tsx`): Fläche `sand`, drei aufgefächerte weiße Blätter mit grauen
+  Platzhalterlinien, vorne ein Blatt, das die Funktion andeutet (Angebot mit Unterschrift, Kalender, Plantafel, Lager …),
+  unten mittig eine grüne Plakette (Aktionsgrün, weißes Strich-Icon – das Icon, das die Karte vorher hatte).
+  Ein Motiv je Funktion (Schlüssel = Slug aus `src/content/registry.ts`); neue Funktion → neues Motiv in `Skizze.tsx`.
+  Dazu Zusatzmotive: **Handy-Form** für App-Themen (vorne ein Handy statt Blatt: Einsätze, Unterwegs, Vor Ort,
+  Abschluss, Kamera, Sprache, Navigation, Kontakte), die Grundsätze von „Macher erledigt“ (Freigabe, Stufen, Verlauf,
+  Ehrlich) und die Quellen beim Daten übernehmen (Dokumente, Tabelle, Software-Export, Datanorm).
+  Im Einsatz: `FunktionKarte` (Übersicht, Verwandte Funktionen), Funktionskarten der Rechner, App-Seite,
+  „Automatisch heißt nicht: ohne dich“, Daten übernehmen. In Karten über `Card` mit `skizze`.
+- **UI-Ebene** (`UiEbene`, `UiZeile`, `UiStatus`, `src/components/ui/UiEbene.tsx`): ein kleiner Ausschnitt aus Macher OS
+  mit echten Beschriftungen und Beispieldaten, auf derselben Fläche, unten angeschnitten, dahinter eine zweite Ebene.
+  Für zwei bis vier Ergebnisse, die ein konkreter Stand besser belegt als eine Zeichnung (Startseite „Feierabend statt
+  Papierkram“). Immer mit „Beispiel“ markiert, Status immer als Text.
+
+Gemeinsam: 4:3 (Skizze) bzw. Höhe nach Inhalt (UI-Ebene), 12 px Radius, rein dekorativ (`aria-hidden`) – die Aussage
+steht im Kartentitel und Text. Nur Tokens (`sand`, `line`, `muted`, `primary`, `signal-soft`), keine Fotos, kein Glas.
+Beim Hover der Karte fächern die Blätter leicht auf bzw. hebt sich die Ebene (150 ms, nur ohne `prefers-reduced-motion`).
+Objektfotos (`Objekt`) bleiben für Bereiche und Einstiege, Glas-Icons für Themen in Listen.
+
+### Fenster-Skizze (Oktober 2026 – Website und Software)
+Feines Drahtgitter eines App-Fensters (Titelleiste, Seitenspalte; alternativ ein Handy-Umriss), das nach unten weich
+ausläuft, in der Mitte eine App-Kachel mit Glas-Icon. **Ohne Farbe:** Auch das Glas-Icon ist grau (aus der Textfarbe
+gemischt, auf Dunkel hellgrau), damit sich die Zeichnung klar von den grünen Themen- und Navigations-Icons abhebt. Linien und Kachel in `currentColor`
+mit geringer Deckkraft: hell auf der ruhigen Fläche (`sand` / `--mm-surface-subtle`), dunkel direkt auf dunklen Karten
+(`karte-dunkel`). Keine Daten, kein Text in der Skizze – Titel und Text der Karte tragen die Bedeutung.
+
+- Einsatz: Einstiege und Teaser – erste Schritte, Schnittstellen, Hilfe-Einstiege, „Geplant“/„Kommt bald“,
+  einzelne dunkle Karten. Nie in Listen, Tabellen, Formularen oder hinter Daten.
+- Abgrenzung: Die **Skizze** erklärt, was eine Funktion tut (Inhalt angedeutet). Die **Fenster-Skizze** zeigt nur,
+  *wo* etwas sitzt bzw. dass es dazukommt (ein Thema, ein Icon). Je Raster nur eine Form.
+- Gemeinsame Quelle: `src/os/ui/fenster.tsx` (`FensterSkizze`, Glas-Icon-Name). Website: `Fenster`
+  (`src/components/ui/Fenster.tsx`, Strich-Icon-Name, `ton="hell" | "dunkel"`), `Card` mit `fenster`, Landingseiten
+  über `vorteile.bild: "fenster"`. Software: `<span className="mm-fenster"><FensterSkizze … /></span>`
+  (`ui.css`), nebeneinander mit Text über `.mm-fenster-teaser`.
+- **Statt Objektfotos (Software):** Die vier Türen unter Betrieb und die Widget-Köpfe im Home zeigen `SkizzenKachel`
+  (Nah-Ausschnitt in fester Größe wie früher `MacherAsset`: 56 × 42 / 96 × 72 / 192 × 144). `Leer` zeigt bei allen
+  früheren Foto-Themen (`LEER_OBJEKT`) automatisch die Fenster-Skizze; ein Foto nur noch über `objekt`.
+- **Nah-Ausschnitt:** `ausschnitt="nah"` – enger 4:3-Ausschnitt um die Kachel, Kachel 25 % größer, Linien kräftiger.
+- **Leerzustände (Software):** `Leer` mit `skizze` (true = Glas-Icon zu `icon`, oder ein Glas-Name; optional
+  `rahmen="handy"`) zeigt die Fenster-Skizze statt Foto/Icon – nur beim ersten Start einer Ansicht („Noch keine
+  Rechnung“, „Noch kein Webhook“). Suche ohne Treffer, fehlende Rechte und „gibt es nicht (mehr)“ bleiben schlicht;
+  Leerzustände mit passendem Objektfoto behalten das Foto.
+- Im Einsatz, Website: `/schnittstellen` (Heute verfügbar), `/hilfe` (vier Einstiege), `/app` (iPhone/Android,
+  Handy-Rahmen), Daten übernehmen (selbst / persönlich), Startseite (Blog-Kachel im Wissen-Bento, dunkel),
+  `/wissen`, Akademie (Lernbereiche, Schulungen dunkel), `/werkzeuge`, Demo „Lieber persönlich?“ (dunkel).
+- Im Einsatz, Software: Start „Was möchtest du als Erstes erledigen?“, Schnittstellen (alle Verbindungen und Dialog),
+  DATEV „Unternehmen online – Geplant“, Macher fragen (erster Start), Konto (nur auf diesem Gerät, „Das passiert
+  dabei“), Einladung, Spielwiese, „schon eingerichtet“, Buchungslink, Daten übernehmen (Datensicherung, Import-Schritt 1,
+  Datanorm beim Artikel-Import), Lesemodus-Dialog, Kundenbereich ohne Link, Home („Dein nächster Schritt“ während der
+  Einrichtung, Ansprechpartner-Ausweich), Notfall-Start und rund 40 Leerzustände beim ersten Start.
 
 ### Themen-Icon-Kacheln (abgelöst durch Glas-Icons – gilt nur noch für Strich-Icons ohne Glas-Motiv)
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.

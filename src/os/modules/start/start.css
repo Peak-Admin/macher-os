@@ -12,7 +12,7 @@
 .mm-start-karte:hover { border-color: var(--mm-brand); }
 .mm-start-karte:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
 .mm-start-karte strong { font: 700 22px/28px var(--mm-font); color: var(--mm-black); }
-.mm-start-karte .mm-auswahlkarte-icon { width: 44px; height: 44px; }
+.mm-start-karte .mm-start-fenster { align-self: stretch; }
 .mm-start-karte-weiter { display: inline-flex; align-items: center; gap: 4px; margin-top: auto; font-weight: 600; color: var(--mm-link); }
 .mm-start-karte--erste { border: 2px solid var(--mm-brand); padding: calc(var(--mm-space-6) - 1px); }
 

@@ -25,16 +25,20 @@ import {
 import {
   ArrowLink,
   Badge,
-  Zone,
   ButtonLink,
   CheckList,
   Faq,
   FaqJsonLd,
+  Fenster,
   Icon,
   IconTile,
   Karte3D,
   Section,
   SectionHeading,
+  UiEbene,
+  UiStatus,
+  UiZeile,
+  Zone,
   type FaqItem,
   type IconName,
 } from "@/components/ui";
@@ -152,10 +156,35 @@ const kundenFoto: Record<(typeof topGewerke)[number]["slug"], GewerkSlug> = {
   galabau: "garten-aussenanlagen",
 };
 
-const feierabend: { text: string; icon: IconName }[] = [
-  { text: "Stundenzettel kommen vom Handy", icon: "smartphone" },
-  { text: "Rechnungen sind vorbereitet", icon: "euro" },
-  { text: "Offene Zahlungen im Blick", icon: "chart" },
+/** Drei Ergebnisse, jeweils mit einer UI-Ebene als Beleg (Beispieldaten). */
+const feierabend: { text: string; ort: string; zeilen: { links: ReactNode; rechts: ReactNode }[] }[] = [
+  {
+    text: "Stundenzettel kommen vom Handy",
+    ort: "Zeiten · Heute",
+    zeilen: [
+      { links: <b className="font-semibold">Max Berger</b>, rechts: <UiStatus ton="gut">Vom Handy</UiStatus> },
+      { links: "Sanierung Haus 24", rechts: <span className="font-semibold tabular-nums">7:45 Std.</span> },
+      { links: "Fahrtzeit", rechts: <span className="font-semibold tabular-nums">0:30 Std.</span> },
+    ],
+  },
+  {
+    text: "Rechnungen sind vorbereitet",
+    ort: "Rechnung · Entwurf",
+    zeilen: [
+      { links: <b className="font-semibold">Sanierung Haus 24</b>, rechts: <UiStatus ton="gut">Zum Prüfen</UiStatus> },
+      { links: "Stunden aus der App", rechts: <UiStatus>Übernommen</UiStatus> },
+      { links: "Material vom Einsatz", rechts: <UiStatus>Übernommen</UiStatus> },
+    ],
+  },
+  {
+    text: "Offene Zahlungen im Blick",
+    ort: "Zahlungen",
+    zeilen: [
+      { links: <b className="font-semibold">Rechnung Schulz</b>, rechts: <UiStatus ton="gut">Bezahlt</UiStatus> },
+      { links: <b className="font-semibold">Rechnung Weber</b>, rechts: <UiStatus>Offen</UiStatus> },
+      { links: "Erinnerung vorbereitet", rechts: <UiStatus ton="warnung">Wartet auf dich</UiStatus> },
+    ],
+  },
 ];
 
 const mobil = [
@@ -347,23 +376,25 @@ export default function HomePage() {
       {/* 7. Feierabend statt Papierkram – alles in Boxen */}
       <Zone ton="weiss">
         <Section tone="transparent">
-          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]">
-            <SectionHeading
-              eyebrow="Feierabend statt Papierkram"
-              title="Kein Küchentisch-Büro mehr am Abend."
-              intro="Angebote, Stundenzettel, Rechnungen: Was früher abends liegen blieb, bereitet Macher OS tagsüber vor. Du prüfst und schickst ab."
-            />
-            <ul className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-              {feierabend.map((p) => (
-                <li key={p.text}>
-                  <Karte3D innen="flex h-full flex-col gap-4 rounded-2xl bg-beige p-5 ring-1 ring-beige-line">
-                    <IconTile name={p.icon} className="karte-3d-tief size-11" />
-                    <span className="font-display text-lg font-bold leading-snug text-ink">{p.text}</span>
-                  </Karte3D>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <SectionHeading
+            eyebrow="Feierabend statt Papierkram"
+            title="Kein Küchentisch-Büro mehr am Abend."
+            intro="Angebote, Stundenzettel, Rechnungen: Was früher abends liegen blieb, bereitet Macher OS tagsüber vor. Du prüfst und schickst ab."
+          />
+          <ul className="mt-10 grid gap-4 lg:grid-cols-3">
+            {feierabend.map((p) => (
+              <li key={p.text}>
+                <Karte3D innen="group flex h-full flex-col gap-5 rounded-2xl bg-white p-5 ring-1 ring-line">
+                  <UiEbene ort={p.ort}>
+                    {p.zeilen.map((z, i) => (
+                      <UiZeile key={i} links={z.links} rechts={z.rechts} />
+                    ))}
+                  </UiEbene>
+                  <span className="font-display text-lg font-bold leading-snug text-ink">{p.text}</span>
+                </Karte3D>
+              </li>
+            ))}
+          </ul>
           <ArrowLink href="/funktionen/automatisch-erledigen" className="mt-8">
             So arbeitet Macher
           </ArrowLink>
@@ -590,13 +621,13 @@ export default function HomePage() {
                     href={w.href}
                     className={`group flex h-full flex-col rounded-2xl p-6 transition-transform duration-150 ease-out hover:-translate-y-0.5 ${gross ? "min-h-64 lg:p-8" : "min-h-44"}`}
                   >
-                    <span
-                      className={`inline-flex size-11 items-center justify-center rounded-xl ${
-                        dunkel ? "bg-white/10 text-accent" : "bg-white text-signal-dark ring-1 ring-line"
-                      }`}
-                    >
-                      <Icon name={w.icon} className="size-5" />
-                    </span>
+                    {gross ? (
+                      <Fenster icon={w.icon} ton="dunkel" className="-mx-2 -mt-2" />
+                    ) : (
+                      <span className="inline-flex size-11 items-center justify-center rounded-xl bg-white text-signal-dark ring-1 ring-line">
+                        <Icon name={w.icon} className="size-5" />
+                      </span>
+                    )}
                     <span className={`mt-auto pt-6 font-display font-bold leading-tight ${gross ? "text-4xl" : "text-xl"}`}>{w.titel}</span>
                     <span className={`mt-1 ${dunkel ? "text-white/75" : "text-muted"} ${gross ? "text-lg" : ""}`}>{w.text}</span>
                     {gross && (

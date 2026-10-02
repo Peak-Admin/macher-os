@@ -1,6 +1,6 @@
 /** Gemeinsamer Rahmen jedes Widgets: Titel, Inhalt, optional „Alle ansehen“. Fehler bleiben im Widget. */
 import { Component, useId, type ReactNode } from 'react';
-import { Button, MacherAsset } from '@ui/index';
+import { Button, SkizzenKachel } from '@ui/index';
 import { homeMessen } from './messen';
 import type { WidgetDefinition } from './typen';
 
@@ -32,7 +32,8 @@ export function WidgetRahmen({ def, children, kopfRechts }: { def: WidgetDefinit
       {!def.ohneTitel && (
         <header className="mm-home-widget-kopf">
           <span className="mm-home-widget-titelzeile">
-            {def.objekt && <MacherAsset asset={def.objekt} groesse="klein" />}
+            {/* Widgets mit Bild zeigen die kleine Fenster-Skizze ihres Themas (früher ein Objektfoto) */}
+            {def.objekt && <SkizzenKachel icon={def.icon} groesse="klein" />}
             <h2 id={id} className="mm-home-widget-titel">
               {def.name}
             </h2>

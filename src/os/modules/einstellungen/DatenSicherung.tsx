@@ -4,7 +4,7 @@ import { db, importieren, useDatenstand } from '@core/db';
 import { datum, heute, relativ, uhrzeit, zahl } from '@core/format';
 import { setzeEinstellung, useEinstellung } from '@core/einstellungen';
 import { useDarf } from '@core/session';
-import { Button, Dialog, Karte, Meldung, Meta, Seite, Stapel, Zeile, useBestaetigen, useToast, DateiKnopf } from '@ui/index';
+import { Button, Dialog, FensterSkizze, Karte, Meldung, Meta, Seite, Stapel, Zeile, useBestaetigen, useToast, DateiKnopf } from '@ui/index';
 import { dateiTeil, herunterladen } from '@modules/schnittstellen/daten';
 import { EinstellungenTabs } from './Navigation';
 import { LETZTE_SICHERUNG_KEY, beispielAnzahl, beispieleEntfernenZaehlen, papierkorbEintraege, sicherungErstellen, sicherungPruefen, type PruefErgebnis } from './daten';
@@ -99,14 +99,19 @@ export function DatenSicherung() {
         </Karte>
 
         <Karte titel="Daten übernehmen">
-          <Stapel>
-            <Meta>Kunden, Artikel, Preise oder offene Rechnungen aus Excel oder deinem alten Programm übernehmen. Macher erkennt die Spalten selbst.</Meta>
-            <div>
-              <Button variante="sekundaer" icon="upload" to="/betrieb/import">
-                Daten übernehmen
-              </Button>
-            </div>
-          </Stapel>
+          <div className="mm-fenster-teaser">
+            <span className="mm-fenster" aria-hidden>
+              <FensterSkizze icon="import" />
+            </span>
+            <Stapel>
+              <Meta>Kunden, Artikel, Preise oder offene Rechnungen aus Excel oder deinem alten Programm übernehmen. Macher erkennt die Spalten selbst.</Meta>
+              <div>
+                <Button variante="sekundaer" icon="upload" to="/betrieb/import">
+                  Daten übernehmen
+                </Button>
+              </div>
+            </Stapel>
+          </div>
         </Karte>
 
         <Karte titel="Beispieldaten">

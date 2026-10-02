@@ -50,7 +50,7 @@ export function NachkalkulationListe() {
           schluessel={(z) => z.a.id}
           zeilenLink={(z) => `/betrieb/nachkalkulation/${z.a.id}`}
           leer={
-            <Leer
+            <Leer skizze
               titel={ansicht === 'erledigt' ? 'Noch keine abgeschlossenen Aufträge mit Daten' : 'Keine laufenden Aufträge mit Daten'}
               text="Für eine Nachkalkulation braucht es ein Soll (angenommenes Angebot oder geplante Stunden) und gebuchte Zeiten, Material oder Belege."
               icon="diagramm"
@@ -144,7 +144,7 @@ export function NachkalkulationDetail() {
     >
       <Stapel abstand={24}>
         {!n.hatIst && !n.hatSoll ? (
-          <Leer titel="Noch keine Daten" text="Es fehlen sowohl ein Soll (angenommenes Angebot oder geplante Stunden) als auch gebuchte Zeiten, Material oder Belege." icon="diagramm" />
+          <Leer skizze titel="Noch keine Daten" text="Es fehlen sowohl ein Soll (angenommenes Angebot oder geplante Stunden) als auch gebuchte Zeiten, Material oder Belege." icon="diagramm" />
         ) : (
           <>
             <Karte titel="Was ist passiert">

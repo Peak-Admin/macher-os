@@ -8,6 +8,7 @@ import {
   Button,
   Checkbox,
   Eingabe,
+  FensterSkizze,
   FormRaster,
   Fortschritt,
   Karte,
@@ -203,9 +204,14 @@ function Export({ monatVorschlag, zuEinstellungen }: { monatVorschlag?: string; 
       </Abschnitt>
 
       <Karte titel="DATEV Unternehmen online" aktion={<Status ton="neutral">Geplant</Status>}>
-        <p style={{ margin: 0 }}>
-          Später schickt Macher Belege und Buchungen direkt an DATEV – ohne Datei. Bis dahin lädst du den Buchungsstapel herunter und schickst ihn deinem Steuerberater oder lädst ihn in DATEV hoch.
-        </p>
+        <div className="mm-fenster-teaser">
+          <span className="mm-fenster" aria-hidden>
+            <FensterSkizze icon="stecker" />
+          </span>
+          <p style={{ margin: 0 }}>
+            Später schickt Macher Belege und Buchungen direkt an DATEV – ohne Datei. Bis dahin lädst du den Buchungsstapel herunter und schickst ihn deinem Steuerberater oder lädst ihn in DATEV hoch.
+          </p>
+        </div>
       </Karte>
     </Stapel>
   );

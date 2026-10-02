@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { db } from '@core/db';
 import { messen } from '@core/messung';
 import { useDarf } from '@core/session';
-import { Button, Icon, Meldung, Seite, ThemenIcon } from '@ui/index';
+import { Button, FensterSkizze, glasFuer, Icon, Meldung, Seite } from '@ui/index';
 import { KARTEN, startKarten, type Wahl } from './daten';
 import './start.css';
 
@@ -35,8 +35,8 @@ export function StartSeite() {
           const k = KARTEN[w];
           return (
             <button key={w} type="button" className={`mm-start-karte${i === 0 ? ' mm-start-karte--erste' : ''}`} onClick={() => waehlen(w, i)}>
-              <span className="mm-auswahlkarte-icon" aria-hidden>
-                <ThemenIcon name={k.icon} size={44} />
+              <span className="mm-fenster mm-start-fenster" aria-hidden>
+                <FensterSkizze icon={glasFuer[k.icon] ?? 'info'} />
               </span>
               <strong>{k.titel}</strong>
               <span>{k.text}</span>

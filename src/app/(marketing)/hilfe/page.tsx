@@ -47,16 +47,16 @@ export default function HilfePage() {
       {/* Schnellzugriff */}
       <Section tone="white" tight>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card title="Schnellstart" icon="bolt" href="/hilfe/schnellstart">
+          <Card title="Schnellstart" icon="bolt" href="/hilfe/schnellstart" fenster>
             Mit einer Frage startklar.
           </Card>
-          <Card title="Hilfe-Center" icon="book" iconTone="sky" href="/hilfe-center">
+          <Card title="Hilfe-Center" icon="book" href="/hilfe-center" fenster>
             Anleitungen zu allen Bereichen.
           </Card>
-          <Card title="Daten übernehmen" icon="download" iconTone="moss" href="/hilfe/daten-uebernehmen">
+          <Card title="Daten übernehmen" icon="download" href="/hilfe/daten-uebernehmen" fenster>
             Kunden, Mitarbeiter, Artikel mitnehmen.
           </Card>
-          <Card title="Kontakt & Support" icon="chat" iconTone="ink" href="/hilfe/kontakt">
+          <Card title="Kontakt & Support" icon="chat" href="/hilfe/kontakt" fenster>
             Persönliche Hilfe von uns.
           </Card>
         </div>

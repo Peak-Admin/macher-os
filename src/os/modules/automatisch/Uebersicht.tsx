@@ -56,7 +56,7 @@ export function Uebersicht() {
       <Meta>{zuletzt ? `Zuletzt alles geprüft ${relativ(zuletzt)} um ${uhrzeit(zuletzt)} Uhr.` : 'Macher prüft beim Start und alle 30 Minuten, solange die App offen ist.'}</Meta>
       {!admin && <Meldung>Du kannst die Regeln ansehen. Zum Ein- und Ausschalten brauchst du die Freigabe „Einstellungen“.</Meldung>}
 
-      {!regeln.length && <Leer icon="wiederholen" titel="Noch keine Regeln" text="Sobald Module Regeln mitbringen, erscheinen sie hier und laufen automatisch." />}
+      {!regeln.length && <Leer skizze icon="wiederholen" titel="Noch keine Regeln" text="Sobald Module Regeln mitbringen, erscheinen sie hier und laufen automatisch." />}
 
       {gruppen.map(({ m, regeln: rs }) => (
         <Abschnitt key={m?.id ?? 'x'} titel={m?.id === 'automatisch' ? 'Übergreifend' : m?.titel ?? 'Weitere'}>

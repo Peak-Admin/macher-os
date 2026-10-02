@@ -18,12 +18,14 @@ import {
   type TextareaHTMLAttributes,
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ThemenIcon } from './glas';
+import { FensterSkizze } from './fenster';
+import { glasFuer, ThemenIcon, type GlasIconName } from './glas';
 import { Icon, type IconName } from './icons';
 import type { Ton } from '@core/modul';
 import './ui.css';
 
-export { GlasIcon, ThemenIcon, type GlasIconName } from './glas';
+export { GlasIcon, ThemenIcon, glasFuer, type GlasIconName } from './glas';
+export { FensterSkizze, SkizzenKachel } from './fenster';
 import { MacherAsset, type ObjektSchluessel } from './asset';
 export { Icon } from './icons';
 export { MacherAsset, type ObjektSchluessel } from './asset';
@@ -964,7 +966,10 @@ export function Tabelle<T>({ zeilen, spalten, schluessel, onZeile, zeilenLink, l
 
 // ------------------------------------------------------------------ Zustände
 
-/** Leerzustände zeigen ein vertrautes Werkzeug-Objekt statt eines abstrakten Icons (docs/design/visual-assets.md, Abschnitt 7). */
+/**
+ * Leerzustände zu diesen Themen zeigen automatisch die Fenster-Skizze (früher ein Objektfoto, Oktober 2026 ersetzt).
+ * Die Werte bleiben als Vorschlag, falls eine Ansicht ausdrücklich ein Foto will (`objekt`).
+ */
 const LEER_OBJEKT: Partial<Record<IconName, ObjektSchluessel>> = {
   auftraege: 'klemmbrett',
   liste: 'klemmbrett',
@@ -988,11 +993,38 @@ const LEER_OBJEKT: Partial<Record<IconName, ObjektSchluessel>> = {
   start: 'werkzeugkiste',
 };
 
-export function Leer({ titel, text, aktion, icon = 'info', objekt }: { titel: string; text?: string; aktion?: ReactNode; icon?: IconName; objekt?: ObjektSchluessel | null }) {
-  const bild = objekt === null ? undefined : (objekt ?? LEER_OBJEKT[icon]);
+/**
+ * Leerzustand. `skizze` zeigt statt Objektfoto bzw. Icon die Fenster-Skizze (Drahtgitter mit Glas-Icon) – für den
+ * ersten Start einer Ansicht („Noch keine Rechnung“), nicht für Suche ohne Treffer, fehlende Rechte oder „gibt es nicht“.
+ * `true` nimmt das Glas-Icon zu `icon`, ein Name wählt ein anderes.
+ */
+export function Leer({
+  titel,
+  text,
+  aktion,
+  icon = 'info',
+  objekt,
+  skizze,
+  rahmen = 'fenster',
+}: {
+  titel: string;
+  text?: string;
+  aktion?: ReactNode;
+  icon?: IconName;
+  objekt?: ObjektSchluessel | null;
+  skizze?: boolean | GlasIconName;
+  rahmen?: 'fenster' | 'handy';
+}) {
+  // Ein Foto nur noch, wenn eine Ansicht es ausdrücklich will; sonst Skizze für alle früheren Foto-Themen.
+  const bild = objekt ?? undefined;
+  const mitSkizze = !bild && objekt !== null && (skizze || LEER_OBJEKT[icon]);
   return (
     <div className="mm-leer">
-      {bild ? (
+      {mitSkizze ? (
+        <span className="mm-fenster mm-leer-skizze" aria-hidden>
+          <FensterSkizze icon={typeof skizze === 'string' ? skizze : (glasFuer[icon] ?? 'info')} rahmen={rahmen} />
+        </span>
+      ) : bild ? (
         <MacherAsset asset={bild} groesse="gross" />
       ) : (
         <span className="mm-leer-icon">

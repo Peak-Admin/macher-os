@@ -8,7 +8,7 @@ import { GEWERKE, vorlageFuer, type FachrichtungId } from '@core/gewerke';
 import type { Gewerk } from '@core/objects';
 import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
 import { DATEN_VERTRAUEN } from '@core/vertrauen';
-import { Button, Eingabe, Icon, MacherOrb, Meldung, Meta, Oberzeile, useBestaetigen, type IconName } from '@ui/index';
+import { Button, Eingabe, FensterSkizze, Icon, MacherOrb, Meldung, Meta, Oberzeile, useBestaetigen, type IconName } from '@ui/index';
 import {
   briefkopfErkennen,
   briefkopfLuecken,
@@ -552,6 +552,9 @@ function SchonEingerichtet({ onNeu }: { onNeu: () => void }) {
     : [];
   return (
     <div className="ob-ablauf">
+      <span className="mm-fenster" aria-hidden>
+        <FensterSkizze icon="erledigt" />
+      </span>
       <div className="ob-frage-kopf">
         <h1>{b?.name} ist schon eingerichtet</h1>
         <p>Du kannst direkt weiterarbeiten.</p>
@@ -607,6 +610,9 @@ function AufDerSpielwiese({ onNeu }: { onNeu: () => void }) {
   };
   return (
     <div className="ob-ablauf">
+      <span className="mm-fenster" aria-hidden>
+        <FensterSkizze icon="start" />
+      </span>
       <div className="ob-frage-kopf">
         <Oberzeile>Spielwiese</Oberzeile>
         <h1>Du bist gerade auf der Spielwiese</h1>
@@ -628,6 +634,9 @@ function Einladung({ betrieb }: { betrieb: string }) {
   const verbunden = cloudAktiv() && !!cloud().konto();
   return (
     <div className="ob-ablauf">
+      <span className="mm-fenster" aria-hidden>
+        <FensterSkizze icon="handy" rahmen="handy" />
+      </span>
       <div className="ob-frage-kopf">
         <Oberzeile>Einladung</Oberzeile>
         <h1>{betrieb ? `${betrieb} hat dich eingeladen` : 'Du wurdest eingeladen'}</h1>

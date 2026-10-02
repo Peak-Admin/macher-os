@@ -114,7 +114,7 @@ export function BetriebsmittelDetail() {
                   titel: 'Prüfungen',
                   zaehler: historie.length,
                   inhalt: (
-                    <Liste leer={<Leer titel="Noch keine Prüfung dokumentiert" text="Trag die nächste Prüfung hier ein – die Frist danach rechnet Macher selbst aus." icon="schild" aktion={<Button variante="sekundaer" onClick={() => setPruefung(true)}>Prüfung dokumentieren</Button>} />}>
+                    <Liste leer={<Leer skizze titel="Noch keine Prüfung dokumentiert" text="Trag die nächste Prüfung hier ein – die Frist danach rechnet Macher selbst aus." icon="schild" aktion={<Button variante="sekundaer" onClick={() => setPruefung(true)}>Prüfung dokumentieren</Button>} />}>
                       {historie.map((h) => {
                         const dok = db.dokumente.get(h.dokumentId);
                         return (

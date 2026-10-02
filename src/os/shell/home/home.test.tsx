@@ -159,6 +159,7 @@ describe('Einrichtung im nächsten Schritt', () => {
     const knoepfe = within(rechts).getAllByRole('link');
     expect(knoepfe).toHaveLength(1);
     expect(knoepfe[0].getAttribute('href')).toBe('/betrieb/import?art=kunden');
-    expect(rechts.querySelector('img.mm-asset')).toBeTruthy();
+    // Zeichnung statt Objektfoto: Fenster-Skizze zum aktiven Schritt
+    expect(rechts.querySelector('.mm-fenster svg')).toBeTruthy();
   });
 });

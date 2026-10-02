@@ -4,7 +4,7 @@ import { db } from '@core/db';
 import { heute } from '@core/format';
 import { pfadZu } from '@core/modul';
 import { darf, useIch } from '@core/session';
-import { Button, Checkbox, Eingabe, Textfeld, FormRaster, Karte, Liste, ListenZeile, MacherArbeitet, Meldung, Meta, Status, Zeile, kiGlow, orbFuer, useBestaetigen, useToast, type OrbZustand } from '@ui/index';
+import { Button, Checkbox, Eingabe, FensterSkizze, Textfeld, FormRaster, Karte, Liste, ListenZeile, MacherArbeitet, Meldung, Meta, Status, Zeile, kiGlow, orbFuer, useBestaetigen, useToast, type OrbZustand } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
 import { rueckgaengigGrund } from '@core/audit';
 import { aktionDef, fuehreAus, fuehrePlanAus, nimmZurueck, planRisiko, pruefePlan, type GatewayKontext } from '@core/gateway';
@@ -68,6 +68,9 @@ export function MacherChat({ onNavigiert, start }: { onNavigiert?: () => void; s
     <div className="mf-seite">
       {!verlauf.length && (
         <div className="mm-stapel" style={{ gap: 12 }}>
+          <span className="mm-fenster" aria-hidden>
+            <FensterSkizze icon="macher" />
+          </span>
           <p style={{ margin: 0 }}>Frag mich nach Terminen, offenen Rechnungen, Kunden oder deinem Team. Ich antworte aus deinen Daten in Macher OS und bereite Aufgaben für dich vor.</p>
           <Meta>Zum Beispiel:</Meta>
           <div className="mf-beispiele">

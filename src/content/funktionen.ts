@@ -6,7 +6,7 @@
  * Alle Zahlen in den Produktansichten sind Beispielwerte aus einem
  * ausgedachten Betrieb – keine Kennzahlen über Macher OS.
  */
-import type { FaqItem, IconName } from "@/components/ui";
+import type { FaqItem, IconName, SkizzenMotiv } from "@/components/ui";
 import {
   funktionen,
   gewerkCluster,
@@ -97,7 +97,7 @@ export type MacherAufgabe = {
 
 export type AutomatischInhalt = Basis & {
   aufgaben: MacherAufgabe[];
-  prinzipien: { titel: string; text: string; icon: IconName }[];
+  prinzipien: { titel: string; text: string; skizze: SkizzenMotiv }[];
   tagesablauf: { zeit: string; text: string }[];
 };
 
@@ -3946,22 +3946,22 @@ export const funktionInhalte: Inhalte = {
       {
         titel: "Macher schlägt vor. Du entscheidest.",
         text: "Alles, was Geld kostet oder nach außen geht, gibst du frei – so lange du willst.",
-        icon: "check",
+        skizze: "freigabe",
       },
       {
         titel: "Du bestimmst, wie viel.",
         text: "Für jede Aufgabe stellst du ein: aus, nur vorschlagen oder selbst erledigen.",
-        icon: "layers",
+        skizze: "stufen",
       },
       {
         titel: "Alles nachvollziehbar.",
         text: "Jede Aktion von Macher steht im Verlauf: was, wann und warum.",
-        icon: "clipboard",
+        skizze: "verlauf",
       },
       {
         titel: "Ehrlich zu deinen Kunden.",
         text: "Am Telefon und in Nachrichten sagt Macher offen, dass er der digitale Assistent deines Betriebs ist.",
-        icon: "shield",
+        skizze: "ehrlich",
       },
     ],
     tagesablauf: [

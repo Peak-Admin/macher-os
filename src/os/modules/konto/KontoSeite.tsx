@@ -8,7 +8,7 @@ import { supabaseCloud, useKontoZustand } from '@core/cloud-supabase';
 import { relativ } from '@core/format';
 import { ROLLEN } from '@core/session';
 import { useSyncStatus, type SyncStatus } from '@core/sync';
-import { Button, Fortschritt, Karte, Laden, Liste, ListenZeile, Meldung, Seite, Stapel, Status, useBestaetigen, useToast } from '@ui/index';
+import { Button, FensterSkizze, Fortschritt, Karte, Laden, Liste, ListenZeile, Meldung, Seite, Stapel, Status, useBestaetigen, useToast } from '@ui/index';
 import { AnmeldeFormular } from './Anmelden';
 
 function herunterladen(daten: unknown, name: string) {
@@ -46,12 +46,17 @@ function NichtVerbunden() {
       }
     >
       <Karte>
-        <Stapel abstand={12}>
-          <div>
-            <Status ton="neutral">Nur auf diesem Gerät</Status>
-          </div>
-          <p>Konten, Team auf mehreren Geräten und echter Versand werden gerade verbunden. Bis dahin arbeitest du wie gewohnt hier – lade ab und zu eine Sicherung herunter.</p>
-        </Stapel>
+        <div className="mm-fenster-teaser">
+          <span className="mm-fenster" aria-hidden>
+            <FensterSkizze icon="schloss" />
+          </span>
+          <Stapel abstand={12}>
+            <div>
+              <Status ton="neutral">Nur auf diesem Gerät</Status>
+            </div>
+            <p>Konten, Team auf mehreren Geräten und echter Versand werden gerade verbunden. Bis dahin arbeitest du wie gewohnt hier – lade ab und zu eine Sicherung herunter.</p>
+          </Stapel>
+        </div>
       </Karte>
     </Seite>
   );
@@ -65,11 +70,16 @@ function Abgemeldet() {
           <AnmeldeFormular />
         </Karte>
         <Karte titel="Das passiert dabei">
-          <ul className="mm-stapel" style={{ gap: 8, paddingLeft: 20, margin: 0 }}>
-            <li>Deine bisherigen Daten aus diesem Browser werden einmal übernommen.</li>
-            <li>Gespeichert wird auf Servern in Frankfurt. Nur dein Betrieb sieht sie.</li>
-            <li>Du kannst offline weiterarbeiten. Abgeglichen wird, sobald du Netz hast.</li>
-          </ul>
+          <div className="mm-fenster-teaser">
+            <span className="mm-fenster" aria-hidden>
+              <FensterSkizze icon="schild" />
+            </span>
+            <ul className="mm-stapel" style={{ gap: 8, paddingLeft: 20, margin: 0 }}>
+              <li>Deine bisherigen Daten aus diesem Browser werden einmal übernommen.</li>
+              <li>Gespeichert wird auf Servern in Frankfurt. Nur dein Betrieb sieht sie.</li>
+              <li>Du kannst offline weiterarbeiten. Abgeglichen wird, sobald du Netz hast.</li>
+            </ul>
+          </div>
         </Karte>
       </Stapel>
     </Seite>

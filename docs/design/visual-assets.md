@@ -1,6 +1,10 @@
 # Macher OS — Visual Asset & Image Language Specification
 **Purpose:** Canonical context for Claude Code when designing or implementing visual elements in Macher OS / Handwerker OS.
 
+> **Stand Oktober 2026:** In der Software (`src/os`) ersetzen Fenster-Skizzen – Drahtgitter-Fenster mit Glas-Icon – die
+> Objektfotos (Türen, Widget-Köpfe, Leerzustände; `SkizzenKachel`, `Leer`). Die Objektfotos dieser Spezifikation gelten
+> weiter für die Website. Regeln: `docs/design/festlegungen.md` („Fenster-Skizze“).
+
 ---
 
 ## 1. Core Principle

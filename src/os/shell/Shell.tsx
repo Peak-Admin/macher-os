@@ -24,7 +24,7 @@ import { useEinstellung } from '@core/einstellungen';
 import { initialen, personName } from '@core/format';
 import { alleModule, modul, modulPfad } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Auswahl, Avatar, Button, Icon, IconButton, Meldung } from '@ui/index';
+import { Auswahl, Avatar, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
 import { BASIS } from '@core/basis';
@@ -118,7 +118,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   title={eingeklappt ? t.titel : undefined}
                 >
                   <span className="mm-nav-haupt-icon">
-                    <Icon name={t.icon} />
+                    <ThemenIcon name={t.icon} size={28} />
                   </span>
                   <span className="mm-leiste-text">{t.titel}</span>
                 </Link>
@@ -132,7 +132,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   title={eingeklappt ? b.titel : undefined}
                 >
                   <span className="mm-nav-haupt-icon">
-                    <Icon name={b.icon} />
+                    <ThemenIcon name={b.icon} size={28} />
                   </span>
                   <span className="mm-leiste-text">{b.titel}</span>
                   {b.id === 'auftraege' && <NeuZahl zahl={eingang} />}
@@ -164,7 +164,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <nav className="mm-bottomnav mm-bottomnav--monteur" aria-label="Monteur-App">
           {MONTEUR_TABS.map((t) => (
             <Link key={t.id} to={t.pfad} className={`mm-bottomnav-link ${tab === t.id ? 'mm-bottomnav-link--aktiv' : ''}`} aria-current={tab === t.id ? 'page' : undefined}>
-              <Icon name={t.icon} />
+              <ThemenIcon name={t.icon} size={28} strichGroesse={24} />
               <span>{t.titel}</span>
             </Link>
           ))}
@@ -174,7 +174,7 @@ export function Shell({ children }: { children: ReactNode }) {
           {STRUKTUR.map((b) => (
             <Link key={b.id} to={b.pfad} className={`mm-bottomnav-link ${aktiv === b.id ? 'mm-bottomnav-link--aktiv' : ''}`} aria-current={aktiv === b.id ? 'page' : undefined}>
               <span className="mm-bottomnav-icon">
-                <Icon name={b.icon} />
+                <ThemenIcon name={b.icon} size={28} strichGroesse={24} />
                 {b.id === 'auftraege' && <NeuZahl zahl={eingang} klein />}
               </span>
               <span>{b.titel}</span>
@@ -219,7 +219,7 @@ function Glocke() {
       onClick={() => oeffne('benachrichtigungen')}
     >
       <span className="mm-nav-haupt-icon mm-glocke">
-        <Icon name="glocke" />
+        <ThemenIcon name="glocke" size={28} />
         {ungelesen > 0 && <span className="mm-glocke-zahl">{ungelesen > 9 ? '9+' : ungelesen}</span>}
       </span>
       <span className="mm-leiste-zeile-text mm-leiste-text">Benachrichtigungen</span>
@@ -316,7 +316,7 @@ function Favoriten({ eingeklappt }: { eingeklappt: boolean }) {
                   aria-current={an ? 'page' : undefined}
                   title={eingeklappt ? m.titel : undefined}
                 >
-                  <Icon name={m.icon ?? 'stern'} size={18} />
+                  <ThemenIcon name={m.icon ?? 'stern'} size={24} strichGroesse={18} />
                   <span className="mm-leiste-text">{m.titel}</span>
                 </Link>
               </li>

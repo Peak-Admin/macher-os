@@ -55,7 +55,7 @@ export function UnterweisungenSeite() {
       ) : (
         ich && alle.some((u) => u.rollen.includes(ich.rolle)) && <Meldung ton="erfolg">Du bist bei allen Unterweisungen auf dem aktuellen Stand.</Meldung>
       )}
-      <Liste leer={<Leer titel="Noch keine Unterweisungen" text="Lege die Pflichtthemen deines Betriebs an – Arbeitsschutz, Leitern, Fahrzeug …" icon="schild" aktion={buero ? <Button onClick={() => setNeu(true)}>Unterweisung anlegen</Button> : undefined} />}>
+      <Liste leer={<Leer skizze titel="Noch keine Unterweisungen" text="Lege die Pflichtthemen deines Betriebs an – Arbeitsschutz, Leitern, Fahrzeug …" icon="schild" aktion={buero ? <Button onClick={() => setNeu(true)}>Unterweisung anlegen</Button> : undefined} />}>
         {alle.map((u) => {
           const ziel = zielgruppe(u, team);
           const aktuell = ziel.filter((m) => !brauchtBestaetigung(stand(u, m.id, t))).length;

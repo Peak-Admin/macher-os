@@ -73,7 +73,7 @@ export function TelefonSeite() {
                 </Button>
               }
             >
-              <Liste leer={<Leer titel="Noch keine Anrufe notiert" text="Notiere den ersten Anruf oben – er landet automatisch beim Kunden und am Auftrag." icon="telefon" />}>
+              <Liste leer={<Leer skizze titel="Noch keine Anrufe notiert" text="Notiere den ersten Anruf oben – er landet automatisch beim Kunden und am Auftrag." icon="telefon" />}>
                 {anrufe.map((n) => {
                   if (istKiAnruf(n)) return <KiAnrufZeile key={n.id} n={n} />;
                   const k = db.kunden.get(n.kundeId);
