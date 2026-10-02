@@ -51,7 +51,7 @@ export default function KarrierePage() {
         <div className="rounded-2xl border border-line bg-paper p-8 sm:p-10">
           <div className="flex flex-wrap items-start justify-between gap-8">
             <div className="max-w-2xl">
-              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-muted">
+              <p className="flex items-center gap-2 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-muted">
                 <Icon name="inbox" className="size-4" /> Offene Stellen
               </p>
               <h2 className="mt-3 font-display text-2xl font-extrabold sm:text-3xl">

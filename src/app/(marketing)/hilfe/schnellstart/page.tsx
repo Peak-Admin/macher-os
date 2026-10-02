@@ -56,7 +56,7 @@ export default function SchnellstartPage() {
               <div>
                 <div className="flex items-center gap-3">
                   <IconTile name={s.icon} />
-                  <span className="font-display text-sm font-extrabold uppercase tracking-wider text-signal-dark">
+                  <span className="text-sm font-extrabold font-tagline uppercase tracking-wider text-signal-dark">
                     Schritt {i + 1} von {schnellstartSchritte.length}
                   </span>
                 </div>

@@ -33,7 +33,7 @@ export default function UeberUnsPage() {
       {/* 1. Mission */}
       <Section tone="white">
         <div className="max-w-4xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">Unsere Mission</p>
+          <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">Unsere Mission</p>
           <p className="mt-4 font-display text-3xl font-extrabold leading-[1.15] tracking-tight text-balance sm:text-4xl lg:text-5xl">
             Jeder Handwerksbetrieb soll so gut organisiert sein wie die besten – ohne dafür ein eigenes Büro aufbauen zu
             müssen.
@@ -75,7 +75,7 @@ export default function UeberUnsPage() {
       <Section tone="ink">
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Produktphilosophie</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Produktphilosophie</p>
             <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
               Einfach vorne.
               <br />

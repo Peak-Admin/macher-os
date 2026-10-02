@@ -30,6 +30,7 @@ def fix_static(cls: str) -> str:
     if "uppercase" in cls and re.search(r"tracking-\[0\.1\d?em\]|tracking-wider|tracking-widest", cls) and "font-tagline" not in cls:
         cls = cls.replace("uppercase", "font-tagline uppercase", 1)
     if "font-tagline" in cls:
+        cls = cls.replace("tracking-[0.14em]", "tracking-[0.06em]")
         cls = re.sub(r"(?<![\w:-])font-display ", "", cls)
     cls = re.sub(r"rounded-full(?= (?:[\w:/.\[\]-]+ )*?p[xy]-)", "rounded", cls)
     return cls

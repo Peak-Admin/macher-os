@@ -52,7 +52,7 @@ export default async function HilfeArtikelPage({ params }: { params: Promise<{ s
               { label: artikel.titel },
             ]}
           />
-          <p className="mb-3 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">
+          <p className="mb-3 inline-flex items-center gap-2 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
             <Icon name={kategorie.icon} className="size-4" /> {kategorie.titel}
           </p>
           <h1 className="max-w-3xl font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-balance sm:text-5xl">
@@ -101,7 +101,7 @@ export default async function HilfeArtikelPage({ params }: { params: Promise<{ s
           <aside className="space-y-8 lg:sticky lg:top-24 lg:self-start">
             {verwandt.length > 0 && (
               <div>
-                <p className="text-sm font-bold uppercase tracking-wider text-muted">Mehr zu {kategorie.titel}</p>
+                <p className="text-sm font-bold font-tagline uppercase tracking-wider text-muted">Mehr zu {kategorie.titel}</p>
                 <ul className="mt-3 space-y-2">
                   {verwandt.map((a) => (
                     <li key={a.slug}>
@@ -115,14 +115,14 @@ export default async function HilfeArtikelPage({ params }: { params: Promise<{ s
             )}
             {funktion && (
               <div className="rounded-xl bg-sand p-5">
-                <p className="text-sm font-bold uppercase tracking-wider text-muted">Passende Funktion</p>
+                <p className="text-sm font-bold font-tagline uppercase tracking-wider text-muted">Passende Funktion</p>
                 <ArrowLink href={`/funktionen/${funktion.slug}`} className="mt-2">
                   {funktion.titel}
                 </ArrowLink>
               </div>
             )}
             <div>
-              <p className="text-sm font-bold uppercase tracking-wider text-muted">Alle Bereiche</p>
+              <p className="text-sm font-bold font-tagline uppercase tracking-wider text-muted">Alle Bereiche</p>
               <ul className="mt-3 flex flex-wrap gap-1.5">
                 {hilfeKategorien.map((k) => (
                   <li key={k.slug}>

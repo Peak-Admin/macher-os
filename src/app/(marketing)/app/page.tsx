@@ -125,7 +125,7 @@ export default function AppPage() {
       <Section tone="ink">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Offline</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Offline</p>
             <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
               Kein Netz im Keller? Kein Problem.
             </h2>
@@ -134,7 +134,7 @@ export default function AppPage() {
             </p>
             <Link
               href="/hilfe-center/offline-arbeiten"
-              className="mt-8 inline-flex items-center gap-1.5 font-bold text-signal underline decoration-2 underline-offset-4 hover:text-white"
+              className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
               So funktioniert es offline <Icon name="arrow-right" className="size-4" />
             </Link>
@@ -142,7 +142,7 @@ export default function AppPage() {
           <ul className="grid gap-3 sm:grid-cols-2">
             {offline.map((o) => (
               <li key={o} className="flex items-center gap-3 rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
-                <Icon name="check" className="size-5 shrink-0 text-signal" />
+                <Icon name="check" className="size-5 shrink-0 text-accent" />
                 <span className="font-semibold">{o}</span>
               </li>
             ))}

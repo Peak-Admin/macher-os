@@ -45,9 +45,9 @@ function ImportMock() {
         <span className="rounded-md bg-sky-soft px-2 py-0.5 text-xs font-semibold text-sky">kunden.xlsx</span>
       </div>
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2 p-4 text-sm">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted">Deine Spalte</span>
+        <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Deine Spalte</span>
         <span />
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted">Macher OS</span>
+        <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Macher OS</span>
         {zeilen.map(([von, nach]) => (
           <div key={von} className="contents">
             <span className="rounded-md bg-paper px-2.5 py-1.5 ring-1 ring-line">{von}</span>
@@ -156,7 +156,7 @@ export default function DatenUebernehmenPage() {
                 "Klärung vorab, was sinnvoll ist",
               ].map((p) => (
                 <li key={p} className="flex items-center gap-2.5">
-                  <Icon name="check" className="size-4 text-signal" /> {p}
+                  <Icon name="check" className="size-4 text-accent" /> {p}
                 </li>
               ))}
             </ul>
