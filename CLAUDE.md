@@ -44,8 +44,8 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 ### Deployment – nur `macher-os`
 
 - Einziges Ziel: Vercel-Team „01 Peak Atlas Web“ → Projekt **`macher-os`**. Nur sein Check zählt.
-- **`macher-os-app` ist stillgelegt.** Es hängt noch am Repo und baut bei jedem Push mit – und schlägt fehl.
-  Diesen roten Check ignorieren: nicht reparieren, nichts dorthin deployen, keine Einstellungen oder Variablen dort anlegen.
+- **`macher-os-app` ist stillgelegt.** Taucht noch ein (roter) Check „macher-os-app“ auf: ignorieren.
+  Nicht reparieren, nichts dorthin deployen, keine Einstellungen oder Variablen dort anlegen.
 - Code der Software gehört nach `src/os/`. Den alten Ordner `os/` nicht anfassen und nicht neu anlegen.
 
 ### Befehle
