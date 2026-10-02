@@ -1,0 +1,11 @@
+/* Minimales Layout für „Macher fragen“. Optik kommt aus den UI-Bausteinen. */
+.mf-verlauf { display: flex; flex-direction: column; gap: 16px; }
+.mf-frage { align-self: flex-end; max-width: 85%; padding: 8px 16px; border-radius: var(--mm-radius-card); background: var(--mm-soft-green); color: var(--mm-black); }
+.mf-antwort { display: flex; flex-direction: column; gap: 12px; }
+.mf-antwort > p { margin: 0; }
+.mf-eingabe { display: flex; gap: 8px; align-items: flex-end; width: 100%; }
+.mf-eingabe > .mm-feld { flex: 1; }
+.mf-beispiele { display: flex; flex-wrap: wrap; gap: 8px; }
+.mf-beispiele .mm-btn { white-space: normal; text-align: left; }
+.mf-seite { display: flex; flex-direction: column; gap: 24px; }
+.mf-eingabe--fix { position: sticky; bottom: -24px; margin-bottom: -24px; padding: 12px 0 24px; background: var(--mm-surface); border-top: 1px solid var(--mm-border); }
