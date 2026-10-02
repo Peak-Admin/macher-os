@@ -7,6 +7,7 @@ import type { Abwesenheit } from '@core/objects';
 import { kontextAusDb, terminKonflikte, ABWESENHEIT_LABEL } from '../verfuegbarkeit/daten';
 import { termineIm } from '../kalender/daten';
 import { Plantafel } from './Plantafel';
+import { PLAN_AKTIONEN } from './gateway';
 
 const terminPfad = (id: string) => `/plan/kalender/termin/${id}`;
 export const einplanenPfad = (auftragId?: string) => (auftragId ? `/plan/einsatzplanung?auftrag=${encodeURIComponent(auftragId)}` : '/plan/einsatzplanung');
@@ -19,6 +20,7 @@ export default defineModul({
   icon: 'team',
   gewicht: 86,
   routen: [{ pfad: '', element: Plantafel }],
+  gateway: { aktionen: [...PLAN_AKTIONEN] },
   aktionen: {
     'plan.einplanen': (payload) => einplanenPfad((payload as { auftragId?: string } | undefined)?.auftragId),
   },

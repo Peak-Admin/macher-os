@@ -8,6 +8,7 @@ import { Kalender, terminPfad } from './Kalender';
 import { TerminDetail } from './TerminDetail';
 import { AuftragTermine } from './AuftragTermine';
 import { kuenftigeTermine } from './daten';
+import { KALENDER_AKTIONEN } from './gateway';
 
 /** Künftige, noch offene Termine eines Auftrags absagen (Auftrag verloren) */
 export function termineAbsagenFuer(auftragId: string, jetzt = new Date()): Termin[] {
@@ -66,6 +67,7 @@ export default defineModul({
         pfad: terminPfad(t.id),
       }));
   },
+  gateway: { aktionen: [...KALENDER_AKTIONEN] },
   aktionen: {
     'termin.bestaetigen': (payload) => {
       const { terminId } = (payload ?? {}) as { terminId?: string };

@@ -1,28 +1,28 @@
 /**
- * Macher fragen – lokaler, regelbasierter Assistent über die echten Daten.
+ * Macher fragen – Fragen und Aufträge in Alltagssprache, beantwortet aus den echten Daten.
  *
- * Kein API-Key, kein externes Modell. Die Schnittstelle `Sprachmodell` ist so geschnitten,
- * dass später eine echte KI dahinter hängen kann (gleicher Kontext, gleiche Antwortform,
- * gleiche Rechteprüfung). Ausführende Aktionen sind immer erst ein Entwurf, den der
+ * Läuft vollständig über den Macher AI Gateway (`@core/gateway`): Dieses Modul meldet nur seine
+ * Absichten (`ABSICHTEN`) und Aktionen (`AKTIONEN`) an. Heute erkennt Lane 0 (Regeln) alles ohne
+ * Modell; Jev/Luna hängen sich später per `registriereModell()` an – gleicher Kontext, gleiche
+ * Antwortform, gleiche Rechteprüfung. Ausführende Aktionen sind immer erst ein Entwurf, den der
  * Mensch bestätigt.
  */
 import { db } from '@core/db';
 import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uhrzeit, datumVon, plusTage, wochenStart, tageZwischen } from '@core/format';
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
-import type { Datum, ID, Kunde, Mitarbeiter, Rechnung, Termin } from '@core/objects';
-import type { Recht } from '@core/session';
+import type { Angebot, Bezug, Datum, ID, Phase, Rechnung, Termin } from '@core/objects';
+import { frage as gatewayFrage, type AbsichtDef, type Plan, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal } from '@core/gateway';
 import { zeitraumAus, type Zeitraum } from './zeit';
+import { AKTIONS_ABSICHTEN } from './aktionen';
+import { FRAGE, LAUFEND, findeAuftrag, findeKunde, findeMitarbeiter, gross, klein, planAntwort, schritte, stand, woerter } from './hilfen';
+
+export { FRAGE, LAUFEND, findeAuftrag, findeKunde, findeMitarbeiter, gross, klein, planAntwort, schritte, stand };
 import { abwesenheitAm, anwesenheit, arbeitstagIm, geplanteStunden, kontextAusDb as planKontextAusDb, verfuegbareStunden } from '../verfuegbarkeit/daten';
 
 // ------------------------------------------------------------------ Schnittstelle
 
-export interface Kontext {
-  heute: Datum;
-  jetzt: Date;
-  ich?: Mitarbeiter;
-  darf: (r: Recht) => boolean;
-}
+export type Kontext = GatewayKontext;
 
 export interface AntwortEintrag {
   titel: string;
@@ -39,8 +39,19 @@ export interface AufgabeEntwurf {
   auftragId?: ID;
 }
 
+/** Ergebnis eines Planschritts, wie es im Verlauf stehen bleibt */
+export interface PlanSchrittStand {
+  id: string;
+  label: string;
+  status: 'ausgefuehrt' | 'fehler' | 'uebersprungen';
+  text?: string;
+  bezug?: Bezug;
+}
+
 export type Vorschlag =
   | { id: string; art: 'aufgabe'; label: string; entwurf: AufgabeEntwurf; status: 'entwurf' | 'ausgefuehrt' | 'verworfen'; ergebnisId?: ID }
+  /** eine oder mehrere strukturierte Aktionen – erst nach Bestätigung über den Gateway ausgeführt */
+  | { id: string; art: 'plan'; label: string; plan: Plan; status: 'entwurf' | 'ausgefuehrt' | 'verworfen'; ergebnisse?: PlanSchrittStand[] }
   | { id: string; art: 'oeffnen'; label: string; pfad: string };
 
 export interface Antwort {
@@ -56,12 +67,6 @@ export interface Antwort {
   absicht: string;
 }
 
-/** Adapter für ein Sprachmodell. Heute: Regeln. Später: echte KI mit denselben Werkzeugen. */
-export interface Sprachmodell {
-  readonly name: string;
-  antworte(frage: string, kontext: Kontext): Promise<Antwort>;
-}
-
 export const BEISPIELFRAGEN = [
   'Was steht morgen an?',
   'Welche Rechnungen sind offen?',
@@ -69,46 +74,14 @@ export const BEISPIELFRAGEN = [
   'Wer hat nächste Woche Zeit?',
   'Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag',
   'Was braucht mich gerade?',
+  'Der Auftrag von Familie Hoffmann ist fertig',
+  'Verschieb den Termin bei Familie Hoffmann auf Montag',
 ];
 
 // ------------------------------------------------------------------ Hilfen
 
-const klein = (t: string) => t.toLowerCase();
 const anzahl = (n: number, eins: string, viele: string) => `${n} ${n === 1 ? eins : viele}`;
 const vid = () => Math.random().toString(36).slice(2, 10);
-const gross = (t: string) => (t ? t[0].toUpperCase() + t.slice(1) : t);
-
-const STOPP = new Set(['familie', 'frau', 'herr', 'firma', 'gmbh', 'kg', 'ohg', 'gbr', 'und', 'der', 'die', 'das', 'von', 'e.k.']);
-
-function woerter(t: string) {
-  return klein(t)
-    .replace(/[^\p{L}\p{N}\s-]/gu, ' ')
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-/** Mitarbeiter, dessen Vor- oder Nachname als Wort im Text vorkommt */
-export function findeMitarbeiter(text: string): Mitarbeiter | undefined {
-  const w = new Set(woerter(text));
-  const alle = db.mitarbeiter.where((m) => m.aktiv);
-  return (
-    alle.find((m) => w.has(klein(m.vorname)) && w.has(klein(m.nachname))) ??
-    alle.find((m) => w.has(klein(m.vorname))) ??
-    alle.find((m) => m.nachname.length > 2 && w.has(klein(m.nachname)))
-  );
-}
-
-/** Kunde, dessen Namensbestandteile im Text vorkommen (beste Übereinstimmung) */
-export function findeKunde(text: string): Kunde | undefined {
-  const w = new Set(woerter(text));
-  let best: { k: Kunde; score: number } | undefined;
-  for (const k of db.kunden.all()) {
-    const teile = woerter(`${k.name} ${k.firma ?? ''}`).filter((x) => x.length >= 3 && !STOPP.has(x));
-    const score = teile.filter((x) => w.has(x)).length;
-    if (score > 0 && (!best || score > best.score)) best = { k, score };
-  }
-  return best?.k;
-}
 
 function rechnungOffen(r: Rechnung, ust: number) {
   const brutto = r.art === 'gutschrift' ? 0 : summen(r.positionen, ust).brutto;
@@ -129,7 +102,7 @@ function terminZeile(t: Termin, mitDatum: boolean): AntwortEintrag {
   };
 }
 
-const stand = (k: Kontext) => `Stand ${uhrzeit(k.jetzt.toISOString())} Uhr`;
+
 
 const KEIN_GELD: Antwort = {
   absicht: 'keine-berechtigung',
@@ -491,56 +464,317 @@ function suchen(k: Kontext, frage: string): Antwort {
   };
 }
 
-// ------------------------------------------------------------------ Regelmodell
+// ------------------------------------------------------------------ Aktionen vorbereiten (Pläne)
 
-/** Erkennt die Absicht und beantwortet sie direkt aus den Daten. */
-export function beantworte(frage: string, k: Kontext): Antwort {
-  const f = klein(frage.trim());
-  if (!f) return { absicht: 'leer', text: 'Stell mir eine Frage zu deinem Betrieb.', folgefragen: BEISPIELFRAGEN };
-  const z = zeitraumAus(f, k.heute);
+const ZAHLWORT: Record<string, number> = { ein: 1, eine: 1, einer: 1, zwei: 2, drei: 3, vier: 4, fünf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9, zehn: 10, anderthalb: 1.5, eineinhalb: 1.5 };
 
-  if (/\baufgabe\b/.test(f) && /\b(leg|lege|erstell|erstelle|anlegen|neue|mach|notier|notiere)\b/.test(f)) return aufgabeAnlegen(k, frage);
-  if (/^erinnere?n?\s/.test(f)) return aufgabeAnlegen(k, frage, true);
-  if (/rechnung/.test(f) && /(offen|überfällig|ueberfaellig|unbezahlt|ausstehend|bezahlt|zahlt|schuld|geld)/.test(f)) return offeneRechnungen(k);
-  if (/\bwer\b.*\b(zeit|frei|verfügbar|kapazität|luft)\b/.test(f) || /\b(freie kapazität|wer ist frei)\b/.test(f))
-    return werHatZeit(k, z ?? { von: plusTage(wochenStart(k.heute), 7), bis: plusTage(wochenStart(k.heute), 11), label: 'nächste Woche', tag: false });
-  if (/^wo\b|\bwo (ist|sind|wohnt|steckt|arbeitet)\b|\badresse\b/.test(f)) return woIst(k, frage);
-  if (/angebot/.test(f) && /(offen|warten|ausstehend|antwort|versendet|stand)/.test(f)) return offeneAngebote(k);
-  if (/anfrage/.test(f)) return offeneAnfragen(k);
-  if (/(braucht mich|brauchst du|was ist wichtig|was muss ich|hinweis|freigabe|entscheid)/.test(f)) return brauchtMich(k);
-  if (/(meine aufgaben|was ist zu tun|was hab ich zu tun|was habe ich zu tun|offene aufgaben)/.test(f)) return meineAufgaben(k);
-  if (z && /(steht|an\b|termin|plan|geplant|los|einsatz|einsätze|was ist|was hab|was habe|was gibt)/.test(f)) {
-    const nurMeine = /\b(ich|mich|mir|meine?n?)\b/.test(f) || (!!k.ich && (k.ich.rolle === 'monteur' || k.ich.rolle === 'azubi'));
-    return agenda(k, z, nurMeine);
+/** „zwei Stunden“, „1,5 Std.“, „eine halbe Stunde“, „45 Minuten“ → Minuten */
+export function dauerAus(text: string): number | undefined {
+  const t = klein(text);
+  if (/\bhalbe?n?\s+stunde\b/.test(t)) return 30;
+  const std = t.match(/(\d+(?:[.,]\d+)?|ein|eine|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|anderthalb|eineinhalb)\s*(stunden?|std\.?|h)(?=\s|$|[.,!?])/);
+  if (std) {
+    const n = ZAHLWORT[std[1]] ?? Number(std[1].replace(',', '.'));
+    return n > 0 ? Math.round(n * 60) : undefined;
   }
-  if (/\b(termine?|einsätze|plan)\b/.test(f)) {
-    const nurMeine = !!k.ich && (k.ich.rolle === 'monteur' || k.ich.rolle === 'azubi');
-    return agenda(k, { von: k.heute, bis: k.heute, label: 'heute', tag: true }, nurMeine);
-  }
-  if (/(hilfe|was kannst du|wie funktioniert)/.test(f))
-    return { absicht: 'hilfe', text: 'Ich beantworte Fragen aus deinen Daten und bereite Aufgaben vor. Ausgeführt wird erst, wenn du bestätigst.', folgefragen: BEISPIELFRAGEN };
-  return suchen(k, frage);
+  const min = t.match(/(\d+)\s*(minuten|min\.?)(?=\s|$|[.,!?])/);
+  return min ? Number(min[1]) : undefined;
 }
 
-export const regelModell: Sprachmodell = {
-  name: 'Macher Regeln (lokal)',
-  async antworte(frage, kontext) {
-    return beantworte(frage, kontext);
+/** „… zwei Stunden Nacharbeit auf das Projekt“ → „Nacharbeit“ */
+function taetigkeitAus(text: string): string | undefined {
+  const m = text.match(/(?:stunden?|std\.?|minuten|min\.?)\s+(.+?)(?:\s+(?:auf|für|bei|beim|zum|zur|im|ins|in)\b.*)?[\s.!?]*$/i);
+  const w = m?.[1]?.trim();
+  return w && !/^(auf|für|bei|noch|bitte|drauf)$/i.test(w) ? gross(w) : undefined;
+}
+
+/** „Der Müller-Auftrag ist fertig.“ → Arbeiten fertig melden, Rechnung vorbereiten, Plan freigeben, Bewertung anfragen */
+function auftragFertig(k: Kontext, frage: string): Antwort {
+  const a = findeAuftrag(frage);
+  if (!a)
+    return {
+      absicht: 'auftrag-unklar',
+      text: 'Welcher Auftrag ist fertig? Nenn mir den Kunden oder die Auftragsnummer, z. B. „Der Auftrag von Familie Hoffmann ist fertig“.',
+    };
+  const kunde = db.kunden.get(a.kundeId);
+  const daten = { auftragId: a.id };
+  const plan: Plan = {
+    titel: `Auftrag ${a.nummer} abschließen`,
+    schritte: schritte([
+      { aktion: 'job.complete', absicht: 'job.finish', daten, label: 'Arbeiten als fertig melden (weiter zur Abnahme)' },
+      ...(k.darf('geld') ? [{ aktion: 'invoice.create_draft', absicht: 'job.finish', daten, label: 'Rechnung vorbereiten (nur Entwurf)' }] : []),
+      { aktion: 'job.release_plan', absicht: 'job.finish', daten, label: 'Weitere Einsätze aus dem Plan nehmen' },
+      { aktion: 'review.request', absicht: 'job.finish', daten, label: 'Bewertung beim Kunden anfragen' },
+    ]),
+  };
+  return planAntwort(
+    'auftrag-fertig',
+    `${a.titel} bei ${kunde?.name ?? 'Kunde'}: Ich habe vorbereitet, was jetzt ansteht. Wähl aus, was passieren soll – erst nach deiner Bestätigung führt Macher es aus.`,
+    plan,
+    `Auftrag ${a.nummer}, Phase „${PHASE_LABEL[a.phase] ?? a.phase}“ · ${stand(k)}`,
+  );
+}
+
+const PHASE_LABEL: Partial<Record<Phase, string>> = { beauftragt: 'Beauftragt', in_arbeit: 'In Arbeit', abnahme: 'Abnahme', abrechnung: 'Abrechnung' };
+
+/** „Schreib bei Müller noch zwei Stunden Nacharbeit auf das Projekt.“ */
+function zeitErfassen(k: Kontext, frage: string): Antwort {
+  const minuten = dauerAus(frage);
+  if (!minuten) return { absicht: 'zeit-unklar', text: 'Wie lange? Schreib es so: „Schreib bei Hoffmann zwei Stunden Nacharbeit auf“.' };
+  const fuer = frage.match(/\bfür\s+(\S+)/i);
+  const wer = (fuer ? findeMitarbeiter(fuer[1]) : undefined) ?? k.ich;
+  const a = findeAuftrag(frage, ['in_arbeit', 'beauftragt', 'abnahme', 'abrechnung']);
+  const datum = zeitraumAus(frage, k.heute)?.von ?? k.heute;
+  const notiz = taetigkeitAus(frage);
+  const dauer = minuten % 60 ? `${(minuten / 60).toLocaleString('de-DE', { maximumFractionDigits: 2 })} Std.` : `${minuten / 60} Std.`;
+  const plan: Plan = {
+    titel: 'Zeit erfassen',
+    schritte: schritte([
+      {
+        aktion: 'time.track',
+        absicht: 'time.track',
+        daten: { mitarbeiterId: wer?.id ?? '', auftragId: a?.id, datum, minuten, notiz },
+        label: `${dauer}${notiz ? ` ${notiz}` : ''} für ${wer?.vorname ?? 'dich'}${a ? ` auf ${a.nummer}` : ''} erfassen (${datumKurz(datum)})`,
+      },
+    ]),
+  };
+  return planAntwort(
+    'zeit-entwurf',
+    a ? `Ich buche die Zeit auf ${a.titel} bei ${db.kunden.get(a.kundeId)?.name ?? 'Kunde'}. Prüf kurz und bestätige.` : 'Ich habe keinen laufenden Auftrag dazu gefunden. Die Zeit wird ohne Auftrag erfasst – oder nenn mir den Kunden.',
+    plan,
+    stand(k),
+  );
+}
+
+/** „Schick das Angebot an Familie Hoffmann.“ */
+function angebotSenden(k: Kontext, frage: string): Antwort {
+  const kunde = findeKunde(frage);
+  const nr = frage.match(/\bAN-\d{4}-\d{3,4}\b/i);
+  const offen = (x: Angebot) => x.status === 'entwurf' || x.status === 'versendet';
+  const angebot: Angebot | undefined = nr
+    ? db.angebote.where((x) => x.nummer.toLowerCase() === nr[0].toLowerCase())[0]
+    : kunde
+      ? db.angebote.where((x) => x.kundeId === kunde.id && offen(x)).sort((x, y) => Number(y.status === 'entwurf') - Number(x.status === 'entwurf') || y.geaendertAm.localeCompare(x.geaendertAm))[0]
+      : undefined;
+  if (!angebot) return { absicht: 'angebot-unklar', text: 'Welches Angebot soll raus? Nenn mir den Kunden oder die Angebotsnummer.', folgefragen: ['Welche Angebote sind offen?'] };
+  const empf = db.kunden.get(angebot.kundeId);
+  const ziel = empf?.email || empf?.telefon;
+  const plan: Plan = {
+    titel: `Angebot ${angebot.nummer} senden`,
+    schritte: schritte([{ aktion: 'offer.send', absicht: 'offer.send', daten: { angebotId: angebot.id }, label: `Angebot ${angebot.nummer} an ${ziel ?? empf?.name ?? 'Kunde'} senden` }]),
+  };
+  return planAntwort(
+    'angebot-senden',
+    `${angebot.titel} für ${empf?.name ?? 'Kunde'}${angebot.status === 'versendet' ? ' (wurde schon einmal versendet)' : ''}. Das Angebot geht an den Kunden – erst nach deiner Bestätigung.`,
+    plan,
+    `Angebot ${angebot.nummer} · ${stand(k)}`,
+  );
+}
+
+/** „Mach aus dem Auftrag von Schneider schon mal eine Rechnung.“ */
+function rechnungVorbereiten(k: Kontext, frage: string): Antwort {
+  const a = findeAuftrag(frage, ['abrechnung', 'abnahme', 'in_arbeit', 'beauftragt']);
+  if (!a) return { absicht: 'auftrag-unklar', text: 'Für welchen Auftrag? Nenn mir den Kunden oder die Auftragsnummer.' };
+  const plan: Plan = {
+    titel: `Rechnung für ${a.nummer} vorbereiten`,
+    schritte: schritte([{ aktion: 'invoice.create_draft', absicht: 'invoice.create_draft', daten: { auftragId: a.id }, label: `Rechnungsentwurf für ${a.nummer} vorbereiten` }]),
+  };
+  return planAntwort(
+    'rechnung-entwurf',
+    `${a.titel} bei ${db.kunden.get(a.kundeId)?.name ?? 'Kunde'}: Macher übernimmt Leistungen, Material und Zeiten in einen Entwurf. Versendet wird nichts.`,
+    plan,
+    `Auftrag ${a.nummer} · ${stand(k)}`,
+  );
+}
+
+
+
+// ------------------------------------------------------------------ Absichten für den Gateway (Lane 0: Regeln)
+
+type Def = AbsichtDef<Antwort>;
+const nurMeineRolle = (k: Kontext) => !!k.ich && (k.ich.rolle === 'monteur' || k.ich.rolle === 'azubi');
+const naechsteWoche = (k: Kontext): Zeitraum => ({ von: plusTage(wochenStart(k.heute), 7), bis: plusTage(wochenStart(k.heute), 11), label: 'nächste Woche', tag: false });
+
+/**
+ * Was Macher versteht – in der Reihenfolge der Prüfung. Alle Absichten laufen über `@core/gateway`:
+ * Regeln vor Modell, Rechte vor Antwort, Aktionen nur als Entwurf.
+ */
+export const ABSICHTEN: Def[] = [
+  {
+    id: 'task.create',
+    titel: 'Aufgabe anlegen',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    erkenne: (t) => /\baufgabe\b/.test(klein(t)) && /\b(leg|lege|erstell|erstelle|anlegen|neue|mach|notier|notiere)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => aufgabeAnlegen(k, t),
   },
-};
+  {
+    id: 'reminder.create',
+    titel: 'Erinnerung anlegen',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    erkenne: (t) => /^erinnere?n?\s/.test(klein(t.trim())),
+    beantworte: (t, _e, k) => aufgabeAnlegen(k, t, true),
+  },
+  // Aktionen in anderen Modulen (Senden, Verschieben, Kunden schreiben …) – vor den Fragen geprüft
+  ...AKTIONS_ABSICHTEN,
+  {
+    id: 'job.finish',
+    titel: 'Auftrag fertig melden (mehrere Schritte)',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    erkenne: (t) => !FRAGE.test(klein(t)) && /(auftrag|baustelle|arbeiten|projekt)/.test(klein(t)) && /\b(fertig|abgeschlossen|abschließen|abschliessen)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => auftragFertig(k, t),
+  },
+  {
+    id: 'time.track',
+    titel: 'Zeit erfassen',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    erkenne: (t) => !!dauerAus(t) && /\b(schreib|schreibe|buch|buche|trag|trage|erfass|erfasse|notier|notiere|auf)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => zeitErfassen(k, t),
+  },
+  {
+    id: 'offer.send',
+    titel: 'Angebot senden',
+    risiko: 'kritisch',
+    rechte: ['veroeffentlichen'],
+    erkenne: (t) => !FRAGE.test(klein(t)) && /angebot/.test(klein(t)) && /\b(schick|schicke|send|sende|senden|versende|versenden|raus)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => angebotSenden(k, t),
+  },
+  {
+    id: 'invoice.create_draft',
+    titel: 'Rechnung vorbereiten',
+    risiko: 'schreiben',
+    rechte: ['schreiben', 'geld'],
+    erkenne: (t) => !FRAGE.test(klein(t)) && /rechnung/.test(klein(t)) && /\b(mach|mache|erstell|erstelle|schreib|schreibe|vorbereiten|bereite|anlegen|leg)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => rechnungVorbereiten(k, t),
+  },
+  {
+    id: 'invoice.list',
+    titel: 'Offene Rechnungen zeigen',
+    risiko: 'lesen',
+    rechte: ['geld'],
+    erkenne: (t) => /rechnung/.test(klein(t)) && /(offen|überfällig|ueberfaellig|unbezahlt|ausstehend|bezahlt|zahlt|schuld|geld)/.test(klein(t)),
+    beantworte: (_t, _e, k) => offeneRechnungen(k),
+  },
+  {
+    id: 'employee.availability',
+    titel: 'Freie Kapazität im Team zeigen',
+    risiko: 'lesen',
+    erkenne: (t) => /\bwer\b.*\b(zeit|frei|verfügbar|kapazität|luft)\b/.test(klein(t)) || /\b(freie kapazität|wer ist frei)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => werHatZeit(k, zeitraumAus(klein(t), k.heute) ?? naechsteWoche(k)),
+  },
+  {
+    id: 'location.find',
+    titel: 'Kunde oder Kollege finden',
+    risiko: 'lesen',
+    erkenne: (t) => /^wo\b|\bwo (ist|sind|wohnt|steckt|arbeitet)\b|\badresse\b/.test(klein(t)),
+    beantworte: (t, _e, k) => woIst(k, t),
+  },
+  {
+    id: 'offer.list',
+    titel: 'Offene Angebote zeigen',
+    risiko: 'lesen',
+    erkenne: (t) => /angebot/.test(klein(t)) && /(offen|warten|ausstehend|antwort|versendet|stand)/.test(klein(t)),
+    beantworte: (_t, _e, k) => offeneAngebote(k),
+  },
+  {
+    id: 'request.list',
+    titel: 'Offene Anfragen zeigen',
+    risiko: 'lesen',
+    erkenne: (t) => /anfrage/.test(klein(t)),
+    beantworte: (_t, _e, k) => offeneAnfragen(k),
+  },
+  {
+    id: 'attention.list',
+    titel: 'Zeigen, was dich braucht',
+    risiko: 'lesen',
+    erkenne: (t) => /(braucht mich|brauchst du|was ist wichtig|was muss ich|hinweis|freigabe|entscheid)/.test(klein(t)),
+    beantworte: (_t, _e, k) => brauchtMich(k),
+  },
+  {
+    id: 'task.list',
+    titel: 'Meine Aufgaben zeigen',
+    risiko: 'lesen',
+    erkenne: (t) => /(meine aufgaben|was ist zu tun|was hab ich zu tun|was habe ich zu tun|offene aufgaben)/.test(klein(t)),
+    beantworte: (_t, _e, k) => meineAufgaben(k),
+  },
+  {
+    id: 'appointment.list',
+    titel: 'Termine und Einsätze zeigen',
+    risiko: 'lesen',
+    erkenne: (t, k) => {
+      const f = klein(t);
+      return (!!zeitraumAus(f, k.heute) && /(steht|an\b|termin|plan|geplant|los|einsatz|einsätze|was ist|was hab|was habe|was gibt)/.test(f)) || /\b(termine?|einsätze|plan)\b/.test(f);
+    },
+    beantworte: (t, _e, k) => {
+      const f = klein(t);
+      const z = zeitraumAus(f, k.heute);
+      if (z && /(steht|an\b|termin|plan|geplant|los|einsatz|einsätze|was ist|was hab|was habe|was gibt)/.test(f))
+        return agenda(k, z, /\b(ich|mich|mir|meine?n?)\b/.test(f) || nurMeineRolle(k));
+      return agenda(k, { von: k.heute, bis: k.heute, label: 'heute', tag: true }, nurMeineRolle(k));
+    },
+  },
+  {
+    id: 'help',
+    titel: 'Hilfe',
+    risiko: 'lesen',
+    erkenne: (t) => /(hilfe|was kannst du|wie funktioniert)/.test(klein(t)),
+    beantworte: () => ({ absicht: 'hilfe', text: 'Ich beantworte Fragen aus deinen Daten und bereite Aufgaben vor. Ausgeführt wird erst, wenn du bestätigst.', folgefragen: BEISPIELFRAGEN }),
+  },
+  {
+    id: 'search',
+    titel: 'In allen Bereichen suchen',
+    risiko: 'lesen',
+    rang: 100,
+    auffang: true,
+    beantworte: (t, _e, k) => suchen(k, t),
+  },
+];
 
-let aktiv: Sprachmodell = regelModell;
-
-/** Später: `setzeSprachmodell(new EchteKi(...))` – die Oberfläche bleibt gleich. */
-export function setzeSprachmodell(m: Sprachmodell) {
-  aktiv = m;
+/** Antwort, wenn der Gateway ablehnt – gleiche Form wie jede andere Antwort */
+export function abgelehnt(g: Pick<GatewayAntwort, 'verweigert' | 'fehlendeRechte'>): Antwort {
+  if (g.verweigert === 'rechte') {
+    if (g.fehlendeRechte?.includes('geld')) return { ...KEIN_GELD };
+    if (g.fehlendeRechte?.includes('veroeffentlichen'))
+      return { absicht: 'keine-berechtigung', text: 'An Kunden senden darfst du nicht. Dafür brauchst du die Freigabe „An Kunden senden“.' };
+    if (g.fehlendeRechte?.includes('schreiben'))
+      return { absicht: 'keine-berechtigung', text: 'Du kannst Aufgaben ansehen. Zum Anlegen brauchst du die entsprechende Freigabe.' };
+    return { absicht: 'keine-berechtigung', text: 'Dafür fehlt dir die Berechtigung. Frag deinen Chef nach der Freigabe.' };
+  }
+  return { absicht: 'unbekannt', text: 'Das kann ich noch nicht beantworten. Probier zum Beispiel:', folgefragen: BEISPIELFRAGEN.slice(0, 4) };
 }
 
-export function sprachmodell(): Sprachmodell {
-  return aktiv;
+const LEER: Antwort = { absicht: 'leer', text: 'Stell mir eine Frage zu deinem Betrieb.', folgefragen: BEISPIELFRAGEN };
+
+/** Lane 0 ohne Protokoll: erkennt die Absicht per Regel und beantwortet sie direkt aus den Daten (Tests, Vorschau). */
+export function beantworte(frage: string, k: Kontext): Antwort {
+  if (!frage.trim()) return LEER;
+  const def = ABSICHTEN.find((a) => a.erkenne?.(frage, k)) ?? ABSICHTEN.find((a) => a.auffang)!;
+  if ((def.rechte ?? []).some((r) => !k.darf(r))) return abgelehnt({ verweigert: 'rechte', fehlendeRechte: (def.rechte ?? []).filter((r) => !k.darf(r)) });
+  return def.beantworte(frage, { absicht: def.id, sicherheit: 1, lane: 0 }, k, {});
+}
+
+/** Der Weg für die Oberfläche: Text oder Sprache → Gateway → Antwort (protokolliert). */
+export async function fragen(text: string, k: Kontext, kanal: Kanal = 'text'): Promise<{ antwort: Antwort; modell: string }> {
+  if (!text.trim()) return { antwort: LEER, modell: 'Regeln' };
+  const g = await gatewayFrage<Antwort>(text, { ...k, kanal });
+  return { antwort: g.ergebnis ?? abgelehnt(g), modell: g.modell };
 }
 
 // ------------------------------------------------------------------ Ausführen (erst nach Bestätigung)
+
+export const AKTIONEN: AktionDef<AufgabeEntwurf>[] = [
+  {
+    id: 'task.create',
+    titel: 'Aufgabe angelegt',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    pruefe: (e) => (e.titel.trim() ? undefined : 'Trage ein, was erledigt werden soll.'),
+    fuehreAus: (e, k) => ({ bezug: { typ: 'aufgaben', id: aufgabeAusEntwurf(e, k).id } }),
+  },
+];
 
 export function aufgabeAusEntwurf(e: AufgabeEntwurf, k: Pick<Kontext, 'darf'>) {
   if (!k.darf('schreiben')) throw new Error('Keine Berechtigung');

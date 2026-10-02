@@ -54,6 +54,7 @@ schreibt vor `dev`, `build` und `test` die Liste `src/os/shell/module-liste.ts` 
 | `hinweise` | live berechnete Punkte für „Braucht dich“ |
 | `aktionen` | Funktionen für Hinweis-Buttons (`{ 'rechnung.mahnen': (payload) => ... }`) |
 | `automationen` | Regeln, die automatisch laufen (`start()` registriert Event-Handler über `on()`) |
+| `gateway` | Absichten und Aktionen für den Macher AI Gateway (`docs/os/KI-GATEWAY.md`) – nie selbst ein Modell aufrufen |
 | `suche` | Treffer für die globale Suche |
 | `schnell` | Erfassungsformular (Foto, Zeit, Material …), das ein **beschrifteter Knopf im Kontext** direkt öffnet: `<ErfassenKnopf aktion="foto" auftragId={id} />` oder `erfassenAktion(...)` für „Weitere Aktionen“. Es gibt keine Auswahl „Was möchtest du erfassen?“. |
 | `erstellen` | Verzeichnis der Erstellungsabläufe (kein Menü mehr). Der Knopf gehört als Hauptaktion auf die passende Liste. |

@@ -11,6 +11,7 @@ import { einsatzBeenden, einsatzStarten, vergesseneBeenden, zeitenFreigeben, zei
 import { MitarbeiterZeitenTab, StempeluhrSeite, StundenkontoSeite } from './Ansichten';
 import { ZeitenWoche } from './ZeitenWoche';
 import { Stempeluhr } from './Stempeluhr';
+import { ZEIT_AKTIONEN } from './gateway';
 
 export default defineModul({
   id: 'arbeitszeiten',
@@ -51,6 +52,7 @@ export default defineModul({
     },
   ],
   hinweise: () => zeitenHinweise(),
+  gateway: { aktionen: [...ZEIT_AKTIONEN] },
   aktionen: {
     'einsatz.starten': (p) => {
       einsatzStarten(p);

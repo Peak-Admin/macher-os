@@ -10,12 +10,14 @@
  * - Tabs in Detailansichten anderer Objekte einhängen (z. B. „Fotos“ in der Auftragsakte),
  * - Hinweise für „Braucht dich“ liefern (Exception-First),
  * - Automationen registrieren (laufen über Events, protokollieren in „Erledigt“),
+ * - Absichten und Aktionen für den zentralen AI Gateway anmelden,
  * - Suchtreffer, Erfassungsformulare (direkt aus dem Kontext geöffnet) und Beispieldaten beisteuern.
  *
  * WO ein Modul in der Oberfläche erscheint, bestimmt allein `src/shell/struktur.ts`
  * (Heute · Aufträge · Planen · Betrieb, je Ebene höchstens vier Ziele).
  */
 import type { ComponentType } from 'react';
+import type { GatewayBeitrag } from './gateway';
 import type { Bezug, ID, Rolle, SammlungsName } from './objects';
 
 export type Bereich = 'heute' | 'auftraege' | 'plan' | 'betrieb' | 'macher';
@@ -138,6 +140,8 @@ export interface ModulDef {
   /** Aktionen für Hinweis-Buttons. Rückgabe: optionaler Pfad zum Navigieren */
   aktionen?: Record<string, (payload: unknown) => string | void>;
   automationen?: Automation[];
+  /** Absichten und Aktionen für den Macher AI Gateway (`@core/gateway`) – Module sprechen nie selbst mit einem Modell */
+  gateway?: GatewayBeitrag;
   suche?: (q: string) => Treffer[];
   schnell?: SchnellAktion[];
   /** Erstellungsabläufe des Moduls (Verzeichnis, kein Menü). Der Knopf steht im Arbeitskontext. */

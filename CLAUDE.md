@@ -116,4 +116,8 @@ Vor Architektur-, Datenmodell- oder UX-Entscheidungen das Dokument konsultieren.
 
 Visuelle Sprache: Für macher-os gelten das Brand Playbook und die Festlegungen (oben). Die Farbangaben der Constitution (Ivory, Burgundy) gelten hier nicht.
 
+**KI:** Jede KI-Funktion läuft über den Macher AI Gateway (`src/os/core/gateway.ts`, Strategie und Stand:
+[`docs/os/KI-GATEWAY.md`](docs/os/KI-GATEWAY.md)). Kein Modul spricht direkt mit einem Modell; Module melden Absichten
+und Aktionen über `defineModul({ gateway })` an. Regeln vor Jev vor Luna vor stärkerem Modell; kritische Aktionen immer bestätigen.
+
 Größere Module werden mit einer **Master Build Specification** (§66) und der **Peak Build Sequence** (§65) geplant.
