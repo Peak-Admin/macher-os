@@ -12,6 +12,33 @@ export const cta = {
   login: { label: "Anmelden", href: "/login" },
 };
 
+/** Die Software selbst (eigenes Vercel-Projekt aus `os/`) */
+export const app = {
+  url: "https://macher-os-app.vercel.app",
+  /** Einrichtung, optional mit vorausgewähltem Gewerk der Software (`elektro`, `shk`, …) */
+  einrichten: (gewerk?: string) =>
+    `https://macher-os-app.vercel.app/willkommen${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
+};
+
+/** Gewerk-Slugs der Website → Gewerk der Software */
+export const appGewerk: Record<string, string> = {
+  elektriker: "elektro",
+  "elektro-energie": "elektro",
+  shk: "shk",
+  "shk-gebaeudetechnik": "shk",
+  maler: "maler",
+  "maler-boden-oberflaechen": "maler",
+  fliesenleger: "fliesen",
+  tischler: "tischler",
+  "holz-innenausbau": "tischler",
+  dachdecker: "dach",
+  "dach-gebaeudehuelle": "dach",
+  bau: "bau",
+  "bau-rohbau": "bau",
+  galabau: "garten",
+  "metall-maschinen": "metall",
+};
+
 export type NavLink = { label: string; href: string };
 export type MegaColumn = {
   titel: string;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Icon } from "@/components/ui";
+import { app, appGewerk } from "@/lib/site";
 import { plaene } from "@/content/preise";
 import { gewerkCluster, topGewerke, type GewerkSlug } from "@/content/registry";
 import { arbeitsweisen, leistungenNachGewerk, teamgroessen } from "./signup-daten";
@@ -104,8 +105,8 @@ export function SignupFlow() {
   if (schritt === SCHRITTE) {
     return (
       <Ergebnis
-        email={email.trim()}
         gewerk={gewerkTitel(gewerk)}
+        appLink={app.einrichten(gewerk ? appGewerk[gewerk] : undefined)}
         leistungen={leistungen}
         arbeitsweise={arbeitsweisen.find((a) => a.id === arbeitsweise)?.label ?? ""}
         team={teamgroessen.find((t) => t.id === team)?.label ?? ""}
@@ -465,8 +466,8 @@ function Auswahl({
 }
 
 function Ergebnis({
-  email,
   gewerk,
+  appLink,
   leistungen,
   arbeitsweise,
   team,
@@ -474,8 +475,8 @@ function Ergebnis({
   ueberschrift,
   zurueck,
 }: {
-  email: string;
   gewerk: string;
+  appLink: string;
   leistungen: string[];
   arbeitsweise: string;
   team: string;
@@ -555,18 +556,19 @@ function Ergebnis({
           {alles && (
             <div className="mt-8 rounded-lg bg-ink p-5 text-white">
               <p className="flex items-center gap-2 font-display text-lg font-bold">
-                <Icon name="inbox" className="size-5 text-accent" /> Fast geschafft.
+                <Icon name="check" className="size-5 text-accent" /> Alles vorbereitet.
               </p>
               <p className="mt-2 text-white/80">
-                Wir melden uns per E-Mail, sobald dein Zugang bereit ist
-                {email && (
-                  <>
-                    {" "}
-                    – an <b className="text-white">{email}</b>
-                  </>
-                )}
-                .
+                Öffne Macher OS und richte deinen Betrieb in zwei Minuten fertig ein
+                {appLink.includes("?gewerk=") ? " – dein Gewerk ist schon ausgewählt" : ""}.
+                Deine Daten bleiben vorerst in deinem Browser auf diesem Gerät.
               </p>
+              <a
+                href={appLink}
+                className="mt-4 inline-flex h-11 items-center gap-2 rounded-lg bg-white px-5 font-bold text-ink transition-colors hover:bg-paper"
+              >
+                Macher OS öffnen <Icon name="arrow-right" className="size-4" />
+              </a>
             </div>
           )}
         </div>

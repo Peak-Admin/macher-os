@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { db } from '@core/db';
 import { ARBEITSWEISEN, GEWERKE, gewerkVorlage } from '@core/gewerke';
 import { euro } from '@core/format';
@@ -56,13 +56,19 @@ function Ablauf({ onFertig }: { onFertig: () => void }) {
   const [fehler, setFehler] = useState<string>();
   const [laedt, setLaedt] = useState(false);
   const [csv, setCsv] = useState<CsvErgebnis & { datei?: string }>();
-  const [a, setA] = useState<Partial<Antworten> & { leistungen: string[]; arbeitsweisen: Arbeitsweise[]; start: Startdaten; betriebName: string; vorname: string; nachname: string }>({
-    leistungen: [],
-    arbeitsweisen: [],
-    start: 'beispiele',
-    betriebName: '',
-    vorname: '',
-    nachname: '',
+  const [params] = useSearchParams();
+  const [a, setA] = useState<Partial<Antworten> & { leistungen: string[]; arbeitsweisen: Arbeitsweise[]; start: Startdaten; betriebName: string; vorname: string; nachname: string }>(() => {
+    // Von der Website („Kostenlos testen“) kommt das gewählte Gewerk mit: ?gewerk=elektro
+    const g = GEWERKE.find((x) => x.id === params.get('gewerk'));
+    return {
+      gewerk: g?.id,
+      leistungen: g ? g.leistungen.map((l) => l.name) : [],
+      arbeitsweisen: g ? g.standardArbeitsweisen : [],
+      start: 'beispiele',
+      betriebName: params.get('betrieb') ?? '',
+      vorname: '',
+      nachname: '',
+    };
   });
   const set = (patch: Partial<typeof a>) => (setA({ ...a, ...patch }), setFehler(undefined));
   const vorlage = a.gewerk ? gewerkVorlage(a.gewerk) : undefined;
