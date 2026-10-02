@@ -12,3 +12,4 @@ export { StartHero } from "./StartHero";
 export { KernBereiche } from "./KernBereiche";
 export { KartenReihe } from "./KartenReihe";
 export { ReihenKarte, type KartenTon } from "./ReihenKarte";
+export { IntegrationenHighlight, LogoWand } from "./Integrationen";

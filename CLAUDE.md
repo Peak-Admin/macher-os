@@ -152,4 +152,8 @@ Visuelle Sprache: Für macher-os gelten das Brand Playbook und die Festlegungen 
 [`docs/os/KI-GATEWAY.md`](docs/os/KI-GATEWAY.md)). Kein Modul spricht direkt mit einem Modell; Module melden Absichten
 und Aktionen über `defineModul({ gateway })` an. Regeln vor Jev vor Luna vor stärkerem Modell; kritische Aktionen immer bestätigen.
 
+**Integrationen:** vier Säulen – Macher Connect (Pipedream), Macher Format Engine, Macher Universal Connectors,
+Macher Handwerk Connect. Bauplan, Priorität (Score) und Logo-Regeln: [`docs/os/INTEGRATIONEN.md`](docs/os/INTEGRATIONEN.md).
+Website-Daten `src/content/integrationen.ts`. Keine „Kommt“-Phase: intern prüfen, dann direkt bauen – auf der Website ohne Status-Abzeichen.
+
 Größere Module werden mit einer **Master Build Specification** (§66) und der **Peak Build Sequence** (§65) geplant.

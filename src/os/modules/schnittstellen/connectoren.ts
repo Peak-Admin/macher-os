@@ -5,7 +5,11 @@
  * - wie er verbunden wird (`art`): Datei-Import/-Export, über einen externen Integrationsanbieter (OAuth –
  *   Macher OS baut kein eigenes OAuth und speichert keine fremden Passwörter), mit Zugangsschlüssel, oder eingebaut,
  * - was er kann (`faehigkeiten`, in Handwerkersprache),
- * - wie es gerade steht (`status()`: verbunden / nicht verbunden / Fehler / geplant – immer als Text).
+ * - wie es gerade steht (`status()`: verbunden / nicht verbunden / Fehler / auf Anfrage / angefragt – immer als Text).
+ *
+ * Es gibt keine „Kommt“-Phase: Was noch nicht gebaut ist, steht „auf Anfrage“. Wer verbinden will, sendet eine
+ * Anfrage (`anfragen.ts`), wir prüfen sie intern und bauen die Verbindung direkt. Alle Integrationen der Website
+ * (`src/content/integrationen.ts`) erscheinen hier – was keinen eigenen Connector hat, über `ausKatalog()`.
  *
  * Der Zustand je Connector (letzte Nutzung, letzter Fehler) liegt in der Sammlung `anbindungen`
  * (ID = Connector-ID), damit jede Verbindung genau einmal existiert.
@@ -22,8 +26,10 @@ import { K as DATEV_K, type ExportProtokoll } from '@modules/datev/speicher';
 import { bankumsaetze } from '@modules/zahlungen/daten';
 import { schnittstellen } from './daten';
 import { webhookQuelle, zustellungText } from './webhooks';
+import { anfrage } from './anfragen';
+import { integrationen, type Integration } from '@/content/integrationen';
 
-export type Kategorie = 'buchhaltung' | 'grosshandel' | 'ausschreibung' | 'kommunikation' | 'kalender' | 'banking' | 'plattform';
+export type Kategorie = 'buchhaltung' | 'grosshandel' | 'ausschreibung' | 'kommunikation' | 'kalender' | 'banking' | 'ablage' | 'vertrieb' | 'daten' | 'plattform';
 
 export const KATEGORIEN: { id: Kategorie; titel: string; text: string }[] = [
   { id: 'banking', titel: 'Bank', text: 'Zahlungseingänge automatisch den Rechnungen zuordnen.' },
@@ -32,6 +38,9 @@ export const KATEGORIEN: { id: Kategorie; titel: string; text: string }[] = [
   { id: 'ausschreibung', titel: 'Ausschreibungen', text: 'Leistungsverzeichnisse direkt ins Angebot übernehmen.' },
   { id: 'kalender', titel: 'Kalender', text: 'Termine im Handy- oder Bürokalender.' },
   { id: 'kommunikation', titel: 'E-Mail & Telefon', text: 'Anfragen und Nachrichten am richtigen Auftrag.' },
+  { id: 'ablage', titel: 'Ablage & Tabellen', text: 'Fotos, Dokumente und Listen in deiner Cloud-Ablage.' },
+  { id: 'vertrieb', titel: 'Kunden & Verkauf', text: 'Kontakte und Verkaufschancen aus deinem CRM.' },
+  { id: 'daten', titel: 'Dateien & Formate', text: 'Rechnungen, Listen und Kataloge rein und raus.' },
   { id: 'plattform', titel: 'Für Programmierer', text: 'Daten und Ereignisse für eigene Programme.' },
 ];
 
@@ -48,7 +57,7 @@ export const VERBINDUNGSART: Record<Verbindungsart, { titel: string; text: strin
   eingebaut: { titel: 'Eingebaut', text: 'Läuft ohne Einrichtung, sobald dein Betrieb mit der Cloud verbunden ist.' },
 };
 
-export type Zustand = 'verbunden' | 'nicht_verbunden' | 'fehler' | 'geplant';
+export type Zustand = 'verbunden' | 'nicht_verbunden' | 'fehler' | 'geplant' | 'angefragt';
 
 export interface ConnectorStatus {
   zustand: Zustand;
@@ -60,10 +69,11 @@ export const ZUSTAND_LABEL: Record<Zustand, string> = {
   verbunden: 'Verbunden',
   nicht_verbunden: 'Nicht verbunden',
   fehler: 'Fehler',
-  geplant: 'Geplant',
+  geplant: 'Auf Anfrage',
+  angefragt: 'Angefragt',
 };
 
-export const ZUSTAND_TON = { verbunden: 'erfolg', nicht_verbunden: 'neutral', fehler: 'achtung', geplant: 'neutral' } as const;
+export const ZUSTAND_TON = { verbunden: 'erfolg', nicht_verbunden: 'neutral', fehler: 'achtung', geplant: 'neutral', angefragt: 'neutral' } as const;
 
 export interface Connector {
   id: string;
@@ -74,7 +84,7 @@ export interface Connector {
   art: Verbindungsart;
   /** was geht damit – kurze Verben */
   faehigkeiten: string[];
-  /** heute nutzbar? Sonst ehrlich „geplant“ */
+  /** heute nutzbar? Sonst „auf Anfrage“: Verbinden sendet eine Anfrage */
   verfuegbar: boolean;
   /** wo die Arbeit passiert */
   pfad?: string;
@@ -122,11 +132,30 @@ export function statusAusAnbindung(id: string, leer: ConnectorStatus): Connector
   return leer;
 }
 
-const geplant = (text = 'Kommt – wir richten das über einen Integrationspartner ein.'): (() => ConnectorStatus) => () => ({ zustand: 'geplant', text });
+const AUF_ANFRAGE = 'Auf Anfrage – sende uns eine Anfrage, wir richten die Verbindung für dich ein.';
+const geplant = (text = AUF_ANFRAGE): (() => ConnectorStatus) => () => ({ zustand: 'geplant', text });
+
+/** Status eines noch nicht gebauten Connectors: Anfrage gesendet? Echte Nutzung (z. B. Bank-Eingang) gewinnt. */
+function mitAnfrage(c: Connector): Connector {
+  if (c.verfuegbar) return c;
+  return {
+    ...c,
+    status: () => {
+      const s = c.status();
+      if (s.zustand === 'verbunden' || s.zustand === 'fehler') return s;
+      const a = anfrage(c.id);
+      return a ? { zustand: 'angefragt', text: `Angefragt am ${datum(a.erstelltAm)} – wir melden uns bei dir.` } : { zustand: 'geplant', text: AUF_ANFRAGE };
+    },
+  };
+}
 
 // ------------------------------------------------------------------ Verzeichnis
 
 export function connectoren(): Connector[] {
+  return [...eigene(), ...ausKatalog()].map(mitAnfrage);
+}
+
+function eigene(): Connector[] {
   const datev = modul('datev');
   const telefon = modul('telefon');
   return [
@@ -167,7 +196,7 @@ export function connectoren(): Connector[] {
           .filter((u) => u.quelle === 'bank')
           .sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm))[0];
         if (letzter) return { zustand: 'verbunden', text: `Letzter Umsatz am ${datum(letzter.datum)}` };
-        return { zustand: 'geplant', text: 'Kommt – bis dahin den Kontoauszug als Datei einlesen.' };
+        return { zustand: 'geplant', text: AUF_ANFRAGE };
       },
     },
     // Buchhaltung
@@ -225,7 +254,7 @@ export function connectoren(): Connector[] {
       verfuegbar: false,
       recht: 'geld',
       technik: ['IDS Connect 2.x (Warenkorb-Rückgabe per Hook-Adresse)', 'Zugangsdaten: Kundennummer und Shop-Benutzer deines Großhändlers'],
-      status: geplant('Kommt – bis dahin Bestellungen in Macher anlegen und per E-Mail senden.'),
+      status: geplant(),
     },
     {
       id: 'oci',
@@ -249,7 +278,7 @@ export function connectoren(): Connector[] {
       verfuegbar: false,
       recht: 'geld',
       technik: ['UGL 4.0 (Anfrage, Angebot, Auftrag, Lieferschein)'],
-      status: geplant('Kommt.'),
+      status: geplant(),
     },
     {
       id: 'shk-connect',
@@ -274,7 +303,7 @@ export function connectoren(): Connector[] {
       pfad: '/betrieb/schnittstellen/gaeb',
       aktion: 'LV einlesen',
       recht: 'geld',
-      technik: ['GAEB DA XML 3.x: X83 (Angebotsaufforderung), X84 (Angebotsabgabe), auch X81 und X86', 'Ordnungszahlen aus den Ebenen (z. B. 01.02.0010)', 'Export als X84: geplant'],
+      technik: ['GAEB DA XML 3.x: X83 (Angebotsaufforderung), X84 (Angebotsabgabe), auch X81 und X86', 'Ordnungszahlen aus den Ebenen (z. B. 01.02.0010)', 'Export als X84: auf Anfrage'],
       status: () => statusAusAnbindung('gaeb', { zustand: 'nicht_verbunden', text: 'Noch kein Leistungsverzeichnis eingelesen' }),
     },
     // Kalender
@@ -302,7 +331,7 @@ export function connectoren(): Connector[] {
       art: 'anbieter',
       faehigkeiten: ['Termine abgleichen', 'Belegte Zeiten berücksichtigen'],
       verfuegbar: false,
-      technik: ['Bis dahin: Kalenderdatei (ICS) herunterladen'],
+      technik: ['Sofort nutzbar: Kalenderdatei (ICS) herunterladen'],
       status: geplant(),
     },
     {
@@ -313,7 +342,7 @@ export function connectoren(): Connector[] {
       art: 'anbieter',
       faehigkeiten: ['Termine abgleichen', 'Belegte Zeiten berücksichtigen'],
       verfuegbar: false,
-      technik: ['Bis dahin: Kalenderdatei (ICS) herunterladen'],
+      technik: ['Sofort nutzbar: Kalenderdatei (ICS) herunterladen'],
       status: geplant(),
     },
     // Kommunikation
@@ -341,8 +370,8 @@ export function connectoren(): Connector[] {
       verfuegbar: false,
       pfad: telefon ? modulPfad(telefon) : undefined,
       aktion: telefon ? 'Anrufe erfassen' : undefined,
-      technik: ['Bis dahin: Anrufe in „Telefon & Empfang“ von Hand erfassen'],
-      status: geplant('Kommt – Anrufe erfasst du bis dahin von Hand.'),
+      technik: ['Sofort nutzbar: Anrufe in „Telefon & Empfang“ erfassen'],
+      status: geplant(),
     },
     // Plattform
     {
@@ -392,9 +421,91 @@ export function connectoren(): Connector[] {
       faehigkeiten: ['Daten lesen', 'Daten schreiben'],
       verfuegbar: false,
       recht: 'admin',
-      status: geplant('Kommt – bis dahin Datenexport und Webhooks nutzen.'),
+      status: geplant(),
     },
   ];
+}
+
+// ------------------------------------------------------------------ Weitere Integrationen aus dem Katalog der Website
+
+/**
+ * Katalog-Einträge, die schon abgedeckt sind: durch einen eigenen Connector oben (ID) oder als eingebaute Funktion
+ * an anderer Stelle (`eingebaut`, z. B. XRechnung in Rechnungen, Excel-Import in der Einrichtung).
+ */
+const ABGEDECKT: Record<string, string> = {
+  'datev-buchungsstapel': 'datev',
+  'google-kalender': 'google-kalender',
+  'microsoft-kalender': 'microsoft-kalender',
+  'email-inbox': 'email',
+  lexware: 'lexware',
+  'ids-connect': 'ids-connect',
+  ugl: 'ugl',
+  oci: 'oci',
+  datanorm: 'datanorm',
+  'datanorm-4': 'datanorm',
+  'datanorm-5': 'datanorm',
+  gaeb: 'gaeb',
+  'gaeb-x83': 'gaeb',
+  'gaeb-x84': 'gaeb',
+  'gaeb-x86': 'gaeb',
+  camt053: 'kontoauszug',
+  ics: 'kalenderdatei',
+  json: 'json',
+  'webhook-ausgang': 'webhooks',
+  'rest-api': 'api',
+  xrechnung: 'eingebaut',
+  'pdf-rechnung': 'eingebaut',
+  csv: 'eingebaut',
+  xlsx: 'eingebaut',
+  xml: 'eingebaut',
+  ubl: 'eingebaut',
+  karten: 'eingebaut',
+};
+
+const KATALOG_KATEGORIE: Record<string, Kategorie> = {
+  gmail: 'kommunikation',
+  outlook: 'kommunikation',
+  imap: 'kommunikation',
+  'google-drive': 'ablage',
+  onedrive: 'ablage',
+  dropbox: 'ablage',
+  'google-sheets': 'ablage',
+  hubspot: 'vertrieb',
+  pipedrive: 'vertrieb',
+  vcard: 'vertrieb',
+  stripe: 'banking',
+  sumup: 'banking',
+  paypal: 'banking',
+  mt940: 'banking',
+  sepa: 'banking',
+  sevdesk: 'buchhaltung',
+  'datev-stammdaten': 'buchhaltung',
+  'open-masterdata': 'grosshandel',
+  bmecat: 'grosshandel',
+  etim: 'grosshandel',
+  'gaeb-x31': 'ausschreibung',
+  'gaeb-x87': 'ausschreibung',
+  'gaeb-x89': 'ausschreibung',
+  'webhook-eingang': 'plattform',
+  sftp: 'plattform',
+};
+
+const SAEULE_ART: Record<Integration['saeule'], Verbindungsart> = { connect: 'anbieter', format: 'datei', universal: 'schluessel', handwerk: 'schluessel' };
+
+/** Alle übrigen Integrationen der Website als Connector „auf Anfrage“ – eine Liste, keine Doppelpflege */
+export function ausKatalog(): Connector[] {
+  return integrationen
+    .filter((i) => !ABGEDECKT[i.id])
+    .map((i) => ({
+      id: i.id,
+      titel: i.name,
+      kategorie: KATALOG_KATEGORIE[i.id] ?? (i.saeule === 'handwerk' ? 'grosshandel' : i.saeule === 'connect' ? 'kommunikation' : i.saeule === 'universal' ? 'plattform' : 'daten'),
+      text: i.hinweis ? `${i.hinweis}.` : `${i.name} mit Macher OS verbinden.`,
+      art: SAEULE_ART[i.saeule],
+      faehigkeiten: [i.hinweis ?? 'Daten austauschen'],
+      verfuegbar: false,
+      status: geplant(),
+    }));
 }
 
 export function connector(id: string): Connector | undefined {

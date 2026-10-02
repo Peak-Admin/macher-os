@@ -107,3 +107,27 @@ describe('Webhooks', () => {
     expect(webhookQuelle()).toBe(kernQuelle);
   });
 });
+
+describe('Integrationen auf Anfrage', () => {
+  it('zeigt jede Integration der Website – eigener Connector, eingebaut oder auf Anfrage', async () => {
+    const { integrationen } = await import('@/content/integrationen');
+    const ids = new Set(connectoren().map((c) => c.id));
+    const fehlt = integrationen.filter((i) => !ids.has(i.id) && !['datev-buchungsstapel', 'google-kalender', 'microsoft-kalender', 'email-inbox', 'lexware', 'ids-connect', 'ugl', 'oci', 'datanorm', 'datanorm-4', 'datanorm-5', 'gaeb', 'gaeb-x83', 'gaeb-x84', 'gaeb-x86', 'camt053', 'ics', 'json', 'webhook-ausgang', 'rest-api', 'xrechnung', 'pdf-rechnung', 'csv', 'xlsx', 'xml', 'ubl', 'karten'].includes(i.id));
+    expect(fehlt).toEqual([]);
+    expect(connectoren().find((c) => c.id === 'gmail')).toMatchObject({ verfuegbar: false, kategorie: 'kommunikation' });
+  });
+
+  it('nicht gebaute Verbindungen stehen „auf Anfrage“ (nie „Kommt“) und wechseln nach der Anfrage auf „Angefragt“', async () => {
+    const { anfrageSpeichern, anfrageMailto, integrationsanfragen } = await import('./anfragen');
+    const gmail = () => connectoren().find((c) => c.id === 'gmail')!;
+    expect(gmail().status().zustand).toBe('geplant');
+    for (const c of connectoren()) expect(c.status().text).not.toMatch(/kommt –|^kommt/i);
+    anfrageSpeichern('gmail', 'Gmail', 'Anfragen aus dem Postfach');
+    expect(gmail().status()).toMatchObject({ zustand: 'angefragt' });
+    anfrageSpeichern('gmail', 'Gmail', 'nochmal');
+    expect(integrationsanfragen.all()).toHaveLength(1);
+    const mail = decodeURIComponent(anfrageMailto('Gmail', 'Anfragen aus dem Postfach'));
+    expect(mail).toMatch(/^mailto:partner@macher-os\.de\?subject=Integration anfragen: Gmail/);
+    expect(mail).toMatch(/Wofür: Anfragen aus dem Postfach/);
+  });
+});

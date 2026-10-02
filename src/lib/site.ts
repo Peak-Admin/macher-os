@@ -1,3 +1,4 @@
+import { integration, logoReihe } from "@/content/integrationen";
 import type { GlasIconName } from "@/os/ui/glas";
 
 export const site = {
@@ -85,8 +86,16 @@ export type MegaVorschau = {
 };
 /** Gewerk als Bildzeile: kleines echtes Foto + ausgeschriebener Name. */
 export type MegaGewerk = NavLink & { bild: string };
+/** Hervorgehobene Box mit echten Logos (Integrationen im Menü „Funktionen“) – statt eines Vorschaubilds. */
+export type MegaHighlight = {
+  href: string;
+  titel: string;
+  text: string;
+  aktion: string;
+  logos: { name: string; logo: string }[];
+};
 export type Mega =
-  | { art: "funktionen" | "wissen"; gruppen: MegaGruppe[]; vorschau?: MegaVorschau; abschluss: NavLink[] }
+  | { art: "funktionen" | "wissen"; gruppen: MegaGruppe[]; vorschau?: MegaVorschau; highlight?: MegaHighlight; abschluss: NavLink[] }
   | { art: "gewerke"; gewerke: MegaGewerk[]; abschluss: NavLink[] };
 export type NavItem = { label: string; href: string; mega?: Mega };
 
@@ -133,20 +142,20 @@ export const mainNav: NavItem[] = [
           ],
         },
       ],
-      vorschau: {
-        href: "/demo",
-        bild: {
-          src: "/bilder/vorschau/einsatz.webp",
-          alt: "Ausschnitt aus Macher OS: ein Einsatz mit Uhrzeit, Kunde, Aufgabe und Adresse (Beispieldaten)",
-          breite: 720,
-          hoehe: 450,
-        },
-        titel: "Ein Einsatz. Alles dabei.",
-        text: "Kunde, Termin und Aufgabe an einem Ort.",
-        aktion: "Beispiel ansehen",
+      // Integrationen sind kein eigener Navigationspunkt: sie stehen hier als Highlight-Box mit Logos
+      highlight: {
+        href: "/integrationen",
+        titel: "Integrationen",
+        text: "Gmail, Outlook, DATEV, Lexware, Stripe und mehr – Macher OS passt zu dem, was du schon nutzt.",
+        aktion: "Alle Integrationen ansehen",
+        logos: logoReihe
+          .map(integration)
+          .flatMap((i) => (i?.logo ? [{ name: i.name, logo: i.logo }] : []))
+          .slice(0, 8),
       },
       abschluss: [
         { label: "Alle Funktionen ansehen", href: "/funktionen" },
+        { label: "Integrationen", href: "/integrationen" },
         { label: "So arbeitet Macher automatisch", href: f("automatisch-erledigen") },
       ],
     },
@@ -231,6 +240,7 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
     links: [
       { label: "Funktionen", href: "/funktionen" },
       { label: "Gewerke", href: "/gewerke" },
+      { label: "Integrationen", href: "/integrationen" },
       { label: "Preise", href: "/preise" },
       { label: "Demo", href: "/demo" },
       { label: "App", href: "/app" },

@@ -42,6 +42,7 @@ const statisch = [
   "/buerosoftware-handwerk",
   "/cloud-handwerkersoftware",
   "/schnittstellen",
+  "/integrationen",
   "/empfehlen",
   "/botschafter",
   "/partnerbetriebe",

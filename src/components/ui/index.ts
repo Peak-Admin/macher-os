@@ -11,3 +11,4 @@ export { Objekt } from "./Objekt";
 export { Skizze, type SkizzenMotiv } from "./Skizze";
 export { UiEbene, UiZeile, UiStatus } from "./UiEbene";
 export { Fenster } from "./Fenster";
+export { IntegrationLogo } from "./IntegrationLogo";
