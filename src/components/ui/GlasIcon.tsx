@@ -2,8 +2,9 @@ import { useId, type ReactNode } from "react";
 
 /**
  * Glas-Icons für die Mega-Menüs der Website (48 × 48).
- * Hinten eine deckende Form in Aktionsgrün, davor eine durchscheinende Glasform in Logogrün, durch die die hintere
- * Form weich verschwommen durchscheint; darauf weiße Details. Ein Farbton in zwei Stärken – keine weiteren Farben.
+ * Hinten eine deckende Form mit Verlauf von Logogrün zu Aktionsgrün. Davor eine Milchglasform: oben links fast weiß,
+ * nach unten rechts grün getönt, mit feiner heller Kante – die hintere Form leuchtet weich verschwommen hindurch.
+ * Details in Aktionsgrün auf dem Glas, weiß auf der hinteren Form. Nur Grün aus den Tokens, keine weiteren Farben.
  * Rein dekorativ (`aria-hidden`): die Beschriftung daneben trägt die Bedeutung.
  * Neue Glas-Icons hier ergänzen, nicht in Seiten inline zeichnen. Für Bedienelemente bleibt `Icon` (Strich-Icons).
  */
@@ -12,10 +13,12 @@ type GlasForm = {
   hinten: ReactNode;
   /** Glasform vorne – nur der Umriss, er dient als Clip-Pfad */
   vorne: ReactNode;
-  /** Weiße Striche (Pfaddaten) */
+  /** Striche auf dem Glas (Pfaddaten) */
   linien?: string;
-  /** Weiße Flächen */
+  /** Flächen auf dem Glas */
   flaechen?: ReactNode;
+  /** Weiße Striche auf der hinteren Form (Pfaddaten) */
+  linienHinten?: string;
 };
 
 const formen = {
@@ -163,7 +166,8 @@ const formen = {
   stundensatz: {
     hinten: <circle cx="33" cy="14" r="11" />,
     vorne: <circle cx="19" cy="28" r="15" />,
-    linien: "M33 8.5V14l3.5 2M23.6 22.6a6.5 6.5 0 1 0 0 10.8M12.5 26.5h8M12.5 29.5h8",
+    linien: "M23.6 22.6a6.5 6.5 0 1 0 0 10.8M12.5 26.5h8M12.5 29.5h8",
+    linienHinten: "M33 8.5V14l3.5 2",
   },
   // Preisschild
   preis: {
@@ -226,37 +230,43 @@ const formen = {
 
 export type GlasIconName = keyof typeof formen;
 
+const strich = { fill: "none", strokeWidth: 2.6, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
 export function GlasIcon({ name, className = "size-8" }: { name: GlasIconName; className?: string }) {
   const id = useId().replace(/[^\w-]/g, "");
-  const { hinten, vorne, linien, flaechen }: GlasForm = formen[name];
+  const { hinten, vorne, linien, flaechen, linienHinten }: GlasForm = formen[name];
   return (
     <svg viewBox="0 0 48 48" aria-hidden="true" className={className}>
       <defs>
         <clipPath id={`${id}-glas`}>{vorne}</clipPath>
         <filter id={`${id}-weich`} filterUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">
-          <feGaussianBlur stdDeviation="3.5" />
+          <feGaussianBlur stdDeviation="4" />
         </filter>
+        {/* Hintere Form: kräftiger Verlauf je Form */}
+        <linearGradient id={`${id}-tief`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" style={{ stopColor: "var(--color-logo)" }} />
+          <stop offset="1" style={{ stopColor: "var(--color-primary)" }} />
+        </linearGradient>
+        {/* Milchglas: oben links hellgrün fast deckend, unten rechts kräftiger getönt und durchscheinend */}
+        <linearGradient id={`${id}-milch`} gradientUnits="userSpaceOnUse" x1="6" y1="6" x2="42" y2="42">
+          <stop offset="0" style={{ stopColor: "var(--color-signal-soft)", stopOpacity: 0.92 }} />
+          <stop offset="1" style={{ stopColor: "var(--color-logo)", stopOpacity: 0.5 }} />
+        </linearGradient>
       </defs>
-      <g className="fill-primary">{hinten}</g>
-      {/* Glas: getönte Fläche, darin die hintere Form verschwommen, darüber ein leichter heller Schleier */}
+      <g fill={`url(#${id}-tief)`}>{hinten}</g>
+      {linienHinten && <path d={linienHinten} className="stroke-white" {...strich} />}
       <g clipPath={`url(#${id}-glas)`}>
-        <rect width="48" height="48" className="fill-logo" fillOpacity={0.6} />
-        <g className="fill-primary" opacity={0.45} filter={`url(#${id}-weich)`}>
+        <g fill={`url(#${id}-tief)`} filter={`url(#${id}-weich)`}>
           {hinten}
         </g>
-        <rect width="48" height="48" className="fill-white" fillOpacity={0.1} />
+        <rect width="48" height="48" fill={`url(#${id}-milch)`} />
+        {/* feine helle Kante: nur die innere Hälfte des Strichs bleibt im Glas sichtbar */}
+        <g fill="none" className="stroke-white" strokeWidth={1.2} strokeOpacity={0.8}>
+          {vorne}
+        </g>
       </g>
-      <g className="fill-white">
-        {linien && (
-          <path
-            d={linien}
-            fill="none"
-            className="stroke-white"
-            strokeWidth={2.6}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        )}
+      <g className="fill-primary">
+        {linien && <path d={linien} className="stroke-primary" {...strich} />}
         {flaechen}
       </g>
     </svg>
