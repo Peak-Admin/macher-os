@@ -3,6 +3,7 @@
 
 - Hauptaktionen auf `bg-signal` bekommen weiße Schrift.
 - Oberzeilen (Versalien mit Laufweite) nutzen Poppins (`font-tagline`).
+- Reines `text-signal` (nur auf dunklen Flächen genutzt) wird Akzentgrün.
 - Pillen-Badges (`rounded-full` mit Innenabstand) werden zu kleinen Rechtecken.
 
 Aufruf: python3 scripts/playbook-sweep.py src
@@ -25,6 +26,10 @@ def fix_classes(cls: str) -> str:
 
 
 def fix_static(cls: str) -> str:
+    # Reines `text-signal` / `bg-signal/NN` wurde nur auf dunklen Flächen genutzt
+    # (auf hellen Flächen steht `text-signal-dark`) – dort Akzentgrün verwenden.
+    cls = re.sub(r"(?<![\w-])((?:hover:)?)text-signal(?![\w/-])", r"\1text-accent", cls)
+    cls = re.sub(r"(?<![\w-])bg-signal/", "bg-accent/", cls)
     if BG_SIGNAL.search(cls):
         cls = re.sub(r"(?<![\w:-])text-ink(?![\w/-])", "text-white", cls)
     if "uppercase" in cls and re.search(r"tracking-\[0\.1\d?em\]|tracking-wider|tracking-widest", cls) and "font-tagline" not in cls:

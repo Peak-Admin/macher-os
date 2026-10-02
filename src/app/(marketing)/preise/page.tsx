@@ -73,7 +73,7 @@ export default function PreisePage() {
       <Section tone="ink">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-center">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Ohne Aufpreis</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Ohne Aufpreis</p>
             <h2 className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl">
               Was immer dabei ist.
             </h2>
@@ -82,7 +82,7 @@ export default function PreisePage() {
           <ul className="grid gap-3 sm:grid-cols-2">
             {immerDabei.map((x) => (
               <li key={x} className="flex items-center gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10">
-                <Icon name="check" className="size-5 shrink-0 text-signal" />
+                <Icon name="check" className="size-5 shrink-0 text-accent" />
                 <span className="font-semibold">{x}</span>
               </li>
             ))}

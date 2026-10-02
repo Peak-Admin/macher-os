@@ -20,7 +20,7 @@ export function DemoExplorer() {
         <Container>
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">Demo auswählen</p>
+              <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">Demo auswählen</p>
               <h2
                 id={`${id}-titel`}
                 className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-balance sm:text-4xl"
@@ -112,7 +112,7 @@ export function DemoExplorer() {
       <section id="tour" className="scroll-mt-20 bg-paper py-14 sm:py-20" aria-labelledby={`${id}-tour`}>
         <Container>
           <div className="max-w-2xl">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
               5-Minuten-Tour · {daten.label}
             </p>
             <h2

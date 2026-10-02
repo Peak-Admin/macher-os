@@ -151,7 +151,7 @@ export function SignupFlow() {
                 {ssoHinweis}
               </p>
             )}
-            <div className="my-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-muted">
+            <div className="my-6 flex items-center gap-3 text-xs font-semibold font-tagline uppercase tracking-wider text-muted">
               <span className="h-px flex-1 bg-line" /> oder <span className="h-px flex-1 bg-line" />
             </div>
             <label htmlFor="signup-email" className="block text-sm font-semibold">
@@ -555,7 +555,7 @@ function Ergebnis({
           {alles && (
             <div className="mt-8 rounded-lg bg-ink p-5 text-white">
               <p className="flex items-center gap-2 font-display text-lg font-bold">
-                <Icon name="inbox" className="size-5 text-signal" /> Fast geschafft.
+                <Icon name="inbox" className="size-5 text-accent" /> Fast geschafft.
               </p>
               <p className="mt-2 text-white/80">
                 Wir melden uns per E-Mail, sobald dein Zugang bereit ist

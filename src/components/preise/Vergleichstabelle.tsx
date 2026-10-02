@@ -53,7 +53,7 @@ export function Vergleichstabelle() {
           {vergleich.map((g) => (
             <Fragment key={g.gruppe}>
               <tr className="bg-sand">
-                <th colSpan={spalten.length + 1} scope="colgroup" className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-ink-soft">
+                <th colSpan={spalten.length + 1} scope="colgroup" className="px-4 py-2 text-xs font-bold font-tagline uppercase tracking-wider text-ink-soft">
                   {g.gruppe}
                 </th>
               </tr>

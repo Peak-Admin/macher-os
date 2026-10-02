@@ -47,7 +47,7 @@ export function PlanWegweiser() {
       <div aria-live="polite" className="flex">
         {plan ? (
           <div className="flex w-full flex-col rounded-xl bg-ink p-6 text-white">
-            <p className="text-sm font-semibold uppercase tracking-wider text-signal">Unsere Empfehlung</p>
+            <p className="text-sm font-semibold font-tagline uppercase tracking-wider text-accent">Unsere Empfehlung</p>
             <p className="mt-2 font-display text-3xl font-extrabold">{plan.name}</p>
             <p className="mt-1 text-white/70">{plan.fuer}</p>
             <p className="mt-4 text-lg font-semibold">

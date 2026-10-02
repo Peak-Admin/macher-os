@@ -215,7 +215,7 @@ function Auftrag({
       <fieldset className="rounded-lg border border-line bg-white p-3 sm:p-4">
         <legend className="sr-only">Arbeitsschritte</legend>
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-xs font-bold uppercase tracking-wider text-muted">Arbeitsschritte</p>
+          <p className="text-xs font-bold font-tagline uppercase tracking-wider text-muted">Arbeitsschritte</p>
           <p className="text-xs font-semibold text-moss">
             {anzahl} von {a.schritte.length} erledigt
           </p>
@@ -240,7 +240,7 @@ function Auftrag({
         </ul>
       </fieldset>
       <div className="rounded-lg border border-line bg-white p-3 sm:p-4">
-        <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted">Material</p>
+        <p className="mb-2 text-xs font-bold font-tagline uppercase tracking-wider text-muted">Material</p>
         <ul className="space-y-1.5">
           {a.material.map((m) => (
             <li key={m.name} className="flex items-center justify-between gap-2 text-xs sm:text-sm">
@@ -308,7 +308,7 @@ function Betrieb({ daten }: { daten: DemoGewerk }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <div className="rounded-lg border border-line bg-white p-3 sm:p-4">
-        <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-muted">
+        <p className="mb-2 flex items-center gap-1.5 text-xs font-bold font-tagline uppercase tracking-wider text-muted">
           <Icon name="users" className="size-3.5" /> Mitarbeiter
         </p>
         <ul className="space-y-2">
@@ -328,7 +328,7 @@ function Betrieb({ daten }: { daten: DemoGewerk }) {
         </ul>
       </div>
       <div className="rounded-lg border border-line bg-white p-3 sm:p-4">
-        <p className="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-muted">
+        <p className="mb-2 flex items-center gap-1.5 text-xs font-bold font-tagline uppercase tracking-wider text-muted">
           <Icon name="warehouse" className="size-3.5" /> Lager
         </p>
         <ul className="space-y-2">
@@ -370,7 +370,7 @@ function Automatisch({
     <div className="space-y-3">
       <Kopf titel="Macher erledigt" rechts="automatische Arbeit" />
       <div className="rounded-lg border border-moss/30 bg-moss-soft p-3 sm:p-4">
-        <p className="text-xs font-bold uppercase tracking-wider text-moss">Schon erledigt</p>
+        <p className="text-xs font-bold font-tagline uppercase tracking-wider text-moss">Schon erledigt</p>
         <ul className="mt-2 space-y-1.5 text-sm">
           {a.erledigt.map((x) => (
             <li key={x} className="flex gap-2">
@@ -380,7 +380,7 @@ function Automatisch({
         </ul>
       </div>
       <div className="rounded-lg border border-line bg-white p-3 sm:p-4">
-        <p className="text-xs font-bold uppercase tracking-wider text-muted">Wartet auf dich</p>
+        <p className="text-xs font-bold font-tagline uppercase tracking-wider text-muted">Wartet auf dich</p>
         <ul className="mt-2 space-y-2">
           {a.vorschlaege.map((v, i) => (
             <li key={v.text} className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-paper p-2.5 text-sm">

@@ -77,7 +77,7 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
           <BeispielHinweis className="mb-10 max-w-3xl" />
           <div className="grid items-start gap-10 lg:grid-cols-[1.3fr_1fr]">
             <div>
-              <p className="mb-4 flex flex-wrap items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">
+              <p className="mb-4 flex flex-wrap items-center gap-2 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
                 Kundenstory <Badge>Beispiel</Badge>
               </p>
               <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl lg:text-6xl">
@@ -201,14 +201,14 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
       <Section tone="ink">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Ergebnis</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Ergebnis</p>
             <h2 className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl">
               {k.ergebnis}.
             </h2>
             <ul className="mt-8 space-y-3">
               {story.ergebnis.map((e) => (
                 <li key={e} className="flex gap-3">
-                  <Icon name="check" className="mt-1 size-4.5 shrink-0 text-signal" />
+                  <Icon name="check" className="mt-1 size-4.5 shrink-0 text-accent" />
                   <span className="leading-relaxed text-white/85">{e}</span>
                 </li>
               ))}
@@ -223,7 +223,7 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
             <figcaption className="mt-6 flex items-center gap-3 text-sm text-white/70">
               <span
                 aria-hidden
-                className="inline-flex size-10 items-center justify-center rounded-lg bg-signal/20 font-display font-extrabold text-signal"
+                className="inline-flex size-10 items-center justify-center rounded-lg bg-accent/20 font-display font-extrabold text-accent"
               >
                 {initialen}
               </span>
