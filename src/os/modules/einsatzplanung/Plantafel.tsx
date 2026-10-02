@@ -607,12 +607,28 @@ export function Plantafel() {
   };
 
   // ---------------------------------------------------------------- Bausteine der Tafel
-  const tagKlasse = (d: Datum, i: number) => `${frei(i) ? 'pt2-tag--frei' : ''} ${d === heute() ? 'pt2-tag--heute' : ''} ${wtagIndex(d) === 0 && i > 0 ? 'pt2-tag--woche' : ''}`;
+  const tagKlasse = (d: Datum, i: number) => `${frei(i) ? `pt2-tag--frei ${!frei(i - 1) ? 'pt2-frei-start' : ''} ${!frei(i + 1) ? 'pt2-frei-ende' : ''}` : ''} ${d === heute() ? 'pt2-tag--heute' : ''} ${wtagIndex(d) === 0 && i > 0 ? 'pt2-tag--woche' : ''}`;
+
+  const datumKurzOhneTag = (d: Datum) => `${d.slice(8, 10)}.${d.slice(5, 7)}.`;
+  const navigation = (
+    <div className="pt2-navi">
+      <div className="pt2-navi-zeile">
+        <IconButton icon="pfeilLinks" label="Früher" className="pt2-navi-pfeil" onClick={() => setze({ ab: plusTage(ab, -schritt), woche: undefined })} />
+        <span className="pt2-navi-datum" aria-live="polite">
+          {datumKurzOhneTag(von)} – {datumKurzOhneTag(bis)}
+        </span>
+        <IconButton icon="pfeilRechts" label="Später" className="pt2-navi-pfeil" onClick={() => setze({ ab: plusTage(ab, schritt), woche: undefined })} />
+      </div>
+      <button type="button" className="pt2-heute" onClick={() => setze({ ab: undefined, woche: undefined })}>
+        Heute
+      </button>
+    </div>
+  );
 
   const kopf = (
     <div className="pt2-zeile pt2-zeile--kopf">
       <div className="pt2-name pt2-name--kopf">
-        <span className="pt2-kopf-zeitraum">{zoom.tage <= 21 ? `KW ${kalenderwoche(von)}${zoom.tage > 7 ? `–${kalenderwoche(bis)}` : ''}` : `${datumKurz(von)} – ${datumKurz(bis)}`}</span>
+        {navigation}
         <BreitenGriff label="Breite der Namensspalte" wert={nameBreite} min={NAME_MIN} max={NAME_MAX} onWert={setNameBreite} />
       </div>
       <div className="pt2-spur pt2-spur--kopf" style={{ gridTemplateRows: 'auto auto auto' }}>
@@ -872,11 +888,11 @@ export function Plantafel() {
                 </>
               );
             },
-            (d) => {
+            (d, j) => {
               const schluessel = `${m.id}|${d}`;
               const a = anwesenheit(m.id, d, k);
               return {
-                className: `${a.status === 'frei' || a.status === 'inaktiv' ? 'pt2-tag--frei' : ''} ${ziel === schluessel ? 'pt2-tag--ziel' : ''}`,
+                className: `${(a.status === 'frei' || a.status === 'inaktiv') && !frei(j) ? 'pt2-tag--frei pt2-frei-start pt2-frei-ende' : ''} ${ziel === schluessel ? 'pt2-tag--ziel' : ''}`,
                 onDragOver: (e: DragEvent<HTMLDivElement>) => {
                   if (!zug) return;
                   e.preventDefault();
@@ -1019,16 +1035,6 @@ export function Plantafel() {
 
   const steuerung = (
     <div className="pt2-steuerung">
-      <span className="pt2-zeitraum">
-        {datumKurz(von)} – {datumKurz(bis)}
-      </span>
-      <span className="pt2-gruppe">
-        <IconButton icon="pfeilLinks" label="Früher" onClick={() => setze({ ab: plusTage(ab, -schritt), woche: undefined })} />
-        <IconButton icon="pfeilRechts" label="Später" onClick={() => setze({ ab: plusTage(ab, schritt), woche: undefined })} />
-      </span>
-      <Button variante="sekundaer" onClick={() => setze({ ab: undefined, woche: undefined })}>
-        Heute
-      </Button>
       <span className="pt2-gruppe">
         <IconButton icon="minus" label="Mehr Tage zeigen" disabled={zoomStufe === 0} onClick={() => (setEigeneBreite(undefined), setze({ zoom: String(zoomStufe - 1) }))} />
         <IconButton icon="plus" label="Weniger Tage, größer zeigen" disabled={zoomStufe === ZOOM.length - 1} onClick={() => (setEigeneBreite(undefined), setze({ zoom: String(zoomStufe + 1) }))} />
