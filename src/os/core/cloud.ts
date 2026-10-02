@@ -13,6 +13,10 @@ export interface Versand {
   kanal: 'email' | 'sms' | 'whatsapp';
   betreff?: string;
   text: string;
+  /** optional gestaltete Fassung für E-Mail (Text bleibt der Rückfall) */
+  html?: string;
+  /** Absender aus Sicht des Kunden: Name des Betriebs, Antworten gehen an den Betrieb */
+  absender?: { name?: string; antwortAn?: string };
   /** Link, der mitgeschickt wird (z. B. Kundenbereich) */
   link?: string;
   /** Anhänge als URL (Storage) oder Data-URL */

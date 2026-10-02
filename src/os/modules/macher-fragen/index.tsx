@@ -3,7 +3,7 @@ import { useOverlay } from '@core/overlay';
 import { Dialog, Seite } from '@ui/index';
 import { MacherChat } from './Chat';
 
-/** Overlay „Macher fragen“ – geöffnet über die Topbar (`oeffne('macher')`). */
+/** Overlay „Macher fragen“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`). */
 function MacherOverlay() {
   const { offen, schliessen, payload } = useOverlay('macher');
   return (
