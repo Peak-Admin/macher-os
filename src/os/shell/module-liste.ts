@@ -29,6 +29,7 @@ import m_braucht_dich from '../modules/braucht-dich';
 import m_checklisten from '../modules/checklisten';
 import m_dateien from '../modules/dateien';
 import m_datev from '../modules/datev';
+import m_dokumente from '../modules/dokumente';
 import m_einarbeitung from '../modules/einarbeitung';
 import m_eingang from '../modules/eingang';
 import m_einsatzplanung from '../modules/einsatzplanung';
@@ -119,6 +120,7 @@ export const modulListe: [string, ModulDef][] = [
   ['checklisten', m_checklisten],
   ['dateien', m_dateien],
   ['datev', m_datev],
+  ['dokumente', m_dokumente],
   ['einarbeitung', m_einarbeitung],
   ['eingang', m_eingang],
   ['einsatzplanung', m_einsatzplanung],

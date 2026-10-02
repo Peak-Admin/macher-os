@@ -2,9 +2,8 @@ import { appPfad } from '@core/basis';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db, neueId, useDatenstand } from '@core/db';
-import { datum, euro, plusTage, positionSumme, relativ, tageZwischen } from '@core/format';
+import { datum, euro, positionSumme, relativ, tageZwischen } from '@core/format';
 import type { Einheit, Position } from '@core/objects';
-import { naechsteNummer } from '@core/nummern';
 import { pfadZu } from '@core/modul';
 import { useDarf } from '@core/session';
 import {
@@ -32,21 +31,24 @@ import {
   useToast,
   GeldEingabe,
 } from '@ui/index';
-import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
+import { ObjektLink, ObjektPanels, ObjektTabs } from '@ui/objekt';
+import { VersandDialog } from '@modules/dokumente/VersandDialog';
+import { DokumentHistorie } from '@modules/dokumente/Historie';
+import { kuerzelFuer } from '@modules/dokumente/nummern';
 import {
   ART_LABEL,
   betrieb as aktuellerBetrieb,
   entwurfLoeschen,
   festschreiben,
   korrekturEntwurf,
-  mailtoLink,
+  nummerArt,
+  optionenSetzen,
   offenerBetrag,
   pflichtangabenPruefen,
   pflichtTexte,
   rechnungsSummen,
   stornieren,
   zahlungenZu,
-  type Mangel,
 } from './logik';
 import { rechnungAendern, rechnungX, type RechnungX } from './typen';
 import { MaengelListe, RechnungStatus, SummenListe } from './teile';
@@ -92,8 +94,8 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
   const druck = () => window.open(appPfad(`/druck/rechnung/${r.id}`), '_blank');
 
   const aktion = entwurf ? (
-    <Button icon="check" onClick={() => setSenden(true)}>
-      Festschreiben und senden
+    <Button icon="mail" onClick={() => setSenden(true)}>
+      Prüfen und senden
     </Button>
   ) : offen > 0 ? (
     <Button icon="euro" onClick={() => setZahlung(true)}>
@@ -151,7 +153,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
             eigene={[
               { id: 'positionen', titel: 'Positionen', inhalt: positionen },
               ...(entwurf ? [] : [{ id: 'zahlungen', titel: 'Zahlungen', zaehler: zahlungen.length, inhalt: <ZahlungenListe r={r} onNeu={() => setZahlung(true)} /> }]),
-              { id: 'verlauf', titel: 'Verlauf', inhalt: <Zeitstrahl bezug={{ typ: 'rechnungen', id: r.id }} /> },
+              { id: 'verlauf', titel: 'Verlauf', inhalt: <DokumentHistorie bezug={{ typ: 'rechnungen', id: r.id }} /> },
             ]}
           />
         }
@@ -187,9 +189,9 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
                     XRechnung (XML)
                   </Button>
                 )}
-                {!entwurf && k?.email && (
-                  <Button variante="tertiaer" icon="mail" onClick={() => (window.location.href = mailtoLink(r)!)}>
-                    Erneut per E-Mail
+                {!entwurf && (
+                  <Button variante="tertiaer" icon="mail" onClick={() => setSenden(true)}>
+                    Erneut senden
                   </Button>
                 )}
                 <Meta>E-Rechnung: XRechnung (UBL 2.1). ZUGFeRD ist geplant.</Meta>
@@ -221,7 +223,25 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
           </>
         }
       />
-      <SendenDialog r={r} offen={senden} onSchliessen={() => setSenden(false)} />
+      <VersandDialog
+        bezug={{ typ: 'rechnungen', id: r.id }}
+        offen={senden}
+        onSchliessen={() => setSenden(false)}
+        nebenaktion={
+          entwurf
+            ? {
+                label: 'Ich verschicke sie selbst',
+                onClick: () => {
+                  const e = festschreiben(r.id, { weg: 'selbst' });
+                  if (!e.ok) return toast(e.maengel?.[0]?.text ?? 'Es fehlen Pflichtangaben.', { ton: 'achtung' });
+                  window.open(appPfad(`/druck/rechnung/${r.id}`), '_blank');
+                  toast(`${e.rechnung!.nummer} festgeschrieben. Druck sie aus oder speichere das PDF.`);
+                  setSenden(false);
+                },
+              }
+            : undefined
+        }
+      />
       <StornoDialog r={r} offen={storno} onSchliessen={() => setStorno(false)} />
       <ZahlungDialog rechnungId={r.id} offen={zahlung} onSchliessen={() => setZahlung(false)} />
       {bestaetigung}
@@ -261,6 +281,7 @@ function PositionenListe({ r }: { r: RechnungX }) {
 
 function PositionenEditor({ r }: { r: RechnungX }) {
   const k = db.kunden.get(r.kundeId);
+  const [mehr, setMehr] = useState(!!(r.einbehaltProzent || r.reverseCharge || r.nummernkreis));
   const setPos = (id: string, patch: Partial<Position>) =>
     rechnungAendern(r.id, { positionen: r.positionen.map((p) => (p.id === id ? { ...p, ...patch } : p)) }, { leise: true });
   const entfernen = (id: string) => rechnungAendern(r.id, { positionen: r.positionen.filter((p) => p.id !== id) }, { leise: true });
@@ -277,13 +298,6 @@ function PositionenEditor({ r }: { r: RechnungX }) {
           placeholder="z. B. 12.09.2026 oder September 2026"
           onChange={(e) => rechnungAendern(r.id, { leistungszeitraum: e.target.value }, { leise: true })}
           hilfe="Pflichtangabe. Macher trägt ihn aus Zeiten und Terminen ein."
-        />
-        <Eingabe
-          label="Zahlungsziel in Tagen"
-          type="number"
-          min={0}
-          value={String(ziel)}
-          onChange={(e) => rechnungAendern(r.id, { faelligAm: plusTage(r.datum, Math.max(0, Number(e.target.value) || 0)) }, { leise: true })}
         />
       </FormRaster>
       {r.positionen.length === 0 && <Leer titel="Noch keine Positionen" text="Füge Leistungen, Material oder Arbeitszeit hinzu." icon="liste" />}
@@ -326,13 +340,43 @@ function PositionenEditor({ r }: { r: RechnungX }) {
         </Button>
       </Zeile>
       <Textfeld label="Bemerkung unter der Rechnung" optional rows={2} value={r.bemerkung ?? ''} onChange={(e) => rechnungAendern(r.id, { bemerkung: e.target.value || undefined }, { leise: true })} />
-      {k && k.art !== 'privat' && !aktuellerBetrieb()?.kleinunternehmer && (
-        <Schalter
-          label="Steuerschuldnerschaft des Leistungsempfängers (§ 13b UStG)"
-          beschreibung="Nur bei Bauleistungen an Betriebe, die selbst Bauleistungen erbringen. Dann ohne USt und mit Pflichthinweis."
-          checked={!!r.reverseCharge}
-          onChange={(v) => rechnungAendern(r.id, { reverseCharge: v }, { leise: true })}
-        />
+      <div>
+        <Button variante="tertiaer" icon={mehr ? 'x' : 'einstellungen'} aria-expanded={mehr} onClick={() => setMehr(!mehr)}>
+          {mehr ? 'Weniger Optionen' : 'Weitere Optionen'}
+        </Button>
+      </div>
+      {mehr && (
+        <Stapel>
+          <FormRaster>
+            <Eingabe label="Zahlungsziel in Tagen" type="number" min={0} value={String(ziel)} onChange={(e) => optionenSetzen(r.id, { zielTage: Math.max(0, Number(e.target.value) || 0) })} />
+            <Eingabe
+              label="Sicherheitseinbehalt in Prozent"
+              optional
+              inputMode="decimal"
+              value={r.einbehaltProzent != null ? String(r.einbehaltProzent).replace('.', ',') : ''}
+              placeholder="z. B. 5"
+              onChange={(e) => optionenSetzen(r.id, { einbehaltProzent: Math.min(20, Math.max(0, Number(e.target.value.replace(',', '.')) || 0)) })}
+              hilfe="Behält dein Kunde bis zum Ende der Gewährleistung ein. Mindert den Zahlbetrag."
+            />
+            <Eingabe
+              label="Kürzel für die Rechnungsnummer"
+              optional
+              maxLength={4}
+              value={r.nummernkreis ?? ''}
+              placeholder={kuerzelFuer(nummerArt(r))}
+              onChange={(e) => optionenSetzen(r.id, { nummernkreis: e.target.value.replace(/[^a-zA-Z]/g, '') })}
+              hilfe="Nur für einen eigenen Nummernkreis. Standard unter Vorlagen › Nummernkreise."
+            />
+          </FormRaster>
+          {k && k.art !== 'privat' && !aktuellerBetrieb()?.kleinunternehmer && (
+            <Schalter
+              label="Steuerschuldnerschaft des Leistungsempfängers (§ 13b UStG)"
+              beschreibung="Nur bei Bauleistungen an Betriebe, die selbst Bauleistungen erbringen. Dann ohne USt und mit Pflichthinweis."
+              checked={!!r.reverseCharge}
+              onChange={(v) => optionenSetzen(r.id, { reverseCharge: v })}
+            />
+          )}
+        </Stapel>
       )}
     </Stapel>
   );
@@ -377,58 +421,6 @@ function ZahlungenListe({ r, onNeu }: { r: RechnungX; onNeu: () => void }) {
 }
 
 // ------------------------------------------------------------------ Dialoge
-
-function SendenDialog({ r, offen, onSchliessen }: { r: RechnungX; offen: boolean; onSchliessen: () => void }) {
-  const toast = useToast();
-  const [maengel, setMaengel] = useState<Mangel[]>([]);
-  const k = db.kunden.get(r.kundeId);
-  const nummer = r.nummer || naechsteNummer('rechnung');
-  const los = (weg: 'email' | 'selbst') => {
-    const e = festschreiben(r.id, { weg });
-    if (!e.ok) return setMaengel(e.maengel ?? []);
-    const neu = e.rechnung!;
-    if (weg === 'email') {
-      xrechnungHerunterladen(neu);
-      window.open(appPfad(`/druck/rechnung/${neu.id}`), '_blank');
-      window.location.href = mailtoLink(neu)!;
-      toast(`${neu.nummer} festgeschrieben. Hänge PDF und XRechnung an die E-Mail an.`);
-    } else {
-      window.open(appPfad(`/druck/rechnung/${neu.id}`), '_blank');
-      toast(`${neu.nummer} festgeschrieben und als versendet markiert.`);
-    }
-    setMaengel([]);
-    onSchliessen();
-  };
-  return (
-    <Dialog
-      offen={offen}
-      onSchliessen={() => (setMaengel([]), onSchliessen())}
-      titel="Festschreiben und senden"
-      aktionen={
-        <>
-          <Button variante="tertiaer" onClick={() => los('selbst')}>
-            Ich verschicke sie selbst
-          </Button>
-          <Button icon="mail" onClick={() => los('email')} disabled={!k?.email}>
-            Per E-Mail senden
-          </Button>
-        </>
-      }
-    >
-      <Stapel>
-        <p>
-          Die Rechnung bekommt die Nummer <strong>{nummer}</strong> und das Datum von heute. Danach lässt sie sich nicht mehr ändern – korrigieren geht nur per Storno.
-        </p>
-        <Meta>
-          {euro(rechnungsSummen(r).zahlbetrag)} an {k?.name}
-          {k?.email ? ` (${k.email})` : ' – keine E-Mail-Adresse hinterlegt, du kannst sie drucken und selbst verschicken.'}
-        </Meta>
-        <Meta>Beim E-Mail-Versand lädt Macher die XRechnung herunter, öffnet die PDF-Ansicht und dein E-Mail-Programm mit fertigem Text.</Meta>
-        <MaengelListe maengel={maengel} kundeId={r.kundeId} />
-      </Stapel>
-    </Dialog>
-  );
-}
 
 function StornoDialog({ r, offen, onSchliessen }: { r: RechnungX; offen: boolean; onSchliessen: () => void }) {
   const [grund, setGrund] = useState('');

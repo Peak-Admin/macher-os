@@ -1,0 +1,11 @@
+/* Dokumenten-Engine: nur minimales Layout, nur Tokens */
+.mm-dokument-vorschau {
+  margin-top: var(--mm-space-1, 4px);
+  padding: var(--mm-space-3);
+  background: var(--mm-canvas);
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-card);
+  max-height: 280px;
+  overflow: auto;
+}
+.mm-dokument-vorschau p { margin: var(--mm-space-2, 8px) 0 0; white-space: pre-wrap; }

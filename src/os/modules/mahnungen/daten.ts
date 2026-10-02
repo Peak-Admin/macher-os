@@ -3,6 +3,7 @@
  * vorbereitete Mahnschreiben – versendet wird nur nach Freigabe durch einen Menschen.
  */
 import { db, defineCollection, vermerken } from '@core/db';
+import { emit } from '@core/events';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
 import { hinweisErledigen } from '@core/macher';
 import { datum, euro, heute, plusTage, tageZwischen } from '@core/format';
@@ -228,6 +229,7 @@ export function senden(mahnungId: ID): Mahnung | undefined {
   rechnungAendern(r.id, { mahnstufe: m.stufe, letzteMahnungAm: heute() }, { text: `${STUFE_LABEL[m.stufe]} versendet` });
   vermerken({ typ: 'kunden', id: r.kundeId }, 'mahnung.versendet', `${STUFE_LABEL[m.stufe]} zu ${r.nummer} versendet`);
   hinweisSchliessen(m);
+  emit({ typ: 'mahnung.versendet', sammlung: 'mahnungen', objekt: neu, daten: { rechnungId: r.id, stufe: m.stufe } });
   return neu;
 }
 
