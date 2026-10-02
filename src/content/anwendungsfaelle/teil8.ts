@@ -180,15 +180,16 @@ export const teil8 = {
 
   "telefon-ki": {
     icon: "phone",
-    kurz: "Kommt bald: Macher nimmt Anrufe an, fragt das Wichtige ab und trägt sie als Anfrage oder Rückruf ein.",
+    kurz: "Macher nimmt Anrufe an, fragt das Wichtige ab und trägt sie als Anfrage oder Rückruf ein. Auf Anfrage für deinen Betrieb eingerichtet.",
     enthalten: ["Anrufe annehmen", "Anliegen abfragen", "Notfälle weitergeben"],
     meta: {
-      title: "Telefonassistent mit KI für Handwerker – kommt bald",
+      title: "Telefonassistent mit KI für Handwerker – Anrufe annehmen lassen",
       description:
-        "Bald nimmt Macher Anrufe an, wenn du auf der Baustelle bist: Er fragt Anliegen, Adresse und Dringlichkeit ab und legt eine Anfrage oder einen Rückruf an. Heute schon: Anrufe in Sekunden notieren in Telefon & Empfang.",
+        "Macher nimmt Anrufe an, wenn du auf der Baustelle bist: Er fragt Anliegen, Adresse und Dringlichkeit ab und legt eine Anfrage oder einen Rückruf an. Wir richten den Telefonassistenten auf Anfrage für deinen Betrieb ein.",
     },
-    bald: {
-      text: "Der Telefonassistent ist in Arbeit. Dann nimmt Macher Anrufe an, wenn du auf der Baustelle bist, fragt Anliegen, Adresse und Dringlichkeit ab und legt dir eine Anfrage oder einen Rückruf an. Notfälle gibt er an deine Bereitschaft weiter.",
+    aufAnfrage: {
+      aktion: "Telefonassistent anfragen",
+      text: "Den Telefonassistenten richten wir für deinen Betrieb ein: deine Nummer, deine Begrüßung, deine Regeln für Notfälle. Schreib uns, wir melden uns mit den nächsten Schritten.",
       heute: [
         "Anrufe in Sekunden notieren: Nummer, Anliegen, Dringlichkeit",
         "Bekannte Anrufer an der Nummer erkennen – auch über das Telefon vor Ort",
@@ -206,7 +207,7 @@ export const teil8 = {
     visual: {
       bereich: "Aufträge",
       titel: "Telefon & Empfang",
-      untertitel: "Vorschau – kommt bald",
+      untertitel: "Dienstag, 14. Oktober",
       kennzahlen: [
         ["3", "von Macher angenommen"],
         ["1", "Notfall weitergegeben"],
@@ -334,14 +335,14 @@ export const teil8 = {
     },
     faq: [
       {
-        frage: "Ab wann geht das?",
+        frage: "Wie bekomme ich den Telefonassistenten?",
         antwort:
-          "Wir bauen daran und nennen kein Datum, bevor es fertig ist. Bis dahin notierst du Anrufe in Sekunden in Telefon & Empfang: Nummer eintippen, Anliegen, Dringlichkeit – daraus wird direkt eine Anfrage oder ein Rückruf.",
+          "Über „Telefonassistent anfragen“. Wir richten ihn für deinen Betrieb ein und melden uns mit den nächsten Schritten. Bis er läuft, notierst du Anrufe in Sekunden in Telefon & Empfang: Nummer eintippen, Anliegen, Dringlichkeit – daraus wird direkt eine Anfrage oder ein Rückruf.",
       },
       {
         frage: "Was ist der Unterschied zu Telefon & Empfang?",
         antwort:
-          "Telefon & Empfang ist der Ort, an dem alle Anrufe landen. Heute trägst du sie dort selbst ein. Der Telefonassistent soll das übernehmen, wenn keiner rangehen kann. Die Einträge sehen gleich aus.",
+          "Telefon & Empfang ist der Ort, an dem alle Anrufe landen. Ohne Assistent trägst du sie dort selbst ein. Der Telefonassistent übernimmt das, wenn keiner rangehen kann. Die Einträge sehen gleich aus.",
       },
       {
         frage: "Was darf Macher am Telefon – und was nicht?",
@@ -351,7 +352,7 @@ export const teil8 = {
       {
         frage: "Brauche ich dafür eine neue Telefonanlage?",
         antwort:
-          "Dazu können wir noch nichts Verbindliches sagen. Die Anbindung an Telefonanlagen steht bei den Schnittstellen als „geplant“. Sobald es fertig ist, steht hier, was du brauchst.",
+          "Das klären wir bei der Einrichtung mit dir – je nachdem, welche Nummer und welches Telefon du heute nutzt.",
       },
     ],
     verwandt: ["telefon", "anfragen", "ki-buerokraft"],
