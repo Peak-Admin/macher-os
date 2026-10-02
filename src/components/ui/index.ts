@@ -1,7 +1,7 @@
 export { Container } from "./Container";
 export { Section, SectionHeading, type Tone } from "./Section";
 export { ButtonLink, ArrowLink, BtnPfeil } from "./Button";
-export { Icon, IconTile, type IconName } from "./Icon";
+export { Icon, IconTile, glasName, type IconName } from "./Icon";
 export { Card, CheckList, Badge } from "./Card";
 export { Faq, FaqJsonLd, type FaqItem } from "./Faq";
 export { Breadcrumbs } from "./Breadcrumbs";
@@ -10,3 +10,4 @@ export { Zone, zone, type ZonenTon } from "./Zone";
 export { Objekt } from "./Objekt";
 export { Skizze, type SkizzenMotiv } from "./Skizze";
 export { UiEbene, UiZeile, UiStatus } from "./UiEbene";
+export { Fenster } from "./Fenster";

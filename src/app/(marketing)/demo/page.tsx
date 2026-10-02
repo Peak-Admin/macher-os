@@ -6,6 +6,7 @@ import {
   Container,
   Faq,
   FaqJsonLd,
+  Fenster,
   Icon,
   Section,
   SectionHeading,
@@ -82,6 +83,7 @@ export default function DemoPage() {
             <TrustRow dark className="mt-6" />
           </div>
           <div className="karte-dunkel p-6">
+            <Fenster icon="chat" ton="dunkel" className="mb-5" />
             <p className="font-display text-lg font-bold">Lieber persönlich?</p>
             <p className="mt-2 text-white/70">
               Wir zeigen dir Macher OS passend zu deinem Gewerk und beantworten deine Fragen.

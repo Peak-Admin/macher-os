@@ -257,6 +257,11 @@ const glas: Partial<Record<IconName, GlasIconName>> = {
   achtung: "achtung",
 };
 
+/** Glas-Motiv zum Strich-Icon (oder `undefined`, wenn es keins gibt). */
+export function glasName(name: IconName): GlasIconName | undefined {
+  return glas[name];
+}
+
 /**
  * Themen-Icon für Karten und Abschnitte: das Glas-Icon zum Strich-Icon (Standard 44 px, mit `size-*` änderbar).
  * Gibt es kein Glas-Icon, erscheint das Strich-Icon in einer hellen Kachel.

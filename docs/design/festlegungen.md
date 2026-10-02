@@ -81,6 +81,24 @@ steht im Kartentitel und Text. Nur Tokens (`sand`, `line`, `muted`, `primary`, `
 Beim Hover der Karte fächern die Blätter leicht auf bzw. hebt sich die Ebene (150 ms, nur ohne `prefers-reduced-motion`).
 Objektfotos (`Objekt`) bleiben für Bereiche und Einstiege, Glas-Icons für Themen in Listen.
 
+### Fenster-Skizze (Oktober 2026 – Website und Software)
+Feines Drahtgitter eines App-Fensters (Titelleiste, Seitenspalte; alternativ ein Handy-Umriss), das nach unten weich
+ausläuft, in der Mitte eine App-Kachel mit Glas-Icon und leichtem grünem Schein. Linien und Kachel in `currentColor`
+mit geringer Deckkraft: hell auf der ruhigen Fläche (`sand` / `--mm-surface-subtle`), dunkel direkt auf dunklen Karten
+(`karte-dunkel`). Keine Daten, kein Text in der Skizze – Titel und Text der Karte tragen die Bedeutung.
+
+- Einsatz: Einstiege und Teaser – erste Schritte, Schnittstellen, Hilfe-Einstiege, „Geplant“/„Kommt bald“,
+  einzelne dunkle Karten. Nie in Listen, Tabellen, Formularen oder hinter Daten.
+- Abgrenzung: Die **Skizze** erklärt, was eine Funktion tut (Inhalt angedeutet). Die **Fenster-Skizze** zeigt nur,
+  *wo* etwas sitzt bzw. dass es dazukommt (ein Thema, ein Icon). Je Raster nur eine Form.
+- Gemeinsame Quelle: `src/os/ui/fenster.tsx` (`FensterSkizze`, Glas-Icon-Name). Website: `Fenster`
+  (`src/components/ui/Fenster.tsx`, Strich-Icon-Name, `ton="hell" | "dunkel"`), `Card` mit `fenster`, Landingseiten
+  über `vorteile.bild: "fenster"`. Software: `<span className="mm-fenster"><FensterSkizze … /></span>`
+  (`ui.css`), nebeneinander mit Text über `.mm-fenster-teaser`.
+- Im Einsatz: Website `/schnittstellen` (Heute verfügbar), `/hilfe` (vier Einstiege), Akademie (dunkel),
+  Demo „Lieber persönlich?“ (dunkel). Software: Start „Was möchtest du als Erstes erledigen?“, Schnittstellen-Dialog,
+  DATEV „Unternehmen online – Geplant“.
+
 ### Themen-Icon-Kacheln (abgelöst durch Glas-Icons – gilt nur noch für Strich-Icons ohne Glas-Motiv)
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.
 Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon allein darf keine Information tragen).

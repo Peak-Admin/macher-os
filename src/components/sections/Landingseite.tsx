@@ -85,7 +85,7 @@ export function Landingseite({ seite }: { seite: Landing }) {
           <SectionHeading eyebrow={vorteile.eyebrow} title={vorteile.titel} intro={vorteile.intro} />
           <div className={`mt-10 grid gap-4 sm:grid-cols-2 ${vorteile.karten.length % 3 === 0 ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
             {vorteile.karten.map((k) => (
-              <Card key={k.titel} title={k.titel} icon={k.icon}>
+              <Card key={k.titel} title={k.titel} icon={k.icon} fenster={vorteile.bild === "fenster"}>
                 {k.text}
               </Card>
             ))}

@@ -1,8 +1,19 @@
 import { useState } from 'react';
 import { useDatenstand } from '@core/db';
 import { darf, useIch } from '@core/session';
-import { Abschnitt, Button, Dialog, Karte, Leer, Meta, Raster, Seite, Stapel, Status, Zeile } from '@ui/index';
-import { connectoren, KATEGORIEN, VERBINDUNGSART, ZUSTAND_LABEL, ZUSTAND_TON, type Connector } from './connectoren';
+import { Abschnitt, Button, Dialog, FensterSkizze, Karte, Leer, Meta, Raster, Seite, Stapel, Status, Zeile, type GlasIconName } from '@ui/index';
+import { connectoren, KATEGORIEN, VERBINDUNGSART, ZUSTAND_LABEL, ZUSTAND_TON, type Connector, type Kategorie } from './connectoren';
+
+/** Glas-Icon je Bereich für die Fenster-Skizze im Dialog. */
+const KATEGORIE_ICON: Record<Kategorie, GlasIconName> = {
+  banking: 'rechnung',
+  buchhaltung: 'rechner',
+  grosshandel: 'lager',
+  ausschreibung: 'liste',
+  kalender: 'kalender',
+  kommunikation: 'mail',
+  plattform: 'stecker',
+};
 
 /** Integration Hub: ruhige Kartenliste „Verbinden“ – Technisches steht hinter „Weitere Optionen“ */
 export function Schnittstellen() {
@@ -81,6 +92,9 @@ function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchl
       }
     >
       <Stapel>
+        <span className="mm-fenster" aria-hidden>
+          <FensterSkizze icon={KATEGORIE_ICON[c.kategorie]} />
+        </span>
         <p>{c.text}</p>
         <div>
           <Status ton={ZUSTAND_TON[s.zustand]}>{ZUSTAND_LABEL[s.zustand]}</Status>

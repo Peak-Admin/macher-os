@@ -22,7 +22,8 @@ import { Icon, type IconName } from './icons';
 import type { Ton } from '@core/modul';
 import './ui.css';
 
-export { GlasIcon, ThemenIcon, type GlasIconName } from './glas';
+export { GlasIcon, ThemenIcon, glasFuer, type GlasIconName } from './glas';
+export { FensterSkizze } from './fenster';
 import { MacherAsset, type ObjektSchluessel } from './asset';
 export { Icon } from './icons';
 export { MacherAsset, type ObjektSchluessel } from './asset';

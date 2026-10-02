@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FinalCta, PageHero } from "@/components/sections";
-import { ArrowLink, ButtonLink, CheckList, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
+import { ArrowLink, ButtonLink, CheckList, Fenster, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
 import { FunktionLinks } from "@/components/wissen/Teile";
 import { topGewerke } from "@/content/registry";
 import { kurse, lernbereiche, rollen, type Kurs } from "@/content/wissen/akademie";
@@ -179,6 +179,7 @@ export default function AkademiePage() {
             </Link>
           </div>
           <div className="karte-dunkel p-6 sm:p-8">
+            <Fenster icon="award" ton="dunkel" className="mb-6" />
             <CheckList
               items={[
                 "Kurse und eigene Schulungen zuweisen",

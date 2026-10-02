@@ -1,0 +1,87 @@
+/**
+ * Fenster-Skizze: ein feines Drahtgitter eines App-Fensters (Titelleiste, Seitenspalte) oder eines Handys,
+ * in der Mitte eine App-Kachel mit Glas-Icon – gemeinsam für Website und Software.
+ *
+ * Für Einstiegs- und Teaserkarten („Erste Schritte“, „Schnittstelle verbinden“, „Kommt bald“), nie hinter Daten,
+ * Listen oder Formularen. Rein dekorativ (`aria-hidden`): Titel und Text der Karte tragen die Bedeutung.
+ *
+ * Linien und Kachel nehmen `currentColor` – die Fläche setzt die Farbe (hell: Textfarbe, dunkel: Weiß).
+ * Der Schein hinter der Kachel nutzt `--glas-hell`. Regeln: docs/design/festlegungen.md („Fenster-Skizze“).
+ */
+import { useId, type CSSProperties } from 'react';
+import { GlasIcon, type GlasIconName } from './glas';
+
+export function FensterSkizze({
+  icon,
+  rahmen = 'fenster',
+  className,
+  style,
+}: {
+  icon: GlasIconName;
+  /** Desktop-Fenster mit Seitenspalte oder Handy-Umriss */
+  rahmen?: 'fenster' | 'handy';
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const id = useId().replace(/[^\w-]/g, '');
+  const linie = { stroke: 'currentColor', fill: 'none' } as const;
+  const balken = (x: number, y: number, b: number, deckkraft = 0.1) => (
+    <rect x={x} y={y} width={b} height={4} rx={2} fill="currentColor" fillOpacity={deckkraft} />
+  );
+  return (
+    <svg
+      viewBox="0 0 320 180"
+      aria-hidden="true"
+      focusable="false"
+      className={className}
+      style={{ display: 'block', width: '100%', height: 'auto', ...style }}
+    >
+      <defs>
+        {/* Rahmen läuft nach unten weich aus */}
+        <linearGradient id={`${id}-aus`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0.45" stopColor="#fff" />
+          <stop offset="1" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+        <mask id={`${id}-maske`} maskUnits="userSpaceOnUse" x="0" y="0" width="320" height="180">
+          <rect width="320" height="180" fill={`url(#${id}-aus)`} />
+        </mask>
+        <radialGradient id={`${id}-schein`}>
+          <stop offset="0" style={{ stopColor: 'var(--glas-hell)', stopOpacity: 0.3 }} />
+          <stop offset="1" style={{ stopColor: 'var(--glas-hell)', stopOpacity: 0 }} />
+        </radialGradient>
+        <linearGradient id={`${id}-kachel`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0.12" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0.03" />
+        </linearGradient>
+      </defs>
+
+      <g mask={`url(#${id}-maske)`}>
+        {rahmen === 'fenster' ? (
+          <>
+            <rect x="36.5" y="14.5" width="247" height="200" rx="10" {...linie} strokeOpacity={0.22} fill="currentColor" fillOpacity={0.025} />
+            <line x1="37" y1="30.5" x2="283" y2="30.5" {...linie} strokeOpacity={0.14} />
+            <line x1="96.5" y1="31" x2="96.5" y2="180" {...linie} strokeOpacity={0.14} />
+            {balken(46, 20.5, 22, 0.24)}
+            {balken(46, 42, 38)}
+            {balken(46, 54, 30)}
+            {balken(46, 66, 34)}
+            {balken(108, 42, 52)}
+          </>
+        ) : (
+          <>
+            <rect x="118.5" y="8.5" width="83" height="200" rx="16" {...linie} strokeOpacity={0.24} fill="currentColor" fillOpacity={0.025} />
+            <rect x="148" y="16" width="24" height="4" rx="2" fill="currentColor" fillOpacity={0.24} />
+            {balken(128, 30, 34, 0.14)}
+          </>
+        )}
+      </g>
+
+      <circle cx="160" cy="98" r="68" fill={`url(#${id}-schein)`} />
+      <rect x="128" y="66" width="64" height="64" rx="17" fill={`url(#${id}-kachel)`} stroke="currentColor" strokeOpacity={0.32} strokeWidth={1.2} />
+      <rect x="133.5" y="71.5" width="53" height="53" rx="13" {...linie} strokeOpacity={0.14} />
+      <g transform="translate(140 78)">
+        <GlasIcon name={icon} size={40} />
+      </g>
+    </svg>
+  );
+}

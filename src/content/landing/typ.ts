@@ -33,7 +33,8 @@ export type Landing = {
   schmerz?: { eyebrow?: string; titel: string; punkte: string[]; antwort: string };
   /** Verlinkte Karten weit oben, z. B. auf der Vergleichsübersicht */
   wegweiser?: { eyebrow?: string; titel: string; intro?: string; karten: { titel: string; text: string; href: string; icon: IconName }[] };
-  vorteile?: { eyebrow?: string; titel: string; intro?: string; karten: { titel: string; text: string; icon: IconName }[] };
+  /** `bild: "fenster"` zeigt über jeder Karte die Fenster-Skizze mit dem Glas-Icon (z. B. Schnittstellen). */
+  vorteile?: { eyebrow?: string; titel: string; intro?: string; bild?: "fenster"; karten: { titel: string; text: string; icon: IconName }[] };
   vergleich?: {
     eyebrow?: string;
     titel: string;
