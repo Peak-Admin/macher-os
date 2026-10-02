@@ -14,6 +14,9 @@
 .ob-frage-kopf { display: flex; flex-direction: column; gap: 8px; }
 .ob-frage-kopf h1 { margin: 0; font-size: 32px; line-height: 1.2; font-weight: 700; color: var(--mm-black); }
 .ob-frage-kopf p { margin: 0; }
+/* „Keine Website? Gewerk auswählen“: darf ab 320 px umbrechen statt über den Rand zu laufen */
+.ob-ohne-website .mm-btn { white-space: normal; text-align: left; }
+.ob-ohne-website .mm-btn > svg { flex-shrink: 0; }
 .ob-navigation { display: flex; justify-content: space-between; align-items: center; gap: 12px; position: sticky; bottom: 0; padding: 16px 0; background: var(--mm-canvas); border-top: 1px solid var(--mm-border); }
 .ob-schnell { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
 /* Gewerk-Wahl: Bildkarten mit leichtem grünem Overlay; fehlt ein Foto, erscheint eine Markenfläche */
@@ -181,6 +184,8 @@
 /* Magic Setup: Website-Frage und „Wir haben deinen Betrieb gefunden“ */
 .ob-website--gross { flex-wrap: wrap; }
 .ob-website--gross > :first-child { flex: 1 1 280px; }
+/* untereinander (≤ 600 px) wären die 280 px sonst die Höhe des Felds */
+@media (max-width: 600px) { .ob-website--gross > :first-child { flex: 0 0 auto; } }
 .ob-fund { display: flex; flex-direction: column; gap: 16px; padding: 24px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); }
 .ob-fund-kopf { display: flex; align-items: center; gap: 16px; min-width: 0; }
 .ob-fund-logo { flex-shrink: 0; width: 64px; height: 64px; object-fit: contain; padding: 6px; background: #fff; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); }
