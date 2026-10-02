@@ -35,6 +35,17 @@
   --mm-radius-control: 4px;
   --mm-radius-card: 6px;
   --mm-radius-panel: 8px;
+  /* Schwebende Seitenleiste (Glas): weiche Radien nur hier */
+  --mm-radius-nav: 20px;
+  --mm-radius-nav-item: 12px;
+  --mm-glass: rgb(255 255 255 / 62%);
+  --mm-glass-strong: rgb(255 255 255 / 92%);
+  --mm-glass-border: rgb(255 255 255 / 80%);
+  --mm-glass-line: rgb(14 19 12 / 8%);
+  --mm-glass-hover: rgb(255 255 255 / 70%);
+  --mm-glass-blur: blur(24px) saturate(160%);
+  --mm-shadow-glass: 0 1px 0 rgb(255 255 255 / 90%) inset, 0 12px 32px rgb(14 19 12 / 8%), 0 1px 2px rgb(14 19 12 / 6%);
+  --mm-shadow-nav-aktiv: 0 1px 2px rgb(14 19 12 / 8%), 0 4px 12px rgb(14 19 12 / 6%);
   --mm-control-height: 44px;
   --mm-sidebar-width: 240px;
   --mm-topbar-height: 64px;
