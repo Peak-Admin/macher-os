@@ -5,6 +5,7 @@ import { datum, heute, personName } from '@core/format';
 import type { ID } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
 import { Auswahl, BeispielMarke, Button, Checkbox, Dialog, Eingabe, Filter, Fortschritt, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, ZweiSpalten, useToast } from '@ui/index';
+import { Person, Personenbild } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { unterweisungen } from '@modules/unterweisungen/daten';
 import { ART_LABEL, einarbeitungen, faelligAm, fortschritt, phase, planFuer, ueberfaellig, type Einarbeitung, type SchrittArt } from './daten';
@@ -73,6 +74,7 @@ export function EinarbeitungenSeite() {
             <ListenZeile
               key={e.id}
               to={`/betrieb/einarbeitung/${e.id}`}
+              links={<Personenbild m={m} groesse={40} />}
               titel={
                 <>
                   {personName(m)} <BeispielMarke zeigen={e.beispiel} />
@@ -210,7 +212,7 @@ export function EinarbeitungDetail() {
           </Stapel>
         }
         seite={
-          <Karte titel={m ? personName(m) : 'Mitarbeiter'} kompakt>
+          <Karte titel={m ? <Person m={m} groesse={32} /> : 'Mitarbeiter'} kompakt>
             <Stapel abstand={8}>
               <Meta>Unterweisungs-Schritte hakt Macher selbst ab, sobald {m?.vorname ?? 'der Mitarbeiter'} am Handy bestätigt.</Meta>
               {m && (

@@ -192,7 +192,7 @@ function BerichtInhaltBearbeiten({ b }: { b: Bericht }) {
           )
         }
       >
-        <ZeitenTabelle b={b} />
+        <ZeitenTabelle b={b} bilder />
       </Karte>
       <Karte titel="Material">
         <MaterialTabelle b={b} />

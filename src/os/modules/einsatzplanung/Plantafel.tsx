@@ -17,6 +17,7 @@ import { anwesenheit, geplanteStunden, kontextAusDb, restStunden, terminKonflikt
 import { offenEinzuplanen } from '../offen/daten';
 import { auftragsBalken, aufZelleVerschieben, vorbelegung } from './daten';
 import { AuftragsFehlergrenze, AuftragsZeilen, GruppenKopf } from './PlanAuftraege';
+import { Person } from '@ui/person';
 import { MitMacherVorbereiten } from '@modules/macher-fragen/MitMacher';
 import '../kalender/plan.css';
 
@@ -191,7 +192,7 @@ export function Plantafel() {
             const a = anwesenheit(m.id, tag, k);
             const liste = termineIm(k.termine, tag, tag, { mitarbeiterId: m.id });
             return (
-              <Karte key={m.id} titel={personName(m)} kompakt aktion={a.status === 'da' ? <Status ton="erfolg">Da</Status> : <Status ton={a.status === 'abwesend' ? 'achtung' : 'neutral'}>{a.text}</Status>}>
+              <Karte key={m.id} titel={<Person m={m} groesse={32} />} kompakt aktion={a.status === 'da' ? <Status ton="erfolg">Da</Status> : <Status ton={a.status === 'abwesend' ? 'achtung' : 'neutral'}>{a.text}</Status>}>
                 <Stapel abstand={8}>
                   {liste.map((t) => kachel(t, m))}
                   {!liste.length && <Meta>{a.status === 'da' ? 'Noch nichts geplant.' : 'Nicht verplanen.'}</Meta>}
@@ -254,7 +255,9 @@ export function Plantafel() {
                 const verf = verfuegbareStunden(m.id, woche, plusTage(woche, 6), k);
                 return [
                   <div key={m.id} className="pl-tafel-name">
-                    <strong>{personName(m)}</strong>
+                    <strong>
+                      <Person m={m} groesse={32} />
+                    </strong>
                     <span className="mm-meta">
                       {zahl(geplant)} von {zahl(verf)} h verplant
                     </span>

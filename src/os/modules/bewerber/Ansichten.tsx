@@ -6,6 +6,7 @@ import type { Rolle } from '@core/objects';
 import { ROLLEN, istBuero, useDarf, useIch } from '@core/session';
 import { Auswahl, BeispielMarke, Button, Eingabe, Filter, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
+import { Person } from '@ui/person';
 import { naechsteFarbe } from '@modules/mitarbeiter/team';
 import { QUELLE_LABEL, STATUS, STATUS_LABEL, STELLE_LABEL, bewerber, mailtoLink, offen, unbeantwortetTage, vorlagen, wartetZuLange, type Bewerber, type BewerberStatus } from './daten';
 import type { Ton } from '@core/modul';
@@ -240,7 +241,9 @@ export function BewerberDetail() {
             )}
             {b.status === 'zusage' && ma && (
               <Meldung ton="erfolg" titel="Eingestellt">
-                <ObjektLink bezug={{ typ: 'mitarbeiter', id: ma.id }}>{personName(ma)} ist jetzt im Team.</ObjektLink>
+                <ObjektLink bezug={{ typ: 'mitarbeiter', id: ma.id }}>
+                  <Person m={ma}>{personName(ma)} ist jetzt im Team.</Person>
+                </ObjektLink>
               </Meldung>
             )}
             {offen(b) && (

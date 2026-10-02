@@ -5,6 +5,7 @@ import { letzteAenderungen, rueckgaengig, rueckgaengigGrund } from '@core/audit'
 import { OBJEKT_LABEL, type Ereignis, type ObjektTyp } from '@core/objects';
 import { useDarf } from '@core/session';
 import { Button, Filter, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { Person } from '@ui/person';
 import { EinstellungenTabs } from './Navigation';
 import { endgueltigLoeschen, papierkorbEintraege, wiederherstellen } from './daten';
 
@@ -89,6 +90,12 @@ function objektName(e: Ereignis): string {
   return name ? `${art} ${name}` : art;
 }
 
+/** Mensch hinter einer Änderung – nur bei eigenen Änderungen, nicht bei Macher, Import oder Abgleich */
+function werMensch(e: Ereignis) {
+  if (e.quelle === 'automation' || e.quelle === 'ai' || e.quelle === 'import' || e.quelle === 'sync') return undefined;
+  return e.vonMitarbeiterId ? db.mitarbeiter.get(e.vonMitarbeiterId) : undefined;
+}
+
 function werText(e: Ereignis): string {
   if (e.quelle === 'automation' || e.quelle === 'ai') return e.vonMitarbeiterId ? `Macher für ${db.mitarbeiter.get(e.vonMitarbeiterId)?.vorname ?? 'dich'}` : 'Macher';
   if (e.quelle === 'import') return 'Import';
@@ -140,7 +147,12 @@ function LetzteAenderungen() {
               <ListenZeile
                 key={e.id}
                 titel={`${objektName(e)}: ${e.text}`}
-                untertitel={`${relativ(e.geaendertAm)}, ${uhrzeit(e.geaendertAm)} · ${werText(e)}`}
+                untertitel={
+                  <>
+                    {`${relativ(e.geaendertAm)}, ${uhrzeit(e.geaendertAm)} · `}
+                    {werMensch(e) ? <Person m={werMensch(e)} /> : werText(e)}
+                  </>
+                }
                 rechts={
                   e.rueckgaengigAm ? (
                     <Status>Zurückgenommen</Status>

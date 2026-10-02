@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '@core/db';
-import { datum, passt, personName, relativ, uhrzeit } from '@core/format';
+import { datum, passt, relativ, uhrzeit } from '@core/format';
 import type { Dokument, ID } from '@core/objects';
 import {
   Abschnitt,
@@ -28,6 +28,7 @@ import {
   type IconName,
 } from '@ui/index';
 import { AuftragAuswahl, Zeitstrahl } from '@ui/objekt';
+import { Person } from '@ui/person';
 import { groesseText } from '@modules/fotos/daten';
 import { ART_LABEL, dataUrlZuBlob, istDatei, vorschauArt } from './daten';
 import { Hochladen } from './Hochladen';
@@ -196,7 +197,12 @@ export function DateiDetail() {
                 <Schalter label="Für Kunden sichtbar" beschreibung="Erscheint im Kundenbereich des Kunden." checked={!!d.fuerKunde} onChange={(v) => db.dokumente.update(d.id, { fuerKunde: v }, { text: v ? 'Für Kunden freigegeben' : 'Für Kunden ausgeblendet' })} />
                 <Meta>
                   {datum(d.erstelltAm)}, {uhrzeit(d.erstelltAm)}
-                  {d.erstelltVon ? ` · ${personName(db.mitarbeiter.get(d.erstelltVon))}` : ''}
+                  {d.erstelltVon && (
+                    <>
+                      {' · '}
+                      <Person m={d.erstelltVon} />
+                    </>
+                  )}
                   {d.groesse ? ` · ${groesseText(d.groesse)}` : ''}
                 </Meta>
                 {!!d.tags?.length && <Meta>Markiert: {d.tags.join(', ')}</Meta>}
