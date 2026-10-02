@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Agent-Worktrees
 /.claude/worktrees/
+
+# Service Worker (erzeugt aus src/os/sw.ts)
+/public/os/sw.js

@@ -4,6 +4,7 @@
  * Jeder Betrieb hat getrennte Daten (siehe `@core/betriebe`); ein Wechsel lädt die Seite neu.
  */
 import { useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { appPfad } from '@core/basis';
 import { aktiverBetrieb, betriebAnlegen, betriebMerken, betriebWaehlen, useBetriebe, type BetriebEintrag } from '@core/betriebe';
@@ -118,7 +119,9 @@ export function BetriebWechsler({ kompakt }: { kompakt?: boolean }) {
         <Icon name="auswahl" size={18} className="mm-wechsler-pfeil" />
       </button>
 
-      {offen && (
+      {offen &&
+        // im body: die Seitenleiste ist ein eigener Stapelkontext (Glas) und legte das Panel sonst unter den Inhalt
+        createPortal(
         <>
           <div className="mm-schleier-unsichtbar" onClick={() => setOffen(false)} />
           <div id={panelId} className="mm-wechsler-panel" style={lage} role="dialog" aria-label="Betrieb wechseln">
@@ -191,8 +194,9 @@ export function BetriebWechsler({ kompakt }: { kompakt?: boolean }) {
               </button>
             </div>
           </div>
-        </>
-      )}
+        </>,
+          document.body,
+        )}
     </div>
   );
 }
