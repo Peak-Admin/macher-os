@@ -7,10 +7,10 @@
 /* Sidebar */
 /* Schwebende Leiste nach Peak One: Abstand zum Fensterrand, runde Ecken, viel Luft – aber deckend, ohne Glas */
 .mm-sidebar {
-  position: sticky; top: 8px; align-self: flex-start; height: calc(100vh - 16px); height: calc(100dvh - 16px); width: var(--mm-sidebar-width); flex-shrink: 0;
-  display: flex; flex-direction: column; gap: 16px; margin: 8px 0 8px 8px; padding: 16px 12px 12px;
-  background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel);
-  box-shadow: var(--mm-shadow-card); overflow-y: auto; scrollbar-width: thin;
+  position: sticky; top: 16px; align-self: flex-start; height: calc(100vh - 32px); height: calc(100dvh - 32px); width: var(--mm-sidebar-width); flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 16px; margin: 16px 0 16px 16px; padding: 20px 14px 14px;
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-leiste);
+  box-shadow: var(--mm-shadow-lift); overflow-y: auto; scrollbar-width: thin;
 }
 .mm-logo { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 8px; color: var(--mm-black); text-decoration: none; font: 500 20px/1 var(--mm-font); }
 .mm-logo strong { font-weight: 900; }
@@ -49,7 +49,7 @@
 .mm-nav-favorit--an { color: var(--mm-brand-ink); background: var(--mm-brand-soft); font-weight: 650; }
 .mm-nav-leer { padding: 0 8px; font-size: 14px; line-height: 20px; color: var(--mm-text); }
 .mm-nav-leer a { color: var(--mm-link); }
-.mm-menue--oben { top: auto; bottom: calc(100% + 8px); left: 0; right: auto; }
+.mm-menue.mm-menue--oben { top: auto; bottom: calc(100% + 8px); left: 0; right: auto; max-height: calc(100vh - 120px); overflow-y: auto; }
 
 /* Ein- und ausklappbar: eingeklappt bleibt eine schmale Leiste nur mit Icons */
 .mm-sidebar { transition: width var(--mm-motion-fast) ease-out; }
@@ -74,7 +74,7 @@
 /* Profilmenü neben die schmale Leiste legen, sonst schneidet die Leiste es ab */
 .mm-app--eingeklappt .mm-nav-haupt { position: relative; }
 .mm-app--eingeklappt .mm-nav-zahl { position: absolute; top: 2px; right: 6px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
-.mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 88px; bottom: 16px; }
+.mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 104px; bottom: 16px; }
 /* Schmale Leiste: eine ruhige 48-px-Spalte, gleichmäßige Abstände; oben der Ausklapp-Knopf statt Logo */
 .mm-app--eingeklappt .mm-sidebar { gap: 12px; padding-top: 12px; }
 .mm-app--eingeklappt .mm-leiste-kopf .mm-logo { display: none; }
@@ -155,6 +155,23 @@
   color: var(--mm-text); font: inherit; cursor: pointer; text-align: left; transition: border-color var(--mm-motion-fast) ease-out;
 }
 .mm-leiste-suche:hover { border-color: var(--mm-brand); }
+.mm-leiste-suchzeile { display: flex; gap: 8px; align-items: stretch; }
+.mm-leiste-suchzeile .mm-leiste-suche { flex: 1; min-width: 0; border-color: var(--mm-border); box-shadow: var(--mm-shadow-lift); }
+.mm-leiste-suche-text { flex: 1; }
+.mm-leiste-kbd { padding: 2px 6px; border: 1px solid var(--mm-border); border-radius: 6px; background: var(--mm-surface-subtle); color: var(--mm-text-secondary); font: 600 12px/16px var(--mm-font); }
+.mm-leiste-ki {
+  display: grid; place-items: center; flex-shrink: 0; width: 48px; min-height: 48px; padding: 0; border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-control); background: var(--mm-surface); box-shadow: var(--mm-shadow-lift); cursor: pointer;
+  transition: transform var(--mm-motion-fast) ease-out, box-shadow var(--mm-motion-fast) ease-out;
+}
+.mm-leiste-ki:hover { box-shadow: var(--mm-shadow-lift-hover); }
+@media (prefers-reduced-motion: no-preference) { .mm-leiste-ki:hover .mm-ki-kugel { transform: scale(1.06); } .mm-ki-kugel { transition: transform var(--mm-motion-panel) ease-out; } }
+.mm-leiste-ki:focus-visible, .mm-leiste-suche:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }
+.mm-app--eingeklappt .mm-leiste-suchzeile { flex-direction: column; align-items: center; gap: 4px; }
+/* schmale Leiste: Suche und KI wie die übrigen Einträge – 48 px, ohne Rahmen und Schatten */
+.mm-app--eingeklappt .mm-leiste-suchzeile :is(.mm-leiste-suche, .mm-leiste-ki) { flex: none; width: 48px; min-height: 48px; padding: 0; justify-content: center; border-color: transparent; background: none; box-shadow: none; }
+.mm-app--eingeklappt .mm-leiste-suchzeile :is(.mm-leiste-suche, .mm-leiste-ki):hover { background: var(--mm-hover); }
+.mm-app--eingeklappt .mm-leiste-kbd { display: none; }
 .mm-leiste-suche-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-leiste-zeile {
   display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 12px; border: 0;
@@ -171,7 +188,7 @@
 .mm-menue > button, .mm-menue > a { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px; border: 0; background: none; border-radius: var(--mm-radius-control); cursor: pointer; text-align: left; font-weight: 500; color: inherit; text-decoration: none; }
 .mm-menue > button:hover, .mm-menue > a:hover { background: var(--mm-hover); }
 .mm-schleier-unsichtbar { position: fixed; inset: 0; z-index: 25; }
-.mm-inhalt { flex: 1; min-width: 0; padding: 32px; outline: none; background: var(--mm-canvas); }
+.mm-inhalt { flex: 1; min-width: 0; padding: 40px 32px 32px; outline: none; background: var(--mm-canvas); }
 
 /* Mobil: untere Navigation mit genau vier Bereichen, kein Plus, kein Hamburger */
 .mm-bottomnav, .mm-kopf-mobil { display: none; }
@@ -353,3 +370,8 @@
 .mm-app--eingeklappt .mm-sidebar .mm-wechsler-knopf { justify-content: center; width: 48px; min-height: 48px; margin-inline: auto; padding: 0; border-color: transparent; background: none; }
 .mm-app--eingeklappt .mm-sidebar .mm-wechsler-knopf:hover { background: var(--mm-hover); }
 .mm-app--eingeklappt .mm-sidebar .mm-wechsler-pfeil { display: none; }
+
+/* Profilmenü: „Plan wählen“ nur in der Testphase – als helle Grünfläche oben im Menü */
+.mm-menue > .mm-menue-titel:first-child { border-top: 0; margin-top: 0; }
+.mm-menue .mm-menue-upgrade { width: calc(100% - 8px); margin: 4px 4px 0; border-radius: var(--mm-radius-control); background: var(--mm-brand-soft); color: var(--mm-brand-ink); font-weight: 600; }
+.mm-menue .mm-menue-upgrade:hover { background: var(--mm-success-border); }

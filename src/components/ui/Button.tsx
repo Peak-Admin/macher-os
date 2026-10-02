@@ -45,7 +45,7 @@ export function ButtonLink({
   className?: string;
 }) {
   // Alle Varianten gleich hoch (mind. 48 px), damit Primär- und Zweitbutton nebeneinander bündig stehen.
-  const sizes = { sm: "min-h-11 px-4", md: "min-h-12 px-5 sm:px-6", lg: "min-h-14 px-5 sm:px-8" };
+  const sizes = { sm: "min-h-12 px-4", md: "min-h-12 px-5 sm:px-6", lg: "min-h-14 px-5 sm:px-8" };
   const primaer = variant === "primary" || variant === "onDark";
   // Primärbutton bringt Schriftgröße, Radius, Fläche und Übergänge selbst mit (btn-primaer).
   const schrift = primaer ? "" : { sm: "text-base font-semibold", md: "text-base font-semibold", lg: "text-lg font-semibold" }[size];

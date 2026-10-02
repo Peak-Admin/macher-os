@@ -20,7 +20,7 @@ export function FunktionKarte({ slug, mitUnterpunkten = false }: { slug: Funktio
         />
       </h3>
       {inhalt.aufAnfrage && (
-        <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-md bg-signal-soft px-2.5 py-0.5 text-xs font-semibold text-signal-dark">
+        <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-md bg-signal-soft px-2.5 py-0.5 text-sm font-semibold text-signal-dark">
           <Icon name="chat" className="size-3.5" /> Auf Anfrage
         </p>
       )}
@@ -28,7 +28,7 @@ export function FunktionKarte({ slug, mitUnterpunkten = false }: { slug: Funktio
       {mitUnterpunkten && inhalt.enthalten && (
         <ul className="mt-4 flex flex-wrap gap-1.5">
           {inhalt.enthalten.map((e) => (
-            <li key={e} className="rounded-md bg-sand px-2.5 py-0.5 text-xs font-semibold text-ink-soft">
+            <li key={e} className="rounded-md bg-sand px-2.5 py-0.5 text-sm font-semibold text-ink-soft">
               {e}
             </li>
           ))}

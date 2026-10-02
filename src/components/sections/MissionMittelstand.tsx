@@ -43,7 +43,7 @@ export function PersonenKarte({ className = "" }: { className?: string }) {
         className="object-contain object-bottom"
         ersatz={<PorträtErsatz />}
       />
-      <figcaption className="absolute inset-x-0 bottom-0 bg-ink/80 px-5 py-3 backdrop-blur-sm">
+      <figcaption className="absolute inset-x-0 bottom-0 bg-ink/90 px-5 py-3">
         <span className="block font-display text-lg font-medium text-white">{person.name}</span>
         <span className="block text-sm text-white/75">{person.rolle}</span>
       </figcaption>

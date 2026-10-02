@@ -107,13 +107,17 @@ export function WartungUebersicht() {
                   rechts={
                     auftrag ? (
                       <Zeile abstand={8}>
+                        {ueber && <Status ton="achtung">Überfällig</Status>}
                         <Status ton="aktiv">{`Auftrag ${auftrag.nummer}`}</Status>
                         {p && <Button klein variante="tertiaer" to={p}>Öffnen</Button>}
                       </Zeile>
                     ) : (
-                      <Button klein variante={ueber ? 'primaer' : 'sekundaer'} onClick={() => einzeln(a)}>
-                        Auftrag anlegen
-                      </Button>
+                      <Zeile abstand={8}>
+                        {ueber && <Status ton="achtung">Überfällig</Status>}
+                        <Button klein variante={ueber ? 'primaer' : 'sekundaer'} onClick={() => einzeln(a)}>
+                          Auftrag anlegen
+                        </Button>
+                      </Zeile>
                     )
                   }
                 />

@@ -116,7 +116,7 @@ export function AuftragAkte() {
       status={
         <>
           <Status ton={phaseTon(a.phase)}>{phaseLabel(a.phase)}</Status>
-          {a.dringend && <Status ton="achtung">Dringend</Status>}
+          {a.dringend && <Status ton="gefahr">Dringend</Status>}
           <BeispielMarke zeigen={a.beispiel} />
         </>
       }

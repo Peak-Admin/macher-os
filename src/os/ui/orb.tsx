@@ -42,3 +42,8 @@ export function MacherArbeitet({ zustand = 'arbeitet', text, groesse = 20, class
 export function kiGlow(an: boolean | undefined): string | undefined {
   return an ? 'mm-ki-glow' : undefined;
 }
+
+/** Die KI-Kugel (Pink → Orange) als ruhiges Zeichen für Macher, die KI – ohne Animation. */
+export function KiKugel({ groesse = 24, className }: { groesse?: number; className?: string }) {
+  return <span className={`mm-ki-kugel${className ? ` ${className}` : ''}`} style={{ '--kugel': `${groesse}px` } as CSSProperties} aria-hidden="true" />;
+}

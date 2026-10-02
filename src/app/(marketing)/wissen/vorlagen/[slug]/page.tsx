@@ -85,7 +85,7 @@ export default async function VorlagePage({ params }: Props) {
         <Container className="print:max-w-none print:px-0">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3 print:hidden">
             <h2 className="font-display text-2xl font-extrabold tracking-tight">Vorschau</h2>
-            <DruckenButton label="Drucken" className="h-11! px-5!" />
+            <DruckenButton label="Drucken" className="h-12! px-5!" />
           </div>
           <VorlageVorschau vorlage={v} />
         </Container>
@@ -149,7 +149,7 @@ export default async function VorlagePage({ params }: Props) {
                   href={vorlageHref(x.slug)}
                   className="group flex h-full flex-col rounded-lg border border-line bg-paper p-6 transition hover:border-ink/30"
                 >
-                  <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-moss">{x.art}</span>
+                  <span className="text-sm font-semibold font-tagline uppercase tracking-wider text-moss">{x.art}</span>
                   <span className="mt-2 font-display text-lg font-bold group-hover:text-signal-dark">{x.titel}</span>
                   <span className="mt-1 text-sm text-muted">{x.kurz}</span>
                 </Link>
@@ -161,7 +161,7 @@ export default async function VorlagePage({ params }: Props) {
                   href={blogHref(a.slug)}
                   className="group flex h-full flex-col rounded-lg border border-line bg-paper p-6 transition hover:border-ink/30"
                 >
-                  <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-sky">Artikel</span>
+                  <span className="text-sm font-semibold font-tagline uppercase tracking-wider text-sky">Artikel</span>
                   <span className="mt-2 font-display text-lg font-bold group-hover:text-signal-dark">{a.titel}</span>
                 </Link>
               </li>

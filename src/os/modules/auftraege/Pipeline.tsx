@@ -196,7 +196,7 @@ function AuftragKarte({ z }: { z: PZeile }) {
 function Merkmale({ z }: { z: PZeile }) {
   return (
     <>
-      {z.a.dringend && <Status ton="achtung">Dringend</Status>}
+      {z.a.dringend && <Status ton="gefahr">Dringend</Status>}
       {z.naechsterTermin ? (
         <Status ton="aktiv">{datumKurz(z.naechsterTermin)}</Status>
       ) : z.a.phase === 'beauftragt' ? (

@@ -36,6 +36,15 @@ export const PHASE_DARSTELLUNG: Record<Phase, { icon: string; gruppe: string; to
 /** Optionen für ein Phasen-Auswahlfeld: gruppiert, mit Icon */
 export const phaseOptionen = (phasen: Phase[]) => phasen.map((p) => ({ wert: p, label: phaseLabel(p), ...PHASE_DARSTELLUNG[p] }));
 
+/** Ein einfaches Strich-Icon je Auftragsart (keine Glas-Icons in Listen) – fünf Arten, fünf Icons */
+export const ART_ICON: Record<Auftragsart, string> = {
+  kundendienst: 'werkzeug',
+  projekt: 'betrieb',
+  wartung: 'wiederholen',
+  reklamation: 'achtung',
+  werkstatt: 'lager',
+};
+
 export const phaseLabel = (p: Phase) => PHASEN.find((x) => x.id === p)?.label ?? p;
 export const phaseIndex = (p: Phase) => PHASEN_REIHE.indexOf(p);
 export const istOffen = (a: Pick<Auftrag, 'phase'>) => a.phase !== 'erledigt' && a.phase !== 'verloren';

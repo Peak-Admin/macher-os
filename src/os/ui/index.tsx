@@ -34,8 +34,8 @@ export type { IconName } from './icons';
 export * from './eingaben';
 export * from './druck';
 export * from './kunde';
-export { MacherOrb, MacherArbeitet, kiGlow, orbFuer, orbText, ORB_ZUSTAENDE, type OrbZustand } from './orb';
-import { MacherOrb, kiGlow } from './orb';
+export { MacherOrb, MacherArbeitet, KiKugel, kiGlow, orbFuer, orbText, ORB_ZUSTAENDE, type OrbZustand } from './orb';
+import { KiKugel, MacherOrb, kiGlow } from './orb';
 import type { OrbZustand } from './orb-zustand';
 
 const cx = (...k: (string | false | undefined | null)[]) => k.filter(Boolean).join(' ');
@@ -612,10 +612,24 @@ export function AuswahlKarten<T extends string>({
   );
 }
 
-export function Suchfeld({ wert, onChange, platzhalter = 'Suchen …', autoFocus }: { wert: string; onChange: (v: string) => void; platzhalter?: string; autoFocus?: boolean }) {
+/**
+ * Typ-Icon in Listen: ein einfaches Strich-Icon auf ruhiger Kachel (36 px). Zeigt die Art eines Objekts
+ * (z. B. Auftragsart) – nie Glas-Icons in Listen. `label` wird für Screenreader vorgelesen.
+ */
+export function TypIcon({ name, label }: { name: IconName; label: string }) {
   return (
-    <div className="mm-suchfeld">
-      <Icon name="suche" />
+    <span className="mm-typicon" title={label}>
+      <Icon name={name} size={18} />
+      <span className="sr-only">{label}: </span>
+    </span>
+  );
+}
+
+/** `ki`: die KI-Leiste (Verlaufsrand und KI-Kugel) – nur für „Suchen oder fragen“ */
+export function Suchfeld({ wert, onChange, platzhalter = 'Suchen …', autoFocus, ki }: { wert: string; onChange: (v: string) => void; platzhalter?: string; autoFocus?: boolean; ki?: boolean }) {
+  return (
+    <div className={cx('mm-suchfeld', ki && 'mm-suchfeld--ki')}>
+      {ki ? <KiKugel groesse={24} /> : <Icon name="suche" />}
       <input
         type="search"
         className="mm-input"

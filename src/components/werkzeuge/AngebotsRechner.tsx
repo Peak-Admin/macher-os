@@ -176,13 +176,13 @@ export function AngebotsRechner() {
                           value={z.bezeichnung}
                           maxLength={80}
                           onChange={(e) => aendern(z.id, { bezeichnung: e.target.value })}
-                          className="h-10 w-full rounded-lg bg-white px-2.5 font-semibold text-ink ring-1 ring-inset ring-line outline-none focus:ring-2 focus:ring-ink"
+                          className="feld px-2.5 font-semibold"
                         />
                       </div>
                       <button
                         type="button"
                         onClick={() => entfernen(z)}
-                        className="col-start-2 row-start-1 inline-flex h-10 items-center justify-center gap-1.5 justify-self-end rounded-lg px-3 text-sm font-semibold text-muted ring-1 ring-inset ring-line hover:bg-white hover:text-ink sm:col-start-auto sm:row-start-auto print:hidden"
+                        className="col-start-2 row-start-1 inline-flex min-h-12 items-center justify-center gap-1.5 justify-self-end rounded-lg bg-white px-3 font-semibold text-signal-dark ring-1 ring-inset ring-line-dark hover:bg-signal-soft sm:col-start-auto sm:row-start-auto print:hidden"
                       >
                         <Icon name="x" className="size-4" />
                         <span className="sr-only">Position {i + 1} </span>Entfernen
@@ -219,8 +219,8 @@ export function AngebotsRechner() {
                         />
                       )}
                       <div className="col-span-2 flex flex-col justify-end sm:col-span-1">
-                        <p className="mb-1.5 text-sm font-semibold">Gesamt</p>
-                        <p className="flex h-10 items-center justify-end rounded-lg bg-white px-2.5 font-bold tabular-nums ring-1 ring-inset ring-line">
+                        <p className="feld-label">Gesamt</p>
+                        <p className="flex h-12 items-center justify-end rounded-lg bg-white px-2.5 font-bold tabular-nums ring-1 ring-inset ring-line">
                           {euro(r?.positionen[i]?.gesamt)}
                         </p>
                       </div>
@@ -236,7 +236,7 @@ export function AngebotsRechner() {
                   type="button"
                   disabled={zeilen.length >= MAX_POSITIONEN}
                   onClick={() => hinzufuegen(k)}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-white px-3 text-sm font-semibold ring-1 ring-inset ring-line hover:ring-ink/40 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="btn-zweit gap-1.5 px-4"
                 >
                   <Icon name="plus" className="size-4 text-signal-dark" /> {positionsTypen[k].titel}
                 </button>

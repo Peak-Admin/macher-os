@@ -4,7 +4,7 @@ import { useOverlay } from '@core/overlay';
 import { Button, Dialog, Seite } from '@ui/index';
 import { beispielBenachrichtigungen, benachrichtigenAutomation } from './daten';
 import { EinstellungenSeite } from './Einstellungen';
-import { BenachrichtigungsListe } from './Liste';
+import { InboxListe } from './Inbox';
 
 /** Overlay „Benachrichtigungen“ – in der Seitenleiste unter „Suchen oder fragen“ */
 function GlockenOverlay() {
@@ -27,7 +27,7 @@ function GlockenOverlay() {
         </>
       }
     >
-      <BenachrichtigungsListe onNavigiert={schliessen} />
+      <InboxListe onNavigiert={schliessen} />
     </Dialog>
   );
 }
@@ -36,14 +36,14 @@ function Seitenansicht() {
   return (
     <Seite
       titel="Benachrichtigungen"
-      untertitel="Nur das, worauf du reagieren solltest."
+      untertitel="Was gerade deine Aufmerksamkeit braucht. Erledigtes verschwindet von selbst."
       aktion={
         <Button variante="sekundaer" icon="einstellungen" to="/macher/benachrichtigungen/einstellungen">
           Takte & Ruhezeiten
         </Button>
       }
     >
-      <BenachrichtigungsListe />
+      <InboxListe />
     </Seite>
   );
 }
@@ -52,7 +52,7 @@ export default defineModul({
   id: 'benachrichtigungen',
   titel: 'Benachrichtigungen',
   bereich: 'macher',
-  beschreibung: 'Informiert nur über relevante Änderungen, Termine und Probleme – mit festen Takten am Morgen und am Nachmittag.',
+  beschreibung: 'Deine Aufmerksamkeit in einer Liste: Jetzt, Aktion nötig, Zur Kenntnis. Erledigtes verschwindet von selbst, Infos verfallen.',
   icon: 'glocke',
   gewicht: 55,
   navigation: 'versteckt',

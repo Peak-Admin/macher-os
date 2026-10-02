@@ -40,6 +40,6 @@ describe('Terminbuchung für echte Kunden', () => {
     expect(buchungEingabe(e, jetzt)).toMatch(/Anfrage/);
     expect(db.termine.all()).toHaveLength(0);
     expect(db.auftraege.all()[0].wunschtermin).toContain('war nicht mehr frei');
-    expect(db.benachrichtigungen.all().some((b) => b.wichtig && b.titel.includes('Anna Berg'))).toBe(true);
+    expect(db.benachrichtigungen.all().some((b) => b.stufe === 'aktion' && b.titel.includes('Anna Berg'))).toBe(true);
   });
 });

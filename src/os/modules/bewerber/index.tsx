@@ -63,7 +63,7 @@ export default defineModul({
           const b = e.objekt as Bewerber;
           if (b.beispiel) return;
           const chefs = db.mitarbeiter.where((m) => m.aktiv && m.rolle === 'chef' && m.id !== b.erstelltVon);
-          for (const c of chefs) benachrichtigen(`Neue Bewerbung: ${b.vorname} ${b.nachname}`, { text: STELLE_LABEL[b.stelle], fuer: c.id });
+          for (const c of chefs) benachrichtigen(`Neue Bewerbung: ${b.vorname} ${b.nachname}`, { text: STELLE_LABEL[b.stelle], fuer: c.id, art: 'bewerbung.neu', grund: 'Du entscheidest über Bewerbungen.' });
           if (chefs.length) erledigt('bewerber.eingang', `Chef über Bewerbung von ${b.vorname} informiert`);
         }),
     },

@@ -51,7 +51,7 @@ export function BlogFilter({
   }, [artikel, thema, query]);
 
   const chip = (aktiv: boolean) =>
-    `inline-flex min-h-11 items-center rounded-md px-3 py-1.5 text-base font-semibold transition ${
+    `inline-flex min-h-12 items-center rounded-md px-3 py-1.5 text-base font-semibold transition ${
       aktiv ? "bg-signal-soft text-signal-dark ring-1 ring-inset ring-primary" : "bg-white text-ink ring-1 ring-inset ring-line-dark hover:bg-signal-soft"
     }`;
 
@@ -70,7 +70,7 @@ export function BlogFilter({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Artikel durchsuchen"
             autoComplete="off"
-            className="h-11 w-full rounded-lg border border-line bg-white pl-11 pr-3 outline-none placeholder:text-muted focus:border-ink/40 focus:ring-2 focus:ring-signal/40"
+            className="feld pl-11"
           />
         </div>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Nach Thema filtern">
@@ -117,7 +117,7 @@ export function BlogFilter({
                 href={a.href}
                 className="group flex h-full flex-col rounded-lg border border-line bg-white p-6 transition hover:-translate-y-0.5 hover:border-ink/30 hover:shadow-lg hover:shadow-ink/5"
               >
-                <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold font-tagline uppercase tracking-wider text-muted">
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm font-semibold text-muted">
                   <span>{a.themenText.join(" · ")}</span>
                 </div>
                 <h3 className="mt-2 font-display text-xl font-bold leading-snug text-balance group-hover:text-signal-dark">

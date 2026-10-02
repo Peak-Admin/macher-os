@@ -24,7 +24,7 @@
 .mm-home-widget {
   display: flex; flex-direction: column; gap: 16px; height: 100%;
   padding: 24px; background: var(--mm-surface); border: 1px solid var(--mm-border);
-  border-radius: var(--mm-radius-card);
+  border-radius: var(--mm-radius-card); box-shadow: var(--mm-shadow-lift);
 }
 .mm-home-widget--einsatz { padding: 0; border: 0; background: none; box-shadow: none; }
 .mm-home-widget-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -294,3 +294,44 @@
 .mm-home-kontakt-team { position: relative; margin: 0 0 4px; overflow: hidden; border-radius: var(--mm-radius-card); aspect-ratio: 16 / 7; background: var(--mm-surface-subtle); }
 .mm-home-kontakt-team img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .mm-home-kontakt-team figcaption { position: absolute; left: 8px; bottom: 8px; padding: 2px 8px; border-radius: var(--mm-radius-control); background: rgb(16 44 33 / 80%); color: var(--mm-on-dark); font-size: 14px; font-weight: 600; }
+
+/* ------------------------------------------------ Bento: Flächen nach Bedeutung (Oktober 2026, nach Peak One)
+   Nicht jede Box gleich: die wichtigste Box (dein nächster Schritt) ist grün und groß, Begleitboxen ruhig getönt,
+   Arbeitslisten bleiben weiß. Ein Grün für die Hauptfläche; Text darauf weiß (Kontrast 6,5:1). */
+.mm-home-widget--naechster-schritt {
+  position: relative; overflow: hidden; color: var(--mm-on-dark); border-color: var(--mm-brand-active); border-radius: var(--mm-radius-panel);
+  background:
+    radial-gradient(70% 90% at 100% 0%, rgb(105 175 68 / 28%), transparent 65%),
+    linear-gradient(155deg, var(--mm-brand) 0%, var(--mm-brand-hover) 60%, var(--mm-forest) 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 18%), 0 2px 4px rgb(16 44 33 / 10%), 0 24px 48px -24px rgb(16 44 33 / 55%);
+}
+.mm-home-widget--naechster-schritt :is(.mm-home-widget-titel, .mm-home-naechster-titel, .mm-home-setup-schritte .mm-home-naechster-titel) { color: var(--mm-on-dark); }
+.mm-home-widget--naechster-schritt :is(p, .mm-meta, .mm-home-schritte li, .mm-home-schritte li.erledigt) { color: var(--mm-on-dark-muted); }
+.mm-home-widget--naechster-schritt .mm-home-schritte li.aktiv { color: var(--mm-on-dark); }
+.mm-home-widget--naechster-schritt .mm-home-haken { border-color: rgb(255 255 255 / 55%); }
+.mm-home-widget--naechster-schritt .mm-home-haken--an { border-color: var(--mm-on-dark); background: var(--mm-on-dark); color: var(--mm-brand-ink); }
+.mm-home-widget--naechster-schritt .mm-home-schritte li.aktiv .mm-home-haken { border-color: var(--mm-on-dark); background: var(--mm-brand-accent); box-shadow: inset 0 0 0 3px var(--mm-brand); }
+.mm-home-widget--naechster-schritt .mm-home-fortschritt-balken { background: rgb(255 255 255 / 20%); }
+.mm-home-widget--naechster-schritt .mm-home-fortschritt-balken > span { background: var(--mm-brand-accent); }
+.mm-home-widget--naechster-schritt .mm-home-kachel { background: rgb(255 255 255 / 92%); box-shadow: 0 8px 20px -10px rgb(0 0 0 / 45%); }
+.mm-home-widget--naechster-schritt .mm-home-naechster-aktion .mm-btn--primaer { background: var(--mm-surface); color: var(--mm-brand-ink); box-shadow: 0 8px 20px -10px rgb(0 0 0 / 50%); }
+.mm-home-widget--naechster-schritt .mm-home-naechster-aktion .mm-btn--primaer:hover { background: var(--mm-brand-soft); }
+.mm-home-widget--naechster-schritt :is(.mm-btn--tertiaer, .mm-btn--sekundaer, .mm-home-textlink, .mm-home-setup-aus) { color: var(--mm-on-dark); background: transparent; border-color: rgb(255 255 255 / 55%); }
+.mm-home-widget--naechster-schritt :is(.mm-btn--tertiaer, .mm-btn--sekundaer):hover { background: rgb(255 255 255 / 12%); }
+.mm-home-widget--naechster-schritt .mm-home-danach { border-top-color: rgb(255 255 255 / 20%); }
+.mm-home-widget--naechster-schritt .mm-home-danach a { color: var(--mm-on-dark); }
+.mm-home-widget--naechster-schritt .mm-home-danach a:hover { background: rgb(255 255 255 / 10%); }
+.mm-home-widget--naechster-schritt .mm-home-danach a > svg { color: var(--mm-brand-accent); }
+.mm-home-widget--naechster-schritt :is(a, button):focus-visible { outline-color: var(--mm-focus-on-dark); }
+/* Die weiße „Jetzt dran“-Karte liegt als aufgelegtes Blatt auf der grünen Fläche */
+.mm-home-widget--naechster-schritt .mm-home-setup-aktiv { color: var(--mm-text); background: var(--mm-surface); border-color: transparent; box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 20px 40px -20px rgb(0 0 0 / 50%); }
+.mm-home-widget--naechster-schritt .mm-home-setup-aktiv :is(p, .mm-meta) { color: var(--mm-text-secondary); }
+.mm-home-widget--naechster-schritt .mm-home-setup-aktiv .mm-home-setup-titel { color: var(--mm-black); }
+.mm-home-widget--naechster-schritt .mm-fenster { background: var(--mm-surface); }
+
+/* Begleiter: warmes Beige (Gegenfarbe der Website) */
+.mm-home-widget--ansprechpartner { background: #f4efe6; border-color: #e6dccb; }
+/* Neu bei Macher: helle Grünfläche */
+.mm-home-widget--neu { background: var(--mm-brand-soft); border-color: var(--mm-success-border); }
+/* Dein Tag (Monteur): dunkles Waldgrün wäre zu laut neben dem grünen Schritt – ruhiges Beige-Grau */
+.mm-home-widget--dein-tag { background: var(--mm-surface-subtle); }

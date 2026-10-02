@@ -88,7 +88,10 @@ export const TELEFON_AKTIONEN: AktionDef<never>[] = [
         text: [wer, f.rueckrufnummer || n.anruf.nummer, f.adresse, n.anruf.notfallGrund].filter(Boolean).join(' · '),
         bezug: anrufBezug(n),
         fuer: ma?.id,
-        wichtig: true,
+        art: 'anruf.notfall',
+        grund: 'Du hast Bereitschaft.',
+        dringend: true,
+        quelleId: `notfall:${n.id}`,
       });
       emit({
         typ: 'anruf.notfall_weitergeleitet',

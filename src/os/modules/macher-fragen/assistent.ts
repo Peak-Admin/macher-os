@@ -193,7 +193,7 @@ function offeneAnfragen(k: Kontext): Antwort {
       titel: `${a.titel} · ${db.kunden.get(a.kundeId)?.name ?? 'Kunde'}`,
       untertitel: [`eingegangen ${relativ(a.erstelltAm)}`, a.wunschtermin ? `Wunsch: ${a.wunschtermin}` : undefined].filter(Boolean).join(' · '),
       pfad: pfadZu({ typ: 'auftraege', id: a.id }),
-      status: a.dringend ? { ton: 'achtung', text: 'Dringend' } : undefined,
+      status: a.dringend ? { ton: 'gefahr', text: 'Dringend' } : undefined,
     })),
     grundlage: `Aufträge in Phase „Anfrage“ · ${stand(k)}`,
   };

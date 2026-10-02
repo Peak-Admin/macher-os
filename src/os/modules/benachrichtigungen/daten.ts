@@ -1,76 +1,22 @@
 /**
- * Benachrichtigungen: sparsam. Nur bei Ereignissen, auf die jemand reagieren muss –
- * neue Anfrage, Kundennachricht, Abwesenheit, Angebot angenommen, Zahlung eingegangen,
- * neue Aufgabe für dich. Nicht bei jeder Änderung.
+ * Benachrichtigungen: Ereignis → Meldung. Hier steht nur, WER bei WELCHEM Ereignis einen echten Grund hat
+ * (Verantwortung, Zuständigkeit, Recht). Stufe, Lebensdauer, Auflösung durch den Zustand, Deduplizierung und Push
+ * regelt zentral `@core/aufmerksamkeit` – nicht diese Datei und keine Komponente.
+ *
+ * Bewusst KEINE Meldung bei: jeder Feldänderung, eigenen Aktionen, Beispieldaten.
  */
 import { db } from '@core/db';
 import { on, type DbEvent } from '@core/events';
 import { datum, euro, personName } from '@core/format';
+import { aufgabeEinstufen, kontext, setzePushVersand } from '@core/aufmerksamkeit';
 import { benachrichtigen } from '@core/macher';
-import type { Abwesenheit, Angebot, Aufgabe, Auftrag, Benachrichtigung, Bezug, ID, Mitarbeiter, Nachricht, Zahlung } from '@core/objects';
+import type { Abwesenheit, Angebot, Aufgabe, Auftrag, Bezug, ID, Mitarbeiter, Nachricht, Zahlung } from '@core/objects';
 import { darf } from '@core/session';
 import { appPfad } from '@core/basis';
 import { pfadZu, type Automation } from '@core/modul';
 import { pushMitRuhezeit } from '@modules/takte/browser';
 
 export const REGEL_ID = 'macher.benachrichtigen';
-
-/** Was sieht dieser Mitarbeiter? Persönliche + allgemeine (ohne Empfänger) */
-export function fuerMich(liste: Benachrichtigung[], ichId: ID | undefined): Benachrichtigung[] {
-  return liste
-    .filter((b) => !b.fuerMitarbeiterId || b.fuerMitarbeiterId === ichId)
-    .sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm));
-}
-
-export function alleGelesen(liste: Benachrichtigung[]) {
-  for (const b of liste) if (!b.gelesen) db.benachrichtigungen.update(b.id, { gelesen: true }, { leise: true });
-}
-
-// ------------------------------------------------------------------ Posteingang & Archiv (wie Notion)
-
-export type Ablage = 'posteingang' | 'archiv';
-
-/** Einträge zum selben Objekt erscheinen als ein Eintrag mit Zähler */
-export interface MeldungsGruppe {
-  schluessel: string;
-  /** neuester Eintrag – liefert Titel, Text, Zeit und Ziel */
-  neueste: Benachrichtigung;
-  eintraege: Benachrichtigung[];
-  ungelesen: boolean;
-  wichtig: boolean;
-}
-
-/**
- * Posteingang oder Archiv, gruppiert nach Objekt (`bezug`), neueste Gruppe zuerst.
- * Einträge ohne Objekt stehen für sich. `ungelesenIds`: was beim Öffnen noch neu war – wird angezeigt,
- * obwohl es inzwischen als gelesen gespeichert ist.
- */
-export function meldungsGruppen(liste: Benachrichtigung[], ablage: Ablage, ungelesenIds?: ReadonlySet<ID>): MeldungsGruppe[] {
-  const gruppen = new Map<string, MeldungsGruppe>();
-  const sortiert = [...liste].filter((b) => !!b.archiviert === (ablage === 'archiv')).sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm));
-  for (const b of sortiert) {
-    const schluessel = b.bezug ? `${b.bezug.typ}:${b.bezug.id}` : `einzeln:${b.id}`;
-    const neu = !b.gelesen || !!ungelesenIds?.has(b.id);
-    const g = gruppen.get(schluessel);
-    if (!g) gruppen.set(schluessel, { schluessel, neueste: b, eintraege: [b], ungelesen: neu, wichtig: !!b.wichtig });
-    else {
-      g.eintraege.push(b);
-      g.ungelesen ||= neu;
-      g.wichtig ||= !!b.wichtig;
-    }
-  }
-  return [...gruppen.values()];
-}
-
-/** Ins Archiv legen (gilt damit auch als gelesen) */
-export function archivieren(liste: Benachrichtigung[]) {
-  for (const b of liste) if (!b.archiviert) db.benachrichtigungen.update(b.id, { archiviert: true, gelesen: true }, { leise: true });
-}
-
-/** Aus dem Archiv zurück in den Posteingang */
-export function zurueckholen(liste: Benachrichtigung[]) {
-  for (const b of liste) if (b.archiviert) db.benachrichtigungen.update(b.id, { archiviert: false }, { leise: true });
-}
 
 const ABWESENHEIT: Record<Abwesenheit['art'], string> = { urlaub: 'Urlaub', krank: 'Krankmeldung', schule: 'Berufsschule', schulung: 'Schulung', frei: 'Freier Tag', sonstiges: 'Abwesenheit' };
 
@@ -79,97 +25,140 @@ function buero(recht?: Parameters<typeof darf>[0]): Mitarbeiter[] {
   return db.mitarbeiter.where((m) => m.aktiv && (m.rolle === 'chef' || m.rolle === 'buero') && (!recht || darf(recht, m)));
 }
 
-/**
- * Benachrichtigt jeden Empfänger einmal. Wer das Ereignis selbst ausgelöst hat, bekommt nichts.
- * Gleicher Titel zum gleichen Objekt innerhalb von 10 Minuten zählt als doppelt
- * (z. B. `angebote.updated` und `angebot.angenommen` für dasselbe Angebot).
- */
-export function melden(empfaenger: (Mitarbeiter | undefined)[], titel: string, opts: { text?: string; bezug?: Bezug; ausloeser?: ID; wichtig?: boolean; dringend?: boolean }) {
-  const seit = new Date(Date.now() - 10 * 60_000).toISOString();
-  const ids = [...new Set(empfaenger.filter((m): m is Mitarbeiter => !!m).map((m) => m.id))].filter((id) => id !== opts.ausloeser);
-  let n = 0;
-  for (const id of ids) {
-    const doppelt = db.benachrichtigungen.where(
-      (b) => b.fuerMitarbeiterId === id && b.titel === titel && b.erstelltAm >= seit && b.bezug?.id === opts.bezug?.id,
-    ).length;
-    if (doppelt) continue;
-    benachrichtigen(titel, { text: opts.text, bezug: opts.bezug, fuer: id, wichtig: opts.wichtig });
-    // Wichtiges auch aufs Handy – außerhalb der Ruhezeit; Dringendes bei Notdienst auch nachts
-    if (opts.wichtig) void pushMitRuhezeit({ anMitarbeiterId: id, titel, text: opts.text, pfad: (() => { const p = pfadZu(opts.bezug); return p ? appPfad(p) : undefined; })() }, { dringend: opts.dringend }).catch(() => {});
-    n++;
-  }
-  return n;
-}
-
+const ids = (liste: (Mitarbeiter | undefined)[]) => liste.filter((m): m is Mitarbeiter => !!m).map((m) => m.id);
 const kundeName = (id: ID | undefined) => db.kunden.get(id)?.name ?? 'Kunde';
 const verantwortlich = (auftragId: ID | undefined) => db.mitarbeiter.get(db.auftraege.get(auftragId)?.verantwortlichId);
 const istStatus = (e: DbEvent, feld: string, wert: string) =>
   (e.objekt as Record<string, unknown> | undefined)?.[feld] === wert && (e.vorher as Record<string, unknown> | undefined)?.[feld] !== wert;
 
-// ------------------------------------------------------------------ Regeln je Ereignis
+// ------------------------------------------------------------------ Regeln je Ereignis (wer hat einen Grund?)
 
 export function neueAnfrage(a: Auftrag) {
   if (a.beispiel || a.phase !== 'anfrage') return;
-  melden(buero(), `Neue Anfrage: ${a.titel}`, { text: `${kundeName(a.kundeId)}${a.dringend ? ' · dringend' : ''}`, bezug: { typ: 'auftraege', id: a.id }, ausloeser: a.erstelltVon, wichtig: a.dringend, dringend: a.dringend });
+  const zust = db.mitarbeiter.get(a.verantwortlichId);
+  benachrichtigen(`Neue Anfrage: ${a.titel}`, {
+    art: 'anfrage.neu',
+    text: `${kundeName(a.kundeId)}${a.dringend ? ' · dringend' : ''}`,
+    bezug: { typ: 'auftraege', id: a.id },
+    fuer: zust ? [zust.id] : ids(buero()),
+    grund: zust ? 'Die Anfrage ist dir zugewiesen.' : 'Du bist im Büro für neue Anfragen zuständig.',
+    ausloeser: a.erstelltVon,
+    dringend: a.dringend,
+  });
 }
 
 export function kundenNachricht(n: Nachricht) {
   // Anrufe notiert das Büro selbst – dafür keine Benachrichtigung
   if (n.beispiel || n.richtung !== 'ein' || n.kanal === 'intern' || n.kanal === 'telefon') return;
   const text = n.text.length > 90 ? n.text.slice(0, 88) + ' …' : n.text;
-  melden([...buero(), verantwortlich(n.auftragId)], `Nachricht von ${kundeName(n.kundeId ?? db.auftraege.get(n.auftragId)?.kundeId)}`, {
+  const zust = verantwortlich(n.auftragId);
+  benachrichtigen(`Nachricht von ${kundeName(n.kundeId ?? db.auftraege.get(n.auftragId)?.kundeId)}`, {
+    art: 'nachricht.kunde',
     text,
-    bezug: n.auftragId ? { typ: 'auftraege', id: n.auftragId } : n.kundeId ? { typ: 'kunden', id: n.kundeId } : undefined,
+    // Zustand: die Nachricht selbst (gelesen = erledigt); gebündelt am Auftrag bzw. Kunden
+    bezug: { typ: 'nachrichten', id: n.id },
+    gruppe: n.auftragId ? { typ: 'auftraege', id: n.auftragId } : n.kundeId ? { typ: 'kunden', id: n.kundeId } : undefined,
+    fuer: zust ? [zust.id] : ids(buero()),
+    grund: zust ? 'Du bist für den Auftrag verantwortlich.' : 'Du bist im Büro für Kundennachrichten zuständig.',
     ausloeser: n.erstelltVon,
+    quelleId: `nachricht:${n.id}`,
   });
 }
 
 export function abwesenheitNeu(a: Abwesenheit) {
-  if (a.beispiel) return;
+  if (a.beispiel || a.status !== 'beantragt') return;
   const m = db.mitarbeiter.get(a.mitarbeiterId);
   const zeitraum = a.von === a.bis ? `am ${datum(a.von)}` : `${datum(a.von)} bis ${datum(a.bis)}`;
   // Krankmeldungen und Bescheide an den Mitarbeiter meldet das Modul Abwesenheiten (eigene Regeln) – hier nicht doppelt
-  if (a.status === 'beantragt') {
-    melden(buero('personal').length ? buero('personal') : buero(), `${ABWESENHEIT[a.art]} beantragt: ${personName(m)}`, { text: `${zeitraum} – bitte freigeben oder ablehnen.`, bezug: { typ: 'abwesenheiten', id: a.id }, ausloeser: a.erstelltVon, wichtig: true });
-  }
+  const freigeber = buero('personal').length ? buero('personal') : buero();
+  benachrichtigen(`${ABWESENHEIT[a.art]} beantragt: ${personName(m)}`, {
+    art: 'abwesenheit.beantragt',
+    text: zeitraum,
+    bezug: { typ: 'abwesenheiten', id: a.id },
+    fuer: ids(freigeber).filter((id) => id !== a.mitarbeiterId),
+    ausloeser: a.erstelltVon,
+  });
 }
 
 export function angebotAngenommen(a: Angebot) {
   if (a.beispiel || a.status !== 'angenommen') return;
-  melden([...buero(), verantwortlich(a.auftragId)], `Angebot angenommen: ${kundeName(a.kundeId)}`, {
+  // dieselbe Art wie „Zum Einplanen“ aus dem Ablauf – ein Eintrag je Auftrag und Person
+  benachrichtigen(`Angebot angenommen: ${kundeName(a.kundeId)}`, {
+    art: 'auftrag.einplanen',
     text: `${a.nummer} · ${a.titel} – jetzt einplanen.`,
     bezug: { typ: 'auftraege', id: a.auftragId },
-    wichtig: true,
+    fuer: ids([...buero('planen'), verantwortlich(a.auftragId)]),
+    grund: 'Du planst die Einsätze.',
   });
 }
 
 export function zahlungEingegangen(z: Zahlung) {
   if (z.beispiel) return;
   const r = db.rechnungen.get(z.rechnungId);
-  melden(buero('geld'), `Zahlung eingegangen: ${euro(z.betrag)}`, {
+  benachrichtigen(`Zahlung eingegangen: ${euro(z.betrag)}`, {
+    art: 'zahlung.eingegangen',
     text: r ? `${r.nummer} · ${kundeName(r.kundeId)}` : undefined,
     bezug: { typ: 'rechnungen', id: z.rechnungId },
+    fuer: ids(buero('geld')),
+    grund: 'Du kümmerst dich um das Geld.',
     ausloeser: z.erstelltVon,
+    quelleId: `zahlung:${z.id}`,
   });
 }
 
 export function aufgabeZugewiesen(a: Aufgabe, vorher?: Aufgabe) {
   if (a.beispiel || a.erledigt || !a.zustaendigId || vorher?.zustaendigId === a.zustaendigId) return;
   const von = db.mitarbeiter.get(a.erstelltVon);
-  melden([db.mitarbeiter.get(a.zustaendigId)], `Neue Aufgabe für dich: ${a.titel}`, {
+  benachrichtigen(`Neue Aufgabe für dich: ${a.titel}`, {
+    art: 'aufgabe.zugewiesen',
     text: [von ? `von ${von.vorname}` : undefined, a.faellig ? `fällig ${datum(a.faellig)}` : undefined].filter(Boolean).join(' · ') || undefined,
     bezug: { typ: 'aufgaben', id: a.id },
+    gruppe: a.auftragId ? { typ: 'auftraege', id: a.auftragId } : undefined,
+    fuer: a.zustaendigId,
     // bei Neuanlage: wer sie sich selbst gibt, braucht keine Glocke
     ausloeser: vorher ? undefined : a.erstelltVon,
+  });
+}
+
+/**
+ * Einmal am Tag: überfällige Aufgaben (auch selbst angelegte) erscheinen als Aktion – überfällig an einem
+ * kritischen Auftrag als „Jetzt“. Je Aufgabe und Fälligkeit höchstens einmal (`quelleId`).
+ */
+export function faelligeAufgaben(jetzt = new Date()) {
+  const k = kontext(jetzt);
+  let n = 0;
+  for (const a of db.aufgaben.where((x) => !x.erledigt && !x.beispiel && !!x.zustaendigId && !!x.faellig && x.faellig < k.heute)) {
+    const stufe = aufgabeEinstufen(a, k);
+    if (stufe === 'ignorieren') continue;
+    n += benachrichtigen(`Überfällig: ${a.titel}`, {
+      art: 'aufgabe.zugewiesen',
+      text: `war fällig ${datum(a.faellig)}`,
+      bezug: { typ: 'aufgaben', id: a.id },
+      gruppe: a.auftragId ? { typ: 'auftraege', id: a.auftragId } : undefined,
+      fuer: a.zustaendigId,
+      quelleId: `aufgabe-ueberfaellig:${a.id}:${a.faellig}`,
+      jetzt,
+    }).length;
+  }
+  return n;
+}
+
+/** Push nur, wenn die zentrale Regel es erlaubt – hier nur die Zustellung (Ruhezeit, Notdienst, Cloud) */
+function pushAnbinden() {
+  setzePushVersand(({ anMitarbeiterId, titel, text, bezug, stufe }: { anMitarbeiterId: ID; titel: string; text?: string; bezug?: Bezug; stufe: string }) => {
+    const p = pfadZu(bezug);
+    void pushMitRuhezeit({ anMitarbeiterId, titel, text, pfad: p ? appPfad(p) : undefined }, { dringend: stufe === 'jetzt' }).catch(() => {});
   });
 }
 
 export const benachrichtigenAutomation: Automation = {
   id: REGEL_ID,
   titel: 'Bei wichtigen Ereignissen benachrichtigen',
-  beschreibung: 'Meldet neue Anfragen, Kundennachrichten, Urlaubsanträge und Krankmeldungen, angenommene Angebote, Zahlungseingänge und neue Aufgaben – sonst nichts.',
+  beschreibung:
+    'Meldet nur, wofür du einen Grund hast: neue Anfragen, Kundennachrichten, Urlaubsanträge, angenommene Angebote, Zahlungseingänge, Aufgaben für dich. Erledigtes verschwindet von selbst.',
   standardAn: true,
   start: () => {
+    pushAnbinden();
     const obj = <T>(e: DbEvent) => e.objekt as T | undefined;
     const aus = [
       on('auftraege.created', (e) => obj<Auftrag>(e) && neueAnfrage(obj<Auftrag>(e)!)),
@@ -183,22 +172,40 @@ export const benachrichtigenAutomation: Automation = {
       on('aufgaben.created', (e) => obj<Aufgabe>(e) && aufgabeZugewiesen(obj<Aufgabe>(e)!)),
       on('aufgaben.updated', (e) => obj<Aufgabe>(e) && aufgabeZugewiesen(obj<Aufgabe>(e)!, e.vorher as Aufgabe)),
     ];
-    return () => aus.forEach((f) => f());
+    return () => {
+      aus.forEach((f) => f());
+      setzePushVersand(undefined);
+    };
+  },
+  pruefen: () => {
+    faelligeAufgaben();
   },
 };
 
-/** Beispiel-Benachrichtigungen nach dem Onboarding – zeigen, wie die Glocke arbeitet. */
+/** Beispiel-Meldungen nach dem Onboarding – zeigen, wie die Inbox arbeitet (gelöst = weg). */
 export function beispielBenachrichtigungen() {
   const chef = db.mitarbeiter.all().find((m) => m.rolle === 'chef');
   if (!chef || !db.auftraege.all().some((a) => a.beispiel)) return;
   const anfrage = db.auftraege.all().find((a) => a.beispiel && a.phase === 'anfrage' && a.dringend);
-  const nachricht = db.nachrichten.all().find((n) => n.beispiel && n.richtung === 'ein');
+  const nachricht = db.nachrichten.all().find((n) => n.beispiel && n.richtung === 'ein' && !n.gelesen);
   const urlaub = db.abwesenheiten.all().find((a) => a.beispiel && a.status === 'beantragt');
-  const B = { beispiel: true, gelesen: false, fuerMitarbeiterId: chef.id };
-  if (urlaub)
-    db.benachrichtigungen.create({ ...B, titel: `Urlaub beantragt: ${personName(db.mitarbeiter.get(urlaub.mitarbeiterId))}`, text: `${datum(urlaub.von)} bis ${datum(urlaub.bis)} – bitte freigeben oder ablehnen.`, bezug: { typ: 'abwesenheiten', id: urlaub.id }, wichtig: true });
-  if (nachricht)
-    db.benachrichtigungen.create({ ...B, titel: `Nachricht von ${kundeName(nachricht.kundeId)}`, text: nachricht.text.slice(0, 88), bezug: nachricht.auftragId ? { typ: 'auftraege', id: nachricht.auftragId } : undefined });
-  if (anfrage)
-    db.benachrichtigungen.create({ ...B, titel: `Neue Anfrage: ${anfrage.titel}`, text: `${kundeName(anfrage.kundeId)} · dringend`, bezug: { typ: 'auftraege', id: anfrage.id }, wichtig: true });
+  const erledigt = db.auftraege.all().find((a) => a.beispiel && a.phase === 'erledigt');
+  const fuer = chef.id;
+  const neu = [
+    ...(urlaub
+      ? benachrichtigen(`Urlaub beantragt: ${personName(db.mitarbeiter.get(urlaub.mitarbeiterId))}`, { art: 'abwesenheit.beantragt', text: `${datum(urlaub.von)} bis ${datum(urlaub.bis)}`, bezug: { typ: 'abwesenheiten', id: urlaub.id }, fuer })
+      : []),
+    ...(nachricht
+      ? benachrichtigen(`Nachricht von ${kundeName(nachricht.kundeId)}`, {
+          art: 'nachricht.kunde',
+          text: nachricht.text.slice(0, 88),
+          bezug: { typ: 'nachrichten', id: nachricht.id },
+          gruppe: nachricht.auftragId ? { typ: 'auftraege', id: nachricht.auftragId } : undefined,
+          fuer,
+        })
+      : []),
+    ...(anfrage ? benachrichtigen(`Neue Anfrage: ${anfrage.titel}`, { art: 'anfrage.neu', text: `${kundeName(anfrage.kundeId)} · dringend`, bezug: { typ: 'auftraege', id: anfrage.id }, fuer }) : []),
+    ...(erledigt ? benachrichtigen(`Auftrag abgeschlossen: ${erledigt.titel}`, { stufe: 'info', text: kundeName(erledigt.kundeId), bezug: { typ: 'auftraege', id: erledigt.id }, fuer }) : []),
+  ];
+  for (const b of neu) db.benachrichtigungen.update(b.id, { beispiel: true }, { leise: true });
 }
