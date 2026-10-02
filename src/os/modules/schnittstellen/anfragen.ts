@@ -4,7 +4,8 @@
  * (Bauplan: `docs/os/INTEGRATIONEN.md`).
  *
  * Jede Anfrage existiert genau einmal je Integration (ID = Connector-ID) und landet als Ereignis
- * `integrationsanfragen.created` in der Timeline. Versand: per E-Mail an das Integrationsteam.
+ * `integrationsanfragen.created` in der Timeline. Versand: direkt aus der App über `/api/integrationen/anfrage`
+ * (Resend, fester Empfänger); ist der Versand nicht eingerichtet, öffnet sich das Mail-Programm (`anfrageMailto`).
  */
 import { db, defineCollection } from '@core/db';
 import type { Basis } from '@core/objects';
@@ -50,4 +51,24 @@ export function anfrageMailto(titel: string, notiz?: string): string {
     .filter((z, i, a) => z !== '' || a[i - 1] !== '')
     .join('\n');
   return `mailto:${INTEGRATION_EMAIL}?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(text)}`;
+}
+
+export type VersandErgebnis = { ok: true } | { ok: false; mailto: string; fehler?: string };
+
+/** Anfrage direkt senden; ohne eingerichteten Versand (501) oder bei Netzfehler: Mail-Programm als Rückfall */
+export async function anfrageSenden(titel: string, notiz?: string, f: typeof fetch = globalThis.fetch): Promise<VersandErgebnis> {
+  const b = db.betrieb.get('betrieb');
+  const mailto = anfrageMailto(titel, notiz);
+  try {
+    const r = await f('/api/integrationen/anfrage', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ integration: titel, notiz: notiz?.trim() || undefined, betrieb: { name: b?.name, email: b?.email, telefon: b?.telefon } }),
+    });
+    if (r.ok) return { ok: true };
+    const d = (await r.json().catch(() => ({}))) as { fehler?: string };
+    return { ok: false, mailto, fehler: r.status === 501 ? undefined : d.fehler };
+  } catch {
+    return { ok: false, mailto };
+  }
 }

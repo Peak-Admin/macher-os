@@ -131,3 +131,17 @@ describe('Integrationen auf Anfrage', () => {
     expect(mail).toMatch(/Wofür: Anfragen aus dem Postfach/);
   });
 });
+
+describe('Anfrage direkt senden', () => {
+  it('sendet inline; ohne eingerichteten Versand (501) bleibt das Mail-Programm als Rückfall', async () => {
+    const { anfrageSenden } = await import('./anfragen');
+    const ok = async () => new Response(JSON.stringify({ id: 'm1' }), { status: 200 });
+    const aus = async () => new Response(JSON.stringify({ fehler: 'nicht verbunden' }), { status: 501 });
+    const kaputt = async () => new Response(JSON.stringify({ fehler: 'E-Mail-Dienst antwortet 500' }), { status: 502 });
+    expect(await anfrageSenden('Gmail', 'x', ok as typeof fetch)).toEqual({ ok: true });
+    const r1 = await anfrageSenden('Gmail', 'x', aus as typeof fetch);
+    expect(r1).toMatchObject({ ok: false, fehler: undefined });
+    expect(!r1.ok && r1.mailto).toMatch(/^mailto:partner@macher-os\.de/);
+    expect(await anfrageSenden('Gmail', 'x', kaputt as typeof fetch)).toMatchObject({ ok: false, fehler: 'E-Mail-Dienst antwortet 500' });
+  });
+});
