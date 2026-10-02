@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { BtnPfeil } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { cta, mainNav, type NavItem } from "@/lib/site";
 import { Logo } from "./Logo";
@@ -103,21 +104,21 @@ export function Header() {
           </Link>
           <Link
             href={cta.secondary.href}
-            className="rounded-lg px-4 py-2 text-[0.95rem] font-semibold text-ink ring-1 ring-inset ring-line hover:ring-ink/40"
+            className="inline-flex h-11 items-center rounded-2xl px-4 text-[0.95rem] font-semibold text-ink ring-1 ring-inset ring-line hover:ring-ink/40"
           >
             {cta.secondary.label}
           </Link>
           <Link
             href={cta.primary.href}
-            className="rounded-lg btn-primaer px-4 py-1.5"
+            className="btn-primaer inline-flex h-11 items-center px-5"
           >
-            {cta.primary.label}
+            <BtnPfeil>{cta.primary.label}</BtnPfeil>
           </Link>
         </div>
 
         {/* Mobil: primärer CTA bleibt sichtbar */}
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2 lg:hidden">
-          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg btn-primaer px-2.5 py-1.5 sm:px-3">
+          <Link href={cta.primary.href} className="inline-flex h-10 items-center whitespace-nowrap btn-primaer px-2.5 sm:px-3">
             {cta.primary.label}
           </Link>
           <button
@@ -229,10 +230,10 @@ function MobileMenu() {
           )}
         </ul>
         <div className="mt-6 grid gap-3">
-          <Link href={cta.primary.href} className="rounded-lg btn-primaer py-3 text-center">
-            {cta.primary.label}
+          <Link href={cta.primary.href} className="btn-primaer inline-flex h-13 items-center justify-center">
+            <BtnPfeil>{cta.primary.label}</BtnPfeil>
           </Link>
-          <Link href={cta.secondary.href} className="rounded-lg bg-white py-3 text-center font-semibold ring-1 ring-line">
+          <Link href={cta.secondary.href} className="inline-flex h-13 items-center justify-center rounded-2xl bg-white font-semibold ring-1 ring-line">
             {cta.secondary.label}
           </Link>
           <Link href={cta.login.href} className="py-2 text-center font-semibold text-muted">

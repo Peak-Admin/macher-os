@@ -13,6 +13,24 @@ const variants: Record<Variant, string> = {
   onDark: "bg-accent text-ink hover:bg-white",
 };
 
+/**
+ * Inhalt des Primärbuttons: Pfeil im weißen Kreis links, beim Hover wandert er nach rechts.
+ * Nur innerhalb von `btn-primaer` verwenden.
+ */
+export function BtnPfeil({ children }: { children: ReactNode }) {
+  return (
+    <span className="btn-pfeil-inhalt">
+      <span aria-hidden className="btn-pfeil">
+        <Icon name="arrow-right" className="size-3.5 stroke-[2.5]" />
+      </span>
+      <span>{children}</span>
+      <span aria-hidden className="btn-pfeil btn-pfeil--nach">
+        <Icon name="arrow-right" className="size-3.5 stroke-[2.5]" />
+      </span>
+    </span>
+  );
+}
+
 export function ButtonLink({
   href,
   children,
@@ -26,20 +44,19 @@ export function ButtonLink({
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
-  const sizes = {
-    sm: "h-9 px-4",
-    md: "h-11 px-5",
-    lg: "h-12 px-6",
-  };
+  // Alle Varianten gleich hoch, damit Primär- und Zweitbutton nebeneinander bündig stehen.
+  const sizes = { sm: "h-10 px-4", md: "h-12 px-6", lg: "h-14 px-8" };
   // Primärbutton bringt Schriftgröße und -stärke selbst mit (btn-primaer, 19 px fett).
   const schrift =
     variant === "primary" ? "" : { sm: "text-sm font-semibold", md: "text-[0.95rem] font-semibold", lg: "text-lg font-semibold" }[size];
+  // Der Primärbutton bringt Radius, Fläche und Übergänge selbst mit.
+  const form = variant === "primary" ? "" : "rounded-2xl transition-colors duration-150 ease-out";
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap transition-colors duration-150 ease-out ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap ${form} ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
     >
-      {children}
+      {variant === "primary" ? <BtnPfeil>{children}</BtnPfeil> : children}
     </Link>
   );
 }

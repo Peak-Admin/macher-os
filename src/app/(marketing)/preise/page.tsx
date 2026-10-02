@@ -56,7 +56,7 @@ export default function PreisePage() {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2">
             {allesDrin.map((x) => (
-              <li key={x} className="flex items-center gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10">
+              <li key={x} className="flex items-center gap-3 karte-dunkel p-4">
                 <Icon name="check" className="size-5 shrink-0 text-accent" />
                 <span className="font-semibold">{x}</span>
               </li>

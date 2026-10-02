@@ -109,7 +109,7 @@ export function AnliegenFormular({
       <div className="mt-6 flex flex-wrap items-center gap-4">
         <button
           type="submit"
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg btn-primaer px-5 transition-colors"
+          className="inline-flex h-11 items-center justify-center gap-2 btn-primaer px-5"
         >
           E-Mail vorbereiten <Icon name="arrow-right" className="size-4" />
         </button>
