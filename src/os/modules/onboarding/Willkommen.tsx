@@ -36,17 +36,21 @@ export function Willkommen() {
   if (spielwiese && !neu) return <Rahmen><AufDerSpielwiese onNeu={() => setNeu(true)} /></Rahmen>;
   if (betrieb?.onboardingFertig && !spielwiese && !neu) return <Rahmen><SchonEingerichtet onNeu={() => setNeu(true)} /></Rahmen>;
   return (
-    <Rahmen>
+    <Rahmen vorteile>
       <Ablauf />
     </Rahmen>
   );
 }
 
-function Rahmen({ children }: { children: ReactNode }) {
+/** Was beim Start zählt – steht bei der Anmeldung (`/signup`) im Markenkopf. */
+const VORTEILE = ['Keine Kündigung notwendig', 'Keine versteckten Kosten', 'Alle Funktionen ab Tag 1 freigeschaltet', 'Sofort startklar – ohne Installation, ohne Setup'];
+
+function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
   return (
     <div className="ob-rahmen">
-      <header className="ob-marke">
+      <header className={`ob-marke${vorteile ? ' ob-marke--vorteile' : ''}`}>
         <div className="ob-marke-innen">
+          {vorteile && <HandwerkerFoto />}
           <div className="ob-logo">
             <span className="mm-logo-zeichen" aria-hidden>
               M
@@ -56,6 +60,18 @@ function Rahmen({ children }: { children: ReactNode }) {
             </span>
           </div>
           <p className="ob-marke-statement">Dein Betrieb. Klar geführt.</p>
+          {vorteile && (
+            <ul className="ob-vorteile">
+              {VORTEILE.map((v) => (
+                <li key={v}>
+                  <span className="ob-vorteil-haken" aria-hidden="true">
+                    <Icon name="check" size={14} strokeWidth={2.5} />
+                  </span>
+                  {v}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </header>
       <main className="ob-inhalt" id="inhalt">
@@ -315,6 +331,24 @@ function GewerkFoto({ gewerk }: { gewerk: Gewerk }) {
           onError={() => setFehlt(true)}
         />
       )}
+    </span>
+  );
+}
+
+/** Handwerker im Markenkopf der Anmeldung; fehlt das Foto, bleibt die grüne Markenfläche stehen. */
+function HandwerkerFoto() {
+  const [fehlt, setFehlt] = useState(false);
+  if (fehlt) return null;
+  return (
+    <span className="ob-marke-foto" aria-hidden="true">
+      <img
+        src={klein('tischler', 640)}
+        srcSet={`${klein('tischler', 640)} 640w, ${klein('tischler', 1080)} 1080w`}
+        sizes="(max-width: 600px) 100vw, 480px"
+        alt=""
+        decoding="async"
+        onError={() => setFehlt(true)}
+      />
     </span>
   );
 }
