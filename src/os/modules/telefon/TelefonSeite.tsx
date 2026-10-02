@@ -4,6 +4,8 @@ import { heute, personName, relativ, telLink, uhrzeit } from '@core/format';
 import type { Aufgabe } from '@core/objects';
 import { Abschnitt, BeispielMarke, Button, Karte, Leer, Liste, ListenZeile, Seite, Stapel, Status, ZweiSpalten, useToast } from '@ui/index';
 import { AnrufFormular } from './AnrufFormular';
+import { istKiAnruf } from './assistent';
+import { KiAnrufZeile } from './KiAnruf';
 import { istUeberfaellig, rueckrufNummer } from './daten';
 
 export function offeneRueckrufe(): Aufgabe[] {
@@ -63,9 +65,17 @@ export function TelefonSeite() {
             <Karte titel="Anruf notieren">
               <AnrufFormular />
             </Karte>
-            <Abschnitt titel={`Letzte Anrufe${heuteAnz ? ` · heute ${heuteAnz}` : ''}`}>
+            <Abschnitt
+              titel={`Letzte Anrufe${heuteAnz ? ` · heute ${heuteAnz}` : ''}`}
+              aktion={
+                <Button klein variante="tertiaer" icon="einstellungen" to="/auftraege/telefon/assistent">
+                  Telefonassistent
+                </Button>
+              }
+            >
               <Liste leer={<Leer titel="Noch keine Anrufe notiert" text="Notiere den ersten Anruf oben – er landet automatisch beim Kunden und am Auftrag." icon="telefon" />}>
                 {anrufe.map((n) => {
+                  if (istKiAnruf(n)) return <KiAnrufZeile key={n.id} n={n} />;
                   const k = db.kunden.get(n.kundeId);
                   const a = db.auftraege.get(n.auftragId);
                   const ziel = a ? pfadZu({ typ: 'auftraege', id: a.id }) : k ? pfadZu({ typ: 'kunden', id: k.id }) : undefined;
@@ -88,11 +98,13 @@ export function TelefonSeite() {
         }
         seite={
           <Abschnitt titel={`Offene Rückrufe${rueckrufe.length ? ` (${rueckrufe.length})` : ''}`}>
-            <Liste leer={<Leer titel="Keine offenen Rückrufe" text="Rückrufe entstehen, wenn du bei einem Anruf „Rückruf“ wählst." icon="check" />}>
-              {rueckrufe.map((a) => (
-                <RueckrufZeile key={a.id} a={a} />
-              ))}
-            </Liste>
+            <div className="tel-rueckrufe">
+              <Liste leer={<Leer titel="Keine offenen Rückrufe" text="Rückrufe entstehen, wenn du bei einem Anruf „Rückruf“ wählst." icon="check" />}>
+                {rueckrufe.map((a) => (
+                  <RueckrufZeile key={a.id} a={a} />
+                ))}
+              </Liste>
+            </div>
           </Abschnitt>
         }
       />

@@ -143,6 +143,9 @@ Auftrag A-2026-0007 abschließen
 | `employee.schedule` | autoplanung | schreiben | planen | Mitarbeiter in einem freien Fenster beim Auftrag einplanen (prüft, ob die Zeit noch frei ist) |
 | `order.create_draft` | bedarf | schreiben | schreiben | Bestellentwürfe je Lieferant für fehlendes Material – bestellt wird erst beim Lieferanten |
 | `invoice.remind` | mahnungen | kritisch | geld, veroeffentlichen | nächste Mahnstufe vorbereiten und freigeben, E-Mail als Link (`oeffnen`) |
+| `call.customer_lookup` | telefon | lesen | lesen | Telefonassistent: Anrufer bekannt? (nur ja/nein + Zahl offener Aufträge) |
+| `call.request_create` / `call.callback_create` / `call.note_create` | telefon | schreiben | schreiben | Telefonassistent: Gesprächsergebnis als Anfrage, Rückruf oder Notiz eintragen (`docs/os/KI-TELEFONIE.md`) |
+| `call.emergency_forward` | telefon | schreiben | schreiben | Telefonassistent: Notfall an die Bereitschaft (Mitteilung, Ereignis `anruf.notfall_weitergeleitet`) |
 
 `endgueltig` (kein „Rückgängig“): `message.send`, `offer.send`, `invoice.send`, `review.request`, `invoice.remind`.
 
