@@ -310,7 +310,9 @@ export function DeinPlan() {
           ) : z.status === 'gekuendigt' ? (
             <p>Du hast gekündigt. Du kannst die Kündigung bis zum {datum(z.aktivBis)} mit einem Klick zurücknehmen.</p>
           ) : z.status === 'lesemodus' ? (
-            <p>Es läuft kein Plan, also gibt es nichts zu kündigen. Es entstehen keine Kosten, und deine Daten bleiben lesbar und exportierbar.</p>
+            <p>
+              Es läuft kein Plan, also gibt es nichts zu kündigen. Es entstehen keine Kosten{gesperrt ? ', und deine Daten bleiben lesbar und exportierbar' : ''}.
+            </p>
           ) : (
             <p>Du hast nichts abgeschlossen. Die Testphase endet von selbst – es entstehen keine Kosten.</p>
           )}

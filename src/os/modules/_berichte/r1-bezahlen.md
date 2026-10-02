@@ -5,7 +5,7 @@ SEPA zuerst, nie Datenverlust.
 
 ## Was gebaut ist
 
-### App – Modul `abo` (`os/src/modules/abo/**`)
+### App – Modul `abo` (`src/os/modules/abo/**`, im Browser unter `/os/betrieb/abo`)
 
 - **„Dein Plan“** unter `/betrieb/abo`, erreichbar über Betrieb › Unternehmen › Einstellungen (Ansicht „Betrieb“),
   das Modulverzeichnis, die Suche („Plan“, „Abo“, „bezahlen“, „kündigen“, „SEPA“ …) und die Hinweise.
@@ -36,16 +36,16 @@ SEPA zuerst, nie Datenverlust.
 - `kurzinfo` für die Betrieb-Kachel (Lesemodus/Abbuchung offen als „Aufmerksamkeit“).
 - **Zeit simulieren:** Einstellung `abo.versatzTage` (Zahl) verschiebt „heute“ für den Plan.
 
-### Server – `os/api/abo/**` (Vercel Functions, `fetch` statt SDKs)
+### Server – Route Handler `src/app/api/abo/*/route.ts` (Node, `fetch` statt SDKs; Helfer in `src/app/api/abo/_lib/`)
 
 | Datei | Zweck |
 |---|---|
-| `stand.ts` (GET) | `betriebe.plan`/`test_bis` (fehlt `test_bis`: 30 Tage ab `erstellt_am`, einmal gespeichert) + aus Stripe: nächste Abbuchung, Betrag, Zahlweise, Zahlungsart, Rechnungen |
-| `checkout.ts` (POST) | Kunde = Betrieb (`betriebe.stripe_kunde`). Plan aus `objekte` (aktive Mitarbeiter) – nicht aus dem Browser. Ohne laufendes Abo: Stripe Checkout `mode=subscription`, `payment_method_types=[sepa_debit, card]`, Rechnungsadresse, USt-IdNr. Mit laufendem Abo: Planwechsel mit `proration_behavior=create_prorations`. Stripe-Preise werden je Plan/Zahlweise/Betrag über `lookup_key` `macher-os-<plan>-<monat|jahr>-<cent>` beim ersten Mal angelegt (eine Quelle: `plaene.ts`). |
-| `portal.ts` (POST) | `portal` → Stripe-Kundenportal (Zahlungsart, Rechnungen) · `kuendigen` → `cancel_at_period_end` + `cancellation_details` (Grund) · `fortsetzen` |
-| `webhook.ts` (POST) | Signaturprüfung (HMAC-SHA256, 5 min Toleranz, zeitkonstanter Vergleich). Setzt `betriebe.plan`/`stripe_kunde`: `checkout.session.completed`, `customer.subscription.created/updated/deleted`, `invoice.payment_failed` (Stufe 1 + E-Mail), `invoice.paid` |
-| `erinnern.ts` (GET, Cron) | Stufe 2 (Tag 5) und 3 (Tag 10) per E-Mail; geschützt mit `CRON_SECRET` |
-| `_gemeinsam.ts`, `_erinnern.ts` | Helfer (keine Routen) |
+| `stand` (GET) | `betriebe.plan`/`test_bis` (fehlt `test_bis`: 30 Tage ab `erstellt_am`, einmal gespeichert) + aus Stripe: nächste Abbuchung, Betrag, Zahlweise, Zahlungsart, Rechnungen |
+| `checkout` (POST) | Kunde = Betrieb (`betriebe.stripe_kunde`). Plan aus `objekte` (aktive Mitarbeiter) – nicht aus dem Browser. Ohne laufendes Abo: Stripe Checkout `mode=subscription`, `payment_method_types=[sepa_debit, card]`, Rechnungsadresse, USt-IdNr. Mit laufendem Abo: Planwechsel mit `proration_behavior=create_prorations`. Stripe-Preise werden je Plan/Zahlweise/Betrag über `lookup_key` `macher-os-<plan>-<monat|jahr>-<cent>` beim ersten Mal angelegt (eine Quelle: `plaene.ts`). |
+| `portal` (POST) | `portal` → Stripe-Kundenportal (Zahlungsart, Rechnungen) · `kuendigen` → `cancel_at_period_end` + `cancellation_details` (Grund) · `fortsetzen` |
+| `webhook` (POST) | Signaturprüfung (HMAC-SHA256, 5 min Toleranz, zeitkonstanter Vergleich). Setzt `betriebe.plan`/`stripe_kunde`: `checkout.session.completed`, `customer.subscription.created/updated/deleted`, `invoice.payment_failed` (Stufe 1 + E-Mail), `invoice.paid` (Rechnung + E-Rechnung per E-Mail, Kopie an den Steuerberater) |
+| `erinnern` (GET, Cron täglich 8:00 laut `vercel.json`) | Stufe 2 (Tag 5) und 3 (Tag 10) per E-Mail; geschützt mit `CRON_SECRET` |
+| `_lib/gemeinsam.ts`, `_lib/erinnern.ts`, `_lib/signatur.ts`, `_lib/rechnung.ts` | Helfer (privater Ordner, keine Routen) |
 
 **Kodierung in `betriebe.plan`** (Datenvertrag bleibt unverändert): `test` · `<planId>` · `<planId>:zahlung_offen:<YYYY-MM-DD>` ·
 `<planId>:gekuendigt:<letzter Tag>` · `lesemodus`. Der Lesemodus nach 14 Tagen Kulanz und nach Kündigungsende wird daraus
@@ -58,7 +58,7 @@ heimlich und buchen nichts ab.“, im Lesemodus mit „Bis dahin bleibt alles le
 
 ### Website
 
-- `src/content/preise.ts` liest Namen, Grenzen, Preise und Testtage aus **`os/src/modules/abo/plaene.ts`** – der gemeinsamen
+- `src/content/preise.ts` liest Namen, Grenzen, Preise und Testtage aus **`src/os/modules/abo/plaene.ts`** – der gemeinsamen
   Quelle für Website, App und Stripe. Die Website ergänzt nur Texte. `preiseVorlaeufig` steuert die Kennzeichnung.
 - `src/app/(marketing)/preise/`: „Ein Preis für deinen Betrieb. Alles drin.“, Rechner „Wie viele Leute arbeiten bei euch?“
   (gleiche Regel wie die App, markiert den passenden Plan), Zahlweise monatlich/jährlich, Badge **„Vorläufig“** und Hinweis an
@@ -82,42 +82,63 @@ Optional: `RESEND_API_KEY` + `ABO_ABSENDER` (Zahlungserinnerungen), `STRIPE_AUTO
 In Stripe: Webhook auf `/api/abo/webhook` mit den Ereignissen oben; Kundenportal aktivieren (Zahlungsart, Rechnungen);
 SEPA-Lastschrift im Dashboard freischalten.
 
+## Lesemodus nur mit Bezahlmöglichkeit
+
+Der Lesemodus wird nur durchgesetzt, wenn Bezahlen wirklich möglich ist – also wenn der Stand vom Server kommt
+(Konto + Stripe verbunden). Ohne Bezahlmöglichkeit (heute live: kein Konto, keine Schlüssel) sperren wir niemanden aus:
+„Dein Plan“ zeigt offen „Testphase vorbei – Bezahlen wird gerade eingerichtet, bis dahin arbeitest du ganz normal weiter.
+Wir verlängern nichts im Hintergrund und buchen nichts ab.“ `test_bis` bleibt unverändert. Sobald Bezahlen verbunden ist,
+greift der Lesemodus nach Ablauf sofort. Das löst auch die Frage nach bestehenden lokalen Betrieben (Einrichtung > 30 Tage).
+
+## E-Rechnung und Steuerberater
+
+Nach jeder bezahlten Stripe-Rechnung (`invoice.paid`) geht eine E-Mail an den Betrieb, in Kopie an die Steuerberater-Adresse
+aus dem DATEV-Modul (`datev.steuerberater`), mit PDF-Link und **XRechnung 3.0** im Anhang. Die XRechnung baut derselbe Baustein
+wie in der App: `xrechnungAus` liegt dafür jetzt in `src/os/modules/rechnungen/xrechnung-xml.ts` (ohne Datenschicht, damit der
+Server ihn nutzen kann); `xrechnung.ts` exportiert ihn unverändert weiter. Der Rechnungssteller (Macher OS) kommt aus
+`ABO_RECHNUNGSSTELLER` – ohne ihn keine XRechnung, Firmendaten erfinden wir nicht.
+
+## Schlüssel (Vercel, Projekt `macher-os`)
+
+Pflicht für Bezahlen: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`, `VITE_SUPABASE_URL` (oder `SUPABASE_URL`).
+Optional: `RESEND_API_KEY` + `ABO_ABSENDER` (Erinnerungen, Rechnungsmails), `ABO_RECHNUNGSSTELLER` als JSON
+`{"name","strasse","plz","ort","email","ustId" oder "steuernummer","telefon","iban"}` (E-Rechnung), `CRON_SECRET` (Erinnerungslauf),
+`STRIPE_AUTOMATISCHE_STEUER=1` (Stripe Tax). In Stripe: Webhook auf `https://<domain>/api/abo/webhook` mit
+`checkout.session.completed`, `customer.subscription.created|updated|deleted`, `invoice.payment_failed`, `invoice.paid`;
+Kundenportal aktivieren; SEPA-Lastschrift freischalten. Stand beim Livegang: keine dieser Variablen gesetzt → alle
+Route Handler antworten 501, die App sagt ehrlich „Bezahlen wird gerade eingerichtet“.
+
 ## Geprüft
 
-- `cd os && npm ci && npx tsc -b && npx vitest run && npx vite build`: tsc, Build grün; Tests 607/608 – der eine Fehlschlag
-  (`autoplanung.test.ts › plant am selben Tag nach dem Vortermin …`) tritt **auch ohne dieses Paket** auf (vorbestehend, datumsabhängig).
-  Neu: `regeln.test.ts` (14), `stand.test.ts` (4, Lesemodus gegen die echte Datenschicht), `webhook.test.ts` (3, Signatur + Stripe-Formular).
-- `os/api/**` zusätzlich mit `tsc` gegen die App-Konfiguration typgeprüft.
-- Website im Wurzelordner: `npm run lint` und `npm run build` grün.
-- Playwright (Chromium) bei **390 und 1440 px**: Beispielbetrieb einrichten → „Dein Plan“ in der Testphase → „Plan buchen“
-  ohne Server zeigt „Bezahlen wird gerade eingerichtet“ → Zeit per `abo.versatzTage = 21` → Hinweis „Seit dem Start: …“ in
-  „Braucht dich“ → `abo.versatzTage = 31` → Kunde anlegen → Meldung „Gerade nur lesen“ → „Plan wählen“ → „Dein Plan“ im
-  Lesemodus; der Kunde wurde nicht angelegt, alle Daten sind da, kein horizontaler Überlauf in der App.
+- Wurzelprojekt: `npm run typecheck`, `npm test` (641/641), `npm run lint` (0 Fehler), `npm run build` grün.
+  Neu: `regeln.test.ts` (15), `stand.test.ts` (5, Lesemodus gegen die echte Datenschicht inkl. „ohne Bezahlmöglichkeit keine Sperre“),
+  `webhook.test.ts` (4: Signatur, Stripe-Formular, XRechnung aus Stripe-Rechnung). Server-Import unter Node geprüft (Webhook ohne Schlüssel → 501).
+- Playwright gegen `next start` bei **390 und 1440 px**: Beispielbetrieb → „Dein Plan“ in der Testphase → „Plan buchen“ →
+  echte 501 → „Bezahlen wird gerade eingerichtet“ → `abo.versatzTage = 21` → „Seit dem Start: …“ in „Braucht dich“ →
+  `abo.versatzTage = 31` ohne Bezahlmöglichkeit: Hinweis „Testphase vorbei“, Kunde anlegen klappt → Stand „vom Server“:
+  Kunde anlegen → „Gerade nur lesen“ → „Plan wählen“ → „Dein Plan“ im Lesemodus, Kunde nicht angelegt, Daten vollständig.
+  Website `/preise`, `/`, `/kontakt`: kein horizontaler Überlauf mehr bei 390 px (Header-Abstände), Rechner wählt bei 12 Leuten „Betrieb“.
 
-## Kernwünsche / Änderungen außerhalb der Tabelle
+## Erledigt aus der ersten Runde
 
-1. **`os/src/shell/struktur.ts`** (2 Zeilen): `abo` als zweites Modul der Ansicht „Betrieb“ unter Einstellungen + Suchwörter.
-   Ohne Eintrag schlägt `struktur.test.ts` fehl („Modul abo fehlt“), und es gäbe keinen Ort unter Betrieb › Einstellungen.
-   Die Ansicht hat schon vier Wechsler-Punkte, deshalb kein fünfter.
-2. **`setzeSchreibschutz`** bekommt nur den Sammlungsnamen. Für „ändern ja, anlegen nein“ hängt das Modul einen Vorschalter vor
-   `create` der vier Sammlungen. Besser: Prüfer mit `(sammlung, aktion: 'anlegen' | 'aendern' | 'loeschen')`.
-3. **Cloud-Vertrag ohne Token:** `api.ts` liest den Supabase-Zugangstoken aus dem `localStorage` (`sb-*-auth-token`).
-   Besser: `cloud().token()` (Paket Fundament).
-4. **Serverseitige Durchsetzung:** Der Lesemodus wird im Browser durchgesetzt; der zwischengespeicherte Stand liegt in der
-   Einstellung `abo.stand`. Fundament sollte per RLS Schreiben in `objekte` (außer Systemsammlungen) sperren, wenn
-   `betriebe.plan` den Lesemodus ergibt – und `betriebe.plan` nur über die Service-Rolle schreibbar machen.
-5. **Cron:** Eintrag `{ "path": "/api/abo/erinnern", "schedule": "0 8 * * *" }` in `os/vercel.json` (Paket Fundament).
+- Struktur von `main` übernommen (App unter `/os`, Server als Route Handler, gemeinsame Quelle unter `src/os/modules/abo/plaene.ts`).
+- Lesemodus ohne Bezahlmöglichkeit, bestehende Betriebe (siehe oben).
+- E-Rechnung + Kopie an den Steuerberater.
+- Cron für die Erinnerungsstufen 2/3 in `vercel.json`.
+- Vercel-Laufzeit: Next bündelt die Route Handler, die Regeln kommen über den Alias `@modules/abo/regeln` (kein `.js`-Trick mehr).
+- Website-Header ohne Überlauf bei 390 px.
 
-## Offene Punkte
+## Offen (Entscheidung oder Zugang nötig)
 
-- **Endgültige Preise** in `os/src/modules/abo/plaene.ts` eintragen und `vorlaeufig: false` setzen – Website und App folgen.
-- **E-Rechnung / Rechnung an Steuerberater-Adresse:** Stripe-Rechnungen sind PDFs. XRechnung/ZUGFeRD und Kopie an den
-  Steuerberater sind nicht gebaut (Stripe „invoice email recipients“ oder DATEV-Modul anbinden).
-- **Bestehende lokale Betriebe**, deren Einrichtung > 30 Tage her ist, sind nach dem Update sofort im Lesemodus und können
-  ohne Backend nicht bezahlen. Entscheidung nötig: Startdatum der Testphase = Einführung von Paid?
-- **Stufen 2/3 per E-Mail** brauchen den Cron und `ABO_ABSENDER`; in der App erscheinen sie immer als Hinweis.
-- **Vercel-Laufzeit:** Die Server-Funktionen importieren `../../src/modules/abo/regeln.js` (eine Quelle der Regeln). Beim
-  ersten Deployment prüfen, dass Vercel die TS-Dateien außerhalb von `api/` mitbaut.
-- **Website-Header (nicht dieses Paket):** bei 390 px 20 px horizontaler Überlauf auf allen Seiten durch das Menü-Icon
-  (`DIV.ml-auto … lg:hidden`).
-- Vercel-Hinweis: Im Vite-Dev-Server liefert `/api/abo/*` den Quelltext als Modul aus – nur lokal, die App wertet das als „nicht verbunden“.
+- **Endgültige Preise:** in `src/os/modules/abo/plaene.ts` eintragen und `vorlaeufig: false` setzen – Website, App und Stripe folgen.
+  Bis dahin steht überall „vorläufig“.
+- **Schlüssel** (siehe oben) und Konto/Supabase aus dem Paket Fundament – erst dann ist Bezahlen live.
+- **Kernwünsche** an Fundament: `cloud().token()`; RLS-Schreibsperre in `objekte`, wenn `betriebe.plan` den Lesemodus ergibt;
+  `betriebe.plan` nur über die Service-Rolle schreibbar. An den Kern: `setzeSchreibschutz` mit Aktion (anlegen/ändern/löschen).
+
+## Außerhalb des Pakets geändert
+
+- `src/os/shell/struktur.ts`: `abo` als zweites Modul der Ansicht „Betrieb“ unter Einstellungen + Suchwörter (sonst schlägt `struktur.test.ts` fehl).
+- `src/os/modules/rechnungen/xrechnung-xml.ts` (neu, aus `xrechnung.ts` herausgelöst, Verhalten unverändert).
+- `src/components/layout/Header.tsx`: kleinere Abstände unter 640 px (Überlauf bei 390 px).
+- `vercel.json`: Cron `/api/abo/erinnern`.

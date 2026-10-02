@@ -6,7 +6,7 @@
  * denn Firmendaten erfinden wir nicht. Ohne `RESEND_API_KEY`/`ABO_ABSENDER` wird nichts gesendet.
  */
 import type { Betrieb, Kunde } from '@core/objects';
-import { xrechnungAus } from '@modules/rechnungen/xrechnung';
+import { xrechnungAus } from '@modules/rechnungen/xrechnung-xml';
 import type { RechnungX } from '@modules/rechnungen/typen';
 import { env, sb } from './gemeinsam';
 

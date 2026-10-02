@@ -117,7 +117,7 @@ export function Header() {
 
         {/* Mobil: primärer CTA bleibt sichtbar */}
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2 lg:hidden">
-          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg btn-primaer px-3 py-1.5">
+          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg btn-primaer px-2.5 py-1.5 sm:px-3">
             {cta.primary.label}
           </Link>
           <button
@@ -125,7 +125,7 @@ export function Header() {
             aria-label={mobileOpen ? "Menü schließen" : "Menü öffnen"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="rounded-lg p-2 hover:bg-sand"
+            className="rounded-lg p-1.5 hover:bg-sand sm:p-2"
           >
             <Icon name={mobileOpen ? "x" : "menu"} className="size-6" />
           </button>
