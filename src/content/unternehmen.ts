@@ -151,17 +151,17 @@ export const partnerGruppen: {
 export const rechtsEntwurfHinweis =
   "Entwurf – vor Veröffentlichung rechtlich prüfen lassen. Alle Angaben in [eckigen Klammern] sind Platzhalter und müssen ersetzt werden.";
 
-/** Platzhalter für Firmendaten. Bewusst nicht ausgefüllt. */
+/** Anbieter von Macher OS. Angaben laut Impressum von mission-mittelstand.de. */
 export const firma = {
-  name: "[Firmenname]",
-  rechtsform: "[Rechtsform]",
-  anschrift: "[Straße und Hausnummer]",
-  ort: "[PLZ Ort]",
-  vertreten: "[Name der vertretungsberechtigten Person(en)]",
-  register: "[Registergericht]",
-  registernummer: "[Handelsregisternummer]",
-  ustId: "[Umsatzsteuer-Identifikationsnummer]",
-  telefon: "[Telefonnummer]",
+  name: "Mission Mittelstand",
+  rechtsform: "GmbH",
+  anschrift: "Industriezubringer 53",
+  ort: "49661 Cloppenburg",
+  vertreten: "Matthias Aumann (Geschäftsführer)",
+  register: "Amtsgericht Oldenburg",
+  registernummer: "HRB 208841",
+  ustId: "DE296230256",
+  telefon: "+49 4471 7097653",
   email: KONTAKT_EMAIL,
   datenschutzbeauftragter: "[Name / Kontakt des Datenschutzbeauftragten, falls bestellt]",
   hosting: "[Name und Sitz des Hosting-Anbieters]",
@@ -208,13 +208,13 @@ export const impressumAbschnitte: RechtsAbschnitt[] = [
   {
     id: "verantwortlich",
     titel: "Verantwortlich für den Inhalt",
-    absaetze: ["Verantwortlich nach § 18 Abs. 2 MStV: [Name], [Anschrift]"],
+    absaetze: [`Verantwortlich nach § 18 Abs. 2 MStV: Matthias Aumann, ${firma.anschrift}, ${firma.ort}`],
   },
   {
     id: "streitbeilegung",
     titel: "Verbraucherstreitbeilegung",
     absaetze: [
-      "[Angabe prüfen und anpassen:] Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.",
+      "Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.",
     ],
   },
   {
