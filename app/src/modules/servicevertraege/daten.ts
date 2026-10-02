@@ -6,7 +6,7 @@
 import { batch, db, defineCollection, vermerken } from '@core/db';
 import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { datum, heute, plusTage } from '@core/format';
-import { naechsteNummer } from '@core/nummern';
+import { naechsteNummer, naechsteNummerFuer } from '@core/nummern';
 import type { Auftrag, Basis, Cent, Datum, ID, Position } from '@core/objects';
 import { plusMonate, vorkommen } from '../wiederkehrend/regel';
 
@@ -276,13 +276,5 @@ export function verlaengern(vertragId: ID) {
 }
 
 export function naechsteVertragsnummer(jahr = new Date().getFullYear()) {
-  const start = `SV-${jahr}-`;
-  const max = servicevertraege
-    .allMitGeloeschten()
-    .map((v) => v.nummer)
-    .filter((n) => n?.startsWith(start))
-    .map((n) => Number(n.slice(start.length)))
-    .filter(Number.isFinite)
-    .reduce((m, n) => Math.max(m, n), 0);
-  return `${start}${String(max + 1).padStart(3, '0')}`;
+  return naechsteNummerFuer('SV', servicevertraege.allMitGeloeschten().map((v) => v.nummer), { jahr, stellen: 3 });
 }

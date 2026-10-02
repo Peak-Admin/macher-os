@@ -9,6 +9,7 @@ import { adresseText, euro, heute, plusTage, zahl, datum } from '@core/format';
 import type { Ton } from '@core/modul';
 import type { Basis, Cent, Datum, Einheit, ID, Lieferant, Zeitpunkt } from '@core/objects';
 import { buchen, HAUPTLAGER, lagerortName, type LagerortId } from '../lager/daten';
+import { naechsteNummerFuer } from '@core/nummern';
 
 export interface Bestellposition {
   id: ID;
@@ -84,15 +85,7 @@ export function summe(b: Bestellung): Cent {
 }
 
 export function naechsteBestellnummer(jahr = new Date().getFullYear()): string {
-  const start = `B-${jahr}-`;
-  const max = bestellungen
-    .allMitGeloeschten()
-    .map((b) => b.nummer)
-    .filter((n) => n?.startsWith(start))
-    .map((n) => Number(n.slice(start.length)))
-    .filter(Number.isFinite)
-    .reduce((m, n) => Math.max(m, n), 0);
-  return `${start}${String(max + 1).padStart(4, '0')}`;
+  return naechsteNummerFuer('B', bestellungen.allMitGeloeschten().map((b) => b.nummer), { jahr });
 }
 
 export function neuePosition(p: Omit<Bestellposition, 'id' | 'geliefert'> & { geliefert?: number }): Bestellposition {
