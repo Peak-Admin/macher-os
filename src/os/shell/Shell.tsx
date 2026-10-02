@@ -26,6 +26,7 @@ import { alleModule, modul, modulPfad } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
 import { Avatar, Button, Icon, IconButton, Meldung } from '@ui/index';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
+import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
 import { BASIS } from '@core/basis';
 import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
@@ -278,6 +279,11 @@ function Profil({ oben }: { oben?: boolean }) {
             {modul('konto') && (
               <Link to="/macher/konto" onClick={() => setOffen(false)}>
                 <Icon name="schloss" /> Konto & Geräte
+              </Link>
+            )}
+            {modul('rueckmeldung') && (
+              <Link to={rueckmeldungLink(pfad)} onClick={() => setOffen(false)}>
+                <Icon name="chat" /> Rückmeldung geben
               </Link>
             )}
             <label className="mm-profil-wechsel">
