@@ -41,6 +41,13 @@ Next.js (App Router, Turbopack) + TypeScript + Tailwind CSS v4. Alles wird stati
 Website und Software laufen in **einem** Projekt auf **einer** Domain: Website unter `/`, Macher OS (die Software) unter `/os`.
 Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 
+### Deployment – nur `macher-os`
+
+- Einziges Ziel: Vercel-Team „01 Peak Atlas Web“ → Projekt **`macher-os`**. Nur sein Check zählt.
+- **`macher-os-app` ist stillgelegt.** Taucht noch ein (roter) Check „macher-os-app“ auf: ignorieren.
+  Nicht reparieren, nichts dorthin deployen, keine Einstellungen oder Variablen dort anlegen.
+- Code der Software gehört nach `src/os/`. Den alten Ordner `os/` nicht anfassen und nicht neu anlegen.
+
 ### Befehle
 
 - `npm run dev` – Entwicklungsserver
