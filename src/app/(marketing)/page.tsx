@@ -182,7 +182,7 @@ export default function HomePage() {
       <StartHero />
 
       {/* 2. Dein Alltag – 3D-Karten mit Blick in die App */}
-      <Alltag />
+      <Alltag nachUeberhang />
 
       {/* 3. Ablauf – vier klickbare Schritte */}
       <Ablauf />

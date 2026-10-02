@@ -88,9 +88,11 @@ const momente: Moment[] = [
 ];
 
 /** „Dein Alltag“: vier Momente als 3D-Karten, jede zeigt oben, wie der Moment in Macher OS aussieht (Beispieldaten). */
-export function Alltag() {
+/** `nachUeberhang`: oben Platz für das Fenster, das aus dem Hero hineinragt (`UEBERHANG` in KernBereiche). */
+export function Alltag({ nachUeberhang = false }: { nachUeberhang?: boolean }) {
+  const abstand = nachUeberhang ? "pb-16 pt-[12rem] sm:pb-24 sm:pt-[17rem] lg:pt-[25rem]" : "py-16 sm:py-24";
   return (
-    <section data-header-theme="hell" className="zone zone-beige py-16 sm:py-24">
+    <section data-header-theme="hell" className={`zone zone-beige ${abstand}`}>
       <Container>
         <SectionHeading
           eyebrow="Dein Alltag"

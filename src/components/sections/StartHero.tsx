@@ -32,7 +32,8 @@ function GoogleLogo() {
 /**
  * Hero der Startseite (Aufbau nach dem Vorbild von Personio, Farben und Marke von Macher OS): Text in der Mitte,
  * darunter der Einstieg – Google oder E-Mail –, danach gleich die fünf Kernelemente als Pillen und die Software,
- * die schon im unteren Drittel des ersten Bildschirms beginnt. Rechts steht Matthias Aumann (freigegebenes Porträt,
+ * die schon im unteren Drittel des ersten Bildschirms beginnt und
+ * unten über die grüne Box hinaus in die beige Box darunter ragt (Box ist dafür `z-10` und `overflow-visible`). Rechts steht Matthias Aumann (freigegebenes Porträt,
  * siehe `missionMittelstandBilder`), ab 1280 px neben dem Text; er läuft über den Pillen weich aus.
  * Beide Wege führen in die Einrichtung der Software; die E-Mail kommt dort vorausgefüllt an (`?email=`),
  * Google startet direkt (`?anmeldung=google`). Ohne JavaScript funktioniert das Formular als normales GET.
@@ -132,9 +133,9 @@ export function StartHero() {
   );
 
   return (
-    <Zone ton="dunkel" label="hero-titel" className="relative overflow-hidden">
-      <div className="mx-auto max-w-[90rem] px-4 pb-8 pt-28 sm:px-10 sm:pb-12 xl:px-14">
-        <KernBereiche dunkel kopf={kopf} />
+    <Zone ton="dunkel" label="hero-titel" className="z-10 flow-root overflow-visible">
+      <div className="mx-auto max-w-[90rem] px-4 pt-28 sm:px-10 xl:px-14">
+        <KernBereiche dunkel ueberhang kopf={kopf} />
       </div>
     </Zone>
   );

@@ -55,6 +55,12 @@ function ruhigAbo(melden: () => void) {
 }
 const ruhigJetzt = () => window.matchMedia(RUHIG).matches;
 
+/**
+ * Wie weit das Fenster unten aus dem Hero in die nächste Box ragt. Die nächste Box braucht oben passend Platz
+ * (`Alltag` mit `nachUeberhang`).
+ */
+export const UEBERHANG = "-mb-32 sm:-mb-48 lg:-mb-80";
+
 /** So lange bleibt ein Kernelement stehen, bevor das nächste kommt (Dauer der Füllung in der Pille). */
 const DAUER_MS = 7000;
 
@@ -70,9 +76,12 @@ const DAUER_MS = 7000;
 export function KernBereiche({
   kopf,
   dunkel = false,
+  ueberhang = false,
 }: {
   kopf?: ReactNode;
   dunkel?: boolean;
+  /** Fenster ragt unten aus der Box in die nächste (siehe `UEBERHANG`) */
+  ueberhang?: boolean;
 }) {
   const [aktiv, setAktiv] = useState<Start>("heute");
   const [selbst, setSelbst] = useState(false);
@@ -183,15 +192,18 @@ export function KernBereiche({
         role="tabpanel"
         id="kern-panel"
         aria-labelledby={`kern-tab-${aktiv}`}
-        className="relative z-10 mx-auto mt-6 max-w-6xl"
+        className={`relative z-10 mx-auto mt-6 max-w-6xl ${ueberhang ? UEBERHANG : ""}`}
         onPointerDown={() => setAuto(false)}
         onKeyDown={() => setAuto(false)}
       >
         {dunkel ? (
-          // Auf dunkler Fläche ein heller Rand statt des grünen Rahmens (der würde im Grün verschwinden); kein Glas.
-          <figure className="rounded-[24px] bg-white/[0.07] p-2 shadow-[0_40px_80px_-36px_rgb(0_0_0/0.6)] ring-1 ring-inset ring-white/15 sm:p-3">
-            <AppVorschau key={aktiv} start={aktiv} className="lg:h-[40rem]" />
-            <figcaption className="mt-2 text-center text-sm text-on-dark/80">
+          // Liegt halb auf Grün, halb auf Beige: deshalb ein deckender weißer Rahmen (wirkt auf beiden), kein Glas.
+          // Der Hinweis steht darunter auf der hellen Box.
+          <figure>
+            <div className="rounded-[24px] bg-white p-2 shadow-[0_40px_80px_-36px_rgb(6_26_18/0.55)] ring-1 ring-inset ring-line sm:p-3">
+              <AppVorschau key={aktiv} start={aktiv} className="lg:h-[40rem]" />
+            </div>
+            <figcaption className="mt-3 text-center text-sm text-muted">
               Klick dich durch – alles Beispieldaten.
             </figcaption>
           </figure>
