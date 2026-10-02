@@ -14,8 +14,11 @@
 import { useSyncExternalStore, useMemo } from 'react';
 import type { Basis, Bezug, ID, ObjektMap, ObjektTyp, Ereignis } from './objects';
 import { emit } from './events';
+import { betriebsSchluessel } from './betriebe';
 
-const SPEICHER_KEY = 'macher-os:v1';
+/** Jeder Betrieb hat seinen eigenen Stand (siehe `betriebe.ts`) */
+const SPEICHER_KEY = betriebsSchluessel('macher-os:v1');
+const DATEN_KEY = betriebsSchluessel('daten');
 const IDB_NAME = 'macher-os';
 const IDB_STORE = 'stand';
 
@@ -36,7 +39,7 @@ let idb: IDBDatabase | undefined;
 let offen = new Map<string, Set<ID>>();
 /** Ganzer Stand ersetzt (Zurücksetzen, Import) */
 let allesOffen = false;
-const kanal: BroadcastChannel | undefined = typeof BroadcastChannel === 'function' ? new BroadcastChannel('macher-os:daten') : undefined;
+const kanal: BroadcastChannel | undefined = typeof BroadcastChannel === 'function' ? new BroadcastChannel(betriebsSchluessel('macher-os:daten')) : undefined;
 
 function markieren(name: string, id: ID) {
   let ids = offen.get(name);
@@ -84,7 +87,7 @@ export async function initDb(): Promise<void> {
     const open = indexedDB.open(IDB_NAME, 1);
     open.onupgradeneeded = () => open.result.createObjectStore(IDB_STORE);
     idb = await idbAnfrage(open);
-    const gespeichert = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get('daten'));
+    const gespeichert = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get(DATEN_KEY));
     if (gespeichert) {
       daten = gespeichert as Daten;
     } else if (Object.keys(daten).length) {
@@ -133,12 +136,12 @@ async function schreibeIdb(): Promise<void> {
   const tx = idb.transaction(IDB_STORE, 'readwrite');
   const store = tx.objectStore(IDB_STORE);
   let neuerStand: Daten | undefined;
-  if (ganz) store.put(daten, 'daten');
+  if (ganz) store.put(daten, DATEN_KEY);
   else {
-    const g = store.get('daten');
+    const g = store.get(DATEN_KEY);
     g.onsuccess = () => {
       neuerStand = ueberlagern((g.result as Daten | undefined) ?? {}, aenderungen, daten);
-      store.put(neuerStand, 'daten');
+      store.put(neuerStand, DATEN_KEY);
     };
   }
   try {
@@ -169,7 +172,7 @@ function uebernehmen(stand: Daten) {
 async function neuLaden() {
   if (!idb) return;
   try {
-    const g = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get('daten'));
+    const g = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get(DATEN_KEY));
     if (g) uebernehmen(g as Daten);
   } catch {
     /* beim nächsten Mal */
@@ -210,6 +213,17 @@ function speichern() {
       setzeStatus({ fehler: SPEICHER_FEHLER });
     }
   }, 150);
+}
+
+/** Geplantes Speichern sofort ausführen – z. B. vor dem Wechsel in einen anderen Betrieb (Seite lädt neu) */
+export async function jetztSpeichern(): Promise<void> {
+  if (!speichernGeplant) return;
+  clearTimeout(speichernGeplant);
+  speichernGeplant = undefined;
+  if (idb) return schreibeIdb();
+  offen = new Map();
+  allesOffen = false;
+  globalThis.localStorage?.setItem(SPEICHER_KEY, JSON.stringify(daten));
 }
 
 /** Speicherort, Fehler und Platz – z. B. für Fotos: vor großen Uploads prüfen */

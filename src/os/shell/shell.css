@@ -167,3 +167,56 @@
   .mm-einsatz-kunde { font-size: 24px; line-height: 30px; }
   .mm-einsatz .mm-btn--primaer { flex: 1 1 100%; }
 }
+
+/* ---------- Betriebs-Wechsler (oben in der Seitenleiste, mobil im Kopf) */
+.mm-wechsler { position: relative; margin-top: -8px; }
+.mm-wechsler-knopf {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px; border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-card); background: var(--mm-surface); color: var(--mm-text); font: inherit; cursor: pointer; text-align: left;
+  transition: border-color var(--mm-motion-fast) ease-out, background-color var(--mm-motion-fast) ease-out;
+}
+.mm-wechsler-knopf:hover { border-color: var(--mm-brand); }
+.mm-wechsler-knopf[aria-expanded='true'] { background: var(--mm-hover); }
+.mm-wechsler-pfeil { flex-shrink: 0; color: var(--mm-muted-on-white); }
+.mm-wechsler-kachel {
+  display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--mm-radius-control);
+  background: var(--mm-brand-deep); color: #fff; font: 800 16px/1 var(--mm-font);
+}
+.mm-wechsler-kachel--gross { width: 40px; height: 40px; font-size: 18px; }
+.mm-wechsler-text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.mm-wechsler-text strong, .mm-wechsler-text span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-wechsler-text strong { font: 700 16px/20px var(--mm-font); color: var(--mm-black); }
+.mm-wechsler-text span { font-size: 13px; line-height: 18px; color: var(--mm-muted-on-white); }
+.mm-wechsler-panel {
+  position: fixed; top: 128px; left: 12px; z-index: 30; width: 320px; max-width: calc(100vw - 32px);
+  max-height: min(560px, calc(100vh - 96px)); overflow-y: auto; display: flex; flex-direction: column;
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-shadow-overlay);
+  animation: mm-wechsler-auf var(--mm-motion-fast) ease-out;
+}
+@keyframes mm-wechsler-auf { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .mm-wechsler-panel { animation: none; } }
+.mm-wechsler-kopf { display: flex; align-items: center; gap: 12px; padding: 16px; }
+.mm-wechsler-aktionen { display: flex; flex-direction: column; gap: 4px; padding: 0 8px 12px; border-bottom: 1px solid var(--mm-border); }
+.mm-wechsler-aktion, .mm-wechsler-eintrag {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 6px 8px; border: 0;
+  border-radius: var(--mm-radius-control); background: none; color: var(--mm-text); font: inherit; font-weight: 500;
+  text-decoration: none; text-align: left; cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-wechsler-aktion { border: 1px solid var(--mm-border); padding: 6px 12px; }
+.mm-wechsler-aktion:hover, .mm-wechsler-eintrag:hover:not(:disabled) { background: var(--mm-hover); }
+.mm-wechsler-eintrag:disabled { cursor: progress; }
+.mm-wechsler-eintrag--an { color: var(--mm-black); font-weight: 700; background: var(--mm-hover); }
+.mm-wechsler-eintrag--an svg { color: var(--mm-brand-text); }
+.mm-wechsler-eintrag-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-wechsler-liste-bereich { display: flex; flex-direction: column; gap: 4px; padding: 12px 8px 8px; }
+.mm-wechsler-liste-bereich > .mm-nav-titel { padding: 4px 8px; }
+.mm-wechsler-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.mm-wechsler-plus { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; color: var(--mm-text); }
+.mm-wechsler-suche {
+  display: flex; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 4px; padding: 0 12px;
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); color: var(--mm-muted-on-white);
+}
+.mm-wechsler-suche:focus-within { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.mm-wechsler-suche input { flex: 1; min-width: 0; min-height: 42px; border: 0; background: none; font: inherit; color: var(--mm-text); outline: none; }
+.mm-wechsler--kompakt { margin: 0; }
+.mm-wechsler--kompakt .mm-wechsler-knopf { gap: 4px; min-height: 44px; padding: 4px 6px; }

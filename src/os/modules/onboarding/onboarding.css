@@ -126,3 +126,10 @@
   .ob-spielwiese { left: 8px; right: 8px; bottom: calc(72px + env(safe-area-inset-bottom)); max-width: none; padding: 8px 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .ob-regler input[type='range'] { transition: none; } }
+.ob-zurueck-betrieb {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; padding: 0 12px;
+  border: 1px solid rgb(255 255 255 / 40%); border-radius: var(--mm-radius-control); background: none;
+  color: var(--mm-on-dark); font: inherit; font-weight: 600; cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
+}
+.ob-zurueck-betrieb:hover { background: rgb(255 255 255 / 8%); }
+.ob-zurueck-betrieb:focus-visible { outline-color: var(--mm-focus-on-dark); }
