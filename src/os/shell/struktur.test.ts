@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { ladeModule } from './module';
-import { STRUKTUR, funktionsTreffer, ortVonModul, ortVonPfad, zieleVon } from './struktur';
+import { STRUKTUR, ansichtPfad, funktionsTreffer, ortVonModul, ortVonPfad, zieleVon } from './struktur';
 
 const module = ladeModule();
 
@@ -43,6 +43,28 @@ describe('Zielstruktur', () => {
     expect(ortVonPfad('/betrieb/team')?.kategorie?.id).toBe('team');
     expect(ortVonPfad('/macher/automatisch')?.ansicht?.titel).toBe('Automationen');
     expect(ortVonModul('mein-tag')?.haupt.id).toBe('heute');
+  });
+
+  test('Katalog: Material und Leistungen unter einem Ziel, frühere Adressen bleiben erreichbar', () => {
+    const katalog = zieleVon(STRUKTUR.find((h) => h.id === 'betrieb')!).find((z) => z.id === 'katalog')!;
+    expect(katalog.ansichten.map((a) => [a.titel, a.module])).toEqual([
+      ['Material', ['artikel']],
+      ['Leistungen', ['leistungen']],
+    ]);
+    expect(ansichtPfad(katalog.ansichten[0])).toBe('/betrieb/katalog/material');
+    expect(ansichtPfad(katalog.ansichten[1])).toBe('/betrieb/katalog/leistungen');
+    for (const pfad of ['/betrieb/katalog/material', '/betrieb/katalog/leistungen', '/betrieb/katalog/leistungen/stundensatz']) {
+      expect(ortVonPfad(pfad, module)?.ziel?.id, pfad).toBe('katalog');
+      expect(ortVonPfad(pfad, module)?.detail, pfad).toBe(false);
+    }
+    expect(ortVonPfad('/betrieb/katalog/material/a1', module)?.ansicht?.titel).toBe('Material');
+    expect(ortVonPfad('/betrieb/katalog/material/a1', module)?.detail).toBe(true);
+    expect(ortVonPfad('/betrieb/katalog/leistungen/l1', module)?.ansicht?.titel).toBe('Leistungen');
+    // alte Lesezeichen: eigene Weiterleitungsrouten der Module
+    expect(ortVonPfad('/betrieb/artikel/a1', module)?.modulId).toBe('artikel');
+    expect(ortVonPfad('/betrieb/leistungen/stundensatz', module)?.modulId).toBe('leistungen');
+    expect(funktionsTreffer('Katalog', undefined)[0]).toMatchObject({ titel: 'Katalog', untertitel: 'Betrieb › Unternehmen › Katalog', pfad: '/betrieb/katalog/material' });
+    expect(funktionsTreffer('Material', undefined).some((t) => t.pfad === '/betrieb/katalog/material')).toBe(true);
   });
 
   test('Funktionen sind unter Synonymen auffindbar', () => {

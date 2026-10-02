@@ -30,6 +30,9 @@ export type { IconName } from './icons';
 export * from './eingaben';
 export * from './druck';
 export * from './kunde';
+export { MacherOrb, MacherArbeitet, kiGlow, orbFuer, orbText, ORB_ZUSTAENDE, type OrbZustand } from './orb';
+import { MacherOrb, kiGlow } from './orb';
+import type { OrbZustand } from './orb-zustand';
 
 const cx = (...k: (string | false | undefined | null)[]) => k.filter(Boolean).join(' ');
 
@@ -46,6 +49,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   laedt?: boolean;
   /** Text während des Ladens, z. B. „Wird gespeichert …“ */
   laedtText?: string;
+  /** KI-Aktion: beim Laden Macher-Orb + Leuchtrand statt Spinner (Zustand siehe `orb-zustand.ts`) */
+  ki?: OrbZustand;
   breit?: boolean;
   klein?: boolean;
   /** als App-Link rendern */
@@ -57,11 +62,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   download?: string;
 }
 
-export function Button({ variante = 'primaer', icon, laedt, laedtText, breit, klein, to, href, neuerTab, download, className, children, ...rest }: ButtonProps) {
-  const klasse = cx('mm-btn', `mm-btn--${variante}`, breit && 'mm-btn--breit', klein && 'mm-btn--klein', className);
+export function Button({ variante = 'primaer', icon, laedt, laedtText, ki, breit, klein, to, href, neuerTab, download, className, children, ...rest }: ButtonProps) {
+  const klasse = cx('mm-btn', `mm-btn--${variante}`, breit && 'mm-btn--breit', klein && 'mm-btn--klein', ki && kiGlow(laedt), className);
   const inhalt = (
     <>
-      {laedt ? <span className="mm-spinner" aria-hidden /> : icon ? <Icon name={icon} /> : null}
+      {laedt ? ki ? <MacherOrb zustand={ki} groesse={20} /> : <span className="mm-spinner" aria-hidden /> : icon ? <Icon name={icon} /> : null}
       {children != null && <span>{laedt && laedtText ? laedtText : children}</span>}
     </>
   );

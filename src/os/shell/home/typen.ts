@@ -21,8 +21,8 @@ export interface NextAction {
   /** Pain-Score 1–100 (Frequenz × Intensität). Höher = weiter vorn. */
   priority: number;
   icon: IconName;
-  /** z. B. Einrichtung: 3 von 4 Schritten */
-  progress?: { erledigt: number; gesamt: number; schritte?: { titel: string; erledigt: boolean }[] };
+  /** z. B. Einrichtung: 3 von 4 Schritten. `aktion` des aktiven Schritts ist die eine Aktion der Einrichtungsansicht. */
+  progress?: { erledigt: number; gesamt: number; schritte?: { id?: string; titel: string; erledigt: boolean; aktion?: { label: string; pfad: string } }[] };
   actionLabel: string;
   actionUrl: string;
   completed: boolean;
@@ -35,6 +35,11 @@ export interface NextAction {
 
 export type WorkItemTyp = 'aufgabe' | 'freigabe' | 'entscheidung' | 'angebot' | 'vertretung' | 'anfrage';
 export type WorkItemStatus = 'to_do' | 'in_progress' | 'waiting' | 'ready' | 'completed';
+/**
+ * Gruppe in „Deine Arbeit“: erledigen (Aufgaben) · pruefen (vorbereitete Entwürfe) · entscheiden (Macher fragt dich)
+ * · bestaetigen (Macher hat etwas vorbereitet und wartet auf deine Freigabe – KI-Entwürfe).
+ */
+export type WorkItemGruppe = 'erledigen' | 'pruefen' | 'entscheiden' | 'bestaetigen';
 
 export interface WorkItem {
   id: string;
@@ -42,6 +47,7 @@ export interface WorkItem {
   title: string;
   description: string;
   status: WorkItemStatus;
+  gruppe?: WorkItemGruppe;
   /** Pain-Score 1–100 */
   priority: number;
   /** ISO-Zeitpunkt der letzten Änderung */
@@ -67,7 +73,10 @@ export interface ContactPerson {
   messageUrl?: string;
   bookingUrl?: string;
   supportUrl?: string;
+  /** Direktwahl – nur echte Nummern aus dem Backend, nie Beispielnummern */
   telefon?: string;
+  /** Nummer für WhatsApp (falls abweichend vom Telefon; nur wenn der Ansprechpartner WhatsApp wirklich nutzt) */
+  whatsapp?: string;
   /** Beispielinhalt, bis die echte Zuordnung aus dem Backend kommt */
   beispiel?: boolean;
 }

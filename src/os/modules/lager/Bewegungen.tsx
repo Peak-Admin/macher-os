@@ -24,7 +24,7 @@ export function Bewegungen() {
             return (
               <ListenZeile
                 key={b.id}
-                to={a ? `/betrieb/artikel/${a.id}` : undefined}
+                to={a ? `/betrieb/katalog/material/${a.id}` : undefined}
                 titel={`${ART_LABEL[b.art]}: ${a?.name ?? 'Unbekannter Artikel'}`}
                 untertitel={[datum(b.datum), weg, b.mitarbeiterId ? personName(db.mitarbeiter.get(b.mitarbeiterId)) : null, auftrag?.nummer, b.notiz].filter(Boolean).join(' · ')}
                 rechts={

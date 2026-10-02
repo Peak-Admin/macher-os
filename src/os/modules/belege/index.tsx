@@ -7,7 +7,7 @@ import type { ID } from '@core/objects';
 import { darf } from '@core/session';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
 import { AuftragBelegeTab, BelegDetail, BelegeListe, BelegNeu, BelegSchnell } from './Ansichten';
-import { alleBelege, auftragVorschlaege, belegX, brutto, fristenAusKonditionen, lieferantName, naechsteFrist, sichererVorschlag } from './logik';
+import { alleBelege, alsBezahlt, auftragVorschlaege, belegSchritt, belegX, brutto, fristenAusKonditionen, lieferantName, naechsteFrist, sichererVorschlag } from './logik';
 
 const pfad = (id: ID) => `/betrieb/belege/${id}`;
 
@@ -16,7 +16,7 @@ export default defineModul({
   titel: 'Eingangsrechnungen & Belege',
   bereich: 'betrieb',
   gruppe: 'geld',
-  beschreibung: 'Lieferantenrechnungen und Quittungen fotografieren, prüfen, dem Auftrag zuordnen.',
+  beschreibung: 'Lieferantenrechnungen ablegen, fotografieren oder per E-Mail weiterleiten – prüfen, dem Auftrag zuordnen, freigeben, bezahlen.',
   icon: 'dokument',
   gewicht: 70,
   routen: [
@@ -26,13 +26,16 @@ export default defineModul({
   ],
   detail: [{ objekt: 'belege', pfad }],
   kurzinfo: () => {
-    const neu = alleBelege().filter((b) => b.status === 'neu').length;
-    const frist = alleBelege().filter((b) => {
+    const alle = alleBelege();
+    const frist = alle.filter((b) => {
       const f = naechsteFrist(b);
       return f && f.tage <= 3;
     }).length;
     if (frist) return { text: frist === 1 ? '1 Frist läuft ab' : `${frist} Fristen laufen ab`, ton: 'achtung' };
-    return neu ? { text: neu === 1 ? '1 Beleg zu prüfen' : `${neu} Belege zu prüfen`, ton: 'aktiv' } : undefined;
+    const pruefen = alle.filter((b) => belegSchritt(b) === 'pruefen').length;
+    if (pruefen) return { text: pruefen === 1 ? '1 Beleg zu prüfen' : `${pruefen} Belege zu prüfen`, ton: 'aktiv' };
+    const frei = alle.filter((b) => ['zuordnen', 'freigeben'].includes(belegSchritt(b))).length;
+    return frei ? { text: frei === 1 ? '1 Beleg freizugeben' : `${frei} Belege freizugeben`, ton: 'aktiv' } : undefined;
   },
   schnell: [{ id: 'beleg', label: 'Beleg fotografieren', icon: 'kamera', component: BelegSchnell, gewicht: 45 }],
   erstellen: [{ label: 'Beleg fotografieren', pfad: '/betrieb/belege/neu', gewicht: 35 }],
@@ -81,6 +84,30 @@ export default defineModul({
         });
       }
     }
+    // Zugewiesene Prüfung: die Person sieht ihre Belege
+    const jePerson = new Map<ID, number>();
+    for (const b of alleBelege()) if (b.pruefendeId && belegSchritt(b) === 'pruefen') jePerson.set(b.pruefendeId, (jePerson.get(b.pruefendeId) ?? 0) + 1);
+    for (const [mid, n] of jePerson)
+      liste.push({
+        schluessel: `belege-pruefen-fuer:${mid}`,
+        art: 'info' as const,
+        titel: n === 1 ? '1 Beleg wartet auf deine Prüfung' : `${n} Belege warten auf deine Prüfung`,
+        gewicht: 40,
+        fuerMitarbeiterId: mid,
+        pfad: '/betrieb/belege',
+      });
+    // Geprüft und zugeordnet – wartet auf Freigabe (Chef/Büro)
+    const freigabe = alleBelege().filter((b) => belegSchritt(b) === 'freigeben');
+    if (freigabe.length)
+      liste.push({
+        schluessel: 'belege-freigeben',
+        art: 'freigabe' as const,
+        titel: freigabe.length === 1 ? `Eingangsrechnung freigeben: ${lieferantName(freigabe[0])}` : `${freigabe.length} Eingangsrechnungen freigeben`,
+        text: freigabe.length === 1 ? `${euro(brutto(freigabe[0]))} · geprüft und zugeordnet.` : 'Geprüft und dem Auftrag zugeordnet.',
+        gewicht: 45,
+        fuerRollen: ['chef' as const, 'buero' as const],
+        pfad: freigabe.length === 1 ? pfad(freigabe[0].id) : '/betrieb/belege?ansicht=freigeben',
+      });
     // Belege, die seit einer Woche niemand geprüft hat
     const liegen = alleBelege().filter((b) => b.status === 'neu' && tageZwischen(b.erstelltAm.slice(0, 10), heute()) > 7);
     if (liegen.length)
@@ -97,7 +124,7 @@ export default defineModul({
   aktionen: {
     'beleg.bezahlt': (payload) => {
       const id = (payload as { belegId: ID }).belegId;
-      if (belegX(id)) belegAendern(id, { status: 'bezahlt' }, { text: 'Als bezahlt markiert' });
+      if (belegX(id)) alsBezahlt(id);
     },
     'beleg.zuordnung-aufheben': (payload) => {
       const id = (payload as { belegId: ID }).belegId;
@@ -129,6 +156,20 @@ export default defineModul({
         }),
     },
     {
+      id: 'belege.pruefer',
+      titel: 'Neue Belege dem Büro zum Prüfen zuweisen',
+      beschreibung: 'Gibt es genau eine Person im Büro, prüft sie neue Belege. Du kannst die Zuweisung am Beleg ändern.',
+      standardAn: true,
+      minuten: 1,
+      start: () =>
+        on('belege.created', (e) => {
+          const b = e.objekt as BelegX | undefined;
+          if (!b || b.pruefendeId || b.status !== 'neu' || b.beispiel) return;
+          const buero = db.mitarbeiter.where((m) => m.aktiv && m.rolle === 'buero');
+          if (buero.length === 1) belegAendern(b.id, { pruefendeId: buero[0].id }, { text: `${buero[0].vorname} prüft` });
+        }),
+    },
+    {
       id: 'belege.fristen',
       titel: 'Zahlungsziel und Skonto aus den Lieferanten-Konditionen',
       beschreibung: 'Steht beim Lieferanten z. B. „3 % Skonto 10 Tage, 30 Tage netto“, trägt Macher die Fristen am Beleg ein.',
@@ -150,7 +191,7 @@ export default defineModul({
   ],
   suche: (q) =>
     alleBelege()
-      .filter((b) => passt(q, lieferantName(b), b.nummer, b.kategorie, db.auftraege.get(b.auftragId)?.nummer))
+      .filter((b) => passt(q, lieferantName(b), b.nummer, b.kategorie, db.auftraege.get(b.auftragId)?.nummer, b.eingangVon))
       .slice(0, 6)
       .map((b) => ({
         typ: 'Beleg',

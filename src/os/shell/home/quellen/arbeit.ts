@@ -4,7 +4,7 @@
  * und Entscheidungen, Angebotsentwürfe. Reine Regeln, ohne Datenbank testbar.
  */
 import type { Abwesenheit, Angebot, Aufgabe, Auftrag, Bezug, ID, Mitarbeiter } from '@core/objects';
-import type { WorkItem, WorkItemStatus } from '../typen';
+import type { WorkItem, WorkItemGruppe, WorkItemStatus } from '../typen';
 
 export interface ArbeitStand {
   heute: string;
@@ -53,6 +53,7 @@ export function arbeitsposten(s: ArbeitStand): WorkItem[] {
       title: weg ? `Urlaubsaufgabe: ${a.titel}` : a.titel,
       description: weg ? `${kollege ?? 'Ein Kollege'} ist nicht da.${kontext ? ` ${kontext}` : ''}` : kontext || 'Deine Aufgabe',
       status: 'to_do',
+      gruppe: 'erledigen',
       priority: (weg ? 55 : 50) + (ueberfaellig ? 30 : faelligHeute ? 20 : 0) + (a.prioritaet === 'hoch' ? 10 : 0),
       updatedAt: a.geaendertAm,
       projectId: a.auftragId,
@@ -75,6 +76,7 @@ export function arbeitsposten(s: ArbeitStand): WorkItem[] {
       title: h.titel,
       description: h.text ?? (h.art === 'freigabe' ? 'Macher hat das für dich vorbereitet. Prüfen und freigeben.' : 'Braucht deine Entscheidung.'),
       status,
+      gruppe: h.art === 'freigabe' ? 'bestaetigen' : 'entscheiden',
       priority: 40 + Math.round(h.gewicht / 2),
       updatedAt: s.heute,
       actionLabel: h.art === 'freigabe' ? 'Prüfen' : 'Ansehen',
@@ -92,6 +94,7 @@ export function arbeitsposten(s: ArbeitStand): WorkItem[] {
         title: kunde ? `${a.titel} · ${kunde}` : a.titel,
         description: 'Angebot ist vorbereitet – noch nicht verschickt',
         status: 'in_progress',
+        gruppe: 'pruefen',
         priority: 45,
         updatedAt: a.geaendertAm,
         projectId: a.auftragId,
@@ -103,6 +106,25 @@ export function arbeitsposten(s: ArbeitStand): WorkItem[] {
   }
 
   return posten.sort((a, b) => b.priority - a.priority || b.updatedAt.localeCompare(a.updatedAt));
+}
+
+export const GRUPPE_TEXT: Record<WorkItemGruppe, string> = {
+  erledigen: 'Zu erledigen',
+  pruefen: 'Zu prüfen',
+  entscheiden: 'Zu entscheiden',
+  bestaetigen: 'Zu bestätigen',
+};
+
+/** Gezeigte Posten nach Gruppe bündeln – Reihenfolge der Gruppen nach ihrem wichtigsten Posten (Exception-First) */
+export function nachGruppe(posten: WorkItem[]): { gruppe: WorkItemGruppe; posten: WorkItem[] }[] {
+  const out: { gruppe: WorkItemGruppe; posten: WorkItem[] }[] = [];
+  for (const w of posten) {
+    const g = w.gruppe ?? 'erledigen';
+    const da = out.find((x) => x.gruppe === g);
+    if (da) da.posten.push(w);
+    else out.push({ gruppe: g, posten: [w] });
+  }
+  return out;
 }
 
 export const STATUS_TEXT: Record<WorkItemStatus, string> = {

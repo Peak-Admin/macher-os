@@ -201,7 +201,7 @@ export function MitarbeiterZeitenTab({ id }: { id: ID }) {
             key={z.id}
             titel={`${datum(z.datum)} · ${z.start}–${z.ende ?? 'läuft'}`}
             untertitel={`${zeitTitel(z)}${z.ende ? ` · ${stunden(dauer(z))}` : ''}`}
-            rechts={!z.ende ? <Status ton="aktiv">Läuft</Status> : z.freigegeben ? <Status ton="erfolg">Freigegeben</Status> : <Status>Offen</Status>}
+            rechts={!z.ende ? <Status ton="aktiv">Läuft</Status> : z.freigegeben ? <Status ton="erfolg">Freigegeben</Status> : <Status>{darfAendern ? 'Zu prüfen' : 'Offen'}</Status>}
           />
         ))}
       </Liste>

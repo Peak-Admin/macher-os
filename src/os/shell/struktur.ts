@@ -236,18 +236,10 @@ export const STRUKTUR: Hauptbereich[] = [
       {
         id: 'ausstattung',
         titel: 'Ausstattung',
-        text: 'Material & Geräte',
+        text: 'Lager, Einkauf & Geräte',
         icon: 'werkzeug',
         ziele: [
-          {
-            id: 'material',
-            titel: 'Material',
-            ansichten: [
-              { titel: 'Katalog', module: ['artikel'] },
-              { titel: 'Bestand', module: ['lager'] },
-            ],
-            stichworte: ['Artikel', 'Material', 'Lager', 'Bestand', 'Inventur'],
-          },
+          { id: 'lager', titel: 'Lager', ansichten: [{ titel: 'Bestand', module: ['lager'] }], stichworte: ['Lager', 'Bestand', 'Inventur', 'Mindestbestand'] },
           {
             id: 'einkauf',
             titel: 'Einkauf',
@@ -276,10 +268,19 @@ export const STRUKTUR: Hauptbereich[] = [
       {
         id: 'unternehmen',
         titel: 'Unternehmen',
-        text: 'Grundlagen & Regeln',
+        text: 'Katalog, Vorlagen & Regeln',
         icon: 'einstellungen',
         ziele: [
-          { id: 'leistungen', titel: 'Leistungen & Preise', kurz: 'Leistungen', ansichten: [{ titel: 'Leistungen', module: ['leistungen'] }], stichworte: ['Leistung', 'Preis', 'Stundensatz', 'Preisliste'] },
+          {
+            // Was kommt aufs Angebot, auf die Rechnung? Material und Leistungen an einem Ort – zwei Sammlungen, keine Kopien.
+            id: 'katalog',
+            titel: 'Katalog',
+            ansichten: [
+              { titel: 'Material', module: ['artikel'] },
+              { titel: 'Leistungen', module: ['leistungen'] },
+            ],
+            stichworte: ['Katalog', 'Artikel', 'Material', 'Leistung', 'Preis', 'Preisliste', 'Stundensatz', 'Einkaufspreis', 'Verkaufspreis', 'Aufschlag', 'Zuschlag', 'DATANORM'],
+          },
           { id: 'vorlagen', titel: 'Vorlagen', ansichten: [{ titel: 'Vorlagen', module: ['vorlagen'] }], stichworte: ['Vorlage', 'Formular', 'Briefkopf', 'Textbaustein'] },
           { id: 'wissen', titel: 'Wissen', ansichten: [{ titel: 'Wissen', module: ['wissen'] }], stichworte: ['Wissen', 'Anleitung', 'Handbuch'] },
           {

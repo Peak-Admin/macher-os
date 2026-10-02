@@ -10,7 +10,7 @@ import { AngebotDetail } from './AngebotDetail';
 import { AngebotDruck } from './AngebotDruck';
 import { portalGeoeffnet } from './erstwert';
 import { alsNachgefasstMarkieren, angebotSummen, entwurfFuer, istAktuelleVersion, istAbgelaufen, laeuftBaldAb, nachfassenFaellig, nachfassenTage } from './daten';
-import { ANGEBOT_AKTIONEN } from './gateway';
+import { ANGEBOT_AKTIONEN, ANGEBOT_ENTWURF } from './gateway';
 
 const aktuelleAngebote = () => {
   const alle = db.angebote.all();
@@ -96,7 +96,7 @@ export default defineModul({
     const n = aktuelleAngebote().filter((a) => a.status === 'versendet').length;
     return n ? { text: n === 1 ? '1 Angebot offen' : `${n} Angebote offen`, ton: 'aktiv' } : undefined;
   },
-  gateway: { aktionen: [...ANGEBOT_AKTIONEN] },
+  gateway: { aktionen: [...ANGEBOT_AKTIONEN, ...ANGEBOT_ENTWURF] },
   aktionen: {
     'angebot.erstellen': (p) => {
       const { auftragId } = p as { auftragId: ID };

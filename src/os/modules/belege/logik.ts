@@ -1,12 +1,15 @@
 /**
- * Eingangsrechnungen & Belege: Konditionen (Skonto/Zahlungsziel) lesen, Auftrag vorschlagen,
- * Fristen erkennen, Fotos verkleinern.
+ * Eingangsrechnungen & Belege: Ablauf (Neu → Prüfen → Zuordnen → Freigeben → Bezahlt), Konditionen (Skonto/Zahlungsziel)
+ * lesen, Auftrag vorschlagen, Fristen erkennen, Dateien ablegen, Belege-Postfach (E-Mail-Eingang).
  */
+import { cloudAktiv } from '@core/cloud';
 import { db } from '@core/db';
 import { heute, plusTage, tageZwischen } from '@core/format';
 import type { Cent, Datum, ID } from '@core/objects';
-import type { BelegX } from '../rechnungen/typen';
+import { ichId } from '@core/session';
+import { belegAendern, type BelegX } from '../rechnungen/typen';
 import { dateiLesen } from '@ui/index';
+import { belegePostfachAdresse } from '@/os/server/belege-postfach';
 
 export const alleBelege = () => db.belege.all() as BelegX[];
 export const belegX = (id: ID | undefined) => db.belege.get(id) as BelegX | undefined;
@@ -154,7 +157,173 @@ export function naechsteFrist(b: BelegX, stichtag: Datum = heute()): Frist | und
   return undefined;
 }
 
+// ------------------------------------------------------------------ Ablauf
+
+/**
+ * Schritte einer Eingangsrechnung. Der Kern-Status (`neu` | `geprueft` | `bezahlt`) bleibt, damit alte Daten und andere
+ * Module (DATEV, Auswertung) unverändert funktionieren. Abbildung:
+ * - `neu` → „Prüfen“
+ * - `geprueft` ohne Auftrag (und nicht „ohne Auftrag“ markiert) → „Zuordnen“
+ * - `geprueft` mit Auftrag, nicht freigegeben → „Freigeben“
+ * - `geprueft` und freigegeben → „Zahlen“
+ * - `bezahlt` → „Bezahlt“
+ * Altbestand: Belege, die vor dem neuen Ablauf auf „geprüft“ gesetzt wurden (kein `geprueftAm`), galten als zahlbereit –
+ * sie landen direkt bei „Zahlen“. Es wird nichts umgeschrieben.
+ */
+export type Schritt = 'pruefen' | 'zuordnen' | 'freigeben' | 'zahlen' | 'bezahlt';
+
+export function belegSchritt(b: Pick<BelegX, 'status' | 'geprueftAm' | 'freigegebenAm' | 'auftragId' | 'ohneAuftrag'>): Schritt {
+  if (b.status === 'bezahlt') return 'bezahlt';
+  if (b.status !== 'geprueft') return 'pruefen';
+  if (!b.geprueftAm && !b.freigegebenAm) return 'zahlen';
+  if (!b.auftragId && !b.ohneAuftrag) return 'zuordnen';
+  if (!b.freigegebenAm) return 'freigeben';
+  return 'zahlen';
+}
+
+/** Anzeige der Schritte (Schrittanzeige im Detail): „Neu“ ist mit dem Eingang erledigt */
+export const SCHRITTE: { id: 'neu' | Exclude<Schritt, 'zahlen'>; label: string }[] = [
+  { id: 'neu', label: 'Neu' },
+  { id: 'pruefen', label: 'Prüfen' },
+  { id: 'zuordnen', label: 'Zuordnen' },
+  { id: 'freigeben', label: 'Freigeben' },
+  { id: 'bezahlt', label: 'Bezahlt' },
+];
+
+/** Index des aktuellen Schritts in `SCHRITTE` („Zahlen“ = der Schritt „Bezahlt“ steht an) */
+export function schrittIndex(s: Schritt): number {
+  return s === 'zahlen' ? 4 : SCHRITTE.findIndex((x) => x.id === s);
+}
+
+export const SCHRITT_STATUS: Record<Schritt, { text: string; ton: 'aktiv' | 'neutral' | 'erfolg' }> = {
+  pruefen: { text: 'Zu prüfen', ton: 'aktiv' },
+  zuordnen: { text: 'Auftrag fehlt', ton: 'neutral' },
+  freigeben: { text: 'Freizugeben', ton: 'neutral' },
+  zahlen: { text: 'Offen zu zahlen', ton: 'neutral' },
+  bezahlt: { text: 'Bezahlt', ton: 'erfolg' },
+};
+
+/** Ansichten der Arbeits-Inbox */
+export type Ansicht = 'pruefen' | 'freigeben' | 'zahlen' | 'alle';
+export const ANSICHTEN: Ansicht[] = ['pruefen', 'freigeben', 'zahlen', 'alle'];
+
+export function inAnsicht(b: BelegX, a: Ansicht): boolean {
+  const s = belegSchritt(b);
+  if (a === 'pruefen') return s === 'pruefen';
+  if (a === 'freigeben') return s === 'zuordnen' || s === 'freigeben';
+  if (a === 'zahlen') return s === 'zahlen';
+  return true;
+}
+
+/** Was fehlt, bevor ein Beleg als geprüft gelten kann? (leer = alles da) */
+export function pruefLuecken(b: BelegX): string[] {
+  const fehlt: string[] = [];
+  if (!b.lieferantId && !b.lieferantName?.trim()) fehlt.push('Lieferant');
+  if (b.netto + b.ust <= 0) fehlt.push('Betrag');
+  if (!b.datum) fehlt.push('Belegdatum');
+  return fehlt;
+}
+
+const jetzt = () => new Date().toISOString();
+
+/** Schritt „Prüfen“ abschließen */
+export function alsGeprueft(id: ID) {
+  return belegAendern(id, { status: 'geprueft', geprueftAm: jetzt(), geprueftVon: ichId() }, { text: 'Geprüft' });
+}
+
+/** Schritt „Zuordnen“: Auftrag setzen (mit Dokument) oder bewusst ohne Auftrag weiter */
+export function auftragZuordnen(id: ID, auftragId: ID | undefined) {
+  const b = belegX(id);
+  if (!b) return;
+  belegAendern(id, { auftragId, ohneAuftrag: auftragId ? undefined : b.ohneAuftrag, zuordnungGrund: undefined }, { text: auftragId ? `Auftrag ${db.auftraege.get(auftragId)?.nummer ?? ''} zugeordnet`.trim() : 'Zuordnung aufgehoben' });
+  if (b.dokumentId) db.dokumente.update(b.dokumentId, { auftragId }, { leise: true });
+}
+
+export function ohneAuftragWeiter(id: ID) {
+  return belegAendern(id, { ohneAuftrag: true, auftragId: undefined, zuordnungGrund: undefined }, { text: 'Gehört zu keinem Auftrag' });
+}
+
+export function freigeben(id: ID) {
+  return belegAendern(id, { freigegebenAm: jetzt(), freigegebenVon: ichId() }, { text: 'Zur Zahlung freigegeben' });
+}
+
+export function alsBezahlt(id: ID) {
+  return belegAendern(id, { status: 'bezahlt', bezahltAm: heute() }, { text: 'Als bezahlt markiert' });
+}
+
+/** Zurück auf „Prüfen“ – alle Ablauf-Stempel weg (Auftrag und Werte bleiben) */
+export function zuruecksetzen(id: ID) {
+  return belegAendern(
+    id,
+    { status: 'neu', geprueftAm: undefined, geprueftVon: undefined, freigegebenAm: undefined, freigegebenVon: undefined, bezahltAm: undefined },
+    { text: 'Wieder auf „Prüfen“ gesetzt' },
+  );
+}
+
+/** Wer kann prüfen? Aktive Mitarbeiter, Büro und Chef zuerst */
+export function pruefende() {
+  const rang = (r: string) => (r === 'buero' ? 0 : r === 'chef' ? 1 : 2);
+  return db.mitarbeiter
+    .where((m) => m.aktiv)
+    .sort((a, b) => rang(a.rolle) - rang(b.rolle) || `${a.vorname} ${a.nachname}`.localeCompare(`${b.vorname} ${b.nachname}`));
+}
+
+export function personName(id: ID | undefined) {
+  const m = db.mitarbeiter.get(id);
+  return m ? `${m.vorname} ${m.nachname}`.trim() : undefined;
+}
+
+// ------------------------------------------------------------------ E-Mail-Eingang (Belege-Postfach)
+
+/** Öffentlicher Schalter: der Betreiber setzt ihn erst, wenn Mail-Dienst, DNS und Webhook laufen (docs/os/BELEGE-EMAIL.md) */
+const EINGANG_FREIGESCHALTET = process.env.NEXT_PUBLIC_BELEGE_EMAIL_AKTIV === '1';
+
+export interface EmailEingang {
+  adresse: string;
+  aktiv: boolean;
+  text: string;
+}
+
+/** Adresse des Belege-Postfachs und ob es wirklich Mails annimmt – ehrlich, nie „aktiv“ ohne Server */
+export function emailEingang(opts: { cloud?: boolean; freigeschaltet?: boolean } = {}): EmailEingang {
+  const adresse = belegePostfachAdresse(db.betrieb.get('betrieb')?.name);
+  const cloud = opts.cloud ?? cloudAktiv();
+  const frei = opts.freigeschaltet ?? EINGANG_FREIGESCHALTET;
+  if (!cloud) return { adresse, aktiv: false, text: 'Noch nicht aktiv: Der E-Mail-Eingang braucht die Cloud-Verbindung („Daten sichern“).' };
+  if (!frei) return { adresse, aktiv: false, text: 'Noch nicht aktiv: Der Mail-Empfang wird gerade eingerichtet. Bis dahin leg PDFs hier ab.' };
+  return { adresse, aktiv: true, text: 'Aktiv: Leite Rechnungen an diese Adresse weiter. PDFs und Fotos im Anhang landen unter „Zu prüfen“.' };
+}
+
 // ------------------------------------------------------------------ Dateien
+
+export const BELEG_DATEITYPEN = 'application/pdf,image/jpeg,image/png,image/*';
+
+/** Passt die Datei als Beleg? Liefert die Fehlermeldung oder undefined */
+export function dateiPruefen(f: Pick<File, 'type' | 'size' | 'name'>): string | undefined {
+  const pdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+  if (!pdf && !f.type.startsWith('image/')) return `${f.name || 'Die Datei'} ist kein PDF und kein Foto.`;
+  if (pdf && f.size > 2_000_000) return `${f.name || 'Das PDF'} ist größer als 2 MB. Fotografiere den Beleg lieber.`;
+  return undefined;
+}
+
+/** Datei ablegen und daraus einen Beleg „neu“ machen (Drag & Drop, Datei wählen, Foto) */
+export async function belegAusDatei(datei: File, opts: { quelle?: 'foto' | 'upload'; pruefendeId?: ID } = {}): Promise<BelegX> {
+  const fehler = dateiPruefen(datei);
+  if (fehler) throw new Error(fehler);
+  const d = await dateiAblegen(datei);
+  const b = db.belege.create({
+    art: 'eingangsrechnung',
+    datum: heute(),
+    netto: 0,
+    ust: 0,
+    status: 'neu',
+    dokumentId: d.id,
+    quelle: opts.quelle ?? 'upload',
+    pruefendeId: opts.pruefendeId,
+  } as Parameters<typeof db.belege.create>[0]) as BelegX;
+  db.dokumente.update(d.id, { bezug: { typ: 'belege', id: b.id } }, { leise: true });
+  return b;
+}
 
 /** Foto/PDF als Dokument ablegen und Beleg anlegen */
 export async function dateiAblegen(datei: File, opts: { auftragId?: ID } = {}) {

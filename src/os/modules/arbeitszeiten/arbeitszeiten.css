@@ -1,0 +1,25 @@
+/* Zeitraum-Übersicht: ruhige Kacheln in einer Karte, umbrechend ab 320 px */
+.az-streifen {
+  display: grid; gap: 12px; padding: 16px;
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card);
+  background: var(--mm-surface); min-width: 0;
+}
+.az-streifen-kopf { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+.az-streifen-titel { margin: 0; font: 600 16px/24px var(--mm-font); color: var(--mm-text); }
+.az-streifen-liste {
+  display: grid; gap: 8px; margin: 0;
+  grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
+}
+.az-kachel {
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+  padding: 12px; border-radius: var(--mm-radius-control); background: var(--mm-surface-subtle);
+}
+.az-kachel dt { font: 600 14px/20px var(--mm-font); color: var(--mm-text); overflow-wrap: break-word; }
+.az-kachel dd { margin: 0; overflow-wrap: anywhere; }
+.az-kachel-wert { font: 700 22px/28px var(--mm-font); color: var(--mm-black); font-variant-numeric: tabular-nums; }
+.az-kachel-wert--null { color: var(--mm-text-secondary); font-weight: 600; }
+@media (max-width: 479px) {
+  .az-streifen-liste { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .az-kachel { padding: 8px 10px; }
+  .az-kachel-wert { font-size: 20px; line-height: 26px; }
+}

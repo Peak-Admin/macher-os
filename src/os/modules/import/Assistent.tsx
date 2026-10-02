@@ -12,7 +12,7 @@ import {
   Button,
   DateiKnopf,
   Karte,
-  Laden,
+  MacherArbeitet,
   Leer,
   Liste,
   ListenZeile,
@@ -139,7 +139,7 @@ export function Assistent() {
           <>
             <Karte titel={vorgabe ? `${artDef(vorgabe).label} aus Excel übernehmen` : 'Welche Datei möchtest du übernehmen?'}>
               {laedt ? (
-                <Laden text="Macher liest die Datei …" />
+                <MacherArbeitet zustand="verbindet" text="Macher liest die Datei …" />
               ) : (
                 <Stapel>
                   <Meta>Excel (.xlsx) oder CSV. Die erste Zeile braucht Überschriften, darunter steht je Zeile ein Eintrag. Macher erkennt selbst, was drinsteht.</Meta>

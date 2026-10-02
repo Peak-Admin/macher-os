@@ -61,7 +61,7 @@ export function PreisRechner({ ek, vk, onChange }: { ek: string; vk: string; onC
   );
 }
 
-/** Anlegen (`/betrieb/artikel/neu`) und Bearbeiten (`/betrieb/artikel/:id/bearbeiten`) */
+/** Anlegen (`/betrieb/katalog/material/neu`) und Bearbeiten (`/betrieb/katalog/material/:id/bearbeiten`) */
 export function ArtikelFormular() {
   const { id } = useParams();
   const a = db.artikel.useOne(id);
@@ -90,7 +90,7 @@ export function ArtikelFormular() {
 
   if (id && !a)
     return (
-      <Seite titel="Nicht gefunden" zurueck={{ to: '/betrieb/artikel', label: 'Artikel' }}>
+      <Seite titel="Nicht gefunden" zurueck={{ to: '/betrieb/katalog/material', label: 'Artikel' }}>
         <Leer titel="Diesen Artikel gibt es nicht (mehr)." icon="paket" />
       </Seite>
     );
@@ -118,7 +118,7 @@ export function ArtikelFormular() {
       const patch = { ...daten, ...(f.lagerartikel ? (a.bestand == null ? { bestand: 0, lagerort: 'Hauptlager' } : {}) : { bestand: undefined }) };
       db.artikel.update(a.id, patch);
       toast('Artikel gespeichert.');
-      navigate(`/betrieb/artikel/${a.id}`, { replace: true });
+      navigate(`/betrieb/katalog/material/${a.id}`, { replace: true });
     } else {
       const neu = db.artikel.create({
         ...(daten as Artikel),
@@ -128,7 +128,7 @@ export function ArtikelFormular() {
         lagerort: f.lagerartikel ? 'Hauptlager' : undefined,
       });
       toast('Artikel angelegt.');
-      navigate(`/betrieb/artikel/${neu.id}`, { replace: true });
+      navigate(`/betrieb/katalog/material/${neu.id}`, { replace: true });
     }
   };
 
@@ -137,13 +137,13 @@ export function ArtikelFormular() {
     if (!(await fragen('Artikel löschen?', `„${a.name}“ kommt in den Papierkorb. Buchungen an Aufträgen bleiben erhalten.`, 'In den Papierkorb'))) return;
     db.artikel.remove(a.id);
     toast('Artikel gelöscht.', { aktion: { label: 'Rückgängig', onClick: () => db.artikel.restore(a.id) } });
-    navigate('/betrieb/artikel', { replace: true });
+    navigate('/betrieb/katalog/material', { replace: true });
   };
 
   const ff = (feld: string) => (fehler?.feld === feld ? fehler.text : undefined);
 
   return (
-    <Seite titel={a ? `${a.name} bearbeiten` : 'Artikel anlegen'} zurueck={a ? { to: `/betrieb/artikel/${a.id}`, label: a.name } : { to: '/betrieb/artikel', label: 'Artikel' }}>
+    <Seite titel={a ? `${a.name} bearbeiten` : 'Artikel anlegen'} zurueck={a ? { to: `/betrieb/katalog/material/${a.id}`, label: a.name } : { to: '/betrieb/katalog/material', label: 'Artikel' }}>
       {bestaetigung}
       <form
         onSubmit={(e) => {

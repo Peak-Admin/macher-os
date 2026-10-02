@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
-import { artikelImportieren, aufschlagProzent, csvParsen, einheitAus, margeProzent, spaltenRaten, vkAusAufschlag, zeilenUmwandeln } from './daten';
+import { artikelImportieren, aufschlagProzent, preisAendern, csvParsen, einheitAus, margeProzent, spaltenRaten, vkAusAufschlag, zeilenUmwandeln } from './daten';
 import { zahlAus } from '@ui/index';
 
 describe('Artikel', () => {
@@ -11,6 +11,23 @@ describe('Artikel', () => {
     expect(margeProzent(1000, 1500)).toBeCloseTo(33.3);
     expect(vkAusAufschlag(1234, 30)).toBe(1604);
     expect(aufschlagProzent(0, 100)).toBeUndefined();
+  });
+
+  it('ändert Preise in der Liste wie der Aufschlag-Rechner', () => {
+    const alt = { ek: 1000, vk: 1250 };
+    // EK steigt → Zuschlag bleibt 25 %, VK zieht mit
+    expect(preisAendern(alt, 'ek', 12)).toEqual({ ek: 1200, vk: 1500 });
+    // Zuschlag ändern → VK neu
+    expect(preisAendern(alt, 'aufschlag', 40)).toEqual({ ek: 1000, vk: 1400 });
+    // VK direkt → Zuschlag ergibt sich
+    const neu = preisAendern(alt, 'vk', 15);
+    expect(neu).toEqual({ ek: 1000, vk: 1500 });
+    expect(aufschlagProzent(1000, 1500)).toBe(50);
+    // ohne EK: VK bleibt beim ersten EK stehen, Zuschlag geht nicht
+    expect(preisAendern({ ek: 0, vk: 900 }, 'ek', 6)).toEqual({ ek: 600, vk: 900 });
+    expect(preisAendern({ ek: 0, vk: 900 }, 'aufschlag', 20)).toHaveProperty('fehler');
+    expect(preisAendern(alt, 'ek', undefined)).toHaveProperty('fehler');
+    expect(preisAendern(alt, 'vk', -1)).toHaveProperty('fehler');
   });
 
   it('liest deutsche Zahlen', () => {
