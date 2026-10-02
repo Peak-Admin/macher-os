@@ -2,19 +2,24 @@
  * Bereichsseite: Widgets der Module (nach Pain-Gewicht), darunter die übrigen Module als geordnete Listen –
  * keine Kachelwand. Einträge, die Aufmerksamkeit brauchen, stehen in ihrer Gruppe oben.
  * „Heute“ bekommt einen kompakten dunklen Markenbereich als persönlichen Einstieg (Playbook 11 A).
+ *
+ * „Betrieb“ ist zugleich das Verzeichnis aller Module: Die Navigation hat keine Unterpunkte,
+ * hier findet man alles (mit Suche) und markiert Module mit dem Stern als Favorit für die Navigation.
  */
 import { BEREICHE, BETRIEB_GRUPPEN, modulPfad, moduleIn, type Bereich, type ModulDef } from '@core/modul';
 import { useDatenstand } from '@core/db';
 import { oeffne } from '@core/overlay';
 import { useIch } from '@core/session';
-import { Abschnitt, Button, Icon, Leer, Seite, Status } from '@ui/index';
+import { modulSichtbar, useFavoriten } from '@core/favoriten';
+import { Abschnitt, Button, Icon, Leer, Seite, Status, Suchfeld } from '@ui/index';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const UNTERTITEL: Record<string, string> = {
   heute: 'Was jetzt wichtig ist.',
   auftraege: 'Vom ersten Anruf bis zur bezahlten Rechnung.',
   plan: 'Wer macht was, wann und wo.',
-  betrieb: 'Alles, was dein Betrieb dauerhaft braucht.',
+  betrieb: 'Alles, was dein Betrieb dauerhaft braucht. Hier findest du alle Module – markiere deine wichtigsten mit dem Stern.',
 };
 
 export function Hub({ bereich }: { bereich: Exclude<Bereich, 'macher'> }) {
@@ -33,26 +38,13 @@ export function Hub({ bereich }: { bereich: Exclude<Bereich, 'macher'> }) {
         return <W key={m.id} />;
       })}
       {bereich === 'betrieb' ? (
-        <div className="mm-hub-gruppen">
-          {BETRIEB_GRUPPEN.map((g) => {
-            const ms = links.filter((m) => m.gruppe === g.id);
-            if (!ms.length) return null;
-            return (
-              <section key={g.id} className="mm-hub-gruppe" aria-labelledby={`gruppe-${g.id}`}>
-                <h2 id={`gruppe-${g.id}`} className="mm-hub-gruppe-titel">
-                  {g.titel}
-                </h2>
-                <ModulListe module={ms} />
-              </section>
-            );
-          })}
-        </div>
+        <AlleModule />
       ) : links.length ? (
         <Abschnitt titel={widgets.length ? 'Mehr in diesem Bereich' : undefined}>
           <ZweiListen module={links} />
         </Abschnitt>
       ) : null}
-      {!widgets.length && !links.length && <Leer titel="Hier entsteht gerade etwas" text="Die Module für diesen Bereich werden eingerichtet." />}
+      {bereich !== 'betrieb' && !widgets.length && !links.length && <Leer titel="Hier entsteht gerade etwas" text="Die Module für diesen Bereich werden eingerichtet." />}
     </>
   );
 
@@ -68,6 +60,42 @@ export function Hub({ bereich }: { bereich: Exclude<Bereich, 'macher'> }) {
     <Seite titel={titel} untertitel={UNTERTITEL[bereich]} breit>
       {inhalt}
     </Seite>
+  );
+}
+
+const ANDERE_BEREICHE = BEREICHE.filter((b) => b.id !== 'betrieb');
+
+/** Verzeichnis aller Module: Betrieb-Gruppen, dann die Module der anderen Bereiche. Mit Suche. */
+function AlleModule() {
+  const ich = useIch();
+  const [suche, setSuche] = useState('');
+  const q = suche.trim().toLowerCase();
+  const passt = (m: ModulDef) => modulSichtbar(m, ich) && (!q || `${m.titel} ${m.beschreibung}`.toLowerCase().includes(q));
+  const gruppen = [
+    ...BETRIEB_GRUPPEN.map((g) => ({ id: g.id, titel: g.titel, module: moduleIn('betrieb', g.id).filter(passt) })),
+    ...ANDERE_BEREICHE.map((b) => ({ id: b.id, titel: b.titel, module: moduleIn(b.id).filter(passt) })),
+  ].filter((g) => g.module.length);
+
+  return (
+    <>
+      <div className="mm-modulsuche">
+        <Suchfeld wert={suche} onChange={setSuche} platzhalter="Modul finden …" />
+      </div>
+      {gruppen.length ? (
+        <div className="mm-hub-gruppen">
+          {gruppen.map((g) => (
+            <section key={g.id} className="mm-hub-gruppe" aria-labelledby={`gruppe-${g.id}`}>
+              <h2 id={`gruppe-${g.id}`} className="mm-hub-gruppe-titel">
+                {g.titel}
+              </h2>
+              <ModulListe module={g.module} />
+            </section>
+          ))}
+        </div>
+      ) : (
+        <Leer titel="Kein Modul gefunden" text={`Zu „${suche.trim()}“ gibt es kein Modul. Versuch ein anderes Wort.`} />
+      )}
+    </>
   );
 }
 
@@ -117,13 +145,14 @@ function ZweiListen({ module }: { module: ModulDef[] }) {
 }
 
 function ModulListe({ module, sortiert }: { module: ModulDef[]; sortiert?: boolean }) {
+  const favoriten = useFavoriten();
   const liste = sortiert ? module : [...module].sort((a, b) => prioritaet(a) - prioritaet(b));
   return (
     <ul className="mm-liste">
       {liste.map((m) => {
         const info = m.kurzinfo?.();
         return (
-          <li key={m.id}>
+          <li key={m.id} className="mm-modulzeile-eintrag">
             <Link to={modulPfad(m)} className="mm-listenzeile mm-listenzeile--klickbar mm-modulzeile">
               <span className="mm-modulzeile-icon" aria-hidden>
                 <Icon name={m.icon ?? 'info'} size={20} />
@@ -139,9 +168,25 @@ function ModulListe({ module, sortiert }: { module: ModulDef[]; sortiert?: boole
               )}
               <Icon name="weiter" size={16} className="mm-modulzeile-pfeil" />
             </Link>
+            <FavoritKnopf an={favoriten.istFavorit(m.id)} titel={m.titel} umschalten={() => favoriten.umschalten(m.id)} />
           </li>
         );
       })}
     </ul>
+  );
+}
+
+function FavoritKnopf({ an, titel, umschalten }: { an: boolean; titel: string; umschalten: () => void }) {
+  return (
+    <button
+      type="button"
+      className={`mm-iconbtn mm-favorit ${an ? 'mm-favorit--an' : ''}`}
+      aria-pressed={an}
+      aria-label={an ? `${titel} aus Favoriten entfernen` : `${titel} als Favorit markieren`}
+      title={an ? 'Aus Favoriten entfernen' : 'Als Favorit in die Navigation'}
+      onClick={umschalten}
+    >
+      <Icon name="stern" />
+    </button>
   );
 }

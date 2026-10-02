@@ -42,7 +42,7 @@ Siehe `src/modules/kunden/` als Referenz.
 |---|---|
 | `bereich`, `gruppe` | Heute · Aufträge · Plan · Betrieb (+ Gruppe im Betrieb) oder `macher` (global) |
 | `gewicht` | Pain-Score 1–100 → Reihenfolge in Navigation und Hub |
-| `navigation` | `haupt` (in Unternavigation), `hub` (nur Kachel), `versteckt` |
+| `navigation` | `haupt` / `hub` (auf der Bereichsseite und im Modulverzeichnis unter „Betrieb“), `versteckt` (nur per Link). Die Seitennavigation hat **keine Unterpunkte** – Module kommen nur als Favorit des Nutzers hinein. |
 | `routen` | relativ zu `/<bereich>/<id>`; `''` = Startansicht, `':id'` = Detail |
 | `vollbildRouten` | ohne App-Rahmen (z. B. Kundenbereich `/k/:token`, Onboarding `/willkommen`) |
 | `hubWidget` | kompakter Block auf der Bereichsseite (nur wenn wirklich wichtig) |

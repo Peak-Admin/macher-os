@@ -1,10 +1,14 @@
 /**
  * App-Rahmen: 4 Hauptbereiche (Heute · Aufträge · Plan · Betrieb), Topbar mit
  * Suche / Macher fragen / Neu, mobile Navigation unten. Alles Weitere kommt aus Modulen.
+ *
+ * Navigation ist flach: jeder Eintrag ist ein Klick, keine aufklappenden Unterpunkte.
+ * Module findet man unter „Betrieb“; mit dem Stern markierte Module stehen zusätzlich als Favoriten hier.
  */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { BEREICHE, alleErstellen, modulPfad, moduleIn, type Bereich } from '@core/modul';
+import { useFavoriten } from '@core/favoriten';
 import { oeffne } from '@core/overlay';
 import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
@@ -47,14 +51,12 @@ export function Shell({ children }: { children: ReactNode }) {
         </Link>
         <nav className="mm-nav">
           {BEREICHE.map((b) => (
-            <div key={b.id} className="mm-nav-gruppe">
-              <NavLink to={b.pfad} className={({ isActive }) => `mm-nav-haupt ${isActive || aktiverBereich === b.id ? 'mm-nav-haupt--aktiv' : ''}`}>
-                <Icon name={BEREICH_ICON[b.id]} />
-                {b.titel}
-              </NavLink>
-              {aktiverBereich === b.id && <UnterNavigation bereich={b.id} />}
-            </div>
+            <NavLink key={b.id} to={b.pfad} className={({ isActive }) => `mm-nav-haupt ${isActive || aktiverBereich === b.id ? 'mm-nav-haupt--aktiv' : ''}`}>
+              <Icon name={BEREICH_ICON[b.id]} />
+              {b.titel}
+            </NavLink>
           ))}
+          <Favoriten />
         </nav>
         <MacherLinks />
         <NutzerWechsel />
@@ -110,20 +112,30 @@ function BottomLink({ pfad, titel, icon }: { pfad: string; titel: string; icon: 
   );
 }
 
-function UnterNavigation({ bereich }: { bereich: Bereich }) {
-  const ich = useIch();
-  const module = moduleIn(bereich).filter((m) => m.navigation === 'haupt' && m.routen?.length && (!m.rollen || !ich || m.rollen.includes(ich.rolle)));
-  if (!module.length) return null;
+/** Vom Nutzer mit dem Stern markierte Module – flach, ein Klick */
+function Favoriten() {
+  const { module } = useFavoriten();
   return (
-    <ul className="mm-nav-unter">
-      {module.map((m) => (
-        <li key={m.id}>
-          <NavLink to={modulPfad(m)} className={({ isActive }) => `mm-nav-unterlink ${isActive ? 'mm-nav-unterlink--aktiv' : ''}`}>
-            {m.titel}
-          </NavLink>
-        </li>
-      ))}
-    </ul>
+    <section className="mm-nav-favoriten" aria-labelledby="nav-favoriten">
+      <h2 id="nav-favoriten" className="mm-nav-titel">
+        Favoriten
+      </h2>
+      {module.length ? (
+        <ul className="mm-nav-liste">
+          {module.map((m) => (
+            <li key={m.id}>
+              <NavLink to={modulPfad(m)} className={({ isActive }) => `mm-nav-unterlink ${isActive ? 'mm-nav-unterlink--aktiv' : ''}`}>
+                <Icon name={m.icon ?? 'stern'} size={16} /> {m.titel}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mm-nav-leer">
+          Markiere Module unter <Link to="/betrieb">Betrieb</Link> mit dem Stern. Dann stehen sie hier.
+        </p>
+      )}
+    </section>
   );
 }
 

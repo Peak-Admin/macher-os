@@ -30,6 +30,22 @@ Optional Flagge oder Icon vor dem Label (Vorbild: Länderwahl Deutschland · Ös
 - Website: `Umschalter` in `src/components/werkzeuge/felder.tsx`
 - Software: `Segmente` (`.mm-segmente`, `.mm-segment--an`), Tokens `--mm-switch-*`
 
+### Navigation: ein Klick, keine Unterpunkte
+Die Seitennavigation ist **flach**. Jeder Eintrag führt mit einem Klick zum Ziel – keine aufklappenden
+Unterpunkte, keine zweite Ebene unter den Bereichen.
+
+- **Feste Einträge:** nur die vier Bereiche Heute · Aufträge · Plan · Betrieb (plus die globalen Macher-Links unten).
+- **Alle Module stecken in „Betrieb“:** Die Betrieb-Seite ist zugleich das Verzeichnis aller Module (Betrieb-Gruppen
+  und die Module von Heute, Aufträge, Plan), mit Suchfeld „Modul finden“. Neue Module müssen dort auffindbar sein.
+- **Favoriten:** Jedes Modul lässt sich mit dem Stern als Favorit markieren. Favoriten stehen zusätzlich in der
+  Navigation unter „Favoriten“ – ebenfalls flach, ein Klick. Ohne Favoriten zeigt der Abschnitt einen kurzen Hinweis.
+- **Persönlich:** Favoriten speichert jeder Nutzer für sich, so passt jede Rolle (Chef, Büro, Monteur, Azubi) ihre
+  Navigation selbst an. Module, die eine Rolle nicht sehen darf, erscheinen auch nicht als Favorit.
+- Mobil: Unterleiste mit den vier Bereichen; Favoriten im Menü.
+
+- Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis `AlleModule` in `os/src/shell/Hub.tsx`,
+  Speicherung `useFavoriten()` in `os/src/core/favoriten.ts` (Einstellung `navigation.favoriten.<mitarbeiterId>`)
+
 ## Orientierungsbeispiele von Mission Mittelstand
 
 Vom Auftraggeber als Referenz geliefert. Nicht 1:1 kopieren, sondern Wirkung übernehmen.

@@ -115,8 +115,9 @@ export interface ModulDef {
   /** Pain-Score des Moduls 1–100 – bestimmt Position in Navigation und Hub */
   gewicht?: number;
   /**
-   * `haupt`: in der Unternavigation des Bereichs sichtbar
-   * `hub`: nur auf der Bereichsseite verlinkt
+   * Die Seitennavigation hat keine Unterpunkte. Module stehen auf der Bereichsseite und im
+   * Modulverzeichnis unter „Betrieb“; der Nutzer kann sie als Favorit in die Navigation holen.
+   * `haupt` / `hub`: auf der Bereichsseite und im Verzeichnis verlinkt
    * `versteckt`: nur per Link/Kontext erreichbar
    */
   navigation?: 'haupt' | 'hub' | 'versteckt';
