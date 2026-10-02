@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { PhoneMock, PlanBoardMock, VorschauRahmen } from "@/components/mocks";
 import {
   Ablauf,
@@ -11,7 +12,16 @@ import {
   MissionMittelstand,
   ReihenKarte,
   StartHero,
+  type KartenTon,
 } from "@/components/sections";
+import {
+  BelegStapel,
+  HandyAusschnitt,
+  Hinweis,
+  IconAussage,
+  PlanAusschnitt,
+  ZitatAnsicht,
+} from "@/components/sections/ReihenAnsichten";
 import {
   ArrowLink,
   Badge,
@@ -30,10 +40,10 @@ import {
 } from "@/components/ui";
 import { gewerkBild } from "@/content/bilder";
 import { topGewerkInhalte } from "@/content/gewerke";
+import { kundenStories } from "@/content/kunden";
 import { kernaengste, weitereEinwaende } from "@/content/einwaende";
 import { testTage } from "@/content/preise";
-import { kunden, topGewerke } from "@/content/registry";
-import type { ObjektSchluessel } from "@/lib/objekte";
+import { kunden, topGewerke, type GewerkSlug } from "@/content/registry";
 import { cta, herausgeber, site } from "@/lib/site";
 
 export const metadata = {
@@ -55,40 +65,92 @@ const machtMacher: { text: string; icon: IconName }[] = [
 ];
 
 /** Die vier Bereiche der Software – mit den Ansichten, die dort wirklich stehen. */
-const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSchluessel; href: string; inhalt: string[] }[] = [
+/** Jede Karte hat einen eigenen Ton und eine eigene Ansicht (Vorbild Feather) – nie vier gleiche Kacheln. */
+const bereiche: { titel: string; text: string; href: string; inhalt: string[]; ton: KartenTon; ansicht: ReactNode }[] = [
   {
     titel: "Heute",
     text: "Was jetzt wichtig ist.",
-    icon: "spark",
-    objekt: "werkzeugwand",
     href: "/funktionen",
     inhalt: ["Dein nächster Schritt", "Braucht deine Entscheidung", "Heute im Betrieb"],
+    ton: "hell",
+    ansicht: (
+      <HandyAusschnitt
+        kopf="Heute"
+        zeilen={[
+          { text: "Angebot freigeben", icon: "file", status: "Neu" },
+          { text: "Einsatz Lindenstraße", icon: "route" },
+          { text: "Material bestellen", icon: "box" },
+          { text: "Rechnung prüfen", icon: "euro" },
+        ]}
+      />
+    ),
   },
   {
     titel: "Aufträge",
     text: "Alles rund um Kunden und Arbeit.",
-    icon: "clipboard",
-    objekt: "klemmbrett",
     href: "/funktionen/auftraege",
     inhalt: ["Aufträge und Angebote", "Eingang mit neuen Anfragen", "Kunden und Service"],
+    ton: "foto",
+    ansicht: <Hinweis text="Angebot angenommen" className="inset-x-6 top-[42%]" />,
   },
   {
     titel: "Planen",
     text: "Was als Nächstes passiert.",
-    icon: "calendar",
-    objekt: "zollstock",
     href: "/funktionen/einsatzplanung",
     inhalt: ["Kalender und Plantafel", "Einplanen mit Vorschlag", "Kapazität im Team"],
+    ton: "beige",
+    ansicht: (
+      <PlanAusschnitt
+        objekt="zollstock"
+        kopf="Diese Woche"
+        zeilen={[
+          { name: "Kevin", balken: [[0, 38, "voll"], [44, 30, "hell"]] },
+          { name: "Lena", balken: [[10, 50, "voll"]] },
+          { name: "Tom", balken: [[0, 22, "hell"], [28, 46, "voll"]] },
+          { name: "Ayse", balken: [[18, 34, "voll"]] },
+        ]}
+      />
+    ),
   },
   {
     titel: "Betrieb",
     text: "Mitarbeiter, Material, Geld und Unternehmen.",
-    icon: "home",
-    objekt: "werkbank",
     href: "/funktionen/mitarbeiter",
     inhalt: ["Geld: Rechnungen und Belege", "Team: Menschen und Zeiten", "Ausstattung und Unternehmen"],
+    ton: "dunkel",
+    ansicht: (
+      <BelegStapel
+        eintraege={[
+          { titel: "Rechnung bezahlt", text: "Geld", icon: "euro" },
+          { titel: "Stunden vom Handy", text: "Team", icon: "clock" },
+          { titel: "Material im Lager", text: "Ausstattung", icon: "warehouse" },
+        ]}
+      />
+    ),
   },
 ];
+
+const gewerkIcons: Record<(typeof topGewerke)[number]["slug"], IconName> = {
+  elektriker: "bolt",
+  shk: "wrench",
+  maler: "pen",
+  fliesenleger: "layers",
+  tischler: "ruler",
+  dachdecker: "home",
+  bau: "warehouse",
+  galabau: "map",
+};
+
+const kundenFoto: Record<(typeof topGewerke)[number]["slug"], GewerkSlug> = {
+  elektriker: "elektro-energie",
+  shk: "shk-gebaeudetechnik",
+  maler: "maler-boden-oberflaechen",
+  fliesenleger: "maler-boden-oberflaechen",
+  tischler: "holz-innenausbau",
+  dachdecker: "dach-gebaeudehuelle",
+  bau: "bau-rohbau",
+  galabau: "garten-aussenanlagen",
+};
 
 const feierabend: { text: string; icon: IconName }[] = [
   { text: "Stundenzettel kommen vom Handy", icon: "smartphone" },
@@ -178,7 +240,7 @@ export default function HomePage() {
       {/* 3. Ablauf – vier klickbare Schritte */}
       <Ablauf />
 
-      {/* 4. Vier Bereiche – Kartenreihe: Objektfoto oben, Titel unten, „+“ zeigt, was dort steht */}
+      {/* 4. Vier Bereiche – Kartenreihe: jede Karte anders (Handy, Foto mit Hinweis, Plantafel, dunkle Belege) */}
       <Zone ton="weiss">
         <Section tone="transparent">
           <KartenReihe
@@ -191,7 +253,9 @@ export default function HomePage() {
                 key={b.titel}
                 titel={b.titel}
                 href={b.href}
-                objekt={b.objekt}
+                ton={b.ton}
+                bild={b.ton === "foto" ? "gewerk/shk-gebaeudetechnik" : undefined}
+                ansicht={b.ansicht}
                 linkText={`${b.titel} ansehen`}
                 details={
                   <>
@@ -214,7 +278,7 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 5. Gewerke – Kartenreihe mit Fotos */}
+      {/* 5. Gewerke – Kartenreihe: Fotos im Wechsel mit hellen Karten und Glas-Icons */}
       <Zone ton="dunkel">
         <Section tone="transparent">
           <KartenReihe
@@ -223,17 +287,29 @@ export default function HomePage() {
             titel="Für deinen Betrieb gemacht."
             nachsatz="Passend zu deinem Gewerk."
           >
-            {topGewerke.map((g) => (
-              <ReihenKarte
-                key={g.slug}
-                art="foto"
-                titel={g.kurz}
-                href={`/gewerke/${g.slug}`}
-                bild={gewerkBild(g.slug)}
-                linkText={`Macher OS für ${g.kurz}`}
-                details={<p>{topGewerkInhalte[g.slug].teaser}</p>}
-              />
-            ))}
+            {topGewerke.map((g, n) => {
+              // Wechsel: Foto · helle Karte mit Glas-Icon · Foto mit Hinweis · grüne Karte mit Glas-Icon
+              const art = (["foto", "beige", "foto-hinweis", "gruen"] as const)[n % 4];
+              const teaser = topGewerkInhalte[g.slug].teaser;
+              return (
+                <ReihenKarte
+                  key={g.slug}
+                  ton={art === "foto" || art === "foto-hinweis" ? "foto" : art}
+                  titel={g.kurz}
+                  href={`/gewerke/${g.slug}`}
+                  bild={gewerkBild(g.slug)}
+                  ansicht={
+                    art === "foto-hinweis" ? (
+                      <Hinweis text={`Vorlagen für ${g.kurz}`} className="left-6 top-8" />
+                    ) : art === "beige" || art === "gruen" ? (
+                      <IconAussage icon={gewerkIcons[g.slug]} text={teaser} />
+                    ) : undefined
+                  }
+                  linkText={`Macher OS für ${g.kurz}`}
+                  details={<p>{teaser}</p>}
+                />
+              );
+            })}
           </KartenReihe>
           <Link
             href="/gewerke"
@@ -355,22 +431,33 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 10. Kunden – Kartenreihe; alle Stories sind Beispiele und so markiert */}
+      {/* 10. Kunden – Kartenreihe im Wechsel Foto · Zitat dunkel · Zitat hell; alle Stories sind Beispiele und so markiert */}
       <Zone ton="weiss">
         <Section tone="transparent">
           <KartenReihe eyebrow="Kunden" titel="Von Machern für Macher." nachsatz="So arbeiten Betriebe wie deiner.">
-            {kunden.map((k) => (
+            {kunden.map((k, n) => (
               <ReihenKarte
                 key={k.slug}
-                art="foto"
-                titel={k.ergebnis}
+                // Wechsel: Foto mit Ergebnis · dunkles Zitat · helles Zitat
+                ton={(["foto", "dunkel", "beige"] as const)[n % 3]}
+                titel={n % 3 === 0 ? k.ergebnis : k.betrieb}
                 href={`/kunden/${k.slug}`}
-                bild={gewerkBild(k.gewerk)}
+                // Anderes Foto als in der Gewerke-Reihe, damit kein Bild doppelt auf der Seite steht
+                bild={gewerkBild(kundenFoto[k.gewerk])}
+                ansicht={
+                  n % 3 === 0 ? undefined : (
+                    <ZitatAnsicht
+                      text={kundenStories[k.slug].zitat.text}
+                      rolle={kundenStories[k.slug].zitat.rolle}
+                      dunkel={n % 3 === 1}
+                    />
+                  )
+                }
                 marke={<Badge>Beispiel</Badge>}
                 linkText="Story lesen"
                 details={
                   <>
-                    <p className="font-semibold text-ink">{k.betrieb}</p>
+                    <p className="font-semibold text-ink">{n % 3 === 0 ? k.betrieb : k.ergebnis}</p>
                     <p className="text-muted">
                       {topGewerke.find((g) => g.slug === k.gewerk)!.kurz} · {k.mitarbeiter} Mitarbeiter · {k.ort}
                     </p>

@@ -11,4 +11,4 @@ export { Alltag } from "./Alltag";
 export { StartHero } from "./StartHero";
 export { KernBereiche } from "./KernBereiche";
 export { KartenReihe } from "./KartenReihe";
-export { ReihenKarte } from "./ReihenKarte";
+export { ReihenKarte, type KartenTon } from "./ReihenKarte";
