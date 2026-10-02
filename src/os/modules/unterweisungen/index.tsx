@@ -59,6 +59,8 @@ export function automatischErinnern(t = heute()): number {
     benachrichtigen(titel.length === 1 ? `Unterweisung „${titel[0]}“ bestätigen` : `${titel.length} Unterweisungen bestätigen`, {
       text: `${titel.join(', ')}. Öffne sie in Macher OS, lies sie kurz und bestätige.`,
       fuer: mitarbeiterId,
+      art: 'unterweisung.bestaetigen',
+      grund: 'Die Unterweisung gilt für dich.',
     });
   }
   const n = offen.size;

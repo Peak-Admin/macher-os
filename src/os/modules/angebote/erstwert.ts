@@ -226,10 +226,16 @@ export function portalGeoeffnet(daten: { kundeId?: ID; bezug?: Bezug } | undefin
     db.angebote.update(a.id, { geoeffnetAm: zeit }, { text: 'Vom Kunden geöffnet' });
     vermerken({ typ: 'angebote', id: a.id }, 'angebot.geoeffnet', 'Der Kunde hat das Angebot geöffnet');
     vermerken({ typ: 'auftraege', id: a.auftragId }, 'angebot.geoeffnet', `Angebot ${a.nummer} vom Kunden geöffnet`);
+    const zustaendig = [a.erstelltVon, db.auftraege.get(a.auftragId)?.verantwortlichId].filter((x): x is string => !!x);
     benachrichtigen(`${kunde?.name ?? 'Dein Kunde'} hat dein Angebot geöffnet`, {
       text: `${a.nummer} · ${a.titel} · ${euro(angebotSummen(a).brutto)}`,
       bezug: { typ: 'angebote', id: a.id },
-      wichtig: true,
+      gruppe: { typ: 'auftraege', id: a.auftragId },
+      art: 'angebot.geoeffnet',
+      // wer das Angebot geschrieben hat bzw. den Auftrag verantwortet – sonst Chef und Büro
+      fuer: zustaendig.length ? zustaendig : undefined,
+      grund: zustaendig.length ? 'Das Angebot ist von dir bzw. dein Auftrag.' : undefined,
+      quelleId: `angebot-geoeffnet:${a.id}`,
     });
     const minuten = a.versendetAm ? Math.max(0, Math.round((Date.parse(zeit) - Date.parse(a.versendetAm)) / 60000)) : undefined;
     messen('erstwert.dokument_geoeffnet', { art: 'angebote', ...(minuten !== undefined ? { minutenNachVersand: minuten } : {}) });

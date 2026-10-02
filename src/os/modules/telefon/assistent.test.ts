@@ -94,7 +94,7 @@ describe('Telefonassistent in der App', () => {
     expect(db.auftraege.get(r.nachricht.auftragId)).toMatchObject({ dringend: true });
     const b = db.benachrichtigungen.all();
     expect(b).toHaveLength(1);
-    expect(b[0]).toMatchObject({ fuerMitarbeiterId: kai.id, wichtig: true, bezug: { typ: 'auftraege', id: r.nachricht.auftragId } });
+    expect(b[0]).toMatchObject({ fuerMitarbeiterId: kai.id, stufe: 'jetzt', art: 'anruf.notfall', bezug: { typ: 'auftraege', id: r.nachricht.auftragId } });
     expect(b[0].titel).toBe('Notfall am Telefon: Bei uns riecht es nach Gas im Keller');
     expect(typen).toEqual(['anruf.angenommen', 'anruf.notfall_weitergeleitet']);
     expect(kiProtokoll.all().map((p) => p.aktion)).toEqual(['call.request_create', 'call.emergency_forward']);

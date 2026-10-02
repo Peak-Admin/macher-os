@@ -37,7 +37,7 @@ export function beiZusage(auftragId: ID | undefined): boolean {
   if (!ziel) return false;
   const st = setzeSchritt(a.id, ziel, { automatisch: true, grund: 'Angebot angenommen' });
   if (!st) return false;
-  for (const id of planer()) benachrichtigen(`Zum Einplanen: ${a.titel}`, { text: `${db.kunden.get(a.kundeId)?.name ?? 'Kunde'} hat zugesagt. Prüf das Material und plan den Einsatz.`, bezug: bezug(a.id), fuer: id });
+  for (const id of planer()) benachrichtigen(`Zum Einplanen: ${a.titel}`, { text: `${db.kunden.get(a.kundeId)?.name ?? 'Kunde'} hat zugesagt. Prüf das Material und plan den Einsatz.`, bezug: bezug(a.id), fuer: id, art: 'auftrag.einplanen', grund: 'Du planst die Einsätze.' });
   erledigt('ablauf.zusage', `${a.nummer}: Zusage – Schritt „${st.schritt.label}“, Planung informiert`, { bezug: bezug(a.id) });
   return true;
 }

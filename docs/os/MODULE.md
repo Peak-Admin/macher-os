@@ -70,7 +70,7 @@ schreibt vor `dev`, `build` und `test` die Liste `src/os/shell/module-liste.ts` 
 - `vermerken(bezug, typ, text)` – eigener Eintrag im Zeitstrahl eines Objekts
 - `erledigt(regelId, titel, { bezug, minuten })` – „Macher hat erledigt“-Protokoll
 - `hinweis({...})` – gespeicherter Hinweis (Freigabe/Entscheidung), dedupliziert über `schluessel`
-- `benachrichtigen(titel, {...})`
+- `benachrichtigen(titel, { art, bezug, fuer, grund, quelleId })` – Meldung in die persönliche Inbox. `art` aus `REGELN` in `core/aufmerksamkeit.ts` bestimmt Stufe (Jetzt · Aktion nötig · Zur Kenntnis · Aktivität), Lebensdauer, Auflösung durch den Objektzustand und Push. Neue Arten nur dort eintragen.
 - `einstellung(key, standard)` / `useEinstellung`
 - `useIch()`, `darf('geld')`, `useDarf('geld')`, `istBuero()`
 - `naechsteNummer('rechnung')`; eigene Nummernkreise: `naechsteNummerFuer('BR', sammlung.allMitGeloeschten().map((x) => x.nummer))`

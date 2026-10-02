@@ -32,13 +32,20 @@ Score = Frequenz (1–10) × Intensität (1–10).
 
 ## Muss rein
 
-- Overlay an der Glocke: Ungelesen/Alle, alle gelesen markieren, Klick = gelesen + zum Objekt, Status „Wichtig“/„Neu“/„Gelesen“ als Text.
-- Sparsame Automation `macher.benachrichtigen` für: neue Anfrage, Kundennachricht, Abwesenheitsantrag/Krankmeldung, Entscheidung zum Antrag (an Mitarbeiter), Angebot angenommen, Zahlung eingegangen (nur mit Geld-Recht), neue Aufgabe für dich.
+- **Inbox statt Postfach** (`Inbox.tsx`): Jetzt · Aktion nötig · Zur Kenntnis; Aktivität nur hinter „Letzte Aktivitäten“. Kein Gelesen/Archiv.
+- Glocke zählt nur Jetzt + Aktion nötig – nie „ungelesen“.
+- Je Eintrag nächste sinnvolle Aktion (Genehmigen, Einplanen, Erledigen …), dazu Später, Öffnen, Erledigt; Grund („Du bist für die Freigabe zuständig.“).
+- Später: in 1 Stunde · heute Nachmittag · morgen früh · nächste Woche · Datum wählen. Kommt nur wieder, wenn der Grund noch besteht.
+- Bündel je Objekt („Auftrag Müller · 2 Kundennachrichten · 1 Aufgabe“), Aktion darin hervorgehoben.
+- Team-Hinweise aus „Braucht dich“ nur mit Grund (persönlich, Sicherheit, Gewicht ab 70) und höchstens fünf; der Rest per Link.
 
 ## Macher erledigt automatisch
 
-- Kein Hinweis an den Auslöser, Dedup gleicher Titel+Objekt in 10 Minuten (z. B. `angebote.updated` + `angebot.angenommen`), Beispieldaten werden ignoriert; Beispiel-Benachrichtigungen per `seed`.
+- Regeln, Stufen, Lebensdauer (Info 48 h, Aktivität 12 h, je Art anpassbar), Auflösung und Push zentral in `core/aufmerksamkeit.ts`.
+- Zustand schlägt Zeit: Antrag entschieden, Nachricht gelesen, Auftrag eingeplant, Aufgabe delegiert, Termin abgesagt, Objekt gelöscht → Meldung sofort weg (ereignisgetrieben und bei jedem Lesen).
+- Idempotent: gleiche Quelle (`quelleId`) nur einmal, gleiche Art + Objekt + Empfänger wird zusammengefasst; kein Hinweis an den Auslöser; Rechte und Rolle werden beim Lesen geprüft.
+- Push nur bei Jetzt oder zeitkritischer Aktion, mit Ruhezeiten. Aufräumen nach 14 Tagen – Zeitstrahl und Ereignisprotokoll bleiben vollständig.
 
 ## Bewusst weggelassen (Pareto)
 
-- Push/E-Mail/SMS, Ruhezeiten, Einstellungen je Ereignistyp.
+- Einstellungen je Ereignistyp, KI-Einstufung (Regeln statt Modell), E-Mail/SMS je Meldung.

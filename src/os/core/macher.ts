@@ -8,10 +8,11 @@
 import { db } from './db';
 import { alsAkteur, registriereAls, type Akteur } from './akteur';
 import { verlaufAufraeumen } from './audit';
+import { melden, posteingang, starteAufmerksamkeit, type Inbox, type MeldenOpts } from './aufmerksamkeit';
 import { starteEreignisse } from './ereignisse';
 import { einstellung, setzeEinstellung } from './einstellungen';
-import { alleAutomationen, alleHinweisVorschlaege, type HinweisVorschlag } from './modul';
-import type { Bezug, Hinweis, ID, Rolle } from './objects';
+import { alleAutomationen, alleHinweisVorschlaege, pfadZu, type HinweisVorschlag } from './modul';
+import type { Bezug, Hinweis, ID, Mitarbeiter, Rolle } from './objects';
 
 // ------------------------------------------------------------------ Automationen
 
@@ -55,6 +56,8 @@ function stoppeAutomation(id: string) {
 export function starteAutomationen() {
   // Ereignis-Architektur (Ableitung, Protokoll, Webhooks) und Verlauf-Rotation laufen immer
   starteEreignisse();
+  // Inbox: gelöste Meldungen sofort entfernen, Altes aufräumen
+  starteAufmerksamkeit();
   try {
     verlaufAufraeumen();
   } catch (e) {
@@ -193,15 +196,18 @@ export function offeneHinweise(fuer?: { rolle?: Rolle; mitarbeiterId?: ID }): Of
   return buendeln(gefiltert);
 }
 
-// ------------------------------------------------------------------ Benachrichtigungen
+// ------------------------------------------------------------------ Benachrichtigungen (Inbox)
 
-export function benachrichtigen(titel: string, opts: { text?: string; bezug?: Bezug; fuer?: ID; wichtig?: boolean } = {}) {
-  return db.benachrichtigungen.create({
-    titel,
-    text: opts.text,
-    bezug: opts.bezug,
-    fuerMitarbeiterId: opts.fuer,
-    wichtig: opts.wichtig,
-    gelesen: false,
-  });
+/**
+ * Meldung an die zuständigen Menschen – Regeln, Stufe, Lebensdauer, Deduplizierung und Push stehen zentral in
+ * `aufmerksamkeit.ts`. Gib möglichst `art` an (siehe `REGELN`); ohne Empfänger gehen Meldungen an Chef und Büro.
+ */
+export function benachrichtigen(titel: string, opts: MeldenOpts = {}) {
+  return melden(titel, opts);
+}
+
+/** Die persönliche Inbox: gespeicherte Meldungen und Live-Hinweise („Braucht dich“) – eine Warteschlange. */
+export function meinPosteingang(m: Mitarbeiter | undefined, jetzt = new Date()): Inbox {
+  const hinweise = offeneHinweise(m ? { rolle: m.rolle, mitarbeiterId: m.id } : undefined);
+  return posteingang({ meldungen: db.benachrichtigungen.all(), hinweise, ich: m, jetzt, pfadZu });
 }
