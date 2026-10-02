@@ -40,7 +40,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 flex flex-col gap-10 border-t border-white/10 pt-8 sm:flex-row sm:items-start sm:justify-between">
-          <div>
+          <div className="sm:pt-6">
             <p className="text-sm text-white/65">{herausgeber.kurz}</p>
             <a
               href={ausgehend(herausgeber.url)}
