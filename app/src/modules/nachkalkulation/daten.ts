@@ -200,7 +200,7 @@ export function nachkalkulation(auftrag: Auftrag, b: Basisdaten, kalkulation?: S
     }
     if (ist.fahrtMinuten) saetze.push(`Davon ${stundenText(ist.fahrtMinuten)} Fahrtzeit.`);
 
-    if (soll.material != null && istMaterial) {
+    if (soll.material && istMaterial) {
       const d = istMaterial - soll.material;
       const a = abw(soll.material, istMaterial) ?? 0;
       saetze.push(
@@ -209,7 +209,7 @@ export function nachkalkulation(auftrag: Auftrag, b: Basisdaten, kalkulation?: S
           : `Material und Belege: ${euro(istMaterial)} statt ${euro(soll.material)} kalkuliert – ${mehrWeniger(d, euro)} (${prozentText(a)}).`,
       );
     } else if (istMaterial) {
-      saetze.push(`Material und Belege: ${euro(istMaterial)}. Dafür gab es kein Soll.`);
+      saetze.push(soll.material === 0 ? `Material und Belege: ${euro(istMaterial)} – kalkuliert war kein Material.` : `Material und Belege: ${euro(istMaterial)}. Dafür gab es kein Soll.`);
     }
     if (ist.belege) saetze.push(`Davon ${euro(ist.belege)} aus Eingangsbelegen am Auftrag.`);
 

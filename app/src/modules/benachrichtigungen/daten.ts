@@ -64,7 +64,8 @@ export function neueAnfrage(a: Auftrag) {
 }
 
 export function kundenNachricht(n: Nachricht) {
-  if (n.beispiel || n.richtung !== 'ein' || n.kanal === 'intern') return;
+  // Anrufe notiert das Büro selbst – dafür keine Benachrichtigung
+  if (n.beispiel || n.richtung !== 'ein' || n.kanal === 'intern' || n.kanal === 'telefon') return;
   const text = n.text.length > 90 ? n.text.slice(0, 88) + ' …' : n.text;
   melden([...buero(), verantwortlich(n.auftragId)], `Nachricht von ${kundeName(n.kundeId ?? db.auftraege.get(n.auftragId)?.kundeId)}`, {
     text,
@@ -77,22 +78,10 @@ export function abwesenheitNeu(a: Abwesenheit) {
   if (a.beispiel) return;
   const m = db.mitarbeiter.get(a.mitarbeiterId);
   const zeitraum = a.von === a.bis ? `am ${datum(a.von)}` : `${datum(a.von)} bis ${datum(a.bis)}`;
+  // Krankmeldungen und Bescheide an den Mitarbeiter meldet das Modul Abwesenheiten (eigene Regeln) – hier nicht doppelt
   if (a.status === 'beantragt') {
     melden(buero('personal').length ? buero('personal') : buero(), `${ABWESENHEIT[a.art]} beantragt: ${personName(m)}`, { text: `${zeitraum} – bitte freigeben oder ablehnen.`, bezug: { typ: 'abwesenheiten', id: a.id }, ausloeser: a.erstelltVon, wichtig: true });
-  } else if (a.art === 'krank') {
-    // Krankmeldung betrifft sofort die Planung
-    melden(buero(), `Krankmeldung: ${personName(m)}`, { text: `${zeitraum} – prüfe die Einsätze.`, bezug: { typ: 'abwesenheiten', id: a.id }, ausloeser: a.erstelltVon, wichtig: true });
   }
-}
-
-export function abwesenheitEntschieden(a: Abwesenheit, vorher?: Abwesenheit) {
-  if (a.beispiel || vorher?.status !== 'beantragt' || a.status === 'beantragt') return;
-  const art = ABWESENHEIT[a.art];
-  const zeitraum = a.von === a.bis ? `am ${datum(a.von)}` : `${datum(a.von)} bis ${datum(a.bis)}`;
-  melden([db.mitarbeiter.get(a.mitarbeiterId)], a.status === 'genehmigt' ? `Dein Antrag ist genehmigt: ${art}` : `Dein Antrag wurde abgelehnt: ${art}`, {
-    text: zeitraum,
-    bezug: { typ: 'abwesenheiten', id: a.id },
-  });
 }
 
 export function angebotAngenommen(a: Angebot) {
@@ -137,7 +126,6 @@ export const benachrichtigenAutomation: Automation = {
       on('anfrage.eingegangen', (e) => obj<Auftrag>(e)?.phase && neueAnfrage(obj<Auftrag>(e)!)),
       on('nachrichten.created', (e) => obj<Nachricht>(e) && kundenNachricht(obj<Nachricht>(e)!)),
       on('abwesenheiten.created', (e) => obj<Abwesenheit>(e) && abwesenheitNeu(obj<Abwesenheit>(e)!)),
-      on('abwesenheiten.updated', (e) => obj<Abwesenheit>(e) && abwesenheitEntschieden(obj<Abwesenheit>(e)!, e.vorher as Abwesenheit)),
       on('angebote.updated', (e) => istStatus(e, 'status', 'angenommen') && angebotAngenommen(obj<Angebot>(e)!)),
       on('angebot.angenommen', (e) => obj<Angebot>(e)?.status && angebotAngenommen(obj<Angebot>(e)!)),
       on('zahlungen.created', (e) => obj<Zahlung>(e) && zahlungEingegangen(obj<Zahlung>(e)!)),

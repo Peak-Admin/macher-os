@@ -75,6 +75,10 @@ describe('Nächster Schritt', () => {
     expect(s.aktion).toBe('rechnung.erstellen');
     expect(s.payload).toEqual({ auftragId: 'x', art: 'schluss' });
   });
+  it('erledigt und Bewertung schon angefragt → kein Schritt mehr', () => {
+    expect(naechsterSchritt(auftrag({ phase: 'erledigt' }), kontext())?.aktion).toBe('bewertung.anfragen');
+    expect(naechsterSchritt(auftrag({ phase: 'erledigt' }), kontext({ bewertungErledigt: true }))).toBeUndefined();
+  });
   it('erledigt ohne Bewertungsmodul → kein Schritt; verloren → wieder aufnehmen', () => {
     expect(naechsterSchritt(auftrag({ phase: 'erledigt' }), kontext({ aktionDa: () => false }))).toBeUndefined();
     expect(naechsterSchritt(auftrag({ phase: 'verloren' }), kontext())?.phase).toBe('anfrage');

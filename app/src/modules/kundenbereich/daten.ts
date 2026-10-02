@@ -6,6 +6,7 @@
  */
 import { db, defineCollection, vermerken } from '@core/db';
 import { emit } from '@core/events';
+import { ablehnen, annehmen } from '@modules/angebote/daten';
 import { benachrichtigen } from '@core/macher';
 import { heute, plusTage, summen } from '@core/format';
 import type { Angebot, Basis, Datum, Dokument, ID, Rechnung, Termin, Zeitpunkt } from '@core/objects';
@@ -130,16 +131,17 @@ export function angebotEntscheiden(kundeId: ID, angebotId: ID, entscheidung: Ent
   const unterschrift = name.trim();
   if (unterschrift.length < 3 || !/\s/.test(unterschrift)) return { ok: false, fehler: 'Bitte gib deinen vollständigen Namen ein (Vor- und Nachname).' };
   const zeit = new Date().toISOString();
-  db.angebote.update(angebotId, { status: entscheidung, entschiedenAm: zeit }, { text: `Im Kundenbereich ${entscheidung} von ${unterschrift}` });
   const text = `Angebot ${a.nummer} ${entscheidung === 'angenommen' ? 'angenommen' : 'abgelehnt'} von ${unterschrift} (Kundenbereich)`;
+  // Derselbe Ablauf wie im Büro (Phase, ältere Versionen, Stunden fürs Planen) – nur mit Namen aus dem Kundenbereich
+  if (entscheidung === 'angenommen') annehmen(angebotId, { name: unterschrift, quelle: 'portal', text: `Im Kundenbereich angenommen von ${unterschrift}` });
+  else {
+    ablehnen(angebotId, `Im Kundenbereich abgelehnt von ${unterschrift}`);
+    emit({ typ: 'angebot.abgelehnt', objekt: db.angebote.get(angebotId), daten: { angebotId, auftragId: a.auftragId, name: unterschrift, quelle: 'portal', zeit } });
+    // Annahmen meldet die Regel „Benachrichtigungen“; Absagen nur hier
+    benachrichtigen(`Angebot abgelehnt: ${a.titel}`, { text: `${db.kunden.get(kundeId)?.name ?? 'Kunde'} – bestätigt von ${unterschrift}`, bezug: { typ: 'angebote', id: angebotId }, wichtig: true });
+  }
   vermerken({ typ: 'auftraege', id: a.auftragId }, `angebot.${entscheidung}`, text, { name: unterschrift, zeit });
   vermerken({ typ: 'kunden', id: kundeId }, `angebot.${entscheidung}`, text);
-  emit({ typ: `angebot.${entscheidung}`, objekt: db.angebote.get(angebotId), daten: { angebotId, auftragId: a.auftragId, name: unterschrift, quelle: 'portal', zeit } });
-  benachrichtigen(entscheidung === 'angenommen' ? `Angebot angenommen: ${a.titel}` : `Angebot abgelehnt: ${a.titel}`, {
-    text: `${db.kunden.get(kundeId)?.name ?? 'Kunde'} – bestätigt von ${unterschrift}`,
-    bezug: { typ: 'angebote', id: angebotId },
-    wichtig: true,
-  });
   return { ok: true };
 }
 
@@ -148,6 +150,6 @@ export function nachrichtSenden(kundeId: ID, text: string, auftragId?: ID): { ok
   if (t.length < 2) return { ok: false, fehler: 'Schreib bitte kurz, worum es geht.' };
   if (t.length > 4000) return { ok: false, fehler: 'Die Nachricht ist zu lang. Bitte kürze sie auf 4000 Zeichen.' };
   db.nachrichten.create({ kanal: 'portal', richtung: 'ein', kundeId, auftragId: auftragId || undefined, text: t, gelesen: false, betreff: 'Nachricht aus dem Kundenbereich' });
-  benachrichtigen(`Neue Nachricht von ${db.kunden.get(kundeId)?.name ?? 'Kunde'}`, { text: t.slice(0, 120), bezug: { typ: 'kunden', id: kundeId } });
+  // Benachrichtigung kommt von der Regel „Benachrichtigungen“ (Kundennachricht) – nicht doppelt
   return { ok: true };
 }

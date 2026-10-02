@@ -2,7 +2,7 @@
  * Auftragsakte – Zugriff auf die Datenschicht: Phase setzen, nächsten Schritt ausführen,
  * Phasen-Automationen. Alles über `db.*`, nichts wird kopiert.
  */
-import { db } from '@core/db';
+import { db, sammlung } from '@core/db';
 import type { DbEvent } from '@core/events';
 import { erledigt } from '@core/macher';
 import { aktionAusfuehren, aktionVorhanden, pfadZu } from '@core/modul';
@@ -33,6 +33,7 @@ export function schrittKontext(a: Auftrag): SchrittKontext {
     rechnungen: db.rechnungen.where((r) => r.auftragId === a.id),
     heute: heute(),
     aktionDa: aktionVorhanden,
+    bewertungErledigt: (sammlung('bewertungen')?.all() as { auftragId?: ID; status?: string }[] | undefined)?.some((b) => b.auftragId === a.id && (b.status === 'gesendet' || b.status === 'verworfen')),
     pfadZu: (typ, id) => pfadZu({ typ, id }),
   };
 }

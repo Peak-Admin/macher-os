@@ -67,6 +67,8 @@ describe('Kundenbereich: Angebot annehmen', () => {
     aus();
     expect(db.angebote.get(an.id)?.status).toBe('angenommen');
     expect(daten).toMatchObject({ name: 'Petra Schulz', quelle: 'portal' });
+    // gleicher Ablauf wie im Büro: Auftrag ist beauftragt
+    expect(db.auftraege.get(an.auftragId)?.phase).toBe('beauftragt');
     expect(angebotEntscheiden(k.id, an.id, 'abgelehnt', 'Petra Schulz').ok).toBe(false);
   });
   it('lässt fremde und abgelaufene Angebote nicht zu', () => {

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { db, setAktuellerNutzer, zuruecksetzen } from '@core/db';
 import { emit } from '@core/events';
 import { benachrichtigenAutomation, fuerMich } from './daten';
+import abwesenheitenModul from '@modules/abwesenheiten/index';
 
 describe('Benachrichtigungen', () => {
   let stopp: () => void = () => {};
@@ -48,11 +49,15 @@ describe('Benachrichtigungen', () => {
     expect(fuer(jonas.id)).toHaveLength(1);
   });
 
-  it('meldet Urlaubsantrag an Chef und Entscheidung an den Mitarbeiter', () => {
+  it('meldet Urlaubsantrag an Chef; Bescheid und Krankmeldung kommen genau einmal (vom Modul Abwesenheiten)', () => {
+    const aus = (abwesenheitenModul.automationen ?? []).map((a) => a.start());
     const ab = db.abwesenheiten.create({ mitarbeiterId: jonas.id, art: 'urlaub', von: '2026-10-12', bis: '2026-10-16', status: 'beantragt' });
-    expect(fuer(chef.id)[0].titel).toBe('Urlaub beantragt: Jonas Becker');
+    expect(fuer(chef.id).map((b) => b.titel)).toEqual(['Urlaub beantragt: Jonas Becker']);
     db.abwesenheiten.update(ab.id, { status: 'genehmigt' });
-    expect(fuer(jonas.id)[0].titel).toBe('Dein Antrag ist genehmigt: Urlaub');
+    expect(fuer(jonas.id)).toHaveLength(1);
+    db.abwesenheiten.create({ mitarbeiterId: jonas.id, art: 'krank', von: '2026-10-20', bis: '2026-10-20', status: 'genehmigt' });
+    expect(fuer(chef.id)).toHaveLength(2);
+    aus.forEach((f) => f?.());
   });
 
   it('meldet Zahlungseingang an Leute mit Geld-Recht und neue Aufgaben an den Zuständigen', () => {

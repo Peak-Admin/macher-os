@@ -70,6 +70,13 @@ describe('nachkalkulation', () => {
     expect(n.db).toBe(80000 - 44000);
     expect(n.saetze.at(-1)).toContain('Deckungsbeitrag');
   });
+  it('nennt verbrauchtes Material nicht „wie kalkuliert“, wenn kein Material kalkuliert war', () => {
+    const a = auftrag('a1', { geplanteStunden: 1 });
+    const n = nachkalkulation(a, leereBasis({ auftraege: [a], mitarbeiter: [ma], zeiten: [zeit('a1', '07:00', '08:00')] }), { stunden: 1, material: 0 });
+    const mitMaterial = nachkalkulation(a, leereBasis({ auftraege: [a], mitarbeiter: [ma], zeiten: [zeit('a1', '07:00', '08:00')], material: [{ ...basis, id: 'mb', auftragId: 'a1', text: 'Dose', menge: 6, einheit: 'Stk', ek: 390, status: 'verbraucht' }] }), { stunden: 1, material: 0 });
+    expect(n.saetze.join(' ')).not.toContain('Material');
+    expect(mitMaterial.saetze.join(' ')).toMatch(/Material und Belege: 23,40\s€ – kalkuliert war kein Material\./);
+  });
   it('sagt ehrlich, wenn Daten fehlen', () => {
     const n = nachkalkulation(auftrag('a1'), leereBasis());
     expect(n.hatSoll).toBe(false);

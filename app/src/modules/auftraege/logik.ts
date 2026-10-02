@@ -64,6 +64,8 @@ export interface SchrittKontext {
   rechnungen: Rechnung[];
   heute: Datum;
   aktionDa: (id: string) => boolean;
+  /** Bewertung zu diesem Auftrag schon angefragt oder bewusst verworfen */
+  bewertungErledigt?: boolean;
   pfadZu: (typ: 'angebote' | 'rechnungen' | 'termine', id: ID) => string | undefined;
 }
 
@@ -193,7 +195,7 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
       };
     }
     case 'erledigt':
-      if (k.aktionDa('bewertung.anfragen'))
+      if (k.aktionDa('bewertung.anfragen') && !k.bewertungErledigt)
         return { label: 'Bewertung anfragen', text: 'Zufriedene Kunden bringen neue Kunden.', icon: 'stern', aktion: 'bewertung.anfragen', payload };
       return undefined;
     case 'verloren':

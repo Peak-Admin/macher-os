@@ -206,10 +206,12 @@ export function angebotStunden(a: Pick<Angebot, 'positionen'>, leistungen: Leist
   return Math.ceil(minuten / 30) / 2;
 }
 
-export function annehmen(id: ID): Angebot | undefined {
+/** Angebot annehmen – egal ob im Büro eingetragen oder vom Kunden im Kundenbereich (`herkunft`) */
+export function annehmen(id: ID, herkunft?: { name: string; quelle: 'portal'; text?: string }): Angebot | undefined {
   const a = db.angebote.get(id);
   if (!a) return undefined;
-  const neu = db.angebote.update(a.id, { status: 'angenommen', entschiedenAm: new Date().toISOString() }, { text: 'Vom Kunden angenommen' });
+  const zeit = new Date().toISOString();
+  const neu = db.angebote.update(a.id, { status: 'angenommen', entschiedenAm: zeit }, { text: herkunft?.text ?? 'Vom Kunden angenommen' });
   const auftrag = db.auftraege.get(a.auftragId);
   if (auftrag && phaseVor(auftrag.phase, 'beauftragt')) {
     // Planung braucht Stunden: aus dem Angebot übernehmen, wenn noch keine geschätzt sind
@@ -221,7 +223,7 @@ export function annehmen(id: ID): Angebot | undefined {
     .filter((v) => v.id !== a.id && (v.status === 'versendet' || v.status === 'entwurf'))
     .forEach((v) => db.angebote.update(v.id, { status: 'abgelehnt', entschiedenAm: new Date().toISOString() }, { text: `Ersetzt durch Version ${a.version}` }));
   vermerken({ typ: 'auftraege', id: a.auftragId }, 'angebot.angenommen', `Angebot ${a.nummer} angenommen – ${euro(angebotSummen(a).brutto)}`);
-  emit({ typ: 'angebot.angenommen', sammlung: 'angebote', objekt: neu });
+  emit({ typ: 'angebot.angenommen', sammlung: 'angebote', objekt: neu, daten: herkunft ? { angebotId: a.id, auftragId: a.auftragId, name: herkunft.name, quelle: herkunft.quelle, zeit } : undefined });
   return neu;
 }
 
