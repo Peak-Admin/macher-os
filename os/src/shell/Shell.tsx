@@ -2,9 +2,12 @@
  * App-Rahmen: genau vier feste Hauptbereiche (Heute · Aufträge · Planen · Betrieb).
  * Desktop: schmale Seitenleiste, mobil: untere Navigation. Keine Unterbäume, kein globales „Neu“,
  * kein Plus, kein Hamburger-Menü. Lokale Navigation (höchstens vier Ziele) steht im Inhaltsbereich.
+ * Zusätzlich: die Favoriten des Nutzers – flach, ein Klick (mobil im Profilmenü). Alle Module: Betrieb › Alle Module.
  */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { modulPfad } from '@core/modul';
+import { useFavoriten } from '@core/favoriten';
 import { oeffne } from '@core/overlay';
 import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
@@ -53,6 +56,7 @@ export function Shell({ children }: { children: ReactNode }) {
               {b.titel}
             </Link>
           ))}
+          <Favoriten />
         </nav>
         <Profil oben />
       </aside>
@@ -97,6 +101,38 @@ export function Shell({ children }: { children: ReactNode }) {
   );
 }
 
+/** Vom Nutzer mit dem Stern markierte Module – flach, ein Klick */
+function Favoriten() {
+  const { module } = useFavoriten();
+  const pfad = useLocation().pathname;
+  return (
+    <section className="mm-nav-favoriten" aria-labelledby="nav-favoriten">
+      <h2 id="nav-favoriten" className="mm-nav-titel">
+        Favoriten
+      </h2>
+      {module.length ? (
+        <ul className="mm-nav-liste">
+          {module.map((m) => {
+            const ziel = modulPfad(m);
+            const an = pfad === ziel || pfad.startsWith(`${ziel}/`);
+            return (
+              <li key={m.id}>
+                <Link to={ziel} className={`mm-nav-fav ${an ? 'mm-nav-fav--aktiv' : ''}`} aria-current={an ? 'page' : undefined}>
+                  <Icon name={m.icon ?? 'stern'} size={16} /> {m.titel}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="mm-nav-leer">
+          Markiere Module unter <Link to="/betrieb/module">Betrieb › Alle Module</Link> mit dem Stern.
+        </p>
+      )}
+    </section>
+  );
+}
+
 function useUngelesen() {
   useDatenstand();
   const ich = useIch();
@@ -120,6 +156,8 @@ function Profil({ oben }: { oben?: boolean }) {
   const ungelesen = useUngelesen();
   const [offen, setOffen] = useState(false);
   const pfad = useLocation().pathname;
+  const navigate = useNavigate();
+  const favoriten = useFavoriten().module;
   useEffect(() => setOffen(false), [pfad]);
   if (!ich) return null;
   return (
@@ -147,6 +185,15 @@ function Profil({ oben }: { oben?: boolean }) {
                 </button>
                 <button type="button" onClick={() => (setOffen(false), oeffne('macher'))}>
                   <Icon name="macher" /> Macher fragen
+                </button>
+                <p className="mm-nav-titel mm-menue-titel">Favoriten</p>
+                {favoriten.map((m) => (
+                  <button key={m.id} type="button" onClick={() => (setOffen(false), navigate(modulPfad(m)))}>
+                    <Icon name={m.icon ?? 'stern'} /> {m.titel}
+                  </button>
+                ))}
+                <button type="button" onClick={() => (setOffen(false), navigate('/betrieb/module'))}>
+                  <Icon name="stern" /> {favoriten.length ? 'Favoriten ändern' : 'Favoriten auswählen'}
                 </button>
               </>
             )}

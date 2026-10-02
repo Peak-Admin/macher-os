@@ -1,6 +1,7 @@
 /**
  * Betrieb: vier Türen – Geld, Team, Ausstattung, Unternehmen.
  * Jede Kachel: Titel, kurze Erklärung, höchstens ein Hinweis. Keine Unterlisten, keine Kennzahlen davor.
+ * Darunter ein ruhiger Link zu „Alle Module“ (Verzeichnis mit Suche und Favoriten).
  */
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { modul } from '@core/modul';
@@ -57,6 +58,11 @@ export function BetriebSeite() {
           );
         })}
       </ul>
+      <p className="mm-alle-module-link">
+        <Link to="/betrieb/module" className="mm-pfeillink">
+          Alle Module ansehen und Favoriten wählen <Icon name="weiter" size={16} />
+        </Link>
+      </p>
     </Seite>
   );
 }

@@ -44,6 +44,14 @@ Der Baum wird nie als Menü gezeigt. Sichtbar ist immer nur die aktuelle Ebene:
   Neue Tabs anderer Module landen im Teil „Weiteres“, nie in einem fünften Bereich. Alte Links mit `?tab=Fotos` usw.
   funktionieren weiter.
 
+### Favoriten und Verzeichnis aller Module
+
+- **Betrieb › Alle Module** (`/betrieb/module`, Link unter den vier Kacheln): jedes Modul an seinem Ort in dieser
+  Struktur, mit Suche „Modul finden“. Kein Menüpunkt und keine fünfte Kachel.
+- **Favoriten:** Dort markiert jeder Nutzer Module mit dem Stern. Sie stehen zusätzlich in der Seitenleiste unter den vier
+  Bereichen (flach, ein Klick), mobil im Profilmenü. Gespeichert je Mitarbeiter (`navigation.favoriten.<id>`),
+  Startauswahl je Rolle in `STANDARD_FAVORITEN` (`os/src/core/favoriten.ts`). Rollenrechte gelten weiter.
+
 ## 2. Heute nach Rolle
 
 | Rolle | Blöcke (höchstens drei) |

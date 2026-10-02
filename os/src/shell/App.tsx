@@ -6,6 +6,7 @@ import { Shell } from './Shell';
 import { HeuteSeite } from './Heute';
 import { BetriebSeite, KategorieWeiter } from './Betrieb';
 import { BereichWeiter } from './BereichWeiter';
+import { AlleModuleSeite } from './AlleModule';
 import { Erststart } from './Erststart';
 import { NichtGefunden } from './NichtGefunden';
 
@@ -38,6 +39,7 @@ export function App() {
                     <Route path="/auftraege" element={<BereichWeiter bereich="auftraege" />} />
                     <Route path="/plan" element={<BereichWeiter bereich="plan" />} />
                     <Route path="/betrieb" element={<BetriebSeite />} />
+                    <Route path="/betrieb/module" element={<AlleModuleSeite />} />
                     <Route path="/betrieb/:kategorie" element={<KategorieWeiter />} />
                     {/* frühere Macher-Leiste: führt jetzt an den neuen Ort */}
                     <Route path="/macher" element={<Navigate to="/heute/braucht-dich" replace />} />

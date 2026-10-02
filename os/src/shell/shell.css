@@ -24,6 +24,15 @@
 }
 .mm-nav-haupt--aktiv { color: var(--mm-black); font-weight: 700; }
 .mm-nav-haupt--aktiv .mm-nav-haupt-icon { background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); }
+.mm-nav-favoriten { display: flex; flex-direction: column; gap: 4px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--mm-border); }
+.mm-nav-titel { margin: 0; padding: 0 12px; font: 600 13px/18px var(--mm-font); color: var(--mm-muted-on-white); }
+.mm-nav-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.mm-nav-fav { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 6px 12px; border-radius: var(--mm-radius-control); color: var(--mm-text); text-decoration: none; font-size: 15px; transition: background-color var(--mm-motion-fast) ease-out; }
+.mm-nav-fav:hover { background: var(--mm-hover); }
+.mm-nav-fav--aktiv { color: var(--mm-brand-text); font-weight: 700; }
+.mm-nav-leer { margin: 0; padding: 0 12px; font-size: 14px; line-height: 20px; color: var(--mm-muted-on-white); }
+.mm-nav-leer a { color: var(--mm-brand-text); }
+.mm-menue-titel { padding: 12px 12px 4px; border-top: 1px solid var(--mm-border); margin-top: 4px; }
 .mm-profil { position: relative; }
 .mm-profil--leiste { padding-top: 8px; border-top: 1px solid var(--mm-border); }
 .mm-profil-knopf { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 6px 8px; border: 0; border-radius: var(--mm-radius-control); background: none; color: var(--mm-black); font-weight: 600; cursor: pointer; text-align: left; }
@@ -136,3 +145,20 @@
   .mm-einsatz-kunde { font-size: 24px; line-height: 30px; }
   .mm-einsatz .mm-btn--primaer { flex: 1 1 100%; }
 }
+
+/* ---------- Betrieb › Alle Module: Verzeichnis mit Suche und Favoriten-Stern */
+.mm-alle-module-link { margin: 0; }
+.mm-pfeillink { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-weight: 600; color: var(--mm-link); text-decoration: none; }
+.mm-pfeillink:hover { text-decoration: underline; }
+.mm-pfeillink:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; border-radius: var(--mm-radius-control); }
+.mm-modulsuche { max-width: 480px; }
+.mm-modulgruppen { display: grid; gap: 24px; grid-template-columns: 1fr; align-items: start; }
+@media (min-width: 1024px) { .mm-modulgruppen { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.mm-modulgruppe { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mm-modulgruppe-titel { margin: 0; font: 600 20px/26px var(--mm-font); }
+.mm-modulzeile-eintrag { display: flex; align-items: stretch; }
+.mm-modulzeile-eintrag > a { flex: 1; min-width: 0; }
+.mm-modulzeile-icon { display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border-radius: var(--mm-radius-control); background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); }
+.mm-favorit { flex-shrink: 0; align-self: center; margin-right: 8px; color: var(--mm-muted-on-white); }
+.mm-favorit--an { color: var(--mm-brand); }
+.mm-favorit--an svg { fill: currentColor; }

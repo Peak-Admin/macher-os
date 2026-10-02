@@ -199,4 +199,9 @@ Danach richtet Macher OS automatisch ein:
 
 Alles Weitere sind Module, Ansichten oder Aktionen innerhalb dieser vier Bereiche.
 
+- **Ein Klick, keine Unterpunkte:** Die Navigation zeigt nur die vier Bereiche – keine aufklappende zweite Ebene.
+- **Alle Module findet man unter „Betrieb“:** Betrieb › Alle Module (`/betrieb/module`), mit Suche, auch für Module aus Heute, Aufträge und Planen.
+- **Favoriten:** Module lassen sich mit dem Stern markieren und stehen dann zusätzlich in der Navigation.
+  Jeder Nutzer – und damit jede Rolle – stellt sich seine Favoriten selbst zusammen.
+
 **Leitregel:** Macher OS darf im Hintergrund sehr umfangreich sein. Auf der Oberfläche sieht jeder Nutzer nur das, was er für seine Arbeit gerade braucht.
