@@ -50,7 +50,7 @@ const KURZ: Record<string, string> = {
 export function VertrauensKacheln({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
-      <ul className="flex flex-wrap gap-2">
+      <ul className="flex flex-wrap gap-2 sm:justify-end">
         {AUSSAGEN.map((v) => {
           const eu = EU_REGEL.has(v.titel);
           return (
@@ -118,7 +118,7 @@ export function KiFragen({ className = "" }: { className?: string }) {
     <div className={className}>
       <p className="text-sm font-bold text-accent">KI fragen</p>
       <p className="mt-1 text-sm text-white/65">Lass dir Macher OS von deiner KI erklären.</p>
-      <ul className="mt-3 flex gap-3">
+      <ul className="mt-3 flex gap-3 sm:justify-end">
         {KIS.map((k) => (
           <li key={k.name}>
             <a

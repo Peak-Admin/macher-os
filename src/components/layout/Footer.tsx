@@ -21,18 +21,6 @@ export function Footer() {
             <ButtonLink href={cta.primary.href} variant="onDark" className="mt-6">
               {cta.primary.label}
             </ButtonLink>
-            <div className="mt-6 border-t border-white/10 pt-5">
-              <p className="text-sm text-white/65">{herausgeber.kurz}</p>
-              <a
-                href={ausgehend(herausgeber.url)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-block rounded-sm hover:opacity-80"
-              >
-                <HerausgeberMarke dark className="h-12" />
-                <span className="sr-only"> (öffnet in neuem Tab)</span>
-              </a>
-            </div>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:grid-cols-5">
             {footerNav.map((col) => (
@@ -51,8 +39,20 @@ export function Footer() {
             ))}
           </div>
         </div>
-        <div className="mt-12 border-t border-white/10 pt-8">
-          <div className="sm:ml-auto sm:w-fit">
+        <div className="mt-12 flex flex-col gap-10 border-t border-white/10 pt-8 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-sm text-white/65">{herausgeber.kurz}</p>
+            <a
+              href={ausgehend(herausgeber.url)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-block rounded-sm hover:opacity-80"
+            >
+              <HerausgeberMarke dark className="h-12" />
+              <span className="sr-only"> (öffnet in neuem Tab)</span>
+            </a>
+          </div>
+          <div className="sm:w-fit sm:text-right">
             <KiFragen />
             <VertrauensKacheln className="mt-6" />
           </div>
