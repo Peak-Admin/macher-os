@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { db, zuruecksetzen } from '@core/db';
 import type { Ort, Termin } from '@core/objects';
-import { hatVorOrtInfos, ortInfosLesen, ortInfosSchreiben, orteOhneInfosVorTermin, passenderOrt } from './daten';
+import { hatVorOrtInfos, kundenAnschriftAusOrt, ortInfosLesen, ortInfosSchreiben, orteOhneInfosVorTermin, passenderOrt } from './daten';
 
 const ort = (x: Partial<Ort>): Ort => ({ id: 'o', erstelltAm: '', geaendertAm: '', kundeId: 'k', bezeichnung: 'O', art: 'gewerbe', adresse: { strasse: 'S', plz: '1', ort: 'O' }, ...x });
 const termin = (x: Partial<Termin>): Termin => ({ id: 't', erstelltAm: '', geaendertAm: '', art: 'einsatz', titel: '', start: '2026-10-03T07:00:00.000Z', ende: '2026-10-03T12:00:00.000Z', mitarbeiterIds: [], status: 'geplant', ...x });
@@ -40,5 +41,22 @@ describe('Orte: Regeln', () => {
     expect(passenderOrt({ kundeId: 'k' }, [ort({ id: 'a' })])?.id).toBe('a');
     expect(passenderOrt({ kundeId: 'k' }, [ort({ id: 'a' }), ort({ id: 'b' })])).toBeUndefined();
     expect(passenderOrt({ kundeId: 'k', ortId: 'x' }, [ort({ id: 'a' })])).toBeUndefined();
+  });
+});
+
+describe('Orte: Anschrift des Kunden', () => {
+  beforeEach(() => zuruecksetzen());
+  it('übernimmt den ersten Ort eines Privatkunden ohne Anschrift als Anschrift', () => {
+    const k = db.kunden.create({ art: 'privat', name: 'Hartmann', ansprechpartner: [], telefon: '0561' });
+    const o = db.orte.create({ kundeId: k.id, bezeichnung: 'Wohnhaus', art: 'haus', adresse: { strasse: 'Lindenweg 12', plz: '34117', ort: 'Kassel' } });
+    expect(kundenAnschriftAusOrt(o)).toBe(true);
+    expect(db.kunden.get(k.id)?.adresse).toEqual({ strasse: 'Lindenweg 12', plz: '34117', ort: 'Kassel' });
+    const o2 = db.orte.create({ kundeId: k.id, bezeichnung: 'Ferienhaus', art: 'haus', adresse: { strasse: 'See 1', plz: '12345', ort: 'X' } });
+    expect(kundenAnschriftAusOrt(o2)).toBe(false);
+  });
+  it('lässt Firmen und vorhandene Anschriften in Ruhe', () => {
+    const f = db.kunden.create({ art: 'firma', name: 'GmbH', ansprechpartner: [] });
+    expect(kundenAnschriftAusOrt(db.orte.create({ kundeId: f.id, bezeichnung: 'Baustelle', art: 'baustelle', adresse: { strasse: 'A 1', plz: '1', ort: 'B' } }))).toBe(false);
+    expect(db.kunden.get(f.id)?.adresse).toBeUndefined();
   });
 });

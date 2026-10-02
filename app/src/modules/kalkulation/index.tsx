@@ -1,3 +1,4 @@
+import { darf } from '@core/session';
 import { defineModul } from '@core/modul';
 import { db } from '@core/db';
 import { passt } from '@core/format';
@@ -5,6 +6,7 @@ import type { ID } from '@core/objects';
 import { KalkulationListe, KalkulationTab } from './KalkulationListe';
 import { KalkulationEditor, kalkulationAnlegen } from './KalkulationEditor';
 import { kalkulationen, zeileAusLeistung } from './daten';
+import { aufmasse } from '@modules/aufmass/daten';
 
 export default defineModul({
   id: 'kalkulation',
@@ -27,8 +29,9 @@ export default defineModul({
       zaehler: (id) => kalkulationen.where((k) => k.auftragId === id).length || undefined,
       sichtbar: (id) => {
         const a = db.auftraege.get(id);
-        // Progressive Disclosure: nur bei Projekten in der Angebotsphase oder wenn schon kalkuliert
-        return !!a && ((a.art === 'projekt' && ['besichtigung', 'angebot'].includes(a.phase)) || kalkulationen.all().some((k) => k.auftragId === id));
+        // Progressive Disclosure: bei Projekten in der Angebotsphase, nach einem Aufmaß oder wenn schon kalkuliert
+        const vorAngebot = !!a && ['besichtigung', 'angebot'].includes(a.phase);
+        return !!a && darf('geld') && ((vorAngebot && (a.art === 'projekt' || aufmasse.all().some((x) => x.auftragId === id))) || kalkulationen.all().some((k) => k.auftragId === id));
       },
     },
   ],

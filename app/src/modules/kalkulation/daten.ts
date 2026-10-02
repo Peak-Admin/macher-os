@@ -33,6 +33,10 @@ export interface Kalkulation extends Basis {
   materialZuschlagProzent: number;
   wagnisGewinnProzent: number;
   angebotId?: ID;
+  /** Positionen, die beim Übernehmen im Angebot entstanden sind (erneutes Übernehmen ersetzt sie) */
+  positionIds?: ID[];
+  /** Mengen kamen aus diesen Aufmaßen – deren Positionen ersetzt die Kalkulation im Angebot */
+  ausAufmassIds?: ID[];
 }
 
 export const kalkulationen = defineCollection<Kalkulation>('kalkulationen');

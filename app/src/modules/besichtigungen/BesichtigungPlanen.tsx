@@ -4,6 +4,7 @@ import { db } from '@core/db';
 import { adresseText, heute, personName, plusTage, uhrzeit, zeitpunkt } from '@core/format';
 import { useIch } from '@core/session';
 import type { ID } from '@core/objects';
+import { naechsteArbeitstage } from '@core/kalender';
 import { Button, Eingabe, FormRaster, Karte, Meldung, Meta, Segmente, Seite, Stapel, Textfeld, useToast } from '@ui/index';
 import { AuftragAuswahl, MitarbeiterAuswahl } from '@ui/objekt';
 import { abwesend, besichtigungPlanen, konflikte } from './daten';
@@ -21,7 +22,7 @@ export function BesichtigungPlanen() {
   const toast = useToast();
   const ich = useIch();
   const [auftragId, setAuftragId] = useState<ID | undefined>(params.get('auftrag') ?? undefined);
-  const [tag, setTag] = useState(plusTage(heute(), 1));
+  const [tag, setTag] = useState(() => naechsteArbeitstage(plusTage(heute(), 1), 1)[0] ?? plusTage(heute(), 1));
   const [uhr, setUhr] = useState('15:00');
   const [dauer, setDauer] = useState('60');
   const [wer, setWer] = useState<ID | undefined>(ich?.id);

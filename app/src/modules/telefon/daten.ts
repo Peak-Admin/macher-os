@@ -59,6 +59,14 @@ export function betreffFuer(n: Pick<NeuerAnruf, 'name' | 'nummer' | 'dringlichke
   return `Anruf von ${wer}${d}`;
 }
 
+/** Auftragstitel aus dem Anliegen: erster Satz, an einer Wortgrenze gekürzt */
+export function kurztitel(anliegen: string, max = 60): string {
+  const satz = anliegen.trim().split('\n')[0].split(/(?<=[.!?:])\s/)[0].replace(/[.:]$/, '');
+  if (satz.length <= max) return satz;
+  const schnitt = satz.slice(0, max);
+  return `${schnitt.slice(0, schnitt.lastIndexOf(' ') > 20 ? schnitt.lastIndexOf(' ') : max).replace(/[,;\s]+$/, '')} …`;
+}
+
 export function anrufErfassen(n: NeuerAnruf): { nachricht: Nachricht; auftrag?: Auftrag; kundeNeu?: boolean } {
   if (!n.anliegen.trim()) throw new Error('Ohne Anliegen kein Anruf.');
   let kunde = db.kunden.get(n.kundeId);
@@ -70,7 +78,7 @@ export function anrufErfassen(n: NeuerAnruf): { nachricht: Nachricht; auftrag?: 
     const r = anfrageAnlegen({
       kundeId: kunde?.id,
       neuerKunde: kunde ? undefined : { name: n.name?.trim() || `Anrufer ${n.nummer}`.trim(), telefon: n.nummer },
-      titel: n.anliegen.split('\n')[0].slice(0, 80),
+      titel: kurztitel(n.anliegen),
       beschreibung: n.anliegen,
       quelle: 'telefon',
       dringend,

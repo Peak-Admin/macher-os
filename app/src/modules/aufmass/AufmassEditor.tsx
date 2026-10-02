@@ -149,7 +149,7 @@ export function AufmassEditor() {
       <Stapel abstand={24}>
         {a.angebotId && db.angebote.get(a.angebotId) && (
           <Meldung ton="erfolg" titel={`Schon übernommen in Angebot ${db.angebote.get(a.angebotId)!.nummer}.`} aktion={<Button klein variante="sekundaer" to={`/auftraege/angebote/${a.angebotId}`}>Angebot öffnen</Button>}>
-            Erneutes Übernehmen hängt die Positionen an den aktuellen Entwurf an.
+            Erneutes Übernehmen ersetzt die Positionen aus diesem Aufmaß im Entwurf.
           </Meldung>
         )}
         {a.raeume.map((r, i) => (

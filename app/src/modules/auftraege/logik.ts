@@ -111,6 +111,8 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
     ersatz: { aufgabe: 'Einsatz einplanen', meldung: 'Aufgabe angelegt: Einsatz einplanen.' },
   };
   const terminSchritt = (t: Termin, textWeiter: string): Schritt => {
+    if ((t.status === 'unterwegs' || t.status === 'vor_ort') && k.aktionDa('einsatz.beenden'))
+      return { label: 'Einsatz beenden', text: 'Der Einsatz läuft. Wenn du fertig bist, stopp die Zeit.', icon: 'stop', aktion: 'einsatz.beenden', payload: { terminId: t.id } };
     if (t.start.slice(0, 10) <= k.heute && k.aktionDa('einsatz.starten'))
       return { label: 'Einsatz starten', text: 'Der Einsatz ist heute dran. Mit dem Start läuft die Zeit.', icon: 'start', aktion: 'einsatz.starten', payload: { terminId: t.id } };
     const p = k.pfadZu('termine', t.id);

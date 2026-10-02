@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
-import { anrufErfassen, betreffFuer, erkenneAnrufer, rueckrufNummer } from './daten';
+import { anrufErfassen, betreffFuer, kurztitel, erkenneAnrufer, rueckrufNummer } from './daten';
 
 describe('Telefon & Empfang', () => {
   beforeEach(() => zuruecksetzen());
@@ -33,5 +33,15 @@ describe('Telefon & Empfang', () => {
   it('verlangt ein Anliegen und schreibt einen klaren Betreff', () => {
     expect(() => anrufErfassen({ nummer: '1', anliegen: ' ', dringlichkeit: 'normal', schritt: 'notiz' })).toThrow();
     expect(betreffFuer({ nummer: '0171', dringlichkeit: 'notfall' })).toBe('Anruf von 0171 · Notfall');
+  });
+});
+
+describe('kurztitel', () => {
+  it('nimmt den ersten Satz und kürzt an einer Wortgrenze', () => {
+    expect(kurztitel('Heizung tropft. Bitte schnell kommen.')).toBe('Heizung tropft');
+    expect(kurztitel('Bad im Obergeschoss soll neu gemacht werden: Waschtisch und WC tauschen')).toBe('Bad im Obergeschoss soll neu gemacht werden');
+    const t = kurztitel('Waschtisch und WC im Obergeschoss tauschen und dabei gleich die Armatur erneuern lassen');
+    expect(t.length).toBeLessThanOrEqual(62);
+    expect(t.endsWith(' …')).toBe(true);
   });
 });

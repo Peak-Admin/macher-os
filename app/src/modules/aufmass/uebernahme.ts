@@ -10,8 +10,8 @@ export function inAngebotUebernehmen(aufmassId: ID): Angebot | undefined {
   const positionen = alsPositionen(a, db.leistungen.all());
   if (!positionen.length) return undefined;
   const entwurf = entwurfFuer(a.auftragId);
-  const neu = positionenAnhaengen(entwurf.id, positionen);
-  aufmasse.update(a.id, { angebotId: entwurf.id, uebernommenAm: new Date().toISOString() }, { text: `In Angebot ${entwurf.nummer} übernommen` });
+  const neu = positionenAnhaengen(entwurf.id, positionen, a.angebotId === entwurf.id ? a.positionIds : []);
+  aufmasse.update(a.id, { angebotId: entwurf.id, uebernommenAm: new Date().toISOString(), positionIds: positionen.map((p) => p.id) }, { text: `In Angebot ${entwurf.nummer} übernommen` });
   vermerken({ typ: 'auftraege', id: a.auftragId }, 'aufmass.uebernommen', `Aufmaß in Angebot ${entwurf.nummer} übernommen`);
   return neu;
 }

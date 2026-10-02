@@ -18,7 +18,7 @@
 .mm-btn--gefahr { background: var(--mm-surface); color: var(--mm-danger); border-color: var(--mm-danger); }
 .mm-btn--gefahr:hover:not(:disabled) { background: var(--mm-danger-surface); }
 .mm-btn:disabled { background: var(--mm-border); color: var(--mm-text); border-color: transparent; cursor: not-allowed; }
-.mm-btn--breit { width: 100%; }
+.mm-btn--breit { width: 100%; white-space: normal; text-align: center; }
 .mm-btn--klein { min-height: 36px; padding: 4px 12px; font-size: 14px; }
 .mm-iconbtn {
   display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0;
@@ -142,7 +142,7 @@
 .mm-status {
   display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; min-height: 24px;
   border-radius: var(--mm-radius-control); font: 600 13px/20px var(--mm-font); border: 1px solid transparent;
-  max-width: 100%; overflow-wrap: anywhere;
+  max-width: 100%; overflow-wrap: break-word;
 }
 .mm-status--neutral { background: var(--mm-hover); color: var(--mm-text); }
 .mm-status--aktiv { background: var(--mm-soft-green); color: var(--mm-brand-text); border-color: #c9d6c0; }

@@ -3,7 +3,7 @@ import { db } from '@core/db';
 import { adresseText, mapsLink, telLink } from '@core/format';
 import type { ID, Ort } from '@core/objects';
 import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Stapel, Textfeld, Zeile, useToast } from '@ui/index';
-import { INFO_LABEL, ORT_ARTEN, hatVorOrtInfos, ortInfosLesen, ortInfosSchreiben, type OrtInfos } from './daten';
+import { INFO_LABEL, ORT_ARTEN, hatVorOrtInfos, kundenAnschriftAusOrt, ortInfosLesen, ortInfosSchreiben, type OrtInfos } from './daten';
 
 /** Was der Monteur vor Ort braucht: Navigation, Ansprechpartner, Zugang, Parken, Schlüssel */
 export function VorOrtInfos({ ort, onBearbeiten }: { ort: Ort; onBearbeiten?: () => void }) {
@@ -119,7 +119,7 @@ export function OrtDialog({ ort, kundeId, onSchliessen, onGespeichert }: { ort?:
       toast('Deine Änderungen sind gespeichert.');
     } else if (kundeId) {
       gespeichert = db.orte.create({ kundeId, ...daten });
-      toast(`${daten.bezeichnung} ist angelegt.`);
+      toast(kundenAnschriftAusOrt(gespeichert) ? `${daten.bezeichnung} ist angelegt und als Anschrift des Kunden eingetragen.` : `${daten.bezeichnung} ist angelegt.`);
     }
     if (gespeichert) onGespeichert?.(gespeichert);
     onSchliessen();

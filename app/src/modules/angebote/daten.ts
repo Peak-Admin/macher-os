@@ -152,10 +152,18 @@ export function entwurfFuer(auftragId: ID): Angebot {
   return e ?? neuesAngebot(auftragId);
 }
 
-export function positionenAnhaengen(angebotId: ID, neu: Position[]): Angebot | undefined {
+/**
+ * Positionen an ein Angebot hängen. `ersetzen`: Positionen, die aus derselben Quelle (Aufmaß, Kalkulation) schon
+ * übernommen wurden – sie werden an ihrer Stelle ersetzt statt doppelt angehängt.
+ */
+export function positionenAnhaengen(angebotId: ID, neu: Position[], ersetzen: ID[] = []): Angebot | undefined {
   const a = db.angebote.get(angebotId);
   if (!a) return undefined;
-  return db.angebote.update(a.id, { positionen: [...a.positionen, ...neu] }, { text: `${neu.length} Positionen übernommen` });
+  const weg = new Set(ersetzen);
+  const stelle = a.positionen.findIndex((p) => weg.has(p.id));
+  const rest = a.positionen.filter((p) => !weg.has(p.id));
+  const positionen = stelle < 0 ? [...rest, ...neu] : [...rest.slice(0, stelle), ...neu, ...rest.slice(stelle)];
+  return db.angebote.update(a.id, { positionen }, { text: `${neu.length} Positionen übernommen` });
 }
 
 export function neueVersion(id: ID): Angebot | undefined {
@@ -190,13 +198,23 @@ export function versenden(id: ID, weg: 'email' | 'anders' = 'email'): Angebot | 
   return neu;
 }
 
+/** Arbeitsstunden laut Angebot: Stundenpositionen plus Zeitansatz der Leistungen (auf halbe Stunden gerundet) */
+export function angebotStunden(a: Pick<Angebot, 'positionen'>, leistungen: Leistung[] = db.leistungen.all()): number {
+  const minuten = a.positionen
+    .filter((p) => !p.optional && p.menge > 0)
+    .reduce((s, p) => s + (p.einheit === 'h' ? p.menge * 60 : p.menge * (leistungen.find((l) => l.id === p.leistungId)?.minuten ?? 0)), 0);
+  return Math.ceil(minuten / 30) / 2;
+}
+
 export function annehmen(id: ID): Angebot | undefined {
   const a = db.angebote.get(id);
   if (!a) return undefined;
   const neu = db.angebote.update(a.id, { status: 'angenommen', entschiedenAm: new Date().toISOString() }, { text: 'Vom Kunden angenommen' });
   const auftrag = db.auftraege.get(a.auftragId);
   if (auftrag && phaseVor(auftrag.phase, 'beauftragt')) {
-    db.auftraege.update(auftrag.id, { phase: 'beauftragt', verlorenGrund: undefined, abgeschlossenAm: undefined }, { text: `Beauftragt (Angebot ${a.nummer} angenommen)` });
+    // Planung braucht Stunden: aus dem Angebot übernehmen, wenn noch keine geschätzt sind
+    const stunden = auftrag.geplanteStunden ? undefined : angebotStunden(a) || undefined;
+    db.auftraege.update(auftrag.id, { phase: 'beauftragt', verlorenGrund: undefined, abgeschlossenAm: undefined, ...(stunden ? { geplanteStunden: stunden } : {}) }, { text: `Beauftragt (Angebot ${a.nummer} angenommen)` });
   }
   // ältere offene Versionen sind damit erledigt
   versionen(a)

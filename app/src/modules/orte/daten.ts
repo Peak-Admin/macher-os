@@ -6,6 +6,7 @@
  * Freitext ohne Präfix bleibt erhalten und wird nach Stichworten zugeordnet.
  */
 import { tageZwischen, datumVon, heute } from '@core/format';
+import { db } from '@core/db';
 import type { Auftrag, ID, Ort, Termin } from '@core/objects';
 
 export interface OrtInfos {
@@ -112,3 +113,15 @@ export const ORT_ARTEN: { wert: Ort['art']; label: string }[] = [
 ];
 
 export const ortArtLabel = (a: Ort['art']) => ORT_ARTEN.find((x) => x.wert === a)?.label ?? a;
+
+/**
+ * Erster Ort eines Privatkunden ohne Anschrift (z. B. am Telefon angelegt): Das ist seine Anschrift.
+ * Sonst bleibt die Rechnung an der fehlenden Kundenadresse hängen.
+ */
+export function kundenAnschriftAusOrt(ort: Ort): boolean {
+  const k = db.kunden.get(ort.kundeId);
+  if (!k || k.art !== 'privat' || (k.adresse?.strasse && k.adresse.ort)) return false;
+  if (db.orte.where((o) => o.kundeId === k.id && o.id !== ort.id).length) return false;
+  db.kunden.update(k.id, { adresse: { ...ort.adresse } }, { text: `Anschrift aus Ort ${ort.bezeichnung} übernommen` });
+  return true;
+}

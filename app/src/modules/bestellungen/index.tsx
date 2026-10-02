@@ -69,8 +69,9 @@ export default defineModul({
       .slice(0, 5)
       .map((b) => ({ typ: 'Bestellung', titel: `${b.nummer} · ${db.lieferanten.get(b.lieferantId)?.name ?? ''}`, untertitel: b.positionen.map((p) => p.text).slice(0, 3).join(', '), pfad: `/betrieb/bestellungen/${b.id}`, relevanz: 40 })),
   seed: () => {
-    // Beispiel: eine Bestellung, die gestern hätte kommen sollen
-    const l = db.lieferanten.where((x) => !!x.beispiel)[0];
+    // Beispiel: eine Bestellung, die gestern hätte kommen sollen (nur mit Beispieldaten)
+    if (!db.mitarbeiter.all().some((m) => m.beispiel)) return;
+    const l =db.lieferanten.where((x) => !!x.beispiel)[0];
     const artikel = db.artikel.where((a) => a.lieferantId === l?.id).slice(3, 5);
     if (!l || !artikel.length) return;
     const b = bestellungAnlegen(l.id, artikel.map((a) => neuePosition({ artikelId: a.id, text: a.name, menge: Math.max(5, a.mindestbestand ?? 10), einheit: a.einheit, ek: a.ek })), { beispiel: true });

@@ -43,6 +43,8 @@ export interface Aufmass extends Basis {
   /** zuletzt übernommen in Angebot */
   angebotId?: ID;
   uebernommenAm?: string;
+  /** Positionen, die dabei im Angebot entstanden sind (erneutes Übernehmen ersetzt sie) */
+  positionIds?: ID[];
 }
 
 export const aufmasse = defineCollection<Aufmass>('aufmasse');

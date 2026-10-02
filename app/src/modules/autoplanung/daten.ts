@@ -9,7 +9,7 @@
  *  - Qualifikation (Pflicht: ohne gültige Nachweise kein Vorschlag)
  * Größere Aufträge werden auf mehrere Tage aufgeteilt, ab 16 h auf zwei Personen.
  */
-import { db, batch, type Neu } from '@core/db';
+import { db, batch, vermerken, type Neu } from '@core/db';
 import { datum as datumFmt, datumKurz, isoDatum, minutenAus, minutenVon, personName, plusTage, uhrAus, wochentag, zeitpunkt } from '@core/format';
 import { naechsteArbeitstage } from '@core/kalender';
 import type { Auftrag, Datum, ID, Termin } from '@core/objects';
@@ -465,7 +465,6 @@ export function vorschlagAlsTermine(a: Auftrag, v: Vorschlag): Neu<Termin>[] {
     ortId: a.ortId,
     mitarbeiterIds: [...v.mitarbeiterIds],
     status: 'geplant',
-    notiz: `Automatisch geplant: ${v.gruende.join(' · ')}`,
   }));
 }
 
@@ -480,6 +479,8 @@ export function vorschlagUebernehmen(v: Vorschlag): { ok: true; termine: Termin[
   batch(() => {
     for (const t of neu) termine.push(db.termine.create(t));
   });
+  // Warum so geplant: in den Verlauf, nicht in die Notiz fürs Team (die liest der Monteur vor Ort)
+  termine.forEach((t) => vermerken({ typ: 'termine', id: t.id }, 'plan.automatisch', `Automatisch geplant: ${v.gruende.join(' · ')}`));
   return { ok: true, termine };
 }
 

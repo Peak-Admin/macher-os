@@ -62,6 +62,10 @@ describe('Nächster Schritt', () => {
     const t = termin({ id: 't1', start: zeitpunkt(heute(), '08:00') });
     expect(naechsterSchritt(auftrag({ phase: 'beauftragt' }), kontext({ termine: [t] }))?.aktion).toBe('einsatz.starten');
   });
+  it('laufender Einsatz → Einsatz beenden statt erneut starten', () => {
+    const t = termin({ id: 't1', start: zeitpunkt(heute(), '08:00'), status: 'vor_ort' });
+    expect(naechsterSchritt(auftrag({ phase: 'in_arbeit' }), kontext({ termine: [t] }))).toMatchObject({ aktion: 'einsatz.beenden', payload: { terminId: 't1' } });
+  });
   it('in Arbeit ohne kommende Einsätze → Abnahme starten', () => {
     expect(naechsterSchritt(auftrag({ phase: 'in_arbeit' }), kontext({ termine: [termin({ status: 'erledigt' })] }))?.aktion).toBe('abnahme.starten');
   });

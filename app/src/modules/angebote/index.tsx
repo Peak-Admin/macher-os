@@ -1,3 +1,4 @@
+import { darf } from '@core/session';
 import { defineModul, type HinweisVorschlag } from '@core/modul';
 import { db } from '@core/db';
 import { erledigt } from '@core/macher';
@@ -76,7 +77,7 @@ export default defineModul({
       zaehler: (id) => db.angebote.where((a) => a.auftragId === id).length || undefined,
       sichtbar: (id) => {
         const a = db.auftraege.get(id);
-        return !!a && (['anfrage', 'besichtigung', 'angebot'].includes(a.phase) || db.angebote.all().some((x) => x.auftragId === id));
+        return !!a && darf('geld') && (['anfrage', 'besichtigung', 'angebot'].includes(a.phase) || db.angebote.all().some((x) => x.auftragId === id));
       },
     },
     {
@@ -85,7 +86,7 @@ export default defineModul({
       component: ({ id }) => <AngeboteTab id={id} kunde />,
       gewicht: 55,
       zaehler: (id) => db.angebote.where((a) => a.kundeId === id).length || undefined,
-      sichtbar: (id) => db.angebote.all().some((a) => a.kundeId === id),
+      sichtbar: (id) => darf('geld') && db.angebote.all().some((a) => a.kundeId === id),
     },
   ],
   kurzinfo: () => {

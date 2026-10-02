@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
 import { on } from '@core/events';
 import type { Angebot } from '@core/objects';
-import { ablehnen, angebotSummen, annehmen, istAktuelleVersion, laeuftBaldAb, nachfassenFaellig, neueVersion, neuesAngebot, optionalSumme, phaseVor, versenden } from './daten';
+import { ablehnen, angebotStunden, angebotSummen, annehmen, istAktuelleVersion, laeuftBaldAb, nachfassenFaellig, neueVersion, neuesAngebot, optionalSumme, phaseVor, versenden } from './daten';
 import { zahlAus } from '@ui/index';
 
 const ang = (x: Partial<Angebot>): Angebot => ({ id: 'a', erstelltAm: '', geaendertAm: '', nummer: 'AN-1', auftragId: 'x', kundeId: 'k', titel: '', positionen: [], status: 'versendet', datum: '2026-09-20', gueltigBis: '2026-10-20', versendetAm: '2026-09-23T10:00:00Z', version: 1, ...x });
@@ -61,6 +61,19 @@ describe('Angebotsablauf', () => {
     aus();
     expect(db.auftraege.get(a.id)?.phase).toBe('beauftragt');
     expect(events).toEqual(['angebot.versendet', 'angebot.angenommen']);
+  });
+
+  it('übernimmt beim Annehmen die Stunden aus dem Angebot für die Planung', () => {
+    const a = auftrag();
+    const l = db.leistungen.create({ name: 'Steckdose', einheit: 'Stk', preis: 4500, minuten: 35, aktiv: true });
+    const an = neuesAngebot(a.id, [
+      { id: 'p1', art: 'leistung', text: 'Steckdose', menge: 6, einheit: 'Stk', einzelpreis: 4500, leistungId: l.id },
+      { id: 'p2', art: 'lohn', text: 'Stunde', menge: 2, einheit: 'h', einzelpreis: 6800 },
+      { id: 'p3', art: 'lohn', text: 'Optional', menge: 9, einheit: 'h', einzelpreis: 6800, optional: true },
+    ]);
+    expect(angebotStunden(an)).toBe(5.5);
+    annehmen(an.id);
+    expect(db.auftraege.get(a.id)?.geplanteStunden).toBe(5.5);
   });
 
   it('Versionen behalten die Nummer, nur die neueste zählt', () => {

@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { db, useDatenstand, vermerken } from '@core/db';
+import { db, useDatenstand } from '@core/db';
 import { setzeEinstellung, einstellung } from '@core/einstellungen';
 import { euro, zahl } from '@core/format';
 import { useDarf } from '@core/session';
@@ -7,7 +7,7 @@ import type { Einheit, ID } from '@core/objects';
 import { Auswahl, BeispielMarke, Button, Eingabe, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, ZweiSpalten, useBestaetigen, useToast, ZahlEingabe } from '@ui/index';
 import { ObjektLink } from '@ui/objekt';
 import { EINHEITEN } from '@modules/angebote/Positionen';
-import { entwurfFuer, positionenAnhaengen } from '@modules/angebote/daten';
+import { kalkulationUebernehmen, zeilenAusAufmass } from './uebernahme';
 import { KeinGeldRecht } from '@modules/angebote/AngebotDetail';
 import { alsPositionen, gkAusStundensatz, kalkulationen, leereZeile, materialAufschlag, mittellohn, rechne, zeileAusArtikel, zeileAusLeistung, type KalkZeile, type Kalkulation } from './daten';
 
@@ -21,9 +21,11 @@ export function kalkulationAnlegen(auftragId: ID): Kalkulation {
   const gk = einstellung<number | undefined>('kalkulation.gemeinkosten', undefined) ?? gkAusStundensatz(betrieb?.stundensatz ?? 0, lohn, wg);
   const mz = einstellung<number | undefined>('kalkulation.materialZuschlag', undefined) ?? materialAufschlag(db.artikel.all()) ?? 0;
   const artikel = db.artikel.all();
-  const zeilen = (a?.leistungIds ?? []).map((id) => db.leistungen.get(id)).filter((l) => !!l).map((l) => zeileAusLeistung(l!, artikel));
+  const ausAufmass = zeilenAusAufmass(auftragId);
+  const zeilen = ausAufmass.zeilen.length ? ausAufmass.zeilen : (a?.leistungIds ?? []).map((id) => db.leistungen.get(id)).filter((l) => !!l).map((l) => zeileAusLeistung(l!, artikel));
   return kalkulationen.create({
     auftragId,
+    ausAufmassIds: ausAufmass.aufmassIds.length ? ausAufmass.aufmassIds : undefined,
     titel: `Kalkulation ${a?.titel ?? ''}`.trim(),
     zeilen: zeilen.length ? zeilen : [leereZeile()],
     lohnkosten: lohn,
@@ -98,13 +100,9 @@ export function KalkulationEditor() {
   const artikel = db.artikel.all().filter((a) => a.aktiv);
 
   const uebernehmen = () => {
-    const pos = alsPositionen(k);
-    if (!pos.length) return toast('Trag zuerst Mengen ein.', { ton: 'achtung' });
-    const ang = entwurfFuer(k.auftragId);
-    positionenAnhaengen(ang.id, pos);
-    kalkulationen.update(k.id, { angebotId: ang.id }, { text: `In Angebot ${ang.nummer} übernommen` });
-    vermerken({ typ: 'auftraege', id: k.auftragId }, 'kalkulation.uebernommen', `Kalkulation in Angebot ${ang.nummer} übernommen (${euro(e.summe.preis)} netto)`);
-    toast(`${pos.length} Positionen ins Angebot ${ang.nummer} übernommen.`);
+    const ang = kalkulationUebernehmen(k.id);
+    if (!ang) return toast('Trag zuerst Mengen ein.', { ton: 'achtung' });
+    toast(`${alsPositionen(k).length} Positionen ins Angebot ${ang.nummer} übernommen.`);
     navigate(`/auftraege/angebote/${ang.id}`);
   };
 

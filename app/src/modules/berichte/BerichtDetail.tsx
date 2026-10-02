@@ -79,7 +79,7 @@ function BerichtSeite({ b }: { b: Bericht }) {
       <Karte titel="Auf einen Blick" kompakt>
         <Stapel abstand={4}>
           <Meta>Stunden: {stundenText(summeMin)}</Meta>
-          <Meta>Material: {material.length} Positionen</Meta>
+          <Meta>Material: {material.length} {material.length === 1 ? 'Position' : 'Positionen'}</Meta>
           <Meta>Fotos: {fotos.length}</Meta>
           <Meta>Angelegt {relativ(b.erstelltAm)}</Meta>
         </Stapel>
