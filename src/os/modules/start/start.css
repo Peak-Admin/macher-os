@@ -1,0 +1,59 @@
+/* First Value: Startauswahl, Schnellabläufe, „Dein Start“ – nur Layout, Farben über --mm-*-Tokens */
+
+.mm-start-karten { display: grid; gap: var(--mm-space-3); }
+@media (min-width: 900px) { .mm-start-karten { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.mm-start-karte {
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--mm-space-3); padding: var(--mm-space-6);
+  min-height: 44px; text-align: left; font: inherit; color: var(--mm-text);
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card);
+  box-shadow: var(--mm-shadow-card); cursor: pointer;
+  transition: border-color var(--mm-motion-fast) ease-out, box-shadow var(--mm-motion-fast) ease-out;
+}
+.mm-start-karte:hover { border-color: var(--mm-brand); }
+.mm-start-karte:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.mm-start-karte strong { font: 700 22px/28px var(--mm-font); color: var(--mm-black); }
+.mm-start-karte .mm-auswahlkarte-icon { width: 44px; height: 44px; }
+.mm-start-karte-weiter { display: inline-flex; align-items: center; gap: 4px; margin-top: auto; font-weight: 600; color: var(--mm-link); }
+.mm-start-karte--erste { border: 2px solid var(--mm-brand); padding: calc(var(--mm-space-6) - 1px); }
+
+/* Schritte 1 · 2 · 3 */
+.mm-schritt-kopf { display: flex; align-items: center; gap: var(--mm-space-3); margin-bottom: var(--mm-space-4); }
+.mm-schritt-nr {
+  display: grid; place-items: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: var(--mm-radius-control);
+  background: var(--mm-brand-deep); color: var(--mm-on-action); font: 700 15px/1 var(--mm-font);
+}
+.mm-schritt-kopf h2 { margin: 0; font: 700 20px/26px var(--mm-font); color: var(--mm-black); }
+.mm-schritt-kopf .mm-status { margin-left: auto; }
+
+/* Positionen kompakt */
+.mm-schnell-pos { display: grid; gap: var(--mm-space-2); padding: var(--mm-space-3); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); background: var(--mm-surface); }
+.mm-schnell-pos-zahlen { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr); gap: var(--mm-space-2); }
+.mm-schnell-eingabe { display: flex; gap: var(--mm-space-2); align-items: flex-end; flex-wrap: wrap; }
+.mm-schnell-eingabe > :first-child { flex: 1 1 260px; min-width: 0; }
+.mm-schnell-vorschlaege { display: flex; flex-wrap: wrap; gap: var(--mm-space-2); }
+.mm-schnell-summe { display: flex; justify-content: space-between; gap: var(--mm-space-4); font-weight: 700; font-size: 20px; }
+.mm-sprache-an { box-shadow: 0 0 0 2px var(--mm-brand-accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .mm-sprache-an { animation: mm-sprache 1.2s ease-out infinite; }
+  @keyframes mm-sprache { 50% { box-shadow: 0 0 0 4px var(--mm-brand-accent); } }
+}
+
+details.mm-mehr > summary { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; font-weight: 600; color: var(--mm-link); }
+details.mm-mehr > summary:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+details.mm-mehr[open] > summary { margin-bottom: var(--mm-space-3); }
+
+/* Briefbogen-Vorschau im Dialog: ohne Druckleiste */
+.mm-vorschau .mm-druck-leiste, .mm-vorschau .mm-druck-hinweis { display: none; }
+.mm-vorschau .mm-druck-huelle { min-height: 0; padding: 0; background: transparent; }
+.mm-vorschau .mm-druck { min-height: 0; box-shadow: none; }
+
+/* Dein Start (Heute) */
+.mm-start-haken { display: grid; gap: var(--mm-space-2); margin: 0; padding: 0; list-style: none; }
+.mm-start-haken li { display: flex; align-items: center; gap: var(--mm-space-3); min-height: 44px; flex-wrap: wrap; }
+.mm-start-haken-box {
+  display: grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0;
+  border: 2px solid var(--mm-border-dark); border-radius: var(--mm-radius-control); color: var(--mm-on-action);
+}
+.mm-start-haken-box--an { background: var(--mm-brand-deep); border-color: var(--mm-brand-deep); }
+.mm-start-haken-text { flex: 1; min-width: 160px; }
+.mm-start-haken li.erledigt .mm-start-haken-text { text-decoration: line-through; color: var(--mm-muted-on-white); }

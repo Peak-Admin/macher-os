@@ -67,6 +67,7 @@ import m_schnell_erfassen from '../modules/schnell-erfassen';
 import m_schnittstellen from '../modules/schnittstellen';
 import m_schulungen from '../modules/schulungen';
 import m_servicevertraege from '../modules/servicevertraege';
+import m_start from '../modules/start';
 import m_subunternehmer from '../modules/subunternehmer';
 import m_suche from '../modules/suche';
 import m_telefon from '../modules/telefon';
@@ -150,6 +151,7 @@ export const modulListe: [string, ModulDef][] = [
   ['schnittstellen', m_schnittstellen],
   ['schulungen', m_schulungen],
   ['servicevertraege', m_servicevertraege],
+  ['start', m_start],
   ['subunternehmer', m_subunternehmer],
   ['suche', m_suche],
   ['telefon', m_telefon],

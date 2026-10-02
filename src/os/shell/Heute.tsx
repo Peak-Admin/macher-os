@@ -3,6 +3,8 @@
  * - Monteur: eigener Einsatz · Dein Tag · Braucht deine Entscheidung
  * - Inhaber: (laufender eigener Einsatz) · Braucht deine Entscheidung · Heute im Betrieb · Dein Tag
  * - Büro: Eingang · Einplanen · Braucht deine Entscheidung
+ * Solange der Start nicht geschafft ist, steht „Dein Start“ (3 Haken) bei Inhaber und Büro ganz oben.
+ * Leere Blöcke zeigen immer einen konkreten nächsten Schritt – nie eine leere Fläche.
  * Listen zeigen höchstens drei Einträge und einen klar benannten Weg zur vollständigen Liste.
  * Die Begrüßung ist eine Zeile. Navigation und Rechte bleiben für alle gleich.
  */
@@ -24,6 +26,7 @@ import { offeneAnfragen } from '@modules/anfragen/daten';
 import { QualiDialog } from '@modules/anfragen/Qualifizieren';
 import type { ID } from '@core/objects';
 import { useOffen, OffenEintraege } from '@modules/offen/OffenListe';
+import { StartKarte, useStartHaken } from '@modules/start/StartKarte';
 
 const VORSCHAU = 3;
 const tagFormat = new Intl.DateTimeFormat('de-DE', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -47,6 +50,7 @@ function Block({ titel, alle, children }: { titel: string; alle?: { to: string; 
 export function HeuteSeite() {
   useDatenstand();
   const ich = useIch();
+  const startOffen = useStartHaken().some((h) => !h.erledigt);
   if (!ich) return <Leer titel="Niemand angemeldet" text="Wähle oben rechts im Profil, wer du bist." icon="person" />;
   const rolle = ich.rolle;
   const einsatz = naechsterEinsatz(ich.id);
@@ -55,12 +59,13 @@ export function HeuteSeite() {
   if (rolle === 'chef') {
     bloecke = [
       einsatz && laeuft(einsatz) ? <EinsatzKurz key="e" t={einsatz} /> : null,
+      startOffen && darf('geld') ? <StartKarte key="s" /> : null,
       <Entscheidungen key="h" ich={ich} immer />,
       <BetriebHeute key="b" />,
       <DeinTag key="t" ich={ich} ohne={einsatz} />,
     ];
   } else if (rolle === 'buero') {
-    bloecke = [einsatz && laeuft(einsatz) ? <EinsatzKurz key="e" t={einsatz} /> : null, <Eingang key="a" />, <Einplanen key="o" />, <Entscheidungen key="h" ich={ich} immer />];
+    bloecke = [einsatz && laeuft(einsatz) ? <EinsatzKurz key="e" t={einsatz} /> : null, startOffen && darf('geld') ? <StartKarte key="s" /> : null, <Eingang key="a" />, <Einplanen key="o" />, <Entscheidungen key="h" ich={ich} immer />];
   } else {
     bloecke = [
       einsatz ? <EinsatzKurz key="e" t={einsatz} /> : <Meldung key="e" titel="Kein Einsatz geplant">In den nächsten zwei Wochen ist für dich nichts eingeplant. Frag im Büro, wenn du etwas erwartest.</Meldung>,
@@ -121,7 +126,16 @@ function DeinTag({ ich, ohne }: { ich: Mitarbeiter; ohne?: Termin }) {
           ))}
         </Liste>
       ) : (
-        <Meta>Heute steht für dich sonst nichts an.</Meta>
+        <>
+          <Meta>Heute steht für dich sonst nichts an.</Meta>
+          {darf('geld') && (
+            <div>
+              <Button variante="sekundaer" klein icon="dokument" to="/start/angebot">
+                Angebot schreiben
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </Block>
   );
