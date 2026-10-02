@@ -7,6 +7,7 @@ import { db, type Neu } from '@core/db';
 import { GEWERKE } from '@core/gewerke';
 import type { Gewerk, Kunde } from '@core/objects';
 import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
+import { PLAN_QUELLE } from '@modules/abo/plaene';
 import { Button, Fortschritt, Icon, Meldung, Meta, Oberzeile, Stapel, useBestaetigen, type IconName } from '@ui/index';
 import {
   briefkopfLuecken,
@@ -44,8 +45,17 @@ export function Willkommen() {
   );
 }
 
-/** Was beim Start zählt – steht bei der Anmeldung (`/signup`) im Markenkopf. */
-const VORTEILE = ['Keine Kündigung notwendig', 'Keine versteckten Kosten', 'Alle Funktionen ab Tag 1 freigeschaltet', 'Sofort startklar – ohne Installation, ohne Setup'];
+/**
+ * Was beim Start zählt – steht bei der Anmeldung (`/signup`) im Markenkopf.
+ * Nur Zusagen, die das Produkt hält: Testzeit aus `abo/plaene`, Import im Schritt „Kunden & Preise“,
+ * Team ohne Passwort im Schritt „Team“, Lesemodus und Export nach dem Test (siehe `preise.ts`).
+ */
+const VORTEILE = [
+  `${PLAN_QUELLE.testTage} Tage kostenlos – ohne Kreditkarte`,
+  'Kunden und Preise bringst du einfach mit',
+  'Dein Team braucht kein Passwort',
+  'Nichts geht verloren – auch nach dem Test',
+];
 
 function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
   return (
