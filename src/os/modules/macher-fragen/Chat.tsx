@@ -11,6 +11,7 @@ import { aktionDef, fuehreAus, fuehrePlanAus, nimmZurueck, planRisiko, pruefePla
 import { BEISPIELFRAGEN, fragen as gatewayFragen, type Antwort, type AufgabeEntwurf, type PlanSchrittStand, type Vorschlag } from './assistent';
 import { chat, type ChatEintrag } from './daten';
 import './macher.css';
+import { ausgehend } from '@/lib/link/ausgehend';
 
 /** Der Chat – im Overlay und auf der Seite `/macher/macher-fragen` gleich. */
 export function MacherChat({ onNavigiert, startFrage }: { onNavigiert?: () => void; startFrage?: string }) {
@@ -116,7 +117,7 @@ function AntwortAnsicht({ eintrag, a, fragen, onNavigiert }: { eintrag: ChatEint
   const navigate = useNavigate();
   const gehe = (pfad: string) => {
     if (/^(https?:|tel:|mailto:)/.test(pfad)) {
-      window.open(pfad, pfad.startsWith('http') ? '_blank' : '_self', 'noopener');
+      window.open(ausgehend(pfad), pfad.startsWith('http') ? '_blank' : '_self', 'noopener');
       return;
     }
     onNavigiert?.();

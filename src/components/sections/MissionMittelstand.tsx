@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Container, Icon } from "@/components/ui";
 import { FotoDatei, bildVorhanden } from "@/components/ui/Foto";
 import { herausgeber } from "@/lib/site";
+import { ausgehend } from "@/lib/link/ausgehend";
 
 /** Große grüne Chevrons hinter der Person (Personen-Hero mit Pfeilmotiv). */
 function Pfeilmotiv({ className = "" }: { className?: string }) {
@@ -104,7 +105,7 @@ export function MissionMittelstand({
             ))}
           </ul>
           <a
-            href={herausgeber.url}
+            href={ausgehend(herausgeber.url)}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
