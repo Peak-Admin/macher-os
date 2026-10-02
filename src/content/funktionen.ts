@@ -61,6 +61,11 @@ type Basis = {
   /** Unterpunkte aus dem Mega-Menü, die diese Funktion abdeckt. */
   enthalten?: string[];
   meta: { title: string; description: string };
+  /**
+   * Nur für angekündigte Funktionen, deren Modul noch nicht fertig ist. Die Seite zeigt dann sichtbar
+   * „Kommt bald“ und sagt, was heute schon geht – damit nichts als fertig verkauft wird, was es noch nicht gibt.
+   */
+  bald?: { text: string; heute: string[] };
   hero: { titel: string; problem: string; loesung: string };
   visual: FunktionsVisual;
   gewerke: { slug: GewerkSlug; text: string }[];
