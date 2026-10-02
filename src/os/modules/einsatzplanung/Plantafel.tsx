@@ -1,4 +1,7 @@
-/** Plantafel: Mitarbeiter × Tage einer Woche. Auftrag wählen → in Zelle einplanen. Termine per Drag & Drop umsetzen. */
+/**
+ * Plantafel: eine Zeitachse (Tage einer Woche), darauf oben die Aufträge (Zeitraum als Balken) und unten die Mitarbeiter.
+ * Auftrag wählen → in Zelle einplanen. Termine per Drag & Drop umsetzen. Klick auf einen Auftragsbalken hebt seine Termine hervor.
+ */
 import { useMemo, useState, type DragEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
@@ -12,7 +15,9 @@ import { terminAmTag, termineIm } from '../kalender/daten';
 import { useSchmal } from '../kalender/hooks';
 import { anwesenheit, geplanteStunden, kontextAusDb, restStunden, terminKonflikte, verfuegbareStunden, type Grund } from '../verfuegbarkeit/daten';
 import { offenEinzuplanen } from '../offen/daten';
-import { aufZelleVerschieben, vorbelegung } from './daten';
+import { auftragsBalken, aufZelleVerschieben, vorbelegung } from './daten';
+import { AuftragsFehlergrenze, AuftragsZeilen, GruppenKopf } from './PlanAuftraege';
+import { MitMacherVorbereiten } from '@modules/macher-fragen/MitMacher';
 import '../kalender/plan.css';
 
 const WOCHENTAGE = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
@@ -22,6 +27,8 @@ export function Plantafel() {
   useDatenstand();
   const [sp, setSp] = useSearchParams();
   const schmal = useSchmal();
+  /** Die Gruppe „Aufträge“ gibt es erst ab Desktop-Breite – darunter bleibt die Tafel wie gewohnt */
+  const mitAuftraegen = !useSchmal(1023);
   const toast = useToast();
   const darfPlanen = useDarf('planen');
   const auftragId = sp.get('auftrag') ?? '';
@@ -33,6 +40,10 @@ export function Plantafel() {
   const [vorgabe, setVorgabe] = useState<TerminVorgabe>();
   const [zug, setZug] = useState<{ terminId: ID; vonMa: ID }>();
   const [ziel, setZiel] = useState<string>();
+  /** Auftrag, dessen Termine im Team hervorgehoben sind */
+  const [markiert, setMarkiert] = useState<ID>();
+  /** eingeklappte Gruppen der Plantafel */
+  const [zu, setZu] = useState<{ auftraege?: boolean; team?: boolean }>({});
 
   const setze = (patch: Record<string, string | undefined>) => {
     const n = new URLSearchParams(sp);
@@ -63,6 +74,16 @@ export function Plantafel() {
     ...weitere.sort((a, b) => a.nummer.localeCompare(b.nummer)).map((a) => ({ wert: a.id, label: auftragLabel(a) })),
   ];
   const rest = auftrag ? restStunden(auftrag, k.termine) : undefined;
+  const ohneTermin = offen.filter((e) => e.grund === 'einsatz').map((e) => e.auftrag.id);
+  let anzahlAuftraege: number | undefined;
+  try {
+    anzahlAuftraege = mitAuftraegen ? auftragsBalken(db.auftraege.all(), k.termine, sichtbareTage, ohneTermin).length : undefined;
+  } catch {
+    anzahlAuftraege = undefined; // den Fehler zeigt die Gruppe selbst
+  }
+  const markierterAuftrag = markiert ? db.auftraege.get(markiert) : undefined;
+  const markierteTermine = markiert ? termineWoche.filter((t) => t.auftragId === markiert && sichtbareTage.some((d) => terminAmTag(t, d))) : [];
+  const markierteLeute = [...new Set(markierteTermine.flatMap((t) => t.mitarbeiterIds))].map((id) => personName(db.mitarbeiter.get(id)));
 
   const zelleOeffnen = (m: Mitarbeiter, d: Datum) => {
     const v = vorbelegung(auftrag, m.id, d, k);
@@ -93,6 +114,7 @@ export function Plantafel() {
     return (
       <div
         key={t.id}
+        className={markiert && t.auftragId === markiert ? 'ep-markiert' : undefined}
         draggable={darfPlanen && !schmal}
         onDragStart={(e) => {
           e.dataTransfer.setData('text/x-termin', t.id);
@@ -140,9 +162,12 @@ export function Plantafel() {
           ton="aktiv"
           titel={`${auftrag.titel} einplanen`}
           aktion={
-            <Button variante="sekundaer" klein onClick={() => setze({ auftrag: undefined })}>
-              Fertig
-            </Button>
+            <>
+              <MitMacherVorbereiten bezug={{ typ: 'auftraege', id: auftrag.id }} zweck="einplanen" klein />
+              <Button variante="sekundaer" klein onClick={() => setze({ auftrag: undefined })}>
+                Fertig
+              </Button>
+            </>
           }
         >
           {rest != null ? (rest > 0 ? `Noch ${zahl(rest)} h einzuplanen. ` : 'Die geschätzten Stunden sind verplant. ') : ''}
@@ -186,15 +211,45 @@ export function Plantafel() {
               </Button>
             )}
           </Zeile>
+          {mitAuftraegen && markierterAuftrag && (
+            <Meldung
+              ton="aktiv"
+              titel={`Hervorgehoben: ${markierterAuftrag.titel}`}
+              aktion={
+                <Zeile>
+                  {darfPlanen && markiert !== auftragId && (
+                    <Button variante="sekundaer" klein onClick={() => setze({ auftrag: markierterAuftrag.id })}>
+                      Einplanen
+                    </Button>
+                  )}
+                  <Button variante="tertiaer" klein onClick={() => setMarkiert(undefined)}>
+                    Hervorhebung aufheben
+                  </Button>
+                </Zeile>
+              }
+            >
+              {markierteTermine.length
+                ? `${markierteTermine.length === 1 ? '1 Termin' : `${markierteTermine.length} Termine`} in dieser Woche${markierteLeute.length ? ` – eingeteilt: ${markierteLeute.join(', ')}` : ' – noch niemand eingeteilt'}. Die Termine sind unten im Team umrandet.`
+                : 'In dieser Woche hat der Auftrag keine Termine. Blättere mit den Pfeilen zu einer anderen Woche.'}
+            </Meldung>
+          )}
           <div className="pl-tafel-rahmen">
             <div className="pl-tafel" style={{ gridTemplateColumns: `200px repeat(${sichtbareTage.length}, minmax(130px, 1fr))` }} role="grid" aria-label="Plantafel">
-              <div className="pl-tafel-kopf">Mitarbeiter</div>
+              <div className="pl-tafel-kopf">{mitAuftraegen ? `KW ${kalenderwoche(woche)}` : 'Mitarbeiter'}</div>
               {sichtbareTage.map((d) => (
                 <div key={d} className={`pl-tafel-kopf ${d === heute() ? 'pl-tafel-kopf--heute' : ''}`}>
                   {WOCHENTAGE[alleTage.indexOf(d)]} {datumKurz(d).split(', ')[1]}
                 </div>
               ))}
-              {mitarbeiter.map((m) => {
+              {mitAuftraegen && <GruppenKopf id="plantafel-auftraege" titel="Aufträge" anzahl={anzahlAuftraege} offen={!zu.auftraege} onUmschalten={() => setZu({ ...zu, auftraege: !zu.auftraege })} />}
+              {mitAuftraegen && !zu.auftraege && (
+                <AuftragsFehlergrenze>
+                  <AuftragsZeilen tage={sichtbareTage} ohneTermin={ohneTermin} markiert={markiert} onMarkieren={setMarkiert} darfPlanen={darfPlanen} onEinplanen={(id) => setze({ auftrag: id })} />
+                </AuftragsFehlergrenze>
+              )}
+              {mitAuftraegen && <GruppenKopf id="plantafel-team" titel="Mitarbeiter" anzahl={mitarbeiter.length} offen={!zu.team} onUmschalten={() => setZu({ ...zu, team: !zu.team })} />}
+              {(!mitAuftraegen || !zu.team) &&
+                mitarbeiter.map((m) => {
                 const geplant = geplanteStunden(m.id, woche, plusTage(woche, 6), k);
                 const verf = verfuegbareStunden(m.id, woche, plusTage(woche, 6), k);
                 return [
@@ -232,7 +287,12 @@ export function Plantafel() {
               })}
             </div>
           </div>
-          {darfPlanen && <Meta>Tipp: Termine kannst du mit der Maus auf einen anderen Mitarbeiter oder Tag ziehen.</Meta>}
+          {(mitAuftraegen || darfPlanen) && (
+            <Meta>
+              {mitAuftraegen && 'Tipp: Tipp auf den Balken eines Auftrags – seine Termine werden unten im Team umrandet. '}
+              {darfPlanen && `${mitAuftraegen ? '' : 'Tipp: '}Termine kannst du auch mit der Maus auf einen anderen Mitarbeiter oder Tag ziehen – oder den Termin öffnen und dort ändern.`}
+            </Meta>
+          )}
         </Stapel>
       )}
 

@@ -29,6 +29,7 @@ Score = Frequenz (1–10) × Intensität (1–10). Betroffen: C = Chef, B = Bür
 | 23 | Preisänderung lässt sich nicht zurücknehmen | 2 | 7 | 14 | B |
 | 24 | Kein Überblick, wo eine Leistung verwendet wird | 3 | 4 | 12 | B |
 | 25 | Kategorien wachsen wild | 4 | 3 | 12 | B |
+| 26 | Leistungen und Material an zwei Orten – wer ein Angebot schreibt, sucht im Menü statt im Katalog (Plancraft-Vergleich, Relevanz 95) | 9 | 6 | 54 | B, C |
 
 ## Muss rein
 - Katalog nach Kategorie mit Suche und Filter „Unter Stundensatz“
@@ -37,6 +38,10 @@ Score = Frequenz (1–10) × Intensität (1–10). Betroffen: C = Chef, B = Bür
 - Preisanpassung in % je Kategorie mit Vorschau, Rundung und Rückgängig
 - Stundensatz-Rechner (Lohn, Lohnnebenkosten, produktive Stunden, Gemeinkosten, Gewinn) mit Übernahme
 - Preise nur mit Recht „Preise & Geld“
+
+- Gemeinsamer **Katalog** (Betrieb › Unternehmen › Katalog) mit den Ansichten **Material · Leistungen** (8, 26) –
+  so, wie es auf Angebot und Rechnung landet. Datenmodelle bleiben getrennt (eine Quelle je Objekt). Neue Adresse
+  `/betrieb/katalog/leistungen/…`; `/betrieb/leistungen/…` leitet weiter (inkl. `?filter=unter`).
 
 ## Macher erledigt automatisch
 - Stundenpreise ziehen beim Ändern des Stundensatzes mit (Erledigt-Eintrag, rückgängig machbar)

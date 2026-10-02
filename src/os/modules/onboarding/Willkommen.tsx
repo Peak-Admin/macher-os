@@ -8,7 +8,7 @@ import { GEWERKE, vorlageFuer, type FachrichtungId } from '@core/gewerke';
 import type { Gewerk } from '@core/objects';
 import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
 import { DATEN_VERTRAUEN } from '@core/vertrauen';
-import { Button, Eingabe, Icon, Meldung, Meta, Oberzeile, useBestaetigen, type IconName } from '@ui/index';
+import { Button, Eingabe, Icon, MacherOrb, Meldung, Meta, Oberzeile, useBestaetigen, type IconName } from '@ui/index';
 import {
   briefkopfErkennen,
   briefkopfLuecken,
@@ -238,7 +238,7 @@ function Ablauf() {
     return (
       <div className="ob-ablauf">
         <Frage titel="Konto erstellen" text="Mit deiner E-Mail oder Handynummer kommst du jederzeit wieder rein – ohne Passwort.">
-          <SchrittKonto konto={konto} setKonto={setKonto} />
+          <SchrittKonto konto={konto} setKonto={setKonto} email={params.get('email')?.trim() ?? ''} google={params.get('anmeldung') === 'google'} />
         </Frage>
         <div className="ob-navigation">
           <Button variante="tertiaer" onClick={() => geheZu('website')} disabled={konto.art === 'laedt'}>
@@ -516,10 +516,10 @@ function HandwerkerFoto() {
  */
 function WeiterButton({ icon, onClick, laedt, laedtText, children }: { icon: IconName; onClick: () => void; laedt?: boolean; laedtText: string; children: ReactNode }) {
   return (
-    <button type="button" className="ob-weiter" onClick={onClick} disabled={laedt} aria-busy={laedt || undefined}>
+    <button type="button" className={`ob-weiter${laedt ? ' mm-ki-glow' : ''}`} onClick={onClick} disabled={laedt} aria-busy={laedt || undefined}>
       <span className="ob-weiter-innen">
         <span className="ob-weiter-kreis" aria-hidden="true">
-          {laedt ? <span className="mm-spinner" /> : <Icon name={icon} size={16} strokeWidth={2.25} />}
+          {laedt ? <MacherOrb zustand="verbindet" groesse={20} /> : <Icon name={icon} size={16} strokeWidth={2.25} />}
         </span>
         <span>{laedt ? laedtText : children}</span>
         <span className="ob-weiter-kreis ob-weiter-kreis--hover" aria-hidden="true">

@@ -9,3 +9,5 @@ export { MissionMittelstand, MissionMittelstandFoto, MissionMittelstandStreifen,
 export { Ablauf } from "./Ablauf";
 export { Alltag } from "./Alltag";
 export { IntegrationenHighlight, LogoWand } from "./Integrationen";
+export { StartHero } from "./StartHero";
+export { KernBereiche } from "./KernBereiche";

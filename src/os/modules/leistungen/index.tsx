@@ -1,3 +1,4 @@
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { defineModul } from '@core/modul';
 import { batch, db } from '@core/db';
 import { on } from '@core/events';
@@ -14,23 +15,33 @@ import { stundensatzBerechnen, unterStundensatz } from './daten';
 
 const LOHN_AUTOMATION = 'leistungen.stundenpreise-nachziehen';
 
+/** `/betrieb/leistungen/…` → `/betrieb/katalog/leistungen/…` (Unterpfad und Filter bleiben erhalten) */
+function AlteAdresse() {
+  const rest = useParams()['*'];
+  const { search, hash } = useLocation();
+  return <Navigate to={`/betrieb/katalog/leistungen${rest ? `/${rest}` : ''}${search}${hash}`} replace />;
+}
+
 export default defineModul({
   id: 'leistungen',
   titel: 'Leistungen & Preise',
   bereich: 'betrieb',
+  basisPfad: '/betrieb/katalog/leistungen',
   gruppe: 'unternehmen',
   beschreibung: 'Was du anbietest, was es kostet und wie lange es dauert.',
   icon: 'liste',
   gewicht: 72,
   routen: [
+    // frühere Adresse (vor dem gemeinsamen Katalog) – Links und Lesezeichen funktionieren weiter
+    { pfad: '/betrieb/leistungen/*', element: AlteAdresse },
     { pfad: '', element: LeistungenListe },
     { pfad: 'neu', element: LeistungForm },
     { pfad: 'preise', element: PreiseAnpassen },
     { pfad: 'stundensatz', element: Stundensatz },
     { pfad: ':id', element: LeistungForm },
   ],
-  detail: [{ objekt: 'leistungen', pfad: (id) => `/betrieb/leistungen/${id}` }],
-  erstellen: [{ label: 'Leistung anlegen', pfad: '/betrieb/leistungen/neu', gewicht: 30 }],
+  detail: [{ objekt: 'leistungen', pfad: (id) => `/betrieb/katalog/leistungen/${id}` }],
+  erstellen: [{ label: 'Leistung anlegen', pfad: '/betrieb/katalog/leistungen/neu', gewicht: 30 }],
   kurzinfo: () => {
     const n = db.leistungen.where((l) => l.aktiv).length;
     return n ? { text: n === 1 ? '1 aktive Leistung' : `${n} aktive Leistungen` } : { text: 'Noch keine Leistungen', ton: 'achtung' };
@@ -43,7 +54,7 @@ export default defineModul({
         typ: 'Leistung',
         titel: l.name,
         untertitel: [l.kategorie, darf('geld') ? `${euro(l.preis)} / ${l.einheit}` : l.einheit].filter(Boolean).join(' · '),
-        pfad: `/betrieb/leistungen/${l.id}`,
+        pfad: `/betrieb/katalog/leistungen/${l.id}`,
         relevanz: 40,
       })),
   hinweise: () => {
@@ -60,7 +71,7 @@ export default defineModul({
         text: `Laut deiner Rechnung brauchst du ${euro(r.verrechnungssatz)} je Stunde, du nimmst ${euro(b.stundensatz)}.`,
         gewicht: 72,
         fuerRollen: ['chef' as const],
-        pfad: '/betrieb/leistungen/stundensatz',
+        pfad: '/betrieb/katalog/leistungen/stundensatz',
         aktionen: [{ aktion: 'leistungen.stundensatzUebernehmen', label: `${euro(r.verrechnungssatz)} übernehmen`, primaer: true, payload: { cent: r.verrechnungssatz } }],
       });
     }
@@ -73,7 +84,7 @@ export default defineModul({
         text: 'Preis oder Minuten passen nicht zusammen. Bei jedem Auftrag damit verschenkst du Geld.',
         gewicht: 45,
         fuerRollen: ['chef' as const, 'buero' as const],
-        pfad: '/betrieb/leistungen?filter=unter',
+        pfad: '/betrieb/katalog/leistungen?filter=unter',
       });
     }
     return liste;
@@ -82,12 +93,12 @@ export default defineModul({
     'leistungen.stundensatzUebernehmen': (p) => {
       const { cent } = p as { cent: number };
       db.betrieb.update('betrieb', { stundensatz: cent }, { text: `Stundensatz auf ${euro(cent)} gesetzt` });
-      return '/betrieb/leistungen/stundensatz';
+      return '/betrieb/katalog/leistungen/stundensatz';
     },
     'leistungen.preiseZuruecksetzen': (p) => {
       const { aenderungen } = p as { aenderungen: { id: string; preis: number }[] };
       batch(() => aenderungen.forEach((a) => db.leistungen.update(a.id, { preis: a.preis }, { text: 'Automatische Preisänderung zurückgenommen' })));
-      return '/betrieb/leistungen';
+      return '/betrieb/katalog/leistungen';
     },
   },
   automationen: [

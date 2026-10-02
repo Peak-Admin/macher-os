@@ -29,17 +29,17 @@ export function LeistungenListe() {
 
   return (
     <Seite
-      titel="Leistungen & Preise"
-      untertitel="Dein Katalog für Angebote, Rechnungen und Planung."
-      aktion={<Button icon="plus" to="/betrieb/leistungen/neu">Leistung anlegen</Button>}
+      titel="Leistungen"
+      untertitel="Dein Katalog: alles, was du als Arbeit auf Angebote und Rechnungen ziehst – mit Preis und Zeit."
+      aktion={<Button icon="plus" to="/betrieb/katalog/leistungen/neu">Leistung anlegen</Button>}
     >
       <Stapel>
         {geld && (
           <Zeile>
-            <Button variante="sekundaer" icon="euro" to="/betrieb/leistungen/preise">
+            <Button variante="sekundaer" icon="euro" to="/betrieb/katalog/leistungen/preise">
               Preise anpassen
             </Button>
-            <Button variante="sekundaer" icon="uhr" to="/betrieb/leistungen/stundensatz">
+            <Button variante="sekundaer" icon="uhr" to="/betrieb/katalog/leistungen/stundensatz">
               Stundensatz berechnen
             </Button>
           </Zeile>
@@ -59,7 +59,7 @@ export function LeistungenListe() {
           <Leer
             titel="Noch keine Leistungen"
             text="Lege an, was du anbietest – mit Preis und Zeit. Angebote und Rechnungen greifen dann darauf zurück."
-            aktion={<Button to="/betrieb/leistungen/neu">Leistung anlegen</Button>}
+            aktion={<Button to="/betrieb/katalog/leistungen/neu">Leistung anlegen</Button>}
             icon="liste"
           />
         ) : !sichtbar.length ? (
@@ -74,7 +74,7 @@ export function LeistungenListe() {
                   .map((l) => (
                     <ListenZeile
                       key={l.id}
-                      to={`/betrieb/leistungen/${l.id}`}
+                      to={`/betrieb/katalog/leistungen/${l.id}`}
                       titel={
                         <>
                           {l.name} <BeispielMarke zeigen={l.beispiel} />

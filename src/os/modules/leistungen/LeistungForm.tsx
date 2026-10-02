@@ -40,7 +40,7 @@ export function LeistungForm() {
   const l = db.leistungen.useOne(id);
   if (!neu && (!l || l.geloeschtAm))
     return (
-      <Seite titel="Leistung nicht gefunden" zurueck={{ to: '/betrieb/leistungen', label: 'Leistungen' }}>
+      <Seite titel="Leistung nicht gefunden" zurueck={{ to: '/betrieb/katalog/leistungen', label: 'Leistungen' }}>
         <Leer titel="Diese Leistung gibt es nicht (mehr)." text="Vielleicht liegt sie im Papierkorb." icon="liste" aktion={<Button to="/betrieb/einstellungen/papierkorb" variante="sekundaer">Papierkorb öffnen</Button>} />
       </Seite>
     );
@@ -112,7 +112,7 @@ function Formular({ leistung }: { leistung?: Leistung }) {
     } else {
       const n = db.leistungen.create({ preis: 0, ...daten });
       toast('Leistung angelegt.');
-      navigate(`/betrieb/leistungen/${n.id}`, { replace: true });
+      navigate(`/betrieb/katalog/leistungen/${n.id}`, { replace: true });
     }
   };
 
@@ -122,7 +122,7 @@ function Formular({ leistung }: { leistung?: Leistung }) {
     if (!ok) return;
     db.leistungen.remove(leistung.id);
     toast('Leistung liegt im Papierkorb.', { aktion: { label: 'Rückgängig', onClick: () => db.leistungen.restore(leistung.id) } });
-    navigate('/betrieb/leistungen');
+    navigate('/betrieb/katalog/leistungen');
   };
 
   return (
@@ -130,7 +130,7 @@ function Formular({ leistung }: { leistung?: Leistung }) {
       titel={leistung ? leistung.name : 'Leistung anlegen'}
       oberzeile={leistung?.kategorie}
       status={<BeispielMarke zeigen={leistung?.beispiel} />}
-      zurueck={{ to: '/betrieb/leistungen', label: 'Leistungen' }}
+      zurueck={{ to: '/betrieb/katalog/leistungen', label: 'Leistungen' }}
     >
       <Stapel abstand={24}>
         {leistung && geld && (

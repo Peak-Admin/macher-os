@@ -55,10 +55,10 @@ export function ArtikelImport() {
   };
 
   return (
-    <Seite titel="Artikel importieren" untertitel="Artikelliste vom Großhändler oder aus Excel als CSV (Semikolon-getrennt)." zurueck={{ to: '/betrieb/artikel', label: 'Artikel' }}>
+    <Seite titel="Artikel importieren" untertitel="Artikelliste vom Großhändler oder aus Excel als CSV (Semikolon-getrennt)." zurueck={{ to: '/betrieb/katalog/material', label: 'Artikel' }}>
       <Stapel>
         {ergebnis && (
-          <Meldung ton="erfolg" titel="Import fertig" aktion={<Button klein variante="sekundaer" to="/betrieb/artikel">Zu den Artikeln</Button>}>
+          <Meldung ton="erfolg" titel="Import fertig" aktion={<Button klein variante="sekundaer" to="/betrieb/katalog/material">Zu den Artikeln</Button>}>
             {ergebnis.neu} neu angelegt, {ergebnis.aktualisiert} aktualisiert{ergebnis.uebersprungen ? `, ${ergebnis.uebersprungen} ohne Bezeichnung übersprungen` : ''}.
           </Meldung>
         )}
