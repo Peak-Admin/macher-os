@@ -73,7 +73,7 @@ export function naechsteAktionen(s: NaechsterSchrittStand): NextAction[] {
       description: `Als Nächstes: ${erster.titel}. Komplett optional – du kannst das auch ausblenden.`,
       priority: 40,
       icon: 'start',
-      progress: { erledigt, gesamt: s.einrichtung.length, schritte: s.einrichtung.map((h) => ({ titel: h.titel, erledigt: h.erledigt })) },
+      progress: { erledigt, gesamt: s.einrichtung.length, schritte: s.einrichtung.map((h) => ({ id: h.id, titel: h.titel, erledigt: h.erledigt, aktion: h.aktion })) },
       actionLabel: 'Weiter einrichten',
       actionUrl: erster.aktion.pfad,
       completed: false,

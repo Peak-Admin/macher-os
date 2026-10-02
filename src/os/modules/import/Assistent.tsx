@@ -13,7 +13,7 @@ import {
   DateiKnopf,
   FensterSkizze,
   Karte,
-  Laden,
+  MacherArbeitet,
   Leer,
   Liste,
   ListenZeile,
@@ -140,7 +140,7 @@ export function Assistent() {
           <>
             <Karte titel={vorgabe ? `${artDef(vorgabe).label} aus Excel übernehmen` : 'Welche Datei möchtest du übernehmen?'}>
               {laedt ? (
-                <Laden text="Macher liest die Datei …" />
+                <MacherArbeitet zustand="verbindet" text="Macher liest die Datei …" />
               ) : (
                 <Stapel>
                   <span className="mm-fenster" aria-hidden>

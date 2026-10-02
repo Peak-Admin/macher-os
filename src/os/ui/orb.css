@@ -1,0 +1,174 @@
+/*
+ * Macher-Orb (orb.tsx): ruhige Animationsvarianten in den Markengrüns. Akzentgrün nur auf dunklen Flächen
+ * (.mm-orb--dunkel). Kein backdrop-filter. Bei prefers-reduced-motion statisch.
+ */
+.mm-orb {
+  --orb: 20px;
+  --orb-farbe: var(--mm-brand);
+  --orb-tief: var(--mm-brand-ink);
+  --orb-hell: var(--mm-brand-soft);
+  --orb-licht: var(--mm-surface);
+  --orb-punkt: max(3px, calc(var(--orb) * 0.18));
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--orb);
+  height: var(--orb);
+  vertical-align: middle;
+}
+.mm-orb--dunkel {
+  --orb-farbe: var(--mm-brand-accent);
+  --orb-tief: var(--mm-brand);
+  --orb-hell: var(--mm-on-dark-muted);
+}
+.mm-orb > span { position: absolute; border-radius: 50%; pointer-events: none; }
+
+/* Kern: eine Kugel aus Licht, Hellgrün und Markengrün */
+.mm-orb-kern {
+  inset: 14%;
+  background: radial-gradient(circle at 34% 30%, var(--orb-licht) 0 10%, var(--orb-hell) 26%, var(--orb-farbe) 62%, var(--orb-tief) 100%);
+  box-shadow: 0 0 calc(var(--orb) * 0.3) color-mix(in srgb, var(--orb-farbe) 30%, transparent);
+}
+.mm-orb-a, .mm-orb-b, .mm-orb-c { inset: 0; opacity: 0; }
+
+/* Ring als Lichtbogen (arbeitet, prueft) */
+.mm-orb[data-zustand='arbeitet'] .mm-orb-a,
+.mm-orb[data-zustand='prueft'] .mm-orb-a,
+.mm-orb[data-zustand='prueft'] .mm-orb-b {
+  opacity: 1;
+  background: conic-gradient(from 0deg, transparent 0 55%, var(--orb-farbe) 100%);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - max(2px, calc(var(--orb) * 0.08))), black calc(100% - max(2px, calc(var(--orb) * 0.08))));
+  mask: radial-gradient(farthest-side, transparent calc(100% - max(2px, calc(var(--orb) * 0.08))), black calc(100% - max(2px, calc(var(--orb) * 0.08))));
+}
+
+/* arbeitet: Kern pulsiert leicht, Lichtbogen läuft ruhig um */
+.mm-orb[data-zustand='arbeitet'] .mm-orb-kern { animation: mm-orb-puls 1.8s ease-in-out infinite; }
+.mm-orb[data-zustand='arbeitet'] .mm-orb-a { animation: mm-orb-dreh 1.6s linear infinite; }
+
+/* sucht: ein Lichtpunkt kreist um den Kern */
+.mm-orb[data-zustand='sucht'] .mm-orb-kern { inset: 20%; }
+.mm-orb[data-zustand='sucht'] .mm-orb-a { opacity: 1; animation: mm-orb-dreh 1.2s linear infinite; }
+.mm-orb[data-zustand='sucht'] .mm-orb-a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(50% - var(--orb-punkt) / 2);
+  width: var(--orb-punkt);
+  height: var(--orb-punkt);
+  border-radius: 50%;
+  background: var(--orb-farbe);
+}
+
+/* prueft: zwei Bögen laufen gegeneinander */
+.mm-orb[data-zustand='prueft'] .mm-orb-kern { inset: 24%; }
+.mm-orb[data-zustand='prueft'] .mm-orb-a { animation: mm-orb-dreh 1.4s linear infinite; }
+.mm-orb[data-zustand='prueft'] .mm-orb-b { inset: 12%; animation: mm-orb-dreh 1.9s linear infinite reverse; }
+
+/* hoert: Kreise breiten sich aus wie Schall */
+.mm-orb[data-zustand='hoert'] .mm-orb-kern { inset: 26%; }
+.mm-orb[data-zustand='hoert'] .mm-orb-a,
+.mm-orb[data-zustand='hoert'] .mm-orb-b {
+  border: max(1.5px, calc(var(--orb) * 0.06)) solid var(--orb-farbe);
+  animation: mm-orb-welle 1.8s ease-out infinite;
+}
+.mm-orb[data-zustand='hoert'] .mm-orb-b { animation-delay: 0.9s; }
+
+/* verbindet: zwei Punkte kommen zusammen und gehen wieder auseinander */
+.mm-orb[data-zustand='verbindet'] .mm-orb-kern { inset: 30%; opacity: 0.85; }
+.mm-orb[data-zustand='verbindet'] .mm-orb-a,
+.mm-orb[data-zustand='verbindet'] .mm-orb-b {
+  opacity: 1;
+  inset: auto;
+  top: calc(50% - var(--orb-punkt) / 2);
+  width: var(--orb-punkt);
+  height: var(--orb-punkt);
+  background: var(--orb-farbe);
+}
+.mm-orb[data-zustand='verbindet'] .mm-orb-a { left: 0; animation: mm-orb-links 1.6s ease-in-out infinite; }
+.mm-orb[data-zustand='verbindet'] .mm-orb-b { right: 0; animation: mm-orb-rechts 1.6s ease-in-out infinite; }
+
+/* schreibt: drei Punkte tippen nacheinander */
+.mm-orb[data-zustand='schreibt'] .mm-orb-kern { opacity: 0.35; }
+.mm-orb[data-zustand='schreibt'] .mm-orb-a,
+.mm-orb[data-zustand='schreibt'] .mm-orb-b,
+.mm-orb[data-zustand='schreibt'] .mm-orb-c {
+  opacity: 1;
+  inset: auto;
+  top: calc(50% - var(--orb-punkt) / 2);
+  width: var(--orb-punkt);
+  height: var(--orb-punkt);
+  background: var(--orb-tief);
+  animation: mm-orb-tippen 1.2s ease-in-out infinite;
+}
+.mm-orb[data-zustand='schreibt'] .mm-orb-a { left: 14%; }
+.mm-orb[data-zustand='schreibt'] .mm-orb-b { left: calc(50% - var(--orb-punkt) / 2); animation-delay: 0.15s; }
+.mm-orb[data-zustand='schreibt'] .mm-orb-c { right: 14%; animation-delay: 0.3s; }
+
+/* formt: der Kern nimmt Form an */
+.mm-orb[data-zustand='formt'] .mm-orb-kern { animation: mm-orb-form 3.2s ease-in-out infinite; }
+
+/* denkt: langsames Atmen mit weichem Hof */
+.mm-orb[data-zustand='denkt'] .mm-orb-kern { animation: mm-orb-atmen 3.4s ease-in-out infinite; }
+.mm-orb[data-zustand='denkt'] .mm-orb-a {
+  background: radial-gradient(circle, color-mix(in srgb, var(--orb-farbe) 28%, transparent) 40%, transparent 70%);
+  animation: mm-orb-hof 3.4s ease-in-out infinite;
+}
+
+/* verknuepft: drei kleine Kugeln kreisen in verschiedenen Bahnen */
+.mm-orb[data-zustand='verknuepft'] .mm-orb-kern { inset: 30%; }
+.mm-orb[data-zustand='verknuepft'] .mm-orb-a,
+.mm-orb[data-zustand='verknuepft'] .mm-orb-b,
+.mm-orb[data-zustand='verknuepft'] .mm-orb-c { opacity: 1; animation: mm-orb-dreh 2.4s linear infinite; }
+.mm-orb[data-zustand='verknuepft'] .mm-orb-b { inset: 8%; animation-duration: 1.7s; animation-direction: reverse; }
+.mm-orb[data-zustand='verknuepft'] .mm-orb-c { inset: 16%; animation-duration: 3.1s; }
+.mm-orb[data-zustand='verknuepft'] .mm-orb-a::before,
+.mm-orb[data-zustand='verknuepft'] .mm-orb-b::before,
+.mm-orb[data-zustand='verknuepft'] .mm-orb-c::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: calc(50% - var(--orb-punkt) / 2.4);
+  width: calc(var(--orb-punkt) / 1.2);
+  height: calc(var(--orb-punkt) / 1.2);
+  border-radius: 50%;
+  background: var(--orb-farbe);
+}
+.mm-orb[data-zustand='verknuepft'] .mm-orb-b::before { background: var(--orb-tief); }
+
+@keyframes mm-orb-dreh { to { transform: rotate(360deg); } }
+@keyframes mm-orb-puls { 0%, 100% { transform: scale(0.92); } 50% { transform: scale(1); } }
+@keyframes mm-orb-atmen { 0%, 100% { transform: scale(0.82); } 50% { transform: scale(1); } }
+@keyframes mm-orb-hof { 0%, 100% { opacity: 0.2; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
+@keyframes mm-orb-welle { 0% { opacity: 0.7; transform: scale(0.45); } 100% { opacity: 0; transform: scale(1.05); } }
+@keyframes mm-orb-links { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(calc(var(--orb) * 0.28)); } }
+@keyframes mm-orb-rechts { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(calc(var(--orb) * -0.28)); } }
+@keyframes mm-orb-tippen { 0%, 60%, 100% { transform: translateY(0); opacity: 0.45; } 30% { transform: translateY(calc(var(--orb) * -0.14)); opacity: 1; } }
+@keyframes mm-orb-form {
+  0%, 100% { border-radius: 50%; transform: rotate(0deg); }
+  33% { border-radius: 42% 58% 55% 45% / 48% 42% 58% 52%; }
+  66% { border-radius: 56% 44% 46% 54% / 54% 58% 42% 46%; transform: rotate(120deg); }
+}
+
+/* Statuszeile: Orb + Text */
+.mm-ki-status { display: flex; align-items: center; gap: 12px; padding: 12px 0; color: var(--mm-text); }
+.mm-ki-status--gross { flex-direction: column; text-align: center; gap: 16px; padding: 24px 16px; }
+
+/* Leuchtrand um das arbeitende KI-Element – nur solange die KI arbeitet */
+.mm-ki-glow { animation: mm-ki-glow 2.4s ease-in-out infinite; }
+@keyframes mm-ki-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--mm-brand) 26%, transparent), 0 0 12px 2px color-mix(in srgb, var(--mm-brand) 12%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mm-brand) 42%, transparent), 0 0 24px 6px color-mix(in srgb, var(--mm-brand) 20%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-orb > span, .mm-orb > span::before { animation: none !important; }
+  .mm-orb[data-zustand='hoert'] .mm-orb-a { opacity: 0.5; transform: scale(0.85); }
+  .mm-ki-glow {
+    animation: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mm-brand) 36%, transparent);
+  }
+}

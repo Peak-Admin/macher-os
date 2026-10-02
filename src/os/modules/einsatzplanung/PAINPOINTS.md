@@ -29,6 +29,7 @@ Score = Frequenz × Intensität. C = Chef, B = Büro, M = Monteur.
 | 23 | Wochenende ein-/ausblenden | 3 | 3 | 9 | B |
 | 24 | Druckansicht für die Werkstattwand | 2 | 4 | 8 | C |
 | 25 | Planungshistorie für Streitfälle | 2 | 3 | 6 | C |
+| 26 | Projektzeitraum und Belegung des Teams stehen in zwei Ansichten – „läuft die Baustelle noch, wer ist da drauf?“ braucht Hin- und Herspringen (Plancraft-Vergleich, Relevanz 92) | 8 | 7 | 56 | C, B |
 
 ## Muss rein
 - **Plantafel Mitarbeiter × Tage (Woche)**, Abwesenheiten in der Zelle als Text („Urlaub“, „Berufsschule“) (1, 4, 10)
@@ -36,6 +37,13 @@ Score = Frequenz × Intensität. C = Chef, B = Büro, M = Monteur.
 - Konflikte sofort als **Text-Status** (Doppelt gebucht, Urlaub, Außerhalb der Arbeitszeit, Kein Arbeitstag) (2, 7, 20)
 - Drag & Drop am Rechner zum Umplanen (anderer Tag / anderer Mitarbeiter) mit Rückgängig (6, 19)
 - Mobil: Tagesansicht je Mitarbeiter (9)
+- **Aufträge und Team auf einer Zeitachse** (ab Desktop-Breite, 1024 px): oben Gruppe „Aufträge“ mit Zeitraum als Balken
+  (erster bis letzter geplanter Termin, offene Kante bei „geht über die Woche hinaus“), Phase als Text, Termine je Tag als Text;
+  darunter Gruppe „Mitarbeiter“ wie bisher. Beide Gruppen per Knopf einklappbar. Klick auf einen Balken umrandet die Termine
+  im Team und nennt Anzahl und Leute als Text – mit „Einplanen“ und „Hervorhebung aufheben“. Beauftragte Aufträge ohne Termin
+  stehen darunter mit „Einplanen“ (öffnet den bekannten Ablauf, kein Drag & Drop nötig). Der Zeitraum wird nur abgeleitet
+  (`auftragsBalken` in `daten.ts`, getestet) – am Auftrag wird nichts gespeichert. Eigene Leer-, Lade- und Fehlerzeile;
+  geht die Ableitung schief, bleibt das Team bedienbar (26)
 - Aktion `plan.einplanen { auftragId }` → Plantafel mit vorausgewähltem Auftrag
 - Phase des Auftrags bleibt unverändert (in_arbeit setzt der Einsatzstart) (22)
 
@@ -45,6 +53,8 @@ Score = Frequenz × Intensität. C = Chef, B = Büro, M = Monteur.
 - Stunden je Mitarbeiter und Woche direkt in der Zeile (4)
 
 ## Bewusst weggelassen
-- Teams/Kolonnen als eigene Zeile (Kern hat nur `team` als Freitext) (14)
+- Teams/Kolonnen als eigene Zeile (Kern hat nur `team` als Freitext) (14) – die Gruppe „Mitarbeiter“ zeigt deshalb Personen, keine Kolonnen
+- Auftragsbalken auf Tablet und Handy: dort bleibt die Ansicht einfach (Tafel bzw. Tagesansicht je Mitarbeiter) (26)
+- Geplanter Start/Ende direkt am Auftrag (gibt es im Kern nicht; Zeitraum kommt aus den Terminen) (26)
 - Prüfungen Qualifikation, Fahrt, Material, Werkzeug → Paket planpruefung über `ObjektPanels` am Termin (16–18)
 - Druckansicht, Planungshistorie (24, 25 – Zeitstrahl am Termin reicht)

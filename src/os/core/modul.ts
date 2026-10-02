@@ -116,6 +116,11 @@ export interface ModulDef {
   titel: string;
   bereich: Bereich;
   gruppe?: BetriebGruppe;
+  /**
+   * Eigener Startpfad statt `/<bereich>/<id>` (z. B. `/betrieb/katalog/material`). `routen` sind dann relativ dazu.
+   * Frühere Adressen leitet das Modul selbst weiter (`routen` mit absolutem Pfad und `<Navigate>`).
+   */
+  basisPfad?: string;
   /** Ein Satz in Handwerkersprache */
   beschreibung: string;
   icon?: string;
@@ -193,7 +198,7 @@ export function moduleIn(bereich: Bereich, gruppe?: BetriebGruppe): ModulDef[] {
 }
 
 export function modulPfad(m: ModulDef, unterpfad = ''): string {
-  const basis = m.bereich === 'macher' ? `/macher/${m.id}` : `/${m.bereich}/${m.id}`;
+  const basis = m.basisPfad ?? (m.bereich === 'macher' ? `/macher/${m.id}` : `/${m.bereich}/${m.id}`);
   return unterpfad ? `${basis}/${unterpfad.replace(/^\//, '')}` : basis;
 }
 

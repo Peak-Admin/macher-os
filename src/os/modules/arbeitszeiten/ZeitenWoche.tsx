@@ -4,16 +4,31 @@ import { db, useDatenstand } from '@core/db';
 import { datum, datumKurz, heute, kalenderwoche, personName, plusTage, wochenStart } from '@core/format';
 import type { Datum, ID, Mitarbeiter, Zeiteintrag } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
-import { Auswahl, Button, IconButton, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { Auswahl, Button, Filter, IconButton, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Zeile, useBestaetigen, useToast } from '@ui/index';
 import { abwesenheitAm, ART_LABEL as ABW_LABEL } from '@modules/abwesenheiten/daten';
+import { offeneAntraege } from '@modules/abwesenheiten/logik';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { dauer, jetztUhr, saldoText, sollTag, stunden, tagAuswerten, tagesProbleme } from './daten';
 import { freigabeZuruecknehmen, freigeben as zeitenFreigeben } from './regelwerk';
 import { zeitTitel } from './Stempeluhr';
 import { ZeitDialog } from './ZeitDialog';
 import { ZeitenNav } from './ZeitenNav';
+import { arbeitsmodelle } from './modell';
+import { OffeneAntraege } from './OffeneAntraege';
+import { ZeitraumStreifen } from './ZeitraumStreifen';
+import { zeitraumSumme } from './zusammenfassung';
 
 const TEAM = 'team';
+
+/** Summen der Woche (laufende Zeiten bis jetzt) – für den Übersichtsstreifen über den Buchungen */
+function uebersichtWoche(leute: Mitarbeiter[], montag: Datum) {
+  return zeitraumSumme(leute, montag, plusTage(montag, 6), {
+    zeiten: db.zeiten.all(),
+    abw: db.abwesenheiten.all(),
+    modelle: arbeitsmodelle.all(),
+    jetzt: { datum: heute(), uhr: jetztUhr() },
+  });
+}
 
 interface WochenWerte {
   ist: number;
@@ -61,6 +76,9 @@ export function ZeitenWoche() {
   const maParam = params.get('ma') ?? (buero ? TEAM : ich?.id ?? '');
   const maId = buero ? maParam : ich?.id ?? '';
   const [dialog, setDialog] = useState<{ eintrag?: Zeiteintrag; datum?: Datum; mitarbeiterId?: ID } | null>(null);
+  // Heller Umschalter „Zeiten | Offene Urlaubsanträge“ (Muster „Zu entscheiden“) – nur für den, der über Urlaub entscheidet
+  const antraege = personal ? offeneAntraege(db.abwesenheiten.all()) : [];
+  const ansicht = personal && params.get('ansicht') === 'antraege' ? 'antraege' : 'zeiten';
 
   // Hinweis-Link „nachtragen“ öffnet direkt das Formular
   useEffect(() => {
@@ -99,30 +117,47 @@ export function ZeitenWoche() {
       aktion={<Button icon="plus" onClick={() => setDialog({ datum: heute() > sonntag ? sonntag : heute() < montag ? montag : heute(), mitarbeiterId: maId !== TEAM ? maId : ich?.id })}>Zeit nachtragen</Button>}
     >
       <ZeitenNav aktiv="woche" />
-      <Zeile zwischen>
-        <Zeile abstand={4} umbruch={false}>
-          <IconButton icon="zurueck" label="Woche davor" onClick={() => setze('datum', plusTage(montag, -7))} />
-          <Button klein variante="tertiaer" onClick={() => setze('datum', heute())}>
-            Diese Woche
-          </Button>
-          <IconButton icon="weiter" label="Woche danach" onClick={() => setze('datum', plusTage(montag, 7))} />
-        </Zeile>
-        {(buero || personal) && (
-          <Button klein variante="tertiaer" icon="download" to={`/betrieb/arbeitszeiten/monat?monat=${montag.slice(0, 7)}`}>
-            Monat & Lohn
-          </Button>
-        )}
-      </Zeile>
-      {buero && (
-        <div style={{ maxWidth: 360 }}>
-          <Auswahl label="Wessen Zeiten" value={maId} onChange={(e) => setze('ma', e.target.value)} optionen={[{ wert: TEAM, label: 'Ganzes Team' }, ...team.map((m) => ({ wert: m.id, label: personName(m) }))]} />
-        </div>
+      {personal && (
+        <Filter
+          label="Ansicht"
+          wert={ansicht}
+          onChange={(v) => setze('ansicht', v)}
+          optionen={[
+            { wert: 'zeiten', label: 'Zeiten' },
+            { wert: 'antraege', label: 'Offene Urlaubsanträge', zaehler: antraege.length },
+          ]}
+        />
       )}
-
-      {maId === TEAM ? (
-        <TeamWoche montag={montag} team={team} onFreigeben={freigeben} onPerson={(id) => setze('ma', id)} />
+      {ansicht === 'antraege' ? (
+        <OffeneAntraege offen={antraege} />
       ) : (
-        <PersonWoche montag={montag} maId={maId} buero={buero} onFreigeben={freigeben} onBearbeiten={(z) => setDialog({ eintrag: z })} onNachtrag={(d) => setDialog({ datum: d, mitarbeiterId: maId })} />
+        <>
+          <Zeile zwischen>
+            <Zeile abstand={4} umbruch={false}>
+              <IconButton icon="zurueck" label="Woche davor" onClick={() => setze('datum', plusTage(montag, -7))} />
+              <Button klein variante="tertiaer" onClick={() => setze('datum', heute())}>
+                Diese Woche
+              </Button>
+              <IconButton icon="weiter" label="Woche danach" onClick={() => setze('datum', plusTage(montag, 7))} />
+            </Zeile>
+            {(buero || personal) && (
+              <Button klein variante="tertiaer" icon="download" to={`/betrieb/arbeitszeiten/monat?monat=${montag.slice(0, 7)}`}>
+                Monat & Lohn
+              </Button>
+            )}
+          </Zeile>
+          {buero && (
+            <div style={{ maxWidth: 360 }}>
+              <Auswahl label="Wessen Zeiten" value={maId} onChange={(e) => setze('ma', e.target.value)} optionen={[{ wert: TEAM, label: 'Ganzes Team' }, ...team.map((m) => ({ wert: m.id, label: personName(m) }))]} />
+            </div>
+          )}
+
+          {maId === TEAM ? (
+            <TeamWoche montag={montag} team={team} onFreigeben={freigeben} onPerson={(id) => setze('ma', id)} />
+          ) : (
+            <PersonWoche montag={montag} maId={maId} buero={buero} onFreigeben={freigeben} onBearbeiten={(z) => setDialog({ eintrag: z })} onNachtrag={(d) => setDialog({ datum: d, mitarbeiterId: maId })} />
+          )}
+        </>
       )}
 
       <ZeitDialog offen={!!dialog} onSchliessen={() => setDialog(null)} eintrag={dialog?.eintrag} vorgabe={dialog ?? undefined} />
@@ -138,16 +173,17 @@ function TeamWoche({ montag, team, onFreigeben, onPerson }: { montag: Datum; tea
   if (!team.length) return <Leer titel="Noch niemand im Team" text="Lege zuerst Mitarbeiter an." icon="team" />;
   return (
     <Stapel abstand={16}>
+      <ZeitraumStreifen summe={uebersichtWoche(team, montag)} titel={`KW ${kalenderwoche(montag)} im Überblick`} wer="Ganzes Team" />
       {offen.length > 0 ? (
         <Meldung
-          titel={`${offen.length === 1 ? '1 Zeit wartet' : `${offen.length} Zeiten warten`} auf Freigabe`}
+          titel={`Zu prüfen: ${offen.length === 1 ? '1 Zeit' : `${offen.length} Zeiten`}`}
           aktion={
             <Button klein onClick={() => onFreigeben(offen, probleme)}>
               Woche freigeben
             </Button>
           }
         >
-          Prüf kurz die Hinweise. Freigegebene Zeiten gehen in die Lohnabrechnung.
+          Prüf kurz die Hinweise und gib die Woche frei. Freigegebene Zeiten gehen in die Lohnabrechnung.
         </Meldung>
       ) : (
         <Meldung ton="erfolg">Alles freigegeben, was in dieser Woche erfasst ist.</Meldung>
@@ -169,7 +205,7 @@ function TeamWoche({ montag, team, onFreigeben, onPerson }: { montag: Datum; tea
               ) : z.w.laeuft ? (
                 <Status ton="aktiv">Läuft</Status>
               ) : z.w.offen.length ? (
-                <Status>{`${z.w.offen.length} offen`}</Status>
+                <Status>{`${z.w.offen.length} zu prüfen`}</Status>
               ) : z.w.ist ? (
                 <Status ton="erfolg">Freigegeben</Status>
               ) : (
@@ -207,6 +243,7 @@ function PersonWoche({
   const zeiten = db.zeiten.where((z) => z.mitarbeiterId === m.id && z.datum >= montag && z.datum <= tage[6]);
   return (
     <Stapel abstand={16}>
+      <ZeitraumStreifen summe={uebersichtWoche([m], montag)} titel={`KW ${kalenderwoche(montag)} im Überblick`} wer={personName(m)} />
       <Raster min={160}>
         <Kennzahl label="Ist" wert={stunden(w.ist)} zeitraum={`KW ${kalenderwoche(montag)}`} />
         <Kennzahl label="Soll bis heute" wert={stunden(w.soll)} hinweis={`${String(m.wochenstunden).replace('.', ',')} h pro Woche`} />
@@ -264,7 +301,7 @@ function PersonWoche({
                   onClick={() => onBearbeiten(z)}
                   titel={`${z.start}–${z.ende ?? 'läuft'} · ${zeitTitel(z)}`}
                   untertitel={[`${stunden(dauer(z, jetzt))}`, z.pauseMinuten ? `${z.pauseMinuten} min Pause` : undefined, z.notiz].filter(Boolean).join(' · ')}
-                  rechts={!z.ende ? <Status ton="aktiv">Läuft</Status> : z.freigegeben ? <Status ton="erfolg">Freigegeben</Status> : <Status>Offen</Status>}
+                  rechts={!z.ende ? <Status ton="aktiv">Läuft</Status> : z.freigegeben ? <Status ton="erfolg">Freigegeben</Status> : <Status>{buero ? 'Zu prüfen' : 'Offen'}</Status>}
                 />
               ))}
             </Liste>

@@ -1,0 +1,43 @@
+/* Materialliste: Desktop mit Preisspalten, mobil einfache Liste (Name + VK) */
+.art-nur-desktop { display: block; }
+.art-nur-mobil { display: none; }
+@media (max-width: 1023px) {
+  .art-nur-desktop { display: none; }
+  .art-nur-mobil { display: block; }
+}
+
+.art-preise th.num, .art-preise td.num { text-align: right; white-space: nowrap; }
+.art-preise td { padding-top: 8px; padding-bottom: 8px; }
+.art-preise td.num { width: 1%; padding-left: 8px; padding-right: 8px; }
+.art-preise-name { min-width: 0; }
+.art-preise-link { color: var(--mm-text); font-weight: 600; text-decoration: none; }
+.art-preise-link:hover { color: var(--mm-link); text-decoration: underline; }
+.art-preise-link:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; border-radius: 4px; }
+.art-preise-meta { display: block; margin-top: 4px; }
+.art-preise-status { width: 1%; white-space: nowrap; }
+.art-preise-status > * + * { margin-left: 8px; }
+
+/* Preis in der Zelle: sichtbar als bearbeitbar (Stift), nicht erst beim Hover */
+.art-zelle-knopf {
+  display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px;
+  min-height: var(--mm-control-height); min-width: 112px; padding: 0 12px;
+  border: 1px solid transparent; border-radius: var(--mm-radius-control);
+  background: transparent; color: var(--mm-text); font: inherit; cursor: pointer;
+  transition: background-color var(--mm-motion-fast) ease-out, border-color var(--mm-motion-fast) ease-out;
+}
+.art-zelle-knopf svg { flex: none; color: var(--mm-text-secondary); }
+.art-zelle-knopf:hover { background: var(--mm-surface-subtle); border-color: var(--mm-border); }
+.art-zelle-knopf:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px; }
+.art-zelle-wert { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; min-height: var(--mm-control-height); padding: 0 12px; }
+.art-zelle-zusatz { font-size: 14px; color: var(--mm-text-secondary); }
+
+.art-zelle-bearbeiten { display: inline-flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.art-zelle-feld { position: relative; display: inline-flex; align-items: center; }
+.mm-input.art-zelle-eingabe { width: 128px; height: var(--mm-control-height); padding-right: 32px; text-align: right; font-variant-numeric: tabular-nums; }
+.mm-input.art-zelle-eingabe:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px; }
+.art-zelle-einheit { position: absolute; right: 12px; color: var(--mm-text-secondary); pointer-events: none; }
+.art-zelle-fehler { max-width: 240px; text-align: left; white-space: normal; }
+
+@media (prefers-reduced-motion: reduce) {
+  .art-zelle-knopf { transition: none; }
+}

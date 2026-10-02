@@ -4,21 +4,27 @@ import { db } from '@core/db';
 import { heute } from '@core/format';
 import { pfadZu } from '@core/modul';
 import { darf, useIch } from '@core/session';
-import { Button, Checkbox, Eingabe, FensterSkizze, Textfeld, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { Button, Checkbox, Eingabe, FensterSkizze, Textfeld, FormRaster, Karte, Liste, ListenZeile, MacherArbeitet, Meldung, Meta, Status, Zeile, kiGlow, orbFuer, useBestaetigen, useToast, type OrbZustand } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
 import { rueckgaengigGrund } from '@core/audit';
 import { aktionDef, fuehreAus, fuehrePlanAus, nimmZurueck, planRisiko, pruefePlan, type GatewayKontext } from '@core/gateway';
-import { BEISPIELFRAGEN, fragen as gatewayFragen, type Antwort, type AufgabeEntwurf, type PlanSchrittStand, type Vorschlag } from './assistent';
+import { BEISPIELFRAGEN, fragen as gatewayFragen, vermuteteAbsicht, type Antwort, type AufgabeEntwurf, type PlanSchrittStand, type Vorschlag } from './assistent';
+import type { MacherStart } from './vorbereiten';
 import { chat, type ChatEintrag } from './daten';
 import './macher.css';
 import { ausgehend } from '@/lib/link/ausgehend';
 
-/** Der Chat – im Overlay und auf der Seite `/macher/macher-fragen` gleich. */
-export function MacherChat({ onNavigiert, startFrage }: { onNavigiert?: () => void; startFrage?: string }) {
+/**
+ * Der Chat – im Overlay und auf der Seite `/macher/macher-fragen` gleich.
+ * `start`: aus der Suche („Macher fragen: …“) oder aus „Mit Macher vorbereiten“ (mit Absicht und Objekt vorbelegt).
+ */
+export function MacherChat({ onNavigiert, start }: { onNavigiert?: () => void; start?: MacherStart }) {
   const ich = useIch();
   const verlauf = chat.use((c) => c.mitarbeiterId === ich?.id, [ich?.id]).sort((a, b) => a.erstelltAm.localeCompare(b.erstelltAm));
   const [frage, setFrage] = useState('');
   const [laedt, setLaedt] = useState(false);
+  // Orb-Zustand, solange Macher arbeitet – aus der (vermuteten) Absicht
+  const [orb, setOrb] = useState<OrbZustand>('denkt');
   const ende = useRef<HTMLDivElement>(null);
   const formular = useRef<HTMLFormElement>(null);
 
@@ -26,14 +32,16 @@ export function MacherChat({ onNavigiert, startFrage }: { onNavigiert?: () => vo
     ende.current?.scrollIntoView?.({ block: 'end' });
   }, [verlauf.length, laedt]);
 
-  const fragen = async (text: string) => {
+  const fragen = async (text: string, vorgabe?: Pick<MacherStart, 'absicht' | 'bezug'>) => {
     const t = text.trim();
     if (!t || laedt) return;
     setFrage('');
     chat.create({ mitarbeiterId: ich?.id, rolle: 'frage', text: t });
+    const k = { heute: heute(), jetzt: new Date(), ich, darf: (r: Parameters<typeof darf>[0]) => darf(r, ich) };
+    setOrb(orbFuer(vorgabe?.absicht ?? vermuteteAbsicht(t, k)));
     setLaedt(true);
     try {
-      const { antwort, modell } = await gatewayFragen(t, { heute: heute(), jetzt: new Date(), ich, darf: (r) => darf(r, ich) });
+      const { antwort, modell } = await gatewayFragen(t, k, 'text', vorgabe?.absicht ? { absicht: vorgabe.absicht, werte: vorgabe.bezug ? { bezug: vorgabe.bezug } : undefined } : undefined);
       chat.create({ mitarbeiterId: ich?.id, rolle: 'antwort', text: antwort.text, antwort, modell });
     } catch (e) {
       console.error(e);
@@ -44,15 +52,15 @@ export function MacherChat({ onNavigiert, startFrage }: { onNavigiert?: () => vo
     }
   };
 
-  // aus der Suche übergeben: „Keine Treffer → Macher fragen“
-  const gestellt = useRef<string | undefined>(undefined);
+  // aus der Suche („Macher fragen: …“) oder „Mit Macher vorbereiten“ übergeben – jeder Klick fragt einmal
+  const gestellt = useRef<MacherStart | undefined>(undefined);
   useEffect(() => {
-    if (startFrage && gestellt.current !== startFrage) {
-      gestellt.current = startFrage;
-      fragen(startFrage);
+    if (start?.frage && gestellt.current !== start) {
+      gestellt.current = start;
+      fragen(start.frage, start);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startFrage]);
+  }, [start]);
 
   const leeren = () => verlauf.forEach((c) => chat.purge(c.id));
 
@@ -79,7 +87,7 @@ export function MacherChat({ onNavigiert, startFrage }: { onNavigiert?: () => vo
           {verlauf.map((c) => (
             <Eintrag key={c.id} c={c} fragen={fragen} onNavigiert={onNavigiert} />
           ))}
-          {laedt && <Laden text="Macher sucht in deinen Daten …" />}
+          {laedt && <MacherArbeitet zustand={orb} />}
           <div ref={ende} />
         </div>
       )}
@@ -91,8 +99,8 @@ export function MacherChat({ onNavigiert, startFrage }: { onNavigiert?: () => vo
           fragen(frage);
         }}
       >
-        <Eingabe label="Deine Frage" value={frage} onChange={(e) => setFrage(e.target.value)} placeholder="z. B. Was steht morgen an?" autoFocus autoComplete="off" enterKeyHint="send" />
-        <Button type="submit" icon="weiter" laedt={laedt} disabled={!frage.trim()}>
+        <Eingabe label="Deine Frage" value={frage} onChange={(e) => setFrage(e.target.value)} placeholder="z. B. Was steht morgen an?" className={kiGlow(laedt)} autoFocus autoComplete="off" enterKeyHint="send" />
+        <Button type="submit" icon="weiter" laedt={laedt} ki={orb} disabled={!frage.trim()}>
           Fragen
         </Button>
       </form>
@@ -375,7 +383,7 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
           <Meta key={t}>{t}</Meta>
         ))}
         <Zeile>
-          <Button icon="check" onClick={ausfuehren} laedt={laeuft} disabled={!gewaehlt.length}>
+          <Button icon="check" onClick={ausfuehren} laedt={laeuft} ki={orbFuer(plan.schritte.find((s) => gewaehlt.includes(s.id))?.aktion)} laedtText="Macher führt aus …" disabled={!gewaehlt.length}>
             {knopf}
           </Button>
           <Button variante="tertiaer" onClick={() => setzeStatus({ status: 'verworfen' })} disabled={laeuft}>

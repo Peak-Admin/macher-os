@@ -92,7 +92,7 @@ function PositionDialog({ offen, onSchliessen, onNeu }: { offen: boolean; onSchl
       />
       {quelle !== 'frei' && <Suchfeld wert={q} onChange={setQ} platzhalter={quelle === 'leistung' ? 'Leistung suchen …' : 'Artikel, Nummer …'} autoFocus />}
       {quelle === 'leistung' && (
-        <Liste leer={<Leer titel={q ? 'Keine passende Leistung' : 'Noch kein Leistungskatalog'} text="Lege Leistungen unter Betrieb → Leistungen & Preise an oder nimm eine freie Position." icon="liste" />}>
+        <Liste leer={<Leer titel={q ? 'Keine passende Leistung' : 'Noch kein Leistungskatalog'} text="Lege Leistungen unter Betrieb → Unternehmen → Katalog an oder nimm eine freie Position." icon="liste" />}>
           {leistungen.slice(0, 40).map((l) => (
             <ListenZeile key={l.id} onClick={() => nehmen(positionAusLeistung(l))} titel={l.name} untertitel={[l.kategorie, l.minuten ? `${zahl(l.minuten)} Min. je ${l.einheit}` : null].filter(Boolean).join(' · ')} rechts={<span className="mm-number">{euro(l.preis)} / {l.einheit}</span>} />
           ))}

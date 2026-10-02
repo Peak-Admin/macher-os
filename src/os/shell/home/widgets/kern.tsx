@@ -4,13 +4,14 @@
  * persönlicher Kontakt + Support, News + Workshops + Produktneuigkeiten.
  */
 import { Link } from 'react-router-dom';
-import { Avatar, BeispielMarke, Button, FensterSkizze, glasFuer, Icon, Status, ThemenIcon } from '@ui/index';
+import { Avatar, BeispielMarke, Button, FensterSkizze, glasFuer, Icon, Status, ThemenIcon, type GlasIconName } from '@ui/index';
 import { Skelett, LadeFehler } from '../Rahmen';
 import { homeMessen } from '../messen';
 import { bezugKennung, useArbeit, useNaechsteAktionen } from '../quellen/hooks';
 import { homeInhalte, useLaden } from '../quellen/inhalte';
-import { STATUS_TEXT } from '../quellen/arbeit';
-import type { NewsItem, NewsTyp, WidgetProps, WorkItem } from '../typen';
+import { GRUPPE_TEXT, STATUS_TEXT, nachGruppe } from '../quellen/arbeit';
+import { kontaktWege } from '../quellen/kontakt';
+import type { NewsItem, NewsTyp, NextAction, WidgetProps, WorkItem } from '../typen';
 import { darf } from '@core/session';
 import { setzeEinstellung } from '@core/einstellungen';
 
@@ -41,6 +42,8 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
   }
   const danach = aktionen.slice(1, groesse === 'gross' ? 4 : 3);
   const p = a.progress;
+  // Setup/First Value: nur solange die Einrichtung oben steht – aktiver Schritt groß, danach verschwindet sie ganz
+  if (a.type === 'onboarding' && p?.schritte?.some((s) => !s.erledigt)) return <Einrichtung a={a} danach={danach} />;
   return (
     <div className="mm-home-naechster">
       {/* Einrichtung ist ein Einstieg: Fenster-Skizze statt Kachel. Alle anderen Schritte sind Arbeit und bleiben schlicht. */}
@@ -113,6 +116,84 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
   );
 }
 
+// ------------------------------------------------------------------ Einrichtung (Setup / First Value)
+
+/** Kurze visuelle Erklärung je Einrichtungsschritt (`startHaken` im Modul start) – eine Fenster-Skizze, ein Satz. */
+const SCHRITT_ERKLAERUNG: Record<string, { icon: GlasIconName; text: string }> = {
+  betrieb: { icon: 'haus', text: 'Name, Anschrift und Logo – damit deine Angebote und Rechnungen gleich richtig aussehen.' },
+  gewerk: { icon: 'werkzeug', text: 'Dein Gewerk bestimmt, welche Leistungen, Vorlagen und Prüfungen Macher dir vorschlägt.' },
+  kunden: { icon: 'import', text: 'Übernimm Kunden und Preise aus Excel oder deinem alten Programm. Macher erkennt die Spalten selbst.' },
+  team: { icon: 'mitarbeiter', text: 'Leg dein Team an. Dann verteilst du Einsätze und jeder sieht seine Termine.' },
+};
+
+export function Einrichtung({ a, danach }: { a: NextAction; danach: NextAction[] }) {
+  const p = a.progress!;
+  const schritte = p.schritte!;
+  const aktiv = schritte.find((s) => !s.erledigt)!;
+  const erklaerung = aktiv.id ? SCHRITT_ERKLAERUNG[aktiv.id] : undefined;
+  const ziel = aktiv.aktion ?? { label: a.actionLabel, pfad: a.actionUrl };
+  return (
+    <div className="mm-home-naechster mm-home-setup">
+      <div className="mm-home-setup-raster">
+        <div className="mm-home-setup-schritte">
+          <h3 className="mm-home-naechster-titel">{a.title}</h3>
+          <div className="mm-home-fortschritt">
+            <div className="mm-home-fortschritt-balken" role="progressbar" aria-valuenow={p.erledigt} aria-valuemin={0} aria-valuemax={p.gesamt} aria-label="Einrichtung">
+              <span style={{ width: `${Math.round((p.erledigt / p.gesamt) * 100)}%` }} />
+            </div>
+            <span className="mm-meta mm-number">
+              {p.erledigt} von {p.gesamt} Schritten erledigt
+            </span>
+          </div>
+          <ol className="mm-home-schritte">
+            {schritte.map((s) => (
+              <li key={s.titel} className={s === aktiv ? 'aktiv' : s.erledigt ? 'erledigt' : undefined} aria-current={s === aktiv ? 'step' : undefined}>
+                <span className={`mm-home-haken${s.erledigt ? ' mm-home-haken--an' : ''}`} aria-hidden>
+                  {s.erledigt && <Icon name="check" size={14} />}
+                </span>
+                {s.titel}
+                <span className="sr-only">{s.erledigt ? ' – erledigt' : s === aktiv ? ' – jetzt dran' : ' – offen'}</span>
+              </li>
+            ))}
+          </ol>
+          {a.ausblenden && (
+            <button type="button" className="mm-home-textlink mm-home-setup-aus" onClick={() => (setzeEinstellung(a.ausblenden!, true), homeMessen('home_next_action_hidden', { typ: a.type }))}>
+              Einrichtung ausblenden
+            </button>
+          )}
+        </div>
+        <div className="mm-home-setup-aktiv">
+          <span className="mm-fenster" aria-hidden>
+            <FensterSkizze icon={erklaerung?.icon ?? 'start'} />
+          </span>
+          <p className="mm-meta">Jetzt dran</p>
+          <h4 className="mm-home-setup-titel">{aktiv.titel}</h4>
+          <p>{erklaerung?.text ?? a.description}</p>
+          <Button to={ziel.pfad} icon="pfeilRechts" onClick={() => homeMessen('home_next_action_clicked', { typ: a.type, schritt: aktiv.id ?? '' })}>
+            {ziel.label}
+          </Button>
+        </div>
+      </div>
+      {danach.length > 0 && (
+        <div className="mm-home-danach">
+          <p className="mm-meta">Danach</p>
+          <ul>
+            {danach.map((d) => (
+              <li key={d.id}>
+                <Link to={d.actionUrl} onClick={() => homeMessen('home_next_action_clicked', { typ: d.type, rang: 'danach' })}>
+                  <Icon name={d.icon} size={18} />
+                  <span>{d.title}</span>
+                  <Icon name="weiter" size={16} />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ------------------------------------------------------------------ Deine Arbeit
 
 const STATUS_TON: Record<WorkItem['status'], 'neutral' | 'aktiv' | 'erfolg' | 'achtung'> = {
@@ -137,24 +218,32 @@ export function ArbeitWidget({ groesse, ich }: WidgetProps) {
   }
   return (
     <>
-      <ul className={`mm-home-posten${groesse === 'gross' ? ' mm-home-posten--zwei' : ''}`}>
-        {posten.slice(0, max).map((w) => (
-          <li key={w.id} className="mm-home-posten-zeile">
-            <div className="mm-home-posten-text">
-              <span className="mm-home-posten-titel">
-                {w.title} <BeispielMarke zeigen={w.beispiel} />
-              </span>
-              <span className="mm-meta">{w.description}</span>
-              <span>
-                {w.ueberfaellig ? <Status ton="achtung">Überfällig</Status> : <Status ton={STATUS_TON[w.status]}>{STATUS_TEXT[w.status]}</Status>}
-              </span>
-            </div>
-            <Button variante={w === posten[0] ? 'sekundaer' : 'tertiaer'} klein to={w.actionUrl} onClick={() => homeMessen('home_work_item_clicked', { typ: w.type })}>
-              {w.actionLabel}
-            </Button>
-          </li>
-        ))}
-      </ul>
+      {/* Gebündelt nach dem, was du tun musst: erledigen · prüfen · entscheiden · bestätigen (KI-Entwürfe) */}
+      {nachGruppe(posten.slice(0, max)).map((g) => (
+        <section key={g.gruppe} className="mm-home-gruppe" aria-label={GRUPPE_TEXT[g.gruppe]}>
+          <h4 className="mm-home-gruppe-titel">
+            {GRUPPE_TEXT[g.gruppe]} <span className="mm-meta mm-number">{posten.filter((w) => (w.gruppe ?? 'erledigen') === g.gruppe).length}</span>
+          </h4>
+          <ul className={`mm-home-posten${groesse === 'gross' ? ' mm-home-posten--zwei' : ''}`}>
+            {g.posten.map((w) => (
+              <li key={w.id} className="mm-home-posten-zeile">
+                <div className="mm-home-posten-text">
+                  <span className="mm-home-posten-titel">
+                    {w.title} <BeispielMarke zeigen={w.beispiel} />
+                  </span>
+                  <span className="mm-meta">{w.description}</span>
+                  <span>
+                    {w.ueberfaellig ? <Status ton="achtung">Überfällig</Status> : <Status ton={STATUS_TON[w.status]}>{STATUS_TEXT[w.status]}</Status>}
+                  </span>
+                </div>
+                <Button variante={w === posten[0] ? 'sekundaer' : 'tertiaer'} klein to={w.actionUrl} onClick={() => homeMessen('home_work_item_clicked', { typ: w.type })}>
+                  {w.actionLabel}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
       {posten.length > max && <p className="mm-meta">und {posten.length - max} weitere</p>}
     </>
   );
@@ -188,6 +277,7 @@ export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
   if (z.status === 'fehler') return <LadeFehler text="Dein Ansprechpartner konnte nicht geladen werden." nochmal={z.nochmal} />;
   const p = z.daten;
   const klick = (ziel: string) => homeMessen('home_contact_clicked', { ziel });
+  const wege = kontaktWege(p ?? {});
   if (!p) {
     return (
       <div className="mm-home-kontakt">
@@ -224,18 +314,35 @@ export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
         </div>
       </div>
       {p.zitat && <p className="mm-home-kontakt-zitat">„{p.zitat}“</p>}
-      <div className="mm-home-kontakt-aktionen">
-        {p.messageUrl && (
-          <Button variante="sekundaer" klein href={p.messageUrl} icon="chat" onClick={() => klick('nachricht')}>
-            Nachricht schreiben
-          </Button>
-        )}
-        {p.bookingUrl && (
-          <Button variante="tertiaer" klein href={p.bookingUrl} icon="kalender" onClick={() => klick('termin')}>
-            Termin buchen
-          </Button>
-        )}
-      </div>
+      {/* Nur echte Kontaktwege: Anrufen primär, WhatsApp/Nachricht sekundär, Termin darunter */}
+      {(wege.anrufen || wege.schreiben.length > 0 || wege.termin) && (
+        <div className="mm-home-kontakt-wege">
+          {wege.anrufen && (
+            <div className="mm-home-kontakt-anrufen">
+              <Button href={wege.anrufen.href} icon="telefon" onClick={() => klick('anrufen')} aria-label={`Anrufen: ${wege.anrufen.nummer}`}>
+                Anrufen
+              </Button>
+              <span className="mm-meta mm-number">{wege.anrufen.nummer}</span>
+            </div>
+          )}
+          {wege.schreiben.length > 0 && (
+            <div className="mm-home-kontakt-aktionen">
+              {wege.schreiben.map((w) => (
+                <Button key={w.art} variante="sekundaer" href={w.href} neuerTab={w.art === 'whatsapp'} icon="chat" onClick={() => klick(w.art)}>
+                  {w.label}
+                </Button>
+              ))}
+            </div>
+          )}
+          {wege.termin && (
+            <div>
+              <Button variante="tertiaer" klein href={wege.termin.href} icon="kalender" onClick={() => klick('termin')}>
+                {wege.termin.label}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
       {p.supportUrl && (
         <Support url={p.supportUrl} klick={() => klick('support')} />
       )}

@@ -3,15 +3,20 @@ import { db, useDatenstand } from '@core/db';
 import { datum, euro, heute, passt, tageZwischen } from '@core/format';
 import { useDarf } from '@core/session';
 import { BeispielMarke, Button, Filter, Kennzahl, Leer, Raster, Seite, Suchfeld, Tabelle } from '@ui/index';
-import { istUeberfaellig, nummerText, offenerBetrag, rechnungsSummen, ART_LABEL, ENTWURF_TAGE } from './logik';
+import { istUeberfaellig, listenBetrag, nummerText, offenerBetrag, ART_LABEL, ENTWURF_TAGE } from './logik';
 import { alleRechnungen, type RechnungX } from './typen';
 import { RechnungStatus } from './teile';
+import { FinanzFilter, ListenSumme, auftragOptionen, useFinanzAnsicht, useZuletztBearbeitet } from '@ui/listen';
+import { summeNach } from '@ui/listen-logik';
+
 
 type F = 'offen' | 'entwurf' | 'ueberfaellig' | 'bezahlt' | 'alle';
 
 export function RechnungenListe() {
   useDatenstand();
   const darf = useDarf('geld');
+  const ansicht = useFinanzAnsicht('rechnungen');
+  const zuletzt = useZuletztBearbeitet('rechnungen');
   const [filter, setFilter] = useState<F>('offen');
   const [q, setQ] = useState('');
   if (!darf) return <KeinZugriff />;
@@ -33,6 +38,7 @@ export function RechnungenListe() {
   };
   const zeilen = alle
     .filter(passtFilter)
+    .filter((r) => ansicht.passt(r))
     .filter((r) => !q || passt(q, r.nummer, r.titel, db.kunden.get(r.kundeId)?.name, db.auftraege.get(r.auftragId)?.nummer))
     .sort((a, b) => (a.status === 'entwurf' ? -1 : 0) - (b.status === 'entwurf' ? -1 : 0) || b.datum.localeCompare(a.datum) || b.nummer.localeCompare(a.nummer));
 
@@ -55,25 +61,31 @@ export function RechnungenListe() {
         />
         <Kennzahl label="Entwürfe" wert={entwuerfe.length} hinweis={alteEntwuerfe.length ? `${alteEntwuerfe.length} älter als ${ENTWURF_TAGE} Tage` : 'warten auf Versand'} ton={alteEntwuerfe.length ? 'achtung' : undefined} />
       </Raster>
-      <Filter
-        label="Rechnungen filtern"
-        wert={filter}
-        onChange={setFilter}
-        optionen={[
-          { wert: 'offen', label: 'Offen & Entwürfe', zaehler: offen.length + entwuerfe.length },
-          { wert: 'entwurf', label: 'Entwürfe', zaehler: entwuerfe.length },
-          { wert: 'ueberfaellig', label: 'Überfällig', zaehler: ueber.length },
-          { wert: 'bezahlt', label: 'Bezahlt' },
-          { wert: 'alle', label: 'Alle' },
-        ]}
+      <FinanzFilter
+        ansicht={ansicht}
+        auftraege={auftragOptionen(alle.map((r) => r.auftragId))}
+        suche={<Suchfeld wert={q} onChange={setQ} platzhalter="Nummer, Kunde, Auftrag …" />}
+        status={
+          <Filter
+            label="Status"
+            wert={filter}
+            onChange={setFilter}
+            optionen={[
+              { wert: 'offen', label: 'Offen & Entwürfe', zaehler: offen.length + entwuerfe.length },
+              { wert: 'entwurf', label: 'Entwürfe', zaehler: entwuerfe.length },
+              { wert: 'ueberfaellig', label: 'Überfällig', zaehler: ueber.length },
+              { wert: 'bezahlt', label: 'Bezahlt' },
+              { wert: 'alle', label: 'Alle' },
+            ]}
+          />
+        }
       />
-      <Suchfeld wert={q} onChange={setQ} platzhalter="Nummer, Kunde, Auftrag …" />
       <Tabelle
         zeilen={zeilen}
         schluessel={(r) => r.id}
         zeilenLink={(r) => `/betrieb/rechnungen/${r.id}`}
         leer={
-          q || filter !== 'offen' ? (
+          q || filter !== 'offen' || ansicht.zeitraum !== 'alle' || ansicht.auftragId ? (
             <Leer titel="Keine Rechnungen gefunden" text="Ändere den Filter oder die Suche." icon="suche" />
           ) : (
             <Leer
@@ -106,9 +118,22 @@ export function RechnungenListe() {
           },
           { titel: 'Datum', wert: (r) => (r.status === 'entwurf' ? '–' : datum(r.datum)), sortierWert: (r) => r.datum, nebensaechlich: true },
           { titel: 'Fällig', wert: (r) => (r.status === 'entwurf' ? '–' : datum(r.faelligAm)), sortierWert: (r) => r.faelligAm, nebensaechlich: true },
-          { titel: 'Betrag', wert: (r) => euro(rechnungsSummen(r).zahlbetrag), zahl: true, sortierWert: (r) => rechnungsSummen(r).zahlbetrag },
+          {
+            titel: ansicht.betragsart === 'netto' ? 'Betrag netto' : 'Betrag brutto',
+            wert: (r) => euro(listenBetrag(r, ansicht.betragsart)),
+            zahl: true,
+            sortierWert: (r) => listenBetrag(r, ansicht.betragsart),
+          },
           { titel: 'Status', wert: (r) => <RechnungStatus r={r} /> },
+          { titel: 'Zuletzt bearbeitet', wert: (r) => <span className="mm-meta">{zuletzt(r)}</span>, sortierWert: (r) => r.geaendertAm, nebensaechlich: true },
         ]}
+      />
+      <ListenSumme
+        anzahl={zeilen.length}
+        einzahl="Rechnung"
+        mehrzahl="Rechnungen"
+        betragsart={ansicht.betragsart}
+        summe={euro(summeNach(ansicht.betragsart, zeilen.map((r) => ({ netto: listenBetrag(r, 'netto'), brutto: listenBetrag(r, 'brutto') }))))}
       />
     </Seite>
   );

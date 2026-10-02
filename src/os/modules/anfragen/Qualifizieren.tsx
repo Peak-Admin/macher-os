@@ -5,6 +5,7 @@ import { useIch } from '@core/session';
 import type { ID } from '@core/objects';
 import { Auswahl, AuswahlKarten, Button, Dialog, Eingabe, FormRaster, Karte, Stapel, Textfeld, useToast } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
+import { MitMacherVorbereiten } from '@modules/macher-fragen/MitMacher';
 import { ABSAGE_GRUENDE, SCHRITTE, qualifizieren, rueckrufFaellig, type NaechsterSchritt } from './daten';
 
 const ERFOLG: Record<NaechsterSchritt, string> = {
@@ -65,6 +66,7 @@ export function QualiAuswahl({ auftragId, onFertig, abbrechen }: { auftragId: ID
         <Button onClick={weiter} variante={schritt === 'absagen' ? 'gefahr' : 'primaer'} icon="pfeilRechts">
           {schritt === 'absagen' ? 'Anfrage absagen' : 'Weiter'}
         </Button>
+        <MitMacherVorbereiten bezug={{ typ: 'auftraege', id: a.id }} nachOeffnen={onFertig} />
         {abbrechen}
       </div>
     </Stapel>

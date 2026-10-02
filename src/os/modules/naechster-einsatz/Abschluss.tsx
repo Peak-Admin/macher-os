@@ -11,7 +11,7 @@ import { db, useDatenstand } from '@core/db';
 import { euro, uhrAus } from '@core/format';
 import { useIch } from '@core/session';
 import type { ID, Termin } from '@core/objects';
-import { Button, Karte, Leer, Meldung, Meta, Seite, Segmente, Stapel, Status, Textfeld, ZahlEingabe, useToast } from '@ui/index';
+import { Button, Karte, Leer, MacherArbeitet, Meldung, Meta, Seite, Segmente, Stapel, Status, Textfeld, ZahlEingabe, useToast } from '@ui/index';
 import { planen, schonUebernommen, STATUS_LABEL, uebernehmen, type AbschlussErgebnis, type AbschlussPlan } from './abschluss';
 import { abschlussPfad, SyncStand, useDiktat } from './Feld';
 import { einsatzBeenden } from './logik';
@@ -119,7 +119,7 @@ function Abschluss({ t }: { t: Termin }) {
           ) : (
             <Meldung titel="Tipp aufs Mikrofon deiner Tastatur">Dein Browser kann hier nicht selbst zuhören. Tipp ins Feld und dann auf das Mikrofon der Tastatur – so diktierst du, auch ohne Netz.</Meldung>
           )}
-          {diktat.hoert && <Meta>Macher hört zu – sprich ganz normal.</Meta>}
+          {diktat.hoert && <MacherArbeitet zustand="hoert" text="Macher hört zu – sprich ganz normal." />}
           {diktat.fehler && <Meldung ton="achtung">{diktat.fehler}</Meldung>}
           <Textfeld
             label="Dein Bericht"

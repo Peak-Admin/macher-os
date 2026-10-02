@@ -33,6 +33,14 @@ describe('Dein nächster Schritt', () => {
     expect(a.actionUrl).toBe('/s/2');
     expect(a.progress).toMatchObject({ erledigt: 2, gesamt: 4 });
     expect(a.ausblenden).toBe('start.karteAus');
+    // Die Einrichtungsansicht zeigt den aktiven Schritt mit seiner eigenen Aktion
+    expect(a.progress?.schritte?.find((s) => !s.erledigt)).toMatchObject({ id: 'h2', aktion: { label: 'Schritt 2 erledigen', pfad: '/s/2' } });
+  });
+
+  it('nach der Aktivierung verschwindet die Einrichtung komplett – auch ausgeblendet ist sie weg', () => {
+    expect(naechsteAktionen(basis({ einrichtung: haken([true, true, true, true]) })).some((a) => a.type === 'onboarding')).toBe(false);
+    // ausgeblendet (`start.karteAus`): useStartHaken liefert keine Haken mehr
+    expect(naechsteAktionen(basis({ einrichtung: [] })).some((a) => a.type === 'onboarding')).toBe(false);
   });
 
   it('echte Arbeit geht vor dem Einrichten', () => {

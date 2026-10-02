@@ -45,7 +45,8 @@ schreibt vor `dev`, `build` und `test` die Liste `src/os/shell/module-liste.ts` 
 | `bereich`, `gruppe` | Bestimmt nur noch den URL-Präfix (`/<bereich>/<id>`). Der sichtbare Ort steht in `src/os/shell/struktur.ts`. |
 | `gewicht` | Pain-Score 1–100 → Reihenfolge von Tabs, Hinweisen, Suche |
 | `navigation` | ohne Wirkung auf die Navigation (Altfeld) |
-| `routen` | relativ zu `/<bereich>/<id>`; `''` = Startansicht, `':id'` = Detail |
+| `routen` | relativ zu `/<bereich>/<id>` (bzw. `basisPfad`); `''` = Startansicht, `':id'` = Detail |
+| `basisPfad` | optional: eigener Startpfad, z. B. `/betrieb/katalog/material`; alte Adressen per Weiterleitung erhalten |
 | `vollbildRouten` | ohne App-Rahmen (z. B. Kundenbereich `/k/:token`, Onboarding `/willkommen`) |
 | `hubWidget` | Altfeld, wird nicht mehr angezeigt (Heute und Betrieb sind fest gestaltet) |
 | `kurzinfo` | 1 Statuszeile; ein Text mit `ton: 'achtung'` kann als einziger Hinweis auf der Betrieb-Kachel erscheinen |

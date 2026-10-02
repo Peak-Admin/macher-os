@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Aufgabe } from '@core/objects';
-import { arbeitsposten, type ArbeitStand } from './arbeit';
+import { arbeitsposten, nachGruppe, type ArbeitStand } from './arbeit';
 
 const aufgabe = (id: string, teil: Partial<Aufgabe> = {}): Aufgabe => ({
   id,
@@ -84,5 +84,23 @@ describe('Deine Arbeit', () => {
     const angebote = [{ id: 'an1', titel: 'Bad', status: 'entwurf' as const, kundeId: 'k1', geaendertAm: '2026-10-01', auftragId: 'au1' }];
     expect(arbeitsposten(basis({ angebote, ohne: ['angebote:an1'] }))).toEqual([]);
     expect(arbeitsposten(basis({ angebote, darfGeld: false }))).toEqual([]);
+  });
+});
+
+describe('Deine Arbeit – Gruppen', () => {
+  it('bündelt nach erledigen · prüfen · entscheiden · bestätigen, wichtigste Gruppe zuerst', () => {
+    const posten = arbeitsposten(
+      basis({
+        aufgaben: [aufgabe('t1', { zustaendigId: 'chef', faellig: '2026-09-30' })],
+        hinweise: [
+          { schluessel: 'f1', art: 'freigabe', titel: 'Rechnungsentwurf von Macher', gewicht: 90 },
+          { schluessel: 'e1', art: 'entscheidung', titel: 'Urlaub genehmigen?', gewicht: 40 },
+        ],
+        angebote: [{ id: 'an1', titel: 'Bad', status: 'entwurf', kundeId: 'k1', geaendertAm: '2026-10-01T08:00:00Z', auftragId: 'au1' }],
+      }),
+    );
+    expect(Object.fromEntries(posten.map((w) => [w.id, w.gruppe]))).toEqual({ 'aufgaben:t1': 'erledigen', 'hinweis:f1': 'bestaetigen', 'hinweis:e1': 'entscheiden', 'angebote:an1': 'pruefen' });
+    // überfällige Aufgabe (80) vor Freigabe (85)? Freigabe 40+45=85 > Aufgabe 50+30=80
+    expect(nachGruppe(posten).map((g) => g.gruppe)).toEqual(['bestaetigen', 'erledigen', 'entscheiden', 'pruefen']);
   });
 });
