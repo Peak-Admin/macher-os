@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { appPfad } from '@core/basis';
+import { aktiverBetrieb, leerenBetriebVerwerfen, useBetriebe } from '@core/betriebe';
 import { cloud, cloudAktiv } from '@core/cloud';
 import { db, type Neu } from '@core/db';
 import { GEWERKE } from '@core/gewerke';
@@ -56,12 +58,34 @@ function Rahmen({ children }: { children: ReactNode }) {
             </span>
           </div>
           <p className="ob-marke-statement">Dein Betrieb. Klar geführt.</p>
+          <ZurueckZumBetrieb />
         </div>
       </header>
       <main className="ob-inhalt" id="inhalt">
         {children}
       </main>
     </div>
+  );
+}
+
+/** Neuer Betrieb über den Wechsler angelegt, Setup noch offen: zurück zum vorigen Betrieb, der leere wird verworfen */
+function ZurueckZumBetrieb() {
+  const betrieb = db.betrieb.useOne('betrieb');
+  const alle = useBetriebe();
+  const hier = aktiverBetrieb();
+  const ziel = alle.find((b) => b.id !== hier && b.eingerichtet);
+  if (betrieb?.onboardingFertig || !ziel || alle.find((b) => b.id === hier)?.eingerichtet) return null;
+  return (
+    <button
+      type="button"
+      className="ob-zurueck-betrieb"
+      onClick={() => {
+        leerenBetriebVerwerfen(hier, ziel.id);
+        window.location.assign(appPfad('/heute'));
+      }}
+    >
+      <Icon name="zurueck" size={18} /> Zurück zu {ziel.name}
+    </button>
   );
 }
 

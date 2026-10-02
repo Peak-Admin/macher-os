@@ -9,6 +9,7 @@ import { alleModule } from './modul';
 import { heute, plusTage, summen, zeitpunkt } from './format';
 import type { Arbeitsweise, Betrieb, Gewerk, ID, Mitarbeiter, Position, Rolle } from './objects';
 import { setzeIch } from './session';
+import { betriebsSchluessel } from './betriebe';
 
 export interface OnboardingAntworten {
   betriebName: string;
@@ -178,7 +179,9 @@ export function beispieleEntfernen() {
  */
 export const SPIELWIESE_KEY = 'modus.spielwiese';
 const SICHERUNG_DB = 'macher-os-spielwiese';
-const SICHERUNG_KEY = 'macher-os:echte-daten';
+const SICHERUNG_KEY = betriebsSchluessel('macher-os:echte-daten');
+/** Schlüssel in der Sicherungs-Datenbank – je Betrieb */
+const SICHERUNG_EINTRAG = betriebsSchluessel('daten');
 
 type Stand = ReturnType<typeof exportieren>;
 
@@ -215,17 +218,17 @@ async function idbSchritt<T>(modus: IDBTransactionMode, fn: (s: IDBObjectStore) 
 /** Standard: eigene IndexedDB; ohne IndexedDB localStorage (wirft bei Platzmangel → Spielwiese startet dann nicht) */
 const browserSpeicher: SicherungsSpeicher = {
   async lesen() {
-    if (globalThis.indexedDB) return (await idbSchritt<Stand | undefined>('readonly', (s) => s.get('daten'))) ?? undefined;
+    if (globalThis.indexedDB) return (await idbSchritt<Stand | undefined>('readonly', (s) => s.get(SICHERUNG_EINTRAG))) ?? undefined;
     const t = globalThis.localStorage?.getItem(SICHERUNG_KEY);
     return t ? (JSON.parse(t) as Stand) : undefined;
   },
   async schreiben(stand) {
-    if (globalThis.indexedDB) return void (await idbSchritt('readwrite', (s) => s.put(stand, 'daten')));
+    if (globalThis.indexedDB) return void (await idbSchritt('readwrite', (s) => s.put(stand, SICHERUNG_EINTRAG)));
     if (!globalThis.localStorage) throw new Error('Kein Speicher für die Sicherung.');
     globalThis.localStorage.setItem(SICHERUNG_KEY, JSON.stringify(stand));
   },
   async loeschen() {
-    if (globalThis.indexedDB) return void (await idbSchritt('readwrite', (s) => s.delete('daten')));
+    if (globalThis.indexedDB) return void (await idbSchritt('readwrite', (s) => s.delete(SICHERUNG_EINTRAG)));
     globalThis.localStorage?.removeItem(SICHERUNG_KEY);
   },
 };

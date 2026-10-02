@@ -1,6 +1,6 @@
 /**
  * App-Rahmen: genau vier feste Hauptbereiche (Heute · Aufträge · Planen · Betrieb).
- * Desktop: nur die Seitenleiste, keine Topbar. Oben darin ein gemeinsames Feld „Suchen oder fragen“
+ * Desktop: nur die Seitenleiste, keine Topbar. Oben darin der Betriebs-Wechsler, dann ein gemeinsames Feld „Suchen oder fragen“
  * (Suche und Macher in einem), darunter die Benachrichtigungen. Mobil: schmaler Kopf + untere Navigation. Keine Unterbäume, kein globales „Neu“,
  * kein Plus, kein Hamburger-Menü. Lokale Navigation (höchstens vier Ziele) steht im Inhaltsbereich.
  * Unter den vier Bereichen höchstens drei persönliche Favoriten (ausgewählt im Modulverzeichnis unter „Betrieb“),
@@ -28,6 +28,7 @@ import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { BASIS } from '@core/basis';
 import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
+import { BetriebWechsler } from './BetriebWechsler';
 import { useFavoriten } from './favoriten';
 import './shell.css';
 
@@ -100,6 +101,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <Icon name="leiste" />
           </button>
         </div>
+        <BetriebWechsler kompakt={eingeklappt} />
         <div className="mm-leiste-werkzeuge">
           <SuchenOderFragen />
           <Glocke />
@@ -127,6 +129,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
       <div className="mm-hauptbereich">
         <header className="mm-kopf-mobil">
+          <BetriebWechsler kompakt />
           <span className="mm-kopf-mobil-titel">{titelMobil}</span>
           <SuchenOderFragen kompakt />
           <Profil />
