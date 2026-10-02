@@ -13,7 +13,7 @@ import {
   Section,
   SectionHeading,
 } from "@/components/ui";
-import { Chevrons, Foto } from "@/components/ui/Foto";
+import { Foto } from "@/components/ui/Foto";
 import { gewerkBild, kundenBild } from "@/content/bilder";
 import { aehnlicheKunden, funktionTitel, gewerkVon, groessen, groesseVon, kundenStories } from "@/content/kunden";
 import { funktionHref, gewerkHref, kunden, type KundeSlug } from "@/content/registry";
@@ -79,7 +79,6 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
           <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/40" />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
         </div>
-        <Chevrons className="absolute -bottom-8 right-[3%] -z-10 hidden h-[60%] max-h-80 text-brand/70 mix-blend-screen lg:block" />
         <Container className="relative py-12 sm:py-16 lg:py-24">
           <Breadcrumbs items={[{ label: "Kunden", href: "/kunden" }, { label: k.betrieb }]} dark />
           <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">

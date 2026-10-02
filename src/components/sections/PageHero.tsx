@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Breadcrumbs, ButtonLink, Container } from "@/components/ui";
-import { Chevrons, Foto } from "@/components/ui/Foto";
+import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import type { BildKey } from "@/content/bilder";
 import { cta } from "@/lib/site";
 import { TrustRow } from "./TrustRow";
@@ -17,7 +17,7 @@ type HeroProps = {
   children?: ReactNode;
   /**
    * Foto aus dem Bildregister. Macht den Kopf zum dunklen Bild-Hero im Stil von
-   * Mission Mittelstand: Foto rechts, Pfeilmotiv, Headline in Versalien.
+   * Mission Mittelstand: Foto rechts, Headline in Versalien. Ohne vorhandenes Foto bleibt es eine ruhige dunkle Fläche.
    * Hervorgehobene Wörter (`<span>` im Titel) erscheinen in Akzentgrün.
    */
   bild?: BildKey;
@@ -37,7 +37,7 @@ export function PageHero(props: HeroProps) {
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-line)_1px,transparent_1px)] bg-[size:48px_48px] opacity-40 [mask-image:radial-gradient(ellipse_at_top_right,black_20%,transparent_70%)]"
       />
-      <Container className="relative py-14 sm:py-20">
+      <Container className="relative py-12 sm:py-16">
         {breadcrumbs && <Breadcrumbs items={breadcrumbs} />}
         <div className={`grid items-center gap-12 ${visual ? "lg:grid-cols-[1.05fr_1fr]" : ""}`}>
           <div className="max-w-3xl">
@@ -78,8 +78,8 @@ function HeroActions({ actions, dark = false }: { actions: HeroProps["actions"];
 
 /**
  * Dunkler Bild-Hero (Referenz: mission-mittelstand.de, Fallstudien und Landingpages).
- * Mobil liegt das Foto oben als Band, ab `lg` füllt es die rechte Hälfte und läuft
- * weich in die dunkle Fläche aus.
+ * Mobil: Aussage → Nutzen → Aktion zuerst, das Foto folgt darunter als Band. Ab `lg` füllt es die rechte Hälfte
+ * und läuft weich in die dunkle Fläche aus. Fehlt das Foto, gibt es keine Bildfläche – keine Deko vor der Aussage.
  */
 function BildHero({
   eyebrow,
@@ -94,17 +94,7 @@ function BildHero({
 }: HeroProps & { bild: BildKey }) {
   return (
     <section className="relative isolate overflow-hidden bg-ink text-white">
-      {/* Foto */}
-      <div className="relative h-64 sm:h-80 lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[58%]">
-        <Foto bild={bild} preload sizes="(min-width: 1024px) 58vw, 100vw" />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-ink/10 lg:bg-gradient-to-r lg:from-ink lg:via-ink/55 lg:to-ink/0"
-        />
-      </div>
-      <Chevrons className="absolute -bottom-10 right-[4%] hidden h-[70%] max-h-[26rem] text-brand/80 mix-blend-screen lg:block" />
-
-      <Container className="relative -mt-16 pb-14 sm:-mt-20 sm:pb-20 lg:mt-0 lg:py-24 xl:py-28">
+      <Container className="relative py-12 sm:py-16 lg:py-24 xl:py-28">
         {breadcrumbs && <Breadcrumbs items={breadcrumbs} dark />}
         <div className={`grid items-center gap-12 ${visual ? "lg:grid-cols-[1.05fr_1fr]" : ""}`}>
           <div className="max-w-2xl">
@@ -122,6 +112,15 @@ function BildHero({
           {visual && <div className="relative min-w-0">{visual}</div>}
         </div>
       </Container>
+      {fotoVorhanden(bild) && (
+        <div className="relative h-56 sm:h-80 lg:absolute lg:inset-y-0 lg:right-0 lg:-z-10 lg:h-auto lg:w-[58%]">
+          <Foto bild={bild} preload sizes="(min-width: 1024px) 58vw, 100vw" />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-b from-ink via-ink/20 to-ink/10 lg:bg-gradient-to-r lg:from-ink lg:via-ink/55 lg:to-ink/0"
+          />
+        </div>
+      )}
       <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-brand" />
     </section>
   );

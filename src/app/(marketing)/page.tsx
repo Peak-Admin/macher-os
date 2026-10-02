@@ -28,7 +28,7 @@ import {
   type FaqItem,
   type IconName,
 } from "@/components/ui";
-import { Chevrons, Foto } from "@/components/ui/Foto";
+import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import { gewerkBild } from "@/content/bilder";
 import { kunden, topGewerke } from "@/content/registry";
 import { cta, herausgeber, site } from "@/lib/site";
@@ -54,7 +54,7 @@ const machtMacher: { text: string; icon: IconName }[] = [
 const bereiche: { titel: string; text: string; icon: IconName; href: string }[] = [
   { titel: "Heute", text: "Was jetzt wichtig ist.", icon: "home", href: "/funktionen" },
   { titel: "Aufträge", text: "Alles rund um Kunden und Arbeit.", icon: "clipboard", href: "/funktionen/auftraege" },
-  { titel: "Plan", text: "Was als Nächstes passiert.", icon: "calendar", href: "/funktionen/einsatzplanung" },
+  { titel: "Planen", text: "Was als Nächstes passiert.", icon: "calendar", href: "/funktionen/einsatzplanung" },
   { titel: "Betrieb", text: "Mitarbeiter, Material, Geld und Unternehmen.", icon: "layers", href: "/funktionen/mitarbeiter" },
 ];
 
@@ -140,17 +140,15 @@ const faq: FaqItem[] = [
 export default function HomePage() {
   return (
     <>
-      {/* 1. Hero – dunkel, Foto, Pfeilmotiv */}
+      {/* 1. Hero – kräftige Markenfläche, Aussage → Nutzen → Aktion; das Foto nur, wenn es vorhanden ist (rechts, ab lg) */}
       <section className="relative isolate overflow-hidden bg-ink text-white">
-        <div className="relative h-72 sm:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[60%]">
-          <Foto bild="start/hero" preload sizes="(min-width: 1024px) 60vw, 100vw" />
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-ink/10 lg:bg-gradient-to-r lg:from-ink lg:via-ink/50 lg:to-ink/0"
-          />
-        </div>
-        <Chevrons className="absolute bottom-24 right-[6%] hidden h-[55%] max-h-[24rem] text-brand/80 mix-blend-screen lg:block" />
-        <Container className="relative -mt-20 pb-36 sm:-mt-24 lg:mt-0 lg:pb-52 lg:pt-28">
+        {fotoVorhanden("start/hero") && (
+          <div className="absolute inset-y-0 right-0 -z-10 hidden w-[60%] lg:block">
+            <Foto bild="start/hero" preload sizes="60vw" />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink via-ink/50 to-ink/0" />
+          </div>
+        )}
+        <Container className="relative pb-36 pt-12 sm:pt-16 lg:pb-52 lg:pt-28">
           <div className="max-w-2xl">
             <p className="mb-5 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
               Von {herausgeber.name} · Das Betriebssystem für Handwerker
@@ -160,8 +158,8 @@ export default function HomePage() {
               <br />
               <span className="text-accent">Eine Software.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80 sm:text-xl">
-              Aufträge, Mitarbeiter, Planung und Büroarbeit in einem einfachen Betriebssystem für Handwerker.
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-on-dark sm:text-xl">
+              Aufträge, Termine und Rechnungen an einem Ort. Für dich und dein Team.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href={cta.primary.href} size="lg" variant="onDark">
@@ -249,7 +247,7 @@ export default function HomePage() {
       </Section>
 
       {/* 5. Gewerke – Hochkant-Karten mit Fotos */}
-      <DunklerAbschnitt hintergrund="Gewerke">
+      <DunklerAbschnitt>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <DunkleHeadline
             eyebrow="Gewerke"

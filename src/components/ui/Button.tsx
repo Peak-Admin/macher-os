@@ -2,15 +2,15 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon } from "./Icon";
 
-type Variant = "primary" | "secondary" | "dark" | "light" | "onDark";
+type Variant = "primary" | "secondary" | "light" | "onDark";
 
 const variants: Record<Variant, string> = {
   primary: "btn-primaer",
-  secondary: "bg-white text-signal-dark ring-1 ring-inset ring-signal-dark/60 hover:bg-hover",
-  dark: "bg-ink text-white hover:bg-ink-soft",
+  /** Nebenaktion: weiß mit erkennbarem Rand, dunkelgrüne Schrift */
+  secondary: "bg-white text-signal-dark ring-1 ring-inset ring-line-dark hover:bg-signal-soft",
   light: "bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/20",
-  /** Hauptaktion auf dunklen Markenflächen */
-  onDark: "bg-accent text-ink hover:bg-white",
+  /** Hauptaktion auf dunklen Markenflächen: dasselbe Aktionsgrün wie überall, mit hellem Rand für die Kante */
+  onDark: "btn-primaer ring-1 ring-inset ring-white/40",
 };
 
 export function ButtonLink({
@@ -27,13 +27,13 @@ export function ButtonLink({
   className?: string;
 }) {
   const sizes = {
-    sm: "h-9 px-4",
-    md: "h-11 px-5",
-    lg: "h-12 px-6",
+    sm: "min-h-11 px-4",
+    md: "min-h-12 px-5",
+    lg: "min-h-12 px-6",
   };
   // Primärbutton bringt Schriftgröße und -stärke selbst mit (btn-primaer, 19 px fett).
   const schrift =
-    variant === "primary" ? "" : { sm: "text-sm font-semibold", md: "text-[0.95rem] font-semibold", lg: "text-lg font-semibold" }[size];
+    variant === "primary" ? "" : { sm: "text-base font-semibold", md: "text-base font-semibold", lg: "text-lg font-semibold" }[size];
   return (
     <Link
       href={href}

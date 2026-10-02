@@ -5,9 +5,15 @@ Bildkarten-Reihen und Gewerk-Karten im Hochformat. Alle Fotos sind in
 [`src/content/bilder.ts`](../../src/content/bilder.ts) registriert und werden nur über ihren Schlüssel eingebunden
 (`<Foto bild="gewerk/elektriker" />`).
 
-**Solange eine Datei fehlt**, zeigt die Website eine gestaltete Markenfläche (dunkles Grün, Pfeilmotiv, Icon).
-Im Entwicklungsserver steht oben links der erwartete Dateipfad. Sobald die Datei unter `public/` liegt,
-erscheint beim nächsten Build automatisch das Foto.
+**Solange eine Datei fehlt**, zeigt die Website eine ruhige dunkle Fläche mit einem Linienicon als zeitweiligen Ersatz –
+keine Pfeilgrafik, die wie ein Foto wirkt (UX-Spezifikation 7.3/9.2). Heros, Abschluss-CTA und Bild-Text-Abschnitte
+lassen die Bildfläche ganz weg, bis das Foto da ist. Im Entwicklungsserver steht oben links der erwartete Dateipfad.
+Sobald die Datei unter `public/` liegt, erscheint beim nächsten Build automatisch das Foto.
+
+**Stand Oktober 2026 vorhanden:** die acht Gewerk-Fotos (`gewerke/<gewerk>.jpg`) plus `metall-maschinen` und
+`weitere-gewerke`, Team- und Personenfotos von Mission Mittelstand, das Werkstattfoto der Einrichtung
+(`os/werkstatt.webp`) sowie zwei aus echten Seiten erzeugte Menü-Vorschauen (`vorschau/einsatz.webp`,
+`vorschau/vorlage-baustellenabnahme.webp`, Skript `scripts/ux/vorschaubilder.mjs`). Alle übrigen Dateien unten fehlen noch.
 
 ## Regeln
 

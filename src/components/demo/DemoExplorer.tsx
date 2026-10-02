@@ -52,7 +52,7 @@ export function DemoExplorer() {
                   onClick={() => setIndex(i)}
                   onKeyDown={tabKeyHandler(i, demoGewerke.length, setIndex)}
                   className={`shrink-0 rounded-md px-4 py-2.5 text-sm font-bold whitespace-nowrap transition-colors ${
-                    aktiv ? "bg-ink text-white" : "bg-paper text-ink ring-1 ring-inset ring-line hover:ring-ink/40"
+                    aktiv ? "bg-signal-soft text-signal-dark ring-1 ring-inset ring-primary" : "bg-white text-ink ring-1 ring-inset ring-line-dark hover:bg-signal-soft"
                   }`}
                 >
                   {g.label}

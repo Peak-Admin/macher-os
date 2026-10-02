@@ -180,7 +180,7 @@ export default async function WerkzeugSeite({ params }: Props) {
           </div>
           <a
             href="#inhalt"
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-ink px-5 font-semibold text-white hover:bg-ink-soft"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-white px-5 font-semibold text-signal-dark ring-1 ring-inset ring-line-dark hover:bg-signal-soft"
           >
             Zum Rechner <Icon name="arrow-right" className="size-4 -rotate-90" />
           </a>

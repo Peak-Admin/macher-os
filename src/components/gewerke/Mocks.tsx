@@ -162,7 +162,7 @@ export function EinrichtungMock() {
             <span
               key={g}
               className={`rounded-md px-2 py-2 text-center text-xs font-semibold ${
-                g === "SHK" ? "bg-ink text-white" : "bg-paper text-ink-soft ring-1 ring-line"
+                g === "SHK" ? "bg-signal-soft text-signal-dark ring-1 ring-primary" : "bg-paper text-ink-soft ring-1 ring-line"
               }`}
             >
               {g}
