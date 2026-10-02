@@ -197,10 +197,10 @@ export default function WerkzeugeHub() {
           </div>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
-          <Card title="Praxistipps im Blog" icon="book" iconTone="sky" href="/wissen/blog">
+          <Card title="Praxistipps im Blog" icon="book" href="/wissen/blog" fenster>
             Stundensatz, Angebot, Nachkalkulation – einfach erklärt.
           </Card>
-          <Card title="Kalkulation in Macher OS" icon="calculator" href="/funktionen/kalkulation">
+          <Card title="Kalkulation in Macher OS" icon="calculator" href="/funktionen/kalkulation" fenster>
             Deine Zahlen einmal hinterlegen und in jedem Angebot nutzen.
           </Card>
         </div>

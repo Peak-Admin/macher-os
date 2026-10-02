@@ -6,6 +6,7 @@ import {
   CheckList,
   Faq,
   FaqJsonLd,
+  Fenster,
   Icon,
   IconTile,
   Section,
@@ -133,8 +134,8 @@ export default function DatenUebernehmenPage() {
       <Section>
         <div className="grid gap-4 lg:grid-cols-2">
           <div className="rounded-2xl border border-line bg-white p-8">
-            <IconTile name="spark" tone="moss" />
-            <h2 className="mt-5 font-display text-2xl font-extrabold">Selbst übernehmen</h2>
+            <Fenster icon="download" className="-mx-2 -mt-2" />
+            <h2 className="mt-6 font-display text-2xl font-extrabold">Selbst übernehmen</h2>
             <p className="mt-2 text-muted">Für die meisten Betriebe reicht das. Macher OS hilft automatisch mit:</p>
             <CheckList
               className="mt-5"
@@ -147,8 +148,8 @@ export default function DatenUebernehmenPage() {
             />
           </div>
           <div className="rounded-2xl bg-ink p-8 text-white">
-            <IconTile name="users" tone="signal" />
-            <h2 className="mt-5 font-display text-2xl font-extrabold">Mit persönlicher Hilfe</h2>
+            <Fenster icon="chat" ton="dunkel" className="-mx-2 -mt-2" />
+            <h2 className="mt-6 font-display text-2xl font-extrabold">Mit persönlicher Hilfe</h2>
             <p className="mt-2 text-white/70">Viele Daten, alte Software oder einfach keine Zeit? Wir helfen dir beim Umstieg.</p>
             <ul className="mt-5 space-y-3">
               {[

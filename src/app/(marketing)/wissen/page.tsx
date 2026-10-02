@@ -4,6 +4,7 @@ import {
   ArrowLink,
   Breadcrumbs,
   Container,
+  Fenster,
   Icon,
   IconTile,
   Section,
@@ -103,8 +104,8 @@ export default function WissenHubPage() {
         <div className="mt-10 grid gap-4 lg:grid-cols-3">
           {bereiche.map((b) => (
             <div key={b.titel} className="flex flex-col rounded-lg border border-line bg-paper p-6">
+              <Fenster icon={b.icon} flaeche="weiss" className="-mx-2 -mt-2 mb-5" />
               <div className="flex items-center gap-3">
-                <IconTile name={b.icon} />
                 <div>
                   <h3 className="font-display text-xl font-bold">{b.titel}</h3>
                   <p className="text-sm text-muted">{b.text}</p>

@@ -76,8 +76,8 @@ export default function AkademiePage() {
             const anzahl = kurse.filter((k) => k.lernbereich === l.titel).length;
             return (
               <div key={l.titel} className="rounded-lg border border-line bg-paper p-6">
-                <IconTile name={l.icon} />
-                <h3 className="mt-4 font-display text-lg font-bold">{l.titel}</h3>
+                <Fenster icon={l.icon} flaeche="weiss" className="-mx-2 -mt-2" />
+                <h3 className="mt-5 font-display text-lg font-bold">{l.titel}</h3>
                 <p className="mt-1 text-muted">{l.text}</p>
                 <p className="mt-3 text-sm font-semibold">
                   {anzahl} {anzahl === 1 ? "Kurs" : "Kurse"}

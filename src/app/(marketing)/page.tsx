@@ -15,11 +15,11 @@ import {
 } from "@/components/sections";
 import {
   ArrowLink,
-  Zone,
   ButtonLink,
   CheckList,
   Faq,
   FaqJsonLd,
+  Fenster,
   Icon,
   IconTile,
   Karte3D,
@@ -29,6 +29,7 @@ import {
   UiEbene,
   UiStatus,
   UiZeile,
+  Zone,
   type FaqItem,
   type IconName,
 } from "@/components/ui";
@@ -531,13 +532,13 @@ export default function HomePage() {
                     href={w.href}
                     className={`group flex h-full flex-col rounded-2xl p-6 transition-transform duration-150 ease-out hover:-translate-y-0.5 ${gross ? "min-h-64 lg:p-8" : "min-h-44"}`}
                   >
-                    <span
-                      className={`inline-flex size-11 items-center justify-center rounded-xl ${
-                        dunkel ? "bg-white/10 text-accent" : "bg-white text-signal-dark ring-1 ring-line"
-                      }`}
-                    >
-                      <Icon name={w.icon} className="size-5" />
-                    </span>
+                    {gross ? (
+                      <Fenster icon={w.icon} ton="dunkel" className="-mx-2 -mt-2" />
+                    ) : (
+                      <span className="inline-flex size-11 items-center justify-center rounded-xl bg-white text-signal-dark ring-1 ring-line">
+                        <Icon name={w.icon} className="size-5" />
+                      </span>
+                    )}
                     <span className={`mt-auto pt-6 font-display font-bold leading-tight ${gross ? "text-4xl" : "text-xl"}`}>{w.titel}</span>
                     <span className={`mt-1 ${dunkel ? "text-white/75" : "text-muted"} ${gross ? "text-lg" : ""}`}>{w.text}</span>
                     {gross && (
