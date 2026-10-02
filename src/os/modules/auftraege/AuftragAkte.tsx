@@ -18,6 +18,7 @@ import { hauptaktion } from "@modules/naechster-einsatz/Einsatz";
 import { WoStehtDerAuftrag } from "@modules/ablauf/WoSteht";
 import { begriff } from "@modules/ablauf/daten";
 import type { Auftrag } from "@core/objects";
+import { nummerAnzeige } from "@core/nummern";
 import {
   AktionsMenue,
   BeispielMarke,
@@ -109,7 +110,8 @@ export function AuftragAkte() {
     <Seite
       breit
       titel={a.titel}
-      oberzeile={`${a.nummer} · ${ART_LABEL[a.art]}`}
+      oberzeile={ART_LABEL[a.art]}
+      untertitel={nummerAnzeige(a.nummer)}
       status={
         <>
           <Status ton={phaseTon(a.phase)}>{phaseLabel(a.phase)}</Status>
@@ -289,6 +291,9 @@ function Kopf({ a }: { a: Auftrag }) {
                   <strong>{o.bezeichnung}</strong>
                 </ObjektLink>
                 <span>{adresseText(o.adresse)}</span>
+                {(o.adresse.zusatz || o.adresse.land) && (
+                  <Meta>{[o.adresse.zusatz, o.adresse.land].filter(Boolean).join(" · ")}</Meta>
+                )}
                 {o.hinweise && (
                   <Meta>
                     <strong>Zugang:</strong> {o.hinweise}
@@ -317,6 +322,9 @@ function Kopf({ a }: { a: Auftrag }) {
       <Karte kompakt oberzeile="Eckdaten">
         <div className="akte-info">
           <span>Verantwortlich: {v ? personName(v) : "niemand"}</span>
+          {!!a.mitarbeiterIds?.length && (
+            <span>Team: {a.mitarbeiterIds.map((id) => personName(db.mitarbeiter.get(id))).join(", ")}</span>
+          )}
           {naechster ? (
             <span>
               Nächster Einsatz:{" "}

@@ -33,6 +33,10 @@ export interface Adresse {
   strasse: string;
   plz: string;
   ort: string;
+  /** Adresszusatz, z. B. „Hinterhaus, 2. OG“ */
+  zusatz?: string;
+  /** Land, wenn nicht Deutschland */
+  land?: string;
 }
 
 /**
@@ -232,7 +236,7 @@ export const PHASEN: { id: Phase; label: string }[] = [
 export type Auftragsart = 'kundendienst' | 'projekt' | 'wartung' | 'reklamation' | 'werkstatt';
 
 export interface Auftrag extends Basis {
-  nummer: string; // "A-2026-0042"
+  nummer: string; // Projektnummer "2610-001" (YYMM-XXX); ältere Aufträge "A-2026-0042"
   titel: string;
   art: Auftragsart;
   phase: Phase;
@@ -244,6 +248,8 @@ export interface Auftrag extends Basis {
   dringend?: boolean;
   /** verantwortlich im Büro / Bauleitung */
   verantwortlichId?: ID;
+  /** Mitarbeiter, die am Auftrag arbeiten (Projektteam) */
+  mitarbeiterIds?: ID[];
   /** gewünschter Zeitraum des Kunden, Freitext */
   wunschtermin?: string;
   /** geschätzte Arbeitsstunden für die Planung */

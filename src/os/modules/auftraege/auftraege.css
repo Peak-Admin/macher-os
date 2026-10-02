@@ -55,8 +55,12 @@
 }
 .ak-ort-zusammenfassung > span { flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
 .ak-ort-zusammenfassung > svg { flex-shrink: 0; color: var(--mm-brand-ink); }
-.ak-adresse { display: grid; gap: 16px; min-width: 0; margin: 0; padding: 0; border: 0; }
-.ak-adresse > legend { margin-bottom: 8px; padding: 0; }
+/* Dialog „Neuer Auftrag“: Gruppen als schlichte Fieldsets mit Abschnittstitel */
+.ak-gruppe { display: grid; gap: 16px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.ak-gruppe-titel { margin-bottom: 4px; padding: 0; font-size: 18px; line-height: 24px; font-weight: 650; color: var(--mm-black); }
+.ak-mitarbeiter { display: grid; gap: 8px; min-width: 0; }
+.ak-mitarbeiter-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.ak-mitarbeiter-chips .mm-chip { max-width: 100%; overflow-wrap: anywhere; text-align: left; }
 .ak-plz-ort { display: grid; grid-template-columns: minmax(0, 140px) minmax(0, 1fr); gap: 16px; }
 .ak-weitere { border-top: 1px solid var(--mm-border); border-bottom: 1px solid var(--mm-border); }
 .ak-weitere > summary {
@@ -74,6 +78,9 @@
 /* Auftragsliste: Suche und Statusfilter in einer Zeile (Desktop), Zeilen mit erkennbaren Spalten */
 .ak-suche-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
 .ak-suche-filter > .mm-suchfeld { flex: 1 1 320px; min-width: 0; }
+/* Zusatzfilter kompakt unter der Suche: 4 Spalten am Desktop, 2 am Tablet, 1 am Handy */
+.ak-filter-zusatz { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px 16px; min-width: 0; }
+.ak-filter-zusatz > * { min-width: 0; }
 .ak-spalten { display: none; }
 .ak-zeile {
   display: grid; grid-template-columns: minmax(0, 1fr) max-content; grid-template-areas: 'titel status' 'schritt schritt' 'termin termin';
