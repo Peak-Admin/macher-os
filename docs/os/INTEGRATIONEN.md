@@ -3,7 +3,7 @@
 > **Verbindlich für jede Verbindung zu anderen Programmen, Formaten und Großhändlern.**
 > Macher OS wird Schritt für Schritt angebunden – in **vier Säulen**. Neue Integrationen gehören in genau eine Säule.
 
-Daten der Website: `src/content/integrationen.ts` (Säulen, alle Integrationen, Score, Stand).
+Daten der Website: `src/content/integrationen.ts` (Säulen, alle Integrationen, Score).
 Stand in der Software: `src/os/modules/schnittstellen/connectoren.ts` (Connector-Registry, Status je Betrieb).
 Website: Seite `/integrationen`, Menüpunkt „Integrationen“ mit Highlight-Box, Abschnitt auf der Startseite (`IntegrationenHighlight`).
 
@@ -18,7 +18,7 @@ Website: Seite `/integrationen`, Menüpunkt „Integrationen“ mit Highlight-Bo
 
 ## Priorität (Score 0–100)
 
-Der Score ist unsere Reihenfolge – nicht für Kunden sichtbar. Hoch = zuerst. Die vollständige Liste mit Stand steht in
+Der Score ist unsere Reihenfolge – nicht für Kunden sichtbar. Hoch = zuerst. Die vollständige Liste steht in
 `src/content/integrationen.ts` (Feld `score`). Die Website sortiert danach.
 
 | Score | Integrationen |
@@ -30,8 +30,9 @@ Der Score ist unsere Reihenfolge – nicht für Kunden sichtbar. Hoch = zuerst. 
 
 ## Bauweise – Schritt für Schritt
 
-Jeder Schritt ist für sich nutzbar. Ein Schritt ist erst fertig, wenn der Connector in `connectoren.ts` `verfuegbar: true`
-meldet **und** `stand` in `src/content/integrationen.ts` angepasst ist. Vorher steht er auf der Website als „Kommt“.
+**Es gibt keine „Kommt“-Phase.** Jede Integration wird erst intern angeschaut und dann direkt gebaut. Die Website zeigt
+alle Integrationen als Teil von Macher OS – ohne Status-Abzeichen, ohne „bis dahin“. Ein Schritt ist fertig, wenn der
+Connector in `connectoren.ts` `verfuegbar: true` meldet.
 
 1. **Format Engine schließen (Score 100):** ZUGFeRD (PDF/A-3 mit CII), CSV/XLSX-Export, GAEB X84-Abgabe.
    Gemeinsamer Kern: ein Leser/Schreiber je Format, ein Prüfbericht, ein Import-Protokoll (`schnittstellen`-Sammlung).
@@ -41,6 +42,18 @@ meldet **und** `stand` in `src/content/integrationen.ts` angepasst ist. Vorher s
 4. **Handwerk Connect:** IDS Connect (Warenkorb-Rückgabe), dann UGL, Open Masterdata, OCI.
 5. **Buchhaltung & Zahlung über Connect:** Lexware Office, sevDesk, DATEV Stammdaten, Stripe, SumUp, PayPal.
 6. **Rest nach Nachfrage:** Ablage (Drive, OneDrive, Dropbox), CRM (HubSpot, Pipedrive), BMEcat, ETIM, MT940, SEPA, SFTP.
+
+### In der App: Verbinden = Anfrage, solange nicht gebaut
+
+Der Hub `Betrieb → Einstellungen → Verbindungen` (`src/os/modules/schnittstellen/`) zeigt **alle** Integrationen der
+Website: eigene Connectoren aus `connectoren.ts`, der Rest kommt über `ausKatalog()` aus `src/content/integrationen.ts`
+(eine Liste, keine Doppelpflege; was schon an anderer Stelle eingebaut ist, steht in `ABGEDECKT`).
+
+- Nicht gebaut → Status „Auf Anfrage“, Knopf **„Verbinden“** öffnet **„Anfrage senden“** (optional: wofür).
+- Die Anfrage wird im Betrieb gespeichert (Sammlung `integrationsanfragen`, eine je Integration, Ereignis in der
+  Timeline) und geht per E-Mail an `partner@macher-os.de` (Betriebsname und Kontakt, keine weiteren Daten).
+- Danach Status „Angefragt am …“. Sobald wir gebaut haben: `verfuegbar: true` – der Knopf führt direkt zur Verbindung.
+- Nie „Kommt“, nie „bis dahin“ – weder in der App noch auf der Website.
 
 Regeln für jede neue Integration:
 

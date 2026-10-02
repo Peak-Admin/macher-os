@@ -242,7 +242,7 @@ export const mainNav: NavItem[] = [
       highlight: {
         href: "/integrationen",
         titel: "Passt zu dem, was du schon nutzt.",
-        text: "Gmail, Outlook, DATEV, Lexware, Stripe und mehr – mit ehrlichem Stand.",
+        text: "Gmail, Outlook, DATEV, Lexware, Stripe und mehr – in vier Säulen.",
         aktion: "Alle Integrationen ansehen",
         logos: logoReihe
           .map(integration)

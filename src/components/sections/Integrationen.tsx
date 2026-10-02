@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ButtonLink, IntegrationLogo, Section, Zone } from "@/components/ui";
-import { integration, logoReihe, saeulen, type Integration } from "@/content/integrationen";
+import { integration, integrationenZahl, logoReihe, saeulen, type Integration } from "@/content/integrationen";
 import { GlasIcon } from "@/os/ui/glas";
 
 const reihe = logoReihe.map(integration).filter((i): i is Integration => !!i);
@@ -38,8 +38,7 @@ export function IntegrationenHighlight() {
               Passt zu dem, was du schon nutzt.
             </h2>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-on-dark">
-              E-Mail, Kalender, Steuerberater, Großhändler und Ausschreibung. Macher OS verbindet sich in vier Säulen – Schritt für
-              Schritt, ehrlich mit Stand.
+              E-Mail, Kalender, Steuerberater, Großhändler und Ausschreibung. Macher OS verbindet sich in vier Säulen.
             </p>
             <ul className="mt-8 grid gap-3 sm:grid-cols-2">
               {saeulen.map((s) => (
@@ -62,7 +61,7 @@ export function IntegrationenHighlight() {
             <p className="mb-4 font-display text-xl font-bold">Womit Macher OS arbeitet</p>
             <LogoWand />
             <p className="mt-4 text-sm text-muted">
-              Vieles kommt noch – auf der Seite siehst du für jede Verbindung, ob sie heute schon geht. Die Marken gehören ihren Inhabern.
+              {integrationenZahl} Integrationen in vier Säulen. Die Marken gehören ihren Inhabern.
             </p>
             <ButtonLink href="/integrationen" className="mt-5 w-full sm:w-auto">
               Alle Integrationen ansehen

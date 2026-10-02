@@ -1,37 +1,18 @@
 import Image from "next/image";
 import { FinalCta, LogoWand, PageHero } from "@/components/sections";
 import { ArrowLink, Faq, FaqJsonLd, IntegrationLogo, Section, SectionHeading, type FaqItem } from "@/components/ui";
-import {
-  STAND_LABEL,
-  heuteZahl,
-  integrationenDerSaeule,
-  integrationenZahl,
-  pipedreamLogo,
-  saeulen,
-  type Stand,
-} from "@/content/integrationen";
+import { integrationenDerSaeule, integrationenZahl, pipedreamLogo, saeulen } from "@/content/integrationen";
 import { pageMeta } from "@/lib/metadata";
 import { GlasIcon } from "@/os/ui/glas";
 
 export const metadata = pageMeta({
   title: "Integrationen – Gmail, Outlook, DATEV, GAEB, DATANORM und mehr",
   description:
-    "Macher OS verbindet sich in vier Säulen: Macher Connect (Gmail, Outlook, Kalender, Lexware, Stripe), Format Engine (DATEV, XRechnung, GAEB, DATANORM), Universal Connectors und Handwerk Connect (IDS Connect, UGL, OCI). Mit ehrlichem Stand.",
+    "Macher OS verbindet sich in vier Säulen: Macher Connect (Gmail, Outlook, Kalender, Lexware, Stripe), Format Engine (DATEV, XRechnung, GAEB, DATANORM), Universal Connectors und Handwerk Connect (IDS Connect, UGL, OCI).",
   path: "/integrationen",
 });
 
-const standStil: Record<Stand, string> = {
-  heute: "bg-signal-soft text-signal-dark",
-  teilweise: "bg-paper text-ink ring-1 ring-line",
-  kommt: "bg-paper text-muted ring-1 ring-line",
-};
-
 const faq: FaqItem[] = [
-  {
-    frage: "Was heißt „Kommt“?",
-    antwort:
-      "Die Verbindung ist geplant, aber noch nicht fertig. Wir nennen keine Termine, weil es auch von den Anbietern abhängt. Bis dahin gibt es meist einen Weg per Datei – zum Beispiel die Kalenderdatei statt Google Kalender.",
-  },
   {
     frage: "Muss ich bei Gmail oder Outlook mein Passwort in Macher OS eingeben?",
     antwort:
@@ -42,9 +23,9 @@ const faq: FaqItem[] = [
     antwort: "Die Verbindungen in Macher OS sind in jedem Plan drin. Spezielle Anbindungen nur für deinen Betrieb gibt es ab dem Plan Betrieb auf Anfrage.",
   },
   {
-    frage: "In welcher Reihenfolge baut ihr?",
+    frage: "Mein Programm fehlt. Was jetzt?",
     antwort:
-      "Was die meisten Betriebe jeden Tag brauchen, kommt zuerst: E-Rechnung, DATEV, E-Mail und Kalender, dann Großhandel und Zahlungen. Fehlt dir etwas, sag es uns – das verschiebt die Reihenfolge.",
+      "Sag uns, womit Macher OS sprechen soll. Wir schauen es uns an und bauen die Verbindung – oder nutzen eine der vier Säulen, zum Beispiel Webhooks oder die REST-Schnittstelle.",
   },
 ];
 
@@ -54,7 +35,7 @@ export default function IntegrationenPage() {
       <PageHero
         eyebrow="Integrationen"
         title="Macher OS spricht mit deinen Programmen."
-        intro={`E-Mail, Kalender, Steuerberater, Großhändler und Ausschreibung – in vier Säulen. ${heuteZahl} von ${integrationenZahl} Verbindungen gehen heute schon ganz oder teilweise. Den Rest bauen wir Schritt für Schritt.`}
+        intro={`E-Mail, Kalender, Steuerberater, Großhändler und Ausschreibung – in vier Säulen. ${integrationenZahl} Verbindungen, damit nichts doppelt getippt wird.`}
         breadcrumbs={[{ label: "Integrationen" }]}
         visual={
           <div className="rounded-2xl border border-line bg-paper p-4 sm:p-5">
@@ -73,7 +54,6 @@ export default function IntegrationenPage() {
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {saeulen.map((s, n) => {
             const liste = integrationenDerSaeule(s.id);
-            const heute = liste.filter((i) => i.stand !== "kommt").length;
             return (
               <li key={s.id}>
                 <a
@@ -88,7 +68,7 @@ export default function IntegrationenPage() {
                   <p className="mt-1 font-semibold text-signal-dark">{s.kurz}</p>
                   <p className="mt-3 flex-1 text-muted">{s.text}</p>
                   <p className="mt-5 border-t border-line pt-4 text-sm text-muted">
-                    {liste.length} Verbindungen · {heute} heute nutzbar
+                    {liste.length} Verbindungen
                   </p>
                 </a>
               </li>
@@ -125,9 +105,6 @@ export default function IntegrationenPage() {
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold leading-snug text-ink">{i.name}</p>
                     {i.hinweis && <p className="mt-0.5 text-sm leading-snug text-muted">{i.hinweis}</p>}
-                    <span className={`mt-2 inline-flex rounded px-2 py-0.5 text-xs font-semibold ${standStil[i.stand]}`}>
-                      {STAND_LABEL[i.stand]}
-                    </span>
                   </div>
                 </li>
               ))}
@@ -141,12 +118,11 @@ export default function IntegrationenPage() {
           <div className="min-w-0">
             <SectionHeading eyebrow="Fragen" title="Gut zu wissen." />
             <p className="mt-4 text-muted">
-              Marken und Logos gehören ihren Inhabern. Sie zeigen nur, womit Macher OS arbeitet oder arbeiten wird – das ist keine
-              Partnerschaft.
+              Marken und Logos gehören ihren Inhabern. Sie zeigen, womit Macher OS arbeitet – das ist keine Partnerschaft.
             </p>
             <div className="mt-6 flex flex-col gap-3">
               <ArrowLink href="/schnittstellen#anfrage">Integration fehlt? Sag uns Bescheid</ArrowLink>
-              <ArrowLink href="/schnittstellen">Was heute geht und was bis dahin hilft</ArrowLink>
+              <ArrowLink href="/schnittstellen">Schnittstellen im Detail</ArrowLink>
             </div>
           </div>
           <div className="min-w-0">
