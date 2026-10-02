@@ -202,16 +202,17 @@
   border-radius: var(--mm-radius-control); background: var(--mm-surface); color: var(--mm-text); cursor: grab; touch-action: none;
 }
 .mm-home-griff:hover { border-color: var(--mm-brand); color: var(--mm-brand-text); }
-.mm-home-griff:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
-.mm-home-groesse { display: inline-flex; background: var(--mm-switch-bg); border-radius: var(--mm-radius-control); padding: 2px; }
+.mm-home-griff:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
+/* Klein/Groß: heller Umschalter wie `.mm-segmente` */
+.mm-home-groesse { display: inline-flex; gap: 2px; background: var(--mm-switch-bg); border-radius: var(--mm-radius-control); padding: 2px; }
 .mm-home-groesse button {
-  min-height: 36px; padding: 0 12px; border: 0; border-radius: 3px; background: transparent; color: var(--mm-on-switch);
+  min-height: 40px; padding: 0 12px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--mm-on-switch);
   font: 600 14px/1 var(--mm-font); cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
 }
-.mm-home-groesse button:hover:not([aria-pressed='true']) { background: rgb(255 255 255 / 8%); }
-.mm-home-groesse button[aria-pressed='true'] { background: var(--mm-switch-active); }
-.mm-home-groesse button:focus-visible { outline: 2px solid var(--mm-focus-on-dark); outline-offset: -2px; }
-@media (pointer: coarse) { .mm-home-groesse button { min-height: 40px; } }
+.mm-home-groesse button:hover:not([aria-pressed='true']) { background: var(--mm-surface); }
+.mm-home-groesse button[aria-pressed='true'] { background: var(--mm-switch-active); border-color: var(--mm-switch-active-border); color: var(--mm-on-switch-active); }
+.mm-home-groesse button:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px; }
+@media (pointer: coarse) { .mm-home-groesse button { min-height: 44px; } }
 @media (max-width: 479px) { .mm-home-werkzeug { flex-wrap: wrap; } .mm-home-werkzeug-titel { flex-basis: calc(100% - 108px); } }
 .mm-home-vorschau { flex: 1; display: flex; flex-direction: column; padding: 0 8px 8px; }
 .mm-home-vorschau > .mm-home-widget { flex: 1; }

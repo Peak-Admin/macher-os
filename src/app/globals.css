@@ -176,13 +176,14 @@ body {
   color: var(--color-ink);
 }
 
-/* Keine automatische Silbentrennung in Überschriften. Nur ein Wort, das breiter ist als die Zeile
-   („Stundenverrechnungssatz“ bei 320 px), darf umbrechen. */
+/* Keine Silbentrennung in kurzen Wörtern. Nur lange Komposita (ab 12 Zeichen, z. B. „Baustellenabnahme“,
+   „Stundenverrechnungssatz“) dürfen auf schmalen Bildschirmen getrennt werden – sonst ragen sie über den Rand. */
 h1,
 h2,
 h3 {
   overflow-wrap: break-word;
-  hyphens: manual;
+  hyphens: auto;
+  hyphenate-limit-chars: 12 6 6;
   text-wrap: balance;
 }
 

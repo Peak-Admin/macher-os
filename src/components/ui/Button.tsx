@@ -45,7 +45,7 @@ export function ButtonLink({
   className?: string;
 }) {
   // Alle Varianten gleich hoch (mind. 48 px), damit Primär- und Zweitbutton nebeneinander bündig stehen.
-  const sizes = { sm: "min-h-11 px-4", md: "min-h-12 px-6", lg: "min-h-14 px-8" };
+  const sizes = { sm: "min-h-11 px-4", md: "min-h-12 px-5 sm:px-6", lg: "min-h-14 px-5 sm:px-8" };
   const primaer = variant === "primary" || variant === "onDark";
   // Primärbutton bringt Schriftgröße, Radius, Fläche und Übergänge selbst mit (btn-primaer).
   const schrift = primaer ? "" : { sm: "text-base font-semibold", md: "text-base font-semibold", lg: "text-lg font-semibold" }[size];
@@ -53,7 +53,7 @@ export function ButtonLink({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap ${form} ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
+      className={`inline-flex max-w-full items-center justify-center gap-2 text-center sm:whitespace-nowrap ${form} ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
     >
       {primaer ? <BtnPfeil>{children}</BtnPfeil> : children}
     </Link>

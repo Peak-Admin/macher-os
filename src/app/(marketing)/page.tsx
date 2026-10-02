@@ -388,13 +388,13 @@ export default function HomePage() {
       {/* 9. Einrichtung */}
       <Section>
         <div className="grid gap-12 lg:grid-cols-2">
-          <div>
+          <div className="min-w-0">
             <SectionHeading
               eyebrow="Einrichtung"
               title="Dein Betrieb ist schon vorbereitet."
               intro="Beim Start beantwortest du vier kurze Fragen. Den Rest richtet Macher OS für dich ein."
             />
-            <ol className="mt-8 grid grid-cols-2 gap-3">
+            <ol className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
               {["Gewerk", "Leistungen", "Arbeitsweise", "Teamgröße"].map((s, i) => (
                 <li key={s} className="flex items-center gap-3 rounded-xl bg-white p-4 ring-1 ring-line">
                   <span className="font-display text-sm font-extrabold text-signal-dark">{i + 1}</span>
@@ -403,9 +403,9 @@ export default function HomePage() {
               ))}
             </ol>
           </div>
-          <div className="rounded-2xl bg-ink p-8 text-white">
+          <div className="min-w-0 rounded-2xl bg-ink p-6 text-white sm:p-8">
             <p className="font-display text-xl font-bold">Macher OS richtet automatisch ein:</p>
-            <ul className="mt-5 grid grid-cols-2 gap-3">
+            <ul className="mt-5 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
               {["passende Funktionen", "Begriffe", "Vorlagen", "Abläufe", "Checklisten", "Schulungen"].map((x) => (
                 <li key={x} className="flex items-center gap-2">
                   <Icon name="check" className="size-4 text-accent" /> {x}

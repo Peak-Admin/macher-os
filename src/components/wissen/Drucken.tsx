@@ -8,7 +8,7 @@ export function DruckenButton({ label = "Kostenlos nutzen / Drucken", className 
     <button
       type="button"
       onClick={() => window.print()}
-      className={`inline-flex h-13 items-center justify-center gap-2 btn-primaer px-7 whitespace-nowrap ${className}`}
+      className={`inline-flex min-h-13 max-w-full items-center justify-center gap-2 btn-primaer px-5 text-center sm:px-7 sm:whitespace-nowrap ${className}`}
     >
       <Icon name="download" className="size-5" />
       {label}
