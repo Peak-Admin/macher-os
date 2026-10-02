@@ -187,6 +187,13 @@
 .mm-fortschritt-balken { height: 8px; border-radius: 4px; background: var(--mm-hover); overflow: hidden; }
 .mm-fortschritt-balken span { display: block; height: 100%; background: var(--mm-brand); transition: width var(--mm-motion-panel) ease-out; }
 .mm-avatar { display: inline-grid; place-items: center; flex-shrink: 0; border-radius: 50%; color: #fff; font-weight: 700; }
+.mm-avatar--foto { object-fit: cover; background: var(--mm-surface-subtle); }
+.mm-person { display: inline-flex; align-items: center; gap: 8px; min-width: 0; vertical-align: middle; }
+.mm-person-name { min-width: 0; overflow-wrap: anywhere; }
+.mm-personen { display: inline-flex; align-items: center; gap: 8px; min-width: 0; vertical-align: middle; }
+.mm-personen-bilder { display: inline-flex; flex-shrink: 0; }
+.mm-personen-bilder > * + * { margin-left: -6px; }
+.mm-personen-bilder > * { box-shadow: 0 0 0 2px var(--mm-surface); }
 .mm-beispiel { display: inline-block; padding: 0 6px; border: 1px dashed var(--mm-border-dark); border-radius: var(--mm-radius-control); font-size: 12px; line-height: 18px; color: var(--mm-text); }
 
 /* ---------- Listen & Tabellen */
