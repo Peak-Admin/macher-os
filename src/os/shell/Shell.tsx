@@ -18,7 +18,7 @@ import { oeffne } from '@core/overlay';
 import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { initialen, personName } from '@core/format';
-import { modulPfad } from '@core/modul';
+import { modul, modulPfad } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
 import { Avatar, Button, Icon, IconButton, Meldung } from '@ui/index';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
@@ -220,6 +220,11 @@ function Profil({ oben }: { oben?: boolean }) {
                   </>
                 )}
               </>
+            )}
+            {modul('konto') && (
+              <Link to="/macher/konto" onClick={() => setOffen(false)}>
+                <Icon name="schloss" /> Konto & Geräte
+              </Link>
             )}
             <label className="mm-profil-wechsel">
               <span className="mm-meta">Arbeiten als</span>

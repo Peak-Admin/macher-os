@@ -13,6 +13,7 @@ import { ladeModule } from './shell/module';
 import { starteAutomationen } from './core/macher';
 import { initDb, setAktuellerNutzer } from './core/db';
 import { ichId } from './core/session';
+import { starteCloud } from './core/cloud-supabase';
 import { App } from './shell/App';
 
 let start: Promise<void> | undefined;
@@ -21,6 +22,9 @@ function starte() {
   start ??= (async () => {
     await initDb();
     ladeModule();
+    // Backend nur mit Schlüsseln (NEXT_PUBLIC_SUPABASE_*): Supabase-Cloud + Messung an den Server.
+    // Ohne Schlüssel passiert nichts – die App bleibt lokal im Browser.
+    void starteCloud();
     setAktuellerNutzer(ichId());
     starteAutomationen();
   })();
