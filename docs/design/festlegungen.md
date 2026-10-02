@@ -20,6 +20,9 @@ Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon 
 - Software: Tokens `--mm-icon-tile` / `--mm-on-icon-tile`; Klassen `.mm-modulkachel-icon`, `.mm-modulzeile-icon`,
   `.mm-auswahlkarte-icon`, `.mm-leer-icon`
 
+- Sidebar (Software): Der aktive Hauptbereich zeigt sein Icon als Kachel (32 px, weißes Icon auf `#69AF44`)
+  und das Label fett – kein Zeilen-Hintergrund, kein Randstreifen. Inaktive Icons bleiben ohne Kachel in Textfarbe.
+
 Funktionale Icons (Pfeile, Schließen, Menü, Status) bleiben in Textfarbe ohne Kachel.
 
 ### Wechsler (Segmente)
