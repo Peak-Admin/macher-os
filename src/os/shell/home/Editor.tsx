@@ -47,7 +47,8 @@ function zielAn(x: number, y: number, ziehtId: string): Ziel | undefined | 'glei
 }
 
 function fokusAufGriff(id: string) {
-  requestAnimationFrame(() => document.querySelector<HTMLElement>(`[data-griff="${CSS.escape(id)}"]`)?.focus());
+  // ohne CSS.escape: fehlt in jsdom und ist für den Vergleich über dataset nicht nötig
+  requestAnimationFrame(() => [...document.querySelectorAll<HTMLElement>('[data-griff]')].find((el) => el.dataset.griff === id)?.focus());
 }
 
 export function HomeEditor({
