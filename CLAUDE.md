@@ -29,7 +29,7 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
 - **Farben:** ein Grün für alle Hauptaktionen: `#0d6b45` (Hover `#095436`, aktiv `#073f29`), helle Grünfläche `#e8f2ec`,
   dunkles Grün für Text/Links `#164c34`, Waldgrün `#102c21` für dunkle Markenflächen.
   Canvas `#f5f6f3`, Flächen `#ffffff`, ruhige Fläche `#eef1ed`, Text `#222c26`, Sekundärtext `#536057`,
-  Linien `#dce2dc`, Feldrahmen `#7a8780`. Status: Warnung `#765000` auf `#fff4d6`, Gefahr `#a02b24` auf `#fdeceb`,
+  Linien `#dce2dc` (Software seit Oktober 2026 in sanftem Beige: Canvas `#fbf9f5`, ruhige Fläche `#f5f2ec`, Linien `#e8e3da`), Feldrahmen `#7a8780`. Status: Warnung `#765000` auf `#fff4d6`, Gefahr `#a02b24` auf `#fdeceb`,
   Erfolg `#1f6040` auf `#e8f2ec`. Akzentgrün `#69af44` nur auf dunklen Flächen. Orange `#e69433` nur für Kampagnen.
   EU-Blau `#003399` (Token `eu` / `--mm-eu`) nur für den Vertrauenskasten (DSGVO, Server in Frankfurt, EU AI Act).
 - **Form:** Radien Controls 8 px, Karten/Panels 12 px, Menüs/Dialoge 16 px; flach, feine Schatten.

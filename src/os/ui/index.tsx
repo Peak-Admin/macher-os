@@ -12,6 +12,7 @@ import {
   useState,
   type ButtonHTMLAttributes,
   type InputHTMLAttributes,
+  type KeyboardEvent as TastenEreignis,
   type ReactNode,
   type SelectHTMLAttributes,
   type TextareaHTMLAttributes,
@@ -198,6 +199,16 @@ export function Eingabe({ label, hilfe, fehler, optional, className, ...rest }: 
   );
 }
 
+type AuswahlOption = { wert: string; label: string };
+
+/** Ab so vielen Einträgen bekommt die Liste ein Suchfeld */
+const AUSWAHL_SUCHE_AB = 9;
+
+/**
+ * Auswahlfeld im Macher-Design (statt Browser-Standard). Muster „Select-only Combobox“ (WAI-ARIA):
+ * Knopf öffnet eine Liste; Pfeiltasten, Pos1/Ende, Enter/Leertaste, Esc und Tippen springen zum Eintrag.
+ * Lange Listen bekommen ein Suchfeld. Die API bleibt wie beim `<select>`: `value` + `onChange(e => e.target.value)`.
+ */
 export function Auswahl({
   label,
   hilfe,
@@ -205,27 +216,232 @@ export function Auswahl({
   optional,
   optionen,
   leer,
-  ...rest
-}: SelectHTMLAttributes<HTMLSelectElement> & {
+  value,
+  defaultValue,
+  onChange,
+  disabled,
+  className,
+  name,
+}: Omit<SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> & {
   label: string;
   hilfe?: string;
   fehler?: string;
   optional?: boolean;
-  optionen: { wert: string; label: string }[];
+  optionen: AuswahlOption[];
   /** Text für „nichts gewählt“ */
   leer?: string;
+  onChange?: (e: { target: { value: string; name?: string }; currentTarget: { value: string; name?: string } }) => void;
 }) {
+  const [eigener, setEigener] = useState(() => (defaultValue == null ? '' : String(defaultValue)));
+  const aktuell = value === undefined ? eigener : value == null ? '' : String(value);
+  const [offen, setOffen] = useState(false);
+  const [aktiv, setAktiv] = useState(0);
+  const [suche, setSuche] = useState('');
+  const [lage, setLage] = useState<{ links: number; breite: number; oben?: number; unten?: number; hoehe: number }>();
+  const knopf = useRef<HTMLButtonElement>(null);
+  const liste = useRef<HTMLUListElement>(null);
+  const sucheRef = useRef<HTMLInputElement>(null);
+  const tippen = useRef({ text: '', zeit: 0 });
+  const listId = useId();
+
+  const alle: AuswahlOption[] = leer != null ? [{ wert: '', label: leer }, ...optionen] : optionen;
+  const mitSuche = optionen.length >= AUSWAHL_SUCHE_AB;
+  const sichtbar = suche ? alle.filter((o) => o.wert !== '' && o.label.toLowerCase().includes(suche.toLowerCase())) : alle;
+  const gewaehlt = alle.find((o) => o.wert === aktuell);
+  const optionId = (i: number) => `${listId}-o${i}`;
+
+  const platzieren = useCallback(() => {
+    const r = knopf.current?.getBoundingClientRect();
+    if (!r) return;
+    const rand = 8;
+    const breite = Math.min(Math.max(r.width, 320), window.innerWidth - 2 * rand);
+    const links = Math.max(rand, Math.min(r.left, window.innerWidth - breite - rand));
+    const unten = window.innerHeight - r.bottom - rand;
+    const oben = r.top - rand;
+    const nachOben = unten < 240 && oben > unten;
+    const hoehe = Math.min(360, Math.max(120, nachOben ? oben - 4 : unten - 4));
+    setLage(nachOben ? { links, breite, unten: window.innerHeight - r.top + 4, hoehe } : { links, breite, oben: r.bottom + 4, hoehe });
+  }, []);
+
+  const oeffnen = () => {
+    if (disabled) return;
+    const i = alle.findIndex((o) => o.wert === aktuell);
+    setSuche('');
+    setAktiv(i < 0 ? 0 : i);
+    platzieren();
+    setOffen(true);
+  };
+  const schliessen = (fokus = true) => {
+    setOffen(false);
+    if (fokus) knopf.current?.focus();
+  };
+  const waehlen = (o: AuswahlOption | undefined) => {
+    if (!o) return;
+    if (value === undefined) setEigener(o.wert);
+    if (o.wert !== aktuell) onChange?.({ target: { value: o.wert, name }, currentTarget: { value: o.wert, name } });
+    schliessen();
+  };
+
+  // Außerhalb klicken schließt; Scrollen/Größe ändern setzt die Liste neu an
+  useEffect(() => {
+    if (!offen) return;
+    const klick = (e: PointerEvent) => {
+      const z = e.target as Node;
+      if (!knopf.current?.contains(z) && !liste.current?.parentElement?.contains(z)) schliessen(false);
+    };
+    const neu = (e: Event) => {
+      if (liste.current?.parentElement?.contains(e.target as Node)) return;
+      platzieren();
+    };
+    document.addEventListener('pointerdown', klick);
+    window.addEventListener('resize', neu);
+    window.addEventListener('scroll', neu, true);
+    if (mitSuche) sucheRef.current?.focus();
+    return () => {
+      document.removeEventListener('pointerdown', klick);
+      window.removeEventListener('resize', neu);
+      window.removeEventListener('scroll', neu, true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offen]);
+
+  // aktiven Eintrag sichtbar halten
+  useEffect(() => {
+    if (offen) document.getElementById(optionId(aktiv))?.scrollIntoView({ block: 'nearest' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offen, aktiv, suche]);
+
+  const tasten = (e: TastenEreignis) => {
+    const imSuchfeld = e.currentTarget === sucheRef.current;
+    if (!offen) {
+      if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
+        e.preventDefault();
+        oeffnen();
+      }
+      return;
+    }
+    const n = sichtbar.length;
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setAktiv((a) => Math.min(n - 1, a + 1));
+        return;
+      case 'ArrowUp':
+        e.preventDefault();
+        setAktiv((a) => Math.max(0, a - 1));
+        return;
+      case 'Home':
+        if (imSuchfeld) return;
+        e.preventDefault();
+        setAktiv(0);
+        return;
+      case 'End':
+        if (imSuchfeld) return;
+        e.preventDefault();
+        setAktiv(n - 1);
+        return;
+      case 'PageDown':
+        e.preventDefault();
+        setAktiv((a) => Math.min(n - 1, a + 8));
+        return;
+      case 'PageUp':
+        e.preventDefault();
+        setAktiv((a) => Math.max(0, a - 8));
+        return;
+      case 'Enter':
+        e.preventDefault();
+        waehlen(sichtbar[aktiv]);
+        return;
+      case ' ':
+        if (imSuchfeld) return;
+        e.preventDefault();
+        waehlen(sichtbar[aktiv]);
+        return;
+      case 'Escape':
+        e.preventDefault();
+        e.stopPropagation();
+        schliessen();
+        return;
+      case 'Tab':
+        schliessen(false);
+        return;
+    }
+    // Tippen springt zum ersten passenden Eintrag (ohne Suchfeld)
+    if (!imSuchfeld && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const jetzt = Date.now();
+      const t = tippen.current;
+      t.text = jetzt - t.zeit > 700 ? e.key.toLowerCase() : t.text + e.key.toLowerCase();
+      t.zeit = jetzt;
+      const i = sichtbar.findIndex((o) => o.label.toLowerCase().startsWith(t.text));
+      if (i >= 0) setAktiv(i);
+    }
+  };
+
   return (
     <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>
       {(id, beschrieben) => (
-        <select id={id} className="mm-input mm-select" aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest}>
-          {leer != null && <option value="">{leer}</option>}
-          {optionen.map((o) => (
-            <option key={o.wert} value={o.wert}>
-              {o.label}
-            </option>
-          ))}
-        </select>
+        <div className={cx('mm-auswahl', offen && 'mm-auswahl--offen', className)}>
+          <button
+            ref={knopf}
+            id={id}
+            type="button"
+            role="combobox"
+            className="mm-input mm-auswahl-knopf"
+            aria-haspopup="listbox"
+            aria-expanded={offen}
+            aria-controls={offen ? listId : undefined}
+            aria-activedescendant={offen && !mitSuche && sichtbar[aktiv] ? optionId(aktiv) : undefined}
+            aria-invalid={!!fehler || undefined}
+            aria-describedby={beschrieben}
+            disabled={disabled}
+            onClick={() => (offen ? schliessen() : oeffnen())}
+            onKeyDown={tasten}
+          >
+            <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>{gewaehlt?.label ?? leer ?? 'Bitte wählen'}</span>
+            <Icon name="runter" size={20} />
+          </button>
+          {name && <input type="hidden" name={name} value={aktuell} />}
+          {offen && lage && (
+            <div
+              className="mm-auswahl-liste"
+              style={{ left: lage.links, width: lage.breite, top: lage.oben, bottom: lage.unten, maxHeight: lage.hoehe }}
+            >
+              {mitSuche && (
+                <div className="mm-auswahl-suche">
+                  <Icon name="suche" size={18} />
+                  <input
+                    ref={sucheRef}
+                    type="text"
+                    value={suche}
+                    placeholder="Suchen"
+                    aria-label={`${label}: Liste durchsuchen`}
+                    aria-controls={listId}
+                    aria-activedescendant={sichtbar[aktiv] ? optionId(aktiv) : undefined}
+                    onChange={(e) => (setSuche(e.target.value), setAktiv(0))}
+                    onKeyDown={tasten}
+                  />
+                </div>
+              )}
+              <ul ref={liste} id={listId} role="listbox" aria-label={label} tabIndex={-1}>
+                {sichtbar.map((o, i) => (
+                  <li
+                    key={o.wert || '__leer'}
+                    id={optionId(i)}
+                    role="option"
+                    aria-selected={o.wert === aktuell}
+                    className={cx('mm-auswahl-option', i === aktiv && 'mm-auswahl-option--aktiv', o.wert === '' && 'mm-auswahl-option--leer')}
+                    onPointerMove={() => i !== aktiv && setAktiv(i)}
+                    onClick={() => waehlen(o)}
+                  >
+                    <span>{o.label}</span>
+                    {o.wert === aktuell && <Icon name="check" size={18} />}
+                  </li>
+                ))}
+                {!sichtbar.length && <li className="mm-auswahl-nichts">Nichts gefunden</li>}
+              </ul>
+            </div>
+          )}
+        </div>
       )}
     </Feld>
   );

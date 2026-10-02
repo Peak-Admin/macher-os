@@ -24,7 +24,7 @@ import { useEinstellung } from '@core/einstellungen';
 import { initialen, personName } from '@core/format';
 import { alleModule, modul, modulPfad } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Avatar, Button, Icon, IconButton, Meldung } from '@ui/index';
+import { Auswahl, Avatar, Button, Icon, IconButton, Meldung } from '@ui/index';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
 import { BASIS } from '@core/basis';
@@ -286,16 +286,9 @@ function Profil({ oben }: { oben?: boolean }) {
                 <Icon name="chat" /> Rückmeldung geben
               </Link>
             )}
-            <label className="mm-profil-wechsel">
-              <span className="mm-meta">Arbeiten als</span>
-              <select value={ich.id} onChange={(e) => (setzeIch(e.target.value), setOffen(false))}>
-                {alle.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {personName(m)}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="mm-profil-wechsel">
+              <Auswahl label="Arbeiten als" value={ich.id} onChange={(e) => (setzeIch(e.target.value), setOffen(false))} optionen={alle.map((m) => ({ wert: m.id, label: personName(m) }))} />
+            </div>
           </div>
         </>
       )}
