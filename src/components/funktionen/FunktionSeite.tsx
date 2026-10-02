@@ -75,7 +75,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
       <Section tone="ink">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Automatisch erledigt</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Automatisch erledigt</p>
             <h2 className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl">
               Das übernimmt Macher für dich.
             </h2>
@@ -84,7 +84,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
             </p>
             <Link
               href="/funktionen/automatisch-erledigen"
-              className="mt-8 inline-flex items-center gap-1.5 font-bold text-signal underline decoration-2 underline-offset-4 hover:text-white"
+              className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
               Alles, was Macher erledigt <Icon name="arrow-right" className="size-4" />
             </Link>
@@ -92,7 +92,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
           <ul className="grid content-start gap-3 sm:grid-cols-2">
             {f.automatisch.map((a) => (
               <li key={a} className="flex items-start gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10">
-                <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-signal/15 text-signal">
+                <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
                   <Icon name="spark" className="size-4" />
                 </span>
                 <span className="font-semibold leading-snug">Macher {a}</span>

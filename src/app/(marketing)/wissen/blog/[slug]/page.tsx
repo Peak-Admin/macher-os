@@ -93,7 +93,7 @@ export default async function BlogArtikelPage({ params }: Props) {
       <Container className="py-12 sm:py-16">
         <div className="grid gap-12 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[17rem_minmax(0,48rem)]">
           {/* 3. Inhaltsverzeichnis */}
-          <aside className="lg:sticky lg:top-24 lg:self-start">
+          <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
             <nav aria-label="Inhaltsverzeichnis" className="rounded-lg border border-line bg-white p-5">
               <p className="font-display font-bold">Inhalt</p>
               <ol className="mt-3 grid gap-2 text-sm">
@@ -116,7 +116,7 @@ export default async function BlogArtikelPage({ params }: Props) {
           </aside>
 
           {/* 4. Hauptinhalt inkl. 5. Beispiele */}
-          <article>
+          <article className="min-w-0">
             <BlogBlocks blocks={a.inhalt} />
 
             {/* 6. Checkliste */}

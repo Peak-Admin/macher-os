@@ -17,7 +17,7 @@ export function FunktionsHandy({ handy, label }: { handy: HandyVisual; label: st
           <span>100%</span>
         </div>
         <div className="space-y-3 p-4">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-muted">{handy.kopf}</p>
+          <p className="text-[0.7rem] font-semibold font-tagline uppercase tracking-wider text-muted">{handy.kopf}</p>
           <div className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-line">
             <p className="font-display text-base font-bold leading-tight">{handy.titel}</p>
             <p className="mt-1 text-xs text-muted">{handy.sub}</p>

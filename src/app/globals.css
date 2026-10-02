@@ -56,6 +56,14 @@ body {
   color: var(--color-ink);
 }
 
+/* Lange deutsche Komposita („Stundenverrechnungssatz“) dürfen auf schmalen Bildschirmen umbrechen. */
+h1,
+h2,
+h3 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
 ::selection {
   background: var(--color-signal);
   color: #fff;

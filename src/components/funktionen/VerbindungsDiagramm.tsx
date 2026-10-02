@@ -51,7 +51,7 @@ export function VerbindungsDiagramm() {
       </svg>
 
       <div className="absolute left-1/2 top-1/2 z-10 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-lg bg-ink px-4 py-3 text-center text-white shadow-xl shadow-ink/20 sm:px-6 sm:py-4">
-        <Icon name="clipboard" className="size-5 text-signal sm:size-6" />
+        <Icon name="clipboard" className="size-5 text-accent sm:size-6" />
         <span className="mt-1 font-display text-base font-extrabold sm:text-xl">Auftrag</span>
         <span className="text-[0.65rem] text-white/70 sm:text-xs">Bad sanieren</span>
       </div>

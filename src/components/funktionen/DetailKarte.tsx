@@ -9,7 +9,7 @@ export function DetailKarte({ detail, label }: { detail: DetailVisual; label: st
       <div aria-hidden className="absolute -inset-3 -z-10 rotate-2 rounded-xl bg-sand" />
       <div className="overflow-hidden rounded-lg border border-ink/10 bg-white shadow-xl shadow-ink/10">
         <div className="flex items-center justify-between gap-3 border-b border-line bg-paper px-5 py-3">
-          <span className="text-[0.7rem] font-semibold uppercase tracking-wider text-muted">{detail.kopf}</span>
+          <span className="text-[0.7rem] font-semibold font-tagline uppercase tracking-wider text-muted">{detail.kopf}</span>
           {detail.status && (
             <span className={`rounded-md px-2.5 py-0.5 text-xs font-semibold ${tonEtikett[detail.status.ton]}`}>
               {detail.status.text}

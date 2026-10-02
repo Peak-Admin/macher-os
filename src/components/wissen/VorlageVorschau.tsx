@@ -164,12 +164,12 @@ export function VorlageVorschau({ vorlage }: { vorlage: Vorlage }) {
       aria-label={`Vorschau: ${vorlage.titel}`}
       className="mx-auto max-w-[52rem] print:max-w-none rounded-lg border border-line bg-white p-6 text-ink shadow-xl shadow-ink/5 sm:p-10"
     >
-      <header className="flex items-start justify-between gap-6 border-b-2 border-ink pb-4">
-        <div>
+      <header className="flex items-start justify-between gap-4 border-b-2 border-ink pb-4 sm:gap-6">
+        <div className="min-w-0">
           <p className="text-xs font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">{vorlage.art}</p>
-          <h2 className="mt-1 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{vorlage.titel}</h2>
+          <h2 className="mt-1 font-display text-2xl font-extrabold tracking-tight break-words hyphens-auto sm:text-3xl">{vorlage.titel}</h2>
         </div>
-        <div className="w-40 shrink-0 text-right text-xs text-muted">
+        <div className="w-24 shrink-0 text-right text-xs text-muted sm:w-40">
           <div className="h-10 rounded-md border border-dashed border-line print:border-ink/30" />
           <p className="mt-1">Firmenstempel / Logo</p>
         </div>

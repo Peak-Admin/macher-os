@@ -73,17 +73,17 @@ export function AutomatischSeite() {
               </div>
               <div className="grid md:grid-cols-[1fr_1fr_0.8fr]">
                 <div className="border-b border-line p-5 sm:p-6 md:border-b-0 md:border-r">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">Vorher</p>
+                  <p className="mb-2 text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Vorher</p>
                   <p className="leading-relaxed text-ink-soft">{a.vorher}</p>
                 </div>
                 <div className="border-b border-line bg-moss-soft/60 p-5 sm:p-6 md:border-b-0 md:border-r">
-                  <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-moss">
+                  <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold font-tagline uppercase tracking-wider text-moss">
                     <Icon name="spark" className="size-3.5" /> Mit Macher
                   </p>
                   <p className="font-semibold leading-relaxed">{a.nachher}</p>
                 </div>
                 <div className="p-5 sm:p-6">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">Du entscheidest</p>
+                  <p className="mb-2 text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Du entscheidest</p>
                   <p className="leading-relaxed text-ink-soft">{a.duEntscheidest}</p>
                 </div>
               </div>
@@ -96,7 +96,7 @@ export function AutomatischSeite() {
       <Section tone="ink">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Ein Tag mit Macher</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Ein Tag mit Macher</p>
             <h2 className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl">
               Dienstag in einem Elektrobetrieb.
             </h2>
@@ -108,7 +108,7 @@ export function AutomatischSeite() {
             {f.tagesablauf.map((t) => (
               <li key={t.zeit} className="relative">
                 <span aria-hidden className="absolute -left-[1.85rem] top-1.5 size-3 rounded-full bg-signal ring-4 ring-ink" />
-                <p className="font-display text-sm font-extrabold text-signal">{t.zeit}</p>
+                <p className="font-display text-sm font-extrabold text-accent">{t.zeit}</p>
                 <p className="mt-0.5 leading-relaxed text-white/85">{t.text}</p>
               </li>
             ))}

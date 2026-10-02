@@ -211,7 +211,7 @@ export default function FunktionenPage() {
       <Section tone="ink" id="macher" className="scroll-mt-16">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
               {funktionGruppen.macher.titel}
             </p>
             <h2 className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl">
@@ -220,7 +220,7 @@ export default function FunktionenPage() {
             <p className="mt-5 max-w-md text-lg text-white/70">{funktionGruppen.macher.beschreibung}</p>
             <Link
               href={funktionHref("automatisch-erledigen")}
-              className="mt-8 inline-flex items-center gap-1.5 font-bold text-signal underline decoration-2 underline-offset-4 hover:text-white"
+              className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
               Was Macher automatisch erledigt <Icon name="arrow-right" className="size-4" />
             </Link>
@@ -232,7 +232,7 @@ export default function FunktionenPage() {
                   href={funktionHref(a.funktion)}
                   className="flex items-center gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10 transition hover:bg-white/10"
                 >
-                  <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-signal/15 text-signal">
+                  <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
                     <Icon name={a.icon} className="size-5" />
                   </span>
                   <span className="font-semibold leading-snug">{a.titel}</span>

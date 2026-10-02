@@ -59,7 +59,7 @@ export function FunktionsMock({ visual, label }: { visual: FunktionsVisual; labe
 
           <div className="rounded-xl border border-line bg-white">
             {visual.liste.ueberschrift && (
-              <p className="border-b border-line px-3 py-2 text-[0.65rem] font-semibold uppercase tracking-wider text-muted">
+              <p className="border-b border-line px-3 py-2 text-[0.65rem] font-semibold font-tagline uppercase tracking-wider text-muted">
                 {visual.liste.ueberschrift}
               </p>
             )}
