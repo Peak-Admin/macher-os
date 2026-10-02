@@ -10,6 +10,7 @@ import { heute, plusTage, summen, zeitpunkt } from './format';
 import type { Arbeitsweise, Betrieb, Gewerk, ID, Mitarbeiter, Position, Rolle } from './objects';
 import { setzeIch } from './session';
 import { betriebsSchluessel } from './betriebe';
+import { projektPraefix } from './projektnummer';
 
 export interface OnboardingAntworten {
   betriebName: string;
@@ -395,7 +396,7 @@ function beispielDaten(chef: Mitarbeiter, qualiIds: ID[], artikelIds: ID[]) {
       leistungId: l.id,
     }));
 
-  const nr = (i: number) => `A-${new Date().getFullYear()}-${String(i).padStart(4, '0')}`;
+  const nr = (i: number) => `${projektPraefix()}-${String(i).padStart(3, '0')}`;
   const auftrag = (i: number, x: Partial<Parameters<typeof db.auftraege.create>[0]>) =>
     db.auftraege.create({
       nummer: nr(i),

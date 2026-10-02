@@ -8,6 +8,7 @@
  * Mensch bestätigt.
  */
 import { db } from '@core/db';
+import { AUFTRAGSNUMMER_IM_TEXT } from '@core/projektnummer';
 import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uhrzeit, datumVon, plusTage, wochenStart, tageZwischen } from '@core/format';
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
@@ -402,7 +403,7 @@ export function aufgabeAusText(frage: string, heute: Datum): AufgabeEntwurf {
     rest = rest.replace(/\bfür\s+\S+(\s+\S+)?\s+an\b/i, '').replace(/\bfür\s+\S+/i, '').replace(/\ban\b\s*$/i, '');
   }
   const titel = gross(rest.replace(/^[\s,:-]+|[\s,.!?]+$/g, '').replace(/\s+/g, ' '));
-  const nr = frage.match(/\bA-\d{4}-\d{3,4}\b/i);
+  const nr = frage.match(AUFTRAGSNUMMER_IM_TEXT);
   const auftrag = nr ? db.auftraege.where((a) => a.nummer.toLowerCase() === nr[0].toLowerCase())[0] : undefined;
   return { titel, zustaendigId: m?.id, faellig, auftragId: auftrag?.id };
 }

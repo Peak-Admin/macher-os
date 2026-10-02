@@ -3,6 +3,8 @@
  * Wird vom Server (`src/app/api/eingang/email/route.ts`) und von der App (Anzeige der Adresse) genutzt.
  */
 
+import { projektNummerFuer } from '../core/projektnummer';
+
 export const POSTFACH_DOMAIN = 'macher-os.de';
 
 /** „Müller Elektro GmbH & Co. KG“ → „mueller-elektro“ */
@@ -181,15 +183,9 @@ export function offeneAnfrageFinden(auftraege: AuftragZeile[], kundeId: string, 
     .find((a) => !b || (a.titel ?? '').toLowerCase().includes(b) || b.includes((a.titel ?? '').toLowerCase()));
 }
 
-/** Nächste Auftragsnummer A-<Jahr>-<lfd> (wie `naechsteNummer('auftrag')` in der App) */
-export function naechsteAuftragsnummer(nummern: (string | undefined)[], jahr = new Date().getFullYear()): string {
-  const start = `A-${jahr}-`;
-  const max = nummern
-    .filter((n): n is string => !!n?.startsWith(start))
-    .map((n) => Number(n.slice(start.length)))
-    .filter(Number.isFinite)
-    .reduce((m, n) => Math.max(m, n), 0);
-  return `${start}${String(max + 1).padStart(4, '0')}`;
+/** Nächste Projektnummer YYMM-XXX (wie `naechsteNummer('auftrag')` in der App) */
+export function naechsteAuftragsnummer(nummern: (string | undefined)[], jetzt: Date = new Date()): string {
+  return projektNummerFuer(nummern, jetzt);
 }
 
 export function titelAus(mail: Pick<EingehendeMail, 'betreff' | 'text'>): string {
@@ -244,7 +240,7 @@ export function anfragePlanen(
       id,
       daten: {
         ...basis(id),
-        nummer: naechsteAuftragsnummer(bestand.auftraege.map((a) => a.nummer), neu.jetzt.getFullYear()),
+        nummer: naechsteAuftragsnummer(bestand.auftraege.map((a) => a.nummer), neu.jetzt),
         titel: titelAus(mail),
         art: 'kundendienst',
         phase: 'anfrage',
