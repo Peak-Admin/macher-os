@@ -49,8 +49,8 @@ Unterpunkte, keine zweite Ebene unter den Bereichen. Die Zielstruktur steht in [
   Favoriten (`STANDARD_FAVORITEN`), bis der Nutzer sie selbst ändert.
 - **Mobil:** Die untere Leiste bleibt bei den vier Bereichen. Favoriten stehen im Profilmenü (oben rechts).
 
-- Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis in `os/src/shell/Betrieb.tsx`,
-  Daten über `modulVerzeichnis()` (`struktur.ts`) und `useFavoriten()` (`os/src/shell/favoriten.ts`).
+- Software: `Favoriten` in `src/os/shell/Shell.tsx`, Verzeichnis in `src/os/shell/Betrieb.tsx`,
+  Daten über `modulVerzeichnis()` (`struktur.ts`) und `useFavoriten()` (`src/os/shell/favoriten.ts`).
 
 ## Orientierungsbeispiele von Mission Mittelstand
 
