@@ -150,8 +150,8 @@ describe('Macher fragen über den Gateway', () => {
     const v = antwort.vorschlaege![0];
     if (v.art !== 'aufgabe') throw new Error('falscher Vorschlag');
     expect(kiProtokoll.all()[0].ergebnis).toBe('vorgeschlagen');
-    expect(fuehreAus({ aktion: 'task.create', daten: v.entwurf }, kontext())).toMatchObject({ ok: false, grund: 'bestaetigung' });
-    const r = fuehreAus({ aktion: 'task.create', daten: v.entwurf }, kontext(), { bestaetigt: true });
+    expect(await fuehreAus({ aktion: 'task.create', daten: v.entwurf }, kontext())).toMatchObject({ ok: false, grund: 'bestaetigung' });
+    const r = await fuehreAus({ aktion: 'task.create', daten: v.entwurf }, kontext(), { bestaetigt: true });
     expect(r.ok).toBe(true);
     expect(db.aufgaben.all()).toHaveLength(1);
   });

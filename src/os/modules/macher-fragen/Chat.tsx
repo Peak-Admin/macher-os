@@ -4,10 +4,10 @@ import { db } from '@core/db';
 import { heute } from '@core/format';
 import { pfadZu } from '@core/modul';
 import { darf, useIch } from '@core/session';
-import { Button, Eingabe, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useToast } from '@ui/index';
+import { Button, Checkbox, Eingabe, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useToast } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
-import { fuehreAus } from '@core/gateway';
-import { BEISPIELFRAGEN, fragen as gatewayFragen, type Antwort, type AufgabeEntwurf, type Vorschlag } from './assistent';
+import { fuehreAus, fuehrePlanAus, planRisiko, pruefePlan, type GatewayKontext } from '@core/gateway';
+import { BEISPIELFRAGEN, fragen as gatewayFragen, type Antwort, type AufgabeEntwurf, type PlanSchrittStand, type Vorschlag } from './assistent';
 import { chat, type ChatEintrag } from './daten';
 import './macher.css';
 
@@ -137,7 +137,9 @@ function AntwortAnsicht({ eintrag, a, fragen, onNavigiert }: { eintrag: ChatEint
           ))}
         </Liste>
       )}
-      {a.vorschlaege?.map((v) => (v.art === 'aufgabe' ? <AufgabeVorschlag key={v.id} eintrag={eintrag} v={v} /> : null))}
+      {a.vorschlaege?.map((v) =>
+        v.art === 'aufgabe' ? <AufgabeVorschlag key={v.id} eintrag={eintrag} v={v} /> : v.art === 'plan' ? <PlanVorschlag key={v.id} eintrag={eintrag} v={v} onNavigiert={onNavigiert} /> : null,
+      )}
       {(a.vorschlaege?.some((v) => v.art === 'oeffnen') || !!a.folgefragen?.length) && (
         <Zeile>
           {a.vorschlaege?.map((v) =>
@@ -197,9 +199,9 @@ function AufgabeVorschlag({ eintrag, v }: { eintrag: ChatEintrag; v: Extract<Vor
       </Karte>
     );
 
-  const anlegen = () => {
+  const anlegen = async () => {
     // Der Mensch hat „Aufgabe anlegen“ gedrückt – erst jetzt führt der Gateway aus und protokolliert.
-    const r = fuehreAus<AufgabeEntwurf>(
+    const r = await fuehreAus<AufgabeEntwurf>(
       { aktion: 'task.create', absicht: 'task.create', daten: e },
       { heute: heute(), jetzt: new Date(), ich, darf: (x) => darf(x, ich) },
       { bestaetigt: true },
@@ -234,6 +236,119 @@ function AufgabeVorschlag({ eintrag, v }: { eintrag: ChatEintrag; v: Extract<Vor
           </Button>
         </Zeile>
       </div>
+    </Karte>
+  );
+}
+
+const kontextFuer = (ich: ReturnType<typeof useIch>): GatewayKontext => ({ heute: heute(), jetzt: new Date(), ich, darf: (x) => darf(x, ich) });
+
+/**
+ * Eine oder mehrere Aktionen als Vorschau. Der Mensch wählt ab, was nicht passieren soll, und bestätigt einmal.
+ * Jeder Schritt läuft einzeln durch Rechte, Prüfung und Protokoll im Gateway.
+ */
+function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: Extract<Vorschlag, { art: 'plan' }>; onNavigiert?: () => void }) {
+  const toast = useToast();
+  const navigate = useNavigate();
+  const ich = useIch();
+  const pruefung = pruefePlan(v.plan, kontextFuer(ich));
+  const erlaubt = (id: string) => !!pruefung.find((p) => p.id === id)?.erlaubt;
+  const [auswahl, setAuswahl] = useState(() => v.plan.schritte.filter((s) => s.an !== false && erlaubt(s.id)).map((s) => s.id));
+  const [laeuft, setLaeuft] = useState(false);
+
+  const setzeStatus = (patch: Partial<typeof v>) => {
+    const antwort = eintrag.antwort!;
+    chat.update(eintrag.id, { antwort: { ...antwort, vorschlaege: antwort.vorschlaege?.map((x) => (x.id === v.id ? ({ ...x, ...patch } as Vorschlag) : x)) } }, { leise: true });
+  };
+
+  if (v.status === 'verworfen')
+    return (
+      <Karte kompakt oberzeile="Entwurf verworfen">
+        <Meta>Es wurde nichts ausgeführt.</Meta>
+      </Karte>
+    );
+
+  if (v.status === 'ausgefuehrt') return <PlanErgebnis titel={v.plan.titel} ergebnisse={v.ergebnisse ?? []} gehe={(p) => (onNavigiert?.(), navigate(p))} />;
+
+  const gewaehlt = auswahl.filter(erlaubt);
+  const kritisch = planRisiko(pruefung, gewaehlt) === 'kritisch';
+  const einzeln = v.plan.schritte.length === 1;
+  const knopf = einzeln ? 'Ausführen' : gewaehlt.length === pruefung.filter((p) => p.erlaubt).length ? 'Alles ausführen' : `${gewaehlt.length} ${gewaehlt.length === 1 ? 'Schritt' : 'Schritte'} ausführen`;
+
+  const ausfuehren = async () => {
+    setLaeuft(true);
+    try {
+      const r = await fuehrePlanAus(v.plan, kontextFuer(ich), { bestaetigt: true, auswahl: gewaehlt });
+      const ergebnisse: PlanSchrittStand[] = r.map((x) =>
+        x.status === 'uebersprungen' ? { id: x.id, label: x.label, status: x.status } : { id: x.id, label: x.label, status: x.status, text: x.ergebnis.text, bezug: x.ergebnis.ok ? x.ergebnis.bezug : undefined },
+      );
+      setzeStatus({ status: 'ausgefuehrt', ergebnisse });
+      const fehler = ergebnisse.filter((x) => x.status === 'fehler').length;
+      toast(fehler ? `${fehler === 1 ? 'Ein Schritt hat' : `${fehler} Schritte haben`} nicht geklappt. Details stehen im Verlauf.` : 'Erledigt.', fehler ? { ton: 'achtung' } : undefined);
+    } finally {
+      setLaeuft(false);
+    }
+  };
+
+  return (
+    <Karte kompakt oberzeile="Entwurf – noch nicht ausgeführt" titel={v.plan.titel}>
+      <div className="mm-stapel" style={{ gap: 12 }}>
+        {v.plan.schritte.map((s) => {
+          const p = pruefung.find((x) => x.id === s.id);
+          const geht = !!p?.erlaubt;
+          return (
+            <div key={s.id} className="mm-stapel" style={{ gap: 4 }}>
+              {einzeln ? (
+                <strong>{s.label}</strong>
+              ) : (
+                <Checkbox
+                  label={s.label}
+                  checked={geht && auswahl.includes(s.id)}
+                  disabled={!geht || laeuft}
+                  onChange={(an) => setAuswahl((alt) => (an ? [...alt, s.id] : alt.filter((x) => x !== s.id)))}
+                />
+              )}
+              {geht && p?.risiko === 'kritisch' && (
+                <span>
+                  <Status ton="achtung">Geht an den Kunden</Status>
+                </span>
+              )}
+              {!geht && <Meta>Nicht möglich: {p?.grund}</Meta>}
+            </div>
+          );
+        })}
+        {kritisch && <Meta>Mindestens ein Schritt geht nach außen. Prüf ihn, bevor du bestätigst.</Meta>}
+        <Zeile>
+          <Button icon="check" onClick={ausfuehren} laedt={laeuft} disabled={!gewaehlt.length}>
+            {knopf}
+          </Button>
+          <Button variante="tertiaer" onClick={() => setzeStatus({ status: 'verworfen' })} disabled={laeuft}>
+            Verwerfen
+          </Button>
+        </Zeile>
+      </div>
+    </Karte>
+  );
+}
+
+function PlanErgebnis({ titel, ergebnisse, gehe }: { titel: string; ergebnisse: PlanSchrittStand[]; gehe: (pfad: string) => void }) {
+  return (
+    <Karte kompakt oberzeile="Ausgeführt" titel={titel}>
+      <Liste>
+        {ergebnisse.map((e) => {
+          const pfad = e.bezug ? pfadZu(e.bezug) : undefined;
+          return (
+            <ListenZeile
+              key={e.id}
+              titel={e.label}
+              untertitel={e.text}
+              rechts={
+                e.status === 'ausgefuehrt' ? <Status ton="erfolg">Erledigt</Status> : e.status === 'fehler' ? <Status ton="achtung">Nicht ausgeführt</Status> : <Status ton="neutral">Übersprungen</Status>
+              }
+              onClick={pfad ? () => gehe(pfad) : undefined}
+            />
+          );
+        })}
+      </Liste>
     </Karte>
   );
 }

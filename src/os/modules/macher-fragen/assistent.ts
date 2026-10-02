@@ -11,8 +11,8 @@ import { db } from '@core/db';
 import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uhrzeit, datumVon, plusTage, wochenStart, tageZwischen } from '@core/format';
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
-import type { Datum, ID, Kunde, Mitarbeiter, Rechnung, Termin } from '@core/objects';
-import { frage as gatewayFrage, type AbsichtDef, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal } from '@core/gateway';
+import type { Angebot, Auftrag, Bezug, Datum, ID, Kunde, Mitarbeiter, Phase, Rechnung, Termin } from '@core/objects';
+import { aktionDef, frage as gatewayFrage, type AbsichtDef, type Plan, type PlanSchritt, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal } from '@core/gateway';
 import { zeitraumAus, type Zeitraum } from './zeit';
 import { abwesenheitAm, anwesenheit, arbeitstagIm, geplanteStunden, kontextAusDb as planKontextAusDb, verfuegbareStunden } from '../verfuegbarkeit/daten';
 
@@ -35,8 +35,19 @@ export interface AufgabeEntwurf {
   auftragId?: ID;
 }
 
+/** Ergebnis eines Planschritts, wie es im Verlauf stehen bleibt */
+export interface PlanSchrittStand {
+  id: string;
+  label: string;
+  status: 'ausgefuehrt' | 'fehler' | 'uebersprungen';
+  text?: string;
+  bezug?: Bezug;
+}
+
 export type Vorschlag =
   | { id: string; art: 'aufgabe'; label: string; entwurf: AufgabeEntwurf; status: 'entwurf' | 'ausgefuehrt' | 'verworfen'; ergebnisId?: ID }
+  /** eine oder mehrere strukturierte Aktionen – erst nach Bestätigung über den Gateway ausgeführt */
+  | { id: string; art: 'plan'; label: string; plan: Plan; status: 'entwurf' | 'ausgefuehrt' | 'verworfen'; ergebnisse?: PlanSchrittStand[] }
   | { id: string; art: 'oeffnen'; label: string; pfad: string };
 
 export interface Antwort {
@@ -59,6 +70,7 @@ export const BEISPIELFRAGEN = [
   'Wer hat nächste Woche Zeit?',
   'Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag',
   'Was braucht mich gerade?',
+  'Der Auftrag von Familie Hoffmann ist fertig',
 ];
 
 // ------------------------------------------------------------------ Hilfen
@@ -481,6 +493,161 @@ function suchen(k: Kontext, frage: string): Antwort {
   };
 }
 
+// ------------------------------------------------------------------ Aktionen vorbereiten (Pläne)
+
+const LAUFEND: Phase[] = ['in_arbeit', 'beauftragt', 'abnahme', 'abrechnung'];
+
+/** Auftrag aus Auftragsnummer oder Kundenname – bevorzugt in der Reihenfolge von `phasen`, dann zuletzt geändert */
+export function findeAuftrag(text: string, phasen: Phase[] = LAUFEND): Auftrag | undefined {
+  const nr = text.match(/\bA-\d{4}-\d{3,4}\b/i);
+  if (nr) return db.auftraege.where((a) => a.nummer.toLowerCase() === nr[0].toLowerCase())[0];
+  const kunde = findeKunde(text);
+  if (!kunde) return undefined;
+  return db.auftraege
+    .where((a) => a.kundeId === kunde.id && phasen.includes(a.phase))
+    .sort((a, b) => phasen.indexOf(a.phase) - phasen.indexOf(b.phase) || b.geaendertAm.localeCompare(a.geaendertAm))[0];
+}
+
+const ZAHLWORT: Record<string, number> = { ein: 1, eine: 1, einer: 1, zwei: 2, drei: 3, vier: 4, fünf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9, zehn: 10, anderthalb: 1.5, eineinhalb: 1.5 };
+
+/** „zwei Stunden“, „1,5 Std.“, „eine halbe Stunde“, „45 Minuten“ → Minuten */
+export function dauerAus(text: string): number | undefined {
+  const t = klein(text);
+  if (/\bhalbe?n?\s+stunde\b/.test(t)) return 30;
+  const std = t.match(/(\d+(?:[.,]\d+)?|ein|eine|einer|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|anderthalb|eineinhalb)\s*(stunden?|std\.?|h)(?=\s|$|[.,!?])/);
+  if (std) {
+    const n = ZAHLWORT[std[1]] ?? Number(std[1].replace(',', '.'));
+    return n > 0 ? Math.round(n * 60) : undefined;
+  }
+  const min = t.match(/(\d+)\s*(minuten|min\.?)(?=\s|$|[.,!?])/);
+  return min ? Number(min[1]) : undefined;
+}
+
+/** „… zwei Stunden Nacharbeit auf das Projekt“ → „Nacharbeit“ */
+function taetigkeitAus(text: string): string | undefined {
+  const m = text.match(/(?:stunden?|std\.?|minuten|min\.?)\s+(.+?)(?:\s+(?:auf|für|bei|beim|zum|zur|im|ins|in)\b.*)?[\s.!?]*$/i);
+  const w = m?.[1]?.trim();
+  return w && !/^(auf|für|bei|noch|bitte|drauf)$/i.test(w) ? gross(w) : undefined;
+}
+
+const sid = (n: number) => `s${n}`;
+
+/** Nur Schritte, deren Aktion ein Modul anbietet – keine toten Knöpfe */
+function schritte(liste: Omit<PlanSchritt, 'id'>[]): PlanSchritt[] {
+  return liste.filter((s) => !!aktionDef(s.aktion)).map((s, i) => ({ ...s, id: sid(i + 1) }));
+}
+
+function planAntwort(absicht: string, text: string, plan: Plan, grundlage: string): Antwort {
+  if (!plan.schritte.length) return { absicht: 'aktion-fehlt', text: 'Das kann Macher in deinem Betrieb noch nicht ausführen.' };
+  return {
+    absicht,
+    text,
+    vorschlaege: [{ id: vid(), art: 'plan', label: plan.titel, plan, status: 'entwurf' }],
+    grundlage,
+  };
+}
+
+/** „Der Müller-Auftrag ist fertig.“ → Arbeiten fertig melden, Rechnung vorbereiten, Plan freigeben, Bewertung anfragen */
+function auftragFertig(k: Kontext, frage: string): Antwort {
+  const a = findeAuftrag(frage);
+  if (!a)
+    return {
+      absicht: 'auftrag-unklar',
+      text: 'Welcher Auftrag ist fertig? Nenn mir den Kunden oder die Auftragsnummer, z. B. „Der Auftrag von Familie Hoffmann ist fertig“.',
+    };
+  const kunde = db.kunden.get(a.kundeId);
+  const daten = { auftragId: a.id };
+  const plan: Plan = {
+    titel: `Auftrag ${a.nummer} abschließen`,
+    schritte: schritte([
+      { aktion: 'job.complete', absicht: 'job.finish', daten, label: 'Arbeiten als fertig melden (weiter zur Abnahme)' },
+      ...(k.darf('geld') ? [{ aktion: 'invoice.create_draft', absicht: 'job.finish', daten, label: 'Rechnung vorbereiten (nur Entwurf)' }] : []),
+      { aktion: 'job.release_plan', absicht: 'job.finish', daten, label: 'Weitere Einsätze aus dem Plan nehmen' },
+      { aktion: 'review.request', absicht: 'job.finish', daten, label: 'Bewertung beim Kunden anfragen' },
+    ]),
+  };
+  return planAntwort(
+    'auftrag-fertig',
+    `${a.titel} bei ${kunde?.name ?? 'Kunde'}: Ich habe vorbereitet, was jetzt ansteht. Wähl aus, was passieren soll – erst nach deiner Bestätigung führt Macher es aus.`,
+    plan,
+    `Auftrag ${a.nummer}, Phase „${PHASE_LABEL[a.phase] ?? a.phase}“ · ${stand(k)}`,
+  );
+}
+
+const PHASE_LABEL: Partial<Record<Phase, string>> = { beauftragt: 'Beauftragt', in_arbeit: 'In Arbeit', abnahme: 'Abnahme', abrechnung: 'Abrechnung' };
+
+/** „Schreib bei Müller noch zwei Stunden Nacharbeit auf das Projekt.“ */
+function zeitErfassen(k: Kontext, frage: string): Antwort {
+  const minuten = dauerAus(frage);
+  if (!minuten) return { absicht: 'zeit-unklar', text: 'Wie lange? Schreib es so: „Schreib bei Hoffmann zwei Stunden Nacharbeit auf“.' };
+  const fuer = frage.match(/\bfür\s+(\S+)/i);
+  const wer = (fuer ? findeMitarbeiter(fuer[1]) : undefined) ?? k.ich;
+  const a = findeAuftrag(frage, ['in_arbeit', 'beauftragt', 'abnahme', 'abrechnung']);
+  const datum = zeitraumAus(frage, k.heute)?.von ?? k.heute;
+  const notiz = taetigkeitAus(frage);
+  const dauer = minuten % 60 ? `${(minuten / 60).toLocaleString('de-DE', { maximumFractionDigits: 2 })} Std.` : `${minuten / 60} Std.`;
+  const plan: Plan = {
+    titel: 'Zeit erfassen',
+    schritte: schritte([
+      {
+        aktion: 'time.track',
+        absicht: 'time.track',
+        daten: { mitarbeiterId: wer?.id ?? '', auftragId: a?.id, datum, minuten, notiz },
+        label: `${dauer}${notiz ? ` ${notiz}` : ''} für ${wer?.vorname ?? 'dich'}${a ? ` auf ${a.nummer}` : ''} erfassen (${datumKurz(datum)})`,
+      },
+    ]),
+  };
+  return planAntwort(
+    'zeit-entwurf',
+    a ? `Ich buche die Zeit auf ${a.titel} bei ${db.kunden.get(a.kundeId)?.name ?? 'Kunde'}. Prüf kurz und bestätige.` : 'Ich habe keinen laufenden Auftrag dazu gefunden. Die Zeit wird ohne Auftrag erfasst – oder nenn mir den Kunden.',
+    plan,
+    stand(k),
+  );
+}
+
+/** „Schick das Angebot an Familie Hoffmann.“ */
+function angebotSenden(k: Kontext, frage: string): Antwort {
+  const kunde = findeKunde(frage);
+  const nr = frage.match(/\bAN-\d{4}-\d{3,4}\b/i);
+  const offen = (x: Angebot) => x.status === 'entwurf' || x.status === 'versendet';
+  const angebot: Angebot | undefined = nr
+    ? db.angebote.where((x) => x.nummer.toLowerCase() === nr[0].toLowerCase())[0]
+    : kunde
+      ? db.angebote.where((x) => x.kundeId === kunde.id && offen(x)).sort((x, y) => Number(y.status === 'entwurf') - Number(x.status === 'entwurf') || y.geaendertAm.localeCompare(x.geaendertAm))[0]
+      : undefined;
+  if (!angebot) return { absicht: 'angebot-unklar', text: 'Welches Angebot soll raus? Nenn mir den Kunden oder die Angebotsnummer.', folgefragen: ['Welche Angebote sind offen?'] };
+  const empf = db.kunden.get(angebot.kundeId);
+  const ziel = empf?.email || empf?.telefon;
+  const plan: Plan = {
+    titel: `Angebot ${angebot.nummer} senden`,
+    schritte: schritte([{ aktion: 'offer.send', absicht: 'offer.send', daten: { angebotId: angebot.id }, label: `Angebot ${angebot.nummer} an ${ziel ?? empf?.name ?? 'Kunde'} senden` }]),
+  };
+  return planAntwort(
+    'angebot-senden',
+    `${angebot.titel} für ${empf?.name ?? 'Kunde'}${angebot.status === 'versendet' ? ' (wurde schon einmal versendet)' : ''}. Das Angebot geht an den Kunden – erst nach deiner Bestätigung.`,
+    plan,
+    `Angebot ${angebot.nummer} · ${stand(k)}`,
+  );
+}
+
+/** „Mach aus dem Auftrag von Schneider schon mal eine Rechnung.“ */
+function rechnungVorbereiten(k: Kontext, frage: string): Antwort {
+  const a = findeAuftrag(frage, ['abrechnung', 'abnahme', 'in_arbeit', 'beauftragt']);
+  if (!a) return { absicht: 'auftrag-unklar', text: 'Für welchen Auftrag? Nenn mir den Kunden oder die Auftragsnummer.' };
+  const plan: Plan = {
+    titel: `Rechnung für ${a.nummer} vorbereiten`,
+    schritte: schritte([{ aktion: 'invoice.create_draft', absicht: 'invoice.create_draft', daten: { auftragId: a.id }, label: `Rechnungsentwurf für ${a.nummer} vorbereiten` }]),
+  };
+  return planAntwort(
+    'rechnung-entwurf',
+    `${a.titel} bei ${db.kunden.get(a.kundeId)?.name ?? 'Kunde'}: Macher übernimmt Leistungen, Material und Zeiten in einen Entwurf. Versendet wird nichts.`,
+    plan,
+    `Auftrag ${a.nummer} · ${stand(k)}`,
+  );
+}
+
+const FRAGE = /^\s*(welche|wie\s?viele|wann|was|zeig|gibt es|sind|ist)\b/;
+
 // ------------------------------------------------------------------ Absichten für den Gateway (Lane 0: Regeln)
 
 type Def = AbsichtDef<Antwort>;
@@ -507,6 +674,38 @@ export const ABSICHTEN: Def[] = [
     rechte: ['schreiben'],
     erkenne: (t) => /^erinnere?n?\s/.test(klein(t.trim())),
     beantworte: (t, _e, k) => aufgabeAnlegen(k, t, true),
+  },
+  {
+    id: 'job.finish',
+    titel: 'Auftrag fertig melden (mehrere Schritte)',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    erkenne: (t) => !FRAGE.test(klein(t)) && /(auftrag|baustelle|arbeiten|projekt)/.test(klein(t)) && /\b(fertig|abgeschlossen|abschließen|abschliessen)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => auftragFertig(k, t),
+  },
+  {
+    id: 'time.track',
+    titel: 'Zeit erfassen',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    erkenne: (t) => !!dauerAus(t) && /\b(schreib|schreibe|buch|buche|trag|trage|erfass|erfasse|notier|notiere|auf)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => zeitErfassen(k, t),
+  },
+  {
+    id: 'offer.send',
+    titel: 'Angebot senden',
+    risiko: 'kritisch',
+    rechte: ['veroeffentlichen'],
+    erkenne: (t) => !FRAGE.test(klein(t)) && /angebot/.test(klein(t)) && /\b(schick|schicke|send|sende|senden|versende|versenden|raus)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => angebotSenden(k, t),
+  },
+  {
+    id: 'invoice.create_draft',
+    titel: 'Rechnung vorbereiten',
+    risiko: 'schreiben',
+    rechte: ['schreiben', 'geld'],
+    erkenne: (t) => !FRAGE.test(klein(t)) && /rechnung/.test(klein(t)) && /\b(mach|mache|erstell|erstelle|schreib|schreibe|vorbereiten|bereite|anlegen|leg)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => rechnungVorbereiten(k, t),
   },
   {
     id: 'invoice.list',
@@ -595,6 +794,8 @@ export const ABSICHTEN: Def[] = [
 export function abgelehnt(g: Pick<GatewayAntwort, 'verweigert' | 'fehlendeRechte'>): Antwort {
   if (g.verweigert === 'rechte') {
     if (g.fehlendeRechte?.includes('geld')) return { ...KEIN_GELD };
+    if (g.fehlendeRechte?.includes('veroeffentlichen'))
+      return { absicht: 'keine-berechtigung', text: 'An Kunden senden darfst du nicht. Dafür brauchst du die Freigabe „An Kunden senden“.' };
     if (g.fehlendeRechte?.includes('schreiben'))
       return { absicht: 'keine-berechtigung', text: 'Du kannst Aufgaben ansehen. Zum Anlegen brauchst du die entsprechende Freigabe.' };
     return { absicht: 'keine-berechtigung', text: 'Dafür fehlt dir die Berechtigung. Frag deinen Chef nach der Freigabe.' };

@@ -132,9 +132,14 @@ export interface AktionDef<D = unknown> {
   rechte?: Recht[];
   /** Fehlertext oder `undefined`, wenn die Daten passen */
   pruefe?: (daten: D, k: GatewayKontext) => string | undefined;
-  /** führt die Geschäftslogik aus – nie das Modell selbst */
-  fuehreAus: (daten: D, k: GatewayKontext) => { bezug?: Bezug; text?: string } | void;
+  /** führt die Geschäftslogik aus – nie das Modell selbst. Für verständliche Fehler `AktionsFehler` werfen. */
+  fuehreAus: (daten: D, k: GatewayKontext) => AktionsRueckgabe | Promise<AktionsRueckgabe>;
 }
+
+export type AktionsRueckgabe = { bezug?: Bezug; text?: string } | void;
+
+/** Fehler mit einem Text, den der Mensch lesen darf („Für Familie Hoffmann ist keine E-Mail hinterlegt.“) */
+export class AktionsFehler extends Error {}
 
 /** Strukturierte Aktion, wie sie eine Regel oder ein Modell vorschlägt */
 export interface Aktion<D = unknown> {
@@ -144,6 +149,8 @@ export interface Aktion<D = unknown> {
   absicht?: string;
   lane?: Lane;
   modell?: string;
+  /** Titel des Plans, wenn die Aktion Teil eines Mehrschritt-Plans ist */
+  plan?: string;
 }
 
 export interface GatewayBeitrag {
@@ -234,6 +241,8 @@ export interface KiProtokoll extends Basis {
   lane: Lane;
   modell: string;
   bestaetigt?: boolean;
+  /** Titel des Mehrschritt-Plans, zu dem die Aktion gehört */
+  plan?: string;
   ergebnis: ProtokollErgebnis;
   grund?: string;
 }
@@ -327,10 +336,10 @@ export type AusfuehrErgebnis =
  * Eine strukturierte Aktion ausführen: Rechte → Prüfen → Bestätigung → Geschäftslogik → Protokoll.
  * `bestaetigt` setzt nur die Oberfläche, nachdem der Mensch „Senden“, „Anlegen“ … gedrückt hat.
  */
-export function fuehreAus<D>(a: Aktion<D>, k: GatewayKontext, opt: { bestaetigt?: boolean } = {}): AusfuehrErgebnis {
-  const basis = { mitarbeiterId: k.ich?.id, kanal: k.kanal ?? 'text', absicht: a.absicht, aktion: a.aktion, lane: a.lane ?? 0, modell: a.modell ?? LANES[a.lane ?? 0].name, bestaetigt: !!opt.bestaetigt } as const;
+export async function fuehreAus<D>(a: Aktion<D>, k: GatewayKontext, opt: { bestaetigt?: boolean } = {}): Promise<AusfuehrErgebnis> {
+  const basis = { mitarbeiterId: k.ich?.id, kanal: k.kanal ?? 'text', absicht: a.absicht, aktion: a.aktion, lane: a.lane ?? 0, modell: a.modell ?? LANES[a.lane ?? 0].name, bestaetigt: !!opt.bestaetigt, plan: a.plan } as const;
   const nein = (grund: Extract<AusfuehrErgebnis, { ok: false }>['grund'], text: string): AusfuehrErgebnis => {
-    const p = protokolliere({ ...basis, ergebnis: grund === 'fehler' ? 'fehler' : 'verweigert', grund });
+    const p = protokolliere({ ...basis, ergebnis: grund === 'fehler' ? 'fehler' : 'verweigert', grund: grund === 'fehler' ? text : grund });
     return { ok: false, grund, text, protokollId: p.id };
   };
 
@@ -342,12 +351,80 @@ export function fuehreAus<D>(a: Aktion<D>, k: GatewayKontext, opt: { bestaetigt?
   if (brauchtBestaetigung(risikoVon(def.risiko, def.rechte)) && !opt.bestaetigt) return nein('bestaetigung', 'Bitte bestätige die Aktion zuerst.');
 
   try {
-    const r = def.fuehreAus(a.daten, k) || {};
+    const r = (await def.fuehreAus(a.daten, k)) || {};
     const p = protokolliere({ ...basis, bezug: r.bezug, ergebnis: 'ausgefuehrt' });
     if (r.bezug) vermerken(r.bezug, 'ki.aktion', `${def.titel} – über Macher${opt.bestaetigt ? ', bestätigt' : ''}`, { protokollId: p.id });
     return { ok: true, bezug: r.bezug, text: r.text, protokollId: p.id };
   } catch (err) {
+    if (err instanceof AktionsFehler) return nein('fehler', err.message);
     console.error(`Aktion ${a.aktion} fehlgeschlagen`, err);
     return nein('fehler', 'Das hat nicht geklappt. Versuche es erneut.');
   }
+}
+
+// ------------------------------------------------------------------ Mehrschritt-Pläne
+
+/**
+ * Ein Satz wie „Der Auftrag ist fertig“ ergibt mehrere verbundene Aktionen.
+ * Der Mensch sieht alle Schritte, wählt ab, was nicht passieren soll, und bestätigt einmal.
+ * Jeder Schritt läuft trotzdem einzeln durch Rechte, Prüfung und Protokoll.
+ */
+export interface PlanSchritt<D = unknown> extends Aktion<D> {
+  /** stabil innerhalb des Plans */
+  id: string;
+  /** Handlung in Handwerkersprache, z. B. „Rechnung vorbereiten“ */
+  label: string;
+  /** vorausgewählt? (Standard: ja) */
+  an?: boolean;
+}
+
+export interface Plan {
+  titel: string;
+  schritte: PlanSchritt[];
+}
+
+export interface SchrittPruefung {
+  id: string;
+  risiko: Risiko;
+  erlaubt: boolean;
+  /** warum nicht – in Klartext */
+  grund?: string;
+}
+
+/** Vorab für die Oberfläche: Was darf, was geht, was ist kritisch? Ändert nichts und protokolliert nichts. */
+export function pruefePlan(plan: Plan, k: GatewayKontext): SchrittPruefung[] {
+  return plan.schritte.map((s) => {
+    const def = aktionDef(s.aktion);
+    if (!def) return { id: s.id, risiko: 'kritisch', erlaubt: false, grund: 'Diese Aktion gibt es in deinem Macher OS noch nicht.' };
+    const risiko = risikoVon(def.risiko, def.rechte);
+    if ((def.rechte ?? []).some((r) => !k.darf(r))) return { id: s.id, risiko, erlaubt: false, grund: 'Dafür fehlt dir die Berechtigung.' };
+    const fehler = def.pruefe?.(s.daten as never, k);
+    return fehler ? { id: s.id, risiko, erlaubt: false, grund: fehler } : { id: s.id, risiko, erlaubt: true };
+  });
+}
+
+/** Höchstes Risiko der ausgewählten Schritte – bestimmt, wie deutlich die Bestätigung ist. */
+export function planRisiko(pruefung: SchrittPruefung[], auswahl?: string[]): Risiko {
+  const r = pruefung.filter((p) => p.erlaubt && (!auswahl || auswahl.includes(p.id))).map((p) => p.risiko);
+  return r.includes('kritisch') ? 'kritisch' : r.includes('schreiben') ? 'schreiben' : 'lesen';
+}
+
+export type SchrittErgebnis = { id: string; label: string } & ({ status: 'uebersprungen' } | { status: 'ausgefuehrt'; ergebnis: AusfuehrErgebnis & { ok: true } } | { status: 'fehler'; ergebnis: AusfuehrErgebnis & { ok: false } });
+
+/**
+ * Ausgewählte Schritte der Reihe nach ausführen. Ein Fehler stoppt die übrigen Schritte nicht –
+ * sie hängen fachlich nicht voneinander ab; das Ergebnis zeigt jeden Schritt einzeln.
+ */
+export async function fuehrePlanAus(plan: Plan, k: GatewayKontext, opt: { bestaetigt?: boolean; auswahl?: string[] } = {}): Promise<SchrittErgebnis[]> {
+  const auswahl = opt.auswahl ?? plan.schritte.filter((s) => s.an !== false).map((s) => s.id);
+  const ergebnisse: SchrittErgebnis[] = [];
+  for (const s of plan.schritte) {
+    if (!auswahl.includes(s.id)) {
+      ergebnisse.push({ id: s.id, label: s.label, status: 'uebersprungen' });
+      continue;
+    }
+    const r = await fuehreAus({ aktion: s.aktion, daten: s.daten, absicht: s.absicht, lane: s.lane, modell: s.modell, plan: plan.titel }, k, { bestaetigt: opt.bestaetigt });
+    ergebnisse.push(r.ok ? { id: s.id, label: s.label, status: 'ausgefuehrt', ergebnis: r } : { id: s.id, label: s.label, status: 'fehler', ergebnis: r });
+  }
+  return ergebnisse;
 }

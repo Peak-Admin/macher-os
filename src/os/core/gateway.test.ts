@@ -129,21 +129,21 @@ describe('Gateway: Aktionen und Bestätigung', () => {
     expect(brauchtBestaetigung('kritisch', true)).toBe(true);
   });
 
-  it('führt erst nach Bestätigung aus, prüft vorher und vermerkt im Zeitstrahl', () => {
+  it('führt erst nach Bestätigung aus, prüft vorher und vermerkt im Zeitstrahl', async () => {
     const k = kontext();
-    expect(fuehreAus({ aktion: 'task.create', daten: { titel: 'Leiter prüfen' } }, k)).toMatchObject({ ok: false, grund: 'bestaetigung' });
-    expect(fuehreAus({ aktion: 'task.create', daten: { titel: '' } }, k, { bestaetigt: true })).toMatchObject({ ok: false, grund: 'ungueltig', text: 'Titel fehlt' });
+    expect(await fuehreAus({ aktion: 'task.create', daten: { titel: 'Leiter prüfen' } }, k)).toMatchObject({ ok: false, grund: 'bestaetigung' });
+    expect(await fuehreAus({ aktion: 'task.create', daten: { titel: '' } }, k, { bestaetigt: true })).toMatchObject({ ok: false, grund: 'ungueltig', text: 'Titel fehlt' });
     expect(db.aufgaben.all()).toHaveLength(0);
-    const r = fuehreAus({ aktion: 'task.create', daten: { titel: 'Leiter prüfen' } }, k, { bestaetigt: true });
+    const r = await fuehreAus({ aktion: 'task.create', daten: { titel: 'Leiter prüfen' } }, k, { bestaetigt: true });
     if (!r.ok) throw new Error(r.text);
     expect(db.aufgaben.get(r.bezug!.id)?.titel).toBe('Leiter prüfen');
     expect(kiProtokoll.get(r.protokollId)).toMatchObject({ aktion: 'task.create', ergebnis: 'ausgefuehrt', bestaetigt: true });
     expect(db.ereignisse.where((e) => e.bezug.id === r.bezug!.id && e.typ === 'ki.aktion')).toHaveLength(1);
   });
 
-  it('lehnt fehlende Rechte und unbekannte Aktionen ab', () => {
-    expect(fuehreAus({ aktion: 'invoice.send', daten: {} }, kontext(), { bestaetigt: true })).toMatchObject({ ok: false, grund: 'rechte' });
-    expect(fuehreAus({ aktion: 'gibt.es.nicht', daten: {} }, kontext(), { bestaetigt: true })).toMatchObject({ ok: false, grund: 'unbekannt' });
+  it('lehnt fehlende Rechte und unbekannte Aktionen ab', async () => {
+    expect(await fuehreAus({ aktion: 'invoice.send', daten: {} }, kontext(), { bestaetigt: true })).toMatchObject({ ok: false, grund: 'rechte' });
+    expect(await fuehreAus({ aktion: 'gibt.es.nicht', daten: {} }, kontext(), { bestaetigt: true })).toMatchObject({ ok: false, grund: 'unbekannt' });
     expect(kiProtokoll.all().every((p) => p.ergebnis === 'verweigert')).toBe(true);
   });
 });

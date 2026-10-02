@@ -26,7 +26,8 @@ Verstehen → Routen → Kontext → Rechte → günstigste ausreichende Lane
 | Strukturierte Aktion | `Aktion { aktion, daten, absicht, lane, modell }` – das Modell ändert nie selbst Daten |
 | Prüfen | `AktionDef.pruefe` |
 | Bestätigung | `brauchtBestaetigung(risikoVon(risiko, rechte))` |
-| Ausführen | `fuehreAus(aktion, kontext, { bestaetigt })` → `AktionDef.fuehreAus` (Geschäftslogik des Moduls) |
+| Ausführen | `fuehreAus(aktion, kontext, { bestaetigt })` → `AktionDef.fuehreAus` (Geschäftslogik des Moduls, auch asynchron) |
+| Mehrere Schritte | `pruefePlan` → eine Bestätigung → `fuehrePlanAus` (siehe unten) |
 | Protokoll | Sammlung `ki-protokoll` (jede Frage und jede Aktion), Event `ki.aktion.ausgefuehrt` / `ki.<ergebnis>`, Eintrag `ki.aktion` im Zeitstrahl des betroffenen Objekts |
 
 ### Module anschließen
@@ -72,20 +73,63 @@ Kostenrahmen (KI- und variable Infrastrukturkosten am Umsatz, `KOSTEN_GRENZEN`):
 Grenze 20 %. Bei Warnung ist Lane 3 gesperrt, an der Grenze laufen nur noch Regeln und Jev.
 Den aktuellen Anteil übergibt der Aufrufer als `kostenAnteil`; die Messung selbst folgt mit dem ersten Modell.
 
+### Mehrschritt-Pläne
+
+Ein Satz kann mehrere verbundene Aktionen auslösen. Die Absicht baut einen `Plan` aus `PlanSchritt`en
+(jeweils eine strukturierte Aktion mit Label); ausgeführt wird nichts.
+
+```text
+„Der Auftrag von Familie Hoffmann ist fertig.“
+
+Auftrag A-2026-0007 abschließen
+☑ Arbeiten als fertig melden (weiter zur Abnahme)        job.complete
+☑ Rechnung vorbereiten (nur Entwurf)                     invoice.create_draft
+☐ Weitere Einsätze aus dem Plan nehmen                   job.release_plan   – Nicht möglich: keine weiteren Einsätze
+☑ Bewertung beim Kunden anfragen   [Geht an den Kunden]  review.request
+
+[Alles ausführen]  [Verwerfen]
+```
+
+- `pruefePlan(plan, kontext)` – Vorschau: je Schritt Risiko, erlaubt, Grund in Klartext. Ändert und protokolliert nichts.
+- `planRisiko(pruefung, auswahl)` – höchstes Risiko der Auswahl; bei `kritisch` zeigt die Oberfläche einen Hinweis.
+- `fuehrePlanAus(plan, kontext, { bestaetigt, auswahl })` – führt die ausgewählten Schritte der Reihe nach über
+  `fuehreAus` aus. Jeder Schritt wird einzeln geprüft und protokolliert (Feld `plan` im `ki-protokoll`). Ein Fehler stoppt
+  die übrigen Schritte nicht; das Ergebnis zeigt jeden Schritt (`ausgefuehrt` / `fehler` / `uebersprungen`).
+- Schritte, deren Aktion kein Modul anbietet, lässt die Absicht weg (keine toten Knöpfe). Schritte ohne Recht
+  (z. B. Rechnung ohne „Preise & Geld“) bietet sie gar nicht erst an.
+- Einzelaktionen („Schick das Angebot an Hoffmann“) sind Pläne mit einem Schritt – eine Vorschau, ein Knopf.
+- Fehler mit lesbarem Text wirft die Aktion als `AktionsFehler`.
+
+### Aktionen (Stand)
+
+| Aktion | Modul | Risiko | Rechte | Was passiert |
+|---|---|---|---|---|
+| `task.create` | macher-fragen | schreiben | schreiben | Aufgabe anlegen |
+| `time.track` | arbeitszeiten | schreiben | schreiben (für andere: planen) | abgeschlossenen Zeiteintrag anlegen, ab Arbeitsbeginn |
+| `invoice.create_draft` | rechnungen | schreiben | schreiben, geld | Rechnungsentwurf aus dem Auftrag (`rechnungErstellen`) – nie versendet |
+| `job.complete` | auftraege | schreiben | schreiben | Arbeiten fertig → Phase „Abnahme“ (erledigt wird der Auftrag erst mit der Zahlung) |
+| `job.release_plan` | einsatzplanung | schreiben | planen | künftige Einsätze des Auftrags absagen, Team wird frei |
+| `offer.send` | angebote | kritisch | veroeffentlichen | Angebot per E-Mail/SMS an den Kunden (`angebotSenden`) |
+| `review.request` | bewertungen | kritisch | veroeffentlichen | Bewertungsanfrage an den Kunden (`anfrageSenden`) |
+
+Jede Aktion liegt in `src/os/modules/<modul>/gateway.ts` und ruft nur die bestehende Geschäftslogik des Moduls auf.
+
 ### Intent-Library (Stand)
 
-Angemeldet von `macher-fragen`: `task.create`, `reminder.create`, `invoice.list`, `employee.availability`,
-`location.find`, `offer.list`, `request.list`, `attention.list`, `task.list`, `appointment.list`, `help`, `search` (Auffang).
-Aktion: `task.create`.
+Angemeldet von `macher-fragen` (Reihenfolge = Prüfreihenfolge):
+`task.create`, `reminder.create`, `job.finish` (Plan), `time.track`, `offer.send`, `invoice.create_draft`,
+`invoice.list`, `employee.availability`, `location.find`, `offer.list`, `request.list`, `attention.list`, `task.list`,
+`appointment.list`, `help`, `search` (Auffang).
 
 Neue IDs folgen dem Muster `<objekt>.<verb>` aus der Liste in Abschnitt B.3.
 
 ### Nächste Schritte
 
-1. Weitere Aktionen in den Besitzer-Modulen anmelden (`invoice.create_draft`, `offer.send`, `time.track` …).
+1. Weitere Aktionen in den Besitzer-Modulen anmelden: `invoice.send`, `appointment.reschedule`, `message.send`,
+   `material.reserve`, `vacation.create` / `vacation.approve`, `customer.create`.
 2. Jev als Lane-1-Adapter anschließen (serverseitig, ohne Schlüssel im Browser).
 3. Kostenmessung je Betrieb und Monat → `kostenAnteil`.
-4. Mehrschritt-Aktionen („Der Auftrag ist fertig“) als Liste strukturierter Aktionen mit einer Bestätigung.
+4. Luna für Texte (`message.draft`): Entwurf der Nachricht als Schritt vor `message.send`.
 5. Sprache: Speech-to-Text vor `frage(…, { kanal: 'sprache' })` – sonst nichts Neues.
 
 ---
