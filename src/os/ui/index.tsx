@@ -764,10 +764,18 @@ export function Status({ ton = 'neutral', children, icon = true }: { ton?: Ton; 
   );
 }
 
-export function Kennzahl({ wert, label, zeitraum, hinweis, to, ton }: { wert: ReactNode; label: string; zeitraum?: string; hinweis?: ReactNode; to?: string; ton?: Ton }) {
+/** Kennzahl-Karte. `icon` (Strich-Icon) unterscheidet die Karten; mit `ton` „achtung“/„gefahr“ hebt sich die ganze Karte ab (Ausnahmen zuerst). */
+export function Kennzahl({ wert, label, zeitraum, hinweis, to, ton, icon }: { wert: ReactNode; label: string; zeitraum?: string; hinweis?: ReactNode; to?: string; ton?: Ton; icon?: IconName }) {
   const inhalt = (
     <>
-      <span className="mm-kennzahl-label">{label}</span>
+      <span className="mm-kennzahl-label">
+        {icon && (
+          <span className="mm-kennzahl-icon" aria-hidden>
+            <Icon name={icon} size={18} />
+          </span>
+        )}
+        {label}
+      </span>
       <span className={cx('mm-kennzahl-wert mm-number', ton && `mm-kennzahl-wert--${ton}`, wert == null && 'mm-kennzahl-wert--leer')}>{wert ?? 'Noch keine Daten'}</span>
       {(zeitraum || hinweis) && (
         <span className="mm-meta">
@@ -779,11 +787,11 @@ export function Kennzahl({ wert, label, zeitraum, hinweis, to, ton }: { wert: Re
     </>
   );
   return to ? (
-    <Link to={to} className="mm-kennzahl mm-karte mm-karte--klickbar">
+    <Link to={to} className={cx('mm-kennzahl mm-karte mm-karte--klickbar', ton && `mm-kennzahl--${ton}`)}>
       {inhalt}
     </Link>
   ) : (
-    <div className="mm-kennzahl mm-karte">{inhalt}</div>
+    <div className={cx('mm-kennzahl mm-karte', ton && `mm-kennzahl--${ton}`)}>{inhalt}</div>
   );
 }
 

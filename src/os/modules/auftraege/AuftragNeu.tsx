@@ -174,7 +174,10 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
     >
       <Stapel abstand={24}>
         <fieldset className="ak-gruppe">
-          <legend className="ak-gruppe-titel">Allgemein</legend>
+          <legend className="ak-gruppe-titel">
+            <Icon name="auftraege" size={20} />
+            Allgemein
+          </legend>
           <Eingabe label="Projektname" value={titel} onChange={(e) => setTitel(e.target.value)} fehler={fehler.titel} placeholder="z. B. Steckdosen im Bad erneuern" autoFocus />
           <FormRaster>
             <Eingabe
@@ -192,7 +195,10 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
         </fieldset>
 
         <fieldset className="ak-gruppe">
-          <legend className="ak-gruppe-titel">Kunde</legend>
+          <legend className="ak-gruppe-titel">
+            <Icon name="person" size={20} />
+            Kunde
+          </legend>
           {kundenAnzahl > 0 && (
             <Segmente
               label="Kunde auswählen oder neu anlegen"
@@ -216,7 +222,10 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
 
         {(neueAdresse || (kundeModus === 'bestehend' && !!kundeId)) && (
           <fieldset className="ak-gruppe">
-            <legend className="ak-gruppe-titel">Baustellenadresse</legend>
+            <legend className="ak-gruppe-titel">
+            <Icon name="ort" size={20} />
+            Baustellenadresse
+          </legend>
             {kundeModus === 'bestehend' && kundeId && (
               zusammenfassung ? (
                 <div className="ak-ort-zusammenfassung">

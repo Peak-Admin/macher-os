@@ -122,10 +122,16 @@
 .mm-app--eingeklappt .mm-leiste-eigene { padding-top: 16px; }
 .mm-app--eingeklappt .mm-leiste-eigene .mm-nav-favorit { justify-content: center; padding: 6px 0; }
 /* Modul hinzufügen */
-.mm-leiste-dialog { display: flex; flex-direction: column; gap: 16px; }
+.mm-leiste-dialog { display: flex; flex-direction: column; gap: 24px; }
 .mm-leiste-dialog-gruppe { display: flex; flex-direction: column; gap: 8px; }
-.mm-leiste-dialog-eintrag { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
-.mm-leiste-dialog-eintrag .mm-listenzeile-text { flex: 1; min-width: 0; }
+.mm-leiste-dialog-eintrag { display: flex; align-items: center; gap: 16px; padding: 16px; }
+.mm-leiste-dialog-eintrag .mm-listenzeile-text { flex: 1; min-width: 0; gap: 4px; }
+.mm-leiste-dialog-eintrag > :last-child { flex-shrink: 0; }
+@media (max-width: 479px) {
+  .mm-leiste-dialog-eintrag { flex-wrap: wrap; gap: 12px; padding: 12px; }
+  .mm-leiste-dialog-eintrag .mm-listenzeile-text { flex-basis: calc(100% - 48px); }
+  .mm-leiste-dialog-eintrag > :last-child { margin-left: 48px; }
+}
 .mm-smartview-name { max-width: 480px; }
 
 /* Hauptbereich */

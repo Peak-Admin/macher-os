@@ -197,7 +197,13 @@
 .mm-status--gefahr { background: var(--mm-danger-surface); color: var(--mm-danger); border-color: transparent; }
 .mm-kennzahl { display: flex; flex-direction: column; gap: 4px; min-width: 0; container-type: inline-size; }
 .mm-karte.mm-kennzahl { padding: 20px; }
-.mm-kennzahl-label { font: 600 14px/20px var(--mm-font); color: var(--mm-text); }
+.mm-kennzahl-label { display: flex; align-items: center; gap: 8px; font: 600 14px/20px var(--mm-font); color: var(--mm-text); }
+.mm-kennzahl-icon { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--mm-radius-control); background: var(--mm-brand-soft); color: var(--mm-brand-text); }
+.mm-karte.mm-kennzahl--achtung { background: var(--mm-warning-surface); border-color: var(--mm-warning-border); }
+.mm-kennzahl--achtung .mm-kennzahl-icon { background: var(--mm-surface); color: var(--mm-warning); }
+.mm-karte.mm-kennzahl--gefahr { background: var(--mm-danger-surface); border-color: var(--mm-danger-border); }
+.mm-kennzahl--gefahr .mm-kennzahl-icon { background: var(--mm-surface); color: var(--mm-danger); }
+.mm-kennzahl-wert--gefahr { color: var(--mm-danger); }
 .mm-kennzahl-wert { font: 700 36px/1.15 var(--mm-font); font-size: clamp(22px, 19cqi, 36px); letter-spacing: -0.5px; color: var(--mm-black); font-variant-numeric: tabular-nums; overflow-wrap: normal; text-wrap: balance; }
 /* Kennzahlen mobil zweispaltig statt langer Kartenstapel */
 @media (max-width: 767px) { .mm-raster:has(> .mm-kennzahl) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px; } .mm-karte.mm-kennzahl { padding: 16px; } }
