@@ -24,6 +24,34 @@ export function vkAusAufschlag(ek: Cent, prozent: number): Cent {
   return Math.round(ek * (1 + prozent / 100));
 }
 
+export type PreisFeld = 'ek' | 'aufschlag' | 'vk';
+
+/**
+ * Schnelle Preisänderung in der Liste: ein Feld ändern, die anderen folgen wie im Aufschlag-Rechner.
+ * - EK ändern: der Zuschlag bleibt, der VK zieht mit (ohne bisherigen EK bleibt der VK stehen).
+ * - Zuschlag ändern: VK = EK × (1 + Zuschlag). Ohne EK nicht möglich.
+ * - VK ändern: nur der VK, der Zuschlag ergibt sich daraus.
+ * Gespeichert werden weiter nur EK und VK – der Zuschlag ist immer abgeleitet (eine Quelle, auch für DATANORM/CSV).
+ * `wert` in Euro bzw. Prozent. Rückgabe: neue Preise oder ein Fehlertext in Du-Ansprache.
+ */
+export function preisAendern(alt: { ek: Cent; vk: Cent }, feld: PreisFeld, wert: number | undefined): { ek: Cent; vk: Cent } | { fehler: string } {
+  if (wert == null || !Number.isFinite(wert)) return { fehler: feld === 'aufschlag' ? 'Trag den Zuschlag in Prozent ein, z. B. 25.' : 'Trag einen Preis ein, z. B. 12,50.' };
+  if (feld === 'ek') {
+    if (wert < 0) return { fehler: 'Der Einkaufspreis kann nicht negativ sein.' };
+    const ek = Math.round(wert * 100);
+    // Zuschlag exakt halten (nicht über den gerundeten Prozentwert)
+    const vk = alt.ek > 0 ? Math.round((ek * alt.vk) / alt.ek) : alt.vk;
+    return { ek, vk };
+  }
+  if (feld === 'aufschlag') {
+    if (!alt.ek) return { fehler: 'Ohne Einkaufspreis gibt es keinen Zuschlag. Trag zuerst den EK ein.' };
+    if (wert <= -100) return { fehler: 'Der Zuschlag muss größer als −100 % sein.' };
+    return { ek: alt.ek, vk: vkAusAufschlag(alt.ek, wert) };
+  }
+  if (wert < 0) return { fehler: 'Der Verkaufspreis kann nicht negativ sein.' };
+  return { ek: alt.ek, vk: Math.round(wert * 100) };
+}
+
 // ------------------------------------------------------------------ Einheiten
 
 const EINHEITEN: Record<string, Einheit> = {

@@ -352,12 +352,24 @@ async function verstehe(text: string, absichten: AbsichtDef[], k: GatewayKontext
   return auffang ? { absicht: auffang.id, sicherheit: 0, lane: 0 } : undefined;
 }
 
+/**
+ * Vorbelegte Absicht aus einer kontextuellen Aktion („Mit Macher vorbereiten“ am Angebot, an der Rechnung …):
+ * Die Oberfläche weiß schon, was gemeint ist und um welches Objekt es geht – kein Raten aus dem Text.
+ * Rechte, Lane-Wahl, Protokoll und Bestätigung laufen genauso wie bei einer getippten Frage.
+ */
+export interface Vorgabe {
+  absicht: string;
+  /** z. B. `{ bezug: { typ: 'angebote', id } }` – landet in `Erkennung.werte` */
+  werte?: Record<string, unknown>;
+}
+
 /** Eine Eingabe beantworten. Führt nie selbst etwas aus – Aktionen kommen als Vorschlag zurück. */
-export async function frage<A = unknown>(text: string, k: GatewayKontext): Promise<GatewayAntwort<A>> {
+export async function frage<A = unknown>(text: string, k: GatewayKontext, vorgabe?: Vorgabe): Promise<GatewayAntwort<A>> {
   const kanal = k.kanal ?? 'text';
   const basis = { mitarbeiterId: k.ich?.id, kanal, eingabe: text };
   const absichten = alleAbsichten();
-  const e = await verstehe(text, absichten, k);
+  const vorbelegt = vorgabe && absichten.some((a) => a.id === vorgabe.absicht);
+  const e: Erkennung | undefined = vorbelegt ? { absicht: vorgabe.absicht, werte: vorgabe.werte, sicherheit: 1, lane: 0 } : await verstehe(text, absichten, k);
   const def = e && (absichten.find((a) => a.id === e.absicht) as AbsichtDef<A> | undefined);
 
   if (!e || !def) {

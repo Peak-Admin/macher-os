@@ -142,6 +142,7 @@ Auftrag A-2026-0007 abschließen
 | `employee.schedule` | autoplanung | schreiben | planen | Mitarbeiter in einem freien Fenster beim Auftrag einplanen (prüft, ob die Zeit noch frei ist) |
 | `order.create_draft` | bedarf | schreiben | schreiben | Bestellentwürfe je Lieferant für fehlendes Material – bestellt wird erst beim Lieferanten |
 | `invoice.remind` | mahnungen | kritisch | geld, veroeffentlichen | nächste Mahnstufe vorbereiten und freigeben, E-Mail als Link (`oeffnen`) |
+| `offer.create_draft` | angebote | schreiben | schreiben, geld | Angebotsentwurf aus der Anfrage (Positionen aus der Vorschau) – nie versendet |
 
 `endgueltig` (kein „Rückgängig“): `message.send`, `offer.send`, `invoice.send`, `review.request`, `invoice.remind`.
 
@@ -175,6 +176,43 @@ Namen im Satz werden ohne Rücksicht auf Umlaute gefunden („Mueller“ = „M�
 | `search` | alles andere | Suche (Auffang) |
 
 Neue IDs folgen dem Muster `<objekt>.<verb>` aus der Liste in Abschnitt B.3.
+
+### „Mit Macher vorbereiten“ (kontextuelle Einstiege)
+
+Kein zweiter Chat: Die Sekundäraktion **„Mit Macher vorbereiten“** (`MitMacherVorbereiten` aus
+`src/os/modules/macher-fragen/MitMacher.tsx`) öffnet denselben Macher-Assistenten wie Strg+K und die Seitenleiste –
+vorbelegt mit Objekt (Typ + ID) und Absicht. Der Gateway nimmt die Absicht als Vorgabe (`frage(text, k, { absicht, werte: { bezug } })`,
+Lane 0, Sicherheit 1) statt sie aus dem Text zu raten; Rechte, Protokoll, Vorschau und Bestätigung laufen unverändert.
+Die Absichten (`vorbereiten.ts`) haben keine Texterkennung und antworten ohne Objekt nur mit einem Hinweis.
+
+| Ort | Objekt | Absicht | Plan (Aktion) |
+|---|---|---|---|
+| Anfrage (Nächster Schritt) | Auftrag in Anfrage/Besichtigung | `offer.prepare_from_request` | `offer.create_draft` – Positionen aus Leistungen am Auftrag und Katalog-Treffern im Anfragetext |
+| Angebot (Entwurf) | Angebot | `offer.prepare_send` | `offer.send` |
+| Angebot (versendet) | Angebot | `offer.prepare_followup` | `message.send` mit änderbarem Text, Anrufen als Alternative |
+| Rechnung (Entwurf) | Rechnung | `invoice.prepare_send` | `invoice.send` |
+| Rechnung (überfällig) | Rechnung | `invoice.prepare_reminder` | `invoice.remind` |
+| Einsatzplanung (Auftrag gewählt) | Auftrag | `job.prepare_schedule` | `employee.schedule` mit dem besten Vorschlag der Autoplanung |
+
+Der Knopf erscheint nur, wenn es am Objekt gerade etwas vorzubereiten gibt und die Rolle die Rechte der Absicht hat.
+
+### Macher-Orb (Ladezustand der KI)
+
+Solange die KI arbeitet, zeigt die Oberfläche statt eines Spinners den Macher-Orb (`src/os/ui/orb.tsx`, eigene CSS-Komponente
+ohne Abhängigkeit) mit Statustext und einem weichen Leuchtrand (`kiGlow`, `Button ki=…`) um Eingabe oder Knopf – nur
+während der Arbeit, bei `prefers-reduced-motion` statisch. Zustand aus Absicht/Aktion: `orbFuer()` in `orb-zustand.ts`.
+
+| Zustand | Vorbild | Wann |
+|---|---|---|
+| `arbeitet` | working | Standard |
+| `sucht` | searching | `*.list`, `search`, `*.find`, Verfügbarkeit |
+| `prueft` | solving | kalkulieren, prüfen, „was fehlt“ |
+| `hoert` | listening | Spracheingabe (`kanal: 'sprache'`, Diktat) |
+| `verbindet` | connecting | DATEV, Import, Website lesen, Schnittstellen |
+| `schreibt` | composing | Nachrichten, Senden, Erinnern, Nachfassen |
+| `formt` | shaping | Entwürfe anlegen (`*.create_draft`, `*.prepare_*`, `task.create`) |
+| `denkt` | breathing | Absicht noch unbekannt, Hilfe |
+| `verknuepft` | weaving | Mehrschritt-Pläne, Einplanen, Auftrag fertig |
 
 ### Nächste Schritte
 

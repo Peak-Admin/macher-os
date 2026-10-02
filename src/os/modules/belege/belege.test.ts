@@ -3,7 +3,28 @@ import { db } from '@core/db';
 import { heute, plusTage, zeitpunkt } from '@core/format';
 import { testBetrieb, vorTagen } from '../rechnungen/testdaten';
 import type { BelegX } from '../rechnungen/typen';
-import { auftragVorschlaege, ausBrutto, fristenAusKonditionen, konditionenLesen, naechsteFrist, sichererVorschlag } from './logik';
+import {
+  alsBezahlt,
+  alsGeprueft,
+  auftragVorschlaege,
+  auftragZuordnen,
+  ausBrutto,
+  belegSchritt,
+  belegX,
+  belegAusDatei,
+  dateiPruefen,
+  emailEingang,
+  freigeben,
+  fristenAusKonditionen,
+  inAnsicht,
+  konditionenLesen,
+  naechsteFrist,
+  ohneAuftragWeiter,
+  pruefLuecken,
+  schrittIndex,
+  sichererVorschlag,
+  zuruecksetzen,
+} from './logik';
 import { belegAusWerten, leereWerte } from './Formular';
 
 let t: ReturnType<typeof testBetrieb>;
@@ -74,5 +95,80 @@ describe('Auftrag vorschlagen', () => {
     const v = auftragVorschlaege({ datum: heute(), lieferantName: 'Tankstelle', kategorie: 'Fahrzeug' });
     expect(v).toHaveLength(2);
     expect(sichererVorschlag(v)).toBeUndefined();
+  });
+});
+
+describe('Ablauf: Neu → Prüfen → Zuordnen → Freigeben → Bezahlt', () => {
+  const neu = (x: Partial<BelegX> = {}) =>
+    db.belege.create({ art: 'eingangsrechnung', lieferantName: 'Sonepar', datum: heute(), netto: 10000, ust: 1900, status: 'neu', ...x } as Parameters<typeof db.belege.create>[0]) as BelegX;
+
+  it('führt Schritt für Schritt durch und landet in den passenden Ansichten', () => {
+    const b = neu();
+    expect(belegSchritt(b)).toBe('pruefen');
+    expect(inAnsicht(b, 'pruefen')).toBe(true);
+    alsGeprueft(b.id);
+    expect(belegSchritt(belegX(b.id)!)).toBe('zuordnen');
+    expect(inAnsicht(belegX(b.id)!, 'freigeben')).toBe(true);
+    auftragZuordnen(b.id, t.auftrag.id);
+    expect(belegSchritt(belegX(b.id)!)).toBe('freigeben');
+    freigeben(b.id);
+    expect(belegSchritt(belegX(b.id)!)).toBe('zahlen');
+    expect(inAnsicht(belegX(b.id)!, 'zahlen')).toBe(true);
+    alsBezahlt(b.id);
+    const fertig = belegX(b.id)!;
+    expect(fertig.status).toBe('bezahlt');
+    expect(fertig.bezahltAm).toBe(heute());
+    expect(belegSchritt(fertig)).toBe('bezahlt');
+    expect(schrittIndex('zahlen')).toBe(4);
+  });
+
+  it('ohne Auftrag weiter, und zurück auf Prüfen löscht die Stempel', () => {
+    const b = neu();
+    alsGeprueft(b.id);
+    ohneAuftragWeiter(b.id);
+    expect(belegSchritt(belegX(b.id)!)).toBe('freigeben');
+    freigeben(b.id);
+    zuruecksetzen(b.id);
+    const z = belegX(b.id)!;
+    expect(z.status).toBe('neu');
+    expect(z.freigegebenAm).toBeUndefined();
+    expect(belegSchritt(z)).toBe('pruefen');
+  });
+
+  it('alte Daten bleiben gültig: „geprüft“ ohne Prüfstempel gilt als zahlbereit', () => {
+    expect(belegSchritt(neu({ status: 'geprueft' }))).toBe('zahlen');
+    expect(belegSchritt(neu({ status: 'bezahlt' }))).toBe('bezahlt');
+  });
+
+  it('meldet, was vor dem Prüfen fehlt', () => {
+    expect(pruefLuecken(neu())).toEqual([]);
+    expect(pruefLuecken(neu({ lieferantName: undefined, netto: 0, ust: 0 }))).toEqual(['Lieferant', 'Betrag']);
+  });
+});
+
+describe('Dateien und E-Mail-Eingang', () => {
+  it('nimmt PDF und Fotos, PDF bis 2 MB', () => {
+    expect(dateiPruefen({ name: 'r.pdf', type: 'application/pdf', size: 100_000 })).toBeUndefined();
+    expect(dateiPruefen({ name: 'foto.jpg', type: 'image/jpeg', size: 9_000_000 })).toBeUndefined();
+    expect(dateiPruefen({ name: 'gross.pdf', type: 'application/pdf', size: 3_000_000 })).toMatch(/größer als 2 MB/);
+    expect(dateiPruefen({ name: 'liste.xlsx', type: 'application/vnd.ms-excel', size: 10 })).toMatch(/kein PDF/);
+  });
+
+  it('abgelegtes PDF wird ein Beleg „neu“ mit Dokument', async () => {
+    const b = await belegAusDatei(new File(['%PDF-1.4'], 'rechnung.pdf', { type: 'application/pdf' }));
+    expect(b).toMatchObject({ status: 'neu', quelle: 'upload', art: 'eingangsrechnung', netto: 0 });
+    const d = db.dokumente.get(b.dokumentId)!;
+    expect(d).toMatchObject({ art: 'pdf', bezug: { typ: 'belege', id: b.id } });
+    expect(d.url).toMatch(/^data:application\/pdf/);
+    await expect(belegAusDatei(new File(['x'], 'a.txt', { type: 'text/plain' }))).rejects.toThrow(/kein PDF/);
+  });
+
+  it('zeigt die Adresse und sagt ehrlich, ob der Eingang aktiv ist', () => {
+    db.betrieb.update('betrieb', { name: 'Müller Elektro GmbH' } as never);
+    const aus = emailEingang({ cloud: false, freigeschaltet: true });
+    expect(aus.adresse).toBe('belege@mueller-elektro.macher-os.de');
+    expect(aus.aktiv).toBe(false);
+    expect(emailEingang({ cloud: true, freigeschaltet: false }).aktiv).toBe(false);
+    expect(emailEingang({ cloud: true, freigeschaltet: true }).aktiv).toBe(true);
   });
 });

@@ -122,3 +122,43 @@ describe('Home', () => {
     }
   });
 });
+
+describe('Einrichtung im nächsten Schritt', () => {
+  it('zeigt links die Schritte, rechts den aktiven Schritt mit genau einer Aktion', async () => {
+    const { Einrichtung } = await import('./widgets/kern');
+    huelle(
+      <Einrichtung
+        danach={[]}
+        a={{
+          id: 'einrichtung:kunden',
+          type: 'onboarding',
+          title: 'Macher fertig machen',
+          description: 'Als Nächstes: Kunden & Preise übernehmen.',
+          priority: 40,
+          icon: 'start',
+          actionLabel: 'Weiter einrichten',
+          actionUrl: '/betrieb/import?art=kunden',
+          completed: false,
+          ausblenden: 'start.karteAus',
+          progress: {
+            erledigt: 2,
+            gesamt: 4,
+            schritte: [
+              { id: 'betrieb', titel: 'Betrieb eingerichtet', erledigt: true },
+              { id: 'gewerk', titel: 'Gewerk eingerichtet', erledigt: true },
+              { id: 'kunden', titel: 'Kunden & Preise übernehmen', erledigt: false, aktion: { label: 'Kunden & Preise übernehmen', pfad: '/betrieb/import?art=kunden' } },
+              { id: 'team', titel: 'Team hinzufügen', erledigt: false, aktion: { label: 'Team hinzufügen', pfad: '/betrieb/mitarbeiter/neu' } },
+            ],
+          },
+        }}
+      />,
+    );
+    const aktiv = document.querySelector('[aria-current="step"]');
+    expect(aktiv?.textContent).toContain('Kunden & Preise übernehmen');
+    const rechts = document.querySelector('.mm-home-setup-aktiv') as HTMLElement;
+    const knoepfe = within(rechts).getAllByRole('link');
+    expect(knoepfe).toHaveLength(1);
+    expect(knoepfe[0].getAttribute('href')).toBe('/betrieb/import?art=kunden');
+    expect(rechts.querySelector('img.mm-asset')).toBeTruthy();
+  });
+});

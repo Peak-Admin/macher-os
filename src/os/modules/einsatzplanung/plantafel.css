@@ -1,0 +1,193 @@
+/* Plantafel: Gruppen „Aufträge“ und „Mitarbeiter“ auf einer Zeitachse. Nur --mm-*-Tokens. */
+
+/* Gruppenkopf über die ganze Breite, Knopf bleibt beim waagerechten Scrollen links stehen */
+.ep-gruppe {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid var(--mm-border);
+  background: var(--mm-surface-subtle);
+}
+.ep-gruppe-knopf {
+  position: sticky;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 16px 8px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--mm-text);
+  font: 600 16px/24px var(--mm-font);
+  cursor: pointer;
+  text-align: left;
+}
+.ep-gruppe-knopf:focus-visible {
+  outline: 3px solid var(--mm-focus);
+  outline-offset: -3px;
+  border-radius: var(--mm-radius-control);
+}
+.ep-gruppe-zahl {
+  min-width: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--mm-surface);
+  border: 1px solid var(--mm-border);
+  font: 600 14px/22px var(--mm-font);
+  color: var(--mm-text-secondary);
+  text-align: center;
+}
+
+/* Auftragszeile: Name links (wie Mitarbeiter), rechts die Spur auf denselben Tagesspalten */
+.ep-auftrag-name {
+  gap: 2px;
+}
+.ep-auftrag-name--aktiv {
+  box-shadow: inset 4px 0 0 var(--mm-brand);
+}
+.ep-auftrag-link {
+  color: var(--mm-link);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.ep-auftrag-link:hover {
+  text-decoration: underline;
+}
+.ep-auftrag-link:focus-visible {
+  outline: 3px solid var(--mm-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.ep-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ep-spur {
+  grid-column: 2 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-rows: minmax(44px, auto) auto;
+  align-items: center;
+  row-gap: 4px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--mm-border);
+  min-width: 0;
+}
+.ep-spur-tag {
+  grid-row: 1 / -1;
+  align-self: stretch;
+  margin: -8px 0;
+  border-left: 1px solid var(--mm-border);
+}
+.ep-balken {
+  grid-row: 1;
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  min-width: 0;
+  margin: 0 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--mm-brand);
+  border-radius: var(--mm-radius-control);
+  background: var(--mm-soft-green);
+  color: var(--mm-brand-text);
+  font: 600 14px/20px var(--mm-font);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--mm-motion-fast) var(--mm-ease),
+    color var(--mm-motion-fast) var(--mm-ease);
+}
+.ep-balken:hover {
+  background: var(--mm-success-border);
+}
+.ep-balken:focus-visible {
+  outline: 3px solid var(--mm-focus);
+  outline-offset: 2px;
+}
+.ep-balken[aria-pressed='true'] {
+  background: var(--mm-brand);
+  border-color: var(--mm-brand);
+  color: var(--mm-on-action);
+}
+.ep-balken[aria-pressed='true']:hover {
+  background: var(--mm-brand-hover);
+}
+/* Geht der Zeitraum über die Woche hinaus, ist die Kante offen */
+.ep-balken--frueher {
+  margin-left: 0;
+  border-left-style: dashed;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.ep-balken--spaeter {
+  margin-right: 0;
+  border-right-style: dashed;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.ep-balken-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.ep-tag-zahl {
+  grid-row: 2;
+  padding: 0 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--mm-text-secondary);
+}
+
+.ep-ohne {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 0 8px;
+}
+
+/* Leer-, Lade- und Fehlerzustand: eine Zeile über die ganze Breite */
+.ep-breit {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid var(--mm-border);
+}
+.ep-breit-inhalt {
+  position: sticky;
+  left: 0;
+  max-width: min(100%, 720px);
+  padding: 12px 16px;
+}
+.ep-leer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--mm-text);
+}
+.ep-leer > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--mm-text-secondary);
+}
+
+/* Einsätze des gewählten Auftrags im Team hervorheben (zusätzlich zum Text in der Meldung) */
+.ep-markiert {
+  border-radius: var(--mm-radius-control);
+  outline: 3px solid var(--mm-brand);
+  outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ep-balken {
+    transition: none;
+  }
+}

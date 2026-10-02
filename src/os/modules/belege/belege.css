@@ -1,0 +1,55 @@
+/* Eingangsrechnungen & Belege – nur Layout, nur --mm-*-Tokens */
+
+/* Ablage: PDF hier ablegen oder fotografieren. Drag & Drop ist nie der einzige Weg – die Knöpfe gehen immer. */
+.bl-ablage {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0;
+  padding: 24px 16px; text-align: center;
+  border: 2px dashed var(--mm-control-border); border-radius: var(--mm-radius-card); background: var(--mm-surface);
+  transition: border-color var(--mm-motion-fast) ease-out, background-color var(--mm-motion-fast) ease-out;
+}
+.bl-ablage--gross { gap: 16px; padding: 48px 24px; }
+.bl-ablage--ziel { border-color: var(--mm-brand); background: var(--mm-brand-soft); }
+.bl-ablage-titel { margin: 0; font-size: 18px; line-height: 24px; font-weight: 600; color: var(--mm-black); hyphens: manual; }
+.bl-ablage--gross .bl-ablage-titel { font-size: 22px; line-height: 28px; }
+.bl-ablage-text { margin: 0; max-width: 56ch; color: var(--mm-text-secondary); }
+.bl-ablage-knoepfe { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.bl-ablage .mm-meldung { width: 100%; text-align: left; }
+
+/* Belege-Postfach: Adresse zum Kopieren und ehrlicher Stand */
+.bl-email {
+  display: flex; flex-direction: column; gap: 8px; width: 100%; min-width: 0;
+  margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--mm-border); text-align: left;
+}
+.bl-email-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; }
+.bl-email-adresse {
+  min-width: 0; padding: 4px 8px; overflow-wrap: anywhere;
+  border-radius: var(--mm-radius-control); background: var(--mm-surface-subtle); color: var(--mm-text);
+  font-family: inherit; font-size: 16px; font-weight: 600;
+}
+
+/* Ansicht der Liste: heller Umschalter mit Zählern */
+.bl-ansicht { display: flex; }
+.bl-ansicht .mm-segment { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+@media (max-width: 479px) {
+  .bl-ansicht .mm-segmente { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+}
+
+/* Schrittanzeige im Detail: Text zu jedem Schritt, Farbe nur unterstützend */
+.bl-schritte {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px;
+}
+.bl-schritt { display: flex; flex-direction: column; gap: 4px; min-width: 0; font-size: 14px; line-height: 20px; color: var(--mm-text-secondary); }
+.bl-schritt::before { content: ''; display: block; height: 6px; border-radius: 3px; background: var(--mm-border); }
+.bl-schritt--fertig { color: var(--mm-text); }
+.bl-schritt--fertig::before { background: var(--mm-brand); }
+.bl-schritt--jetzt { color: var(--mm-brand-text); font-weight: 700; }
+.bl-schritt--jetzt::before { background: var(--mm-brand-deep); }
+.bl-schritt-name { overflow-wrap: anywhere; hyphens: manual; }
+.bl-schritt-zustand { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Schmal: nur die Balken; Name und Zustand bleiben für Screenreader, der Satz darunter nennt den Schritt sichtbar */
+@media (max-width: 479px) {
+  .bl-schritt-name { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+.bl-ablauf-angaben { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px; align-items: end; }

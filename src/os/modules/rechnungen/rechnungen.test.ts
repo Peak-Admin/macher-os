@@ -6,6 +6,7 @@ import {
   entwurfLoeschen,
   festschreiben,
   istUeberfaellig,
+  listenBetrag,
   offenerBetrag,
   pflichtangabenPruefen,
   pflichtTexte,
@@ -103,6 +104,18 @@ describe('Rechnung aus Auftrag', () => {
     expect(s.abzugBrutto).toBe(rechnungsSummen(rechnungX(ab.id)!).brutto);
     expect(s.abzugGezahlt).toBe(32725);
     expect(s.zahlbetrag).toBe(65450 - 32725);
+  });
+
+  it('Listenbetrag: brutto = Zahlbetrag, netto = Netto abzüglich verrechneter Abschläge', () => {
+    angebot();
+    const ab = rechnungErstellen(t.auftrag.id, 'abschlag', { prozent: 50 })!;
+    expect(listenBetrag(ab, 'netto')).toBe(27500);
+    expect(listenBetrag(ab, 'brutto')).toBe(32725);
+    expect(festschreiben(ab.id).ok).toBe(true);
+    db.zahlungen.create({ rechnungId: ab.id, betrag: 32725, datum: heute(), art: 'ueberweisung' });
+    const schluss = rechnungErstellen(t.auftrag.id, 'schluss')!;
+    expect(listenBetrag(schluss, 'brutto')).toBe(65450 - 32725);
+    expect(listenBetrag(schluss, 'netto')).toBe(55000 - 27500);
   });
 
   it('liefert bestehenden Entwurf statt einen zweiten', () => {

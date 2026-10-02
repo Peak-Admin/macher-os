@@ -25,8 +25,8 @@ Macher OS
 └── Betrieb               vier Kacheln + Verzeichnis aller Module (Suche „Modul finden“, Stern = Favorit)
     ├── Geld              Rechnungen (+ Zahlungen, Mahnungen) · Ausgaben · Überblick · Steuerberater
     ├── Team              Mitarbeiter · Zeiten & Abwesenheit · Lernen & Nachweise · Bewerber
-    ├── Ausstattung       Material (Katalog, Bestand) · Einkauf · Geräte & Fahrzeuge
-    └── Unternehmen       Leistungen & Preise · Vorlagen · Wissen · Einstellungen
+    ├── Ausstattung       Lager (Bestand) · Einkauf · Geräte & Fahrzeuge
+    └── Unternehmen       Katalog (Material · Leistungen) · Vorlagen · Wissen · Einstellungen
                           (Einstellungen: Betrieb · Zugriffe · Verbindungen · Automationen)
 ```
 
@@ -86,9 +86,9 @@ bekannten Auftrag sichtbar („Zum Auftrag A-2026-0004 · …“). Formulare fra
 | Servicevertrag anlegen | Aufträge › Service › Verträge › „Vertrag anlegen“ |
 | Bericht erstellen | Auftrag › Unterlagen › Dokumente › Berichte; Einsatz › Weitere Aktionen › „Bericht schreiben“ |
 | Datei hochladen | Auftrag › Unterlagen › Dokumente › Dateien › „Dateien hochladen“ |
-| Leistung anlegen | Betrieb › Unternehmen › Leistungen & Preise › „Leistung anlegen“ |
+| Leistung anlegen | Betrieb › Unternehmen › Katalog › Leistungen › „Leistung anlegen“ |
 | Abnahme starten | Auftrag › nächster Schritt, sobald die Abnahme ansteht (Bereich Arbeit › Weiteres › Abnahme) |
-| Artikel anlegen | Betrieb › Ausstattung › Material › Katalog › „Artikel anlegen“ |
+| Artikel anlegen | Betrieb › Unternehmen › Katalog › Material › „Artikel anlegen“ |
 | Urlaub beantragen, Krank melden | Betrieb › Team › Zeiten & Abwesenheit › Abwesenheit (Formular „Urlaub beantragen“ / „Krankmeldung senden“) |
 | Werkzeug, Maschine, Fahrzeug anlegen | Betrieb › Ausstattung › Geräte & Fahrzeuge › „Werkzeug anlegen“ / „Gerät anlegen“ / „Fahrzeug anlegen“ |
 | Bestellung, Lieferant, Subunternehmer anlegen | Betrieb › Ausstattung › Einkauf › jeweilige Ansicht |
@@ -143,8 +143,8 @@ Objekt (z. B. Auftrag › Unterlagen), über die Suche (Funktionsnamen und Synon
 | Maschinen & Geräte (`maschinen`) | Betrieb › Werkzeuge & Fahrzeuge (Untermenü) | `/betrieb/maschinen` | Betrieb › Ausstattung › Geräte & Fahrzeuge › Ansicht „Maschinen“ |
 | Prüfungen & Wartung (`pruefungen`) | Betrieb › Werkzeuge & Fahrzeuge (Untermenü) | `/betrieb/pruefungen` | Betrieb › Ausstattung › Geräte & Fahrzeuge › Ansicht „Prüfungen“ |
 | Werkzeuge (`werkzeuge`) | Betrieb › Werkzeuge & Fahrzeuge (Untermenü) | `/betrieb/werkzeuge`, `/betrieb/werkzeuge/neu`, `/betrieb/werkzeuge/:id`, `/betrieb/werkzeuge/:id/bearbeiten` | Betrieb › Ausstattung › Geräte & Fahrzeuge › Ansicht „Werkzeuge“ |
-| Lager (`lager`) | Betrieb › Material & Einkauf (Untermenü) | `/betrieb/lager`, `/betrieb/lager/inventur`, `/betrieb/lager/bewegungen` | Betrieb › Ausstattung › Material › Ansicht „Bestand“ |
-| Artikel & Material (`artikel`) | Betrieb › Material & Einkauf (Untermenü) | `/betrieb/artikel`, `/betrieb/artikel/neu`, `/betrieb/artikel/import`, `/betrieb/artikel/:id`, `/betrieb/artikel/:id/bearbeiten` | Betrieb › Ausstattung › Material › Ansicht „Katalog“ |
+| Lager (`lager`) | Betrieb › Material & Einkauf (Untermenü) | `/betrieb/lager`, `/betrieb/lager/inventur`, `/betrieb/lager/bewegungen` | Betrieb › Ausstattung › Lager › Ansicht „Bestand“ |
+| Artikel & Material (`artikel`) | Betrieb › Material & Einkauf (Untermenü) | `/betrieb/katalog/material`, `…/neu`, `…/import`, `…/:id`, `…/:id/bearbeiten` (früher `/betrieb/artikel/…`, wird weitergeleitet) | Betrieb › Unternehmen › Katalog › Ansicht „Material“ |
 | Eingangsrechnungen & Belege (`belege`) | Betrieb › Geld (Untermenü) | `/betrieb/belege`, `/betrieb/belege/neu`, `/betrieb/belege/:id` | Betrieb › Geld › Ausgaben |
 | Mahnungen (`mahnungen`) | Betrieb › Geld (Untermenü) | `/betrieb/mahnungen`, `/betrieb/mahnungen/:id`, `/druck/mahnung/:id (Vollbild)` | Betrieb › Geld › Rechnungen › Ansicht „Mahnungen“ |
 | Rechnungen (`rechnungen`) | Betrieb › Geld (Untermenü) | `/betrieb/rechnungen`, `/betrieb/rechnungen/neu`, `/betrieb/rechnungen/:id`, `/druck/rechnung/:id (Vollbild)` | Betrieb › Geld › Rechnungen › Ansicht „Rechnungen“ |
@@ -168,7 +168,7 @@ Objekt (z. B. Auftrag › Unterlagen), über die Suche (Funktionsnamen und Synon
 | Schnittstellen (`schnittstellen`) | Betrieb › Unternehmen (nur Bereichsseite) | `/betrieb/schnittstellen` | Betrieb › Unternehmen › Einstellungen › Ansicht „Verbindungen“ |
 | Terminbuchung (`terminbuchung`) | Plan (Untermenü) | `/plan/terminbuchung`, `/buchen/:token (Vollbild)` | Betrieb › Unternehmen › Einstellungen › Ansicht „Verbindungen“ |
 | Rollen & Rechte (`rollen`) | Betrieb › Unternehmen (nur Bereichsseite) | `/betrieb/rollen` | Betrieb › Unternehmen › Einstellungen › Ansicht „Zugriffe“ |
-| Leistungen & Preise (`leistungen`) | Betrieb › Unternehmen (Untermenü) | `/betrieb/leistungen`, `/betrieb/leistungen/neu`, `/betrieb/leistungen/preise`, `/betrieb/leistungen/stundensatz`, `/betrieb/leistungen/:id` | Betrieb › Unternehmen › Leistungen & Preise |
+| Leistungen & Preise (`leistungen`) | Betrieb › Unternehmen (Untermenü) | `/betrieb/katalog/leistungen`, `…/neu`, `…/preise`, `…/stundensatz`, `…/:id` (früher `/betrieb/leistungen/…`, wird weitergeleitet) | Betrieb › Unternehmen › Katalog › Ansicht „Leistungen“ |
 | Vorlagen & Formulare (`vorlagen`) | Betrieb › Unternehmen (Untermenü) | `/betrieb/vorlagen`, `/betrieb/vorlagen/briefkopf`, `/betrieb/vorlagen/:id` | Betrieb › Unternehmen › Vorlagen |
 | Wissen & Anleitungen (`wissen`) | Betrieb › Unternehmen (Untermenü) | `/betrieb/wissen`, `/betrieb/wissen/neu`, `/betrieb/wissen/:id`, `/betrieb/wissen/:id/bearbeiten` | Betrieb › Unternehmen › Wissen |
 | Benachrichtigungen (`benachrichtigungen`) | Macher-Leiste (versteckt) | `/macher/benachrichtigungen` | Heute › Baustein/Overlay |

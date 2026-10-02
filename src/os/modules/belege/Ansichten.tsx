@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { db, useDatenstand, vermerken } from '@core/db';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { db, useDatenstand } from '@core/db';
 import { datum, euro, passt } from '@core/format';
 import type { ID } from '@core/objects';
 import { useDarf } from '@core/session';
@@ -9,7 +9,6 @@ import {
   BeispielMarke,
   Button,
   Eingabe,
-  Filter,
   FormRaster,
   Karte,
   Leer,
@@ -21,6 +20,7 @@ import {
   Stapel,
   Status,
   Suchfeld,
+  Zeile,
   ZweiSpalten,
   useBestaetigen,
   useToast,
@@ -29,75 +29,137 @@ import {
 } from '@ui/index';
 import { AuftragAuswahl, ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
-import { ART_LABEL, KATEGORIEN, alleBelege, belegX, brutto, dateiAblegen, lieferantName, naechsteFrist } from './logik';
+import {
+  ANSICHTEN,
+  ART_LABEL,
+  BELEG_DATEITYPEN,
+  KATEGORIEN,
+  SCHRITTE,
+  SCHRITT_STATUS,
+  alleBelege,
+  alsBezahlt,
+  alsGeprueft,
+  auftragVorschlaege,
+  auftragZuordnen,
+  ausBrutto,
+  belegSchritt,
+  belegX,
+  brutto,
+  dateiAblegen,
+  dateiPruefen,
+  freigeben,
+  inAnsicht,
+  lieferantName,
+  naechsteFrist,
+  ohneAuftragWeiter,
+  personName,
+  pruefLuecken,
+  pruefende,
+  schrittIndex,
+  zuruecksetzen,
+  type Ansicht,
+  type Schritt,
+} from './logik';
+import { Ablage } from './Ablage';
+import './belege.css';
 import { AuftragVorschlag, BelegFormular, LieferantenListe, Vorschau, belegAusWerten, leereWerte, lieferantAus, type FormularWerte } from './Formular';
-
-const STATUS = { neu: { text: 'Neu', ton: 'aktiv' }, geprueft: { text: 'Geprüft', ton: 'neutral' }, bezahlt: { text: 'Bezahlt', ton: 'erfolg' } } as const;
 
 export function BelegStatus({ b }: { b: BelegX }) {
   const f = naechsteFrist(b);
   if (f && f.tage < 0) return <Status ton="achtung">{`Seit ${-f.tage} ${-f.tage === 1 ? 'Tag' : 'Tagen'} fällig`}</Status>;
   if (f && f.art === 'skonto' && f.tage <= 3) return <Status ton="achtung">{f.tage === 0 ? 'Skonto nur noch heute' : `Skonto noch ${f.tage} ${f.tage === 1 ? 'Tag' : 'Tage'}`}</Status>;
   if (f && f.art === 'faellig' && f.tage <= 3) return <Status ton="achtung">{f.tage === 0 ? 'Heute fällig' : `Fällig in ${f.tage} ${f.tage === 1 ? 'Tag' : 'Tagen'}`}</Status>;
-  const s = STATUS[b.status];
+  const s = SCHRITT_STATUS[belegSchritt(b)];
   return <Status ton={s.ton}>{s.text}</Status>;
 }
 
-type F = 'offen' | 'neu' | 'ohne' | 'bezahlt' | 'alle';
+const ANSICHT_LABEL: Record<Ansicht, string> = { pruefen: 'Zu prüfen', freigeben: 'Freizugeben', zahlen: 'Offen zu zahlen', alle: 'Alle' };
+
+const LEER_ANSICHT: Record<Ansicht, { titel: string; text: string }> = {
+  pruefen: { titel: 'Alles geprüft', text: 'Neue Rechnungen legst du oben ab oder fotografierst sie.' },
+  freigeben: { titel: 'Nichts freizugeben', text: 'Geprüfte Belege mit Auftrag warten hier auf deine Freigabe.' },
+  zahlen: { titel: 'Nichts offen zu zahlen', text: 'Freigegebene Rechnungen erscheinen hier, bis du sie als bezahlt markierst.' },
+  alle: { titel: 'Keine Belege', text: 'Leg eine Rechnung oben ab.' },
+};
+
+/** Heller Umschalter der Arbeits-Inbox (Radiogruppe, mit Zählern) */
+function AnsichtWahl({ wert, onChange, zaehler }: { wert: Ansicht; onChange: (a: Ansicht) => void; zaehler: Record<Ansicht, number> }) {
+  return (
+    <div className="bl-ansicht">
+      <div className="mm-segmente" role="radiogroup" aria-label="Ansicht der Belege">
+        {ANSICHTEN.map((a) => (
+          <button key={a} type="button" role="radio" aria-checked={wert === a} className={wert === a ? 'mm-segment mm-segment--an' : 'mm-segment'} onClick={() => onChange(a)}>
+            {ANSICHT_LABEL[a]}
+            {a !== 'alle' && <span className="mm-chip-zaehler">{zaehler[a]}</span>}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function BelegeListe() {
   useDatenstand();
   const geld = useDarf('geld');
-  const [filter, setFilter] = useState<F>('offen');
+  const [params, setParams] = useSearchParams();
+  const ansicht: Ansicht = (ANSICHTEN as string[]).includes(params.get('ansicht') ?? '') ? (params.get('ansicht') as Ansicht) : 'pruefen';
+  const setAnsicht = (a: Ansicht) => setParams(a === 'pruefen' ? {} : { ansicht: a }, { replace: true });
   const [q, setQ] = useState('');
   const alle = alleBelege();
+  const zaehler = Object.fromEntries(ANSICHTEN.map((a) => [a, alle.filter((b) => inAnsicht(b, a)).length])) as Record<Ansicht, number>;
   const zeigen = alle
-    .filter((b) => (filter === 'offen' ? b.status !== 'bezahlt' : filter === 'neu' ? b.status === 'neu' : filter === 'ohne' ? !b.auftragId : filter === 'bezahlt' ? b.status === 'bezahlt' : true))
-    .filter((b) => !q || passt(q, lieferantName(b), b.nummer, b.kategorie, db.auftraege.get(b.auftragId)?.nummer))
+    .filter((b) => inAnsicht(b, ansicht))
+    .filter((b) => !q || passt(q, lieferantName(b), b.nummer, b.kategorie, db.auftraege.get(b.auftragId)?.nummer, b.eingangVon))
     .sort((a, b) => (naechsteFrist(a)?.datum ?? '9999').localeCompare(naechsteFrist(b)?.datum ?? '9999') || b.datum.localeCompare(a.datum));
+  const titel = 'Eingangsrechnungen & Belege';
+  const aktion = <Button icon="kamera" to="/betrieb/belege/neu">Beleg erfassen</Button>;
+
+  if (!alle.length)
+    return (
+      <Seite titel={titel} aktion={aktion}>
+        <Ablage gross onFertig={(l) => l.length === 1 && setAnsicht('pruefen')} />
+      </Seite>
+    );
+
+  const leer = q ? { titel: 'Keine Belege gefunden', text: 'Ändere die Suche oder wähle „Alle“.' } : LEER_ANSICHT[ansicht];
   return (
-    <Seite titel="Eingangsrechnungen & Belege" aktion={<Button icon="kamera" to="/betrieb/belege/neu">Beleg fotografieren</Button>}>
-      <Filter
-        label="Belege filtern"
-        wert={filter}
-        onChange={setFilter}
-        optionen={[
-          { wert: 'offen', label: 'Unbezahlt', zaehler: alle.filter((b) => b.status !== 'bezahlt').length },
-          { wert: 'neu', label: 'Zu prüfen', zaehler: alle.filter((b) => b.status === 'neu').length },
-          { wert: 'ohne', label: 'Ohne Auftrag', zaehler: alle.filter((b) => !b.auftragId).length },
-          { wert: 'bezahlt', label: 'Bezahlt' },
-          { wert: 'alle', label: 'Alle' },
-        ]}
-      />
-      <Suchfeld wert={q} onChange={setQ} platzhalter="Lieferant, Nummer, Auftrag …" />
-      <Liste
-        leer={
-          q || filter !== 'offen' ? (
-            <Leer titel="Keine Belege gefunden" text="Ändere den Filter oder die Suche." icon="suche" />
-          ) : (
-            <Leer titel="Keine offenen Belege" text="Fotografiere Lieferantenrechnungen und Quittungen direkt auf der Baustelle – Macher schlägt den Auftrag vor." aktion={<Button to="/betrieb/belege/neu">Beleg fotografieren</Button>} icon="kamera" />
-          )
-        }
-      >
-        {zeigen.map((b) => {
-          const a = db.auftraege.get(b.auftragId);
-          const f = naechsteFrist(b);
-          return (
-            <ListenZeile
-              key={b.id}
-              to={`/betrieb/belege/${b.id}`}
-              titel={
-                <>
-                  {lieferantName(b)}
-                  {geld ? ` · ${euro(brutto(b))}` : ''} <BeispielMarke zeigen={b.beispiel} />
-                </>
-              }
-              untertitel={[ART_LABEL[b.art], datum(b.datum), a ? a.nummer : 'ohne Auftrag', f ? `${f.art === 'skonto' ? 'Skonto bis' : 'zahlen bis'} ${datum(f.datum)}` : null].filter(Boolean).join(' · ')}
-              rechts={<BelegStatus b={b} />}
-            />
-          );
-        })}
-      </Liste>
+    <Seite titel={titel} aktion={aktion}>
+      <Ablage onFertig={() => setAnsicht('pruefen')} />
+      <Stapel abstand={16}>
+        <AnsichtWahl wert={ansicht} onChange={setAnsicht} zaehler={zaehler} />
+        <Suchfeld wert={q} onChange={setQ} platzhalter="Lieferant, Nummer, Auftrag …" />
+        <Liste leer={<Leer titel={leer.titel} text={leer.text} icon={q ? 'suche' : 'check'} />}>
+          {zeigen.map((b) => {
+            const a = db.auftraege.get(b.auftragId);
+            const f = naechsteFrist(b);
+            const schritt = belegSchritt(b);
+            const pruefer = schritt === 'pruefen' ? personName(b.pruefendeId) : undefined;
+            return (
+              <ListenZeile
+                key={b.id}
+                to={`/betrieb/belege/${b.id}`}
+                titel={
+                  <>
+                    {lieferantName(b)}
+                    {geld ? ` · ${brutto(b) > 0 ? euro(brutto(b)) : 'Betrag fehlt'}` : ''} <BeispielMarke zeigen={b.beispiel} />
+                  </>
+                }
+                untertitel={[
+                  ART_LABEL[b.art],
+                  datum(b.datum),
+                  a ? a.nummer : b.ohneAuftrag ? 'ohne Auftrag (gewollt)' : 'ohne Auftrag',
+                  b.quelle === 'email' ? 'per E-Mail' : null,
+                  pruefer ? `prüft: ${pruefer}` : null,
+                  f ? `${f.art === 'skonto' ? 'Skonto bis' : 'zahlen bis'} ${datum(f.datum)}` : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
+                rechts={<BelegStatus b={b} />}
+              />
+            );
+          })}
+        </Liste>
+      </Stapel>
     </Seite>
   );
 }
@@ -154,6 +216,49 @@ export function BelegSchnell({ fertig, auftragId }: { fertig: () => void; auftra
   );
 }
 
+const SCHRITT_SATZ: Record<Schritt, string> = {
+  pruefen: 'Vergleiche Lieferant, Betrag und Datum mit der Rechnung.',
+  zuordnen: 'Zu welchem Auftrag gehören die Kosten? Oder gehört der Beleg zu keinem Auftrag?',
+  freigeben: 'Passt alles? Gib die Rechnung zur Zahlung frei.',
+  zahlen: 'Freigegeben. Zahle die Rechnung und markiere sie dann als bezahlt.',
+  bezahlt: 'Erledigt. Hier ist nichts mehr zu tun.',
+};
+
+const NACH_SCHRITT: Record<Schritt, string> = {
+  pruefen: 'Gespeichert.',
+  zuordnen: 'Geprüft. Jetzt dem Auftrag zuordnen.',
+  freigeben: 'Erledigt. Jetzt freigeben.',
+  zahlen: 'Freigegeben. Jetzt offen zu zahlen.',
+  bezahlt: 'Als bezahlt markiert.',
+};
+
+/** Schrittanzeige: jeder Schritt mit Namen und Zustand als Text – Farbe hilft nur */
+function Schrittanzeige({ schritt }: { schritt: Schritt }) {
+  const i = schrittIndex(schritt);
+  const alleFertig = schritt === 'bezahlt';
+  return (
+    <ol className="bl-schritte" aria-label="Ablauf der Eingangsrechnung">
+      {SCHRITTE.map((s, j) => {
+        const zustand = alleFertig || j < i ? 'fertig' : j === i ? 'jetzt' : 'offen';
+        return (
+          <li key={s.id} className={`bl-schritt bl-schritt--${zustand}`} aria-current={zustand === 'jetzt' ? 'step' : undefined}>
+            <span className="bl-schritt-name">{s.label}</span>
+            <span className="bl-schritt-zustand">{zustand === 'fertig' ? 'erledigt' : zustand === 'jetzt' ? 'jetzt dran' : 'noch offen'}</span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+const SAETZE = [19, 7, 0];
+/** USt-Satz aus Netto/USt ablesen; passt keiner der üblichen, ist es eine eigene Aufteilung */
+function satzVon(b: BelegX): string {
+  if (b.netto <= 0) return b.ust > 0 ? 'eigen' : '19';
+  const s = SAETZE.find((x) => Math.abs(Math.round((b.netto * x) / 100) - b.ust) <= 1);
+  return s != null ? String(s) : 'eigen';
+}
+
 export function BelegDetail() {
   const { id = '' } = useParams();
   useDatenstand();
@@ -161,32 +266,65 @@ export function BelegDetail() {
   const toast = useToast();
   const geld = useDarf('geld');
   const [fragen, bestaetigung] = useBestaetigen();
+  const [fehler, setFehler] = useState<string>();
   const b = belegX(id);
   if (!b || b.geloeschtAm)
     return (
       <Seite titel="Beleg nicht gefunden" zurueck={{ to: '/betrieb/belege', label: 'Belege' }}>
-        <Leer titel="Diesen Beleg gibt es nicht (mehr)." icon="dokument" />
+        <Leer titel="Diesen Beleg gibt es nicht (mehr)." text="Vielleicht liegt er im Papierkorb." aktion={<Button variante="sekundaer" to="/betrieb/belege">Zu den Belegen</Button>} icon="dokument" />
       </Seite>
     );
   const dok = db.dokumente.get(b.dokumentId);
   const f = naechsteFrist(b);
+  const schritt = belegSchritt(b);
+  const nr = schrittIndex(schritt) + 1;
+  const vorschlag = schritt === 'zuordnen' ? auftragVorschlaege(b)[0] : undefined;
+  const vorschlagAuftrag = db.auftraege.get(vorschlag?.auftragId);
   const set = (patch: Partial<BelegX>) => belegAendern(b.id, patch, { leise: true });
-  const status = (s: BelegX['status'], text: string) => {
-    belegAendern(b.id, { status: s }, { text });
-    vermerken({ typ: 'belege', id: b.id }, `beleg.${s}`, text);
-    toast(text + '.');
+  const weiter = (tun: () => unknown) => {
+    setFehler(undefined);
+    tun();
+    const nach = belegX(b.id);
+    toast(nach ? NACH_SCHRITT[belegSchritt(nach)] : 'Gespeichert.');
   };
+  const pruefen = () => {
+    const luecken = pruefLuecken(b).filter((x) => geld || x !== 'Betrag');
+    if (luecken.length) return setFehler(`Es fehlt noch: ${luecken.join(', ')}. Trag es ein und tippe dann auf „Geprüft“.`);
+    weiter(() => alsGeprueft(b.id));
+  };
+  const zumAuftragsfeld = () => {
+    const feld = document.querySelector<HTMLSelectElement>('#beleg-auftrag select');
+    feld?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    feld?.focus({ preventScroll: true });
+  };
+
   const aktion =
-    b.status === 'neu' ? (
-      <Button icon="check" onClick={() => status('geprueft', 'Als geprüft markiert')}>
-        Als geprüft markieren
+    schritt === 'pruefen' ? (
+      <Button icon="check" onClick={pruefen}>
+        Geprüft
       </Button>
-    ) : b.status === 'geprueft' && geld ? (
-      <Button icon="euro" onClick={() => status('bezahlt', 'Als bezahlt markiert')}>
+    ) : schritt === 'zuordnen' ? (
+      vorschlagAuftrag ? (
+        <Button icon="auftraege" onClick={() => weiter(() => auftragZuordnen(b.id, vorschlagAuftrag.id))}>
+          {`${vorschlagAuftrag.nummer} zuordnen`}
+        </Button>
+      ) : (
+        <Button icon="auftraege" onClick={zumAuftragsfeld}>
+          Auftrag zuordnen
+        </Button>
+      )
+    ) : schritt === 'freigeben' && geld ? (
+      <Button icon="check" onClick={() => weiter(() => freigeben(b.id))}>
+        Freigeben
+      </Button>
+    ) : schritt === 'zahlen' && geld ? (
+      <Button icon="euro" onClick={() => weiter(() => alsBezahlt(b.id))}>
         Als bezahlt markieren
       </Button>
     ) : undefined;
   const skontoBetrag = f?.art === 'skonto' && f.betrag ? f.betrag : undefined;
+  const satz = satzVon(b);
+  const wann = (z: string | undefined, wer: ID | undefined) => [z ? datum(z.slice(0, 10)) : null, personName(wer) ? `von ${personName(wer)}` : null].filter(Boolean).join(' ');
 
   return (
     <Seite
@@ -200,9 +338,64 @@ export function BelegDetail() {
       zurueck={{ to: '/betrieb/belege', label: 'Belege' }}
       aktion={aktion}
     >
+      <Karte titel="Ablauf" kompakt>
+        <Stapel abstand={12}>
+          <Schrittanzeige schritt={schritt} />
+          <p className="mm-meta" style={{ margin: 0 }}>
+            <strong>{schritt === 'bezahlt' ? 'Fertig' : `Schritt ${nr} von 5: ${SCHRITTE[nr - 1].label}`}.</strong> {SCHRITT_SATZ[schritt]}
+            {(schritt === 'freigeben' || schritt === 'zahlen') && !geld ? ' Das macht Chef oder Büro.' : ''}
+          </p>
+          {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
+          {schritt === 'zuordnen' && (
+            <Zeile>
+              {vorschlagAuftrag && (
+                <Button klein variante="sekundaer" onClick={zumAuftragsfeld}>
+                  Anderen Auftrag wählen
+                </Button>
+              )}
+              <Button klein variante="sekundaer" onClick={() => weiter(() => ohneAuftragWeiter(b.id))}>
+                Gehört zu keinem Auftrag
+              </Button>
+            </Zeile>
+          )}
+          <div className="bl-ablauf-angaben">
+            <Auswahl
+              label="Wer prüft?"
+              value={b.pruefendeId ?? ''}
+              leer="Noch niemand"
+              onChange={(e) => {
+                const pid = e.target.value || undefined;
+                belegAendern(b.id, { pruefendeId: pid }, { text: pid ? `${personName(pid)} prüft` : 'Zuweisung entfernt' });
+                toast(pid ? `${personName(pid)} prüft den Beleg.` : 'Zuweisung entfernt.');
+              }}
+              optionen={pruefende().map((m) => ({ wert: m.id, label: `${m.vorname} ${m.nachname}`.trim() }))}
+            />
+            <div className="mm-feld">
+              <span className="mm-label">Zahlung</span>
+              <div>
+                {b.status === 'bezahlt' ? (
+                  <Status ton="erfolg">{b.bezahltAm ? `Bezahlt am ${datum(b.bezahltAm)}` : 'Bezahlt'}</Status>
+                ) : (
+                  <Status ton={f && f.tage <= 3 ? 'achtung' : 'neutral'}>{f ? `Nicht bezahlt · ${f.art === 'skonto' ? 'Skonto bis' : 'zahlen bis'} ${datum(f.datum)}` : 'Nicht bezahlt'}</Status>
+                )}
+              </div>
+            </div>
+          </div>
+          {(b.geprueftAm || b.freigegebenAm) && (
+            <Meta>
+              {[b.geprueftAm ? `Geprüft ${wann(b.geprueftAm, b.geprueftVon)}` : null, b.freigegebenAm ? `Freigegeben ${wann(b.freigegebenAm, b.freigegebenVon)}` : null].filter(Boolean).join(' · ')}
+            </Meta>
+          )}
+        </Stapel>
+      </Karte>
       {f && f.art === 'skonto' && f.tage <= 3 && (
         <Meldung ton="achtung" titel={`Skonto sichern bis ${datum(f.datum)}`}>
           {skontoBetrag ? `Zahlst du rechtzeitig, sparst du ${euro(skontoBetrag)}.` : 'Zahl rechtzeitig, dann darfst du Skonto abziehen.'}
+        </Meldung>
+      )}
+      {b.quelle === 'email' && schritt === 'pruefen' && (
+        <Meldung ton="neutral" titel="Per E-Mail eingegangen">
+          {[b.eingangVon ? `Von ${b.eingangVon}` : null, b.eingangBetreff ? `Betreff „${b.eingangBetreff}“` : null, b.lieferantGrund ? `Lieferant ${b.lieferantGrund}` : null].filter(Boolean).join(' · ')}. Betrag und Datum trägst du beim Prüfen ein.
         </Meldung>
       )}
       {b.zuordnungGrund && b.auftragId && <Meldung ton="neutral" titel="Von Macher zugeordnet">{b.zuordnungGrund}</Meldung>}
@@ -213,6 +406,7 @@ export function BelegDetail() {
               <LieferantenListe />
               <FormRaster>
                 <Eingabe
+                  key={`l-${b.lieferantId ?? b.lieferantName ?? ''}`}
                   label="Lieferant"
                   list="geld-lieferanten"
                   defaultValue={lieferantName(b) === 'Unbekannter Lieferant' ? '' : lieferantName(b)}
@@ -221,8 +415,22 @@ export function BelegDetail() {
                 <Eingabe label="Rechnungsnummer" optional value={b.nummer ?? ''} onChange={(e) => set({ nummer: e.target.value || undefined })} />
                 <Eingabe label="Belegdatum" type="date" value={b.datum} onChange={(e) => set({ datum: e.target.value })} />
                 <Auswahl label="Kategorie" value={b.kategorie ?? ''} leer="Keine" onChange={(e) => set({ kategorie: e.target.value || undefined })} optionen={KATEGORIEN.map((k) => ({ wert: k, label: k }))} />
+                {geld && <GeldEingabe label="Betrag brutto (€)" wert={brutto(b)} onWert={(c) => set(ausBrutto(c, satz === 'eigen' ? 19 : Number(satz)))} />}
+                {geld && (
+                  <Auswahl
+                    label="USt-Satz"
+                    value={satz}
+                    onChange={(e) => e.target.value !== 'eigen' && set(ausBrutto(brutto(b), Number(e.target.value)))}
+                    optionen={[
+                      { wert: '19', label: '19 %' },
+                      { wert: '7', label: '7 %' },
+                      { wert: '0', label: '0 % / keine' },
+                      ...(satz === 'eigen' ? [{ wert: 'eigen', label: 'Eigene Aufteilung' }] : []),
+                    ]}
+                  />
+                )}
                 {geld && <GeldEingabe label="Netto (€)" wert={b.netto} onWert={(c) => set({ netto: c })} />}
-                {geld && <GeldEingabe label="USt (€)" wert={b.ust} onWert={(c) => set({ ust: c })} hilfe={`Brutto ${euro(brutto(b))}`} />}
+                {geld && <GeldEingabe label="USt (€)" wert={b.ust} onWert={(c) => set({ ust: c })} />}
                 {geld && <Eingabe label="Zahlen bis" type="date" optional value={b.faelligAm ?? ''} onChange={(e) => set({ faelligAm: e.target.value || undefined })} />}
                 {geld && <Eingabe label="Skonto bis" type="date" optional value={b.skontoBis ?? ''} onChange={(e) => set({ skontoBis: e.target.value || undefined })} />}
                 {geld && (
@@ -235,8 +443,11 @@ export function BelegDetail() {
                   />
                 )}
               </FormRaster>
-              <AuftragAuswahl wert={b.auftragId ?? ''} onChange={(aid) => (set({ auftragId: aid || undefined, zuordnungGrund: undefined }), b.dokumentId && db.dokumente.update(b.dokumentId, { auftragId: aid || undefined }, { leise: true }))} optional nurOffene={false} />
-              <AuftragVorschlag beleg={b} aktuell={b.auftragId} onWahl={(aid) => (set({ auftragId: aid, zuordnungGrund: undefined }), toast('Auftrag zugeordnet.'))} />
+              <div id="beleg-auftrag">
+                <AuftragAuswahl wert={b.auftragId ?? ''} onChange={(aid) => auftragZuordnen(b.id, aid || undefined)} optional nurOffene={false} />
+              </div>
+              {b.ohneAuftrag && !b.auftragId && <Meta>Gehört zu keinem Auftrag (z. B. Büro oder Fahrzeug).</Meta>}
+              {schritt !== 'zuordnen' && <AuftragVorschlag beleg={b} aktuell={b.auftragId} onWahl={(aid) => (auftragZuordnen(b.id, aid), toast('Auftrag zugeordnet.'))} />}
             </Stapel>
           </Karte>
         }
@@ -244,22 +455,24 @@ export function BelegDetail() {
           <>
             <Karte titel="Beleg" kompakt>
               <Stapel abstand={8}>
-                {dok?.url ? <Vorschau url={dok.url} mime={dok.mime} /> : <Meta>Noch kein Foto.</Meta>}
+                {dok?.url ? <Vorschau url={dok.url} mime={dok.mime} /> : <Meta>Noch kein Foto und kein PDF.</Meta>}
                 <DateiKnopf
-                  accept="image/*,application/pdf"
+                  accept={BELEG_DATEITYPEN}
                   kamera
                   onDateien={async ([file]) => {
+                    const problem = dateiPruefen(file);
+                    if (problem) return toast(problem, { ton: 'achtung' });
                     try {
                       const d = await dateiAblegen(file, { auftragId: b.auftragId });
                       db.dokumente.update(d.id, { bezug: { typ: 'belege', id: b.id } }, { leise: true });
                       set({ dokumentId: d.id });
-                      toast('Foto gespeichert.');
+                      toast('Datei gespeichert.');
                     } catch {
-                      toast('Das Foto konnte nicht gespeichert werden.', { ton: 'achtung' });
+                      toast('Die Datei konnte nicht gespeichert werden. Versuch es noch einmal.', { ton: 'achtung' });
                     }
                   }}
                 >
-                  {dok ? 'Foto ersetzen' : 'Beleg fotografieren'}
+                  {dok ? 'Datei ersetzen' : 'Beleg fotografieren'}
                 </DateiKnopf>
               </Stapel>
             </Karte>
@@ -274,8 +487,8 @@ export function BelegDetail() {
               <Zeitstrahl bezug={{ typ: 'belege', id: b.id }} max={8} />
             </Karte>
             {b.status !== 'neu' && (
-              <Button variante="tertiaer" onClick={() => status('neu', 'Wieder auf „neu“ gesetzt')}>
-                Status zurücksetzen
+              <Button variante="tertiaer" onClick={() => (zuruecksetzen(b.id), setFehler(undefined), toast('Wieder auf „Prüfen“ gesetzt.'))}>
+                Zurück auf „Prüfen“
               </Button>
             )}
             <Button

@@ -1,5 +1,6 @@
 /**
  * Anfrage-Postfach: Eingangs-Webhook für `anfragen@<betrieb>.macher-os.de` (Resend Inbound oder Postmark Inbound).
+ * Mails an `belege@<betrieb>.macher-os.de` gehen an den Belege-Eingang (`src/os/server/belege-eingang.ts`).
  *
  * POST /api/eingang/email (Next.js Route Handler, Node)
  *  → erkennt den Betrieb an der Empfängeradresse,
@@ -13,6 +14,9 @@
  */
 import { json, lesen, neueId, nichtVerbunden, objekteLesen, objekteSchreiben, verbindung, type ObjektZeile, type Verbindung } from '@/os/server/supabase';
 import { anfragePlanen, betriebSlug, mailLesen, slugAusAdresse, type AuftragZeile, type KundeZeile } from '@/os/server/postfach';
+import { slugAusBelegeAdresse } from '@/os/server/belege-postfach';
+import { belegeEingang } from '@/os/server/belege-eingang';
+import { appUrl } from '@/server/cloud/lib';
 
 function erlaubt(request: Request): boolean {
   const geheim = process.env.EINGANG_WEBHOOK_SECRET;
@@ -59,8 +63,14 @@ export async function POST(request: Request): Promise<Response> {
   const mail = mailLesen(body);
   if (!mail) return json({ fehler: 'keine E-Mail erkannt' }, 400);
 
+  // Belege-Postfach (`belege@<betrieb>.macher-os.de`): Anhänge werden Eingangsrechnungen – siehe docs/os/BELEGE-EMAIL.md
+  const belegeSlug = mail.an.map(slugAusBelegeAdresse).find(Boolean);
+  // Belege legen Dateien im Speicher ab – ohne gesetzten Schlüssel nehmen wir dort nichts an
+  if (belegeSlug && !process.env.EINGANG_WEBHOOK_SECRET) return json({ fehler: 'Belege-Eingang braucht EINGANG_WEBHOOK_SECRET' }, 503);
+  if (belegeSlug) return belegeEingang({ v, body, mail, slug: belegeSlug, appBasis: appUrl(request) });
+
   const slug = mail.an.map(slugAusAdresse).find(Boolean);
-  if (!slug) return json({ fehler: 'Empfänger ist kein Anfrage-Postfach' }, 404);
+  if (!slug) return json({ fehler: 'Empfänger ist kein Anfrage- oder Belege-Postfach' }, 404);
 
   try {
     const betrieb = await betriebZumPostfach(v, slug);
