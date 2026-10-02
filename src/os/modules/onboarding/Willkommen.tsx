@@ -238,7 +238,7 @@ function Ablauf() {
     return (
       <div className="ob-ablauf">
         <Frage titel="Konto erstellen" text="Mit deiner E-Mail oder Handynummer kommst du jederzeit wieder rein – ohne Passwort.">
-          <SchrittKonto konto={konto} setKonto={setKonto} />
+          <SchrittKonto konto={konto} setKonto={setKonto} email={params.get('email')?.trim() ?? ''} google={params.get('anmeldung') === 'google'} />
         </Frage>
         <div className="ob-navigation">
           <Button variante="tertiaer" onClick={() => geheZu('website')} disabled={konto.art === 'laedt'}>

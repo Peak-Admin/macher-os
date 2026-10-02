@@ -58,6 +58,8 @@ export interface Cloud {
   /** Anmeldung ohne Passwort: Link per E-Mail oder Code per SMS */
   anmelden(ziel: { email?: string; telefon?: string }): Promise<{ ok: boolean; fehler?: string }>;
   codeBestaetigen(telefon: string, code: string): Promise<{ ok: boolean; fehler?: string }>;
+  /** Anmelden mit Google (leitet weiter und kommt auf `zurueck` zurück). Fehlt es, gibt es kein Google-Konto. */
+  mitGoogle?(zurueck: string): Promise<{ ok: boolean; fehler?: string }>;
   abmelden(): Promise<void>;
   /** Mitarbeiter einladen (SMS/E-Mail mit Link) */
   einladen(mitarbeiterId: ID, ziel: { email?: string; telefon?: string }): Promise<VersandErgebnis>;
