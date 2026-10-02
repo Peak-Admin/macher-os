@@ -1,29 +1,38 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '@core/db';
-import type { Kunde } from '@core/objects';
-import { Button, Eingabe, FormRaster, Karte, Segmente, Seite, useToast } from '@ui/index';
+import type { ID } from '@core/objects';
+import { Button, Karte, Liste, ListenZeile, Meldung, Seite, Stapel, useToast } from '@ui/index';
+import { KundeAuswahl } from '@ui/objekt';
+import { empfehlungErfassen } from '@modules/bewertungen/daten';
+import { aehnlicheKunden, naechsteKundennummer } from './daten';
+import { KundeFelder, kundenDatenAus, leererEntwurf, pruefeEntwurf, type KundeEntwurf } from './KundeFelder';
 
 export function KundeNeu() {
   const navigate = useNavigate();
   const toast = useToast();
-  const [art, setArt] = useState<Kunde['art']>('privat');
-  const [f, setF] = useState({ name: '', telefon: '', email: '', strasse: '', plz: '', ort: '' });
-  const [fehler, setFehler] = useState<string>();
-  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF({ ...f, [k]: e.target.value });
+  const [f, setF] = useState<KundeEntwurf>(leererEntwurf);
+  const [fehler, setFehler] = useState<ReturnType<typeof pruefeEntwurf>>({});
+  const [empfohlenVon, setEmpfohlenVon] = useState<ID>('');
+  const kunden = db.kunden.use();
+
+  const aehnlich = useMemo(() => {
+    const d = kundenDatenAus(f);
+    if (!d.name && !d.telefon && !d.email) return [];
+    return aehnlicheKunden({ name: d.name ?? '', telefon: d.telefon, email: d.email, adresse: d.adresse, ansprechpartner: [] }, kunden);
+  }, [f, kunden]);
 
   const speichern = () => {
-    if (!f.name.trim()) return setFehler('Trage einen Namen ein.');
+    const e = pruefeEntwurf(f);
+    setFehler(e);
+    if (Object.keys(e).length) return;
     const k = db.kunden.create({
-      art,
-      name: f.name.trim(),
-      firma: art !== 'privat' ? f.name.trim() : undefined,
-      telefon: f.telefon || undefined,
-      email: f.email || undefined,
-      adresse: f.strasse || f.ort ? { strasse: f.strasse, plz: f.plz, ort: f.ort } : undefined,
+      ...kundenDatenAus(f),
+      nummer: naechsteKundennummer(),
       ansprechpartner: [],
-    });
-    toast('Kunde angelegt.');
+    } as Parameters<typeof db.kunden.create>[0]);
+    if (f.quelle === 'empfehlung' && empfohlenVon) empfehlungErfassen(k.id, empfohlenVon);
+    toast(`${k.name} ist angelegt.`);
     navigate(`/auftraege/kunden/${k.id}`, { replace: true });
   };
 
@@ -37,18 +46,26 @@ export function KundeNeu() {
           }}
           className="mm-stapel"
           style={{ gap: 24 }}
+          noValidate
         >
-          <Segmente label="Art" wert={art} onChange={setArt} optionen={[{ wert: 'privat', label: 'Privat' }, { wert: 'firma', label: 'Firma' }, { wert: 'hausverwaltung', label: 'Hausverwaltung' }, { wert: 'oeffentlich', label: 'Öffentlich' }]} />
-          <FormRaster>
-            <Eingabe label={art === 'privat' ? 'Name' : 'Firmenname'} value={f.name} onChange={set('name')} fehler={fehler} autoFocus autoComplete="name" />
-            <Eingabe label="Telefon" type="tel" value={f.telefon} onChange={set('telefon')} optional autoComplete="tel" />
-            <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} optional autoComplete="email" />
-            <Eingabe label="Straße und Hausnummer" value={f.strasse} onChange={set('strasse')} optional />
-            <Eingabe label="PLZ" value={f.plz} onChange={set('plz')} optional inputMode="numeric" />
-            <Eingabe label="Ort" value={f.ort} onChange={set('ort')} optional />
-          </FormRaster>
+          <KundeFelder wert={f} onChange={setF} fehler={fehler} />
+          {f.quelle === 'empfehlung' && <KundeAuswahl label="Wer hat euch empfohlen?" optional wert={empfohlenVon} onChange={setEmpfohlenVon} />}
+          {aehnlich.length > 0 && (
+            <Meldung ton="achtung" titel="Gibt es diesen Kunden schon?">
+              <Stapel abstand={8}>
+                <span>Diese Kunden sehen ähnlich aus. Öffne den passenden, statt einen doppelten anzulegen.</span>
+                <Liste>
+                  {aehnlich.slice(0, 3).map((k) => (
+                    <ListenZeile key={k.id} to={`/auftraege/kunden/${k.id}`} titel={k.name} untertitel={[k.adresse?.ort, k.telefon, k.email].filter(Boolean).join(' · ')} />
+                  ))}
+                </Liste>
+              </Stapel>
+            </Meldung>
+          )}
           <div>
-            <Button type="submit">Kunde speichern</Button>
+            <Button type="submit" icon="check">
+              {aehnlich.length ? 'Trotzdem neu anlegen' : 'Kunde speichern'}
+            </Button>
           </div>
         </form>
       </Karte>
