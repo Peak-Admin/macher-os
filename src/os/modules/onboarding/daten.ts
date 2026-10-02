@@ -19,6 +19,7 @@ import { alleAutomationen, alleModule } from '@core/modul';
 import type { Gewerk, ID, Kunde, Rolle } from '@core/objects';
 import { beispieleEntfernen, einrichten, preisAnpassen, sicherungVerwerfen } from '@core/seed';
 import { checklistenVorlagen } from '@modules/checklisten/daten';
+import { feldvorlagenAnwenden } from '@modules/felder/daten';
 import { dublettenGruende, normEmail, normTelefon } from '@modules/kunden/daten';
 import { istXlsx, xlsxZeilen } from './xlsx';
 
@@ -616,8 +617,8 @@ export function setzeSchwerpunkt(id: FachrichtungId | undefined) {
  * (Abläufe und Begriffe folgen daraus), fehlendes Material und Qualifikationen der Fachrichtung, zusätzliche
  * Checklisten, abweichende Automationen. Alles ohne Dubletten – mehrfach aufrufen ändert nichts.
  */
-export function vorlageAnwenden(v: Vorlage): { artikel: number; qualifikationen: number; checklisten: number } {
-  const n = { artikel: 0, qualifikationen: 0, checklisten: 0 };
+export function vorlageAnwenden(v: Vorlage): { artikel: number; qualifikationen: number; checklisten: number; felder: number } {
+  const n = { artikel: 0, qualifikationen: 0, checklisten: 0, felder: 0 };
   const name = (x: string) => x.trim().toLowerCase();
   batch(() => {
     if (v.id !== v.gewerk) setzeEinstellung(VORLAGE_KEY, v.id);
@@ -660,6 +661,8 @@ export function vorlageAnwenden(v: Vorlage): { artikel: number; qualifikationen:
       n.checklisten++;
     }
   });
+  // Aufmaß-/Formularfelder des Gewerks gleich mitbringen – der Betrieb muss nichts einrichten
+  n.felder = feldvorlagenAnwenden(v.felder).angelegt.length;
   const bekannt = new Set(alleAutomationen().map((x) => x.id));
   for (const id of v.automationen.an) if (bekannt.has(id)) setzeAutomation(id, true);
   for (const id of v.automationen.aus) if (bekannt.has(id)) setzeAutomation(id, false);

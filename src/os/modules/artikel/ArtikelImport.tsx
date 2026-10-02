@@ -141,8 +141,10 @@ export function ArtikelImport() {
 
         <Karte titel="Datanorm" kompakt>
           <Zeile zwischen>
-            <Meta>Direkter Import von Datanorm-Dateien (Großhandels-Standard) inklusive Preisupdates.</Meta>
-            <Status>Geplant</Status>
+            <Meta>Datanorm-Datei vom Großhändler direkt einlesen, inklusive Preisupdates.</Meta>
+            <Button variante="sekundaer" icon="upload" to="/betrieb/schnittstellen/datanorm">
+              Datanorm einlesen
+            </Button>
           </Zeile>
         </Karte>
       </Stapel>

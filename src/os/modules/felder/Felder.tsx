@@ -4,7 +4,8 @@
  */
 import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
-import { gewerkVorlage } from '@core/gewerke';
+import { einstellung } from '@core/einstellungen';
+import { VORLAGE_KEY, vorlageFuer } from '@core/gewerke';
 import { useDarf } from '@core/session';
 import { AktionsMenue, Auswahl, Button, Checkbox, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Textfeld, Zeile, useBestaetigen, useToast } from '@ui/index';
 import {
@@ -45,8 +46,7 @@ function beschreibung(f: FeldDefinition): string {
 function gewerkFeldvorlagen(): FeldVorlage[] {
   const b = db.betrieb.get('betrieb');
   if (!b) return [];
-  const v = gewerkVorlage(b.gewerk) as unknown as Record<string, unknown>;
-  const liste = v.feldvorlagen ?? v.felder;
+  const liste = vorlageFuer(b.gewerk, einstellung<string | undefined>(VORLAGE_KEY, undefined)).felder;
   return sindFeldvorlagen(liste) ? liste : [];
 }
 
