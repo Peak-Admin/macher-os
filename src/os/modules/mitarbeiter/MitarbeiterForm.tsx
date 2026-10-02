@@ -4,10 +4,12 @@ import { db } from '@core/db';
 import { centAlsEingabe, centAus, heute } from '@core/format';
 import type { Mitarbeiter, Rolle } from '@core/objects';
 import { ROLLEN, istBuero, useDarf, useIch } from '@core/session';
-import { Button, Eingabe, FormRaster, Karte, Leer, Meldung, Segmente, Seite, Stapel, useToast } from '@ui/index';
+import { Button, Eingabe, FormAbschnitt, FormFuss, FormRaster, Karte, Leer, Meldung, Segmente, Seite, useToast, type IconName } from '@ui/index';
 import { einarbeitungen } from '@modules/einarbeitung/daten';
 import { wochenstundenGeaendert } from '@modules/arbeitszeiten/modell';
 import { naechsteFarbe } from './team';
+
+const ROLLEN_ICON: Record<Rolle, IconName> = { chef: 'stern', buero: 'notiz', monteur: 'werkzeug', azubi: 'wissen' };
 
 /** Anlegen (`/betrieb/mitarbeiter/neu`) und Bearbeiten (`/betrieb/mitarbeiter/:id/bearbeiten`) */
 export function MitarbeiterForm() {
@@ -94,31 +96,40 @@ export function MitarbeiterForm() {
             speichern();
           }}
         >
-          <Segmente label="Rolle" wert={rolle} onChange={setRolle} optionen={ROLLEN.map((r) => ({ wert: r.id, label: r.label }))} />
-          <FormRaster>
-            <Eingabe label="Vorname" value={f.vorname} onChange={set('vorname')} fehler={fehler.vorname} autoFocus={neu} autoComplete="off" />
-            <Eingabe label="Nachname" value={f.nachname} onChange={set('nachname')} fehler={fehler.nachname} autoComplete="off" />
-            <Eingabe label="Handynummer" type="tel" value={f.telefon} onChange={set('telefon')} optional />
-            <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} optional />
-          </FormRaster>
-          <FormRaster>
-            <Eingabe label="Wochenstunden laut Vertrag" inputMode="decimal" value={f.wochenstunden} onChange={set('wochenstunden')} fehler={fehler.wochenstunden} hilfe="Grundlage für Soll-Stunden und Stundenkonto. Stunden je Wochentag (Teilzeit) stellst du am Mitarbeiter unter Zeiten ein." />
-            <Eingabe label="Urlaubstage pro Jahr" inputMode="numeric" value={f.urlaubstageJahr} onChange={set('urlaubstageJahr')} fehler={fehler.urlaubstageJahr} />
-            <Eingabe label="Eintritt" type="date" value={f.eintritt} onChange={set('eintritt')} optional />
-            <Eingabe label="Team / Kolonne" value={f.team} onChange={set('team')} optional hilfe="Zum Beispiel „Kolonne Nord“." />
-          </FormRaster>
-          {personal ? (
+          <FormAbschnitt titel="Person und Kontakt" text="Wer kommt ins Team und wie erreichst du ihn?" icon="person">
+            <Segmente label="Rolle" wert={rolle} onChange={setRolle} optionen={ROLLEN.map((r) => ({ wert: r.id, label: r.label, icon: ROLLEN_ICON[r.id] }))} />
             <FormRaster>
-              <Eingabe label="Interne Kosten je Stunde (€)" inputMode="decimal" value={f.kostensatz} onChange={set('kostensatz')} optional hilfe="Lohn plus Nebenkosten. Nur für Chef sichtbar, Grundlage der Nachkalkulation." />
+              <Eingabe label="Vorname" value={f.vorname} onChange={set('vorname')} fehler={fehler.vorname} autoFocus={neu} autoComplete="off" />
+              <Eingabe label="Nachname" value={f.nachname} onChange={set('nachname')} fehler={fehler.nachname} autoComplete="off" />
+              <Eingabe label="Handynummer" type="tel" value={f.telefon} onChange={set('telefon')} optional />
+              <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} optional />
             </FormRaster>
-          ) : (
-            <Meldung>Lohn- und Kostendaten pflegt der Chef.</Meldung>
-          )}
-          <Stapel abstand={8}>
-            <div>
-              <Button type="submit">{neu ? 'Mitarbeiter anlegen' : 'Änderungen speichern'}</Button>
-            </div>
-          </Stapel>
+          </FormAbschnitt>
+          <FormAbschnitt titel="Vertrag und Zeiten" text="Daraus rechnet Macher OS Soll-Stunden, Stundenkonto und Urlaub." icon="uhr">
+            <FormRaster>
+              <Eingabe label="Wochenstunden laut Vertrag" inputMode="decimal" value={f.wochenstunden} onChange={set('wochenstunden')} fehler={fehler.wochenstunden} hilfe="Stunden je Wochentag (Teilzeit) stellst du am Mitarbeiter unter Zeiten ein." />
+              <Eingabe label="Urlaubstage pro Jahr" inputMode="numeric" value={f.urlaubstageJahr} onChange={set('urlaubstageJahr')} fehler={fehler.urlaubstageJahr} />
+              <Eingabe label="Eintritt" type="date" value={f.eintritt} onChange={set('eintritt')} optional />
+              <Eingabe label="Team / Kolonne" value={f.team} onChange={set('team')} optional hilfe="Zum Beispiel „Kolonne Nord“." />
+            </FormRaster>
+          </FormAbschnitt>
+          <FormAbschnitt titel="Kosten" text="Grundlage der Nachkalkulation." icon="euro">
+            {personal ? (
+              <FormRaster>
+                <Eingabe label="Interne Kosten je Stunde (€)" inputMode="decimal" value={f.kostensatz} onChange={set('kostensatz')} optional hilfe="Lohn plus Nebenkosten. Nur für Chef sichtbar." />
+              </FormRaster>
+            ) : (
+              <Meldung>Lohn- und Kostendaten pflegt der Chef.</Meldung>
+            )}
+          </FormAbschnitt>
+          <FormFuss>
+            <Button type="submit" icon={neu ? 'plus' : 'check'}>
+              {neu ? 'Mitarbeiter anlegen' : 'Änderungen speichern'}
+            </Button>
+            <Button variante="tertiaer" to={zurueck.to}>
+              Abbrechen
+            </Button>
+          </FormFuss>
         </form>
       </Karte>
     </Seite>

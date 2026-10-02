@@ -186,11 +186,11 @@ export function verweiseAufKunde(id: ID) {
   };
 }
 
-export const KUNDEN_ARTEN: { wert: Kunde['art']; label: string }[] = [
-  { wert: 'privat', label: 'Privat' },
-  { wert: 'firma', label: 'Firma' },
-  { wert: 'hausverwaltung', label: 'Hausverwaltung' },
-  { wert: 'oeffentlich', label: 'Öffentlich' },
+export const KUNDEN_ARTEN: { wert: Kunde['art']; label: string; icon: string }[] = [
+  { wert: 'privat', label: 'Privat', icon: 'person' },
+  { wert: 'firma', label: 'Firma', icon: 'betrieb' },
+  { wert: 'hausverwaltung', label: 'Hausverwaltung', icon: 'ordner' },
+  { wert: 'oeffentlich', label: 'Öffentlich', icon: 'schild' },
 ];
 
 export const QUELLEN: { wert: NonNullable<Kunde['quelle']>; label: string }[] = [

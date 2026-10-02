@@ -28,14 +28,17 @@ export function MitarbeiterWahl({ wert, onChange, label = 'Mitarbeiter', hilfe }
             </ul>
           )}
           {rest.length > 0 && (
-            <select id={id} className="mm-input mm-select" aria-describedby={beschrieben} value="" onChange={(e) => e.target.value && onChange([...wert, e.target.value])}>
-              <option value="">{gewaehlt.length ? 'Weitere hinzufügen' : 'Mitarbeiter hinzufügen'}</option>
-              {rest.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {personName(m)}
-                </option>
-              ))}
-            </select>
+            <div className="mm-feldrahmen">
+              <Icon name="team" size={20} className="mm-feldrahmen-icon" aria-hidden />
+              <select id={id} className="mm-input mm-input--icon mm-select" aria-describedby={beschrieben} value="" onChange={(e) => e.target.value && onChange([...wert, e.target.value])}>
+                <option value="">{gewaehlt.length ? 'Weitere hinzufügen' : 'Mitarbeiter hinzufügen'}</option>
+                {rest.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {personName(m)}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
         </div>
       )}

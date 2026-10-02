@@ -63,6 +63,8 @@ const pfade: Record<string, string> = {
   stecker: 'M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4',
   kalender: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M8 14h2M12 14h2M16 14h.5',
   leiste: 'M4 5h16v14H4zM9 5v14',
+  nummer: 'M10 4L8 20M16 4l-2 16M5 9h15M4 15h15',
+  prozent: 'M19 5L5 19M7.5 5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM16.5 14a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
 };
 
 export type IconName = keyof typeof pfade | string;
