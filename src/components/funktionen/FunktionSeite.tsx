@@ -42,7 +42,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
         <ul className={`mt-10 grid gap-4 sm:grid-cols-2 ${f.probleme.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
           {f.probleme.map((p) => (
             <li key={p.titel} className="rounded-lg border border-line bg-paper p-6">
-              <span className="inline-flex size-9 items-center justify-center rounded-md bg-signal-soft text-signal-dark">
+              <span className="inline-flex size-9 items-center justify-center rounded-md icon-kachel">
                 <Icon name="x" className="size-4.5" />
               </span>
               <h3 className="mt-4 font-display text-lg font-bold leading-snug">{p.titel}</h3>
@@ -92,7 +92,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
           <ul className="grid content-start gap-3 sm:grid-cols-2">
             {f.automatisch.map((a) => (
               <li key={a} className="flex items-start gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10">
-                <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
+                <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-md icon-kachel">
                   <Icon name="spark" className="size-4" />
                 </span>
                 <span className="font-semibold leading-snug">Macher {a}</span>

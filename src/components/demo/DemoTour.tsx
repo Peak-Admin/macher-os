@@ -48,7 +48,7 @@ export function DemoTour({ daten }: { daten: DemoGewerk }) {
             Schritt {schritt + 1} von {tourSchritte.length} · Bereich „{tourSchritte[schritt].bereich}“
           </p>
           <div className="mt-4 flex items-start gap-4">
-            <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-lg bg-signal-soft text-signal-dark">
+            <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-lg icon-kachel">
               <Icon name={icons[schritt]} className="size-6" />
             </span>
             <div>

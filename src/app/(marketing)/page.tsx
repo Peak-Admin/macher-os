@@ -187,7 +187,7 @@ export default function HomePage() {
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {machtMacher.map((m) => (
               <li key={m.text} className="flex items-center gap-3 rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
-                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent/15 text-accent">
+                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg icon-kachel">
                   <Icon name={m.icon} className="size-5" />
                 </span>
                 <span className="font-semibold leading-snug">{m.text}</span>

@@ -208,12 +208,12 @@ export function Umschalter<T extends string>({
       <p id={`${id}-label`} className="mb-1.5 text-sm font-semibold">
         {label}
       </p>
-      <div className="flex flex-wrap gap-1 rounded-lg bg-sand p-1">
+      <div className="flex flex-wrap overflow-hidden rounded-md bg-ink-soft">
         {optionen.map((o) => (
           <label
             key={o.wert}
-            className={`flex-1 cursor-pointer rounded-md px-3 py-2 text-center text-sm font-semibold transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-signal ${
-              wert === o.wert ? "bg-white text-ink shadow-sm ring-1 ring-line" : "text-muted hover:text-ink"
+            className={`flex min-h-11 flex-1 cursor-pointer items-center justify-center px-4 py-2 text-center text-white transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:-outline-offset-4 has-[:focus-visible]:outline-accent ${
+              wert === o.wert ? "bg-brand font-semibold" : "font-medium hover:bg-white/8"
             }`}
           >
             <input

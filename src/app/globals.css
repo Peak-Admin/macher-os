@@ -47,6 +47,12 @@
   --radius-3xl: 8px;
 }
 
+/* Themen-Icon-Kachel: helles Akzentgrün, weiße Linien (Festlegung macher-os). Immer mit Textlabel daneben. */
+@utility icon-kachel {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
 html {
   scroll-behavior: smooth;
 }

@@ -116,7 +116,7 @@ export default function WerkzeugeHub() {
       <Section tone="sand" tight>
         <div className="grid items-center gap-8 rounded-2xl bg-white p-6 ring-1 ring-line sm:p-10 lg:grid-cols-[1fr_auto]">
           <div className="flex gap-5">
-            <span className="hidden size-12 shrink-0 items-center justify-center rounded-lg bg-sky-soft text-sky sm:inline-flex">
+            <span className="hidden size-12 shrink-0 items-center justify-center rounded-lg icon-kachel sm:inline-flex">
               <Icon name="file" className="size-6" />
             </span>
             <div>
