@@ -3,9 +3,8 @@ import { useMemo, useState } from 'react';
 import { db } from '@core/db';
 import { datum, euro, heute } from '@core/format';
 import type { ID } from '@core/objects';
-import { Auswahl, Button, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, Zeile } from '@ui/index';
+import { Auswahl, Button, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, Zeile, GeldEingabe, DateiKnopf } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
-import { GeldEingabe } from '../rechnungen/teile';
 import type { BelegX } from '../rechnungen/typen';
 import { ART_LABEL, KATEGORIEN, auftragVorschlaege, ausBrutto, dateiAblegen, fristenAusKonditionen } from './logik';
 
@@ -26,26 +25,6 @@ export function lieferantAus(name: string): Pick<BelegX, 'lieferantId' | 'liefer
   if (!n) return { lieferantId: undefined, lieferantName: undefined };
   const l = db.lieferanten.all().find((x) => x.name.toLowerCase() === n.toLowerCase());
   return l ? { lieferantId: l.id, lieferantName: undefined } : { lieferantId: undefined, lieferantName: n };
-}
-
-/** Foto/PDF wählen – auf dem Handy öffnet sich direkt die Kamera */
-export function DateiWahl({ onDatei, label = 'Foto oder PDF wählen', laedt }: { onDatei: (f: File) => void; label?: string; laedt?: boolean }) {
-  return (
-    <label className="mm-btn mm-btn--sekundaer" style={{ cursor: 'pointer', position: 'relative' }}>
-      <span>{laedt ? 'Wird verkleinert …' : label}</span>
-      <input
-        type="file"
-        accept="image/*,application/pdf"
-        capture="environment"
-        style={{ position: 'absolute', opacity: 0, width: 1, height: 1 }}
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          if (f) onDatei(f);
-          e.target.value = '';
-        }}
-      />
-    </label>
-  );
 }
 
 export function Vorschau({ url, mime }: { url?: string; mime?: string }) {
@@ -157,7 +136,9 @@ export function BelegFormular({
     <Stapel>
       <LieferantenListe />
       <Zeile>
-        <DateiWahl onDatei={hochladen} laedt={laedt} label={datei ? 'Anderes Foto' : 'Beleg fotografieren'} />
+        <DateiKnopf accept="image/*,application/pdf" kamera onDateien={([f]) => hochladen(f)} laedt={laedt} laedtText="Wird verkleinert …">
+          {datei ? 'Anderes Foto' : 'Beleg fotografieren'}
+        </DateiKnopf>
         {datei && <Meta>Datei gespeichert.</Meta>}
       </Zeile>
       {dateiFehler && <Meldung ton="achtung">{dateiFehler}</Meldung>}

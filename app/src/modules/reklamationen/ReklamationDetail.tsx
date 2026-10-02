@@ -4,7 +4,7 @@ import { db, useDatenstand } from '@core/db';
 import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { datum, heute, relativ } from '@core/format';
 import { PHASEN } from '@core/objects';
-import { Auswahl, BeispielMarke, Button, Dialog, Eingabe, Feld, FormRaster, Karte, Leer, Meta, Seite, Segmente, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useToast } from '@ui/index';
+import { Auswahl, BeispielMarke, Button, Dialog, Eingabe, FormRaster, Karte, Leer, Meta, Seite, Segmente, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useToast, DateiKnopf } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { BEWERTUNG_TEXT, fotosZu, GRUNDLAGEN, nacharbeitAnlegen, offen, pruefen, reklamationen, reklamationErledigen, type Bewertung, type Grundlage } from './daten';
 import { Pruefbox } from './Pruefbox';
@@ -173,9 +173,11 @@ export function ReklamationDetail() {
                 ) : (
                   <Meta>Noch keine Fotos. Fotos sichern dich ab, wenn es später Streit gibt.</Meta>
                 )}
-                <Feld label="Foto hinzufügen" optional>
-                  {(fid) => <input id={fid} className="mm-input" type="file" accept="image/*" capture="environment" multiple disabled={laedt} onChange={(e) => void fotoHinzu(Array.from(e.target.files ?? []))} />}
-                </Feld>
+                <div>
+                  <DateiKnopf accept="image/*" kamera mehrfach onDateien={fotoHinzu} laedt={laedt} laedtText="Wird gespeichert …">
+                    Foto hinzufügen
+                  </DateiKnopf>
+                </div>
               </Stapel>
             </Karte>
 

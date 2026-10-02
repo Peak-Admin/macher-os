@@ -6,6 +6,7 @@ import { db } from '@core/db';
 import { heute, plusTage, tageZwischen } from '@core/format';
 import type { Cent, Datum, ID } from '@core/objects';
 import type { BelegX } from '../rechnungen/typen';
+import { dateiLesen } from '@ui/index';
 
 export const alleBelege = () => db.belege.all() as BelegX[];
 export const belegX = (id: ID | undefined) => db.belege.get(id) as BelegX | undefined;
@@ -153,51 +154,17 @@ export function naechsteFrist(b: BelegX, stichtag: Datum = heute()): Frist | und
   return undefined;
 }
 
-// ------------------------------------------------------------------ Bilder
-
-/** Foto auf max. Kantenlänge verkleinern und als JPEG-Data-URL zurückgeben */
-export function bildVerkleinern(datei: File, max = 1600, qualitaet = 0.72): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const leser = new FileReader();
-    leser.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
-    leser.onload = () => {
-      const img = new Image();
-      img.onerror = () => reject(new Error('Bild konnte nicht geöffnet werden'));
-      img.onload = () => {
-        const f = Math.min(1, max / Math.max(img.width, img.height));
-        const c = document.createElement('canvas');
-        c.width = Math.round(img.width * f);
-        c.height = Math.round(img.height * f);
-        const ctx = c.getContext('2d');
-        if (!ctx) return resolve(leser.result as string);
-        ctx.drawImage(img, 0, 0, c.width, c.height);
-        resolve(c.toDataURL('image/jpeg', qualitaet));
-      };
-      img.src = leser.result as string;
-    };
-    leser.readAsDataURL(datei);
-  });
-}
-
-export function dateiAlsDataUrl(datei: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const leser = new FileReader();
-    leser.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
-    leser.onload = () => resolve(leser.result as string);
-    leser.readAsDataURL(datei);
-  });
-}
+// ------------------------------------------------------------------ Dateien
 
 /** Foto/PDF als Dokument ablegen und Beleg anlegen */
 export async function dateiAblegen(datei: File, opts: { auftragId?: ID } = {}) {
-  const istBild = datei.type.startsWith('image/');
-  const url = istBild ? await bildVerkleinern(datei) : await dateiAlsDataUrl(datei);
+  const d = await dateiLesen(datei);
   return db.dokumente.create({
-    art: istBild ? 'foto' : 'pdf',
+    art: d.istBild ? 'foto' : 'pdf',
     titel: datei.name || 'Beleg',
-    url,
-    mime: istBild ? 'image/jpeg' : datei.type,
-    groesse: Math.round((url.length * 3) / 4),
+    url: d.url,
+    mime: d.mime,
+    groesse: d.bytes,
     auftragId: opts.auftragId,
     tags: ['beleg'],
   });

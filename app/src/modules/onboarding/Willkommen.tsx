@@ -5,7 +5,7 @@ import { ARBEITSWEISEN, GEWERKE, gewerkVorlage } from '@core/gewerke';
 import { euro } from '@core/format';
 import type { Arbeitsweise, Gewerk } from '@core/objects';
 import { einrichten } from '@core/seed';
-import { AuswahlKarten, Button, Eingabe, FormRaster, Fortschritt, Kennzahl, Liste, ListenZeile, Meldung, Meta, Oberzeile, Raster, Stapel, Zeile, useBestaetigen, type IconName } from '@ui/index';
+import { AuswahlKarten, Button, Eingabe, FormRaster, Fortschritt, Kennzahl, Liste, ListenZeile, Meldung, Meta, Oberzeile, Raster, Stapel, Zeile, useBestaetigen, type IconName, DateiFeld } from '@ui/index';
 import { betriebEinrichten, gewerkLabel, kundenAusCsv, TEAM, vorbereitet, type Antworten, type CsvErgebnis, type Startdaten, type Teamgroesse } from './daten';
 import './onboarding.css';
 
@@ -197,13 +197,14 @@ function Ablauf({ onFertig }: { onFertig: () => void }) {
           />
           {a.start === 'csv' && (
             <Stapel abstand={12}>
-              <div className="mm-feld">
-                <label className="mm-label" htmlFor="ob-csv">
-                  CSV-Datei
-                </label>
-                <input id="ob-csv" type="file" accept=".csv,text/csv,text/plain" className="mm-input" onChange={(e) => dateiLesen(e.target.files?.[0])} />
-                <p className="mm-hilfe">Erste Zeile mit Überschriften, z. B. Name; Straße; PLZ; Ort; Telefon; E-Mail.</p>
-              </div>
+              <DateiFeld
+                label="CSV-Datei"
+                accept=".csv,text/csv,text/plain"
+                knopf="CSV-Datei wählen"
+                hilfe="Erste Zeile mit Überschriften, z. B. Name; Straße; PLZ; Ort; Telefon; E-Mail."
+                dateien={csv?.datei ? [{ name: csv.datei }] : []}
+                onDateien={([f]) => dateiLesen(f)}
+              />
               {csv?.fehler && <Meldung ton="achtung" titel="Import nicht möglich">{csv.fehler}</Meldung>}
               {csv && !csv.fehler && (
                 <Meldung ton={csv.kunden.length ? 'erfolg' : 'achtung'} titel={csv.kunden.length === 1 ? '1 Kunde erkannt' : `${csv.kunden.length} Kunden erkannt`}>

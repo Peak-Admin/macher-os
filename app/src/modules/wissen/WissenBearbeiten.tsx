@@ -1,11 +1,10 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '@core/db';
 import { GEWERKE, gewerkVorlage } from '@core/gewerke';
 import type { Gewerk, ID } from '@core/objects';
 import { useDarf } from '@core/session';
-import { Auswahl, Button, Checkbox, Eingabe, FormRaster, IconButton, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Textfeld, Zeile, useToast } from '@ui/index';
-import { bildVerkleinern } from '@modules/vorlagen/bild';
+import { Auswahl, Button, Checkbox, Eingabe, FormRaster, IconButton, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Textfeld, Zeile, useToast, DateiKnopf, bildVerkleinern } from '@ui/index';
 import { KATEGORIEN, istSichererLink, wissen, type WissensArtikel } from './daten';
 
 export function WissenBearbeiten() {
@@ -28,7 +27,6 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
   const leistungen = db.leistungen.use((l) => l.aktiv);
   const anlagen = db.anlagen.use();
   const alleArtikel = wissen.use();
-  const datei = useRef<HTMLInputElement>(null);
   const [f, setF] = useState({
     titel: artikel?.titel ?? '',
     kategorie: artikel?.kategorie ?? '',
@@ -54,14 +52,14 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
       </Seite>
     );
 
-  const fotoHinzufuegen = async (dateien: FileList | null) => {
-    if (!dateien?.length) return;
+  const fotoHinzufuegen = async (dateien: File[]) => {
+    if (!dateien.length) return;
     setLaedt(true);
     try {
       const ids: ID[] = [];
-      for (const d of Array.from(dateien)) {
-        const url = await bildVerkleinern(d, 1600, 1600);
-        const doc = db.dokumente.create({ art: 'foto', titel: d.name, url, mime: url.slice(5, url.indexOf(';')), groesse: Math.round((url.length * 3) / 4), tags: ['wissen'] });
+      for (const d of dateien) {
+        const b = await bildVerkleinern(d, { pngBehalten: true });
+        const doc = db.dokumente.create({ art: 'foto', titel: d.name, url: b.url, mime: b.mime, groesse: b.bytes, tags: ['wissen'] });
         ids.push(doc.id);
       }
       setF((x) => ({ ...x, fotoIds: [...x.fotoIds, ...ids] }));
@@ -70,7 +68,6 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
       setFehler({ ...fehler, foto: e instanceof Error ? e.message : 'Foto konnte nicht gespeichert werden.' });
     } finally {
       setLaedt(false);
-      if (datei.current) datei.current.value = '';
     }
   };
 
@@ -156,12 +153,11 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
                 })}
               </Raster>
             )}
-            <input ref={datei} type="file" accept="image/*" multiple hidden onChange={(e) => fotoHinzufuegen(e.target.files)} />
             {fehler.foto && <Meldung ton="achtung">{fehler.foto}</Meldung>}
             <div>
-              <Button variante="sekundaer" icon="kamera" laedt={laedt} laedtText="Wird verkleinert …" onClick={() => datei.current?.click()}>
+              <DateiKnopf accept="image/*" icon="kamera" mehrfach onDateien={fotoHinzufuegen} laedt={laedt} laedtText="Wird verkleinert …">
                 Foto hinzufügen
-              </Button>
+              </DateiKnopf>
             </div>
           </Stapel>
         </Karte>

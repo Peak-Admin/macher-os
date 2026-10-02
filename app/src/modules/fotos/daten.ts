@@ -8,8 +8,6 @@ export const FOTO_TAGS = ['Vorher', 'Nachher', 'Mangel'] as const;
 export type FotoTag = (typeof FOTO_TAGS)[number];
 
 /** Längste Bildkante nach dem Verkleinern (Speichergrenze im Browser) */
-export const MAX_KANTE = 1600;
-export const JPEG_QUALITAET = 0.7;
 /** Sprachnotizen: höchstens 2 Minuten, sonst wird der Speicher knapp */
 export const MAX_SPRACHE_SEKUNDEN = 120;
 
@@ -17,22 +15,6 @@ export const istFoto = (d: Dokument) => d.art === 'foto';
 export const istNotizOderSprache = (d: Dokument) => d.art === 'notiz' || d.art === 'sprache';
 /** Was im Tab „Fotos“ erscheint */
 export const istDoku = (d: Dokument) => istFoto(d) || istNotizOderSprache(d) || d.art === 'video';
-
-/** Zielgröße beim Verkleinern – Seitenverhältnis bleibt, nie hochskalieren */
-export function skalierteGroesse(breite: number, hoehe: number, max = MAX_KANTE): { breite: number; hoehe: number } {
-  if (breite <= 0 || hoehe <= 0) return { breite: 0, hoehe: 0 };
-  const f = Math.min(1, max / Math.max(breite, hoehe));
-  return { breite: Math.round(breite * f), hoehe: Math.round(hoehe * f) };
-}
-
-/** Ungefähre Bytes einer Data-URL (Base64-Anteil) */
-export function dataUrlBytes(url: string | undefined): number {
-  if (!url) return 0;
-  const komma = url.indexOf(',');
-  const roh = komma >= 0 ? url.slice(komma + 1) : url;
-  if (url.slice(0, komma).includes(';base64')) return Math.floor((roh.length * 3) / 4);
-  return roh.length;
-}
 
 /** "1,2 MB", "340 KB" */
 export function groesseText(bytes: number | undefined): string {

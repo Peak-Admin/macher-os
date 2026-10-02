@@ -7,8 +7,9 @@ import { db, defineCollection, vermerken } from '@core/db';
 import { datumVon, heute, plusTage } from '@core/format';
 import type { Aufgabe, Basis, Datum, Dokument, Gewerk, ID, Materialbuchung, Termin, Zeiteintrag } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
-import { unterschriftSpeichern, type UnterschriftDaten, type UnterschriftEingabe } from '@modules/abnahme/unterschrift';
+import { unterschriftSpeichern, type UnterschriftDaten } from '@modules/abnahme/unterschrift';
 import { naechsteNummerFuer } from '@core/nummern';
+import type { UnterschriftEingabe } from '@ui/index';
 
 export type BerichtArt = 'tagesbericht' | 'regiebericht' | 'rapport' | 'pruefprotokoll';
 

@@ -1,11 +1,11 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { pfadZu } from '@core/modul';
 import { adresseText, datumKurz, mapsLink, personName, relativ, telLink, uhrzeit } from '@core/format';
-import { Auswahl, AuswahlKarten, BeispielMarke, Button, Icon, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Textfeld, ZweiSpalten, useToast } from '@ui/index';
+import { Auswahl, AuswahlKarten, BeispielMarke, Button, Icon, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Textfeld, ZweiSpalten, useToast, DateiKnopf, bildVerkleinern } from '@ui/index';
 import { ObjektLink } from '@ui/objekt';
-import { ERGEBNISSE, bildVerkleinern, ergebnisFestlegen, type Ergebnis } from './daten';
+import { ERGEBNISSE, ergebnisFestlegen, type Ergebnis } from './daten';
 
 const GRUENDE = ['Zu teuer für den Kunden', 'Passt nicht zu unseren Leistungen', 'Kunde will doch nicht', 'Sonstiges'];
 
@@ -20,7 +20,6 @@ export function BesichtigungVorOrt() {
   const [grund, setGrund] = useState('');
   const [laedt, setLaedt] = useState(false);
   const [fehler, setFehler] = useState<string>();
-  const datei = useRef<HTMLInputElement>(null);
 
   if (!t || t.geloeschtAm || t.art !== 'besichtigung')
     return (
@@ -45,21 +44,20 @@ export function BesichtigungVorOrt() {
     toast('Notiz gespeichert.');
   };
 
-  const fotoHinzu = async (files: FileList | null) => {
-    if (!files?.length) return;
+  const fotoHinzu = async (files: File[]) => {
+    if (!files.length) return;
     setLaedt(true);
     setFehler(undefined);
     try {
-      for (const f of Array.from(files)) {
-        const url = await bildVerkleinern(f);
-        db.dokumente.create({ art: 'foto', titel: f.name || 'Foto Besichtigung', url, mime: 'image/jpeg', groesse: url.length, auftragId: t.auftragId, bezug, tags: ['besichtigung'] });
+      for (const f of files) {
+        const b = await bildVerkleinern(f);
+        db.dokumente.create({ art: 'foto', titel: f.name || 'Foto Besichtigung', url: b.url, mime: b.mime, groesse: b.bytes, auftragId: t.auftragId, bezug, tags: ['besichtigung'] });
       }
       toast(files.length === 1 ? 'Foto gespeichert.' : `${files.length} Fotos gespeichert.`);
     } catch (e) {
       setFehler(e instanceof Error ? e.message : 'Foto konnte nicht gespeichert werden.');
     } finally {
       setLaedt(false);
-      if (datei.current) datei.current.value = '';
     }
   };
 
@@ -99,11 +97,10 @@ export function BesichtigungVorOrt() {
                     ))}
                   </div>
                 )}
-                <input ref={datei} type="file" accept="image/*" capture="environment" multiple hidden onChange={(e) => fotoHinzu(e.target.files)} />
                 <div>
-                  <Button variante="sekundaer" icon="kamera" laedt={laedt} laedtText="Wird gespeichert …" onClick={() => datei.current?.click()}>
+                  <DateiKnopf accept="image/*" kamera mehrfach onDateien={fotoHinzu} laedt={laedt} laedtText="Wird gespeichert …">
                     Foto aufnehmen
-                  </Button>
+                  </DateiKnopf>
                 </div>
                 {!fotos.length && <Meta>Fotos von Zählerschrank, Leitungswegen, Schäden – sie landen automatisch am Auftrag.</Meta>}
               </Stapel>

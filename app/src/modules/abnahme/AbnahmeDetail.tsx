@@ -24,12 +24,13 @@ import {
   Zeile,
   ZweiSpalten,
   useToast,
+  UnterschriftFeld,
 } from '@ui/index';
 import { AuftragKurz, ObjektLink } from '@ui/objekt';
 import { FotoKnopf } from '@modules/fotos/FotoKnopf';
 import { Vorschaubild } from '@modules/fotos/Galerie';
 import { ERGEBNIS_TEXT, abnahmeUnterschreiben, abnahmeVerweigert, abnahmen, ergebnis, mangelEntfernen, mangelHinzufuegen, offeneMaengel, type Abnahme } from './daten';
-import { UnterschriftAnzeige, UnterschriftFeld } from './Unterschrift';
+import { UnterschriftAnzeige } from './Unterschrift';
 
 export function AbnahmeStatus({ a }: { a: Abnahme }) {
   if (a.status === 'offen') return <Status ton="aktiv">Läuft</Status>;

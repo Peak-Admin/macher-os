@@ -4,6 +4,7 @@
  */
 import { batch, db } from '@core/db';
 import type { Artikel, Cent, Einheit, ID } from '@core/objects';
+import { zahlAus } from '@ui/index';
 
 // ------------------------------------------------------------------ Preise
 
@@ -21,16 +22,6 @@ export function margeProzent(ek: Cent, vk: Cent): number | undefined {
 
 export function vkAusAufschlag(ek: Cent, prozent: number): Cent {
   return Math.round(ek * (1 + prozent / 100));
-}
-
-/** Zahl aus deutscher Eingabe: „1.234,5“ → 1234.5; „12.5“ → 12.5 */
-export function zahlAus(s: string | undefined): number | undefined {
-  if (s == null) return undefined;
-  let t = s.trim().replace(/[€\s]/g, '');
-  if (!t) return undefined;
-  if (t.includes(',')) t = t.replace(/\./g, '').replace(',', '.');
-  const n = Number(t);
-  return Number.isFinite(n) ? n : undefined;
 }
 
 // ------------------------------------------------------------------ Einheiten

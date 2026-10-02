@@ -49,5 +49,3 @@ export function inRechnung(liste: Materialbuchung[], positionen: Pick<Position, 
   return liste.filter(offenFuerRechnung).filter((b) => ids.has(`mat_${b.id}`) || (b.artikelId && artikel.has(b.artikelId)) || texte.has(b.text.trim().toLowerCase()));
 }
 
-/** Menge aus Eingabe „2,5“ → 2.5; ungültig → NaN */
-export const mengeAus = (s: string) => Number(s.replace(',', '.').trim());

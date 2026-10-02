@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
-import { artikelImportieren, aufschlagProzent, csvParsen, einheitAus, margeProzent, spaltenRaten, vkAusAufschlag, zahlAus, zeilenUmwandeln } from './daten';
+import { artikelImportieren, aufschlagProzent, csvParsen, einheitAus, margeProzent, spaltenRaten, vkAusAufschlag, zeilenUmwandeln } from './daten';
+import { zahlAus } from '@ui/index';
 
 describe('Artikel', () => {
   beforeEach(() => zuruecksetzen());

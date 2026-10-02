@@ -1,10 +1,8 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { db } from '@core/db';
 import { useEinstellung } from '@core/einstellungen';
 import { useDarf } from '@core/session';
-import { Button, Karte, Leer, Meldung, Meta, Schalter, Seite, Stapel, Textfeld, Zeile, useToast } from '@ui/index';
-import { BRIEFKOPF_KEY, BRIEFKOPF_STANDARD, briefkopf, type BriefkopfEinstellung } from './daten';
-import { bildVerkleinern } from './bild';
+import { Button, Karte, Leer, Meldung, Meta, Schalter, Seite, Stapel, Textfeld, Zeile, useToast, DateiKnopf, bildVerkleinern, BRIEFKOPF_KEY, BRIEFKOPF_STANDARD, briefkopf, type BriefkopfEinstellung } from '@ui/index';
 
 export function Briefkopf() {
   const toast = useToast();
@@ -14,23 +12,20 @@ export function Briefkopf() {
   const [zusatz, setZusatz] = useState(e.zusatz ?? '');
   const [laedt, setLaedt] = useState(false);
   const [fehler, setFehler] = useState<string>();
-  const datei = useRef<HTMLInputElement>(null);
   const kopf = briefkopf(e);
   const fehlt = [!betrieb?.adresse?.strasse && 'Adresse', !betrieb?.telefon && 'Telefon', !betrieb?.iban && 'IBAN', !betrieb?.steuernummer && !betrieb?.ustId && 'Steuernummer oder USt-IdNr.'].filter(Boolean);
 
-  const logoWaehlen = async (f: File | undefined) => {
-    if (!f) return;
+  const logoWaehlen = async ([f]: File[]) => {
     setFehler(undefined);
     setLaedt(true);
     try {
-      const logo = await bildVerkleinern(f, 600, 240);
+      const { url: logo } = await bildVerkleinern(f, { max: 600, maxHoehe: 240, qualitaet: 0.82, pngBehalten: true });
       setE({ ...e, logo });
       toast('Logo gespeichert.');
     } catch (err) {
       setFehler(err instanceof Error ? err.message : 'Das Logo konnte nicht gespeichert werden.');
     } finally {
       setLaedt(false);
-      if (datei.current) datei.current.value = '';
     }
   };
 
@@ -46,13 +41,12 @@ export function Briefkopf() {
         <Karte titel="Logo">
           <Stapel>
             {e.logo ? <img src={e.logo} alt="Dein Logo" style={{ maxWidth: 240, maxHeight: 96, objectFit: 'contain', alignSelf: 'flex-start' }} /> : <Leer titel="Noch kein Logo" text="Lade dein Logo als PNG oder JPG hoch. Macher verkleinert es automatisch." icon="kamera" />}
-            <input ref={datei} type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={(ev) => logoWaehlen(ev.target.files?.[0])} />
             {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
             {admin && (
               <Zeile>
-                <Button variante="sekundaer" icon="upload" laedt={laedt} laedtText="Wird verkleinert …" onClick={() => datei.current?.click()}>
+                <DateiKnopf accept="image/png,image/jpeg,image/webp" onDateien={logoWaehlen} laedt={laedt} laedtText="Wird verkleinert …">
                   {e.logo ? 'Anderes Logo hochladen' : 'Logo hochladen'}
-                </Button>
+                </DateiKnopf>
                 {e.logo && (
                   <Button variante="tertiaer" icon="muell" onClick={() => (setE({ ...e, logo: undefined }), toast('Logo entfernt.'))}>
                     Logo entfernen

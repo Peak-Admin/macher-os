@@ -6,10 +6,9 @@ import { useEffect, useRef, useState } from 'react';
 import { db } from '@core/db';
 import type { ID } from '@core/objects';
 import { useIch } from '@core/session';
-import { Button, Icon, IconButton, Meldung, Meta, Segmente, Stapel, Textfeld, Zeile, useToast } from '@ui/index';
+import { Button, Icon, IconButton, Meldung, Meta, Segmente, Stapel, Textfeld, Zeile, useToast, DateiKnopf, bildVerkleinern, dateiAlsDataUrl, type Bild } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
 import { FOTO_TAGS, MAX_SPRACHE_SEKUNDEN, groesseText, laufenderAuftrag, standardTitel, titelAusText } from './daten';
-import { alsDataUrl, verkleinern, type Bild } from './bild';
 import { SPEICHER_VOLL_TEXT, platzFrei } from './speicher';
 
 export interface ErfassenProps {
@@ -30,8 +29,6 @@ function useVorauswahl(auftragId?: ID): [ID | undefined, (id: ID | undefined) =>
 
 export function FotoErfassen({ fertig, auftragId }: ErfassenProps) {
   const toast = useToast();
-  const kamera = useRef<HTMLInputElement>(null);
-  const galerie = useRef<HTMLInputElement>(null);
   const [auftrag, setAuftrag] = useVorauswahl(auftragId);
   const [bilder, setBilder] = useState<Bild[]>([]);
   const [tag, setTag] = useState<string>('');
@@ -39,19 +36,19 @@ export function FotoErfassen({ fertig, auftragId }: ErfassenProps) {
   const [laedt, setLaedt] = useState(false);
   const [fehler, setFehler] = useState<string>();
 
-  const dateienGewaehlt = async (liste: FileList | null) => {
-    if (!liste?.length) return;
+  const dateienGewaehlt = async (liste: File[]) => {
+    if (!liste.length) return;
     setFehler(undefined);
     setLaedt(true);
     const neu: Bild[] = [];
     let kaputt = 0;
-    for (const f of Array.from(liste)) {
+    for (const f of liste) {
       if (!f.type.startsWith('image/')) {
         kaputt++;
         continue;
       }
       try {
-        neu.push(await verkleinern(f));
+        neu.push(await bildVerkleinern(f));
       } catch {
         kaputt++;
       }
@@ -84,15 +81,13 @@ export function FotoErfassen({ fertig, auftragId }: ErfassenProps) {
 
   return (
     <Stapel abstand={16}>
-      <input ref={kamera} type="file" accept="image/*" capture="environment" multiple hidden onChange={(e) => (dateienGewaehlt(e.target.files), (e.target.value = ''))} />
-      <input ref={galerie} type="file" accept="image/*" multiple hidden onChange={(e) => (dateienGewaehlt(e.target.files), (e.target.value = ''))} />
       <Zeile>
-        <Button icon="kamera" onClick={() => kamera.current?.click()} laedt={laedt} laedtText="Bilder werden verkleinert …">
+        <DateiKnopf variante="primaer" accept="image/*" kamera mehrfach onDateien={dateienGewaehlt} laedt={laedt} laedtText="Bilder werden verkleinert …">
           {bilder.length ? 'Noch ein Foto' : 'Foto aufnehmen'}
-        </Button>
-        <Button variante="sekundaer" icon="upload" onClick={() => galerie.current?.click()} disabled={laedt}>
+        </DateiKnopf>
+        <DateiKnopf accept="image/*" mehrfach onDateien={dateienGewaehlt} disabled={laedt}>
           Aus Galerie wählen
-        </Button>
+        </DateiKnopf>
       </Zeile>
       {bilder.length > 0 && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))', gap: 8 }}>
@@ -189,7 +184,7 @@ export function SpracheErfassen({ fertig, auftragId }: ErfassenProps) {
       r.ondataavailable = (e) => e.data.size && teile.push(e.data);
       r.onstop = async () => {
         const blob = new Blob(teile, { type: r.mimeType || 'audio/webm' });
-        const url = await alsDataUrl(blob);
+        const url = await dateiAlsDataUrl(blob);
         setAudio({ url, mime: blob.type, bytes: blob.size });
         setZustand('fertig');
         aufraeumen();

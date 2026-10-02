@@ -23,13 +23,14 @@ import {
   ZweiSpalten,
   Zeile,
   useToast,
+  GeldEingabe,
+  Briefbogen,
+  DruckNichtGefunden,
 } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { istUeberfaellig, offenFuerKunde, offenePosten, tageUeberfaellig } from '../rechnungen/logik';
 import { rechnungX } from '../rechnungen/typen';
 import { KeinZugriff } from '../rechnungen/RechnungenListe';
-import { GeldEingabe } from '../rechnungen/teile';
-import { Briefbogen } from '../rechnungen/Druck';
 import {
   STUFE_LABEL,
   kulanzSetzen,
@@ -246,7 +247,7 @@ export function MahnungDetail() {
 export function MahnungDruck() {
   const { id = '' } = useParams();
   const m = mahnungen.get(id);
-  if (!m) return <Leer titel="Mahnung nicht gefunden" icon="mail" />;
+  if (!m) return <DruckNichtGefunden was="Mahnung" />;
   const r = rechnungX(m.rechnungId);
   const t = mahntext(m);
   return (

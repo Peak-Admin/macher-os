@@ -22,10 +22,11 @@ import {
   Zeile,
   ZweiSpalten,
   useToast,
+  UnterschriftFeld,
 } from '@ui/index';
 import { AuftragAuswahl, AuftragKurz, ObjektLink } from '@ui/objekt';
 import { Galerie } from '@modules/fotos/Galerie';
-import { UnterschriftAnzeige, UnterschriftFeld } from '@modules/abnahme/Unterschrift';
+import { UnterschriftAnzeige } from '@modules/abnahme/Unterschrift';
 import { BERICHT_ARTEN, artLabel, berichtAktualisieren, berichtErstellen, berichtUnterschreiben, berichte, stundenText, type Bericht, type BerichtArt, type Pruefpunkt } from './daten';
 import { AufgabenListe, MaterialTabelle, ZeitenTabelle, useBerichtInhalt } from './Inhalt';
 

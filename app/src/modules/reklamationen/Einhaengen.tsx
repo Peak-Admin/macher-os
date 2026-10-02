@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { db } from '@core/db';
 import { datum, heute, plusTage, relativ } from '@core/format';
 import type { ID } from '@core/objects';
-import { Button, Eingabe, Feld, Karte, Leer, Liste, ListenZeile, Meta, Stapel, useToast } from '@ui/index';
+import { Button, Eingabe, Karte, Leer, Liste, ListenZeile, Meta, Stapel, useToast, DateiFeld } from '@ui/index';
 import { AuftragAuswahl, KundeAuswahl } from '@ui/objekt';
 import { BEWERTUNG_TEXT, fristTage, grundlageVorschlag, naechsteReklamationsnummer, offen, pruefen, reklamationen } from './daten';
 import { ReklamationStatus } from './ReklamationListe';
@@ -119,9 +119,7 @@ export function MangelSchnell({ fertig, auftragId }: { fertig: () => void; auftr
       <AuftragAuswahl label="Auftrag" optional nurOffene={false} wert={aId} onChange={(v) => setAId(v || undefined)} />
       {!aId && <KundeAuswahl wert={kundeId} onChange={(v) => setKundeId(v || undefined)} />}
       <Eingabe label="Mangel" value={titel} onChange={(e) => setTitel(e.target.value)} fehler={fehler} placeholder="z. B. Steckdose Küche ohne Funktion" autoFocus />
-      <Feld label="Foto" optional>
-        {(fid) => <input id={fid} className="mm-input" type="file" accept="image/*" capture="environment" multiple onChange={(e) => setDateien(Array.from(e.target.files ?? []))} />}
-      </Feld>
+      <DateiFeld label="Foto" optional accept="image/*" kamera mehrfach knopf="Foto aufnehmen" dateien={dateien} onDateien={(neu) => setDateien([...dateien, ...neu])} />
       <Button type="submit" breit icon="check" laedt={laedt} laedtText="Wird gespeichert …">Mangel speichern</Button>
     </form>
   );

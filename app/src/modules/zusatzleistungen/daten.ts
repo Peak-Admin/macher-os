@@ -8,7 +8,8 @@ import { euro } from '@core/format';
 import type { Auftrag, Basis, Cent, Einheit, ID, Position, Rechnung, Zeitpunkt } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
 import { rechnungAendern, type RechnungX } from '@modules/rechnungen/typen';
-import { unterschriftSpeichern, type UnterschriftDaten, type UnterschriftEingabe } from '@modules/abnahme/unterschrift';
+import { unterschriftSpeichern, type UnterschriftDaten } from '@modules/abnahme/unterschrift';
+import type { UnterschriftEingabe } from '@ui/index';
 
 export type Berechnung = 'leistung' | 'stunden' | 'pauschal';
 
@@ -41,12 +42,6 @@ export const STATUS_TEXT: Record<Zusatzleistung['status'], string> = {
   abgelehnt: 'Abgelehnt',
   abgerechnet: 'Abgerechnet',
 };
-
-/** "1,5" → 1.5; ungültig → NaN */
-export function zahlAus(s: string): number {
-  const t = s.trim().replace(/\s/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.');
-  return t ? Number(t) : NaN;
-}
 
 export const betrag = (z: Pick<Zusatzleistung, 'menge' | 'einzelpreis'>): Cent => Math.round(z.menge * z.einzelpreis);
 export const abrechenbar = (z: Zusatzleistung) => z.status === 'freigegeben' && !z.rechnungId;

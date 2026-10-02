@@ -4,9 +4,8 @@ import { db, useDatenstand } from '@core/db';
 import { zahl } from '@core/format';
 import { useDarf } from '@core/session';
 import type { ID } from '@core/objects';
-import { Auswahl, BeispielMarke, Button, Eingabe, IconButton, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Textfeld, useBestaetigen, useToast } from '@ui/index';
+import { Auswahl, BeispielMarke, Button, Eingabe, IconButton, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Textfeld, useBestaetigen, useToast, ZahlEingabe } from '@ui/index';
 import { ObjektLink } from '@ui/objekt';
-import { ZahlEingabe } from '@modules/angebote/felder';
 import { ART_INFO, FELD_LABEL, aufmasse, menge, neuerAbzug, neuerRaum, neueZeile, rechenweg, zusammenfassen, type Aufmass, type MassArt, type MassZeile, type Raum } from './daten';
 import { inAngebotUebernehmen } from './uebernahme';
 

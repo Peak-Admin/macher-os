@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { db } from '@core/db';
 import { heute, personName } from '@core/format';
 import type { ID } from '@core/objects';
-import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Stapel, useToast } from '@ui/index';
+import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Stapel, useToast, DateiFeld, dateiLesen } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
-import { dateiLesen } from '@modules/abwesenheiten/AbwesenheitForm';
 import { gueltigBisAus } from './daten';
 
 /** Nachweis eintragen: wer, was, wann erworben, gültig bis (automatisch), Dokument optional */
@@ -43,12 +42,13 @@ export function NachweisDialog({ offen, onSchliessen, mitarbeiterId, qualifikati
       let dokumentId: ID | undefined;
       const m = db.mitarbeiter.get(maId);
       if (datei) {
+        const gelesen = await dateiLesen(datei);
         const d = db.dokumente.create({
-          art: datei.type === 'application/pdf' ? 'pdf' : 'foto',
+          art: gelesen.istBild ? 'foto' : 'pdf',
           titel: `${q?.name ?? 'Nachweis'} – ${personName(m)}`,
-          url: await dateiLesen(datei),
-          mime: datei.type,
-          groesse: datei.size,
+          url: gelesen.url,
+          mime: gelesen.mime,
+          groesse: gelesen.bytes,
           bezug: { typ: 'mitarbeiter', id: maId },
           tags: ['nachweis'],
         });
@@ -96,13 +96,7 @@ export function NachweisDialog({ offen, onSchliessen, mitarbeiterId, qualifikati
             hilfe={q?.gueltigMonate ? `Automatisch: ${q.gueltigMonate} Monate ab Erwerb` : 'Leer lassen, wenn unbefristet'}
           />
         </FormRaster>
-        <label className="mm-feld">
-          <span className="mm-label">
-            Nachweis-Dokument <span className="mm-label-optional">(optional)</span>
-          </span>
-          <input type="file" accept="image/*,application/pdf" onChange={(e) => setDatei(e.target.files?.[0])} />
-          <span className="mm-hilfe">Foto oder PDF vom Zertifikat, Ausweis oder Teilnahmebescheinigung.</span>
-        </label>
+        <DateiFeld label="Nachweis-Dokument" optional hilfe="Foto oder PDF vom Zertifikat, Ausweis oder Teilnahmebescheinigung." accept="image/*,application/pdf" dateien={datei ? [datei] : []} onDateien={([f]) => setDatei(f)} />
         {fehler && (
           <Meldung ton="achtung" titel="Bitte prüfen">
             {fehler}

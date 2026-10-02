@@ -5,6 +5,7 @@
  */
 import { db } from '@core/db';
 import type { ID, Zeitpunkt } from '@core/objects';
+import type { UnterschriftEingabe } from '@ui/index';
 
 export interface UnterschriftDaten {
   dokumentId: ID;
@@ -12,19 +13,6 @@ export interface UnterschriftDaten {
   name: string;
   ort?: string;
   zeitpunkt: Zeitpunkt;
-}
-
-export interface UnterschriftEingabe {
-  bild: string;
-  name: string;
-  ort?: string;
-}
-
-/** Name und Bild sind Pflicht, das Bild muss eine echte Zeichnung sein */
-export function unterschriftFehler(e: Partial<UnterschriftEingabe>): string | undefined {
-  if (!e.bild) return 'Bitte unterschreiben.';
-  if (!e.name?.trim()) return 'Trag den Namen der unterschreibenden Person ein.';
-  return undefined;
 }
 
 export function unterschriftSpeichern(auftragId: ID | undefined, titel: string, e: UnterschriftEingabe, beispiel?: boolean): UnterschriftDaten {
