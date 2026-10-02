@@ -39,6 +39,7 @@ import m_fotos from '../modules/fotos';
 import m_hinweise from '../modules/hinweise';
 import m_kalender from '../modules/kalender';
 import m_kalkulation from '../modules/kalkulation';
+import m_konto from '../modules/konto';
 import m_kosten from '../modules/kosten';
 import m_kunden from '../modules/kunden';
 import m_kundenbereich from '../modules/kundenbereich';
@@ -124,6 +125,7 @@ export const modulListe: [string, ModulDef][] = [
   ['hinweise', m_hinweise],
   ['kalender', m_kalender],
   ['kalkulation', m_kalkulation],
+  ['konto', m_konto],
   ['kosten', m_kosten],
   ['kunden', m_kunden],
   ['kundenbereich', m_kundenbereich],
