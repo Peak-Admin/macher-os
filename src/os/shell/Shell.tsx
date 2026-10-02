@@ -24,7 +24,7 @@ import { useEinstellung } from '@core/einstellungen';
 import { personName } from '@core/format';
 import { alleModule, modul } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Auswahl, Button, Icon, IconButton, KiKugel, Meldung, ThemenIcon } from '@ui/index';
+import { Auswahl, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
 import { Personenbild } from '@ui/person';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
@@ -197,8 +197,8 @@ function useUngelesen() {
 const istMac = () => typeof navigator !== 'undefined' && /mac|iphone|ipad/i.test(navigator.platform || navigator.userAgent);
 
 /**
- * Ein Einstieg für beides: links „Suchen“ mit Lupe und Tastenkürzel, rechts die KI-Kugel. Beide öffnen dieselbe
- * KI-Leiste (Treffer in deinen Daten oder eine Frage an Macher, Strg K bzw. ⌘K).
+ * Ein Einstieg für beides: eine Fläche mit Lupe, „Suchen“ und Tastenkürzel. Sie öffnet die KI-Leiste
+ * (Treffer in deinen Daten oder eine Frage an Macher, Strg K bzw. ⌘K) – die KI-Kugel steht erst dort, nicht in der Navigation.
  */
 function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
   if (kompakt)
@@ -209,16 +209,11 @@ function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
     );
   const kuerzel = istMac() ? '⌘K' : 'Strg K';
   return (
-    <div className="mm-leiste-suchzeile">
-      <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" title={`Suchen oder Macher fragen (${kuerzel})`}>
-        <Icon name="suche" size={18} />
-        <span className="mm-leiste-suche-text mm-leiste-text">Suchen</span>
-        <kbd className="mm-leiste-kbd mm-leiste-text">{kuerzel}</kbd>
-      </button>
-      <button type="button" className="mm-leiste-ki" onClick={() => oeffne('suche')} aria-label="Macher fragen" title="Macher fragen">
-        <KiKugel groesse={26} />
-      </button>
-    </div>
+    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" title={`Suchen oder Macher fragen (${kuerzel})`}>
+      <Icon name="suche" size={18} />
+      <span className="mm-leiste-suche-text mm-leiste-text">Suchen</span>
+      <kbd className="mm-leiste-kbd mm-leiste-text">{kuerzel}</kbd>
+    </button>
   );
 }
 
