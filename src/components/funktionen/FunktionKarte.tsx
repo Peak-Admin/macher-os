@@ -13,7 +13,7 @@ export function FunktionKarte({ slug, mitUnterpunkten = false }: { slug: Funktio
     >
       <div className="flex items-center gap-3">
         <IconTile name={inhalt.icon} className="size-10" />
-        <h3 className="font-display text-lg font-bold leading-snug">
+        <h3 className="min-w-0 font-display text-lg font-bold leading-snug [overflow-wrap:anywhere]">
           {funktionTitel(slug)}
           <Icon
             name="arrow-right"
@@ -21,6 +21,11 @@ export function FunktionKarte({ slug, mitUnterpunkten = false }: { slug: Funktio
           />
         </h3>
       </div>
+      {inhalt.bald && (
+        <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-md bg-warning-soft px-2.5 py-0.5 text-xs font-semibold text-warning">
+          <Icon name="clock" className="size-3.5" /> Kommt bald
+        </p>
+      )}
       <p className="mt-3 text-[0.95rem] leading-relaxed text-muted">{inhalt.kurz}</p>
       {mitUnterpunkten && inhalt.enthalten && (
         <ul className="mt-4 flex flex-wrap gap-1.5">
