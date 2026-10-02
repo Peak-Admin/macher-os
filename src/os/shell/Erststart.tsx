@@ -8,6 +8,7 @@ export function Erststart() {
   return (
     <div style={{ padding: 32 }}>
       <Seite titel="Willkommen bei Macher OS" untertitel="Richte deinen Betrieb mit Beispieldaten ein.">
+        <div className="mm-einstieg">
         <span className="mm-fenster" aria-hidden style={{ maxWidth: 480 }}>
           <FensterSkizze icon="start" />
         </span>
@@ -20,6 +21,7 @@ export function Erststart() {
           >
             Beispielbetrieb einrichten
           </Button>
+        </div>
         </div>
       </Seite>
     </div>

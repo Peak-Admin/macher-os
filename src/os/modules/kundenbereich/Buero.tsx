@@ -31,7 +31,7 @@ export function KundenbereichPanel({ id }: { id: ID }) {
   if (!z)
     return (
       <Karte titel="Kundenbereich" kompakt>
-        <Stapel abstand={8}>
+        <div className="mm-einstieg" style={{ gap: 8 }}>
           <span className="mm-fenster" aria-hidden>
             <FensterSkizze icon="link" rahmen="handy" />
           </span>
@@ -53,7 +53,7 @@ export function KundenbereichPanel({ id }: { id: ID }) {
           ) : (
             <Meta>Einen Link kann das Büro oder der Chef erzeugen.</Meta>
           )}
-        </Stapel>
+        </div>
       </Karte>
     );
 

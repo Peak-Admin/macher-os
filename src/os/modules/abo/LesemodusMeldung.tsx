@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cloudAktiv } from '@core/cloud';
 import { useDatenstand } from '@core/db';
-import { Button, Dialog, FensterSkizze, Stapel } from '@ui/index';
+import { Button, Dialog, FensterSkizze } from '@ui/index';
 import { aboApi } from './api';
 import { istSchreibGesperrt, standUebernehmen, statusPruefen } from './stand';
 
@@ -67,13 +67,13 @@ export function LesemodusMeldung() {
         </>
       }
     >
-      <Stapel abstand={12}>
+      <div className="mm-einstieg">
         <span className="mm-fenster" aria-hidden>
           <FensterSkizze icon="schloss" />
         </span>
         <p>{grund}</p>
         <p className="mm-meta">Nichts geht verloren. Kundenbereich, offene Rechnungen und der Export laufen weiter.</p>
-      </Stapel>
+      </div>
     </Dialog>
   );
 }

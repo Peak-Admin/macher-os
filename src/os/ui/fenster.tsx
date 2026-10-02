@@ -10,6 +10,7 @@
  * Themen- und Navigations-Icons unterscheidet. Regeln: docs/design/festlegungen.md („Fenster-Skizze“).
  */
 import { useId, type CSSProperties } from 'react';
+import { GlasIcon, glasFuer, type GlasIconName } from './glas';
 
 /** Graue Glas-Farben für die Zeichnung – überschreiben die grünen `--glas-*` nur innerhalb der Skizze. */
 const GRAU = {
@@ -17,7 +18,6 @@ const GRAU = {
   '--glas-dunkel': 'color-mix(in srgb, currentColor 68%, transparent)',
   '--glas-milch': 'color-mix(in srgb, currentColor 8%, transparent)',
 } as CSSProperties;
-import { GlasIcon, glasFuer, type GlasIconName } from './glas';
 
 export function FensterSkizze({
   icon,

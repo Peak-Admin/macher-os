@@ -87,19 +87,19 @@ export default function AppPage() {
       {/* 2./3. iPhone und Android */}
       <Section tone="white">
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-2xl border border-line bg-paper p-8">
+          <div className="rounded-2xl border border-line bg-paper p-8 text-center">
             <Fenster icon="smartphone" rahmen="handy" flaeche="weiss" className="-mx-2 -mt-2" />
             <h2 className="mt-6 font-display text-2xl font-extrabold">Für iPhone</h2>
             <p className="mt-2 text-muted">Läuft auf aktuellen iPhones. Mitteilungen, Kamera und Navigation sind direkt eingebunden.</p>
-            <div className="mt-6">
+            <div className="mt-6 flex justify-center">
               <StoreLink plattform="iphone" />
             </div>
           </div>
-          <div className="rounded-2xl border border-line bg-paper p-8">
+          <div className="rounded-2xl border border-line bg-paper p-8 text-center">
             <Fenster icon="smartphone" rahmen="handy" flaeche="weiss" className="-mx-2 -mt-2" />
             <h2 className="mt-6 font-display text-2xl font-extrabold">Für Android</h2>
             <p className="mt-2 text-muted">Läuft auf aktuellen Android-Handys – auch auf robusten Baustellen-Geräten.</p>
-            <div className="mt-6">
+            <div className="mt-6 flex justify-center">
               <StoreLink plattform="android" />
             </div>
           </div>
