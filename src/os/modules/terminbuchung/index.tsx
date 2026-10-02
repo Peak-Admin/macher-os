@@ -97,6 +97,6 @@ export default defineModul({
   },
   seed: () => {
     if (buchungsfenster.all().length) return;
-    standardFenster().forEach((f) => buchungsfenster.create({ ...f, beispiel: true }));
+    standardFenster().forEach((f) => buchungsfenster.create({ ...f }));
   },
 });

@@ -40,6 +40,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
     steuernummer: b.steuernummer ?? '',
     ustId: b.ustId ?? '',
     iban: b.iban ?? '',
+    bic: b.bic ?? '',
     stundensatz: centAlsEingabe(b.stundensatz),
     zahlungszielTage: String(b.zahlungszielTage ?? 14),
     ustSatz: String(b.ustSatz ?? 19),
@@ -78,6 +79,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
       steuernummer: f.steuernummer.trim() || undefined,
       ustId: f.ustId.replace(/\s/g, '').toUpperCase() || undefined,
       iban: f.iban.replace(/\s/g, '').toUpperCase() || undefined,
+      bic: f.bic.replace(/\s/g, '').toUpperCase() || undefined,
       ...(geld ? { stundensatz: centAus(f.stundensatz) } : {}),
       zahlungszielTage: Number(f.zahlungszielTage),
       ustSatz: Number(f.ustSatz),
@@ -142,6 +144,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
                 <Eingabe label="Steuernummer" optional value={f.steuernummer} onChange={set('steuernummer')} hilfe="Steuernummer oder USt-IdNr. muss auf jede Rechnung" />
                 <Eingabe label="USt-IdNr." optional value={f.ustId} onChange={set('ustId')} fehler={fehler.ustId} placeholder="DE…" />
                 <Eingabe label="IBAN" optional value={f.iban} onChange={set('iban')} fehler={fehler.iban} autoComplete="off" />
+                <Eingabe label="BIC" optional value={f.bic} onChange={set('bic')} autoComplete="off" />
                 <Auswahl
                   label="Umsatzsteuer"
                   value={f.ustSatz}
