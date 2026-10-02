@@ -292,6 +292,7 @@ export const STRUKTUR: Hauptbereich[] = [
               { titel: 'Verbindungen', module: ['schnittstellen', 'terminbuchung'] },
               { titel: 'Automationen', module: ['automatisch', 'erledigt'] },
             ],
+            kontext: ['import', 'felder'],
             stichworte: ['Einstellungen', 'Rollen', 'Rechte', 'Zugriff', 'Schnittstelle', 'Terminbuchung', 'Online buchen', 'Automation', 'Erledigt', 'Datensicherung', 'Papierkorb', 'Dein Plan', 'Abo', 'Bezahlen', 'Kündigen', 'Testphase'],
           },
         ],
