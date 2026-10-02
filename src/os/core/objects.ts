@@ -454,6 +454,8 @@ export interface Beleg extends Basis {
   ust: Cent;
   auftragId?: ID;
   kategorie?: string; // "Material", "Fahrzeug", "Werkzeug" …
+  /** Betriebsbereich (Lager, Büro, Fahrzeuge …), wenn der Beleg zu keinem Auftrag gehört – entweder Auftrag oder Bereich */
+  bereich?: string;
   faelligAm?: Datum;
   status: 'neu' | 'geprueft' | 'bezahlt';
   dokumentId?: ID;

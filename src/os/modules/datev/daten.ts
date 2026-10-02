@@ -149,6 +149,8 @@ export interface Buchung {
   belegfeld1: string;
   text: string;
   quelle: { typ: 'rechnungen' | 'belege'; id: ID };
+  /** Kostenstelle (KOST1) – Betriebsbereich des Belegs, nur wenn eingeschaltet */
+  kost1?: string;
 }
 
 export interface ExportOptionen {
@@ -163,6 +165,8 @@ export interface ExportOptionen {
   rechnungenExportiert: Record<ID, string>;
   /** bereits exportierte Rechnungen/Belege trotzdem erneut ausgeben */
   auchExportierte?: boolean;
+  /** Betriebsbereich eines Belegs als Kostenstelle (KOST1) mitgeben */
+  kostenstellen?: boolean;
 }
 
 export interface ExportErgebnis {
@@ -273,6 +277,7 @@ export function buchungenErzeugen(
       belegfeld1: x.nummer ?? '',
       text: [name, AUFWAND_LABEL[aufwand]].filter(Boolean).join(' – '),
       quelle: { typ: 'belege', id: x.id },
+      ...(o.kostenstellen && !x.auftragId && x.bereich ? { kost1: x.bereich } : {}),
     });
     belegIds.push(x.id);
   }
@@ -419,7 +424,20 @@ export function kopfzeile(k: DateiKopf): string {
   return felder.join(';');
 }
 
-export function buchungszeile(b: Buchung): string {
+/** Spalten 15–37 bis „KOST1 – Kostenstelle“ – nur, wenn eine Buchung eine Kostenstelle hat */
+export const SPALTEN_BIS_KOST1 = [
+  'Postensperre',
+  'Diverse Adressnummer',
+  'Geschäftspartnerbank',
+  'Sachverhalt',
+  'Zinssperre',
+  'Beleglink',
+  ...Array.from({ length: 8 }, (_, i) => [`Beleginfo - Art ${i + 1}`, `Beleginfo - Inhalt ${i + 1}`]).flat(),
+  'KOST1 - Kostenstelle',
+];
+
+export function buchungszeile(b: Buchung, mitKost = false): string {
+  const kost = mitKost ? [...SPALTEN_BIS_KOST1.slice(0, -1).map(() => ''), b.kost1 ? txt(b.kost1, 36) : '""'] : [];
   return [
     betragDatev(b.umsatz),
     `"${b.sh}"`,
@@ -435,11 +453,14 @@ export function buchungszeile(b: Buchung): string {
     '""',
     '',
     txt(b.text, 60),
+    ...kost,
   ].join(';');
 }
 
 export function extfDatei(buchungen: Buchung[], kopf: DateiKopf): string {
-  const zeilen = [kopfzeile(kopf), SPALTEN.join(';'), ...buchungen.map(buchungszeile)];
+  const mitKost = buchungen.some((b) => b.kost1);
+  const spalten = mitKost ? [...SPALTEN, ...SPALTEN_BIS_KOST1] : SPALTEN;
+  const zeilen = [kopfzeile(kopf), spalten.join(';'), ...buchungen.map((b) => buchungszeile(b, mitKost))];
   return zeilen.join('\r\n') + '\r\n';
 }
 
@@ -453,6 +474,8 @@ export interface DatevEinstellungen {
   rahmen: Kontenrahmen;
   beraterNr: string;
   mandantNr: string;
+  /** Betriebsbereiche der Belege als Kostenstelle (KOST1) übergeben – nur, wenn der Steuerberater Kostenstellen nutzt */
+  kostenstellen?: boolean;
 }
 
 export function einstellungenPruefen(e: DatevEinstellungen): Partial<Record<'beraterNr' | 'mandantNr', string>> {

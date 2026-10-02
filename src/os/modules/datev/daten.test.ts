@@ -18,6 +18,7 @@ import {
   monatsSpanne,
   personenkonto,
   SPALTEN,
+  SPALTEN_BIS_KOST1,
   steuersatzAus,
   zeitraumPruefen,
   type ExportOptionen,
@@ -169,6 +170,23 @@ describe('EXTF-Datei', () => {
     expect(b.slice(0, 11)).toEqual(['1190,00', '"S"', '"EUR"', '', '', '""', '10000', '8400', '""', '0509', '"R-2026-0001"']);
     expect(b[13]).toBe('"Rechnung Mehmet Yilmaz ""Bau"""');
     expect(datei).not.toMatch(/ı/);
+  });
+
+  it('gibt Betriebsbereiche nur auf Wunsch als Kostenstelle KOST1 mit (Spalte 37)', () => {
+    const belege = [beleg('b1', { bereich: 'Fahrzeuge', art: 'tankbeleg' }), beleg('b2', { bereich: 'Lager', auftragId: 'a1' }), beleg('b3')];
+    const ohne = buchungenErzeugen({ rechnungen: [r('0001')], belege, kunden, lieferanten }, opt());
+    expect(ohne.buchungen.some((b) => b.kost1)).toBe(false);
+    expect(extfDatei(ohne.buchungen, kopf).split('\r\n')[1].split(';')).toHaveLength(SPALTEN.length);
+
+    const mit = buchungenErzeugen({ rechnungen: [r('0001')], belege, kunden, lieferanten }, opt({ kostenstellen: true }));
+    expect(mit.buchungen.map((b) => b.kost1)).toEqual([undefined, 'Fahrzeuge', undefined, undefined]);
+    const zeilen = extfDatei(mit.buchungen, kopf).split('\r\n');
+    const breite = SPALTEN.length + SPALTEN_BIS_KOST1.length;
+    expect(breite).toBe(37);
+    expect(zeilen[1].split(';')[36]).toBe('KOST1 - Kostenstelle');
+    for (const z of zeilen.slice(2, -1)) expect(z.split(';')).toHaveLength(37);
+    expect(zeilen[3].split(';')[36]).toBe('"Fahrzeuge"');
+    expect(zeilen[2].split(';')[36]).toBe('""');
   });
 
   it('benennt die Datei nach Zeitraum', () => {

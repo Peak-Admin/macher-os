@@ -693,6 +693,18 @@ export function korrekturEntwurf(id: ID): RechnungX | undefined {
   return neu;
 }
 
+/**
+ * Rechnung korrigieren (geführter Weg): Storno + Kopie als Entwurf in einem Schritt.
+ * Für Handwerker ist das die Rechnungskorrektur – eine eigene Art „Korrektur“ gibt es bewusst nicht.
+ */
+export function korrigieren(id: ID, grund?: string): { storno: RechnungX; entwurf: RechnungX } | undefined {
+  const storno = stornieren(id, grund);
+  if (!storno) return undefined;
+  const entwurf = korrekturEntwurf(id);
+  if (!entwurf) return undefined;
+  return { storno, entwurf };
+}
+
 // ------------------------------------------------------------------ Versand
 
 export function mailtoLink(r: RechnungX): string | undefined {

@@ -7,6 +7,7 @@ import { heute, plusTage, tageZwischen } from '@core/format';
 import type { Cent, Datum, ID } from '@core/objects';
 import type { BelegX } from '../rechnungen/typen';
 import { dateiLesen } from '@ui/index';
+import { betragCsv, csvText } from '../rechnungen/liste';
 
 export const alleBelege = () => db.belege.all() as BelegX[];
 export const belegX = (id: ID | undefined) => db.belege.get(id) as BelegX | undefined;
@@ -168,4 +169,42 @@ export async function dateiAblegen(datei: File, opts: { auftragId?: ID } = {}) {
     auftragId: opts.auftragId,
     tags: ['beleg'],
   });
+}
+
+// ------------------------------------------------------------------ Liste & Export
+
+export const STATUS_LABEL: Record<BelegX['status'], string> = { neu: 'Zu prüfen', geprueft: 'Geprüft', bezahlt: 'Bezahlt' };
+
+/** Zuordnungsfilter: `''` = alle, `'auftrag'` = mit Auftrag, `'ohne'` = weder Auftrag noch Bereich, sonst Bereichsname */
+export type ZuordnungFilter = string;
+
+export function passtZuordnung(b: Pick<BelegX, 'auftragId' | 'bereich'>, f: ZuordnungFilter): boolean {
+  if (!f) return true;
+  if (f === 'auftrag') return !!b.auftragId;
+  if (f === 'ohne') return !b.auftragId && !b.bereich;
+  return !b.auftragId && b.bereich === f;
+}
+
+const tmj = (d: string | undefined) => (d ? `${d.slice(8, 10)}.${d.slice(5, 7)}.${d.slice(0, 4)}` : '');
+
+export const BELEG_CSV_SPALTEN = ['Datum', 'Lieferant', 'Art', 'Nummer', 'Auftrag', 'Betriebsbereich', 'Kategorie', 'Netto', 'USt', 'Brutto', 'Status', 'Zahlen bis'];
+
+export function belegeCsv(liste: BelegX[]): string {
+  return csvText([
+    BELEG_CSV_SPALTEN,
+    ...liste.map((b) => [
+      tmj(b.datum),
+      lieferantName(b),
+      ART_LABEL[b.art],
+      b.nummer ?? '',
+      db.auftraege.get(b.auftragId)?.nummer ?? '',
+      b.auftragId ? '' : (b.bereich ?? ''),
+      b.kategorie ?? '',
+      betragCsv(b.netto),
+      betragCsv(b.ust),
+      betragCsv(brutto(b)),
+      STATUS_LABEL[b.status],
+      tmj(b.faelligAm),
+    ]),
+  ]);
 }
