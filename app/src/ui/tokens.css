@@ -1,0 +1,55 @@
+/* Design-Tokens nach Brand Playbook Mission Mittelstand, Abschnitt 14. Nur diese Werte verwenden. */
+:root {
+  --mm-brand: #2f9250;
+  --mm-brand-accent: #69af44;
+  --mm-brand-deep: #06480c;
+  --mm-brand-text: #1f6135;
+  --mm-dark: #0e130c;
+  --mm-black: #000000;
+  --mm-text: #374040;
+  --mm-muted-on-white: #767676;
+  --mm-canvas: #f7fafb;
+  --mm-surface: #ffffff;
+  --mm-border: #d9d9d9;
+  --mm-border-dark: #484848;
+  --mm-hover: #eef1f2;
+  --mm-soft-green: #edf0e9;
+  --mm-campaign-orange: #e69433;
+
+  --mm-font: 'Barlow', sans-serif;
+  --mm-font-eyebrow: 'Poppins', Arial, sans-serif;
+
+  --mm-action: var(--mm-brand-deep);
+  --mm-action-hover: var(--mm-brand-text);
+  --mm-on-action: #ffffff;
+  --mm-link: var(--mm-brand-text);
+  --mm-focus: var(--mm-brand-text);
+  --mm-radius-control: 4px;
+  --mm-radius-card: 6px;
+  --mm-radius-panel: 8px;
+  --mm-control-height: 44px;
+  --mm-sidebar-width: 240px;
+  --mm-topbar-height: 64px;
+  --mm-content-max: 1360px;
+  --mm-space-1: 4px;
+  --mm-space-2: 8px;
+  --mm-space-3: 12px;
+  --mm-space-4: 16px;
+  --mm-space-6: 24px;
+  --mm-space-8: 32px;
+  --mm-space-12: 48px;
+  --mm-space-16: 64px;
+  --mm-shadow-card: 0 1px 2px rgb(14 19 12 / 6%);
+  --mm-shadow-overlay: 0 8px 24px rgb(14 19 12 / 12%);
+  --mm-motion-fast: 150ms;
+  --mm-motion-panel: 220ms;
+
+  --mm-danger: #b42318;
+  --mm-danger-surface: #fef3f2;
+  --mm-warning: #854d0e;
+  --mm-warning-surface: #fefce8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --mm-motion-fast: 0ms; --mm-motion-panel: 0ms; }
+}
