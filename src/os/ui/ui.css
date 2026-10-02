@@ -115,6 +115,28 @@
 .mm-auswahlkarte-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
 .mm-auswahlkarte-text strong { color: var(--mm-black); font-weight: 600; }
 .mm-auswahlkarte-check { color: var(--mm-brand-text); }
+.mm-auswahlkarte:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
+.mm-auswahlkarte--gesperrt { cursor: not-allowed; background: var(--mm-surface); }
+.mm-auswahlkarte--gesperrt:hover { border-color: var(--mm-border); }
+.mm-auswahlkarte--gesperrt .mm-auswahlkarte-icon, .mm-auswahlkarte--gesperrt .mm-auswahlkarte-buehne > * { opacity: .55; }
+.mm-auswahlkarte-sperre { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font-size: 14px; line-height: 21px; color: var(--mm-text-secondary); }
+
+/* Aufbau „Bühne“ (nach Stripe): Motiv oben auf ruhiger Fläche, Text darunter */
+.mm-auswahlkarten--buehne { grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 16px; }
+.mm-auswahlkarten--buehne .mm-auswahlkarte { flex-direction: column; align-items: stretch; gap: 0; padding: 0; overflow: hidden; }
+.mm-auswahlkarten--buehne .mm-auswahlkarte--an { padding: 0; border-width: 1px; box-shadow: 0 0 0 1px var(--mm-brand); background: var(--mm-surface); }
+.mm-auswahlkarte-buehne {
+  display: grid; place-items: center; min-height: 160px; padding: 24px;
+  background: var(--mm-surface-subtle); border-bottom: 1px solid var(--mm-border);
+  transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-auswahlkarte--an .mm-auswahlkarte-buehne { background: var(--mm-soft-green); }
+.mm-auswahlkarten--buehne .mm-auswahlkarte-text { padding: 16px 20px 20px; gap: 4px; }
+.mm-auswahlkarten--buehne .mm-auswahlkarte-check {
+  position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; padding: 4px;
+  border-radius: 50%; background: var(--mm-brand); color: var(--mm-on-action);
+}
+@media (max-width: 480px) { .mm-auswahlkarte-buehne { min-height: 112px; padding: 16px; } }
 
 /* ---------- Layout */
 .mm-seite { width: 100%; max-width: var(--mm-content-max); margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }

@@ -300,49 +300,75 @@ export function Segmente<T extends string>({ label, wert, optionen, onChange }: 
   );
 }
 
-/** Große Auswahlkarten für geführte Abläufe (KI-Check-Muster) */
+/**
+ * Große Auswahlkarten für geführte Abläufe (KI-Check-Muster).
+ * Aufbau „buehne“ (nach Stripe): oben eine ruhige Bühne mit großem Motiv, darunter Titel und Erklärung.
+ * Standard: Bühne bei 2–3 Optionen mit Icon oder Vorschau, sonst kompakte Zeilen.
+ * `gesperrt` macht eine Option sichtbar, aber nicht wählbar – mit Grund als Text.
+ */
 export function AuswahlKarten<T extends string>({
   wert,
   optionen,
   onChange,
   mehrfach,
   label,
+  aufbau,
 }: {
   label: string;
   wert: T | T[];
-  optionen: { wert: T; label: string; text?: string; icon?: IconName }[];
+  optionen: { wert: T; label: string; text?: string; icon?: IconName; vorschau?: ReactNode; gesperrt?: string }[];
   onChange: (v: T | T[]) => void;
   mehrfach?: boolean;
+  aufbau?: 'zeile' | 'buehne';
 }) {
   const gewaehlt = (w: T) => (Array.isArray(wert) ? wert.includes(w) : wert === w);
+  const buehne = aufbau ? aufbau === 'buehne' : optionen.length >= 2 && optionen.length <= 3 && optionen.every((o) => o.icon || o.vorschau);
   return (
-    <div className="mm-auswahlkarten" role={mehrfach ? 'group' : 'radiogroup'} aria-label={label}>
-      {optionen.map((o) => (
-        <button
-          key={o.wert}
-          type="button"
-          role={mehrfach ? 'checkbox' : 'radio'}
-          aria-checked={gewaehlt(o.wert)}
-          className={cx('mm-auswahlkarte', gewaehlt(o.wert) && 'mm-auswahlkarte--an')}
-          onClick={() => {
-            if (mehrfach) {
-              const liste = Array.isArray(wert) ? wert : [];
-              onChange(liste.includes(o.wert) ? liste.filter((x) => x !== o.wert) : [...liste, o.wert]);
-            } else onChange(o.wert);
-          }}
-        >
-          {o.icon && (
-            <span className="mm-auswahlkarte-icon">
-              <ThemenIcon name={o.icon} />
+    <div className={cx('mm-auswahlkarten', buehne && 'mm-auswahlkarten--buehne')} role={mehrfach ? 'group' : 'radiogroup'} aria-label={label}>
+      {optionen.map((o) => {
+        const an = gewaehlt(o.wert);
+        const hinweisId = o.gesperrt ? `auswahl-${label}-${o.wert}-gesperrt`.replace(/\s+/g, '-') : undefined;
+        return (
+          <button
+            key={o.wert}
+            type="button"
+            role={mehrfach ? 'checkbox' : 'radio'}
+            aria-checked={an}
+            aria-disabled={o.gesperrt ? true : undefined}
+            aria-describedby={hinweisId}
+            className={cx('mm-auswahlkarte', an && 'mm-auswahlkarte--an', o.gesperrt && 'mm-auswahlkarte--gesperrt')}
+            onClick={() => {
+              if (o.gesperrt) return;
+              if (mehrfach) {
+                const liste = Array.isArray(wert) ? wert : [];
+                onChange(liste.includes(o.wert) ? liste.filter((x) => x !== o.wert) : [...liste, o.wert]);
+              } else onChange(o.wert);
+            }}
+          >
+            {buehne ? (
+              <span className="mm-auswahlkarte-buehne" aria-hidden="true">
+                {o.vorschau ?? (o.icon && <ThemenIcon name={o.icon} size={64} strichGroesse={32} />)}
+              </span>
+            ) : (
+              o.icon && (
+                <span className="mm-auswahlkarte-icon">
+                  <ThemenIcon name={o.icon} />
+                </span>
+              )
+            )}
+            <span className="mm-auswahlkarte-text">
+              <strong>{o.label}</strong>
+              {o.text && <span className="mm-meta">{o.text}</span>}
+              {o.gesperrt && (
+                <span id={hinweisId} className="mm-auswahlkarte-sperre">
+                  <Icon name="schloss" size={16} /> {o.gesperrt}
+                </span>
+              )}
             </span>
-          )}
-          <span className="mm-auswahlkarte-text">
-            <strong>{o.label}</strong>
-            {o.text && <span className="mm-meta">{o.text}</span>}
-          </span>
-          {gewaehlt(o.wert) && <Icon name="check" className="mm-auswahlkarte-check" />}
-        </button>
-      ))}
+            {an && <Icon name="check" className="mm-auswahlkarte-check" />}
+          </button>
+        );
+      })}
     </div>
   );
 }
