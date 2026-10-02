@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useId, useState, type FormEvent } from "react";
 import { Icon } from "@/components/ui";
+import { app } from "@/lib/site";
 
 const emailMuster = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -26,7 +27,7 @@ export function LoginForm() {
       setHinweis(null);
       return;
     }
-    setHinweis("Die Anmeldung ist bald verfügbar.");
+    setHinweis("Konten mit Anmeldung kommen bald. Macher OS läuft schon jetzt direkt in deinem Browser.");
   };
 
   const feld =
@@ -116,6 +117,11 @@ export function LoginForm() {
               <Icon name="bell" className="mt-0.5 size-4 shrink-0 text-signal-dark" />
               <span>
                 {hinweis}{" "}
+                {hinweis.startsWith("Konten") && (
+                  <a href={app.einrichten()} className="font-semibold underline">
+                    Macher OS öffnen
+                  </a>
+                )}
                 {hinweis.startsWith("„Passwort") && (
                   <Link href="/hilfe/kontakt" className="font-semibold underline">
                     Kontakt & Support
