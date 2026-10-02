@@ -1,7 +1,8 @@
 /** Kundenbereich `/k/:token` – schlichtes Vollbild-Layout ohne App-Navigation. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { db, setAktuellerNutzer } from '@core/db';
+import { emit } from '@core/events';
 import { datum, datumKurz, euro, positionSumme, telLink, uhrzeit } from '@core/format';
 import type { Angebot, ID } from '@core/objects';
 import { Abschnitt, Auswahl, KundenRahmen, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, useToast } from '@ui/index';
@@ -19,6 +20,7 @@ const FEHLER: Record<'unbekannt' | 'widerrufen' | 'abgelaufen', { titel: string;
 
 export function Portal() {
   const { token } = useParams();
+  const [params] = useSearchParams();
   const zugaenge = portalzugaenge.use();
   const z = zugaenge.find((x) => x.token === token) ?? zugangZuToken(token);
   const pruefung = zugangPruefen(z);
@@ -27,7 +29,13 @@ export function Portal() {
   useEffect(() => {
     // Im Kundenbereich handelt der Kunde, nicht ein Mitarbeiter
     setAktuellerNutzer(undefined);
-    if (pruefung.ok) portalzugaenge.update(pruefung.zugang.id, { letzterZugriffAm: new Date().toISOString() }, { leise: true });
+    if (!pruefung.ok) return;
+    portalzugaenge.update(pruefung.zugang.id, { letzterZugriffAm: new Date().toISOString() }, { leise: true });
+    // „Der Kunde hat dein Angebot geöffnet“: kommt der Kunde über den Link eines Angebots (?angebot=…), gilt es diesem
+    const angebotId = params.get('angebot');
+    const kundeId = pruefung.zugang.kundeId;
+    const angebot = angebotId ? db.angebote.get(angebotId) : undefined;
+    emit({ typ: 'portal.geoeffnet', daten: { kundeId, bezug: angebot && angebot.kundeId === kundeId ? { typ: 'angebote', id: angebot.id } : { typ: 'kunden', id: kundeId } } });
   }, [pruefung.ok, z?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!pruefung.ok || !kunde || kunde.geloeschtAm) {

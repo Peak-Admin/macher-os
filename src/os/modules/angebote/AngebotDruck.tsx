@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { db } from '@core/db';
 import { adresseText, datum, euro, positionSumme, zahl } from '@core/format';
+import type { Angebot } from '@core/objects';
 import { Briefbogen, DruckNichtGefunden } from '@ui/index';
 import { angebotSummen, optionalSumme, ustSatz } from './daten';
 
@@ -9,6 +10,11 @@ export function AngebotDruck() {
   const { id = '' } = useParams();
   const a = db.angebote.useOne(id);
   if (!a) return <DruckNichtGefunden was="Angebot" />;
+  return <AngebotBrief a={a} />;
+}
+
+/** Das Angebot im Briefbogen – auch als Vorschau für ein noch nicht gespeichertes Angebot */
+export function AngebotBrief({ a }: { a: Pick<Angebot, 'kundeId' | 'auftragId' | 'titel' | 'beispiel' | 'nummer' | 'version' | 'datum' | 'gueltigBis' | 'einleitung' | 'positionen' | 'rabattProzent'> }) {
   const ort = db.orte.get(db.auftraege.get(a.auftragId)?.ortId);
   const s = angebotSummen(a);
   const opt = optionalSumme(a);
