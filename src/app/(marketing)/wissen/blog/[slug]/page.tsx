@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FinalCta } from "@/components/sections";
-import { Breadcrumbs, ButtonLink, Container, Icon, Section, SectionHeading } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, Container, Icon, Section, SectionHeading, zone } from "@/components/ui";
 import { BlogBlocks } from "@/components/wissen/BlogBlocks";
 import { Abhakliste, FunktionLinks, Rechtshinweis, WerkzeugLinks } from "@/components/wissen/Teile";
 import { blogArtikel, blogHref, getArtikel, lesezeit, weitereArtikel } from "@/content/wissen/blog";
@@ -63,7 +63,7 @@ export default async function BlogArtikelPage({ params }: Props) {
       />
 
       {/* 1. Titel + 2. Kurzantwort */}
-      <section className="border-b border-line bg-paper">
+      <section {...zone("weiss")}>
         <Container size="narrow" className="py-12 sm:py-16">
           <Breadcrumbs items={[{ label: "Wissen", href: "/wissen" }, { label: "Blog", href: "/wissen/blog" }, { label: a.titel }]} />
           <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
@@ -90,113 +90,115 @@ export default async function BlogArtikelPage({ params }: Props) {
         </Container>
       </section>
 
-      <Container className="py-12 sm:py-16">
-        <div className="grid gap-12 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[17rem_minmax(0,48rem)]">
-          {/* 3. Inhaltsverzeichnis */}
-          <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
-            <nav aria-label="Inhaltsverzeichnis" className="rounded-lg border border-line bg-white p-5">
-              <p className="font-display font-bold">Inhalt</p>
-              <ol className="mt-3 grid gap-2 text-sm">
-                {toc.map((t, i) => (
-                  <li key={t.id} className="flex gap-2">
-                    <span className="w-4 shrink-0 text-right text-muted">{i + 1}.</span>
-                    <a href={`#${t.id}`} className="hover:text-signal-dark">
-                      {t.text}
+      <div {...zone("weiss")}>
+        <Container className="py-12 sm:py-16">
+          <div className="grid gap-12 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[17rem_minmax(0,48rem)]">
+            {/* 3. Inhaltsverzeichnis */}
+            <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
+              <nav aria-label="Inhaltsverzeichnis" className="rounded-lg border border-line bg-white p-5">
+                <p className="font-display font-bold">Inhalt</p>
+                <ol className="mt-3 grid gap-2 text-sm">
+                  {toc.map((t, i) => (
+                    <li key={t.id} className="flex gap-2">
+                      <span className="w-4 shrink-0 text-right text-muted">{i + 1}.</span>
+                      <a href={`#${t.id}`} className="hover:text-signal-dark">
+                        {t.text}
+                      </a>
+                    </li>
+                  ))}
+                  <li className="flex gap-2">
+                    <span className="w-4 shrink-0 text-right text-muted">{toc.length + 1}.</span>
+                    <a href="#checkliste" className="hover:text-signal-dark">
+                      Checkliste
                     </a>
                   </li>
-                ))}
-                <li className="flex gap-2">
-                  <span className="w-4 shrink-0 text-right text-muted">{toc.length + 1}.</span>
-                  <a href="#checkliste" className="hover:text-signal-dark">
-                    Checkliste
-                  </a>
-                </li>
-              </ol>
-            </nav>
-          </aside>
+                </ol>
+              </nav>
+            </aside>
 
-          {/* 4. Hauptinhalt inkl. 5. Beispiele */}
-          <article className="min-w-0">
-            <BlogBlocks blocks={a.inhalt} />
+            {/* 4. Hauptinhalt inkl. 5. Beispiele */}
+            <article className="min-w-0">
+              <BlogBlocks blocks={a.inhalt} />
 
-            {/* 6. Checkliste */}
-            <section id="checkliste" className="mt-14 scroll-mt-28 rounded-lg bg-sand p-6 sm:p-8">
-              <h2 className="font-display text-2xl font-extrabold tracking-tight">{a.checkliste.titel}</h2>
-              <p className="mt-1 text-muted">Zum Abhaken – oder als Vorlage für deinen Betrieb.</p>
-              <div className="mt-5">
-                <Abhakliste punkte={a.checkliste.punkte} />
-              </div>
-            </section>
-
-            {a.rechtshinweis && <Rechtshinweis className="mt-8" />}
-
-            {/* 7. Rechner / Vorlage */}
-            {(a.werkzeuge.length > 0 || vorlagen.length > 0) && (
-              <section className="mt-14">
-                <h2 className="font-display text-2xl font-extrabold tracking-tight">Gleich selbst anwenden</h2>
-                {a.werkzeuge.length > 0 && (
-                  <div className="mt-5">
-                    <WerkzeugLinks slugs={a.werkzeuge} />
-                  </div>
-                )}
-                {vorlagen.length > 0 && (
-                  <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                    {vorlagen.map((v) => (
-                      <li key={v.slug}>
-                        <Link
-                          href={vorlageHref(v.slug)}
-                          className="group flex h-full items-start gap-3 rounded-lg border border-line bg-white p-4 transition hover:border-ink/30"
-                        >
-                          <Icon name={v.art === "Checkliste" ? "clipboard" : "file"} className="mt-0.5 size-5 shrink-0 text-moss" />
-                          <span>
-                            <span className="block font-semibold group-hover:text-signal-dark">{v.titel}</span>
-                            <span className="mt-0.5 block text-sm text-muted">
-                              {v.art} · kostenlos drucken
-                            </span>
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              {/* 6. Checkliste */}
+              <section id="checkliste" className="mt-14 scroll-mt-28 rounded-lg bg-sand p-6 sm:p-8">
+                <h2 className="font-display text-2xl font-extrabold tracking-tight">{a.checkliste.titel}</h2>
+                <p className="mt-1 text-muted">Zum Abhaken – oder als Vorlage für deinen Betrieb.</p>
+                <div className="mt-5">
+                  <Abhakliste punkte={a.checkliste.punkte} />
+                </div>
               </section>
-            )}
 
-            {gewerke.length > 0 && (
-              <p className="mt-10 flex flex-wrap items-center gap-2 text-sm">
-                <span className="font-semibold">Besonders relevant für:</span>
-                {gewerke.map((g) => (
-                  <Link
-                    key={g.slug}
-                    href={gewerkHref(g.slug)}
-                    className="rounded-md bg-white px-2.5 py-1 font-medium ring-1 ring-line hover:ring-ink/40"
-                  >
-                    {g.titel}
-                  </Link>
-                ))}
-              </p>
-            )}
+              {a.rechtshinweis && <Rechtshinweis className="mt-8" />}
 
-            {/* 8. Passende Macher-OS-Funktion */}
-            <section className="mt-14 rounded-lg border border-line bg-white p-6 sm:p-8">
-              <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">In Macher OS</p>
-              <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">So hilft dir Macher OS dabei</h2>
-              <p className="mt-2 text-muted">
-                Wenn du das nicht mehr von Hand machen willst: Diese Funktionen nehmen dir die Arbeit ab.
-              </p>
-              <div className="mt-5">
-                <FunktionLinks slugs={a.funktionen} />
-              </div>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <ButtonLink href={cta.primary.href}>{cta.primary.label}</ButtonLink>
-                <ButtonLink href={cta.secondary.href} variant="secondary">
-                  {cta.secondary.label}
-                </ButtonLink>
-              </div>
-            </section>
-          </article>
-        </div>
-      </Container>
+              {/* 7. Rechner / Vorlage */}
+              {(a.werkzeuge.length > 0 || vorlagen.length > 0) && (
+                <section className="mt-14">
+                  <h2 className="font-display text-2xl font-extrabold tracking-tight">Gleich selbst anwenden</h2>
+                  {a.werkzeuge.length > 0 && (
+                    <div className="mt-5">
+                      <WerkzeugLinks slugs={a.werkzeuge} />
+                    </div>
+                  )}
+                  {vorlagen.length > 0 && (
+                    <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                      {vorlagen.map((v) => (
+                        <li key={v.slug}>
+                          <Link
+                            href={vorlageHref(v.slug)}
+                            className="group flex h-full items-start gap-3 rounded-lg border border-line bg-white p-4 transition hover:border-ink/30"
+                          >
+                            <Icon name={v.art === "Checkliste" ? "clipboard" : "file"} className="mt-0.5 size-5 shrink-0 text-moss" />
+                            <span>
+                              <span className="block font-semibold group-hover:text-signal-dark">{v.titel}</span>
+                              <span className="mt-0.5 block text-sm text-muted">
+                                {v.art} · kostenlos drucken
+                              </span>
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              )}
+
+              {gewerke.length > 0 && (
+                <p className="mt-10 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="font-semibold">Besonders relevant für:</span>
+                  {gewerke.map((g) => (
+                    <Link
+                      key={g.slug}
+                      href={gewerkHref(g.slug)}
+                      className="rounded-md bg-white px-2.5 py-1 font-medium ring-1 ring-line hover:ring-ink/40"
+                    >
+                      {g.titel}
+                    </Link>
+                  ))}
+                </p>
+              )}
+
+              {/* 8. Passende Macher-OS-Funktion */}
+              <section className="mt-14 rounded-lg border border-line bg-white p-6 sm:p-8">
+                <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">In Macher OS</p>
+                <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">So hilft dir Macher OS dabei</h2>
+                <p className="mt-2 text-muted">
+                  Wenn du das nicht mehr von Hand machen willst: Diese Funktionen nehmen dir die Arbeit ab.
+                </p>
+                <div className="mt-5">
+                  <FunktionLinks slugs={a.funktionen} />
+                </div>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <ButtonLink href={cta.primary.href}>{cta.primary.label}</ButtonLink>
+                  <ButtonLink href={cta.secondary.href} variant="secondary">
+                    {cta.secondary.label}
+                  </ButtonLink>
+                </div>
+              </section>
+            </article>
+          </div>
+        </Container>
+      </div>
 
       {/* 9. Weitere Artikel */}
       <Section tone="sand">

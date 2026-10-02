@@ -25,7 +25,7 @@ const DESKTOP = "(min-width: 75rem)";
  * (`data-header-theme="dunkel" | "hell"`). Der Filter sitzt nur auf eigenen Glasebenen (`.kopf-glas`), nie auf dem
  * `<header>` selbst – sonst würde der Kopf zum Bezugsrahmen für fest positionierte Kinder. Das mobile Menü ist ein
  * `<dialog>` in der obersten Ebene und davon unabhängig.
- * Auf allen Seiten außer der Startseite hält ein Platzhalter den Inhalt unter dem Kopf frei.
+ * Auf jeder Seite ist die erste Box die Bühne für den Kopf; sie hält oben Platz frei (globals.css, `main > .zone`).
  */
 export function Header() {
   const pathname = usePathname();
@@ -105,7 +105,6 @@ export function Header() {
   }, [pathname]);
 
   const dunkel = thema === "dunkel" && !offen;
-  const startseite = pathname === "/";
 
   const umschalten = (label: string) => setOffen((o) => (o === label ? null : label));
 
@@ -227,7 +226,6 @@ export function Header() {
         <MobilesMenue offen={mobil} schliessen={() => setMobil(false)} menueKnopf={menueKnopf} />
       </header>
       {/* Platzhalter: Die Startseite legt den Kopf auf den Hero, alle anderen Seiten beginnen darunter. */}
-      {!startseite && <div aria-hidden className="h-[4.5rem] sm:h-[4.75rem]" />}
     </>
   );
 }
