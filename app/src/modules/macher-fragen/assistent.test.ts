@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
 import { zeitpunkt } from '@core/format';
-import { aufgabeAusEntwurf, aufgabeAusText, beantworte, findeKunde, verfuegbarkeit, type Kontext } from './assistent';
+import { aufgabeAusEntwurf, aufgabeAusText, erinnerungAusText, beantworte, findeKunde, verfuegbarkeit, type Kontext } from './assistent';
 import { wochenStart } from '@core/format';
 import { zeitraumAus } from './zeit';
 
@@ -114,5 +114,13 @@ describe('Macher fragen', () => {
     const a = beantworte('Wie wird das Wetter?', kontext());
     expect(a.absicht).toBe('unbekannt');
     expect(a.folgefragen?.length).toBeGreaterThan(0);
+  });
+});
+
+describe('Erinnerung per Satz', () => {
+  it('macht aus „Erinnere mich morgen …“ eine Aufgabe für mich', () => {
+    expect(erinnerungAusText('Erinnere mich morgen daran, Familie Hartmann anzurufen', '2026-10-02', 'ich')).toEqual({ titel: 'Familie Hartmann anrufen', zustaendigId: 'ich', faellig: '2026-10-03' });
+    expect(erinnerungAusText('Erinnere mich heute an Material bestellen', '2026-10-02', 'ich')).toMatchObject({ titel: 'Material bestellen', faellig: '2026-10-02' });
+    expect(erinnerungAusText('Erinnere mich daran, die Leiter zu prüfen', '2026-10-02', 'ich')).toMatchObject({ titel: 'Die Leiter prüfen' });
   });
 });

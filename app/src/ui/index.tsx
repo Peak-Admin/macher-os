@@ -692,6 +692,9 @@ export function Filter<T extends string>({ optionen, wert, onChange, label }: { 
 export function Dialog({ offen, onSchliessen, titel, children, aktionen, breit }: { offen: boolean; onSchliessen: () => void; titel: string; children: ReactNode; aktionen?: ReactNode; breit?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   const vorher = useRef<Element | null>(null);
+  // Inhalt erst nach showModal einhängen: sonst greift autoFocus ins Leere (Dialog noch zu)
+  // und showModal setzt den Fokus auf den Schließen-Knopf
+  const [bereit, setBereit] = useState(false);
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
@@ -699,14 +702,18 @@ export function Dialog({ offen, onSchliessen, titel, children, aktionen, breit }
       vorher.current = document.activeElement;
       d.showModal?.();
       if (!d.showModal) d.setAttribute('open', '');
-    } else if (!offen && d.open) {
-      d.close?.();
-      (vorher.current as HTMLElement | null)?.focus?.();
+      setBereit(true);
+    } else if (!offen) {
+      setBereit(false);
+      if (d.open) {
+        d.close?.();
+        (vorher.current as HTMLElement | null)?.focus?.();
+      }
     }
   }, [offen]);
   return (
     <dialog ref={ref} className={cx('mm-dialog', breit && 'mm-dialog--breit')} onClose={onSchliessen} onCancel={onSchliessen} aria-label={titel}>
-      {offen && (
+      {offen && bereit && (
         <>
           <div className="mm-dialog-kopf">
             <h2>{titel}</h2>

@@ -236,7 +236,7 @@ function VerschiebenInhalt({ t, onFertig }: { t: NonNullable<ReturnType<typeof d
     const alt = { start: t.start, ende: t.ende };
     db.termine.update(t.id, ziel, { text: `Verschoben auf ${datumKurz(ziel.start)}, ${uhrzeit(ziel.start)} Uhr` });
     if (t.auftragId) vermerken({ typ: 'auftraege', id: t.auftragId }, 'termin.verschoben', `Termin „${t.titel}“ verschoben auf ${datumKurz(ziel.start)}`);
-    toast(`Verschoben auf ${datumKurz(ziel.start)}.`, { aktion: { label: 'Rückgängig', onClick: () => db.termine.update(t.id, alt, { text: 'Verschieben rückgängig gemacht' }) } });
+    toast(`Verschoben auf ${datumKurz(ziel.start)}`, { aktion: { label: 'Rückgängig', onClick: () => db.termine.update(t.id, alt, { text: 'Verschieben rückgängig gemacht' }) } });
     onFertig();
   };
 

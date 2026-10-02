@@ -188,7 +188,7 @@ export default defineModul({
           schluessel: `wartung-kunde:${a.id}:${termin.start}`,
           art: 'freigabe',
           titel: `Kunde über Wartung informieren: ${k}`,
-          text: `Termin ${datumKurz(termin.start)}. Nachricht ist vorbereitet – prüfen und freigeben.`,
+          text: `Termin ${datumKurz(termin.start)} – Nachricht ist vorbereitet – prüfen und freigeben.`,
           bezug: { typ: 'auftraege', id: a.id },
           gewicht: 45,
           faellig: termin.start.slice(0, 10),

@@ -25,7 +25,9 @@ function dringendOhneTermin(a: Auftrag) {
 /** Macher legt für dringende Aufträge einen Planvorschlag zur Freigabe in „Braucht dich“ */
 function dringendVorschlagen(a: Auftrag) {
   if (!dringendOhneTermin(a)) return;
-  if (db.hinweise.all().some((h) => h.schluessel === schluessel(a.id) && h.status === 'offen')) return;
+  // offen – oder in den letzten 7 Tagen von dir erledigt/verworfen: nicht sofort wieder vorlegen
+  const seit = new Date(Date.now() - 7 * 86_400_000).toISOString();
+  if (db.hinweise.all().some((h) => h.schluessel === schluessel(a.id) && (h.status === 'offen' || (h.erledigtAm ?? h.geaendertAm) >= seit))) return;
   const ctx = kontextAusDb();
   const vs = vorschlaege(ctx, a.id, { anzahl: 1 }).vorschlaege[0];
   if (!vs) return;

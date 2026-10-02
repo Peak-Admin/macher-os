@@ -234,7 +234,7 @@ function agenda(k: Kontext, z: Zeitraum, nurMeine: boolean): Antwort {
   const teile = [termine.length ? anzahl(termine.length, 'Termin', 'Termine') : '', aufgaben.length ? anzahl(aufgaben.length, 'fällige Aufgabe', 'fällige Aufgaben') : ''].filter(Boolean);
   return {
     absicht: 'agenda',
-    text: `${wann} stehen${fuer} ${teile.join(' und ')} an.`,
+    text: `${wann} ${termine.length + aufgaben.length === 1 ? 'steht' : 'stehen'}${fuer} ${teile.join(' und ')} an.`,
     eintraege: [
       ...termine.map((t) => terminZeile(t, !z.tag)),
       ...aufgaben.map((a) => ({
@@ -426,10 +426,35 @@ export function aufgabeAusText(frage: string, heute: Datum): AufgabeEntwurf {
   return { titel, zustaendigId: m?.id, faellig, auftragId: auftrag?.id };
 }
 
-function aufgabeAnlegen(k: Kontext, frage: string): Antwort {
+const TRENNBAR = ['an', 'ab', 'auf', 'aus', 'bei', 'ein', 'mit', 'nach', 'vor', 'zu', 'zurück', 'weg', 'durch', 'um', 'los', 'fest', 'rein', 'raus'];
+
+/** „…, Familie Hartmann anzurufen“ → „Familie Hartmann anrufen“ (zu-Infinitiv in Grundform) */
+function grundform(satz: string): string {
+  return satz
+    .replace(/\bzu\s+(\S+)$/i, '$1')
+    .replace(/(\S+)$/, (w) => {
+      const m = w.match(/^(.+?)zu(.{3,})$/i);
+      return m && TRENNBAR.includes(m[1].toLowerCase()) ? m[1] + m[2] : w;
+    });
+}
+
+/** „Erinnere mich morgen daran, Familie Hartmann anzurufen“ → Aufgabe für mich, fällig morgen */
+export function erinnerungAusText(frage: string, heute: Datum, ichId?: ID): AufgabeEntwurf {
+  const kopf = frage.match(/^\s*erinnere?n?\s+(\S+)/i);
+  const wen = kopf && !/^(mich|uns)$/i.test(kopf[1]) ? findeMitarbeiter(kopf[1]) : undefined;
+  const faellig = zeitraumAus(frage, heute)?.bis;
+  let rest = frage.replace(/^\s*erinnere?n?\s+\S+\s*/i, '');
+  const i = rest.search(/\b(daran|dran)\b[,:]?\s*(,?\s*dass\s+)?/i);
+  if (i >= 0) rest = rest.slice(i).replace(/^(daran|dran)[,:]?\s*(dass\s+)?/i, '');
+  else rest = rest.replace(/^(heute|morgen|übermorgen|am\s+\S+|nächste\s+woche)\s+/i, '').replace(/^an\s+/i, '');
+  const titel = gross(grundform(rest.replace(/[\s,.!?]+$/g, '').replace(/\s+(bitte)$/i, '')).trim());
+  return { titel, zustaendigId: wen?.id ?? ichId, faellig: faellig ?? heute };
+}
+
+function aufgabeAnlegen(k: Kontext, frage: string, erinnerung = false): Antwort {
   if (!k.darf('schreiben'))
     return { absicht: 'keine-berechtigung', text: 'Du kannst Aufgaben ansehen. Zum Anlegen brauchst du die entsprechende Freigabe.' };
-  const e = aufgabeAusText(frage, k.heute);
+  const e = erinnerung ? erinnerungAusText(frage, k.heute, k.ich?.id) : aufgabeAusText(frage, k.heute);
   if (!e.titel)
     return {
       absicht: 'aufgabe-unklar',
@@ -439,7 +464,7 @@ function aufgabeAnlegen(k: Kontext, frage: string): Antwort {
   const wer = e.zustaendigId ? db.mitarbeiter.get(e.zustaendigId) : undefined;
   return {
     absicht: 'aufgabe-entwurf',
-    text: `Ich habe einen Entwurf vorbereitet. Prüfe ihn und lege die Aufgabe dann an${wer ? ` – ${wer.vorname} bekommt sie direkt` : ''}.`,
+    text: `Ich habe einen Entwurf vorbereitet. Prüfe ihn und lege die Aufgabe dann an${wer ? (wer.id === k.ich?.id ? ' – sie landet bei dir' : ` – ${wer.vorname} bekommt sie direkt`) : ''}.`,
     vorschlaege: [{ id: vid(), art: 'aufgabe', label: 'Aufgabe anlegen', entwurf: e, status: 'entwurf' }],
   };
 }
@@ -475,6 +500,7 @@ export function beantworte(frage: string, k: Kontext): Antwort {
   const z = zeitraumAus(f, k.heute);
 
   if (/\baufgabe\b/.test(f) && /\b(leg|lege|erstell|erstelle|anlegen|neue|mach|notier|notiere)\b/.test(f)) return aufgabeAnlegen(k, frage);
+  if (/^erinnere?n?\s/.test(f)) return aufgabeAnlegen(k, frage, true);
   if (/rechnung/.test(f) && /(offen|überfällig|ueberfaellig|unbezahlt|ausstehend|bezahlt|zahlt|schuld|geld)/.test(f)) return offeneRechnungen(k);
   if (/\bwer\b.*\b(zeit|frei|verfügbar|kapazität|luft)\b/.test(f) || /\b(freie kapazität|wer ist frei)\b/.test(f))
     return werHatZeit(k, z ?? { von: plusTage(wochenStart(k.heute), 7), bis: plusTage(wochenStart(k.heute), 11), label: 'nächste Woche', tag: false });

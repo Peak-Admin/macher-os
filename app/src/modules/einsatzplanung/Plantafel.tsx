@@ -82,7 +82,7 @@ export function Plantafel() {
     const alt = { start: t.start, ende: t.ende, mitarbeiterIds: t.mitarbeiterIds };
     db.termine.update(t.id, neu, { text: `Umgeplant: ${personName(m)}, ${datumKurz(neu.start)}` });
     const konflikt = terminKonflikte({ ...t, ...neu }, kontextAusDb()).find((x) => x.mitarbeiterId === m.id);
-    toast(konflikt ? `Umgeplant – Achtung: ${konflikt.gruende[0].text}.` : `Umgeplant auf ${personName(m)}, ${datumKurz(neu.start)}.`, {
+    toast(konflikt ? `Umgeplant – Achtung: ${konflikt.gruende[0].text}.` : `Umgeplant auf ${personName(m)}, ${datumKurz(neu.start)}`, {
       ton: konflikt ? 'achtung' : 'erfolg',
       aktion: { label: 'Rückgängig', onClick: () => db.termine.update(t.id, alt, { text: 'Umplanung rückgängig gemacht' }) },
     });

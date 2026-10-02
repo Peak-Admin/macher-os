@@ -2,7 +2,7 @@ import { defineModul, type HinweisVorschlag } from '@core/modul';
 import { db } from '@core/db';
 import { on } from '@core/events';
 import { benachrichtigen, erledigt } from '@core/macher';
-import { passt, personName } from '@core/format';
+import { personName } from '@core/format';
 import type { Auftrag } from '@core/objects';
 import { AnfragenListe, NeueAnfragenWidget } from './AnfragenListe';
 import { AnfrageNeu } from './AnfrageNeu';
@@ -82,9 +82,5 @@ export default defineModul({
         }),
     },
   ],
-  suche: (q) =>
-    db.auftraege
-      .where((a) => a.phase === 'anfrage' && passt(q, a.titel, a.beschreibung, a.nummer, db.kunden.get(a.kundeId)?.name))
-      .slice(0, 5)
-      .map((a) => ({ typ: 'Anfrage', titel: a.titel, untertitel: `${db.kunden.get(a.kundeId)?.name ?? ''} · ${alterText(a)}`, pfad: `/auftraege/anfragen?anfrage=${a.id}`, relevanz: 65 })),
+  // Suche: Anfragen sind Aufträge – die Auftragssuche findet sie (mit Phase), kein zweiter Treffer
 });

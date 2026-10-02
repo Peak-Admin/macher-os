@@ -64,7 +64,7 @@ export default defineModul({
         const neu = pruefeMaterial(ctx, 1).filter((c) => c.ergebnis === 'problem' && !gemeldet.includes(c.auftrag.id));
         for (const c of neu) {
           benachrichtigen(`Material fehlt: ${c.auftrag.titel}`, {
-            text: `Einsatz am ${datumKurz(c.termin.start)}. ${c.zeilen.filter((z) => z.pruefung.ergebnis === 'problem').map((z) => z.pruefung.loesung).join(' ')}`,
+            text: `Einsatz am ${datumKurz(c.termin.start)} – ${c.zeilen.filter((z) => z.pruefung.ergebnis === 'problem').map((z) => z.pruefung.loesung).join(' ')}`,
             bezug: { typ: 'auftraege', id: c.auftrag.id },
             wichtig: true,
           });
