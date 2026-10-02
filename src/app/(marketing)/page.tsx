@@ -56,7 +56,7 @@ const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSch
   { titel: "Heute", text: "Was jetzt wichtig ist.", icon: "home", objekt: "werkzeugwand", href: "/funktionen" },
   { titel: "Aufträge", text: "Alles rund um Kunden und Arbeit.", icon: "clipboard", objekt: "klemmbrett", href: "/funktionen/auftraege" },
   { titel: "Planen", text: "Was als Nächstes passiert.", icon: "calendar", objekt: "zollstock", href: "/funktionen/einsatzplanung" },
-  { titel: "Betrieb", text: "Mitarbeiter, Material, Geld und Unternehmen.", icon: "layers", objekt: "werkzeugkiste", href: "/funktionen/mitarbeiter" },
+  { titel: "Betrieb", text: "Mitarbeiter, Material, Geld und Unternehmen.", icon: "layers", objekt: "werkbank", href: "/funktionen/mitarbeiter" },
 ];
 
 const gewerkIcons: Record<string, IconName> = {
