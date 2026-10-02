@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { db } from '@core/db';
 import { useDarf } from '@core/session';
 import { Auswahl, Button, Eingabe, Karte, Leer, Meldung, Meta, Seite, Stapel, Textfeld, ZweiSpalten, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { variablenFuer } from '@modules/dokumente/variablen';
+import { geschaeftsdokumente } from '@modules/dokumente/daten';
 import { PLATZHALTER, VORLAGEN_ARTEN, fehlendePlatzhalter, kontextAus, platzhalterErsetzen, standardKontext, vorlagen, type Kontext, type Vorlage, type VorlagenArt } from './daten';
 
 export function VorlageBearbeiten() {
@@ -17,20 +19,22 @@ export function VorlageBearbeiten() {
   return <Editor key={v.id} vorlage={v} />;
 }
 
-/** Beispielkontext aus echten Daten – damit die Vorschau nach etwas Echtem aussieht */
+/** Beispielkontext aus echten Daten – über die Variablen der Dokumenten-Engine (gleiche Werte wie beim Senden) */
 function beispielKontext(art: VorlagenArt): { kontext: Kontext; quelle?: string } {
   const r = db.rechnungen.all().find((x) => x.status !== 'entwurf') ?? db.rechnungen.all()[0];
   const an = db.angebote.all()[0];
   const t = db.termine.all().find((x) => x.kundeId) ?? db.termine.all()[0];
   const a = db.auftraege.all()[0];
-  if ((art === 'rechnung' || art === 'mahnung') && r) return { kontext: kontextAus({ rechnungId: r.id }), quelle: `Rechnung ${r.nummer}` };
-  if (art === 'angebot' && an) return { kontext: kontextAus({ angebotId: an.id }), quelle: `Angebot ${an.nummer}` };
+  const gd = geschaeftsdokumente.all()[0];
+  if ((art === 'rechnung' || art === 'mahnung') && r) return { kontext: variablenFuer({ typ: 'rechnungen', id: r.id }), quelle: `Rechnung ${r.nummer || '(Entwurf)'}` };
+  if (art === 'angebot' && an) return { kontext: variablenFuer({ typ: 'angebote', id: an.id }), quelle: `Angebot ${an.nummer}` };
   if (art === 'termin' && t) return { kontext: kontextAus({ terminId: t.id }), quelle: `Termin „${t.titel}“` };
+  if (art === 'dokument' && gd) return { kontext: variablenFuer({ typ: 'geschaeftsdokumente', id: gd.id }), quelle: `${gd.nummer}` };
   if (art === 'email') {
-    const k = { ...kontextAus({ angebotId: an?.id }), ...kontextAus({ rechnungId: r?.id }) };
+    const k = { ...(an ? variablenFuer({ typ: 'angebote', id: an.id }) : {}), ...(r ? variablenFuer({ typ: 'rechnungen', id: r.id }) : {}) };
     return { kontext: k, quelle: 'deinen Angeboten und Rechnungen' };
   }
-  return a ? { kontext: kontextAus({ auftragId: a.id }), quelle: `Auftrag ${a.nummer}` } : { kontext: {} };
+  return a ? { kontext: variablenFuer({ typ: 'auftraege', id: a.id }), quelle: `Auftrag ${a.nummer}` } : { kontext: {} };
 }
 
 function Editor({ vorlage }: { vorlage: Vorlage }) {

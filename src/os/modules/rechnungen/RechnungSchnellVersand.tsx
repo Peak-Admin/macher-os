@@ -6,19 +6,28 @@
 import { db, vermerken } from '@core/db';
 import type { Versand } from '@core/cloud';
 import { datum, euro } from '@core/format';
-import type { ID, Position } from '@core/objects';
+import type { ID, Position, RechnungsArt } from '@core/objects';
 import { kundenLink } from '@modules/angebote/erstwert';
 import { dokumentVersendet, sendenMitRueckfall, type SendeErgebnis } from '@modules/start/daten';
 import { absenderVon, dokumentHtml, zeilenAus } from '@modules/start/emailHtml';
-import { ART_LABEL, betrieb, festschreiben, freieRechnung, pflichtTexte, rechnungErstellen, rechnungsSummen, type Mangel } from './logik';
+import { ART_LABEL, betrieb, festschreiben, freieRechnung, optionenSetzen, pflichtTexte, rechnungErstellen, rechnungsSummen, summenZeilen, type Mangel, type RechnungsOptionen } from './logik';
 import { rechnungAendern, type RechnungX } from './typen';
 import { xrechnungFuer } from './xrechnung';
 
-/** Entwurf aus Auftrag (vorhandener Entwurf wird genutzt) oder frei – mit den Positionen vom Bildschirm */
-export function schnellEntwurf(q: { auftragId?: ID; kundeId: ID }, positionen: Position[], leistungszeitraum: string, titel?: string): RechnungX | undefined {
-  const r = q.auftragId ? rechnungErstellen(q.auftragId, 'rechnung') : freieRechnung(q.kundeId);
+/** Art und „Weitere Optionen“ aus dem Schnell-Bildschirm */
+export interface SchnellOptionen extends RechnungsOptionen {
+  art?: RechnungsArt;
+  /** Abschlag in Prozent der Angebotssumme */
+  prozent?: number;
+}
+
+/** Entwurf aus Auftrag (vorhandener Entwurf derselben Art wird genutzt) oder frei – mit den Positionen vom Bildschirm */
+export function schnellEntwurf(q: { auftragId?: ID; kundeId: ID }, positionen: Position[], leistungszeitraum: string, titel?: string, o: SchnellOptionen = {}): RechnungX | undefined {
+  const { art = 'rechnung', prozent, ...optionen } = o;
+  const r = q.auftragId ? rechnungErstellen(q.auftragId, art, { prozent }) : freieRechnung(q.kundeId);
   if (!r) return undefined;
-  return rechnungAendern(r.id, { positionen, leistungszeitraum, ...(titel?.trim() ? { titel: titel.trim() } : {}) }, { leise: true }) as RechnungX;
+  rechnungAendern(r.id, { positionen, leistungszeitraum, ...(titel?.trim() ? { titel: titel.trim() } : {}) }, { leise: true });
+  return optionenSetzen(r.id, optionen);
 }
 
 export function rechnungNachricht(r: RechnungX, kanal: Versand['kanal']): { betreff: string; text: string } {
@@ -61,12 +70,7 @@ export function rechnungHtml(r: RechnungX, link?: string): string {
     ],
     absaetze: [`Guten Tag${k?.art === 'privat' ? ' ' + k.name : ''},`, 'vielen Dank für Ihren Auftrag. Wir berechnen folgende Leistungen:'],
     zeilen: zeilenAus(r.positionen),
-    summen: [
-      ['Netto', euro(s.netto)],
-      ...(b?.kleinunternehmer ? [] : ([[`USt ${s.ustSatz} %`, euro(s.ust)]] as [string, string][])),
-      ...s.abzuege.map((x) => [`abzüglich ${x.nummer}`, euro(-x.brutto)] as [string, string]),
-      ['Zahlbetrag', euro(s.zahlbetrag), true],
-    ],
+    summen: summenZeilen(s, b?.kleinunternehmer).map((z) => [z.label, euro(z.wert), z.gesamt] as [string, string, boolean?]),
     link: link ? { label: 'Rechnung online ansehen', url: link } : undefined,
     schluss: [
       `Bitte überweisen Sie ${euro(s.zahlbetrag)} bis zum ${datum(r.faelligAm)}${b?.iban ? ` auf das Konto ${b.iban}` : ''}, Verwendungszweck ${r.nummer}.`,

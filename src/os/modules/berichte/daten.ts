@@ -4,6 +4,7 @@
  * und beim Anzeigen/Drucken aufgelöst.
  */
 import { db, defineCollection, vermerken } from '@core/db';
+import { emit } from '@core/events';
 import { datumVon, heute, plusTage, minutenAus } from '@core/format';
 import type { Aufgabe, Basis, Datum, Dokument, Gewerk, ID, Materialbuchung, Termin, Zeiteintrag } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
@@ -14,8 +15,8 @@ import type { UnterschriftEingabe } from '@ui/index';
 export type BerichtArt = 'tagesbericht' | 'regiebericht' | 'rapport' | 'pruefprotokoll';
 
 export const BERICHT_ARTEN: { wert: BerichtArt; label: string; text: string }[] = [
-  { wert: 'tagesbericht', label: 'Tagesbericht', text: 'Was heute auf der Baustelle passiert ist.' },
-  { wert: 'regiebericht', label: 'Regiebericht', text: 'Stundenlohnarbeiten, die der Kunde gegenzeichnet.' },
+  { wert: 'tagesbericht', label: 'Baustellenbericht', text: 'Was heute auf der Baustelle passiert ist (Tagesbericht).' },
+  { wert: 'regiebericht', label: 'Arbeitsbericht', text: 'Stundenlohnarbeiten (Regie), die der Kunde gegenzeichnet.' },
   { wert: 'rapport', label: 'Rapport', text: 'Kurzer Arbeitsnachweis für den Kundendienst.' },
   { wert: 'pruefprotokoll', label: 'Prüfprotokoll', text: 'Prüfpunkte mit Ergebnis und Messwerten.' },
 ];
@@ -166,6 +167,7 @@ export function berichtUnterschreiben(id: ID, e: UnterschriftEingabe) {
   const sig = unterschriftSpeichern(b.auftragId, `Unterschrift ${artLabel(b.art)} ${b.nummer}`, e);
   berichte.update(id, { status: 'unterschrieben', unterschriftKunde: sig }, { text: `Unterschrieben von ${sig.name}` });
   vermerken({ typ: 'auftraege', id: b.auftragId }, 'bericht.unterschrieben', `${artLabel(b.art)} ${b.nummer} vom Kunden unterschrieben`);
+  emit({ typ: 'bericht.unterschrieben', sammlung: 'berichte', objekt: berichte.get(id), daten: { auftragId: b.auftragId, art: b.art } });
 }
 
 export function berichtHinweise(termine: Termin[], liste: Bericht[], tag: Datum): HinweisVorschlag[] {

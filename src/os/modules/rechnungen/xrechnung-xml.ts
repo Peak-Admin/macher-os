@@ -65,7 +65,8 @@ function partei(rolle: 'Supplier' | 'Customer', p: { name: string; email?: strin
 
 export interface XRechnungDaten {
   r: RechnungX;
-  s: RechnungsSummen;
+  /** Summen; ohne `abzugGezahlt` gilt `abzugBrutto` als bereits gezahlt (z. B. Abo-Rechnungen) */
+  s: Omit<RechnungsSummen, 'abzugGezahlt' | 'offenAusAbzuegen' | 'einbehaltProzent' | 'einbehalt'> & Partial<Pick<RechnungsSummen, 'abzugGezahlt' | 'einbehalt'>>;
   betrieb: Betrieb | undefined;
   kunde: Kunde | undefined;
   /** Nummer der Originalrechnung bei Storno */
@@ -89,8 +90,9 @@ export function xrechnungAus(d: XRechnungDaten): string {
   const netto = s.netto * vz;
   const ust = s.ust * vz;
   const brutto = s.brutto * vz;
-  const prepaid = s.abzugBrutto * vz;
-  const zahlbar = s.zahlbetrag * vz;
+  // EN 16931 (BR-CO-16): Zahlbetrag = Brutto − bereits gezahlt. Ein Sicherheitseinbehalt steht als Hinweis im Text.
+  const prepaid = (s.abzugGezahlt ?? s.abzugBrutto) * vz;
+  const zahlbar = (s.zahlbetrag + (s.einbehalt ?? 0)) * vz;
 
   const notes = [...d.texte, r.bemerkung].filter(Boolean) as string[];
   const zahlungsText = gutschrift ? 'Der Betrag wird erstattet bzw. verrechnet.' : `Zahlbar bis ${r.faelligAm} ohne Abzug.`;

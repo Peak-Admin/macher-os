@@ -5,7 +5,7 @@ import { datum, euro } from '@core/format';
 import type { ID } from '@core/objects';
 import { useDarf } from '@core/session';
 import { Button, Leer, Liste, ListenZeile, Meldung, Stapel, Zeile, useToast } from '@ui/index';
-import { ART_LABEL, gueltigeRechnungen, nummerText, offenFuerKunde, rechnungErstellen, rechnungsSummen } from './logik';
+import { abschlussRechnung, ART_LABEL, nummerText, offenFuerKunde, passendeArt, rechnungErstellen, rechnungsSummen } from './logik';
 import { alleRechnungen, type RechnungX } from './typen';
 import { RechnungStatus } from './teile';
 
@@ -35,9 +35,8 @@ export function AuftragRechnungenTab({ id }: { id: ID }) {
   const a = db.auftraege.get(id);
   if (!darf) return <Leer titel="Nur für Chef und Büro" text="Rechnungen sehen nur Chef und Büro." icon="schloss" />;
   const liste = alleRechnungen().filter((r) => r.auftragId === id);
-  const gueltig = gueltigeRechnungen(id);
-  const hatAbschlag = gueltig.some((r) => r.art === 'abschlag' && r.status !== 'entwurf');
-  const erstellen = (art: 'rechnung' | 'abschlag' | 'schluss') => {
+  const art = passendeArt(id);
+  const erstellen = () => {
     const r = rechnungErstellen(id, art);
     if (!r) return;
     toast(`${ART_LABEL[art]} als Entwurf angelegt.`);
@@ -45,16 +44,13 @@ export function AuftragRechnungenTab({ id }: { id: ID }) {
   };
   return (
     <Stapel>
-      {a?.phase === 'abrechnung' && !gueltig.length && <Meldung ton="achtung" titel="Der Auftrag wartet auf die Rechnung">Macher übernimmt Angebot, Material und Zeiten in den Entwurf.</Meldung>}
+      {a?.phase === 'abrechnung' && !abschlussRechnung(id) && <Meldung ton="achtung" titel="Der Auftrag wartet auf die Rechnung">Macher übernimmt Angebot, Material, Zeiten und bezahlte Abschläge in den Entwurf.</Meldung>}
       <Zeile>
-        <Button icon="plus" onClick={() => erstellen(hatAbschlag ? 'schluss' : 'rechnung')}>
-          {hatAbschlag ? 'Schlussrechnung erstellen' : 'Rechnung erstellen'}
-        </Button>
-        <Button variante="sekundaer" onClick={() => erstellen('abschlag')}>
-          Abschlag anfordern
+        <Button icon="plus" onClick={erstellen}>
+          {art === 'schluss' ? 'Schlussrechnung erstellen' : 'Rechnung erstellen'}
         </Button>
         <Button variante="tertiaer" to={`/betrieb/rechnungen/neu?auftrag=${id}`}>
-          Mehr Optionen
+          Weitere Optionen
         </Button>
       </Zeile>
       {liste.length ? <RechnungsZeilen liste={liste} /> : <Leer titel="Noch keine Rechnung" text="Erstelle die Rechnung mit einem Klick – Positionen kommen aus Angebot, Material und Zeiten." icon="euro" />}

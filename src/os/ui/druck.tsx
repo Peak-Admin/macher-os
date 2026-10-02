@@ -1,13 +1,14 @@
 /**
- * Druck-/PDF-Ansichten: ein Rahmen und ein Briefbogen für Angebote, Rechnungen, Mahnungen und Protokolle.
+ * Druck-/PDF-Ansichten: ein Rahmen und ein Briefbogen für Angebote, Rechnungen, Mahnungen und Protokolle –
+ * dazu die gemeinsamen Bausteine der Dokumenten-Engine: Positionstabelle und Summenblock.
  * Absender, Logo und Fußzeile kommen aus `db.betrieb` und der Einstellung „Briefkopf“ (Vorlagen) –
  * nichts wird kopiert. Über „Drucken → Als PDF speichern“ entsteht das PDF.
  */
 import type { ReactNode } from 'react';
 import { db } from '@core/db';
 import { einstellung } from '@core/einstellungen';
-import { adresseText } from '@core/format';
-import type { ID } from '@core/objects';
+import { adresseText, euro, positionSumme, zahl } from '@core/format';
+import type { ID, Position } from '@core/objects';
 import { BeispielMarke, Button, Leer, Meta } from './index';
 import './druck.css';
 
@@ -192,5 +193,92 @@ export function Briefbogen({
         </footer>
       )}
     </Druckrahmen>
+  );
+}
+
+// ------------------------------------------------------------------ Gemeinsame Bausteine der Geschäftsdokumente
+
+/**
+ * Positionstabelle für alle Geschäftsdokumente (Angebot, Auftragsbestätigung, Lieferschein, Rechnungen).
+ * Textzeilen ohne Nummer, Bedarfspositionen in Klammern. `preise={false}` für Lieferscheine.
+ */
+export function DruckPositionen({ positionen, preise = true }: { positionen: Position[]; preise?: boolean }) {
+  let nr = 0;
+  return (
+    <div className="mm-druck-tabelle-rahmen">
+      <table>
+        <thead>
+          <tr>
+            <th>Pos.</th>
+            <th>Beschreibung</th>
+            <th className="num">Menge</th>
+            {preise && <th className="num mm-nebensaechlich">Einzelpreis</th>}
+            {preise && <th className="num">Gesamt</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {!positionen.length && (
+            <tr>
+              <td />
+              <td colSpan={preise ? 4 : 2}>Keine Positionen.</td>
+            </tr>
+          )}
+          {positionen.map((p) => {
+            if (p.art === 'text' || p.art === 'zwischensumme')
+              return (
+                <tr key={p.id}>
+                  <td />
+                  <td colSpan={preise ? 4 : 2} style={{ whiteSpace: 'pre-wrap' }}>
+                    {p.text}
+                  </td>
+                </tr>
+              );
+            nr++;
+            return (
+              <tr key={p.id}>
+                <td>{nr}</td>
+                <td style={{ whiteSpace: 'pre-wrap' }}>
+                  {p.text}
+                  {p.optional && <div className="mm-druck-klein">Bedarfs-/Alternativposition – nicht in der Summe enthalten</div>}
+                </td>
+                <td className="num">
+                  {zahl(p.menge)} {p.einheit}
+                </td>
+                {preise && <td className="num mm-nebensaechlich">{euro(p.einzelpreis)}</td>}
+                {preise && <td className="num">{p.optional ? `(${euro(Math.round(p.menge * p.einzelpreis))})` : euro(positionSumme(p))}</td>}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export interface SummenZeile {
+  label: ReactNode;
+  wert: string;
+  /** Gesamt- oder Zahlbetrag: fett mit Linie */
+  gesamt?: boolean;
+  /** kleine Zusatzzeile unter dem Label */
+  klein?: ReactNode;
+}
+
+/** Summenblock rechtsbündig – Netto, USt, Abzüge, Zahlbetrag */
+export function DruckSummen({ zeilen }: { zeilen: SummenZeile[] }) {
+  return (
+    <table className="mm-druck-summen">
+      <tbody>
+        {zeilen.map((z, i) => (
+          <tr key={i} className={z.gesamt ? 'mm-druck-gesamt' : undefined}>
+            <td>
+              {z.label}
+              {z.klein && <div className="mm-druck-klein">{z.klein}</div>}
+            </td>
+            <td className="num">{z.wert}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

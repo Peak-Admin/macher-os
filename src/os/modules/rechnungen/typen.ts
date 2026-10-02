@@ -27,6 +27,12 @@ export type RechnungX = Rechnung & {
   abschlagProzent?: number;
   /** freier Text unter den Positionen */
   bemerkung?: string;
+  /** Sicherheitseinbehalt in Prozent vom Gesamtbetrag (z. B. 5 nach § 17 VOB/B) */
+  einbehaltProzent?: number;
+  /** beim Festschreiben eingefroren: wie viel auf jede abgezogene Abschlags-/Teilrechnung bezahlt war (Cent je ID) */
+  abzugStand?: Record<ID, Cent>;
+  /** eigenes Nummernkürzel nur für diese Rechnung (Standard aus den Nummernkreisen der Dokumenten-Engine) */
+  nummernkreis?: string;
 };
 
 export type ZahlungX = Zahlung & {
