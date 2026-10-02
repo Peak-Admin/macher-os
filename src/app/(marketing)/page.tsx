@@ -162,7 +162,7 @@ export default function HomePage() {
               Aufträge, Termine und Rechnungen an einem Ort. Für dich und dein Team.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href={cta.primary.href} size="lg" variant="onDark">
+              <ButtonLink href={cta.primary.href} size="lg">
                 {cta.primary.label}
               </ButtonLink>
               <ButtonLink href={cta.secondary.href} variant="light" size="lg">
@@ -334,7 +334,7 @@ export default function HomePage() {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {machtMacher.map((m) => (
-              <li key={m.text} className="flex items-center gap-3 rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
+              <li key={m.text} className="flex items-center gap-3 karte-dunkel p-4">
                 <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg icon-kachel">
                   <Icon name={m.icon} className="size-5" />
                 </span>
@@ -415,7 +415,7 @@ export default function HomePage() {
             <p className="mt-6 border-t border-white/15 pt-5 text-white/75">
               Bestehende Kunden, Mitarbeiter und Artikel einfach übernehmen.
             </p>
-            <ButtonLink href={cta.primary.href} variant="onDark" className="mt-6">
+            <ButtonLink href={cta.primary.href} className="mt-6">
               Kostenlos starten <Icon name="arrow-right" className="size-4" />
             </ButtonLink>
           </div>

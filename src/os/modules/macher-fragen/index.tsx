@@ -1,6 +1,8 @@
 import { defineModul } from '@core/modul';
 import { useOverlay } from '@core/overlay';
 import { Dialog, Seite } from '@ui/index';
+import { ABSICHTEN, AKTIONEN } from './assistent';
+import { verbindeModelle } from '@core/ki-modelle';
 import { MacherChat } from './Chat';
 
 /** Overlay „Macher fragen“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`). */
@@ -31,4 +33,7 @@ export default defineModul({
   navigation: 'versteckt',
   routen: [{ pfad: '', element: MacherSeite }],
   global: MacherOverlay,
+  gateway: { absichten: ABSICHTEN, aktionen: AKTIONEN },
+  // Jev/Luna anmelden, wenn auf dem Server eingerichtet – sonst bleibt alles bei Regeln
+  init: () => void verbindeModelle(),
 });

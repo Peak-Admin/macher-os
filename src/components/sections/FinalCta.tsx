@@ -46,7 +46,7 @@ export function FinalCta({
           </h2>
           <p className="mt-5 max-w-xl text-lg text-white/80">{intro}</p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <ButtonLink href={primaryHref} size="lg" variant="onDark" className="sm:min-w-64">
+            <ButtonLink href={primaryHref} size="lg" className="sm:min-w-64">
               {primaryLabel}
             </ButtonLink>
             {secondary && (

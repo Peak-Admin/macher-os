@@ -46,6 +46,13 @@ Next.js (App Router, Turbopack) + TypeScript + Tailwind CSS v4. Alles wird stati
 Website und Software laufen in **einem** Projekt auf **einer** Domain: Website unter `/`, Macher OS (die Software) unter `/os`.
 Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 
+### Deployment – nur `macher-os`
+
+- Einziges Ziel: Vercel-Team „01 Peak Atlas Web“ → Projekt **`macher-os`**. Nur sein Check zählt.
+- **`macher-os-app` ist stillgelegt.** Taucht noch ein (roter) Check „macher-os-app“ auf: ignorieren.
+  Nicht reparieren, nichts dorthin deployen, keine Einstellungen oder Variablen dort anlegen.
+- Code der Software gehört nach `src/os/`. Den alten Ordner `os/` nicht anfassen und nicht neu anlegen.
+
 ### Befehle
 
 - `npm run dev` – Entwicklungsserver
@@ -120,5 +127,9 @@ Vor Architektur-, Datenmodell- oder UX-Entscheidungen das Dokument konsultieren.
 10. **Jedes größere Feature muss einen ausreichend wichtigen Pain lösen.** Das Produkt wird einfacher, während das System mächtiger wird.
 
 Visuelle Sprache: Für macher-os gelten das Brand Playbook und die Festlegungen (oben). Die Farbangaben der Constitution (Ivory, Burgundy) gelten hier nicht.
+
+**KI:** Jede KI-Funktion läuft über den Macher AI Gateway (`src/os/core/gateway.ts`, Strategie und Stand:
+[`docs/os/KI-GATEWAY.md`](docs/os/KI-GATEWAY.md)). Kein Modul spricht direkt mit einem Modell; Module melden Absichten
+und Aktionen über `defineModul({ gateway })` an. Regeln vor Jev vor Luna vor stärkerem Modell; kritische Aktionen immer bestätigen.
 
 Größere Module werden mit einer **Master Build Specification** (§66) und der **Peak Build Sequence** (§65) geplant.

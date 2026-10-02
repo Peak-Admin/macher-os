@@ -1,7 +1,8 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { fuehreAus, kiProtokoll, registriereGateway } from '@core/gateway';
 import { db, zuruecksetzen } from '@core/db';
 import { zeitpunkt } from '@core/format';
-import { aufgabeAusEntwurf, aufgabeAusText, erinnerungAusText, beantworte, findeKunde, verfuegbarkeit, type Kontext } from './assistent';
+import { ABSICHTEN, AKTIONEN, aufgabeAusEntwurf, aufgabeAusText, fragen, erinnerungAusText, beantworte, findeKunde, verfuegbarkeit, type Kontext } from './assistent';
 import { wochenStart } from '@core/format';
 import { zeitraumAus } from './zeit';
 
@@ -122,5 +123,36 @@ describe('Erinnerung per Satz', () => {
     expect(erinnerungAusText('Erinnere mich morgen daran, Familie Hartmann anzurufen', '2026-10-02', 'ich')).toEqual({ titel: 'Familie Hartmann anrufen', zustaendigId: 'ich', faellig: '2026-10-03' });
     expect(erinnerungAusText('Erinnere mich heute an Material bestellen', '2026-10-02', 'ich')).toMatchObject({ titel: 'Material bestellen', faellig: '2026-10-02' });
     expect(erinnerungAusText('Erinnere mich daran, die Leiter zu prüfen', '2026-10-02', 'ich')).toMatchObject({ titel: 'Die Leiter prüfen' });
+  });
+});
+
+describe('Macher fragen über den Gateway', () => {
+  let aus: () => void;
+  beforeEach(() => {
+    basis();
+    aus = registriereGateway({ absichten: ABSICHTEN, aktionen: AKTIONEN });
+  });
+  afterEach(() => aus());
+
+  it('beantwortet und protokolliert jede Frage', async () => {
+    const { antwort, modell } = await fragen('Was steht morgen an?', kontext(), 'sprache');
+    expect(antwort.absicht).toBe('agenda');
+    expect(modell).toBe('Regeln');
+    expect(kiProtokoll.all()[0]).toMatchObject({ absicht: 'appointment.list', kanal: 'sprache', lane: 0, ergebnis: 'beantwortet' });
+  });
+
+  it('zeigt fehlende Rechte als normale Antwort', async () => {
+    expect((await fragen('Welche Rechnungen sind offen?', kontext(undefined, ['lesen']))).antwort.absicht).toBe('keine-berechtigung');
+  });
+
+  it('legt Aufgaben nur über die bestätigte Aktion an', async () => {
+    const { antwort } = await fragen('Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag', kontext());
+    const v = antwort.vorschlaege![0];
+    if (v.art !== 'aufgabe') throw new Error('falscher Vorschlag');
+    expect(kiProtokoll.all()[0].ergebnis).toBe('vorgeschlagen');
+    expect(await fuehreAus({ aktion: 'task.create', daten: v.entwurf }, kontext())).toMatchObject({ ok: false, grund: 'bestaetigung' });
+    const r = await fuehreAus({ aktion: 'task.create', daten: v.entwurf }, kontext(), { bestaetigt: true });
+    expect(r.ok).toBe(true);
+    expect(db.aufgaben.all()).toHaveLength(1);
   });
 });

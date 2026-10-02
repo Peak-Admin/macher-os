@@ -2,7 +2,7 @@
 
 > **Seit Oktober 2026 gilt vorrangig die [UX- und Designspezifikation](ux-spezifikation.md).** Sie überschreibt alle
 > bisherigen Designvorgaben – auch diese Datei und das Playbook. Abgelöst sind insbesondere:
-> Primärbutton `#2F9250` mit 19 px (jetzt `#0d6b45`, 16 px halbfett, 48 px hoch), Icon-Kacheln in Akzentgrün mit weißen Linien
+> Primärbutton-Farbe `#2F9250` (jetzt `#0d6b45`; Software flach, 16 px halbfett, 48 px hoch), Icon-Kacheln in Akzentgrün mit weißen Linien
 > (jetzt helle Grünfläche `#e8f2ec` mit dunkelgrünem Icon), der dunkle Wechsler `#1C2619` (jetzt heller Umschalter),
 > die aktive Sidebar-Kachel (jetzt hellgrüne Zeile, dunkelgrüne Schrift), kleine Radien 4–8 px (jetzt 8/12/16 px),
 > Controls 44 px (jetzt 48 px) und das Glas über dem Werkstattfoto (Arbeitsflächen sind jetzt deckend).
@@ -13,14 +13,23 @@ weil sie jüngere, ausdrücklich bestätigte Entscheidungen enthält – außer 
 
 ## Bestätigte Bausteine
 
-### Primärbutton (abgelöst – siehe UX-Spezifikation 5.1)
-Markengrün `#2F9250`, weiße Schrift **Barlow 700 in 19 px**, Hover `#1F6135`, 4 px Radius, leichter Schatten erlaubt beim großen Einstiegs-CTA.
-Weiß auf `#2F9250` hat 3,9:1 – das reicht nur für große Schrift (ab 19 px fett). Die Buttonschrift darf deshalb nicht kleiner werden.
-Kleine weiße Texte auf Grün (Badges, Schrittnummern, Mini-Buttons in Mocks) bleiben auf tiefem Grün `#06480C`.
-Vorbild: Startseiten-CTA „Jetzt Erstgespräch buchen“ (optional mit kleinem Personenbild links).
+### Primärbutton (Website) – Pixel-Würfel, Farbe nach UX-Spezifikation
+Aktionsgrün `#0d6b45` (früher `#2F9250`) mit leichtem Verlauf, hellem Innenschein und feinen Pixel-Würfeln
+(`public/marke/button-pixel.svg`), weiße Schrift **Barlow 700 in 19 px**, **12 px Radius**, mind. 48 px hoch.
+Links ein weißer Kreis mit grünem Pfeil; beim Hover und Fokus wandert der Pfeil nach rechts, die Würfel laufen einmal
+**von rechts nach links** durch (mit `prefers-reduced-motion` ohne Bewegung). Fokus: 3-px-Ring (UX-Spezifikation).
+Funktioniert auf hellen und dunklen Flächen gleich – auch im dunklen Hero und Abschluss-CTA ist das die Hauptaktion.
+Weiß auf `#0d6b45` hat 6,55:1. Kleine weiße Texte auf Grün (Badges, Schrittnummern) stehen auf dunklem Grün `#164c34`.
+Vorbild: CTA „Jetzt Erstgespräch vereinbaren“ auf matthias-aumann.de (Wirkung nachgebaut, keine fremden Dateien).
 
-- Website: Utility `btn-primaer` (`src/app/globals.css`, Tokens `--color-primary`, `--color-primary-hover`); `ButtonLink` Variante `primary`
-- Software: `.mm-btn--primaer` (`--mm-action`)
+- Website: Utility `btn-primaer` (`src/app/globals.css`), Pfeil über `BtnPfeil`; `ButtonLink` Variante `primary` bringt beides mit.
+  Zweitbuttons daneben gleich hoch und ebenfalls 12 px Radius.
+- Software: `.mm-btn--primaer` (`--mm-action`) – bleibt schlicht und flach mit 8 px Radius (Arbeitsoberfläche, UX-Spezifikation 5.1).
+
+### Karten (Website)
+Helle Karten 12 px Radius, 1-px-Linie `#dce2dc`, sehr feiner Schatten.
+Auf Markendunkel: Utility `karte-dunkel` – leicht aufgehellte Fläche (Weiß 6 % → 2,5 %), feiner heller Rahmen (Weiß 11 %), 12 px Radius.
+Radien Website (UX-Spezifikation): Controls 8 px (`rounded-md`/`rounded-lg`), Karten und Panels 12 px (`rounded-xl`/`rounded-2xl`), Menüs und große Flächen 16 px (`rounded-3xl`).
 
 **Einstiegs-CTA (Einrichtung):** Der „Weiter“-Button im Onboarding folgt dem CTA von matthias-aumann.de:
 grüne Fläche mit hellem Innenrand und feinem 8-px-Würfelraster, 12 px Radius, 56 px hoch, weißer Kreis mit grünem Pfeil links.

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type FocusEvent, type MouseEvent } from "react";
+import { BtnPfeil } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { cta, mainNav, type Mega, type MegaGewerk, type MegaGruppe, type MegaVorschau, type NavItem } from "@/lib/site";
 import { Logo } from "./Logo";
@@ -138,8 +139,8 @@ export function Header() {
           >
             {cta.secondary.label}
           </Link>
-          <Link href={cta.primary.href} className="flex min-h-11 items-center rounded-md btn-primaer px-4">
-            {cta.primary.label}
+          <Link href={cta.primary.href} className="btn-primaer flex min-h-11 items-center px-5">
+            <BtnPfeil>{cta.primary.label}</BtnPfeil>
           </Link>
         </div>
 
@@ -147,7 +148,7 @@ export function Header() {
         <div className="ml-auto flex shrink-0 items-center gap-2 nav:hidden">
           <Link
             href={cta.primary.href}
-            className="hidden min-h-12 items-center whitespace-nowrap rounded-md btn-primaer px-3 min-[480px]:flex"
+            className="btn-primaer hidden min-h-12 items-center whitespace-nowrap px-3 min-[480px]:flex"
           >
             {cta.primary.label}
           </Link>
@@ -183,7 +184,7 @@ function MegaPanel({ item, maxHoehe }: { item: MegaItem; maxHoehe: string }) {
         id={panelId(item.label)}
         aria-labelledby={titelId}
         style={{ maxHeight: maxHoehe }}
-        className={`mega-auf pointer-events-auto mx-auto w-full overflow-y-auto overscroll-contain rounded-b-2xl border border-t-0 border-line bg-white px-8 pb-5 pt-8 shadow-popover ${
+        className={`mega-auf pointer-events-auto mx-auto w-full overflow-y-auto overscroll-contain rounded-b-3xl border border-t-0 border-line bg-white px-8 pb-5 pt-8 shadow-popover ${
           mega.art === "gewerke" ? "max-w-[920px]" : "max-w-[1200px]"
         }`}
       >
@@ -436,8 +437,8 @@ function MobilesMenue({
       </nav>
 
       <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-line bg-white px-5 pt-4 pb-[calc(16px+env(safe-area-inset-bottom,0px))]">
-        <Link href={cta.primary.href} className="flex min-h-12 w-full items-center justify-center rounded-md btn-primaer px-4">
-          {cta.primary.label}
+        <Link href={cta.primary.href} className="btn-primaer flex min-h-12 w-full items-center justify-center px-4">
+          <BtnPfeil>{cta.primary.label}</BtnPfeil>
         </Link>
         <Link href={cta.secondary.href} className="inline-flex min-h-11 items-center font-semibold text-signal-dark underline underline-offset-4">
           {cta.secondary.label}

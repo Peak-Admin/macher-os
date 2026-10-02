@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { db } from '@core/db';
-import { personName } from '@core/format';
+import { heute, personName } from '@core/format';
 import { useIch } from '@core/session';
 import type { ID } from '@core/objects';
 import { Abschnitt, Avatar, Button, Dialog, Eingabe, Liste, ListenZeile, Meta, Stapel, Textfeld, useToast } from '@ui/index';
@@ -89,11 +89,13 @@ export function DefektDialog({ id, offen, onSchliessen }: { id: ID; offen: boole
   const b = db.betriebsmittel.useOne(id);
   const toast = useToast();
   const [text, setText] = useState('');
+  const [wieder, setWieder] = useState('');
   if (!b) return null;
   const melden = () => {
-    defektMelden(id, text);
+    defektMelden(id, text, wieder || undefined);
     toast(`${b.name} ist als defekt gemeldet. Das Büro sieht es unter „Braucht dich“.`);
     setText('');
+    setWieder('');
     onSchliessen();
   };
   return (
@@ -112,7 +114,10 @@ export function DefektDialog({ id, offen, onSchliessen }: { id: ID; offen: boole
         </>
       }
     >
-      <Textfeld label="Was ist kaputt?" value={text} onChange={(e) => setText(e.target.value)} placeholder="z. B. Kabel angeschmort, Akku lädt nicht" autoFocus optional />
+      <Stapel>
+        <Textfeld label="Was ist kaputt?" value={text} onChange={(e) => setText(e.target.value)} placeholder="z. B. Kabel angeschmort, Akku lädt nicht" autoFocus optional />
+        <Eingabe label="Wann ist es wieder einsatzbereit?" type="date" min={heute()} value={wieder} onChange={(e) => setWieder(e.target.value)} hilfe="Wenn du es schon weißt, z. B. Werkstatttermin" optional />
+      </Stapel>
     </Dialog>
   );
 }

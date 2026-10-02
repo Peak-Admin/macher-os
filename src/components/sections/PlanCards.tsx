@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CheckList } from "@/components/ui";
+import { BtnPfeil, CheckList } from "@/components/ui";
 import { formatPreis, plaene, preiseVorlaeufig } from "@/content/preise";
 
 /** Preiskarten aller Pläne. `billing` steuert, welcher Monatspreis gezeigt wird. */
@@ -47,11 +47,11 @@ export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "
             <CheckList items={p.vorteile} className="mt-4 flex-1 text-sm" />
             <Link
               href={p.cta.href}
-              className={`mt-6 flex min-h-12 items-center justify-center rounded-md py-3 text-center transition-colors ${
-                p.hervorgehoben ? "bg-white font-semibold text-ink hover:bg-sand" : "btn-primaer"
+              className={`mt-6 inline-flex min-h-13 items-center justify-center text-center font-bold ${
+                p.hervorgehoben ? "rounded-xl bg-white text-ink transition-colors hover:bg-sand" : "btn-primaer"
               }`}
             >
-              {p.cta.label}
+              {p.hervorgehoben ? p.cta.label : <BtnPfeil>{p.cta.label}</BtnPfeil>}
             </Link>
           </div>
         );

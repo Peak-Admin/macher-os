@@ -231,7 +231,7 @@ export default function FunktionenPage() {
               <li key={a.titel}>
                 <Link
                   href={funktionHref(a.funktion)}
-                  className="flex items-center gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10 transition hover:bg-white/10"
+                  className="flex items-center gap-3 karte-dunkel p-4 transition hover:bg-white/10"
                 >
                   <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md icon-kachel">
                     <Icon name={a.icon} className="size-5" />

@@ -91,7 +91,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
           </div>
           <ul className="grid content-start gap-3 sm:grid-cols-2">
             {f.automatisch.map((a) => (
-              <li key={a} className="flex items-start gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10">
+              <li key={a} className="flex items-start gap-3 karte-dunkel p-4">
                 <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-md icon-kachel">
                   <Icon name="spark" className="size-4" />
                 </span>

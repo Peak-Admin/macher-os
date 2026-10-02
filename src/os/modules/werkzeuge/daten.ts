@@ -16,6 +16,8 @@ export type BetriebsmittelX = Betriebsmittel & {
   /** Prüfintervall in Monaten (überschreibt den Standard der Prüfart) */
   pruefIntervallMonate?: number;
   ausgegebenAm?: string;
+  /** Defekt / in der Werkstatt: ab wann wieder einsatzbereit (Datum) */
+  wiederVerfuegbarAb?: string;
 };
 
 export const bmx = (b: Betriebsmittel) => b as BetriebsmittelX;
@@ -139,17 +141,17 @@ export function zurueckgeben(id: ID) {
   });
 }
 
-export function defektMelden(id: ID, text: string) {
+export function defektMelden(id: ID, text: string, wiederVerfuegbarAb?: string) {
   const b = db.betriebsmittel.get(id);
   if (!b) return;
   const notiz = [b.notiz, `Defekt (${new Date().toLocaleDateString('de-DE')}): ${text.trim() || 'ohne Beschreibung'}`].filter(Boolean).join('\n');
-  db.betriebsmittel.update(id, { status: 'defekt', notiz }, { text: `Defekt gemeldet: ${text.trim() || 'ohne Beschreibung'}` });
+  db.betriebsmittel.update(id, { status: 'defekt', notiz, wiederVerfuegbarAb: wiederVerfuegbarAb || undefined } as Partial<BetriebsmittelX>, { text: `Defekt gemeldet: ${text.trim() || 'ohne Beschreibung'}` });
 }
 
 export function wiederEinsatzbereit(id: ID) {
   const b = db.betriebsmittel.get(id);
   if (!b) return;
-  db.betriebsmittel.update(id, { status: b.mitarbeiterId ? 'im_einsatz' : 'verfuegbar' }, { text: 'Wieder einsatzbereit' });
+  db.betriebsmittel.update(id, { status: b.mitarbeiterId ? 'im_einsatz' : 'verfuegbar', wiederVerfuegbarAb: undefined } as Partial<BetriebsmittelX>, { text: 'Wieder einsatzbereit' });
   vermerken({ typ: 'betriebsmittel', id }, 'betriebsmittel.repariert', 'Repariert und wieder einsatzbereit');
 }
 

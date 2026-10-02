@@ -178,7 +178,7 @@ export default function AkademiePage() {
               Funktion Schulungen ansehen <Icon name="arrow-right" className="size-4" />
             </Link>
           </div>
-          <div className="rounded-lg bg-white/5 p-6 ring-1 ring-white/10 sm:p-8">
+          <div className="karte-dunkel p-6 sm:p-8">
             <CheckList
               items={[
                 "Kurse und eigene Schulungen zuweisen",

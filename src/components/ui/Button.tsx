@@ -9,9 +9,27 @@ const variants: Record<Variant, string> = {
   /** Nebenaktion: weiß mit erkennbarem Rand, dunkelgrüne Schrift */
   secondary: "bg-white text-signal-dark ring-1 ring-inset ring-line-dark hover:bg-signal-soft",
   light: "bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/20",
-  /** Hauptaktion auf dunklen Markenflächen: dasselbe Aktionsgrün wie überall, mit hellem Rand für die Kante */
-  onDark: "btn-primaer ring-1 ring-inset ring-white/40",
+  /** Hauptaktion auf dunklen Markenflächen: derselbe Primärbutton wie überall (ein Grün für alle Hauptaktionen) */
+  onDark: "btn-primaer",
 };
+
+/**
+ * Inhalt des Primärbuttons: Pfeil im weißen Kreis links, beim Hover wandert er nach rechts.
+ * Nur innerhalb von `btn-primaer` verwenden.
+ */
+export function BtnPfeil({ children }: { children: ReactNode }) {
+  return (
+    <span className="btn-pfeil-inhalt">
+      <span aria-hidden className="btn-pfeil">
+        <Icon name="arrow-right" className="size-3.5 stroke-[2.5]" />
+      </span>
+      <span>{children}</span>
+      <span aria-hidden className="btn-pfeil btn-pfeil--nach">
+        <Icon name="arrow-right" className="size-3.5 stroke-[2.5]" />
+      </span>
+    </span>
+  );
+}
 
 export function ButtonLink({
   href,
@@ -26,20 +44,18 @@ export function ButtonLink({
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
-  const sizes = {
-    sm: "min-h-11 px-4",
-    md: "min-h-12 px-5",
-    lg: "min-h-12 px-6",
-  };
-  // Primärbutton bringt Schriftgröße und -stärke selbst mit (btn-primaer, 19 px fett).
-  const schrift =
-    variant === "primary" ? "" : { sm: "text-base font-semibold", md: "text-base font-semibold", lg: "text-lg font-semibold" }[size];
+  // Alle Varianten gleich hoch (mind. 48 px), damit Primär- und Zweitbutton nebeneinander bündig stehen.
+  const sizes = { sm: "min-h-11 px-4", md: "min-h-12 px-6", lg: "min-h-14 px-8" };
+  const primaer = variant === "primary" || variant === "onDark";
+  // Primärbutton bringt Schriftgröße, Radius, Fläche und Übergänge selbst mit (btn-primaer).
+  const schrift = primaer ? "" : { sm: "text-base font-semibold", md: "text-base font-semibold", lg: "text-lg font-semibold" }[size];
+  const form = primaer ? "" : "rounded-xl transition-colors duration-150 ease-out";
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap transition-colors duration-150 ease-out ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap ${form} ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
     >
-      {children}
+      {primaer ? <BtnPfeil>{children}</BtnPfeil> : children}
     </Link>
   );
 }

@@ -11,7 +11,7 @@ export function Faq({ items, dark = false }: { items: FaqItem[]; dark?: boolean 
     return (
       <div className="grid gap-2">
         {items.map((item) => (
-          <details key={item.frage} className="group rounded-lg bg-ink-soft px-5 py-4 ring-1 ring-white/10 open:ring-brand/60">
+          <details key={item.frage} className="group karte-dunkel bg-ink-soft px-5 py-4 open:shadow-[inset_0_0_0_1px_var(--color-brand)]">
             <summary className="flex cursor-pointer items-center gap-4 font-semibold text-white">
               <Icon name="frage" className="size-6 shrink-0 text-accent" />
               <span className="flex-1 text-[1.05rem]">{item.frage}</span>

@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import { Breadcrumbs, Container, Icon } from "@/components/ui";
-import { rechtsEntwurfHinweis, type RechtsAbschnitt } from "@/content/unternehmen";
+import { type RechtsAbschnitt } from "@/content/unternehmen";
 
 /** Hebt Platzhalter wie „[Firmenname]“ sichtbar hervor. */
 export function MitPlatzhaltern({ text }: { text: string }) {
@@ -9,9 +9,7 @@ export function MitPlatzhaltern({ text }: { text: string }) {
     <>
       {teile.map((t, i) =>
         t.startsWith("[") && t.endsWith("]") ? (
-          <mark key={i} className="rounded bg-signal-soft px-1 font-semibold text-signal-dark">
-            {t}
-          </mark>
+          <Platzhalter key={i}>{t}</Platzhalter>
         ) : (
           <Fragment key={i}>{t}</Fragment>
         ),
@@ -20,14 +18,23 @@ export function MitPlatzhaltern({ text }: { text: string }) {
   );
 }
 
+/** Markierung für offene Angaben: Warnfarbe aus dem Playbook, gestrichelter Rahmen, nicht nur Farbe. */
+function Platzhalter({ children }: { children: ReactNode }) {
+  return (
+    <mark className="rounded-sm border border-dashed border-warning bg-warning-soft px-1 font-semibold text-warning">
+      {children}
+    </mark>
+  );
+}
+
 /** Gut sichtbarer Hinweis, dass der Text ein Entwurf ist. */
 export function EntwurfHinweis() {
   return (
-    <div role="note" className="flex items-start gap-3 rounded-lg border-2 border-signal bg-signal-soft p-4 text-sm">
-      <Icon name="bell" className="mt-0.5 size-5 shrink-0 text-signal-dark" />
+    <div role="note" className="flex items-start gap-3 rounded-lg border-2 border-warning bg-warning-soft p-4 text-sm">
+      <Icon name="bell" className="mt-0.5 size-5 shrink-0 text-warning" />
       <p>
         <b className="block text-base">Entwurf – vor Veröffentlichung rechtlich prüfen lassen.</b>
-        {rechtsEntwurfHinweis.replace("Entwurf – vor Veröffentlichung rechtlich prüfen lassen. ", "")}
+        Offene Angaben sind so markiert: <Platzhalter>[Platzhalter]</Platzhalter>. Sie müssen ersetzt werden.
       </p>
     </div>
   );
