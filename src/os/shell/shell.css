@@ -1,4 +1,12 @@
-.mm-app { display: flex; min-height: 100vh; background: var(--mm-canvas); }
+.mm-app { display: flex; min-height: 100vh; background: var(--mm-canvas); isolation: isolate; }
+/* Hintergrund: Werkstattfoto, hell überdeckt, damit Texte auf der Arbeitsfläche lesbar bleiben */
+.mm-app::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(color-mix(in srgb, var(--mm-canvas) 84%, transparent), color-mix(in srgb, var(--mm-canvas) 84%, transparent)),
+    url('/bilder/os/werkstatt.webp') center / cover no-repeat;
+}
+@media print { .mm-app::before { display: none; } }
 .mm-skip { position: absolute; left: -9999px; top: 8px; z-index: 200; padding: 8px 16px; background: var(--mm-action); color: #fff; border-radius: var(--mm-radius-control); }
 .mm-skip:focus { left: 8px; }
 
