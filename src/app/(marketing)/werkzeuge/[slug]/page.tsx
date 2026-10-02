@@ -10,8 +10,10 @@ import {
   Faq,
   FaqJsonLd,
   Icon,
+  IconTile,
   Section,
   SectionHeading,
+  zone,
 } from "@/components/ui";
 import { Druckstil } from "@/components/werkzeuge/Druckstil";
 import { Rechner } from "@/components/werkzeuge/Rechner";
@@ -77,7 +79,7 @@ export default async function WerkzeugSeite({ params }: Props) {
       />
 
       {/* 1.–3. Headline, Rechner, Ergebnis – sofort sichtbar */}
-      <section className="border-b border-line bg-paper">
+      <section {...zone("weiss")}>
         <Container className="pb-14 pt-8 sm:pb-20 sm:pt-10">
           <Breadcrumbs items={[{ label: "Werkzeuge", href: "/werkzeuge" }, { label: werkzeug.titel }]} />
           <div className="mb-8 max-w-3xl print:hidden">
@@ -168,9 +170,7 @@ export default async function WerkzeugSeite({ params }: Props) {
       {/* 6. Ergebnis speichern / senden – Hinweis */}
       <Section tone="sand" tight>
         <div className="grid items-center gap-6 md:grid-cols-[auto_1fr_auto]">
-          <span className="inline-flex size-12 items-center justify-center rounded-lg icon-kachel">
-            <Icon name="download" className="size-6" />
-          </span>
+          <IconTile name="download" className="size-12" />
           <div>
             <h2 className="font-display text-2xl font-extrabold tracking-tight">Ergebnis behalten oder weitergeben.</h2>
             <p className="mt-1 text-muted">

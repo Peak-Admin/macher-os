@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 import { hilfeArtikel } from "@/content/hilfe/artikel";
+import { vergleichsSeiten } from "@/content/landing/vergleich";
+import { zielgruppenSeiten } from "@/content/landing/zielgruppen";
 import { funktionen, gewerkCluster, kunden, topGewerke, werkzeuge } from "@/content/registry";
 import { blogArtikel } from "@/content/wissen/blog";
 import { vorlagen } from "@/content/wissen/vorlagen";
@@ -18,6 +20,7 @@ const statisch = [
   "/wissen/vorlagen",
   "/wissen/videos",
   "/hilfe",
+  "/bedenken",
   "/hilfe/schnellstart",
   "/hilfe/daten-uebernehmen",
   "/hilfe/kontakt",
@@ -32,11 +35,24 @@ const statisch = [
   "/kontakt",
   "/partner",
   "/karriere",
+  "/vergleich",
+  "/wechseln",
+  "/wechselbonus",
+  "/handwerker-app",
+  "/buerosoftware-handwerk",
+  "/cloud-handwerkersoftware",
+  "/schnittstellen",
+  "/empfehlen",
+  "/botschafter",
+  "/partnerbetriebe",
+  "/neuigkeiten",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pfade = [
     ...statisch,
+    ...Object.values(vergleichsSeiten).map((s) => s.pfad),
+    ...Object.values(zielgruppenSeiten).map((s) => s.pfad),
     ...funktionen.map((f) => `/funktionen/${f.slug}`),
     ...topGewerke.map((g) => `/gewerke/${g.slug}`),
     ...gewerkCluster.map((g) => `/gewerke/${g.slug}`),

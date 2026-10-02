@@ -144,6 +144,10 @@ export default function PreisePage() {
           items={immerDabei}
           columns={2}
         />
+        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+          <ArrowLink href="/vergleich">Software-Vergleich</ArrowLink>
+          <ArrowLink href="/wechselbonus">Wechselbonus für laufende Verträge</ArrowLink>
+        </div>
       </Section>
 
       <MissionMittelstandStreifen />

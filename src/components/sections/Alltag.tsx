@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Container, Icon, Karte3D, SectionHeading, type IconName } from "@/components/ui";
+import { Container, Icon, IconTile, Karte3D, SectionHeading, type IconName } from "@/components/ui";
 
 type Moment = { titel: string; icon: IconName; text: string; href: string; ort: string; app: ReactNode };
 
@@ -103,9 +103,7 @@ export function Alltag() {
               <Karte3D href={m.href} innen="flex flex-col rounded-2xl border border-line bg-white">
                 <div className="relative min-h-48 rounded-t-2xl bg-ink px-4 pb-5 pt-4" style={{ transformStyle: "preserve-3d" }}>
                   <div className="mb-3 flex items-center justify-between text-white">
-                    <span className="inline-flex size-9 items-center justify-center rounded-lg bg-white/10 text-accent">
-                      <Icon name={m.icon} className="size-5" />
-                    </span>
+                    <IconTile name={m.icon} className="size-9" />
                     <span className="font-display text-sm font-bold tabular-nums text-white/60">0{n + 1}</span>
                   </div>
                   <div className="karte-3d-tief rounded-xl bg-white p-3 text-[12px] text-ink shadow-[0_18px_30px_-18px_rgb(0_0_0/0.7)]">

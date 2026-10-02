@@ -129,9 +129,10 @@ export default function UeberUnsPage() {
             </Card>
           ))}
         </div>
-        <ArrowLink href="/karriere" className="mt-8">
-          Mitmachen? Zur Karriere-Seite
-        </ArrowLink>
+        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+          <ArrowLink href="/karriere">Mitmachen? Zur Karriere-Seite</ArrowLink>
+          <ArrowLink href="/neuigkeiten">Was ist neu in Macher OS?</ArrowLink>
+        </div>
       </Section>
 
       {/* 6. Partner */}

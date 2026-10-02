@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Container, Icon } from "@/components/ui";
+import { Container, Icon, zone } from "@/components/ui";
 import { FotoDatei, bildVorhanden } from "@/components/ui/Foto";
 import { herausgeber } from "@/lib/site";
 import { ausgehend } from "@/lib/link/ausgehend";
@@ -86,7 +86,7 @@ export function MissionMittelstand({
   intro?: string;
 }) {
   return (
-    <section id={id} className="scroll-mt-20 overflow-hidden bg-ink text-white">
+    <section id={id} {...zone("dunkel")}>
       <Container className="grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[1.2fr_1fr]">
         <div>
           <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
@@ -151,7 +151,7 @@ export function MissionMittelstandFoto({ className = "" }: { className?: string 
 export function MissionMittelstandStreifen({ className = "" }: { className?: string }) {
   const { person } = herausgeber;
   return (
-    <section className={`bg-white py-12 sm:py-16 ${className}`}>
+    <section {...zone("weiss", `py-12 sm:py-16 ${className}`)}>
       <Container>
         <div className="grid items-center gap-8 overflow-hidden rounded-2xl border border-line bg-paper p-6 sm:p-8 lg:grid-cols-[1fr_1.1fr]">
           <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] items-end gap-3">

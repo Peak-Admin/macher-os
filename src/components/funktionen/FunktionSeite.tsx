@@ -95,9 +95,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
           <ul className="grid content-start gap-3 sm:grid-cols-2">
             {f.automatisch.map((a) => (
               <li key={a} className="flex items-start gap-3 karte-dunkel p-4">
-                <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-md icon-kachel">
-                  <Icon name="spark" className="size-4" />
-                </span>
+                <IconTile name="spark" className="size-8" />
                 <span className="font-semibold leading-snug">Macher {a}</span>
               </li>
             ))}

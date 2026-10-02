@@ -65,7 +65,18 @@
   --shadow-popover: 0 16px 40px rgb(16 44 33 / 12%), 0 2px 8px rgb(16 44 33 / 5%);
 }
 
-/* Icon-Fläche: helles Markengrün, Icon in dunklem Grün. Immer mit Textlabel daneben. */
+/*
+ * Glas-Icons (Themen-Icons, `src/os/ui/glas.tsx`): hinten Logogrün → Aktionsgrün, davor Milchglas aus der hellen
+ * Grünfläche, Details in Aktionsgrün, Kante weiß. Die Software setzt dieselben Namen in `src/os/ui/tokens.css`.
+ */
+:root {
+  --glas-hell: var(--color-logo);
+  --glas-dunkel: var(--color-primary);
+  --glas-milch: var(--color-signal-soft);
+  --glas-licht: #ffffff;
+}
+
+/* Icon-Fläche: helles Markengrün, Icon in dunklem Grün. Für Strich-Icons, die kein Glas-Icon haben. */
 @utility icon-kachel {
   background-color: var(--color-signal-soft);
   color: var(--color-signal-dark);
@@ -419,7 +430,8 @@ details > summary::-webkit-details-marker {
   .zone {
     position: relative;
     isolation: isolate;
-    overflow: hidden;
+    /* clip statt hidden: schneidet die Rundung ab, ohne Scroll-Container zu sein – `sticky` darin funktioniert. */
+    overflow: clip;
     margin: 0.375rem 0.5rem;
     border-radius: 12px;
   }
@@ -438,13 +450,46 @@ details > summary::-webkit-details-marker {
     box-shadow: 0 30px 60px -24px rgb(16 44 33 / 0.45);
   }
   .zone-beige {
-    background-color: var(--color-beige);
+    --zone-flaeche: var(--color-beige);
+    background-color: var(--zone-flaeche);
     color: var(--color-ink);
   }
   .zone-weiss {
-    background-color: #fff;
+    --zone-flaeche: #fff;
+    background-color: var(--zone-flaeche);
     color: var(--color-ink);
     box-shadow: 0 24px 50px -28px rgb(16 44 33 / 0.18), inset 0 0 0 1px rgb(16 44 33 / 0.07);
+  }
+
+  /* Folgen helle Boxen gleichen Tons aufeinander, wechseln sie sich ab – wie auf der Startseite. */
+  .zone-weiss + .zone-weiss,
+  .zone-beige + .zone-beige + .zone-beige,
+  .zone-weiss + .zone-weiss + .zone-weiss + .zone-weiss,
+  .zone-beige + .zone-beige + .zone-beige + .zone-beige + .zone-beige {
+    --zone-flaeche: var(--color-beige);
+    background-color: var(--zone-flaeche);
+    box-shadow: none;
+  }
+  .zone-beige + .zone-beige,
+  .zone-weiss + .zone-weiss + .zone-weiss,
+  .zone-beige + .zone-beige + .zone-beige + .zone-beige,
+  .zone-weiss + .zone-weiss + .zone-weiss + .zone-weiss + .zone-weiss {
+    --zone-flaeche: #fff;
+    background-color: var(--zone-flaeche);
+    box-shadow: 0 24px 50px -28px rgb(16 44 33 / 0.18), inset 0 0 0 1px rgb(16 44 33 / 0.07);
+  }
+
+  @media print {
+    .zone {
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+
+  /* Erste Box jeder Unterseite: der Glas-Kopf liegt darauf, der Inhalt beginnt darunter. */
+  main > .zone:first-child:not(.zone-hero) {
+    padding-top: 4rem;
   }
 
   /* Hero-Box: volle Fensterhöhe, der Glas-Kopf liegt darauf */
@@ -462,6 +507,11 @@ details > summary::-webkit-details-marker {
       min-height: 40rem;
       max-height: 62rem;
     }
+  }
+
+  /* Deutschlandflagge im runden Punkt der Made-in-Germany-Pille (Footer) */
+  .flagge-de {
+    background: linear-gradient(#000 0 33.4%, #dd0000 33.4% 66.7%, #ffce00 66.7%);
   }
 
   /* Glas-Kopf: zwei Glasebenen, die je nach Fläche darunter überblenden */

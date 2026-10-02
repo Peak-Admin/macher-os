@@ -8,6 +8,7 @@ import {
   IconTile,
   Section,
   SectionHeading,
+  zone,
   type IconName,
 } from "@/components/ui";
 import { WissenKarte, WissenLinkListe } from "@/components/wissen/WissenKarte";
@@ -78,7 +79,7 @@ export default function WissenHubPage() {
   return (
     <>
       {/* 1. Hero mit Suche */}
-      <section className="relative overflow-hidden border-b border-line bg-paper">
+      <section {...zone("weiss")}>
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-line)_1px,transparent_1px)] bg-[size:48px_48px] opacity-40 [mask-image:radial-gradient(ellipse_at_top_right,black_20%,transparent_70%)]"

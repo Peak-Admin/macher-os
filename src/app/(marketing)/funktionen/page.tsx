@@ -256,9 +256,7 @@ export default function FunktionenPage() {
                   href={funktionHref(a.funktion)}
                   className="flex items-center gap-3 karte-dunkel p-4 transition hover:bg-white/10"
                 >
-                  <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md icon-kachel">
-                    <Icon name={a.icon} className="size-5" />
-                  </span>
+                  <IconTile name={a.icon} className="size-9" />
                   <span className="font-semibold leading-snug">{a.titel}</span>
                 </Link>
               </li>
@@ -334,6 +332,10 @@ export default function FunktionenPage() {
           <Faq items={faq} />
         </div>
         <FaqJsonLd items={faq} />
+        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+          <ArrowLink href="/schnittstellen">Schnittstellen: DATEV, GAEB, Datanorm</ArrowLink>
+          <ArrowLink href="/vergleich">Software-Vergleich</ArrowLink>
+        </div>
       </Section>
 
       {/* 6. Final CTA */}
