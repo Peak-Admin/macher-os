@@ -56,7 +56,7 @@ export function PlanWegweiser() {
             <p className="text-sm text-white/60">{plan.nutzer}</p>
             <Link
               href={plan.cta.href}
-              className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-signal py-3 font-bold text-white transition-colors hover:bg-signal-dark"
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg btn-primaer py-3 transition-colors"
             >
               {plan.cta.label} <Icon name="arrow-right" className="size-4" />
             </Link>

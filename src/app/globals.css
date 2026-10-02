@@ -23,6 +23,9 @@
   --color-signal: #06480c;
   --color-signal-dark: #1f6135;
   --color-signal-soft: #e5efe7;
+  /* Primärbutton: Markengrün, weiße Schrift 19 px fett (große Schrift → AA mit 3,9:1) */
+  --color-primary: #2f9250;
+  --color-primary-hover: #1f6135;
   /* Markengrün und Akzentgrün (Akzent v. a. auf dunklen Flächen) */
   --color-brand: #2f9250;
   --color-accent: #69af44;
@@ -51,6 +54,17 @@
 @utility icon-kachel {
   background-color: var(--color-accent);
   color: #fff;
+}
+
+/* Primärbutton (Festlegung macher-os): Markengrün, weiße Schrift 19 px fett. Unter 19 px fett reicht der Kontrast nicht. */
+@utility btn-primaer {
+  background-color: var(--color-primary);
+  color: #fff;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
 }
 
 html {

@@ -9,7 +9,7 @@
   transition: background-color var(--mm-motion-fast) ease-out, border-color var(--mm-motion-fast) ease-out, color var(--mm-motion-fast) ease-out;
 }
 .mm-btn:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 3px; }
-.mm-btn--primaer { background: var(--mm-action); color: var(--mm-on-action); }
+.mm-btn--primaer { background: var(--mm-action); color: var(--mm-on-action); font-size: 19px; font-weight: 700; }
 .mm-btn--primaer:hover:not(:disabled) { background: var(--mm-action-hover); }
 .mm-btn--primaer:active:not(:disabled) { background: var(--mm-dark); }
 .mm-btn--sekundaer:active:not(:disabled), .mm-btn--tertiaer:active:not(:disabled) { background: var(--mm-soft-green); }

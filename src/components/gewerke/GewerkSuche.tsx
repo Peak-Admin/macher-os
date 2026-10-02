@@ -101,7 +101,7 @@ export function GewerkSuche({ begriffe, beispiele }: { begriffe: Suchbegriff[]; 
         </div>
         <button
           type="submit"
-          className="inline-flex h-13 items-center justify-center gap-2 rounded-lg bg-signal px-7 font-semibold whitespace-nowrap text-white transition-colors hover:bg-signal-dark"
+          className="inline-flex h-13 items-center justify-center gap-2 rounded-lg btn-primaer px-7 whitespace-nowrap transition-colors"
         >
           Gewerk finden <Icon name="arrow-right" className="size-4" />
         </button>

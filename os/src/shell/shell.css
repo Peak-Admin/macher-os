@@ -13,13 +13,17 @@
 .mm-logo-zeichen { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--mm-radius-control); background: var(--mm-brand-deep); color: #fff; font-weight: 900; }
 .mm-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
 .mm-nav-haupt {
-  display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 12px;
+  display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 8px;
   border-radius: var(--mm-radius-control); color: var(--mm-text); text-decoration: none; font-weight: 500;
-  border-left: 3px solid transparent; transition: background-color var(--mm-motion-fast) ease-out;
+  transition: background-color var(--mm-motion-fast) ease-out;
 }
 .mm-nav-haupt:hover { background: var(--mm-hover); }
-.mm-nav-haupt--aktiv { background: var(--mm-soft-green); color: var(--mm-black); font-weight: 700; border-left-color: var(--mm-brand); }
-.mm-nav-haupt--aktiv svg { color: var(--mm-brand-text); }
+.mm-nav-haupt-icon {
+  display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--mm-radius-control);
+  color: var(--mm-text); transition: background-color var(--mm-motion-fast) ease-out, color var(--mm-motion-fast) ease-out;
+}
+.mm-nav-haupt--aktiv { color: var(--mm-black); font-weight: 700; }
+.mm-nav-haupt--aktiv .mm-nav-haupt-icon { background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); }
 .mm-profil { position: relative; }
 .mm-profil--leiste { padding-top: 8px; border-top: 1px solid var(--mm-border); }
 .mm-profil-knopf { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 6px 8px; border: 0; border-radius: var(--mm-radius-control); background: none; color: var(--mm-black); font-weight: 600; cursor: pointer; text-align: left; }
