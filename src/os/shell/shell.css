@@ -53,6 +53,32 @@
 .mm-nav-leer a { color: var(--mm-link); }
 .mm-menue--oben { top: auto; bottom: calc(100% + 8px); left: 0; right: auto; }
 
+/* Ein- und ausklappbar: eingeklappt bleibt eine schmale Leiste nur mit Icons */
+.mm-sidebar { transition: width var(--mm-motion-fast) ease-out; }
+.mm-leiste-kopf { display: flex; align-items: center; gap: 4px; }
+.mm-leiste-kopf .mm-logo { flex: 1; min-width: 0; }
+.mm-leiste-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-leiste-umschalter {
+  display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border: 0; border-radius: var(--mm-radius-control);
+  background: none; color: var(--mm-text); cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-leiste-umschalter:hover { background: var(--mm-hover); }
+.mm-app--eingeklappt .mm-sidebar { width: 72px; padding-left: 8px; padding-right: 8px; overflow-x: hidden; }
+.mm-app--eingeklappt .mm-leiste-text,
+.mm-app--eingeklappt .mm-nav-leer { display: none; }
+.mm-app--eingeklappt .mm-leiste-kopf { flex-direction: column; gap: 8px; }
+.mm-app--eingeklappt .mm-logo { justify-content: center; padding: 0; }
+.mm-app--eingeklappt .mm-leiste-suche { justify-content: center; padding: 8px; }
+.mm-app--eingeklappt .mm-nav-haupt,
+.mm-app--eingeklappt .mm-leiste-zeile,
+.mm-app--eingeklappt .mm-profil-knopf { justify-content: center; padding-left: 0; padding-right: 0; }
+.mm-app--eingeklappt .mm-nav-favorit { justify-content: center; padding: 6px 0; }
+.mm-app--eingeklappt .mm-nav-favoriten { margin: 0; padding-top: 16px; }
+/* Profilmenü neben die schmale Leiste legen, sonst schneidet die Leiste es ab */
+.mm-app--eingeklappt .mm-nav-haupt { position: relative; }
+.mm-app--eingeklappt .mm-nav-zahl { position: absolute; top: 2px; right: 6px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
+.mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 80px; bottom: 16px; }
+
 /* Hauptbereich */
 .mm-hauptbereich { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 /* Seitenleiste: Suchen oder fragen + Benachrichtigungen (ersetzt die Topbar) */
