@@ -4,6 +4,7 @@ import { datumKurz, personName } from '@core/format';
 import { istBuero, useDarf, useIch } from '@core/session';
 import type { Auftrag } from '@core/objects';
 import { Button, Karte, Meta, Stapel, Status, Zeile, useToast } from '@ui/index';
+import { Person } from '@ui/person';
 import { standVon, tageSeit, weiter } from './daten';
 import { BEDINGUNG_LABEL, weiterMoeglich, weiterVonHand } from './logik';
 import './ablauf.css';
@@ -29,8 +30,8 @@ export function WoStehtDerAuftrag({ auftrag: a, naechstes }: { auftrag: Auftrag;
   const details = [
     nr ? `Schritt ${nr} von ${schritte.length}` : undefined,
     !st.fertig && !verloren && tage != null ? (tage === 0 ? 'seit heute' : tage === 1 ? 'seit gestern' : `seit ${tage} Tagen`) : undefined,
-    !st.fertig && !verloren && zustaendig ? `zuständig: ${personName(zustaendig)}` : undefined,
   ].filter(Boolean);
+  const zeigeZustaendig = !st.fertig && !verloren && !!zustaendig;
 
   return (
     <Karte kompakt oberzeile="Wo steht der Auftrag?">
@@ -51,7 +52,17 @@ export function WoStehtDerAuftrag({ auftrag: a, naechstes }: { auftrag: Auftrag;
         <Zeile zwischen>
           <div className="ablauf-jetzt">
             <strong>{st.schritt.label}</strong>
-            {details.length > 0 && <Meta>{details.join(' · ')}</Meta>}
+            {(details.length > 0 || zeigeZustaendig) && (
+              <Meta>
+                {details.join(' · ')}
+                {zeigeZustaendig && (
+                  <>
+                    {details.length > 0 && ' · '}
+                    <Person m={zustaendig}>zuständig: {personName(zustaendig)}</Person>
+                  </>
+                )}
+              </Meta>
+            )}
           </div>
           {st.ueberfaellig ? <Status ton="achtung">Frist {datumKurz(st.faellig)} überschritten</Status> : st.faellig ? <Status ton="neutral">Frist {datumKurz(st.faellig)}</Status> : st.fertig ? <Status ton="erfolg">Abgeschlossen</Status> : null}
         </Zeile>

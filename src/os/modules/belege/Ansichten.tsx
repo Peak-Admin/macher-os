@@ -28,6 +28,7 @@ import {
   DateiKnopf,
 } from '@ui/index';
 import { AuftragAuswahl, ObjektLink, Zeitstrahl } from '@ui/objekt';
+import { Person } from '@ui/person';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
 import {
   ANSICHTEN,
@@ -144,16 +145,25 @@ export function BelegeListe() {
                     {geld ? ` · ${brutto(b) > 0 ? euro(brutto(b)) : 'Betrag fehlt'}` : ''} <BeispielMarke zeigen={b.beispiel} />
                   </>
                 }
-                untertitel={[
-                  ART_LABEL[b.art],
-                  datum(b.datum),
-                  a ? a.nummer : b.ohneAuftrag ? 'ohne Auftrag (gewollt)' : 'ohne Auftrag',
-                  b.quelle === 'email' ? 'per E-Mail' : null,
-                  pruefer ? `prüft: ${pruefer}` : null,
-                  f ? `${f.art === 'skonto' ? 'Skonto bis' : 'zahlen bis'} ${datum(f.datum)}` : null,
-                ]
-                  .filter(Boolean)
-                  .join(' · ')}
+                untertitel={
+                  <>
+                    {[
+                      ART_LABEL[b.art],
+                      datum(b.datum),
+                      a ? a.nummer : b.ohneAuftrag ? 'ohne Auftrag (gewollt)' : 'ohne Auftrag',
+                      b.quelle === 'email' ? 'per E-Mail' : null,
+                      f ? `${f.art === 'skonto' ? 'Skonto bis' : 'zahlen bis'} ${datum(f.datum)}` : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                    {pruefer && (
+                      <>
+                        {' · '}
+                        <Person m={b.pruefendeId}>prüft: {pruefer}</Person>
+                      </>
+                    )}
+                  </>
+                }
                 rechts={<BelegStatus b={b} />}
               />
             );

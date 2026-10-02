@@ -4,8 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { erledigt } from '@core/macher';
 import { pfadZu } from '@core/modul';
-import { adresseText, datumKurz, heute, personName, uhrAus, zahl } from '@core/format';
+import { adresseText, datumKurz, heute, uhrAus, zahl } from '@core/format';
 import { BeispielMarke, Button, Eingabe, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, useToast, Zeile } from '@ui/index';
+import { Personen } from '@ui/person';
 import { finde, kontextAusDb } from './basis';
 import { offeneStunden, vorschlaege, vorschlagKurz, vorschlagUebernehmen, type Vorschlag } from './daten';
 import { benoetigteQualifikationen } from '../qualifikation-planung/daten';
@@ -92,7 +93,7 @@ export function AuftragPlanen() {
             <Karte
               key={i}
               oberzeile={i === 0 ? 'Bester Vorschlag' : `Alternative ${i}`}
-              titel={vs.mitarbeiterIds.map((m) => personName(finde(ctx.mitarbeiter, m))).join(' + ')}
+              titel={<Personen ids={vs.mitarbeiterIds} groesse={32} namen />}
               aktion={<Status ton={vs.score >= 70 ? 'erfolg' : 'aktiv'}>{vs.score} / 100 Punkte</Status>}
             >
               <Stapel abstand={12}>

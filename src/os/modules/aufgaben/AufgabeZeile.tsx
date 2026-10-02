@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { db } from '@core/db';
-import { heute, initialen, personName, relativ } from '@core/format';
+import { heute, relativ } from '@core/format';
 import type { Aufgabe } from '@core/objects';
-import { Avatar, BeispielMarke, Checkbox, ListenZeile, Status, useToast } from '@ui/index';
+import { BeispielMarke, Checkbox, ListenZeile, Status, useToast } from '@ui/index';
+import { Personenbild } from '@ui/person';
 import { abhaken, aufgabePfad } from './daten';
 
 /** Eine Aufgabe in einer Liste: schnell abhaken, Titel öffnet das Detail */
@@ -33,7 +34,7 @@ export function AufgabeZeile({ a, ohneAuftrag }: { a: Aufgabe; ohneAuftrag?: boo
         <>
           {a.prioritaet === 'hoch' && !a.erledigt && <Status ton="achtung">Wichtig</Status>}
           {a.faellig && !a.erledigt && <Status ton={ueberfaellig ? 'achtung' : 'neutral'} icon={ueberfaellig}>{relativ(a.faellig)}</Status>}
-          {wer && <Avatar text={initialen(wer)} farbe={wer.farbe} groesse={28} titel={personName(wer)} />}
+          {wer && <Personenbild m={wer} groesse={28} />}
         </>
       }
     />
