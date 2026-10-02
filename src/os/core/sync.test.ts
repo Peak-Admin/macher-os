@@ -203,4 +203,36 @@ describe('Abgleich', () => {
     weg();
     expect(gesehen).toEqual([{ kundeId: 'k1', bezug: { typ: 'angebote', id: 'a1' } }]);
   });
+
+  test('geschützte Felder (nur Chef/Büro) werden wieder ins Objekt eingefügt – auch nach Neustart', async () => {
+    const srv = server();
+    const sp = speicher();
+    s = starteSync(srv.adapter, { betriebId: 'b1', speicher: sp, verzoegerung: 0 });
+    await s.abgleichen();
+    // Server liefert den Mitarbeiter ohne Kostensatz, den Kostensatz in einer eigenen Zeile
+    srv.fremd({ sammlung: 'mitarbeiter#geschuetzt', id: 'm1', daten: { id: 'm1', geaendertAm: '2026-10-02T09:00:00.000Z', kostensatz: 3500 } as unknown as Basis });
+    srv.fremd({ sammlung: 'mitarbeiter', id: 'm1', daten: { id: 'm1', erstelltAm: 'x', geaendertAm: '2026-10-02T09:00:00.000Z', vorname: 'Jonas' } as unknown as Basis });
+    expect(db.mitarbeiter.get('m1')).toMatchObject({ vorname: 'Jonas', kostensatz: 3500 });
+    expect(db.mitarbeiter.all().length).toBe(1);
+    s.stoppen();
+    // Neustart; Monteur ändert den Namen (Zeile ohne Kostensatz) → Kostensatz bleibt
+    s = starteSync(srv.adapter, { betriebId: 'b1', speicher: sp, verzoegerung: 0 });
+    await s.abgleichen();
+    srv.fremd({ sammlung: 'mitarbeiter', id: 'm1', daten: { id: 'm1', erstelltAm: 'x', geaendertAm: '2026-10-02T11:00:00.000Z', vorname: 'Jonas K.' } as unknown as Basis });
+    expect(db.mitarbeiter.get('m1')).toMatchObject({ vorname: 'Jonas K.', kostensatz: 3500 });
+  });
+
+  test('keine Berechtigung → verständlicher Fehler, nichts geht verloren', async () => {
+    const srv = server();
+    srv.adapter.hochladen = async () => {
+      throw Object.assign(new Error('kein Mitglied dieses Betriebs'), { berechtigung: true });
+    };
+    s = starteSync(srv.adapter, { betriebId: 'b1', speicher: speicher(), verzoegerung: 0 });
+    db.kunden.create({ name: 'X' } as never);
+    await kurz();
+    await s.abgleichen();
+    expect(syncStatus().zustand).toBe('fehler');
+    expect(syncStatus().fehler).toContain('Keine Berechtigung');
+    expect(syncStatus().wartend).toBeGreaterThan(0);
+  });
 });

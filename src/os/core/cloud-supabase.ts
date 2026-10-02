@@ -15,6 +15,7 @@ import { db, exportieren, importieren, neueId, sicherungAnlegen } from './db';
 import { emit } from './events';
 import { messen, messpunkte, setzeMessziel, type Messpunkt } from './messung';
 import { ichId, setzeIch } from './session';
+import { dataUrlsAuslagern } from './sync-dateien';
 import { laufenderSync, starteSync, type ObjektZeile, type SyncAdapter } from './sync';
 
 export interface CloudKonfig {
@@ -131,11 +132,12 @@ function base64UrlZuBytes(s: string): Uint8Array<ArrayBuffer> {
 export function supabaseAdapter(client: SupabaseClient, betriebId: string): SyncAdapter {
   return {
     async hochladen(zeilen) {
-      const { error } = await client.from('objekte').upsert(
-        zeilen.map((z) => ({ betrieb_id: betriebId, sammlung: z.sammlung, id: z.id, daten: z.daten, geloescht_am: z.geloescht_am ?? null })),
-        { onConflict: 'betrieb_id,sammlung,id' },
-      );
-      if (error) throw new Error(error.message);
+      // über die Server-Funktion: prüft Mitgliedschaft und Rechte je Rolle (siehe Migration „Rechte“)
+      const { error } = await client.rpc('objekte_schreiben', {
+        p_betrieb: betriebId,
+        p_zeilen: zeilen.map((z) => ({ sammlung: z.sammlung, id: z.id, daten: z.daten, geloescht_am: z.geloescht_am ?? null })),
+      });
+      if (error) throw Object.assign(new Error(error.message), { berechtigung: error.code === '42501' });
     },
     async laden(seit) {
       const alle: ObjektZeile[] = [];
@@ -168,6 +170,8 @@ export interface SupabaseCloud extends Cloud {
   starten(): Promise<void>;
   /** Einladungs-Token merken (vor der Anmeldung über `/beitreten/:token`) */
   einladungMerken(token: string): void;
+  /** Einladung annehmen, wenn schon jemand angemeldet ist (`/beitreten/:token`) */
+  einladungAnnehmen(token: string): Promise<{ ok: boolean; fehler?: string }>;
   /** Betrieb anlegen und vorhandene Browser-Daten einmalig hochladen („Daten sichern & Team einladen“) */
   sichern(): Promise<{ ok: boolean; fehler?: string }>;
   pushEinschalten(): Promise<{ ok: boolean; fehler?: string }>;
@@ -264,6 +268,8 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
     setze({ phase: 'bereit', fehler: undefined });
     if (opt.uebernahme) await sync.allesHochladen();
     else await sync.abgleichen();
+    // alte Data-URLs (Fotos, PDFs) im Hintergrund in den Speicher umziehen
+    void dataUrlsAuslagern((d, n) => c.dateiAblegen(d, n), { weiter: () => c.aktiv() && (globalThis.navigator?.onLine ?? true) }).catch(() => {});
     if (opt.beigetreten && opt.mitarbeiterId) {
       setzeIch(opt.mitarbeiterId);
       messen('team.beigetreten');
@@ -281,21 +287,22 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
 
   let laufendeAnmeldung: Promise<void> | undefined;
 
-  function nachAnmeldung(session: Session): Promise<void> {
+  function nachAnmeldung(session: Session, erzwingen = false): Promise<void> {
     laufendeAnmeldung ??= (async () => {
       const u = session.user;
       const basis = { nutzerId: u.id, email: u.email || undefined, telefon: u.phone ? `+${u.phone.replace(/^\+/, '')}` : undefined };
       // gleiches Konto, schon verbunden → nur Abgleich (z. B. Token erneuert)
-      if (konto?.nutzerId === u.id && konto.betriebId && laufenderSync()) return;
+      if (!erzwingen && konto?.nutzerId === u.id && konto.betriebId && laufenderSync()) return;
       kontoSetzen({ ...konto, ...basis, betriebId: konto?.nutzerId === u.id ? konto.betriebId : undefined });
       setze({ phase: 'verbinde', fehler: undefined });
       try {
         let beigetreten: { betrieb_id: string; mitarbeiter_id?: string; rolle?: string } | undefined;
+        let einladungFehler: string | undefined;
         const einladung = lesen(K_EINLADUNG);
         if (einladung) {
           const { data, error } = await client.rpc('einladung_annehmen', { p_token: einladung });
           schreiben(K_EINLADUNG, undefined);
-          if (error) setze({ fehler: 'Die Einladung ist ungültig oder abgelaufen. Bitte lass dir eine neue schicken.' });
+          if (error) einladungFehler = 'Die Einladung ist ungültig oder abgelaufen. Bitte lass dir eine neue schicken.';
           else beigetreten = (Array.isArray(data) ? data[0] : data) as typeof beigetreten;
         }
         const { data: m, error } = await client
@@ -305,12 +312,13 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
           .order('erstellt_am', { ascending: true })
           .limit(1);
         if (error) throw new Error(error.message);
-        let mitglied = (m?.[0] as { betrieb_id: string; mitarbeiter_id?: string; rolle?: string } | undefined) ?? beigetreten;
+        // eine gerade angenommene Einladung hat Vorrang (z. B. Wechsel in einen anderen Betrieb)
+        let mitglied = beigetreten ?? (m?.[0] as { betrieb_id: string; mitarbeiter_id?: string; rolle?: string } | undefined);
         let uebernahme = false;
         if (!mitglied) {
           if (!db.betrieb.get('betrieb')?.onboardingFertig) {
             kontoSetzen({ ...basis });
-            setze({ phase: 'kein-betrieb' });
+            setze({ phase: 'kein-betrieb', fehler: einladungFehler });
             return;
           }
           mitglied = { betrieb_id: await betriebAnlegen(), mitarbeiter_id: ichId(), rolle: 'chef' };
@@ -322,6 +330,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
           mitarbeiterId: mitglied.mitarbeiter_id ?? undefined,
           beigetreten: !!beigetreten && beigetreten.betrieb_id === mitglied.betrieb_id,
         });
+        if (einladungFehler) setze({ fehler: einladungFehler });
       } catch (e) {
         setze({ phase: konto?.betriebId ? 'bereit' : 'kein-betrieb', fehler: fehlerText(e) });
       }
@@ -463,12 +472,15 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
 
     async dateiAblegen(datei, name) {
       if (!konto?.betriebId) return LOKALE_CLOUD.dateiAblegen(datei, name);
-      const sauber = name.normalize('NFKD').replace(/[^\w.-]+/g, '-').replace(/-+/g, '-').slice(-80) || 'datei';
-      const pfad = `${konto.betriebId}/${neueId()}-${sauber}`;
+      const sauber = name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w.-]+/g, '-').replace(/-+/g, '-').slice(-80) || 'datei';
+      const pfad = `${konto.betriebId}/${neueId().replace(/[^\w-]/g, '')}-${sauber}`;
       try {
         const { error } = await client.storage.from('dateien').upload(pfad, datei, { contentType: datei.type || undefined, upsert: false });
         if (error) throw error;
-        return client.storage.from('dateien').getPublicUrl(pfad).data.publicUrl;
+        // privater Speicher: dauerhafter, signierter Link über den Server
+        const r = await serverAufruf<{ url?: string }>('datei', { pfad });
+        if (r.status !== 200 || !r.daten?.url) throw new Error('Kein Link für die Datei');
+        return r.daten.url;
       } catch {
         // offline o. Ä.: im Gerät behalten, damit nichts verloren geht
         return LOKALE_CLOUD.dateiAblegen(datei, name);
@@ -503,6 +515,18 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
 
     einladungMerken(t) {
       schreiben(K_EINLADUNG, t);
+    },
+
+    async einladungAnnehmen(t) {
+      const { data } = await client.auth.getSession();
+      if (!data.session) {
+        schreiben(K_EINLADUNG, t);
+        return { ok: false, fehler: 'Bitte melde dich zuerst an.' };
+      }
+      schreiben(K_EINLADUNG, t);
+      setze({ fehler: undefined });
+      await nachAnmeldung(data.session, true);
+      return zustand.fehler ? { ok: false, fehler: zustand.fehler } : { ok: true };
     },
 
     async sichern() {

@@ -12,6 +12,7 @@ import { POST as authSms } from '@/app/api/cloud/auth-sms/route';
 import { signaturPruefen } from './webhook';
 import { pushAnMitarbeiter } from './push';
 import { GET as cron } from '@/app/api/cron/taeglich/route';
+import { GET as dateiOeffnen, POST as dateiLink } from '@/app/api/cloud/datei/route';
 
 type Antwort = unknown | ((init: RequestInit, url: URL) => unknown);
 interface Aufruf {
@@ -63,7 +64,7 @@ const ANGEMELDET: [string, Antwort][] = [
 
 beforeEach(() => {
   vi.unstubAllEnvs();
-  for (const n of ['SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'SMS_API_KEY', 'VAPID_PRIVATE_KEY', 'VAPID_PUBLIC_KEY', 'NEXT_PUBLIC_VAPID_PUBLIC_KEY', 'CRON_SECRET', 'SUPABASE_SMS_HOOK_SECRET', 'APP_URL'])
+  for (const n of ['SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'SMS_API_KEY', 'VAPID_PRIVATE_KEY', 'VAPID_PUBLIC_KEY', 'NEXT_PUBLIC_VAPID_PUBLIC_KEY', 'CRON_SECRET', 'SUPABASE_SMS_HOOK_SECRET', 'APP_URL', 'WHATSAPP_TOKEN', 'WHATSAPP_NUMMER_ID', 'WHATSAPP_VORLAGE', 'DATEI_GEHEIMNIS'])
     vi.stubEnv(n, '');
 });
 afterEach(() => {
@@ -145,6 +146,52 @@ describe('senden', () => {
     const r = await senden(anfrage('/api/cloud/senden', { versand: { an: 'a@b.de', kanal: 'email', text: 'x' } }));
     expect(r.status).toBe(502);
     expect(aufrufe.find((a) => a.init.method === 'PATCH')?.body).toEqual({ status: 'fehler' });
+  });
+});
+
+describe('WhatsApp', () => {
+  test('ohne Schlüssel 501, mit Vorlage als Template ohne Zeilenumbrüche', async () => {
+    mitSupabase();
+    const ohne = await senden(anfrage('/api/cloud/senden', { versand: { an: '0171', kanal: 'whatsapp', text: 'x' } }));
+    expect(ohne.status).toBe(501);
+    vi.stubEnv('WHATSAPP_TOKEN', 'wa-token');
+    vi.stubEnv('WHATSAPP_NUMMER_ID', '12345');
+    vi.stubEnv('WHATSAPP_VORLAGE', 'nachricht_vom_betrieb');
+    const aufrufe = fetchAttrappe([...ANGEMELDET, ['POST /rest/v1/versand', undefined, 201], ['PATCH /rest/v1/versand', undefined, 204], ['POST graph.facebook.com', { messages: [{ id: 'wamid.1' }] }]]);
+    const r = await senden(anfrage('/api/cloud/senden', { versand: { an: '0171 1234567', kanal: 'whatsapp', text: 'Guten Tag,\nwir sind unterwegs.' } }));
+    expect(await r.json()).toMatchObject({ status: 'gesendet' });
+    const wa = aufrufe.find((a) => a.url.host === 'graph.facebook.com')!;
+    expect(wa.url.pathname).toBe('/v21.0/12345/messages');
+    expect(wa.init.headers).toMatchObject({ authorization: 'Bearer wa-token' });
+    expect(wa.body).toMatchObject({
+      to: '491711234567',
+      type: 'template',
+      template: { name: 'nachricht_vom_betrieb', language: { code: 'de' }, components: [{ type: 'body', parameters: [{ type: 'text', text: 'Guten Tag, · wir sind unterwegs.' }] }] },
+    });
+  });
+});
+
+describe('private Dateien', () => {
+  const PFAD = '11111111-2222-3333-4444-555555555555/abc-foto.jpg';
+  test('Link nur für den eigenen Betrieb, Öffnen nur mit gültiger Signatur', async () => {
+    mitSupabase();
+    fetchAttrappe([
+      ['GET /auth/v1/user', { id: 'u1' }],
+      ['GET /rest/v1/mitglieder', [{ betrieb_id: '11111111-2222-3333-4444-555555555555', nutzer_id: 'u1', rolle: 'monteur' }]],
+      ['POST /storage/v1/object/sign/dateien/', { signedURL: '/object/sign/dateien/x.jpg?token=kurz' }],
+    ]);
+    const fremd = await dateiLink(anfrage('/api/cloud/datei', { pfad: '99999999-2222-3333-4444-555555555555/abc.jpg' }));
+    expect(fremd.status).toBe(400);
+    const r = await dateiLink(anfrage('/api/cloud/datei', { pfad: PFAD }));
+    const { url } = (await r.json()) as { url: string };
+    expect(url).toMatch(/^https:\/\/app\.macher-os\.de\/api\/cloud\/datei\?p=.+&s=[\w-]{32}$/);
+    const offen = await dateiOeffnen(new Request(url));
+    expect(offen.status).toBe(302);
+    expect(offen.headers.get('location')).toBe(`${SUPA}/storage/v1/object/sign/dateien/x.jpg?token=kurz`);
+    const gefaelscht = await dateiOeffnen(new Request(url.replace(/s=.*/, 's=' + 'A'.repeat(32))));
+    expect(gefaelscht.status).toBe(404);
+    const anderePfad = await dateiOeffnen(new Request(url.replace('abc-foto', 'xyz-foto')));
+    expect(anderePfad.status).toBe(404);
   });
 });
 

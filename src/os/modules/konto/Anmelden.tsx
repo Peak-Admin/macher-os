@@ -167,9 +167,25 @@ export function BeitretenSeite() {
   const { token } = useParams();
   const z = useKontoZustand();
   const navigate = useNavigate();
+  // Wer beim Öffnen schon angemeldet ist, nimmt die Einladung mit einem Tipp an
+  // (wer erst auf dieser Seite anmeldet, nimmt sie automatisch mit der Anmeldung an)
+  const [warAbgemeldet, setWarAbgemeldet] = useState(false);
+  const [annehmen, setAnnehmen] = useState<'offen' | 'laeuft' | 'fertig'>('offen');
+  const [fehler, setFehler] = useState<string>();
+  const schonAngemeldet = !warAbgemeldet && (z.phase === 'bereit' || z.phase === 'kein-betrieb');
   useEffect(() => {
+    if (z.phase !== 'abgemeldet') return;
+    setWarAbgemeldet(true);
     if (token) supabaseCloud()?.einladungMerken(token);
-  }, [token]);
+  }, [token, z.phase]);
+
+  async function jetztAnnehmen() {
+    setAnnehmen('laeuft');
+    setFehler(undefined);
+    const r = await supabaseCloud()!.einladungAnnehmen(token!);
+    setAnnehmen(r.ok ? 'fertig' : 'offen');
+    if (!r.ok) setFehler(r.fehler);
+  }
 
   return (
     <Vollbild>
@@ -177,6 +193,20 @@ export function BeitretenSeite() {
         <Karte>
           {!z.konfiguriert ? (
             <Leer titel="Einladungen sind noch nicht verbunden" text="Frag im Büro nach, wie du mitmachen kannst." />
+          ) : schonAngemeldet && annehmen !== 'fertig' ? (
+            <Stapel>
+              <p>
+                Du bist angemeldet als <strong>{z.konto?.email ?? z.konto?.telefon}</strong>. Mit der Einladung wechselt dieses Gerät in den
+                Betrieb, der dich eingeladen hat. Deine bisherigen Daten hier werden vorher gesichert.
+              </p>
+              {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
+              <Button breit laedt={annehmen === 'laeuft'} laedtText="Wird angenommen …" onClick={() => void jetztAnnehmen()}>
+                Einladung annehmen
+              </Button>
+              <Button variante="tertiaer" to="/heute">
+                Nicht jetzt
+              </Button>
+            </Stapel>
           ) : z.phase === 'abgemeldet' || z.phase === 'lokal' ? (
             <AnmeldeFormular standard="telefon" />
           ) : (

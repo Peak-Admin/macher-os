@@ -55,6 +55,14 @@ const MAX_BYTES = 1_500_000;
 const MAX_ZEILEN = 500;
 
 const schluessel = (sammlung: string, id: ID) => `${sammlung}/${id}`;
+/** Zeilen `<sammlung>#geschuetzt` tragen Felder, die nur Chef und Büro lesen (siehe Migration „Rechte“) */
+const GESCHUETZT = '#geschuetzt';
+function ohneVerwaltung(d: Basis): Record<string, unknown> {
+  const r = { ...d } as unknown as Record<string, unknown>;
+  delete r.id;
+  delete r.geaendertAm;
+  return r;
+}
 const teile = (k: string) => {
   const i = k.indexOf('/');
   return { sammlung: k.slice(0, i), id: k.slice(i + 1) };
@@ -189,6 +197,7 @@ export function starteSync(adapter: SyncAdapter, opt: SyncOptionen): SyncSteueru
   const speicher = opt.speicher ?? globalThis.localStorage;
   const K_WARTESCHLANGE = `macher-os:sync:${opt.betriebId}:warteschlange`;
   const K_STAND = `macher-os:sync:${opt.betriebId}:stand`;
+  const K_GESCHUETZT = `macher-os:sync:${opt.betriebId}:geschuetzt`;
   const verzoegerung = opt.verzoegerung ?? 800;
   const online = opt.online ?? (() => globalThis.navigator?.onLine ?? true);
 
@@ -213,6 +222,16 @@ export function starteSync(adapter: SyncAdapter, opt: SyncOptionen): SyncSteueru
   /** gerade hochgeladene Fassungen – ihr Echo per Realtime ist kein Konflikt */
   const unterwegs = new Map<string, Basis | null>();
   let stand = lesen(K_STAND);
+  /** geschützte Felder je Objekt (nur bei Chef/Büro gefüllt) – überlebt Neuladen */
+  const geschuetzt = new Map<string, Record<string, unknown>>(
+    (() => {
+      try {
+        return JSON.parse(lesen(K_GESCHUETZT) ?? '[]') as [string, Record<string, unknown>][];
+      } catch {
+        return [];
+      }
+    })(),
+  );
   let gestoppt = false;
   let laeuft: Promise<void> | undefined;
   let nochmal = false;
@@ -236,15 +255,33 @@ export function starteSync(adapter: SyncAdapter, opt: SyncOptionen): SyncSteueru
   // ---------------------------------------------------------------- Empfang
 
   function empfangen(zeilen: ObjektZeile[]) {
-    const einspielen: { sammlung: string; id: ID; objekt: Basis | null }[] = [];
+    /** in diesem Durchgang neu eingespielte Fassungen (Schlüssel → Objekt) */
+    const einspielen = new Map<string, { sammlung: string; id: ID; objekt: Basis | null }>();
+    const aktuell = (sammlung: string, id: ID) => {
+      const e = einspielen.get(schluessel(sammlung, id));
+      return e ? (e.objekt ?? undefined) : rohObjekt(sammlung, id);
+    };
     const vermerke: { sammlung: string; id: ID; konflikte: FeldKonflikt[] }[] = [];
     const ereignisse: Ereignis[] = [];
     let neuerStand = stand;
+    let geschuetztGeaendert = false;
     for (const z of zeilen) {
       if (z.geaendert_am && (!neuerStand || z.geaendert_am > neuerStand)) neuerStand = z.geaendert_am;
+      if (z.sammlung.endsWith(GESCHUETZT)) {
+        // geschützte Felder (nur Chef/Büro) in das eigentliche Objekt einfügen
+        const sammlung = z.sammlung.slice(0, -GESCHUETZT.length);
+        const k = schluessel(sammlung, z.id);
+        const felder = z.daten ? ohneVerwaltung(z.daten) : undefined;
+        if (felder) geschuetzt.set(k, felder);
+        else geschuetzt.delete(k);
+        geschuetztGeaendert = true;
+        const lokal = aktuell(sammlung, z.id);
+        if (lokal && felder && !gleichesObjekt({ ...lokal, ...felder }, lokal)) einspielen.set(k, { sammlung, id: z.id, objekt: { ...lokal, ...felder } as Basis });
+        continue;
+      }
       const k = schluessel(z.sammlung, z.id);
-      const lokal = rohObjekt(z.sammlung, z.id);
-      const fern = z.daten ?? null;
+      const lokal = aktuell(z.sammlung, z.id);
+      const fern = z.daten ? ({ ...z.daten, ...geschuetzt.get(k) } as Basis) : null;
       const echo = unterwegs.get(k);
       if (unterwegs.has(k) && (echo?.geaendertAm ?? null) === (fern?.geaendertAm ?? null)) {
         bekannt.set(k, fern);
@@ -258,16 +295,17 @@ export function starteSync(adapter: SyncAdapter, opt: SyncOptionen): SyncSteueru
       if (warteschlange.has(k)) {
         const { objekt, konflikte } = zusammenfuehren(bekannt.get(k) ?? undefined, lokal, fern);
         bekannt.set(k, fern);
-        if (objekt !== lokal) einspielen.push({ sammlung: z.sammlung, id: z.id, objekt });
+        if (objekt !== lokal) einspielen.set(k, { sammlung: z.sammlung, id: z.id, objekt });
         if (objekt && fern && gleichesObjekt(objekt, fern)) warteschlange.delete(k);
         if (konflikte.length && !OHNE_VERMERK.has(z.sammlung)) vermerke.push({ sammlung: z.sammlung, id: z.id, konflikte });
       } else {
         bekannt.set(k, fern);
-        einspielen.push({ sammlung: z.sammlung, id: z.id, objekt: fern });
+        einspielen.set(k, { sammlung: z.sammlung, id: z.id, objekt: fern });
         if (!lokal && fern && z.sammlung === 'ereignisse' && FACH_EREIGNISSE.has((fern as Ereignis).typ)) ereignisse.push(fern as Ereignis);
       }
     }
-    fremdeAenderungen(einspielen);
+    fremdeAenderungen([...einspielen.values()]);
+    if (geschuetztGeaendert) schreiben(K_GESCHUETZT, JSON.stringify([...geschuetzt]));
     for (const v of vermerke) {
       try {
         vermerken({ typ: v.sammlung, id: v.id }, 'sync.konflikt', konfliktText(v.konflikte), { konflikte: v.konflikte });
@@ -357,7 +395,12 @@ export function starteSync(adapter: SyncAdapter, opt: SyncOptionen): SyncSteueru
           setzeStatus({ zustand: 'bereit', zuletzt: new Date().toISOString(), fehler: undefined });
         } catch (e) {
           versuch++;
-          setzeStatus({ zustand: online() ? 'fehler' : 'offline', fehler: e instanceof Error ? e.message : String(e) });
+          const text = e instanceof Error ? e.message : String(e);
+          const berechtigung = (e as { berechtigung?: boolean }).berechtigung;
+          setzeStatus({
+            zustand: online() ? 'fehler' : 'offline',
+            fehler: berechtigung ? 'Keine Berechtigung für diesen Betrieb. Bist du noch Mitglied? Melde dich neu an.' : text,
+          });
           // erneut versuchen: 2 s, 4 s, 8 s … höchstens 60 s
           planen(Math.min(60_000, 1000 * 2 ** versuch));
           return;

@@ -258,11 +258,34 @@ describe('Dienste', () => {
     expect(f.mock.calls[0][0]).toBe('/api/cloud/oeffentlich?art=portal&token=gut');
   });
 
-  test('Dateien landen im Ordner des Betriebs', async () => {
-    const { c, a } = await angemeldet(vi.fn() as unknown as typeof fetch);
-    const url = await c.dateiAblegen(new Blob(['x'], { type: 'image/jpeg' }), 'Foto Bad (1).jpg');
-    expect(a.hochgeladen[0].pfad).toMatch(/^b1\/[\w-]+-Foto-Bad-1-\.jpg$/);
-    expect(url).toBe(`https://projekt.supabase.co/storage/v1/object/public/dateien/${a.hochgeladen[0].pfad}`);
+  test('Dateien landen privat im Ordner des Betriebs, Link kommt signiert vom Server', async () => {
+    const f = vi.fn(async (_u: string, init: RequestInit) => antwort(200, { url: `https://app/api/cloud/datei?p=${encodeURIComponent(JSON.parse(init.body as string).pfad)}&s=sig` }));
+    const { c, a } = await angemeldet(f as unknown as typeof fetch);
+    const url = await c.dateiAblegen(new Blob(['x'], { type: 'image/jpeg' }), 'Foto Bäder (1).jpg');
+    expect(a.hochgeladen[0].pfad).toMatch(/^b1\/[\w-]+-Foto-Bader-1-\.jpg$/);
+    expect(f.mock.calls[0][0]).toBe('/api/cloud/datei');
+    expect(url).toBe(`https://app/api/cloud/datei?p=${encodeURIComponent(a.hochgeladen[0].pfad)}&s=sig`);
+  });
+
+  test('Datei-Link nicht erreichbar → Datei bleibt auf dem Gerät', async () => {
+    const { c } = await angemeldet((async () => antwort(501, {})) as unknown as typeof fetch);
+    expect(await c.dateiAblegen(new Blob(['x'], { type: 'text/plain' }), 'a.txt')).toMatch(/^data:text\/plain/);
+  });
+
+  test('angemeldet: Einladung in einen anderen Betrieb annehmen', async () => {
+    eingerichtet();
+    const mitglieder = [{ nutzer_id: 'u1', betrieb_id: 'b1', rolle: 'chef' }];
+    const a = attrappe({ mitglieder }, { einladung_annehmen: () => ({ data: [{ betrieb_id: 'b2', mitarbeiter_id: 'm9', rolle: 'buero' }] }) });
+    const sp = speicher();
+    sp.setItem('macher-os:daten-betrieb', 'b1');
+    const s = syncAttrappe();
+    const c = erzeugeSupabaseCloud(a.client, KONFIG, { speicher: sp, syncStarten: s.starten });
+    await c.codeBestaetigen('chef@muster.de', '111111');
+    expect(c.konto()?.betriebId).toBe('b1');
+    expect(await c.einladungAnnehmen('tok')).toEqual({ ok: true });
+    expect(c.konto()?.betriebId).toBe('b2');
+    expect(kontoZustand().konto?.rolle).toBe('buero');
+    expect(db.betrieb.get('betrieb')).toBeUndefined(); // Gerät hat die Daten von b2 übernommen (vorher gesichert)
   });
 });
 

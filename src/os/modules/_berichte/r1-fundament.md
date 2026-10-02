@@ -1,6 +1,6 @@
 # Bericht R1 – Paket „fundament“
 
-Branch `claude/fervent-pascal-joztaz-fundament`. Grundlage: PRD Abschnitt 0 und 0.1, `os/PAKETE-AKTIVIERUNG.md`.
+Branch `claude/fervent-pascal-joztaz-fundament`. Runde 2: auf `main` (Next.js, `/os`) umgezogen, offene Punkte erledigt. Grundlage: PRD Abschnitt 0 und 0.1, `os/PAKETE-AKTIVIERUNG.md`.
 
 ## Was gebaut ist
 
@@ -65,19 +65,29 @@ Auswertung: Tabelle `messpunkte` (nur mit Service-Role lesbar).
 - **Bezahlen:** `betriebe.plan`, `test_bis` (30 Tage ab Anlage), `stripe_kunde` sind da; nur der Server ändert sie.
 - **Spielwiese:** `importieren`/`zuruecksetzen` werden nie hochgeladen; Beispieldaten (`beispiel: true`) auch nicht.
 
-## Offene Punkte
+## Offene Punkte – erledigt (Runde 2)
 
-- **Kernwunsch `struktur.ts`:** `konto` braucht einen Ort (Vorschlag: Heute › `kontext`). Bis dahin wird das Modul in
-  `main.tsx` nur mit Schlüsseln registriert und heißt `modul.tsx` statt `index.tsx` (sonst schlägt
-  `struktur.test.ts` fehl). Danach umbenennen und die Sonderregistrierung entfernen. Ein Eintrag „Konto“ im
-  Profil-Menü (Avatar oben rechts, `Shell.tsx`) wäre der natürliche Einstieg.
-- **Rechte je Rolle auf dem Server:** RLS trennt Betriebe sauber; innerhalb des Betriebs dürfen alle Mitglieder alle
-  Objekte lesen/schreiben (die App blendet Geld usw. je Rolle aus). Feldgenaue Sperren (z. B. Lohn für Monteure)
-  folgen als eigener Schritt.
-- **Dateien** liegen in einem öffentlichen Bucket unter nicht erratbaren Pfaden (UUID); Auflisten ist gesperrt.
-  Für sehr sensible Unterlagen später signierte URLs.
-- **Einladung, wenn schon angemeldet:** `/beitreten/:token` nimmt die Einladung erst bei der nächsten Anmeldung an.
-- **Bestehende Fotos als Data-URL** werden bei der Übernahme mit hochgeladen (in `objekte`); neue Dateien gehen in
-  Storage. Ein späterer Umzug alter Data-URLs nach Storage spart Platz.
-- **Realtime-Grenzen:** sehr große Zeilen kommen ggf. nicht per Realtime an – das minütliche Nachladen fängt das ab.
-- **WhatsApp Business** ist noch nicht angebunden (Rückfall: `wa.me`-Link).
+- **Auf `main` umgezogen:** App unter `/os` (Next.js). Browser-Code `src/os/core/{sync,sync-dateien,cloud-supabase}.ts`,
+  Modul `src/os/modules/konto/`, Server `src/app/api/cloud/*` + `src/app/api/cron/taeglich` (Route Handler), Helfer
+  `src/server/cloud/`, Migrationen `supabase/`, Anleitung `docs/os/BACKEND.md`. Öffentliche Werte heißen jetzt
+  `NEXT_PUBLIC_*` (Vertrag in `docs/os/PAKETE-AKTIVIERUNG.md` angepasst).
+- **Ort in `struktur.ts`:** `konto` steht unter Heute › Kontext und wird normal geladen. Einstieg im Profilmenü
+  (oben rechts): „Konto & Geräte“. Ohne Schlüssel zeigt die Seite ehrlich „Nur auf diesem Gerät“ + Sicherung herunterladen.
+- **Rechte je Rolle auf dem Server** (Migration `20261002120000_rechte_und_dateien.sql`): Rechnungen, Zahlungen, Belege,
+  Mahnungen lesen nur Chef/Büro; `mitarbeiter.kostensatz` wird beim Speichern in eine Zeile `mitarbeiter#geschuetzt`
+  abgetrennt, die nur Chef/Büro lesen – der Abgleich fügt sie im Browser wieder ein. Schreiben geht über
+  `objekte_schreiben`: alle Mitglieder dürfen anlegen (keine verlorene Automation auf dem Monteur-Handy), geschützte
+  Felder setzen nur Chef/Büro. Konfigurierbar über `sammlung_rechte` / `feld_rechte`. In PostgreSQL geprüft.
+- **Dateien privat:** Bucket nicht mehr öffentlich. `dateiAblegen` liefert `/api/cloud/datei?p=…&s=…` (signiert,
+  dauerhaft), der beim Öffnen auf einen 1-Stunden-Link umleitet. Sperren: `DATEI_GEHEIMNIS` wechseln.
+- **Einladung, wenn schon angemeldet:** `/os/beitreten/:token` zeigt „Einladung annehmen“; das Gerät wechselt in den
+  neuen Betrieb (alte Gerätedaten werden gesichert). Eine frische Einladung hat Vorrang vor älteren Mitgliedschaften.
+- **Alte Data-URLs:** werden nach der Anmeldung im Hintergrund in den Speicher umgezogen (ab 20 KB, Stück für Stück).
+- **WhatsApp Business:** Kanal `whatsapp` über die Meta-Cloud-API (Vorlage mit einem Textfeld für den Erstkontakt);
+  ohne Schlüssel bleibt der `wa.me`-Rückfall.
+- **Realtime-Grenzen:** bleiben abgefangen durch Nachladen jede Minute (kein Handlungsbedarf).
+
+## Was noch fehlt (nicht im Code lösbar)
+
+- **Supabase-Projekt und Schlüssel** gibt es noch nicht. Ohne sie läuft alles lokal. Schritte: `docs/os/BACKEND.md`.
+- **Vercel Pro**, sobald die Crons der anderen Pakete öfter als täglich laufen sollen.

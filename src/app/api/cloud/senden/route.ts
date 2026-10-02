@@ -1,11 +1,11 @@
 /**
- * POST /api/cloud/senden – echte E-Mail oder SMS im Namen des Betriebs.
+ * POST /api/cloud/senden – echte E-Mail, SMS oder WhatsApp-Nachricht im Namen des Betriebs.
  * Body: { versand: Versand } (siehe src/core/cloud.ts). Antwort: VersandErgebnis.
  * Enthält der Versand einen Link, wird er durch einen Öffnen-Link ersetzt (`/api/cloud/oeffnen?v=…`),
  * damit der Betrieb sieht, dass der Kunde geöffnet hat.
  */
 import { angemeldetesMitglied, appUrl, body, fehler, istEmail, json, neueId, nichtVerbunden, objektLesen, rest, supabaseKonfig } from '@/server/cloud/lib';
-import { emailSenden, emailVerbunden, smsSenden, smsVerbunden, type Anhang } from '@/server/cloud/versand';
+import { emailSenden, emailVerbunden, smsSenden, smsVerbunden, whatsappSenden, whatsappVerbunden, type Anhang } from '@/server/cloud/versand';
 
 interface Versand {
   an: string;
@@ -23,7 +23,7 @@ export async function POST(req: Request): Promise<Response> {
   const b = await body<{ versand?: Versand }>(req);
   const v = b?.versand;
   if (!v?.an || !v.text || !v.kanal) return fehler(400, 'Empfänger, Kanal und Text fehlen.');
-  if (v.kanal === 'whatsapp') return nichtVerbunden('whatsapp');
+  if (v.kanal === 'whatsapp' && !whatsappVerbunden()) return nichtVerbunden('whatsapp');
   if (v.kanal === 'email' && !emailVerbunden()) return nichtVerbunden('email');
   if (v.kanal === 'sms' && !smsVerbunden()) return nichtVerbunden('sms');
   if (v.kanal === 'email' && !istEmail(v.an)) return fehler(400, 'Die E-Mail-Adresse stimmt nicht.');
@@ -55,6 +55,9 @@ export async function POST(req: Request): Promise<Response> {
         antwortAn: betrieb?.email && istEmail(betrieb.email) ? betrieb.email : undefined,
         anhaenge: v.anhaenge,
       });
+      anbieterId = r.id;
+    } else if (v.kanal === 'whatsapp') {
+      const r = await whatsappSenden(v.an, [v.text, link].filter(Boolean).join('\n'));
       anbieterId = r.id;
     } else {
       const r = await smsSenden(v.an, [v.text, link].filter(Boolean).join('\n'));

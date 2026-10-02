@@ -92,3 +92,40 @@ export async function smsSenden(an: string, text: string): Promise<{ id?: string
   const id = antwort.id ?? antwort.messages?.[0]?.id;
   return { id: id == null ? undefined : String(id) };
 }
+
+export const whatsappVerbunden = () => !!env('WHATSAPP_TOKEN') && !!env('WHATSAPP_NUMMER_ID');
+
+/**
+ * WhatsApp Business über die Cloud-API von Meta.
+ * Freier Text geht nur innerhalb von 24 Stunden nach der letzten Nachricht des Kunden. Für den ersten Kontakt
+ * (Angebot, Termin, „Wir sind unterwegs“) braucht es eine freigegebene Vorlage mit genau einem Textfeld:
+ * `WHATSAPP_VORLAGE` (Name) und optional `WHATSAPP_SPRACHE` (Standard `de`).
+ */
+export async function whatsappSenden(an: string, text: string): Promise<{ id?: string }> {
+  const token = env('WHATSAPP_TOKEN');
+  const nummer = env('WHATSAPP_NUMMER_ID');
+  if (!token || !nummer) throw new Error('WhatsApp nicht verbunden');
+  const vorlage = env('WHATSAPP_VORLAGE');
+  const empfaenger = telefonNormal(an).replace(/^\+/, '');
+  const nachricht = vorlage
+    ? {
+        messaging_product: 'whatsapp',
+        to: empfaenger,
+        type: 'template',
+        template: {
+          name: vorlage,
+          language: { code: env('WHATSAPP_SPRACHE') ?? 'de' },
+          // Vorlagen-Felder dürfen keine Zeilenumbrüche enthalten
+          components: [{ type: 'body', parameters: [{ type: 'text', text: text.replace(/\s*\n+\s*/g, ' · ').replace(/ {4,}/g, ' ').slice(0, 1000) }] }],
+        },
+      }
+    : { messaging_product: 'whatsapp', to: empfaenger, type: 'text', text: { body: text.slice(0, 4096), preview_url: true } };
+  const r = await fetch(`https://graph.facebook.com/v21.0/${encodeURIComponent(nummer)}/messages`, {
+    method: 'POST',
+    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+    body: JSON.stringify(nachricht),
+  });
+  if (!r.ok) throw new Error(`WhatsApp-Versand fehlgeschlagen (${r.status}): ${(await r.text()).slice(0, 200)}`);
+  const antwort = (await r.json()) as { messages?: { id?: string }[] };
+  return { id: antwort.messages?.[0]?.id };
+}

@@ -38,8 +38,11 @@ create table oeffentliche_links (token text primary key, betrieb_id uuid, art te
 create table push_abos (nutzer_id uuid, betrieb_id uuid, abo jsonb, primary key (nutzer_id, abo));
 create table messpunkte (betrieb_id uuid, ereignis text, zeit timestamptz, daten jsonb);
 ```
-RLS: Zeilen nur für Mitglieder des Betriebs. Umgebungsvariablen (Vercel): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`,
-`SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` (E-Mail), `SMS_API_KEY` + `SMS_ABSENDER`, `VAPID_PUBLIC_KEY`/`VITE_VAPID_PUBLIC_KEY`,
+RLS: Zeilen nur für Mitglieder des Betriebs (Geld-Sammlungen und geschützte Felder nur Chef/Büro, siehe
+`supabase/migrations/`; Schreiben aus der App über `objekte_schreiben`). Server-Helfer: `src/server/cloud/*`
+(`supabaseKonfig`, `rest`, `angemeldetesMitglied`, `pushAnMitarbeiter`, `cronErlaubt`).
+Umgebungsvariablen (Vercel): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+`SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` (E-Mail), `SMS_API_KEY` + `SMS_ABSENDER`, `VAPID_PUBLIC_KEY`/`NEXT_PUBLIC_VAPID_PUBLIC_KEY`,
 `VAPID_PRIVATE_KEY`, `ANTHROPIC_API_KEY` (KI-Erkennung), `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `CRON_SECRET`.
 Server-Funktionen ohne gesetzte Schlüssel antworten mit `501 { fehler: "nicht verbunden" }` – der Browser zeigt dann den lokalen Rückfall.
 

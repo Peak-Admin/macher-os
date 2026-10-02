@@ -47,7 +47,9 @@ function NichtVerbunden() {
     >
       <Karte>
         <Stapel abstand={12}>
-          <Status ton="neutral">Nur auf diesem Gerät</Status>
+          <div>
+            <Status ton="neutral">Nur auf diesem Gerät</Status>
+          </div>
           <p>Konten, Team auf mehreren Geräten und echter Versand werden gerade verbunden. Bis dahin arbeitest du wie gewohnt hier – lade ab und zu eine Sicherung herunter.</p>
         </Stapel>
       </Karte>
