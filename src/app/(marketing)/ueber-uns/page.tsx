@@ -1,4 +1,4 @@
-import { ProductMock } from "@/components/mocks";
+import { AppVorschau, VorschauRahmen } from "@/components/mocks";
 import { FinalCta, Flow, MissionMittelstand, MissionMittelstandFoto, PageHero } from "@/components/sections";
 import { ArrowLink, ButtonLink, Card, Icon, Section, SectionHeading } from "@/components/ui";
 import { KONTAKT_EMAIL, werte } from "@/content/unternehmen";
@@ -100,7 +100,9 @@ export default function UeberUnsPage() {
               </div>
             </div>
           </div>
-          <ProductMock />
+          <VorschauRahmen hinweis="Klick dich durch – alles Beispieldaten.">
+            <AppVorschau />
+          </VorschauRahmen>
         </div>
       </Section>
 

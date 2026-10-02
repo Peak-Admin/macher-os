@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AppVorschau, PhoneMock, PlanBoardMock } from "@/components/mocks";
+import { AppVorschau, PhoneMock, PlanBoardMock, VorschauRahmen } from "@/components/mocks";
 import {
   Ablauf,
   Alltag,
@@ -207,8 +207,9 @@ export default function HomePage() {
             <TrustRow dark className="mt-6" />
           </div>
           <div className="min-w-0">
-            <AppVorschau className="lg:h-[min(34rem,calc(100svh-15rem))]" />
-            <p className="mt-3 text-center text-sm text-white/65">Klick dich durch – alles Beispieldaten.</p>
+            <VorschauRahmen hinweis="Klick dich durch – alles Beispieldaten.">
+              <AppVorschau className="lg:h-[min(36rem,calc(100svh-17rem))]" />
+            </VorschauRahmen>
           </div>
         </div>
       </Zone>
@@ -400,7 +401,9 @@ export default function HomePage() {
                 Einsatzplanung ansehen
               </ArrowLink>
             </div>
-            <PlanBoardMock />
+            <VorschauRahmen>
+              <PlanBoardMock />
+            </VorschauRahmen>
           </div>
         </Section>
       </Zone>
