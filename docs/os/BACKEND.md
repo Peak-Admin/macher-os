@@ -6,7 +6,7 @@ Team auf mehreren Geräten, echter Versand, Push, öffentliche Links und Dateien
 Jeder Dienst ist einzeln zuschaltbar – fehlt ein Schlüssel, antwortet die zugehörige Server-Funktion mit
 `501 { fehler: "nicht verbunden" }` und die App nutzt den lokalen Rückfall (z. B. eigenes Mail-Programm).
 
-Dauer: etwa 45 Minuten. Du brauchst Zugang zu Vercel (Team „01 Peak Atlas Web“, Projekt `macher-os-app`) und zum DNS deiner Domain.
+Dauer: etwa 45 Minuten. Du brauchst Zugang zu Vercel (Team „01 Peak Atlas Web“, Projekt `macher-os`) und zum DNS deiner Domain.
 Server-Funktionen: `src/app/api/cloud/*`, `src/app/api/cron/*` und `src/app/api/takte/*` (Next.js Route Handler), Helfer in `src/server/cloud/`
 (Takte: Planung und Server-Aktionen in `src/os/server/takte/`).
 
@@ -23,7 +23,8 @@ Server-Funktionen: `src/app/api/cloud/*`, `src/app/api/cron/*` und `src/app/api/
    - `anon public` → wird `NEXT_PUBLIC_SUPABASE_ANON_KEY` (darf in den Browser)
    - `service_role` → wird `SUPABASE_SERVICE_ROLE_KEY` (**geheim**, nur Server)
 3. **SQL Editor → New query**: nacheinander den Inhalt von
-   `supabase/migrations/20261002000000_fundament.sql` und `supabase/migrations/20261002120000_rechte_und_dateien.sql`
+   `supabase/migrations/20261002000000_fundament.sql`, `supabase/migrations/20261002100000_aktivierung.sql`
+   (eindeutiges Anfrage-Postfach je Betrieb) und `supabase/migrations/20261002120000_rechte_und_dateien.sql`
    einfügen → jeweils **Run**. (Alternativ mit der Supabase-CLI: `supabase link --project-ref <ref> && supabase db push`.)
    Das legt Tabellen, Zugriffsregeln (RLS: nur Mitglieder des eigenen Betriebs), Realtime für `objekte`
    den privaten Speicher `dateien` und die Rechte je Rolle an (Rechnungen, Zahlungen, Belege, Mahnungen und
@@ -111,10 +112,10 @@ Hat ein Mitarbeiter kein Gerät mit Push, geht die Nachricht als E-Mail raus (we
   ungültig (Notbremse). Ohne ihn wird ein Wert aus dem Service-Key abgeleitet.
 - Andere Pakete: `ANTHROPIC_API_KEY` (KI-Erkennung), `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (Bezahlen).
 
-## 7. In Vercel eintragen (Projekt `macher-os-app`)
+## 7. In Vercel eintragen (Projekt `macher-os`)
 
-1. <https://vercel.com> → Team **01 Peak Atlas Web** → Projekt **macher-os-app** → **Settings → General**:
-   Root Directory leer (Wurzel des Repos), Framework **Next.js**.
+1. <https://vercel.com> → Team **01 Peak Atlas Web** → Projekt **macher-os** (Website und Software, Software unter `/os`) → **Settings → General**:
+   Root Directory leer (Wurzel des Repos), Framework **Next.js**. Das frühere Projekt `macher-os-app` wird nicht mehr gebraucht.
 2. **Settings → Environment Variables** → jede Variable einzeln anlegen, Umgebungen **Production** und **Preview**
    anhaken (für Preview gern ein eigenes Supabase-Projekt nehmen):
 
@@ -130,6 +131,7 @@ Hat ein Mitarbeiter kein Gerät mit Push, geht die Nachricht als E-Mail raus (we
 | `VAPID_PUBLIC_KEY` / `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | `web-push generate-vapid-keys` | Public Key ja |
 | `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | `web-push generate-vapid-keys` | nein |
 | `WHATSAPP_TOKEN`, `WHATSAPP_NUMMER_ID`, `WHATSAPP_VORLAGE` | Meta (Schritt 4b) | nein |
+| `EINGANG_WEBHOOK_SECRET` | selbst erzeugt (optional, sichert `/api/eingang/email` ab) | nein |
 | `CRON_SECRET` | selbst erzeugt | nein |
 | `DATEI_GEHEIMNIS` | selbst erzeugt (optional) | nein |
 | `TAKTE_GEHEIMNIS` | selbst erzeugt (optional, sonst `CRON_SECRET`) – signiert die Knöpfe in Takt-Mitteilungen | nein |
