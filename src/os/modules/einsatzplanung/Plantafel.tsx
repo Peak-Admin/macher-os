@@ -254,9 +254,9 @@ export function Plantafel() {
     );
   };
 
-  const einplanenKnopf = (m: Mitarbeiter, d: Datum) =>
+  const einplanenKnopf = (m: Mitarbeiter, d: Datum, inZelle = false) =>
     darfPlanen && d >= heute() ? (
-      <button type="button" className="pl-einplanen" onClick={() => zelleOeffnen(m, d)} aria-label={`${auftrag ? `${auftrag.titel} einplanen` : 'Termin anlegen'}: ${personName(m)}, ${datumKurz(d)}`}>
+      <button type="button" className={`pl-einplanen ${inZelle ? `pt-plus ${auftrag ? 'pt-plus--immer' : ''}` : ''}`} onClick={() => zelleOeffnen(m, d)} aria-label={`${auftrag ? `${auftrag.titel} einplanen` : 'Termin anlegen'}: ${personName(m)}, ${datumKurz(d)}`}>
         + {auftrag ? 'Hier einplanen' : 'Termin'}
       </button>
     ) : null;
@@ -398,7 +398,7 @@ export function Plantafel() {
         ) : (
           <>
             {liste.map((t) => kachel(t, m))}
-            {einplanenKnopf(m, d)}
+            {einplanenKnopf(m, d, true)}
           </>
         )}
       </div>

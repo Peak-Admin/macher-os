@@ -147,3 +147,17 @@ a.pl-abw:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px
   .pt-name, .pt-zelle, .pl-balken, .pl-mini, .pl-last-wert, button.pt-kopf { transition: none; }
   .pl-mini:hover { transform: none; }
 }
+
+/* Volle Breite: die Plantafel nutzt den ganzen Platz neben der Navigation */
+.mm-seite:has(.pt-rahmen) { max-width: none; }
+
+/* „+ Termin“ füllt den freien Platz der Zelle. Mit Maus erscheint es erst beim Überfahren
+   (Tastatur: beim Fokus); auf Touch-Geräten und beim Einplanen eines Auftrags bleibt es sichtbar. */
+.pt-plus { flex: 1 1 auto; min-height: 36px; }
+@media (hover: hover) and (pointer: fine) {
+  .pt-plus:not(.pt-plus--immer) { opacity: 0; transition: opacity var(--mm-motion-fast) ease-out; }
+  .pt-zelle:hover .pt-plus, .pt-plus:focus-visible { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pt-plus { transition: none; }
+}
