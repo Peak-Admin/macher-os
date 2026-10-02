@@ -308,7 +308,7 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 5. Gewerke – Kartenreihe: Fotos im Wechsel mit hellen Karten und Glas-Icons */}
+      {/* 5. Gewerke – Kartenreihe: Fotos im Wechsel mit hellen und dunkelgrünen Karten mit Glas-Icons */}
       <Zone ton="dunkel">
         <Section tone="transparent">
           <KartenReihe
@@ -318,8 +318,8 @@ export default function HomePage() {
             nachsatz="Passend zu deinem Gewerk."
           >
             {topGewerke.map((g, n) => {
-              // Wechsel: Foto · helle Karte mit Glas-Icon · Foto mit Hinweis · grüne Karte mit Glas-Icon
-              const art = (["foto", "beige", "foto-hinweis", "gruen"] as const)[n % 4];
+              // Wechsel: Foto · beige Karte · Foto mit Hinweis · dunkelgrüne Karte · Foto · hellgrüne Karte
+              const art = (["foto", "beige", "foto-hinweis", "dunkelgruen", "foto", "gruen"] as const)[n % 6];
               const teaser = topGewerkInhalte[g.slug].teaser;
               return (
                 <ReihenKarte
@@ -331,8 +331,8 @@ export default function HomePage() {
                   ansicht={
                     art === "foto-hinweis" ? (
                       <Hinweis text={`Vorlagen für ${g.kurz}`} className="left-6 top-8" />
-                    ) : art === "beige" || art === "gruen" ? (
-                      <IconAussage icon={gewerkIcons[g.slug]} text={teaser} />
+                    ) : art === "beige" || art === "gruen" || art === "dunkelgruen" ? (
+                      <IconAussage icon={gewerkIcons[g.slug]} text={teaser} dunkel={art === "dunkelgruen"} />
                     ) : undefined
                   }
                   linkText={`Macher OS für ${g.kurz}`}

@@ -7,7 +7,7 @@ import type { BildKey } from "@/content/bilder";
 import type { ObjektSchluessel } from "@/lib/objekte";
 import { KartenDetails } from "./KartenReihe";
 
-export type KartenTon = "hell" | "beige" | "gruen" | "dunkel" | "foto";
+export type KartenTon = "hell" | "beige" | "gruen" | "dunkel" | "dunkelgruen" | "foto";
 
 /** Fläche und Schrift je Ton. Benachbarte Karten einer Reihe bekommen bewusst unterschiedliche Töne und Ansichten. */
 const toene: Record<KartenTon, string> = {
@@ -15,6 +15,8 @@ const toene: Record<KartenTon, string> = {
   beige: "bg-beige text-ink ring-1 ring-inset ring-beige-line",
   gruen: "bg-signal-soft text-ink",
   dunkel: "bg-ink text-white",
+  /** Dunkelgrün mit heller Schrift – hebt sich auch auf dunklen Boxen (Waldgrün) ab */
+  dunkelgruen: "bg-signal-dark text-white ring-1 ring-inset ring-white/10",
   foto: "bg-ink text-white",
 };
 
@@ -55,7 +57,7 @@ export function ReihenKarte({
   linkText?: string;
 }) {
   const foto = ton === "foto";
-  const dunkel = foto || ton === "dunkel";
+  const dunkel = foto || ton === "dunkel" || ton === "dunkelgruen";
   return (
     <li className="w-[82%] shrink-0 snap-start min-[480px]:w-[20rem] lg:w-[22rem] xl:w-[23.5rem]">
       <article
@@ -71,7 +73,7 @@ export function ReihenKarte({
             <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-ink/90 via-ink/20 to-transparent" />
           </>
         )}
-        {ton === "dunkel" && (
+        {(ton === "dunkel" || ton === "dunkelgruen") && (
           // Sanftes Licht im Aktionsgrün, wie auf den dunklen Markenflächen
           <div
             aria-hidden
