@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Container, Icon, type IconName } from "@/components/ui";
-import { Chevrons, Foto } from "@/components/ui/Foto";
+import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import type { BildKey } from "@/content/bilder";
 
 /**
@@ -27,11 +27,11 @@ export function DunkleHeadline({
   return (
     <div className={`max-w-3xl ${className}`}>
       {eyebrow && <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-white/70">{eyebrow}</p>}
-      <h2 className="font-display text-3xl font-bold uppercase leading-[1.05] tracking-tight text-balance sm:text-4xl lg:text-5xl">
+      <h2 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-balance sm:text-4xl lg:text-5xl">
         <span className="text-accent">{gruen}</span>
         {rest && <> {rest}</>}
       </h2>
-      {intro && <p className="mt-4 text-lg leading-relaxed text-pretty text-white/75">{intro}</p>}
+      {intro && <p className="mt-4 text-lg leading-relaxed text-pretty text-on-dark">{intro}</p>}
     </div>
   );
 }
@@ -66,7 +66,7 @@ export function BildKarten({
                   />
                   <div aria-hidden className="absolute inset-0 bg-accent/15 mix-blend-multiply" />
                 </div>
-                <h3 className="mt-5 font-display text-xl font-medium uppercase tracking-wide text-accent">{k.titel}</h3>
+                <h3 className="mt-5 font-display text-xl font-semibold text-accent">{k.titel}</h3>
                 <p className="mt-2 leading-relaxed text-white/80">{k.text}</p>
               </>
             );
@@ -126,7 +126,7 @@ export function BereichsKarte({
       )}
       <div>
         <div className="flex items-end justify-between gap-3">
-          <span className="font-display text-xl font-bold uppercase leading-[1.05] tracking-tight text-balance sm:text-2xl">
+          <span className="font-display text-xl font-bold leading-[1.1] tracking-tight text-balance sm:text-2xl">
             {titel}
           </span>
           <Icon
@@ -140,28 +140,18 @@ export function BereichsKarte({
   );
 }
 
-/** Dunkler Abschnitt mit riesigem, ausgeblendetem Hintergrundwort (z. B. „GEWERKE“). */
+/** Ruhiger dunkler Abschnitt (Waldgrün) – ohne Dekowort im Hintergrund. */
 export function DunklerAbschnitt({
-  hintergrund,
   children,
   id,
   className = "",
 }: {
-  hintergrund?: string;
   children: ReactNode;
   id?: string;
   className?: string;
 }) {
   return (
     <section id={id} className={`relative isolate overflow-hidden bg-ink py-16 text-white sm:py-24 ${className}`}>
-      {hintergrund && (
-        <p
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-4 -z-10 select-none text-center font-display text-[22vw] font-black uppercase leading-none tracking-tight text-white/[0.04] [mask-image:linear-gradient(to_bottom,black_30%,transparent_85%)] lg:text-[16rem]"
-        >
-          {hintergrund}
-        </p>
-      )}
       <Container>{children}</Container>
     </section>
   );
@@ -187,15 +177,22 @@ export function BildText({
 }) {
   const tones = { white: "bg-white text-ink", paper: "bg-paper text-ink", ink: "bg-ink text-white" };
   const rechts = seite === "rechts";
+  // Ohne Foto und ohne Produktansicht keine Bildfläche: der Text steht allein, ruhig und lesbar.
+  if (!fotoVorhanden(bild) && !overlay) {
+    return (
+      <section className={`relative ${tones[tone]}`}>
+        <Container className="relative py-14 sm:py-20 lg:py-24">
+          <div className="max-w-3xl">{children}</div>
+        </Container>
+      </section>
+    );
+  }
   return (
     <section className={`relative isolate overflow-hidden ${tones[tone]}`}>
       <div
         className={`relative h-72 sm:h-96 lg:absolute lg:inset-y-0 lg:h-auto lg:w-1/2 ${rechts ? "lg:right-0" : "lg:left-0"}`}
       >
         <Foto bild={bild} sizes="(min-width: 1024px) 50vw, 100vw" />
-        <Chevrons
-          className={`absolute bottom-6 h-24 text-accent/90 sm:h-32 ${rechts ? "left-6" : "right-6"}`}
-        />
         {overlay && <div className="absolute inset-0 flex items-center justify-center p-6">{overlay}</div>}
       </div>
       <Container className="relative py-14 sm:py-20 lg:py-28">
@@ -222,7 +219,6 @@ export function FotoBuehne({
     <div className={`relative isolate overflow-hidden rounded-lg bg-ink px-4 py-10 sm:px-10 sm:py-14 ${className}`}>
       <Foto bild={bild} sizes="(min-width: 1024px) 50vw, 100vw" className="-z-10" />
       <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-ink/85 via-ink/35 to-ink/10" />
-      <Chevrons className="absolute -bottom-6 -left-4 -z-10 h-40 text-accent/80" />
       <div className="relative">{children}</div>
     </div>
   );

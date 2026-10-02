@@ -25,13 +25,13 @@ export function PreisUmschalter() {
   return (
     <div>
       <div className="flex flex-col items-center gap-3">
-        <fieldset className="inline-flex rounded-lg bg-white p-1 ring-1 ring-line">
+        <fieldset className="inline-flex gap-1 rounded-xl bg-sand p-1">
           <legend className="sr-only">Zahlweise</legend>
           {optionen.map((o) => (
             <label
               key={o.value}
-              className={`relative cursor-pointer rounded-md px-5 py-2 text-sm font-bold transition-colors has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-signal ${
-                billing === o.value ? "bg-ink text-white" : "text-muted hover:text-ink"
+              className={`relative flex min-h-11 cursor-pointer items-center rounded-md border px-5 py-2 text-base transition-colors duration-150 ease-out has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
+                billing === o.value ? "border-line-dark bg-white font-semibold text-signal-dark" : "border-transparent font-medium text-muted hover:bg-white"
               }`}
             >
               <input

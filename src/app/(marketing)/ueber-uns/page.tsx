@@ -154,7 +154,7 @@ export default function UeberUnsPage() {
             intro="Fragen, Ideen oder Kritik – schreib uns. Wir lernen am meisten von Leuten, die jeden Tag im Handwerk arbeiten."
           />
           <div className="flex flex-wrap gap-3">
-            <ButtonLink href="/kontakt" variant="dark">
+            <ButtonLink href="/kontakt" variant="secondary">
               Kontakt aufnehmen
             </ButtonLink>
             <ButtonLink href={`mailto:${KONTAKT_EMAIL}`} variant="secondary">

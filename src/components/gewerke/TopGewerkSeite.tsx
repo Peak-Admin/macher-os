@@ -189,7 +189,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
       {/* 8. Mobile Baustelle / Außendienst */}
       <Section>
         <div className="grid items-center gap-14 lg:grid-cols-2">
-          <div className="order-2 lg:order-1">
+          <div className="order-2 min-w-0 lg:order-1">
             <FotoBuehne bild="alltag/handy">
               <GewerkPhoneMock einsatz={g.mobil.einsatz} />
             </FotoBuehne>
@@ -224,7 +224,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2">
             {g.automatisch.map((a) => (
-              <li key={a} className="flex items-center gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10">
+              <li key={a} className="flex items-center gap-3 karte-dunkel p-4">
                 <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md icon-kachel">
                   <Icon name="spark" className="size-5" />
                 </span>

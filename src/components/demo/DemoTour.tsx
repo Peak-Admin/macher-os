@@ -25,7 +25,7 @@ export function DemoTour({ daten }: { daten: DemoGewerk }) {
                 onClick={() => gehe(i)}
                 aria-current={aktiv ? "step" : undefined}
                 className={`flex w-full items-center gap-3 rounded-lg p-3 text-left text-sm font-semibold transition-colors ${
-                  aktiv ? "bg-ink text-white" : "bg-white text-ink ring-1 ring-line hover:ring-ink/40"
+                  aktiv ? "bg-signal-soft text-signal-dark ring-1 ring-inset ring-primary" : "bg-white text-ink ring-1 ring-inset ring-line-dark hover:bg-signal-soft"
                 }`}
               >
                 <span
@@ -77,8 +77,8 @@ export function DemoTour({ daten }: { daten: DemoGewerk }) {
           <button
             type="button"
             onClick={() => gehe(letzter ? 0 : schritt + 1)}
-            className={`inline-flex h-11 items-center gap-2 rounded-lg px-5 text-white ${
-              letzter ? "bg-ink font-semibold hover:bg-ink-soft" : "btn-primaer"
+            className={`inline-flex h-11 items-center gap-2 px-5 text-white ${
+              letzter ? "rounded-lg bg-ink font-semibold hover:bg-ink-soft" : "btn-primaer"
             }`}
           >
             {letzter ? "Tour neu starten" : "Weiter"}

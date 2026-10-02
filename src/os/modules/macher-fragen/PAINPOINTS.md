@@ -46,6 +46,6 @@ Score = Frequenz (1–10) × Intensität (1–10).
 
 ## Bewusst weggelassen (Pareto)
 
-- Freitext-KI/externes Modell (nur Schnittstelle `Sprachmodell` vorbereitet).
+- Freitext-KI/externes Modell (Anschluss über den Macher AI Gateway vorbereitet: `registriereModell`, Lane 1–3).
 - Sprachein-/ausgabe, Ortung von Mitarbeitern (nur Einsatzplan).
 - Ausführen weiterer Aktionen (Rechnung schreiben, Termin verschieben) – erst wenn die Besitzer-Module Aktionen anbieten.

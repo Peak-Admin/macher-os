@@ -79,7 +79,7 @@ export default function GewerkeHubPage() {
       />
 
       {/* 2. Beliebte Gewerke – Hochkant-Karten mit Fotos */}
-      <DunklerAbschnitt hintergrund="Gewerke" id="beliebte-gewerke" className="scroll-mt-20">
+      <DunklerAbschnitt id="beliebte-gewerke" className="scroll-mt-20">
         <DunkleHeadline
           eyebrow="Beliebte Gewerke"
           gruen="Für deinen Betrieb"

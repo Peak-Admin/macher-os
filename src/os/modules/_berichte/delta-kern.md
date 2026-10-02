@@ -85,3 +85,46 @@ Keine neue Automation. `automatisch.pruefeAlle` ruft zusätzlich `pruefeFristen(
 „Letzte Änderungen“ – keine Konsolenfehler, keine horizontale Rollleiste bei 390 px. Hinweis: Mein Worktree stand auf
 `23e2a03` (ohne `src/os`); ich habe per Fast-Forward auf `3b35be5` (Stand des Hauptcheckouts) aufgesetzt. Neue Tests:
 `core/audit.test.ts`, `core/ereignisse.test.ts`, `macher-fragen/befehle.test.ts` (Absicht, Freigabe, alle sechs Befehle, Rückgängig).
+
+## Zusammenführung mit dem Gateway (Merge von `main`, Oktober 2026)
+
+`main` brachte den **Macher AI Gateway** (`src/os/core/gateway.ts`, `docs/os/KI-GATEWAY.md`) – den einzigen Weg von einer
+Eingabe zu einer Antwort oder Aktion. Die Action Engine aus Delta 3 war eine Parallelfunktion und ist darin aufgegangen.
+
+**Entfernt:** `src/os/core/aktionen.ts`, das Feld `befehle` in `defineModul`, `macher-fragen/befehle.ts` (Befehl-Typen,
+`erkenneBefehl`, `setzeAbsichtsErkenner`, `befehlVorbereiten/-Ausfuehren/-Rueckgaengig`, Klassen READ/WRITE/MONEY/PUBLICATION/
+DESTRUCTIVE, `freigabeStufe`). Die KI-Erkennung hängt jetzt an der Lane 1 (Jev) des Gateways.
+
+**Ins Gateway übernommen** (`core/gateway.ts`):
+- Ausführen als Macher: `fuehreAus` läuft in `alsAkteur({ quelle: 'ai', id: 'macher', mitarbeiterId })` und schneidet die
+  Verlaufseinträge mit → `AusfuehrErgebnis.eintraege`.
+- Rückgängig: `nimmZurueck(eintraege, kontext)` über `allesRueckgaengig` (Audit), protokolliert als `zurueckgenommen`.
+- `AktionDef.endgueltig` (kein „Rückgängig“, Hinweis in Vorschau und Ergebnis) und `AktionsRueckgabe.oeffnen` (mailto-Links).
+- Risiko: nur Gateway-Risiko (`lesen`/`schreiben`/`kritisch`, Rechte machen kritisch). Keine zweite Klassifikation;
+  `kritisch` bestätigt der Mensch im Chat zusätzlich in einem Dialog (früher „Freigabe“).
+- Protokoll: `ki-protokoll` bleibt (KI-Kosten, Lanes, Erkennung, Ablehnungen). Statt `ki.<ergebnis>` für jede Frage geht nur
+  bei einer ausgeführten Aktion **ein** Ereignis `macher.aktion_ausgefuehrt` auf den Bus (Katalog, Webhooks, Bezug = geändertes
+  Objekt) – sonst hätte das Ereignisprotokoll jede Frage doppelt gespeichert. `ki-protokoll` ist vom Feld-Audit ausgenommen.
+  Abgrenzung in `docs/os/MODULE.md` §8.3.
+
+**Die sechs Sätze als Gateway-Anmeldungen** (Aktionen im Besitzer-Modul, Absichten in `macher-fragen`):
+
+| Satz | Absicht | Aktion (Modul) |
+|---|---|---|
+| „Mach Müller die Rechnung fertig“ | `invoice.create_draft` (gab es in main; ergänzt um Vorschau, „schon ein Entwurf“, „noch nichts abzurechnen“) | `invoice.create_draft` (rechnungen, main) |
+| „Plane Jonas morgen bei Schneider ein“ | `employee.schedule` (neu, `absichten.ts`) | `employee.schedule` (autoplanung, neu) |
+| „Was fehlt noch für die Baustelle …?“ | `job.missing` (neu, lesen) | – |
+| „Bestell das fehlende Material“ | `order.create_draft` (neu) | `order.create_draft` (bedarf, neu) |
+| „Erinnere alle Kunden, deren Rechnung länger als 14 Tage offen ist“ | `invoice.remind` (neu, vor `reminder.create` geprüft) | `invoice.remind` (mahnungen, neu, kritisch, je Rechnung ein Schritt) |
+| „Schreib Frau Müller, dass wir morgen um 8 Uhr kommen“ | `message.send` (main) – Vorlage stellt jetzt den dass-Satz um, ergänzt das Datum und übernimmt die Anrede | `message.send` (nachrichten, main) |
+
+Namensauflösung mit Umlauten (`normalisieren`, `findeKunde({ ohne })`) steckt jetzt in `macher-fragen/hilfen.ts` und gilt für
+alle Absichten. Chat: ein Vorschlagstyp (`plan`) mit Vorschau, editierbarem Text, Bestätigung, Links und „Rückgängig machen“.
+Tests: `macher-fragen/absichten.test.ts` (vorher `befehle.test.ts`) und `core/gateway.test.ts` (Akteur, Mitschnitt,
+Rückgängig, genau ein Ereignis).
+
+**Weitere Konflikte:** `db.ts` (Betriebs-Speicherschlüssel + Audit/Akteur – beides; Audit und Ereignisprotokoll sind
+Sammlungen und liegen damit je Betrieb getrennt), `abwesenheiten`/`arbeitszeiten` (`gateway` + `init`/`kontoHinweise`),
+`AuftraegeSeite` (neue Zeile aus main, Status zeigt den Ablauf-Schritt), `onboarding.css` (Spielwiese im Layoutfluss aus
+main – der zusätzliche Abstand unten entfällt), `shell.css` (Design aus main, Profil bleibt unten in der Leiste – auch in der
+Monteur-Navigation ohne Favoriten).

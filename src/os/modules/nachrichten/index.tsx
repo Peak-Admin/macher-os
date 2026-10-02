@@ -7,6 +7,7 @@ import type { Nachricht } from '@core/objects';
 import { AuftragNachrichtenTab, AuftragVerlauf, InternVerlauf, KundeNachrichtenTab, KundeVerlauf, NachrichtWeiter, NachrichtenWidget, Posteingang } from './Posteingang';
 import { istUngelesen, nachrichtenHinweise, passenderAuftrag, threadVon } from './daten';
 import { ich } from '@core/session';
+import { NACHRICHT_AKTIONEN } from './gateway';
 
 const ungelesenBei = (pruefe: (n: Nachricht) => boolean) => db.nachrichten.where((n) => pruefe(n) && istUngelesen(n, ich()?.id)).length || undefined;
 
@@ -55,6 +56,7 @@ export default defineModul({
         }),
     },
   ],
+  gateway: { aktionen: [...NACHRICHT_AKTIONEN] },
   suche: (q) =>
     db.nachrichten
       .where((n) => passt(q, n.text, n.betreff, db.kunden.get(n.kundeId)?.name))

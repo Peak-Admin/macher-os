@@ -10,14 +10,15 @@
  * - Tabs in Detailansichten anderer Objekte einhängen (z. B. „Fotos“ in der Auftragsakte),
  * - Hinweise für „Braucht dich“ liefern (Exception-First),
  * - Automationen registrieren (laufen über Events, protokollieren in „Erledigt“),
+ * - Absichten und Aktionen für den zentralen AI Gateway anmelden,
  * - Suchtreffer, Erfassungsformulare (direkt aus dem Kontext geöffnet) und Beispieldaten beisteuern.
  *
  * WO ein Modul in der Oberfläche erscheint, bestimmt allein `src/shell/struktur.ts`
  * (Heute · Aufträge · Planen · Betrieb, je Ebene höchstens vier Ziele).
  */
 import type { ComponentType } from 'react';
+import type { GatewayBeitrag } from './gateway';
 import type { Bezug, ID, Rolle, SammlungsName } from './objects';
-import type { Befehl } from './aktionen';
 
 export type Bereich = 'heute' | 'auftraege' | 'plan' | 'betrieb' | 'macher';
 export type BetriebGruppe = 'team' | 'material' | 'werkzeuge' | 'geld' | 'unternehmen';
@@ -54,6 +55,8 @@ export interface HinweisVorschlag {
   aktionen?: { aktion: string; label: string; primaer?: boolean; payload?: unknown }[];
   /** Pfad, den „Öffnen“ ansteuert */
   pfad?: string;
+  /** Akute Sicherheitswarnung (z. B. Gerät mit überfälliger Prüfung: nicht verwenden). Zählt nie gegen ein Mengenlimit. */
+  sicherheit?: boolean;
 }
 
 export interface Automation {
@@ -127,7 +130,7 @@ export interface ModulDef {
   routen?: { pfad: string; element: ComponentType }[];
   /** Routen ohne App-Rahmen (Onboarding, Kundenbereich, Terminbuchung für Kunden). Absolute Pfade. */
   vollbildRouten?: { pfad: string; element: ComponentType }[];
-  /** Altfeld: Bereichsseiten zeigen keine Modul-Widgets mehr (Heute und Betrieb sind fest gestaltet) */
+  /** Altfeld: wird nicht angezeigt. Widgets fürs Home: `registriereWidget()` (src/os/shell/home/registry.ts, docs/os/HOME.md) */
   hubWidget?: ComponentType;
   /** Kurzer Status, z. B. „3 Prüfungen fällig“; mit `ton: 'achtung'` ggf. als Hinweis auf der Betrieb-Kachel */
   kurzinfo?: () => { text: string; ton?: Ton } | undefined;
@@ -138,19 +141,17 @@ export interface ModulDef {
   hinweise?: () => HinweisVorschlag[];
   /** Aktionen für Hinweis-Buttons. Rückgabe: optionaler Pfad zum Navigieren */
   aktionen?: Record<string, (payload: unknown) => string | void>;
-  /**
-   * Befehle für „Macher fragen“ (Action Engine, `@core/aktionen`): ein Satz → Vorschau → Freigabe → Ausführen.
-   * Bauen auf `aktionen` auf (`braucht: ['rechnung.erstellen']`) und rufen sie über `aktionAusfuehren` auf.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  befehle?: Befehl<any>[];
   automationen?: Automation[];
+  /** Absichten und Aktionen für den Macher AI Gateway (`@core/gateway`) – Module sprechen nie selbst mit einem Modell */
+  gateway?: GatewayBeitrag;
   suche?: (q: string) => Treffer[];
   schnell?: SchnellAktion[];
   /** Erstellungsabläufe des Moduls (Verzeichnis, kein Menü). Der Knopf steht im Arbeitskontext. */
   erstellen?: { label: string; pfad: string; gewicht?: number }[];
   /** Global gerenderte Komponente (Overlays, Tastenkürzel …) */
   global?: ComponentType;
+  /** Kompakte Zeile oben im Inhalt, im normalen Layoutfluss (z. B. Hinweis „Spielwiese“) – nie schwebend über Daten */
+  leiste?: ComponentType;
   /** Beispieldaten für eigene Sammlungen nach dem Onboarding */
   seed?: () => void;
   /** Nur für diese Rollen in der Navigation */
@@ -159,7 +160,8 @@ export interface ModulDef {
   init?: () => void;
 }
 
-export type Ton = 'neutral' | 'aktiv' | 'erfolg' | 'achtung';
+/** Status-Töne. `gefahr` nur für eine tatsächliche Sperre oder Gefahr („Nicht verwenden“) – immer mit eindeutigem Text. */
+export type Ton = 'neutral' | 'aktiv' | 'erfolg' | 'achtung' | 'gefahr';
 
 export function defineModul(def: ModulDef): ModulDef {
   return { gewicht: 50, navigation: 'haupt', ...def };

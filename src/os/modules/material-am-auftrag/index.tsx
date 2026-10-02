@@ -9,6 +9,7 @@ import { MaterialFormular } from './MaterialFormular';
 import { materialAbrechnen, materialAusAngebot } from './daten';
 import { offenFuerRechnung, summeEk } from './logik';
 import { erledigt } from '@core/macher';
+import { MATERIAL_AKTIONEN } from './gateway';
 
 const wurde = (e: DbEvent, werte: string[]) => {
   const n = e.objekt as { status?: string } | undefined;
@@ -76,6 +77,7 @@ export default defineModul({
           },
         ];
       }),
+  gateway: { aktionen: [...MATERIAL_AKTIONEN] },
   aktionen: {
     /** Material bewusst nicht berechnen (z. B. Kulanz): der zuletzt versendeten Rechnung zuordnen */
     'material.nicht-berechnen': (p) => {

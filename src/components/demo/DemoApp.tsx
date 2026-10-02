@@ -27,7 +27,7 @@ type Ansicht = "heute" | "auftrag" | "plan" | "betrieb" | "automatisch";
 const ansichten: { id: Ansicht; label: string; icon: IconName }[] = [
   { id: "heute", label: "Heute", icon: "home" },
   { id: "auftrag", label: "Auftrag", icon: "clipboard" },
-  { id: "plan", label: "Plan", icon: "calendar" },
+  { id: "plan", label: "Planen", icon: "calendar" },
   { id: "betrieb", label: "Betrieb", icon: "layers" },
   { id: "automatisch", label: "Automatisch", icon: "spark" },
 ];
@@ -73,7 +73,7 @@ export function DemoApp({ daten }: { daten: DemoGewerk }) {
                 onClick={() => setAnsicht(a.id)}
                 onKeyDown={tabKeyHandler(i, ansichten.length, waehle)}
                 className={`flex items-center gap-2 rounded-md px-2.5 py-2.5 text-left text-sm font-semibold transition-colors sm:px-3 ${
-                  aktiv ? "bg-ink text-white" : "text-muted hover:bg-sand hover:text-ink"
+                  aktiv ? "bg-signal-soft font-semibold text-signal-dark" : "text-muted hover:bg-sand hover:text-ink"
                 }`}
               >
                 <Icon name={a.icon} className="size-4.5 shrink-0" />

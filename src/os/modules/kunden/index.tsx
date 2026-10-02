@@ -9,6 +9,7 @@ import { AnsprechpartnerTab, KundeDetail, VerlaufTab } from './KundeDetail';
 import { KundeNeu } from './KundeNeu';
 import { Dubletten } from './Dubletten';
 import { aktuelleDubletten, naechsteKundennummer } from './daten';
+import { KUNDEN_AKTIONEN } from './gateway';
 
 const OFFEN = (p: string) => !['erledigt', 'verloren'].includes(p);
 
@@ -88,6 +89,7 @@ export default defineModul({
     },
   ],
 
+  gateway: { aktionen: [...KUNDEN_AKTIONEN] },
   suche: (q) => {
     const offen = db.auftraege.where((a) => OFFEN(a.phase));
     return db.kunden

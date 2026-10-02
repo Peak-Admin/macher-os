@@ -8,7 +8,7 @@ export interface ChatEintrag extends Basis {
   rolle: 'frage' | 'antwort' | 'fehler';
   text: string;
   antwort?: Antwort;
-  /** welches Sprachmodell geantwortet hat */
+  /** welche Gateway-Lane bzw. welches Modell geantwortet hat */
   modell?: string;
 }
 

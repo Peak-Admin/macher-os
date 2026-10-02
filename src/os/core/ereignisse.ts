@@ -84,7 +84,7 @@ export const EREIGNISSE: EreignisArt[] = [
   art('import.abgeschlossen', 'Import abgeschlossen', 'importe', 'import.completed', 'modul', 'Ein Datenimport ist fertig (Excel/CSV, DATANORM, GAEB).'),
   art('import.rueckgaengig', 'Import rückgängig gemacht', 'importe', 'import.reverted', 'modul', 'Ein Datenimport wurde zurückgenommen.'),
   art('formular.ausgefuellt', 'Formular ausgefüllt', 'eigeneFormulare', 'form.completed', 'modul', 'Ein eigenes Formular wurde an einem Kunden, Auftrag oder Ort ausgefüllt.'),
-  art('macher.aktion_ausgefuehrt', 'Macher hat etwas erledigt', 'chat', 'assistant.action_executed', 'modul', 'Macher hat nach deiner Freigabe eine Aktion ausgeführt.'),
+  art('macher.aktion_ausgefuehrt', 'Macher hat etwas erledigt', 'ki-protokoll', 'assistant.action_executed', 'modul', 'Macher hat nach deiner Bestätigung eine Aktion über den Gateway ausgeführt (Bezug: das geänderte Objekt).'),
 ];
 
 /** Gruppe für Auswahllisten (Webhooks, Automationen) – nach dem Objekt des Ereignisses */

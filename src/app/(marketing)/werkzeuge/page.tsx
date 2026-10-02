@@ -129,7 +129,7 @@ export default function WerkzeugeHub() {
               </p>
             </div>
           </div>
-          <ButtonLink href="/wissen/vorlagen" variant="dark">
+          <ButtonLink href="/wissen/vorlagen" variant="secondary">
             Zu den Vorlagen <Icon name="arrow-right" className="size-4" />
           </ButtonLink>
         </div>

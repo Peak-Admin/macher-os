@@ -13,6 +13,7 @@ import { MonatSeite } from './MonatSeite';
 import { kontoHinweise } from './regelwerk';
 import { ZeitenWoche } from './ZeitenWoche';
 import { Stempeluhr } from './Stempeluhr';
+import { ZEIT_AKTIONEN } from './gateway';
 
 export default defineModul({
   id: 'arbeitszeiten',
@@ -55,6 +56,7 @@ export default defineModul({
     },
   ],
   hinweise: () => [...zeitenHinweise(), ...kontoHinweise()],
+  gateway: { aktionen: [...ZEIT_AKTIONEN] },
   aktionen: {
     'einsatz.starten': (p) => {
       einsatzStarten(p);

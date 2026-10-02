@@ -12,4 +12,3 @@
 /* Beispielfragen ruhig darstellen – sie sind Vorschläge, keine konkurrierenden Hauptaktionen */
 .mf-beispiele .mm-btn--sekundaer { border-color: var(--mm-border); background: var(--mm-canvas); color: var(--mm-black); font-weight: 500; }
 .mf-beispiele .mm-btn--sekundaer:hover:not(:disabled) { border-color: var(--mm-brand); background: var(--mm-soft-green); }
-.mf-frage { border-left: 3px solid var(--mm-brand); }

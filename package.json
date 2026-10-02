@@ -11,9 +11,11 @@
     "lint": "eslint",
     "pretest": "node scripts/os-module.mjs",
     "test": "vitest run",
-    "typecheck": "node scripts/os-module.mjs && next typegen && tsc --noEmit"
+    "typecheck": "node scripts/os-module.mjs && next typegen && tsc --noEmit",
+    "test:ux": "node scripts/ux/menue-test.mjs && node scripts/ux/formular-test.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "@fontsource/barlow": "^5.2.0",
     "@fontsource/poppins": "^5.2.0",
     "@supabase/supabase-js": "^2.117.2",

@@ -19,6 +19,7 @@ import {
   beiZahlung,
   setzePhase,
 } from './daten';
+import { AUFTRAG_AKTIONEN } from './gateway';
 
 const wechsel = <T extends Basis>(e: DbEvent, feld: keyof T, werte: unknown[]) => {
   const neu = e.objekt as T | undefined;
@@ -64,6 +65,7 @@ export default defineModul({
         relevanz: istOffen(a) ? 75 : 55,
       })),
   hinweise: auftragHinweise,
+  gateway: { aktionen: [...AUFTRAG_AKTIONEN] },
   aktionen: {
     'auftrag.oeffnen': (p) => (auftragVon(p) ? auftragPfad(auftragVon(p)!) : undefined),
     'auftrag.einplanen': (p) => {

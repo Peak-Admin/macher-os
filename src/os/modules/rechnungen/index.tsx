@@ -12,6 +12,7 @@ import { RechnungDruck } from './Druck';
 import { AuftragRechnungenTab, KundeRechnungenTab } from './Tabs';
 import { abschlussRechnung, ART_LABEL, ENTWURF_TAGE, gueltigeRechnungen, nummerText, passendeArt, rechnungErstellen, rechnungsSummen } from './logik';
 import { alleRechnungen } from './typen';
+import { RECHNUNG_AKTIONEN, RECHNUNG_SENDEN } from './gateway';
 
 const pfad = (id: ID) => `/betrieb/rechnungen/${id}`;
 
@@ -92,6 +93,7 @@ export default defineModul({
     }
     return liste;
   },
+  gateway: { aktionen: [...RECHNUNG_AKTIONEN, ...RECHNUNG_SENDEN] },
   aktionen: {
     'rechnung.erstellen': (payload) => {
       const p = payload as { auftragId: ID; art?: RechnungsArt; prozent?: number; nachAufwand?: boolean };

@@ -21,7 +21,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="mt-2 inline-block rounded-sm hover:opacity-80"
               >
-                <HerausgeberMarke dark />
+                <HerausgeberMarke dark className="h-12" />
                 <span className="sr-only"> (öffnet in neuem Tab)</span>
               </a>
             </div>

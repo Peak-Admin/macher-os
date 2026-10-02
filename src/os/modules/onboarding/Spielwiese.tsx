@@ -4,7 +4,7 @@ import { useEinstellung } from '@core/einstellungen';
 import { hatGesicherteDaten, SPIELWIESE_KEY, spielwieseVerlassen } from '@core/seed';
 import { Button, Status, useToast } from '@ui/index';
 
-/** Hinweis am Rand, solange die Spielwiese offen ist – Beispieldaten sind nie mit echten Daten gemischt. */
+/** Hinweis als kompakte Zeile oben im Inhalt, solange die Spielwiese offen ist – Beispieldaten sind nie mit echten Daten gemischt. */
 export function SpielwieseLeiste() {
   const [an] = useEinstellung<boolean>(SPIELWIESE_KEY, false);
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export function SpielwieseLeiste() {
         <Status ton="achtung">Spielwiese</Status>
         <span>Alles hier sind Beispieldaten.</span>
       </div>
-      <Button klein onClick={verlassen} laedt={laedt}>
+      <Button klein variante="sekundaer" onClick={verlassen} laedt={laedt}>
         {gesichert ? 'Zu meinen echten Daten' : 'Eigenen Betrieb einrichten'}
       </Button>
     </aside>

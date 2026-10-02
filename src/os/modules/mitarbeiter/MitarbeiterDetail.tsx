@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db, vermerken } from '@core/db';
-import { datum, euro, heute, initialen, personName, telLink } from '@core/format';
+import { datum, euro, heute, personName, telLink } from '@core/format';
 import { istBuero, useDarf, useIch } from '@core/session';
-import { Avatar, BeispielMarke, Button, Dialog, Eingabe, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Zeile, ZweiSpalten, useToast } from '@ui/index';
+import { BeispielMarke, Button, Dialog, Eingabe, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Zeile, ZweiSpalten, useToast } from '@ui/index';
 import { ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
+import { Personenbild, ProfilbildKnopf } from './profilbild';
 import { ROLLE_LABEL, istAktiv } from './team';
 
 export function MitarbeiterDetail() {
@@ -62,11 +63,16 @@ export function MitarbeiterDetail() {
         haupt={<ObjektTabs objekt="mitarbeiter" id={m.id} />}
         seite={
           <>
-            <Karte titel="Kontakt" kompakt aktion={<Avatar text={initialen(m)} farbe={m.farbe} titel={personName(m)} />}>
+            <Karte titel="Kontakt" kompakt aktion={<Personenbild m={m} groesse={48} />}>
               <Stapel abstand={8}>
                 {m.telefon && <a href={telLink(m.telefon)}>{m.telefon}</a>}
                 {m.email && <a href={`mailto:${m.email}`}>{m.email}</a>}
                 {!m.telefon && !m.email && <Meta>Noch keine Kontaktdaten.</Meta>}
+                {(darfAendern || ich?.id === m.id) && (
+                  <div>
+                    <ProfilbildKnopf m={m} />
+                  </div>
+                )}
               </Stapel>
             </Karte>
             <Karte

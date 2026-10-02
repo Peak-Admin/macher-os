@@ -7,6 +7,7 @@ import type { Auftrag, ID } from '@core/objects';
 import { BewertungenSeite } from './Bewertungen';
 import { BewertungPanelAuftrag, EmpfehlungPanelKunde } from './Panels';
 import { LINK_KEY, anfrageSenden, anfrageVerwerfen, anfrageVorbereiten, bewertungen, empfehlungFuer, sollAnfragen } from './daten';
+import { BEWERTUNG_AKTIONEN } from './gateway';
 
 const REGEL = 'bewertungen.vorbereiten';
 const PFAD = '/auftraege/bewertungen';
@@ -70,6 +71,7 @@ export default defineModul({
     return liste;
   },
 
+  gateway: { aktionen: [...BEWERTUNG_AKTIONEN] },
   aktionen: {
     'bewertung.anfragen': (payload) => {
       const auftragId = (payload as { auftragId?: ID })?.auftragId;

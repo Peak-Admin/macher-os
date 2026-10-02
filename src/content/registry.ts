@@ -155,7 +155,7 @@ export const kunden = [
     gewerk: "elektriker",
     ort: "Hannover",
     mitarbeiter: 14,
-    ergebnis: "6 Stunden Büroarbeit pro Woche weniger",
+    ergebnis: "Stunden und Material kommen direkt vom Handy",
   },
   {
     slug: "haustechnik-yilmaz",
@@ -171,7 +171,7 @@ export const kunden = [
     gewerk: "maler",
     ort: "Freiburg",
     mitarbeiter: 8,
-    ergebnis: "Angebote am selben Tag statt nach einer Woche",
+    ergebnis: "Angebote gehen noch am Tag der Besichtigung raus",
   },
   {
     slug: "tischlerei-weber",

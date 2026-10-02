@@ -3,6 +3,7 @@ import { on } from '@core/events';
 import { BedarfAnsicht } from './BedarfAnsicht';
 import { bedarfZusammenfassung, berechneBedarf, bestellvorschlag } from './daten';
 import { BEDARF_AUTOMATION, bedarfHinweisAktualisieren, bedarfSpaeterPruefen } from './pruefung';
+import { BEDARF_AKTIONEN } from './gateway';
 
 export default defineModul({
   id: 'bedarf',
@@ -19,6 +20,7 @@ export default defineModul({
     if (s.mindest) return { text: `${s.mindest} unter Mindestbestand`, ton: 'aktiv' };
     return { text: 'Alles da', ton: 'erfolg' };
   },
+  gateway: { aktionen: [...BEDARF_AKTIONEN] },
   aktionen: {
     'material.bestellvorschlag': () => {
       const b = bestellvorschlag();

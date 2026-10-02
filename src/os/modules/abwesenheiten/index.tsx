@@ -9,6 +9,7 @@ import { ART_LABEL, abwesenheitAm, zeitraumText } from './daten';
 import { abwesendBeobachten, abwesenheitenHinweise, bescheidSenden, entscheiden, krankInfo } from './logik';
 import { AbwesenheitDetail, AbwesenheitenSeite, JahrSeite, MitarbeiterAbwesenheitenTab } from './Ansichten';
 import { AbwesenheitForm } from './AbwesenheitForm';
+import { URLAUB_EINTRAGEN, URLAUB_ENTSCHEIDEN } from './gateway';
 
 export default defineModul({
   id: 'abwesenheiten',
@@ -61,6 +62,7 @@ export default defineModul({
   init: () => {
     abwesendBeobachten();
   },
+  gateway: { aktionen: [...URLAUB_EINTRAGEN, ...URLAUB_ENTSCHEIDEN] },
   aktionen: {
     'abwesenheit.genehmigen': (p) => {
       entscheiden((p as { id: ID }).id, true);

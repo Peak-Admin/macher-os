@@ -10,6 +10,10 @@ describe('Service Worker', () => {
     expect(zielVonKlick({ pfad: '/os/heute' }, undefined)).toBe('/os/heute');
     expect(zielVonKlick({ pfad: '//boese.de' }, undefined)).toBe('/os/heute');
     expect(zielVonKlick(undefined, undefined)).toBe('/os/heute');
+    // Takte öffnen ihre Ansicht und führen die Aktion dort aus
+    const takt = { tag: 'takt-tagesbrief', pfad: '/os/macher/takte/tagesbrief', aktionen: [{ aktion: 'abwesenheit.genehmigen', label: 'Genehmigen', payload: { id: 'a1' } }] };
+    expect(zielVonKlick(takt, undefined)).toBe('/os/macher/takte/tagesbrief?quelle=benachrichtigung');
+    expect(zielVonKlick(takt, 'abwesenheit.genehmigen')).toBe(`/os/macher/takte/tagesbrief?quelle=benachrichtigung&aktion=abwesenheit.genehmigen&payload=${encodeURIComponent('{"id":"a1"}')}`);
   });
 
   it('nur eigene statische Dateien in den Cache – nie Server-Funktionen', () => {

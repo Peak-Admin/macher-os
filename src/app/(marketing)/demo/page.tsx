@@ -71,7 +71,7 @@ export default function DemoPage() {
             </div>
             <TrustRow dark className="mt-6" />
           </div>
-          <div className="rounded-xl bg-white/5 p-6 ring-1 ring-white/10">
+          <div className="karte-dunkel p-6">
             <p className="font-display text-lg font-bold">Lieber persönlich?</p>
             <p className="mt-2 text-white/70">
               Wir zeigen dir Macher OS passend zu deinem Gewerk und beantworten deine Fragen.

@@ -1,9 +1,9 @@
 import { defineModul } from '@core/modul';
 import { useOverlay } from '@core/overlay';
 import { Dialog, Seite } from '@ui/index';
+import { ABSICHTEN, AKTIONEN } from './assistent';
+import { verbindeModelle } from '@core/ki-modelle';
 import { MacherChat } from './Chat';
-import { MACHER_BEFEHLE } from './befehle';
-
 
 /** Overlay „Macher fragen“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`). */
 function MacherOverlay() {
@@ -28,11 +28,12 @@ export default defineModul({
   titel: 'Macher fragen',
   bereich: 'macher',
   beschreibung: 'Findet Informationen, beantwortet Fragen und bereitet Aktionen vor.',
-  // Action Engine: Sätze wie „Mach Müller die Rechnung fertig“ → Vorschau → Freigabe → Ausführen
-  befehle: MACHER_BEFEHLE,
   icon: 'macher',
   gewicht: 70,
   navigation: 'versteckt',
   routen: [{ pfad: '', element: MacherSeite }],
   global: MacherOverlay,
+  gateway: { absichten: ABSICHTEN, aktionen: AKTIONEN },
+  // Jev/Luna anmelden, wenn auf dem Server eingerichtet – sonst bleibt alles bei Regeln
+  init: () => void verbindeModelle(),
 });

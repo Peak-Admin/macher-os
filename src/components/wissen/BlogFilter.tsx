@@ -51,8 +51,8 @@ export function BlogFilter({
   }, [artikel, thema, query]);
 
   const chip = (aktiv: boolean) =>
-    `rounded-md px-3 py-1.5 text-sm font-semibold transition ${
-      aktiv ? "bg-ink text-white" : "bg-white text-ink ring-1 ring-line hover:ring-ink/40"
+    `inline-flex min-h-11 items-center rounded-md px-3 py-1.5 text-base font-semibold transition ${
+      aktiv ? "bg-signal-soft text-signal-dark ring-1 ring-inset ring-primary" : "bg-white text-ink ring-1 ring-inset ring-line-dark hover:bg-signal-soft"
     }`;
 
   return (

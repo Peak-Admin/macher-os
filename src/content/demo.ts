@@ -382,7 +382,7 @@ export const demoGewerke: DemoGewerk[] = [
 
 export const tourSchritte = [
   { titel: "Anfrage kommt rein", bereich: "Heute" },
-  { titel: "Termin wird geplant", bereich: "Plan" },
+  { titel: "Termin wird geplant", bereich: "Planen" },
   { titel: "Mitarbeiter sieht Auftrag", bereich: "App" },
   { titel: "Arbeit wird dokumentiert", bereich: "Auftrag" },
   { titel: "Rechnung wird vorbereitet", bereich: "Automatisch" },

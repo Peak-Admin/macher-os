@@ -4,6 +4,7 @@
  * Macher (KI/Automation) hält sich an dieselben Rechte wie der Mensch, für den es arbeitet.
  */
 import { db, setAktuellerNutzer } from './db';
+import { betriebsSchluessel } from './betriebe';
 import { einstellung, useEinstellung } from './einstellungen';
 import type { ID, Mitarbeiter, Rolle } from './objects';
 
@@ -51,7 +52,8 @@ export function rechteMatrix(): Record<Rolle, Recht[]> {
   return einstellung('rollen.rechte', STANDARD_RECHTE);
 }
 
-const ICH_KEY = 'macher-os:ich';
+/** je Betrieb: Mitarbeiter-IDs gibt es nur im eigenen Betrieb */
+const ICH_KEY = betriebsSchluessel('macher-os:ich');
 
 export function ichId(): ID | undefined {
   try {

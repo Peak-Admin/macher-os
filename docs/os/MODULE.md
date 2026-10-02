@@ -53,8 +53,8 @@ schreibt vor `dev`, `build` und `test` die Liste `src/os/shell/module-liste.ts` 
 | `tabs` / `panels` | in Detailansichten anderer Objekte einhängen (z. B. Tab „Fotos“ am Auftrag). Tabs werden in höchstens vier Bereiche gebündelt (`OBJEKT_BEREICHE` in `@ui/objekt`) – ein neuer Tab erzeugt nie einen fünften Bereich. |
 | `hinweise` | live berechnete Punkte für „Braucht dich“ |
 | `aktionen` | Funktionen für Hinweis-Buttons (`{ 'rechnung.mahnen': (payload) => ... }`) |
-| `befehle` | Sätze für „Macher fragen“ (Action Engine, Abschnitt 8): erkennen → Vorschau → Freigabe → ausführen über `aktionen` |
 | `automationen` | Regeln, die automatisch laufen (`start()` registriert Event-Handler über `on()`) |
+| `gateway` | Absichten und Aktionen für den Macher AI Gateway (`docs/os/KI-GATEWAY.md`) – nie selbst ein Modell aufrufen |
 | `suche` | Treffer für die globale Suche |
 | `schnell` | Erfassungsformular (Foto, Zeit, Material …), das ein **beschrifteter Knopf im Kontext** direkt öffnet: `<ErfassenKnopf aktion="foto" auftragId={id} />` oder `erfassenAktion(...)` für „Weitere Aktionen“. Es gibt keine Auswahl „Was möchtest du erfassen?“. |
 | `erstellen` | Verzeichnis der Erstellungsabläufe (kein Menü mehr). Der Knopf gehört als Hauptaktion auf die passende Liste. |
@@ -86,7 +86,7 @@ schreibt vor `dev`, `build` und `test` die Liste `src/os/shell/module-liste.ts` 
 - Geld immer in **Cent** (ganzzahlig). Datum `YYYY-MM-DD`, Zeitpunkte ISO.
 
 - `alsAkteur({ quelle: 'import', id: 'csv' }, () => …)` – Änderungen einem Akteur zuordnen (Abschnitt 8)
-- Ereignisse, Webhooks, Audit und Rückgängig: `@core/ereignisse`, `@core/audit`, Befehle: `@core/aktionen` (Abschnitt 8)
+- Ereignisse, Webhooks, Audit und Rückgängig: `@core/ereignisse`, `@core/audit`; KI-Aktionen nur über `@core/gateway` (Abschnitt 8)
 
 ## 5. UI
 
@@ -180,27 +180,44 @@ Leitsatz: **Viele Fähigkeiten im Produkt. Wenige Entscheidungen auf jedem Scree
 - Sichtbar ist Audit nur als Verlauf am Objekt (`Zeitstrahl`) und unter Einstellungen › Papierkorb › „Letzte Änderungen“.
   Kein eigenes Audit-Modul. Rotation: automatische Einträge 365 Tage / 20 000 auf dem Gerät (`verlaufAufraeumen`).
 
-### 8.3 Macher Action Engine (`@core/aktionen`)
+### 8.3 Aktionen aus Sätzen – nur über den Gateway (`@core/gateway`)
 
-Ablauf: Eingabe → `erkenneBefehl` (Regeln; optional KI über `setzeAbsichtsErkenner`) → Objekte finden (`findeKunde`,
-`findeMitarbeiter`, `findeAuftrag`) → `befehlVorbereiten` (prüft Rechte) → Vorschau → Freigabe → `befehlAusfuehren` (läuft als
-`{ quelle: 'ai', id: 'macher', mitarbeiterId }`, sendet `macher.aktion_ausgefuehrt`) → `befehlRueckgaengig(eintraege)`.
+Es gibt **einen** Weg von einem Satz zu einer Aktion: den Macher AI Gateway (`docs/os/KI-GATEWAY.md`). Die frühere
+Action Engine (`@core/aktionen`, Feld `befehle`) ist darin aufgegangen und entfernt.
+
+- **Module melden an:** `defineModul({ gateway: { aktionen } })` im Besitzer-Modul (`src/os/modules/<modul>/gateway.ts`),
+  Absichten (`erkenne` → Plan) in `macher-fragen` (`assistent.ts`, `aktionen.ts`, `absichten.ts`). Eine Aktion ruft nur die
+  bestehende Geschäftslogik des Moduls auf – keine kopierte Fachlogik.
+- **Ablauf:** `frage()` → Absicht (Regeln, sonst Jev) → Rechte (`AbsichtDef.rechte` – ohne Recht keine Vorschau) → `Plan` als
+  Vorschau (Texte über `PlanSchritt.textFeld` änderbar) → `pruefePlan` → Bestätigung → `fuehrePlanAus`/`fuehreAus`.
+- **Risiko:** nur `lesen` / `schreiben` / `kritisch` (`risikoVon`). Geld zählt über das Recht `geld`; Senden, Löschen,
+  Personal und Einstellungen machen eine Aktion automatisch `kritisch`. Keine zweite Klassifikation. `kritisch` bestätigt der
+  Mensch im Chat ausdrücklich (Dialog).
+- **Ausführen als Macher:** `fuehreAus` läuft in `alsAkteur({ quelle: 'ai', id: 'macher', mitarbeiterId })` und schneidet die
+  Verlaufseinträge mit (`mitschneiden`) → Ergebnis `eintraege`. Der Akteur gilt synchron; was eine Aktion nach einem `await`
+  schreibt (Senden), läuft als Mensch – solche Aktionen sind `endgueltig`.
+- **Rückgängig:** `nimmZurueck(eintraege, kontext)` → `allesRueckgaengig` des Audits (mit allen Sperren, z. B. festgeschriebene
+  Rechnungen), protokolliert als `zurueckgenommen`. Aktionen mit `endgueltig: '…'` (Nachricht, Angebot, Rechnung, Mahnung senden)
+  bieten kein „Rückgängig“ an; der Satz steht in Vorschau und Ergebnis.
+- **Links statt Versand:** Eine Aktion kann `oeffnen: [{ label, url }]` zurückgeben (mailto: …) – der Mensch öffnet sie selbst.
 
 ```ts
-befehle: [{
-  id: 'rechnung.fertig', titel: 'Rechnung fertig machen', beschreibung: '…', beispiele: ['Mach Müller die Rechnung fertig'],
-  klassen: ['WRITE', 'MONEY'],          // READ | WRITE | MONEY | PUBLICATION | DESTRUCTIVE
-  rechte: [],                          // weitere Rechte, z. B. 'planen'
-  braucht: ['rechnung.erstellen'],     // Modul-Aktionen; fehlt eine, ist der Befehl aus
-  erkennen: (text) => 0.9,             // 0–1, ab 0,5 zählt
-  vorbereiten: (k) => ({ art: 'entwurf', titel, text, zeilen, parameter, bestaetigen: 'Rechnungsentwurf anlegen' }),
-  ausfuehren: (p, k) => ({ text, pfad: aktionAusfuehren('rechnung.erstellen', p) as string }),
-}]
+// src/os/modules/mahnungen/gateway.ts
+export const MAHNUNG_AKTIONEN: AktionDef<{ rechnungId: ID }>[] = [{
+  id: 'invoice.remind', titel: 'Zahlungserinnerung freigegeben', risiko: 'kritisch', rechte: ['geld', 'veroeffentlichen'],
+  endgueltig: 'Was beim Kunden angekommen ist, lässt sich nicht zurückholen.',
+  pruefe: (d, k) => …,                       // Fehlertext oder undefined
+  fuehreAus: (d, k) => ({ bezug: { typ: 'rechnungen', id: d.rechnungId }, oeffnen: [{ label: 'E-Mail an …', url: 'mailto:…' }] }),
+}];
 ```
 
-- Freigabestufen (`freigabeStufe`): nur READ → sofort antworten; WRITE → ein Klick bestätigt; MONEY, PUBLICATION, DESTRUCTIVE →
-  ausdrückliche Freigabe (Bestätigungsdialog). Rechte je Klasse: READ `lesen`, WRITE `schreiben`, MONEY `geld`,
-  PUBLICATION `veroeffentlichen`, DESTRUCTIVE `loeschen` – ohne Recht gibt es nicht einmal eine Vorschau.
-- `parameter` muss JSON-fähig sein (der Entwurf steht im Chatverlauf). `felder` macht Texte in der Vorschau bearbeitbar.
-- Macher OS versendet nichts selbst: Nachrichten an Kunden öffnen sich über `oeffnen` (mailto:, WhatsApp) in der App des Menschen.
-- Ausführen immer über bestehende `aktionen` (`aktionAusfuehren`) oder `db.*` – keine kopierte Fachlogik.
+**Zwei Protokolle, zwei Zwecke:**
+
+| | `ki-protokoll` (Gateway) | `ereignisprotokoll` (Kern, 8.1) |
+|---|---|---|
+| Was | jede Frage und jede Aktion: Eingabe, Absicht, Sicherheit, Lane, Modell, bestätigt, verweigert/Fehler, zurückgenommen | fachliche Ereignisse des Betriebs |
+| Wofür | KI-Kosten und Lanes, Qualität der Erkennung, Nachvollziehbarkeit der KI | Automationen, Integrationen, Webhooks |
+| Verbindung | eine **ausgeführte** Aktion sendet genau ein Ereignis `macher.aktion_ausgefuehrt` (Bezug: das geänderte Objekt) | – |
+
+Fragen, Vorschläge und Ablehnungen gehen nicht auf den Bus und landen nicht im Ereignisprotokoll. Was eine Aktion an Daten
+ändert, steht wie jede Änderung im Verlauf am Objekt (8.2) – mit `quelle: 'ai'`.

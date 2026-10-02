@@ -5,9 +5,15 @@ Bildkarten-Reihen und Gewerk-Karten im Hochformat. Alle Fotos sind in
 [`src/content/bilder.ts`](../../src/content/bilder.ts) registriert und werden nur über ihren Schlüssel eingebunden
 (`<Foto bild="gewerk/elektriker" />`).
 
-**Solange eine Datei fehlt**, zeigt die Website eine gestaltete Markenfläche (dunkles Grün, Pfeilmotiv, Icon).
-Im Entwicklungsserver steht oben links der erwartete Dateipfad. Sobald die Datei unter `public/` liegt,
-erscheint beim nächsten Build automatisch das Foto.
+**Solange eine Datei fehlt**, zeigt die Website eine ruhige dunkle Fläche mit einem Linienicon als zeitweiligen Ersatz –
+keine Pfeilgrafik, die wie ein Foto wirkt (UX-Spezifikation 7.3/9.2). Heros, Abschluss-CTA und Bild-Text-Abschnitte
+lassen die Bildfläche ganz weg, bis das Foto da ist. Im Entwicklungsserver steht oben links der erwartete Dateipfad.
+Sobald die Datei unter `public/` liegt, erscheint beim nächsten Build automatisch das Foto.
+
+**Stand Oktober 2026 vorhanden:** die acht Gewerk-Fotos (`gewerke/<gewerk>.jpg`) plus `metall-maschinen` und
+`weitere-gewerke`, Team- und Personenfotos von Mission Mittelstand, das Werkstattfoto der Einrichtung
+(`os/werkstatt.webp`) sowie zwei aus echten Seiten erzeugte Menü-Vorschauen (`vorschau/einsatz.webp`,
+`vorschau/vorlage-baustellenabnahme.webp`, Skript `scripts/ux/vorschaubilder.mjs`). Alle übrigen Dateien unten fehlen noch.
 
 ## Regeln
 
@@ -62,19 +68,19 @@ erscheint beim nächsten Build automatisch das Foto.
 | `public/bilder/gewerke/galabau.jpg` | Landschaftsgärtner pflastert einen Weg |
 | `public/bilder/gewerke/galabau-alltag.jpg` | GaLaBau-Team legt einen Garten an |
 | `public/bilder/gewerke/galabau-detail.jpg` | Nahaufnahme: Pflastersteine und Gummihammer |
-| `public/bilder/gewerke/elektro-energie.jpg` | Monteur installiert Solarmodule auf einem Dach |
-| `public/bilder/gewerke/shk-gebaeudetechnik.jpg` | Techniker an einer Wärmepumpe im Garten |
-| `public/bilder/gewerke/maler-boden-oberflaechen.jpg` | Bodenleger verlegt Parkett |
-| `public/bilder/gewerke/holz-innenausbau.jpg` | Trockenbauer montiert Gipskartonplatten |
-| `public/bilder/gewerke/dach-gebaeudehuelle.jpg` | Zimmerer auf einem Dachstuhl |
-| `public/bilder/gewerke/bau-rohbau.jpg` | Betonbauer an der Schalung |
+| `public/bilder/gewerke/elektro-energie.jpg` | Montage einer Photovoltaikanlage auf dem Dach |
+| `public/bilder/gewerke/shk-gebaeudetechnik.jpg` | Heizungsraum mit Rohren, Pumpen und Ventilen |
+| `public/bilder/gewerke/maler-boden-oberflaechen.jpg` | Bodenleger verlegt einen neuen Bodenbelag |
+| `public/bilder/gewerke/holz-innenausbau.jpg` | Holzoberfläche wird mit einem Schleifer bearbeitet |
+| `public/bilder/gewerke/dach-gebaeudehuelle.jpg` | Dachdecker trägt Schindeln über ein Dach |
+| `public/bilder/gewerke/bau-rohbau.jpg` | Bauarbeiter auf einer Rohbaudecke mit Bewehrung |
 | `public/bilder/gewerke/metall-maschinen.jpg` | Metallbauer schweißt ein Geländer |
-| `public/bilder/gewerke/fahrzeug-werkstatt.jpg` | Kfz-Mechaniker unter einem Fahrzeug auf der Hebebühne |
-| `public/bilder/gewerke/garten-aussenanlagen.jpg` | Gärtner schneidet eine Hecke |
-| `public/bilder/gewerke/gebaeude-service.jpg` | Gebäudereiniger reinigt eine Glasfassade |
-| `public/bilder/gewerke/glas-fenster-sonnenschutz.jpg` | Glaser setzt eine Fensterscheibe ein |
-| `public/bilder/gewerke/friseur-dienstleistungen.jpg` | Friseurin schneidet Haare im Salon |
-| `public/bilder/gewerke/lebensmittelhandwerk.jpg` | Bäcker formt Brote in der Backstube |
-| `public/bilder/gewerke/gesundheitshandwerk.jpg` | Orthopädietechniker in der Werkstatt |
-| `public/bilder/gewerke/textil-gestaltung-werbetechnik.jpg` | Werbetechniker klebt Folie auf ein Fahrzeug |
+| `public/bilder/gewerke/fahrzeug-werkstatt.jpg` | Mechaniker wechselt einen Reifen in der Werkstatt |
+| `public/bilder/gewerke/garten-aussenanlagen.jpg` | Pflastersteine werden verlegt |
+| `public/bilder/gewerke/gebaeude-service.jpg` | Reinigungskraft wischt einen Flur |
+| `public/bilder/gewerke/glas-fenster-sonnenschutz.jpg` | Neu eingebautes Fenster auf einer Baustelle |
+| `public/bilder/gewerke/friseur-dienstleistungen.jpg` | Friseurin föhnt einer Kundin die Haare |
+| `public/bilder/gewerke/lebensmittelhandwerk.jpg` | Bäcker formt Teiglinge auf der Arbeitsfläche |
+| `public/bilder/gewerke/gesundheitshandwerk.jpg` | Brillenfassungen in einem Optikergeschäft |
+| `public/bilder/gewerke/textil-gestaltung-werbetechnik.jpg` | Siebdruckrahmen in einer Werkstatt |
 | `public/bilder/gewerke/weitere-gewerke.jpg` | Werkbank mit verschiedenem Werkzeug |

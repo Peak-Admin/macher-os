@@ -1,9 +1,9 @@
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { useIch } from '@core/session';
 import { datumKurz, passt, uhrzeit } from '@core/format';
 import type { Auftrag } from '@core/objects';
-import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meta, Seite, Segmente, Stapel, Status, Suchfeld } from '@ui/index';
+import { BeispielMarke, Button, Filter, Leer, Liste, Meta, Seite, Segmente, Stapel, Status, Suchfeld } from '@ui/index';
 import { Pipeline, meineAuftraege } from './Pipeline';
 import { istOffen, kommendeEinsaetze, phaseLabel, phaseTon } from './logik';
 import { auftragPfad, schrittFuer } from './daten';
@@ -16,6 +16,8 @@ const SEITE = 30;
 
 /**
  * Übersicht: eine einfache, durchsuchbare Liste mit drei Schnellfiltern und genau einer Hauptaktion.
+ * Desktop: Suche und Statusfilter in einer Zeile, darunter Zeilen mit erkennbaren Spalten
+ * (Auftrag und Kunde · nächster Schritt · Termin · Status). Handy: Auftrag und Kunde, darunter Schritt bzw. Termin.
  * Am Desktop gibt es optional die Board-Ansicht nach Phasen. Suche, Filter und Ansicht stehen in der URL,
  * damit „Zurück“ dorthin führt, wo man war.
  */
@@ -66,17 +68,27 @@ export function AuftraegeSeite() {
         <Pipeline />
       ) : (
         <Stapel abstand={16}>
-          <Suchfeld wert={q} onChange={(v) => setze('q', v || undefined)} platzhalter="Nummer, Kunde, Ort, Titel …" />
-          <Filter<Sicht>
-            label="Welche Aufträge"
-            wert={sicht}
-            onChange={(v) => setze('sicht', v === 'aktiv' ? undefined : v)}
-            optionen={[
-              { wert: 'aktiv', label: 'Aktiv', zaehler: zaehler('aktiv') },
-              { wert: 'meine', label: 'Meine', zaehler: zaehler('meine') },
-              { wert: 'abgeschlossen', label: 'Abgeschlossen', zaehler: zaehler('abgeschlossen') },
-            ]}
-          />
+          <div className="ak-suche-filter">
+            <Suchfeld wert={q} onChange={(v) => setze('q', v || undefined)} platzhalter="Nummer, Kunde, Ort, Titel …" />
+            <Filter<Sicht>
+              label="Welche Aufträge"
+              wert={sicht}
+              onChange={(v) => setze('sicht', v === 'aktiv' ? undefined : v)}
+              optionen={[
+                { wert: 'aktiv', label: 'Aktiv', zaehler: zaehler('aktiv') },
+                { wert: 'meine', label: 'Meine', zaehler: zaehler('meine') },
+                { wert: 'abgeschlossen', label: 'Abgeschlossen', zaehler: zaehler('abgeschlossen') },
+              ]}
+            />
+          </div>
+          {treffer.length > 0 && (
+            <div className="ak-spalten" aria-hidden>
+              <span>Auftrag und Kunde</span>
+              <span>Nächster Schritt</span>
+              <span>Termin</span>
+              <span>Status</span>
+            </div>
+          )}
           <Liste
             leer={
               !alle.length ? (
@@ -108,22 +120,45 @@ export function AuftraegeSeite() {
   );
 }
 
-/** Eine Zeile: Titel/Kunde, nächster Termin oder nächster Schritt, ein wichtiger Status */
+/**
+ * Eine Zeile ist ein Link zum Auftrag (keine Buttons darin). Nur vorhandene Daten erscheinen:
+ * Titel und Kunde, nächster Schritt, nächster Termin, ein Status. Lange Namen brechen um, nichts wird abgeschnitten.
+ */
 function AuftragZeile({ a }: { a: Auftrag }) {
   const kunde = db.kunden.get(a.kundeId)?.name;
-  const termin = istOffen(a) ? kommendeEinsaetze(db.termine.where((t) => t.auftragId === a.id))[0] : undefined;
-  const naechstes = termin ? `Nächster Termin ${datumKurz(termin.start)}, ${uhrzeit(termin.start)} Uhr` : istOffen(a) ? schrittFuer(a)?.label : undefined;
+  const offen = istOffen(a);
+  const termin = offen ? kommendeEinsaetze(db.termine.where((t) => t.auftragId === a.id))[0] : undefined;
+  const schritt = offen ? schrittFuer(a)?.label : undefined;
   return (
-    <ListenZeile
-      to={auftragPfad(a.id)}
-      titel={
-        <>
-          {a.titel} <BeispielMarke zeigen={a.beispiel} />
-        </>
-      }
-      untertitel={[kunde, naechstes ?? a.nummer].filter(Boolean).join(' · ')}
-      rechts={a.dringend && istOffen(a) ? <Status ton="achtung">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{istOffen(a) ? schrittLabel(a) : phaseLabel(a.phase)}</Status>}
-    />
+    <li>
+      <Link to={auftragPfad(a.id)} className="ak-zeile">
+        <span className="ak-zeile-titel">
+          <strong>
+            {a.titel} <BeispielMarke zeigen={a.beispiel} />
+          </strong>
+          <span className="mm-meta">{[kunde, a.nummer].filter(Boolean).join(' · ')}</span>
+        </span>
+        <span className="ak-zeile-schritt">
+          {schritt && (
+            <>
+              <span className="sr-only">Nächster Schritt: </span>
+              {schritt}
+            </>
+          )}
+        </span>
+        <span className="ak-zeile-termin mm-number">
+          {termin && (
+            <>
+              <span className="sr-only">Nächster Termin: </span>
+              {datumKurz(termin.start)}, {uhrzeit(termin.start)} Uhr
+            </>
+          )}
+        </span>
+        <span className="ak-zeile-status">
+          {a.dringend && offen ? <Status ton="achtung">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{offen ? schrittLabel(a) : phaseLabel(a.phase)}</Status>}
+        </span>
+      </Link>
+    </li>
   );
 }
 

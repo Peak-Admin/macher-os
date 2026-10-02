@@ -43,7 +43,7 @@ const ablauf: { gruppe: FunktionGruppe; titel: string; text: string; icon: IconN
   },
   {
     gruppe: "planen",
-    titel: "Plan",
+    titel: "Planen",
     text: "Termine, Mitarbeiter und Einsätze.",
     icon: "calendar",
     kette: ["Termin", "Team", "Material", "Fahrzeug"],
@@ -231,7 +231,7 @@ export default function FunktionenPage() {
               <li key={a.titel}>
                 <Link
                   href={funktionHref(a.funktion)}
-                  className="flex items-center gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10 transition hover:bg-white/10"
+                  className="flex items-center gap-3 karte-dunkel p-4 transition hover:bg-white/10"
                 >
                   <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md icon-kachel">
                     <Icon name={a.icon} className="size-5" />
@@ -278,7 +278,7 @@ export default function FunktionenPage() {
               title="Passend zu deinem Gewerk eingerichtet."
               intro="Macher OS richtet Funktionen und Abläufe passend zu deinem Gewerk ein – mit den Begriffen, Vorlagen und Checklisten, die du kennst."
             />
-            <ButtonLink href="/gewerke" variant="dark" className="mt-8">
+            <ButtonLink href="/gewerke" variant="secondary" className="mt-8">
               Mein Gewerk ansehen <Icon name="arrow-right" className="size-4" />
             </ButtonLink>
           </div>

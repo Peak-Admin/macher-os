@@ -29,7 +29,7 @@ export default function PreisePage() {
         breadcrumbs={[{ label: "Preise" }]}
         eyebrow="Preise"
         title="Ein Preis für deinen Betrieb. Alles drin."
-        intro={`Du zahlst nach Teamgröße – nicht nach Funktionen. ${testTage} Tage kostenlos testen ohne Zahlungsdaten, danach monatlich kündbar. Bezahlen per SEPA-Lastschrift oder Karte.`}
+        intro={`Du zahlst nach Teamgröße – nicht nach Funktionen. ${testTage} Tage kostenlos testen, danach monatlich kündbar.`}
         actions="none"
       />
 
@@ -56,7 +56,7 @@ export default function PreisePage() {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2">
             {allesDrin.map((x) => (
-              <li key={x} className="flex items-center gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10">
+              <li key={x} className="flex items-center gap-3 karte-dunkel p-4">
                 <Icon name="check" className="size-5 shrink-0 text-accent" />
                 <span className="font-semibold">{x}</span>
               </li>
@@ -92,7 +92,7 @@ export default function PreisePage() {
               intro="Du nutzt schon ein anderes Programm oder arbeitest mit Excel und Zetteln? Deine Daten kommen mit."
             />
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/hilfe/daten-uebernehmen" variant="dark">
+              <ButtonLink href="/hilfe/daten-uebernehmen" variant="secondary">
                 So übernimmst du deine Daten
               </ButtonLink>
             </div>
