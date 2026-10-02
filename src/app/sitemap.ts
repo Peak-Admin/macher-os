@@ -19,6 +19,7 @@ const statisch = [
   "/wissen/akademie",
   "/wissen/vorlagen",
   "/hilfe",
+  "/bedenken",
   "/hilfe/schnellstart",
   "/hilfe/daten-uebernehmen",
   "/hilfe/kontakt",
