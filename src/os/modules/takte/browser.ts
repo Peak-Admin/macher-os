@@ -136,7 +136,7 @@ export async function taktZustellen(takt: TaktId, m: Mitarbeiter, jetzt = new Da
     await cloud().push({ anMitarbeiterId: m.id, titel: n.titel, text: n.text, pfad: n.pfad, aktionen: n.aktionen, tag: `takt-${takt}` });
     return true;
   }
-  benachrichtigen(n.titel, { text: n.text, bezug: { typ: 'takte', id: takt }, fuer: m.id });
+  benachrichtigen(n.titel, { text: n.text, bezug: { typ: 'takte', id: takt }, fuer: m.id, art: 'takt', grund: 'Dein eingestellter Takt.', schluessel: `takt|${takt}|${m.id}` });
   await systemmeldung(n, takt);
   return true;
 }

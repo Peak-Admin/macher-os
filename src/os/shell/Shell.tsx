@@ -18,7 +18,7 @@
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { oeffne } from '@core/overlay';
-import { db, useDatenstand, useSpeicherStatus } from '@core/db';
+import { db, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { useEinstellung } from '@core/einstellungen';
 import { initialen, personName } from '@core/format';
@@ -26,6 +26,7 @@ import { alleModule, modul, modulPfad } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
 import { Auswahl, Avatar, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
+import { useInboxZahl } from '@modules/benachrichtigungen/Inbox';
 import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
 import { BASIS } from '@core/basis';
 import { STRUKTUR, ortVonPfad } from './struktur';
@@ -186,10 +187,9 @@ export function Shell({ children }: { children: ReactNode }) {
   );
 }
 
+/** Zahl an der Glocke: nur was gerade Aufmerksamkeit braucht (Jetzt + Aktion nötig) – nie „ungelesen“ */
 function useUngelesen() {
-  useDatenstand();
-  const ich = useIch();
-  return db.benachrichtigungen.where((b) => !b.gelesen && (!b.fuerMitarbeiterId || b.fuerMitarbeiterId === ich?.id)).length;
+  return useInboxZahl();
 }
 
 /** Ein Einstieg für beides: Treffer in deinen Daten oder eine Frage an Macher (Strg K). */
@@ -214,7 +214,7 @@ function Glocke() {
     <button
       type="button"
       className="mm-leiste-zeile"
-      aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} ungelesen` : ''}`}
+      aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} brauchen dich` : ''}`}
       title="Benachrichtigungen"
       onClick={() => oeffne('benachrichtigungen')}
     >
@@ -244,7 +244,7 @@ function Profil({ oben }: { oben?: boolean }) {
         className="mm-profil-knopf"
         aria-expanded={offen}
         aria-haspopup="true"
-        aria-label={`Profil von ${personName(ich)}${ungelesen && !oben ? `, ${ungelesen} ungelesene Benachrichtigungen` : ''}`}
+        aria-label={`Profil von ${personName(ich)}${ungelesen && !oben ? `, ${ungelesen} Benachrichtigungen brauchen dich` : ''}`}
         onClick={() => setOffen(!offen)}
       >
         <Avatar text={initialen(ich)} farbe={ich.farbe} />

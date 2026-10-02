@@ -80,7 +80,7 @@ export default defineModul({
           if (datumVon(t.start) < ctx.heute) return;
           const probleme = pruefeWerkzeug(ctx, t).filter((p) => p.ergebnis === 'problem');
           if (!probleme.length) return;
-          benachrichtigen(`Werkzeug/Fahrzeug nicht bereit: ${t.titel}`, { text: probleme.map((p) => `${p.text} ${p.loesung ?? ''}`).join(' '), bezug: { typ: 'termine', id: t.id }, wichtig: true });
+          benachrichtigen(`Werkzeug/Fahrzeug nicht bereit: ${t.titel}`, { text: probleme.map((p) => `${p.text} ${p.loesung ?? ''}`).join(' '), bezug: { typ: 'termine', id: t.id }, art: 'werkzeug.fehlt' });
           erledigt(AUTOMATION, `Einsatz geprüft: Betriebsmittel-Problem bei „${t.titel}“`, { bezug: { typ: 'termine', id: t.id } });
         };
         const a = on('termine.created', (e) => pruefe(e.objekt as Termin));

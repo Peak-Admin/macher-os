@@ -19,7 +19,7 @@ export function besitzerWarnen() {
       text: `${b.pruefungArt ?? 'Prüfung'} war am ${datum(b.naechstePruefung)} fällig. Bitte bring es zur Prüfung oder gib es im Lager ab.`,
       bezug: { typ: 'betriebsmittel', id: b.id },
       fuer: b.mitarbeiterId,
-      wichtig: true,
+      art: 'pruefung.ueberfaellig',
     });
     erledigt(AUTOMATION, `${b.name}: Mitarbeiter vor überfälliger Prüfung gewarnt`, { bezug: { typ: 'betriebsmittel', id: b.id } });
     setzeEinstellung(key, true);
