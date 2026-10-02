@@ -430,7 +430,8 @@ details > summary::-webkit-details-marker {
   .zone {
     position: relative;
     isolation: isolate;
-    overflow: hidden;
+    /* clip statt hidden: schneidet die Rundung ab, ohne Scroll-Container zu sein – `sticky` darin funktioniert. */
+    overflow: clip;
     margin: 0.375rem 0.5rem;
     border-radius: 12px;
   }
@@ -449,13 +450,46 @@ details > summary::-webkit-details-marker {
     box-shadow: 0 30px 60px -24px rgb(16 44 33 / 0.45);
   }
   .zone-beige {
-    background-color: var(--color-beige);
+    --zone-flaeche: var(--color-beige);
+    background-color: var(--zone-flaeche);
     color: var(--color-ink);
   }
   .zone-weiss {
-    background-color: #fff;
+    --zone-flaeche: #fff;
+    background-color: var(--zone-flaeche);
     color: var(--color-ink);
     box-shadow: 0 24px 50px -28px rgb(16 44 33 / 0.18), inset 0 0 0 1px rgb(16 44 33 / 0.07);
+  }
+
+  /* Folgen helle Boxen gleichen Tons aufeinander, wechseln sie sich ab – wie auf der Startseite. */
+  .zone-weiss + .zone-weiss,
+  .zone-beige + .zone-beige + .zone-beige,
+  .zone-weiss + .zone-weiss + .zone-weiss + .zone-weiss,
+  .zone-beige + .zone-beige + .zone-beige + .zone-beige + .zone-beige {
+    --zone-flaeche: var(--color-beige);
+    background-color: var(--zone-flaeche);
+    box-shadow: none;
+  }
+  .zone-beige + .zone-beige,
+  .zone-weiss + .zone-weiss + .zone-weiss,
+  .zone-beige + .zone-beige + .zone-beige + .zone-beige,
+  .zone-weiss + .zone-weiss + .zone-weiss + .zone-weiss + .zone-weiss {
+    --zone-flaeche: #fff;
+    background-color: var(--zone-flaeche);
+    box-shadow: 0 24px 50px -28px rgb(16 44 33 / 0.18), inset 0 0 0 1px rgb(16 44 33 / 0.07);
+  }
+
+  @media print {
+    .zone {
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+
+  /* Erste Box jeder Unterseite: der Glas-Kopf liegt darauf, der Inhalt beginnt darunter. */
+  main > .zone:first-child:not(.zone-hero) {
+    padding-top: 4rem;
   }
 
   /* Hero-Box: volle Fensterhöhe, der Glas-Kopf liegt darauf */

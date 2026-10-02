@@ -1,4 +1,4 @@
-import { ButtonLink, Container } from "@/components/ui";
+import { ButtonLink, Container, zone } from "@/components/ui";
 import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import type { BildKey } from "@/content/bilder";
 import { cta } from "@/lib/site";
@@ -28,13 +28,13 @@ export function FinalCta({
 }) {
   const mitFoto = fotoVorhanden(bild);
   return (
-    <section data-header-theme="hell" className="zone zone-weiss">
+    <section {...zone("weiss")}>
       {mitFoto && (
         <div className="relative h-56 sm:h-72 lg:absolute lg:inset-y-0 lg:left-0 lg:h-auto lg:w-[42%]">
           <Foto bild={bild} sizes="(min-width: 1024px) 42vw, 100vw" />
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent lg:bg-gradient-to-l lg:from-white lg:via-white/40 lg:to-transparent"
+            className="absolute inset-0 bg-gradient-to-t from-(--zone-flaeche) via-[color-mix(in_srgb,var(--zone-flaeche)_20%,transparent)] to-transparent lg:bg-gradient-to-l lg:from-(--zone-flaeche) lg:via-[color-mix(in_srgb,var(--zone-flaeche)_40%,transparent)] lg:to-transparent"
           />
         </div>
       )}

@@ -13,6 +13,7 @@ import {
   IconTile,
   Section,
   SectionHeading,
+  zone,
 } from "@/components/ui";
 import { Druckstil } from "@/components/werkzeuge/Druckstil";
 import { Rechner } from "@/components/werkzeuge/Rechner";
@@ -78,7 +79,7 @@ export default async function WerkzeugSeite({ params }: Props) {
       />
 
       {/* 1.–3. Headline, Rechner, Ergebnis – sofort sichtbar */}
-      <section className="border-b border-line bg-paper">
+      <section {...zone("weiss")}>
         <Container className="pb-14 pt-8 sm:pb-20 sm:pt-10">
           <Breadcrumbs items={[{ label: "Werkzeuge", href: "/werkzeuge" }, { label: werkzeug.titel }]} />
           <div className="mb-8 max-w-3xl print:hidden">

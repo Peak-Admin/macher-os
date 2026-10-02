@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
-import { Container, Icon, type IconName } from "@/components/ui";
+import { Container, Icon, zone, type IconName } from "@/components/ui";
 import { demoGewerke } from "@/content/demo";
 import { DemoApp } from "./DemoApp";
 import { DemoTour } from "./DemoTour";
@@ -16,7 +16,7 @@ export function DemoExplorer() {
 
   return (
     <>
-      <section id="demo" className="scroll-mt-20 bg-white py-14 sm:py-20" aria-labelledby={`${id}-titel`}>
+      <section id="demo" {...zone("weiss", "py-14 sm:py-20")} aria-labelledby={`${id}-titel`}>
         <Container>
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
@@ -109,7 +109,7 @@ export function DemoExplorer() {
         </Container>
       </section>
 
-      <section id="tour" className="scroll-mt-20 bg-paper py-14 sm:py-20" aria-labelledby={`${id}-tour`}>
+      <section id="tour" {...zone("beige", "py-14 sm:py-20")} aria-labelledby={`${id}-tour`}>
         <Container>
           <div className="max-w-2xl">
             <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
