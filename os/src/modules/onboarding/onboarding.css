@@ -23,3 +23,31 @@
   .ob-frage-kopf h1 { font-size: 28px; line-height: 34px; }
   .ob-navigation .mm-btn--primaer { flex: 1; }
 }
+/* Setup-Schritte */
+.ob-block { display: flex; flex-direction: column; gap: 16px; }
+.ob-block-titel { margin: 0; font: 700 20px/28px var(--mm-font); color: var(--mm-black); }
+.ob-quellen { display: grid; grid-template-columns: auto 1fr; gap: 16px 24px; align-items: end; padding: 16px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: 8px; }
+.ob-website { display: flex; gap: 8px; align-items: flex-end; min-width: 0; }
+.ob-website > :first-child { flex: 1; min-width: 0; }
+.ob-plz-ort { display: grid; grid-template-columns: 110px 1fr; gap: 12px; }
+.ob-logo-feld { display: flex; flex-direction: column; gap: 8px; }
+.ob-logo-vorschau { max-height: 48px; max-width: 200px; object-fit: contain; border: 1px solid var(--mm-border); border-radius: 4px; background: #fff; padding: 4px; }
+.ob-preisliste { display: flex; flex-direction: column; gap: 4px; max-height: 360px; overflow: auto; padding: 8px 12px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: 5px; }
+.ob-preisliste .mm-checkbox-label { flex: 1; min-width: 0; }
+.ob-preis-zeile { display: flex; justify-content: space-between; gap: 12px; width: 100%; }
+.ob-preis { white-space: nowrap; font-variant-numeric: tabular-nums; font-weight: 600; }
+.ob-regler { display: flex; flex-direction: column; gap: 8px; }
+.ob-regler input[type='range'] { width: 100%; height: 44px; accent-color: var(--mm-brand); }
+.ob-regler input[type='range']:focus-visible { outline: 2px solid var(--mm-focus, var(--mm-brand)); outline-offset: 2px; }
+.ob-preis-beispiele { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.ob-preis-beispiele li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--mm-border); }
+/* Spielwiese: fester Hinweis unten rechts, mobil oberhalb der unteren Navigation */
+.ob-spielwiese { position: fixed; right: 24px; bottom: 24px; z-index: 30; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; max-width: 420px; padding: 12px 16px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: 8px; box-shadow: 0 2px 8px rgb(0 0 0 / 12%); }
+.ob-spielwiese-text { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 600px) {
+  .ob-quellen { grid-template-columns: 1fr; }
+  .ob-quellen .mm-btn { width: 100%; }
+  .ob-website { flex-direction: column; align-items: stretch; }
+  .ob-spielwiese { left: 8px; right: 8px; bottom: calc(72px + env(safe-area-inset-bottom)); max-width: none; padding: 8px 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .ob-regler input[type='range'] { transition: none; } }
