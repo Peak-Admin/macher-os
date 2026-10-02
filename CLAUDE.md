@@ -14,8 +14,9 @@ Für **jede** Oberfläche, jedes Mockup und jeden UI-Text gilt die UX- und Desig
 (z. B. Logo, Bildsprache, Markenauftakt). Leitsatz: „Das sieht ordentlich aus. Das verstehe ich. Damit kann ich arbeiten.“
 
 Bildsprache: **[`docs/design/visual-assets.md`](docs/design/visual-assets.md)** – „das digitale Werkzeug“. Echte Fotos von
-Handwerksobjekten (Register `src/lib/objekte.ts`; Website `<Objekt>`, Card-Prop `objekt`; Software `<MacherAsset>`, `Leer` zeigt
-automatisch ein passendes Objekt) als ruhige Ebene – ein starkes Objekt pro Karte, nie in Listen, Tabellen, Formularen.
+Handwerksobjekten (Register `src/lib/objekte.ts`; Website `<Objekt>`, Card-Prop `objekt`) als ruhige Ebene – ein starkes
+Objekt pro Karte, nie in Listen, Tabellen, Formularen. **In der Software** stehen statt Objektfotos Zeichnungen: Türen und
+Widget-Köpfe `<SkizzenKachel>`, `Leer` zeigt automatisch die Fenster-Skizze (`MacherAsset` nur noch, wenn ausdrücklich gewollt).
 Fotos von Mission Mittelstand / Matthias Aumann nur mit Freigabe des Betreibers (siehe `missionMittelstandBilder`).
 Karten, die eine Funktion kurz erklären, zeigen statt Foto oder Icon eine abstrakte **Skizze** (`<Skizze motiv="angebote" />`,
 Card-Prop `skizze`) oder eine **UI-Ebene** mit Beispieldaten (`<UiEbene>`). Einstiegs- und Teaserkarten (erste Schritte,

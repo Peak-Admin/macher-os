@@ -51,8 +51,8 @@ Aktionsgrün auf dem Glas, weiß auf der hinteren Form. Keine Kachel dahinter. I
   Mega-Menü 36 px
 - Software: `ThemenIcon` in Modulkacheln, Auswahl- und Start-Karten, Verzeichnis, Home- und News-Kacheln und
   Leerzuständen; die Kachelfläche entfällt, sobald ein Glas-Icon darin steht
-- Wo ein Objektbild (`MacherAsset`, `docs/design/visual-assets.md`) vorgesehen ist, bleibt das Foto; das Glas-Icon
-  ist die Form für alle übrigen Themen
+- In der Software stehen statt Objektfotos seit Oktober 2026 Fenster-Skizzen (siehe „Fenster-Skizze“); auf der Website
+  bleiben Objektfotos (`Objekt`). Das Glas-Icon ist die Form für alle übrigen Themen
 - Mega-Menü: Icons nur an den Einträgen, nicht zusätzlich an den Gruppenüberschriften (keine doppelten Motive)
 - Bedien-Icons (Pfeile, Schließen, Menü, Plus im Button, Haken im Button, Status) und alles unter 32 px bleiben
   Strich-Icons in Textfarbe – ebenso die Sidebar-Navigation
@@ -95,6 +95,10 @@ mit geringer Deckkraft: hell auf der ruhigen Fläche (`sand` / `--mm-surface-sub
   (`src/components/ui/Fenster.tsx`, Strich-Icon-Name, `ton="hell" | "dunkel"`), `Card` mit `fenster`, Landingseiten
   über `vorteile.bild: "fenster"`. Software: `<span className="mm-fenster"><FensterSkizze … /></span>`
   (`ui.css`), nebeneinander mit Text über `.mm-fenster-teaser`.
+- **Statt Objektfotos (Software):** Die vier Türen unter Betrieb und die Widget-Köpfe im Home zeigen `SkizzenKachel`
+  (Nah-Ausschnitt in fester Größe wie früher `MacherAsset`: 56 × 42 / 96 × 72 / 192 × 144). `Leer` zeigt bei allen
+  früheren Foto-Themen (`LEER_OBJEKT`) automatisch die Fenster-Skizze; ein Foto nur noch über `objekt`.
+- **Nah-Ausschnitt:** `ausschnitt="nah"` – enger 4:3-Ausschnitt um die Kachel, Kachel 25 % größer, Linien kräftiger.
 - **Leerzustände (Software):** `Leer` mit `skizze` (true = Glas-Icon zu `icon`, oder ein Glas-Name; optional
   `rahmen="handy"`) zeigt die Fenster-Skizze statt Foto/Icon – nur beim ersten Start einer Ansicht („Noch keine
   Rechnung“, „Noch kein Webhook“). Suche ohne Treffer, fehlende Rechte und „gibt es nicht (mehr)“ bleiben schlicht;

@@ -230,6 +230,8 @@
 /* Fenster-Skizze (fenster.tsx): Drahtgitter mit Glas-Icon – nur für Einstiege und Teaser, nie hinter Daten */
 .mm-fenster { display: block; max-width: 520px; overflow: hidden; border-radius: var(--mm-radius-card); background: var(--mm-surface-subtle); color: var(--mm-text); }
 .mm-fenster > svg { max-width: 360px; margin-inline: auto; }
+.mm-fenster--kachel { flex-shrink: 0; border-radius: var(--mm-radius-control); }
+.mm-fenster--kachel > svg { max-width: none; }
 .mm-leer .mm-leer-skizze { width: min(100%, 360px); margin-bottom: 8px; }
 .mm-fenster-teaser { display: grid; gap: var(--mm-space-4); align-items: center; }
 @media (min-width: 640px) { .mm-fenster-teaser { grid-template-columns: minmax(0, 220px) minmax(0, 1fr); } }

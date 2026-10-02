@@ -24,7 +24,7 @@ import type { Ton } from '@core/modul';
 import './ui.css';
 
 export { GlasIcon, ThemenIcon, glasFuer, type GlasIconName } from './glas';
-export { FensterSkizze } from './fenster';
+export { FensterSkizze, SkizzenKachel } from './fenster';
 import { MacherAsset, type ObjektSchluessel } from './asset';
 export { Icon } from './icons';
 export { MacherAsset, type ObjektSchluessel } from './asset';
@@ -715,7 +715,10 @@ export function Tabelle<T>({ zeilen, spalten, schluessel, onZeile, zeilenLink, l
 
 // ------------------------------------------------------------------ Zustände
 
-/** Leerzustände zeigen ein vertrautes Werkzeug-Objekt statt eines abstrakten Icons (docs/design/visual-assets.md, Abschnitt 7). */
+/**
+ * Leerzustände zu diesen Themen zeigen automatisch die Fenster-Skizze (früher ein Objektfoto, Oktober 2026 ersetzt).
+ * Die Werte bleiben als Vorschlag, falls eine Ansicht ausdrücklich ein Foto will (`objekt`).
+ */
 const LEER_OBJEKT: Partial<Record<IconName, ObjektSchluessel>> = {
   auftraege: 'klemmbrett',
   liste: 'klemmbrett',
@@ -761,10 +764,12 @@ export function Leer({
   skizze?: boolean | GlasIconName;
   rahmen?: 'fenster' | 'handy';
 }) {
-  const bild = objekt === null ? undefined : (objekt ?? LEER_OBJEKT[icon]);
+  // Ein Foto nur noch, wenn eine Ansicht es ausdrücklich will; sonst Skizze für alle früheren Foto-Themen.
+  const bild = objekt ?? undefined;
+  const mitSkizze = !bild && objekt !== null && (skizze || LEER_OBJEKT[icon]);
   return (
     <div className="mm-leer">
-      {skizze ? (
+      {mitSkizze ? (
         <span className="mm-fenster mm-leer-skizze" aria-hidden>
           <FensterSkizze icon={typeof skizze === 'string' ? skizze : (glasFuer[icon] ?? 'info')} rahmen={rahmen} />
         </span>
