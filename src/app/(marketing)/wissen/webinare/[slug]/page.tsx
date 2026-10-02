@@ -54,15 +54,15 @@ export default async function WebinarPage({ params }: Props) {
               <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">{w.kurz}</p>
               <dl className="mt-8 grid gap-4 sm:grid-cols-3">
                 <div className="rounded-lg border border-line bg-white p-4">
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-muted">Termin</dt>
+                  <dt className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Termin</dt>
                   <dd className="mt-1 font-semibold">{aufzeichnung ? "Als Aufzeichnung verfügbar" : "Termin folgt"}</dd>
                 </div>
                 <div className="rounded-lg border border-line bg-white p-4">
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-muted">Dauer</dt>
+                  <dt className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Dauer</dt>
                   <dd className="mt-1 font-semibold">ca. {w.dauer} Minuten</dd>
                 </div>
                 <div className="rounded-lg border border-line bg-white p-4">
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-muted">Kosten</dt>
+                  <dt className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Kosten</dt>
                   <dd className="mt-1 font-semibold">Kostenlos</dd>
                 </div>
               </dl>
@@ -132,7 +132,7 @@ export default async function WebinarPage({ params }: Props) {
         <div className="flex flex-col gap-4 rounded-lg border border-line bg-white p-6 sm:flex-row sm:items-center sm:p-8">
           <IconTile name="mic" tone="ink" />
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">Sprecher</p>
+            <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">Sprecher</p>
             <h2 className="mt-1 font-display text-xl font-bold">{w.sprecher}</h2>
             {sprecher && <p className="mt-1 text-muted">{sprecher.text}</p>}
           </div>

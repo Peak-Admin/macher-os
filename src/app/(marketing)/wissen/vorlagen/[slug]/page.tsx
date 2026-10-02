@@ -56,7 +56,7 @@ export default async function VorlagePage({ params }: Props) {
           />
           <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">Kostenlose {v.art}</p>
+              <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">Kostenlose {v.art}</p>
               <h1 className="mt-3 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl">
                 {v.titel}
               </h1>
@@ -149,7 +149,7 @@ export default async function VorlagePage({ params }: Props) {
                   href={vorlageHref(x.slug)}
                   className="group flex h-full flex-col rounded-lg border border-line bg-paper p-6 transition hover:border-ink/30"
                 >
-                  <span className="text-xs font-semibold uppercase tracking-wider text-moss">{x.art}</span>
+                  <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-moss">{x.art}</span>
                   <span className="mt-2 font-display text-lg font-bold group-hover:text-signal-dark">{x.titel}</span>
                   <span className="mt-1 text-sm text-muted">{x.kurz}</span>
                 </Link>
@@ -161,7 +161,7 @@ export default async function VorlagePage({ params }: Props) {
                   href={blogHref(a.slug)}
                   className="group flex h-full flex-col rounded-lg border border-line bg-paper p-6 transition hover:border-ink/30"
                 >
-                  <span className="text-xs font-semibold uppercase tracking-wider text-sky">Artikel</span>
+                  <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-sky">Artikel</span>
                   <span className="mt-2 font-display text-lg font-bold group-hover:text-signal-dark">{a.titel}</span>
                 </Link>
               </li>

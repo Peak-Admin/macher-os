@@ -66,7 +66,7 @@ export default async function BlogArtikelPage({ params }: Props) {
       <section className="border-b border-line bg-paper">
         <Container size="narrow" className="py-12 sm:py-16">
           <Breadcrumbs items={[{ label: "Wissen", href: "/wissen" }, { label: "Blog", href: "/wissen/blog" }, { label: a.titel }]} />
-          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">
+          <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
             {a.themen.map(themaTitel).join(" · ")}
           </p>
           <h1 className="mt-3 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-balance sm:text-5xl">
@@ -82,7 +82,7 @@ export default async function BlogArtikelPage({ params }: Props) {
             </span>
           </p>
           <div className="mt-8 rounded-lg border border-line bg-white p-6">
-            <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-moss">
+            <p className="flex items-center gap-2 text-sm font-semibold font-tagline uppercase tracking-wider text-moss">
               <Icon name="check" className="size-4" /> Kurz gesagt
             </p>
             <p className="mt-2 text-lg leading-relaxed text-ink">{a.kurzantwort}</p>
@@ -179,7 +179,7 @@ export default async function BlogArtikelPage({ params }: Props) {
 
             {/* 8. Passende Macher-OS-Funktion */}
             <section className="mt-14 rounded-lg border border-line bg-white p-6 sm:p-8">
-              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">In Macher OS</p>
+              <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">In Macher OS</p>
               <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">So hilft dir Macher OS dabei</h2>
               <p className="mt-2 text-muted">
                 Wenn du das nicht mehr von Hand machen willst: Diese Funktionen nehmen dir die Arbeit ab.
@@ -208,7 +208,7 @@ export default async function BlogArtikelPage({ params }: Props) {
                 href={blogHref(w.slug)}
                 className="group flex h-full flex-col rounded-lg border border-line bg-white p-6 transition hover:border-ink/30"
               >
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted">
+                <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">
                   {w.themen.map(themaTitel).join(" · ")}
                 </span>
                 <span className="mt-2 font-display text-lg font-bold leading-snug group-hover:text-signal-dark">{w.titel}</span>

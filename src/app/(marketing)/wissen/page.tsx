@@ -84,7 +84,7 @@ export default function WissenHubPage() {
         />
         <Container className="relative py-14 sm:py-20">
           <Breadcrumbs items={[{ label: "Wissen" }]} />
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">Wissen</p>
+          <p className="mb-4 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">Wissen</p>
           <h1 className="max-w-4xl font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl lg:text-6xl">
             Wissen für einen besseren Handwerksbetrieb.
           </h1>

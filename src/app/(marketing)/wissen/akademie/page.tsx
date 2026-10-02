@@ -163,7 +163,7 @@ export default function AkademiePage() {
       <Section tone="ink">
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Schulungen für Mitarbeiter</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Schulungen für Mitarbeiter</p>
             <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
               Dein Team lernt. Du behältst den Überblick.
             </h2>
@@ -173,7 +173,7 @@ export default function AkademiePage() {
             </p>
             <Link
               href="/funktionen/schulungen"
-              className="mt-8 inline-flex items-center gap-1.5 font-bold text-signal underline decoration-2 underline-offset-4 hover:text-white"
+              className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
               Funktion Schulungen ansehen <Icon name="arrow-right" className="size-4" />
             </Link>

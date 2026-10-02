@@ -46,7 +46,8 @@ export default function WebinareHubPage() {
         </ul>
       </Section>
 
-      {/* 3. Aufzeichnungen */}
+      {/* 3. Aufzeichnungen – erst sichtbar, wenn es welche gibt */}
+      {aufzeichnungen.length > 0 && (
       <Section>
         <SectionHeading
           eyebrow="Aufzeichnungen"
@@ -61,6 +62,7 @@ export default function WebinareHubPage() {
           ))}
         </ul>
       </Section>
+      )}
 
       {/* 4. Themen */}
       <Section tone="sand">

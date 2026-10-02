@@ -62,7 +62,7 @@ export default function BlogHubPage() {
                 href={blogHref(a.slug)}
                 className="group flex h-full gap-4 rounded-lg border border-line bg-white p-6 transition hover:border-ink/30"
               >
-                <span className="font-display text-4xl font-black leading-none text-signal">{i + 1}</span>
+                <span className="font-display text-4xl font-black leading-none text-accent">{i + 1}</span>
                 <span>
                   <span className="block font-display text-lg font-bold leading-snug group-hover:text-signal-dark">
                     {a.titel}

@@ -18,7 +18,7 @@ function Block({ block }: { block: VorlageBlock }) {
     case "felder":
       return (
         <div className="vorlage-block">
-          {block.titel && <h3 className="mb-2 font-display text-sm font-bold uppercase tracking-wider">{block.titel}</h3>}
+          {block.titel && <h3 className="mb-2 text-sm font-bold font-tagline uppercase tracking-wider">{block.titel}</h3>}
           <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2 print:grid-cols-2">
             {block.felder.map((f) => (
               <Linie key={f} label={f} />
@@ -29,7 +29,7 @@ function Block({ block }: { block: VorlageBlock }) {
     case "checkliste":
       return (
         <div className="vorlage-block">
-          <h3 className="mb-2 font-display text-sm font-bold uppercase tracking-wider">{block.titel}</h3>
+          <h3 className="mb-2 text-sm font-bold font-tagline uppercase tracking-wider">{block.titel}</h3>
           <table className="w-full border-collapse text-sm print:text-[10pt]">
             {block.bewertung && (
               <thead>
@@ -74,7 +74,7 @@ function Block({ block }: { block: VorlageBlock }) {
       const leer = Array.from({ length: block.zeilen });
       return (
         <div className="vorlage-block">
-          {block.titel && <h3 className="mb-2 font-display text-sm font-bold uppercase tracking-wider">{block.titel}</h3>}
+          {block.titel && <h3 className="mb-2 text-sm font-bold font-tagline uppercase tracking-wider">{block.titel}</h3>}
           <div className="overflow-x-auto print:overflow-visible">
             <table className="w-full min-w-[34rem] table-fixed border-collapse text-sm print:min-w-0 print:text-[9pt]">
               {block.breiten && (
@@ -118,7 +118,7 @@ function Block({ block }: { block: VorlageBlock }) {
     case "freitext":
       return (
         <div className="vorlage-block">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider">{block.titel}</h3>
+          <h3 className="text-sm font-bold font-tagline uppercase tracking-wider">{block.titel}</h3>
           {block.hinweis && <p className="mt-0.5 text-xs text-muted">{block.hinweis}</p>}
           <div className="mt-1">
             {Array.from({ length: block.linien }).map((_, i) => (
@@ -130,7 +130,7 @@ function Block({ block }: { block: VorlageBlock }) {
     case "auswahl":
       return (
         <div className="vorlage-block">
-          <h3 className="mb-2 font-display text-sm font-bold uppercase tracking-wider">{block.titel}</h3>
+          <h3 className="mb-2 text-sm font-bold font-tagline uppercase tracking-wider">{block.titel}</h3>
           <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
             {block.optionen.map((o) => (
               <span key={o} className="inline-flex items-center gap-2">
@@ -166,7 +166,7 @@ export function VorlageVorschau({ vorlage }: { vorlage: Vorlage }) {
     >
       <header className="flex items-start justify-between gap-6 border-b-2 border-ink pb-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-signal-dark">{vorlage.art}</p>
+          <p className="text-xs font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">{vorlage.art}</p>
           <h2 className="mt-1 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{vorlage.titel}</h2>
         </div>
         <div className="w-40 shrink-0 text-right text-xs text-muted">
