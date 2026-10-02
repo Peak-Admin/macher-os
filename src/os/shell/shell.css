@@ -1,12 +1,10 @@
-.mm-app { display: flex; min-height: 100vh; background: var(--mm-canvas); isolation: isolate; }
-/* Hintergrund: Werkstattfoto, hell überdeckt, damit Texte auf der Arbeitsfläche lesbar bleiben */
+.mm-app { display: flex; gap: 12px; min-height: 100vh; padding: 12px; background: var(--mm-dark); isolation: isolate; }
+/* Hintergrund: Werkstattfoto über die ganze Fläche; Sidebar, Topbar und Inhalt liegen als Glas darüber */
 .mm-app::before {
   content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background:
-    linear-gradient(color-mix(in srgb, var(--mm-canvas) 84%, transparent), color-mix(in srgb, var(--mm-canvas) 84%, transparent)),
-    url('/bilder/os/werkstatt.webp') center / cover no-repeat;
+  background: url('/bilder/os/werkstatt.webp') center / cover no-repeat;
 }
-@media print { .mm-app::before { display: none; } }
+@media print { .mm-app::before { display: none; } .mm-app { padding: 0; background: #fff; } }
 .mm-skip { position: absolute; left: -9999px; top: 8px; z-index: 200; padding: 8px 16px; background: var(--mm-action); color: #fff; border-radius: var(--mm-radius-control); }
 .mm-skip:focus { left: 8px; }
 
@@ -170,4 +168,35 @@
   .mm-einsatz { padding: 16px; }
   .mm-einsatz-kunde { font-size: 24px; line-height: 30px; }
   .mm-einsatz .mm-btn--primaer { flex: 1 1 100%; }
+}
+
+/* ---------- Glas: Sidebar, Topbar, Inhalt und untere Leiste schweben über dem Foto.
+   Die Unschärfe sitzt auf ::before, damit fest positionierte Kinder (Schleier, Toasts) am Fenster bleiben. */
+.mm-sidebar, .mm-topbar, .mm-inhalt, .mm-bottomnav { isolation: isolate; border: 1px solid var(--mm-glass-rand); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-glass-schatten); background: none; }
+.mm-sidebar::before, .mm-topbar::before, .mm-inhalt::before, .mm-bottomnav::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: var(--mm-glass); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur);
+}
+.mm-inhalt { position: relative; margin-top: 12px; }
+.mm-inhalt::before { background: var(--mm-glass-inhalt); }
+.mm-sidebar { top: 12px; height: calc(100vh - 24px); border-right: 1px solid var(--mm-glass-rand); }
+.mm-topbar { top: 12px; border-bottom: 1px solid var(--mm-glass-rand); }
+.mm-topbar-suche { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
+.mm-nav-haupt:hover, .mm-nav-favorit:hover, .mm-profil-knopf:hover { background: var(--mm-glass-karte); }
+.mm-nav-favoriten, .mm-profil--leiste { border-top-color: rgb(55 64 64 / 18%); }
+/* Karten und Listen im Inhalt: leicht durchscheinend */
+.mm-inhalt .mm-karte, .mm-inhalt .mm-liste, .mm-inhalt .mm-tabelle-rahmen, .mm-inhalt .mm-leer { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
+.mm-menue, .mm-aktionsmenue-liste { background: var(--mm-glass-inhalt); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur); border-color: var(--mm-glass-rand); }
+@media (max-width: 1023px) {
+  .mm-app { padding: 8px; gap: 8px; }
+  .mm-topbar { top: 8px; }
+  .mm-inhalt { margin-top: 8px; }
+  .mm-bottomnav { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); padding-bottom: 0; border-top: 1px solid var(--mm-glass-rand); }
+}
+@media print {
+  .mm-inhalt, .mm-inhalt .mm-karte, .mm-inhalt .mm-liste, .mm-inhalt .mm-tabelle-rahmen { border: 0; box-shadow: none; background: #fff; }
+  .mm-inhalt::before { display: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .mm-sidebar::before, .mm-topbar::before, .mm-inhalt::before, .mm-bottomnav::before { background: var(--mm-surface); }
 }

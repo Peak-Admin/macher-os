@@ -49,6 +49,13 @@
   --mm-space-16: 64px;
   --mm-shadow-card: 0 1px 2px rgb(14 19 12 / 6%);
   --mm-shadow-overlay: 0 8px 24px rgb(14 19 12 / 12%);
+  /* Glas (Macher OS auf dem Werkstattfoto): milchiges Weiß mit Unschärfe, heller Rand */
+  --mm-glass: rgb(255 255 255 / 66%);
+  --mm-glass-inhalt: rgb(255 255 255 / 80%);
+  --mm-glass-karte: rgb(255 255 255 / 72%);
+  --mm-glass-rand: rgb(255 255 255 / 60%);
+  --mm-glass-blur: blur(24px) saturate(140%);
+  --mm-glass-schatten: 0 8px 32px rgb(14 19 12 / 18%);
   --mm-motion-fast: 150ms;
   --mm-motion-panel: 220ms;
 
