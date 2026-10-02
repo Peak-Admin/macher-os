@@ -36,12 +36,21 @@ Optional Flagge oder Icon vor dem Label (Vorbild: Länderwahl Deutschland · Ös
 - Software: `Segmente` (`.mm-segmente`, `.mm-segment--an`), Tokens `--mm-switch-*`
 
 ### Navigation: vier Bereiche, höchstens drei Favoriten
-- **Fest:** Heute · Aufträge · Planen · Betrieb – ohne Unterpunkte in der Navigation, jeder Eintrag ein Klick.
-- **Favoriten:** darunter höchstens drei persönliche Abkürzungen, ausgewählt per Stern. Mobil im Profilmenü,
-  die untere Leiste bleibt bei vier Punkten.
-- **Betrieb ist das Modulverzeichnis:** vier Kacheln, darunter alle Module mit Suche „Modul finden“.
+Die Seitennavigation ist **flach**. Jeder Eintrag führt mit einem Klick zum Ziel – keine aufklappenden
+Unterpunkte, keine zweite Ebene unter den Bereichen. Die Zielstruktur steht in [`docs/produkt/navigation.md`](../produkt/navigation.md).
+
+- **Fest:** nur die vier Bereiche Heute · Aufträge · Planen · Betrieb.
+- **Betrieb ist das Modulverzeichnis:** vier Kacheln, darunter alle Module, die der Nutzer sehen darf, mit Suchfeld
+  „Modul finden“. Kein fünfter Menüpunkt. (`/betrieb/module` leitet auf `/betrieb` weiter.)
+- **Favoriten:** Im Verzeichnis markiert man bis zu **drei** Module mit dem Stern. Sie stehen unter den vier Bereichen
+  in der Seitenleiste – flach, ein Klick. Ohne Favoriten steht dort ein kurzer Hinweis mit Link zu Betrieb.
+- **Persönlich:** Favoriten speichert jeder Nutzer für sich (Einstellung `navigation.favoriten.<mitarbeiterId>`).
+  Module, die eine Rolle nicht sehen darf, erscheinen auch nicht als Favorit. Zum Start bekommt jede Rolle drei
+  Favoriten (`STANDARD_FAVORITEN`), bis der Nutzer sie selbst ändert.
+- **Mobil:** Die untere Leiste bleibt bei den vier Bereichen. Favoriten stehen im Profilmenü (oben rechts).
+
 - Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis in `os/src/shell/Betrieb.tsx`,
-  Daten über `modulVerzeichnis()` (`struktur.ts`) und `useFavoriten()` (`favoriten.ts`).
+  Daten über `modulVerzeichnis()` (`struktur.ts`) und `useFavoriten()` (`os/src/shell/favoriten.ts`).
 
 ## Orientierungsbeispiele von Mission Mittelstand
 

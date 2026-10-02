@@ -154,11 +154,15 @@ function Profil({ oben }: { oben?: boolean }) {
                 <button type="button" onClick={() => (setOffen(false), oeffne('macher'))}>
                   <Icon name="macher" /> Macher fragen
                 </button>
+                <p className="mm-nav-titel mm-menue-titel">Favoriten</p>
                 {favoriten.map((m) => (
                   <Link key={m.id} to={modulPfad(m)} onClick={() => setOffen(false)}>
-                    <Icon name="stern" /> {m.titel}
+                    <Icon name={m.icon ?? 'stern'} /> {m.titel}
                   </Link>
                 ))}
+                <Link to="/betrieb" onClick={() => setOffen(false)}>
+                  <Icon name="stern" /> {favoriten.length ? 'Favoriten ändern' : 'Favoriten auswählen'}
+                </Link>
               </>
             )}
             <label className="mm-profil-wechsel">
