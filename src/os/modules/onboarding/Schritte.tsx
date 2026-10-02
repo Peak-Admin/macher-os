@@ -1,6 +1,7 @@
 /** Konto erstellen (Signup) vor dem Magic Setup – nur, wenn Konten verbunden sind. */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cloud } from '@core/cloud';
+import { useKontoZustand } from '@core/cloud-supabase';
 import { Button, Eingabe, Meldung, Meta, Segmente, Zeile } from '@ui/index';
 import { telefonGueltig } from './daten';
 
@@ -14,11 +15,52 @@ export type KontoStand =
   | { art: 'link'; email: string }
   | { art: 'gesichert' };
 
-export function SchrittKonto({ konto, setKonto }: { konto: KontoStand; setKonto: (k: KontoStand) => void }) {
+/**
+ * `email` kommt vorausgefüllt von der Website (`/os/willkommen?email=…`), `google` startet die Google-Anmeldung direkt
+ * (`?anmeldung=google`) – beides nur, wenn Konten verbunden sind.
+ */
+export function SchrittKonto({
+  konto,
+  setKonto,
+  email = '',
+  google = false,
+}: {
+  konto: KontoStand;
+  setKonto: (k: KontoStand) => void;
+  email?: string;
+  google?: boolean;
+}) {
   const [weg, setWeg] = useState<'email' | 'telefon'>('email');
-  const [ziel, setZiel] = useState('');
+  const [ziel, setZiel] = useState(email);
   const [code, setCode] = useState('');
   const [fehler, setFehler] = useState<string>();
+  const mitGoogle = cloud().mitGoogle;
+  const googleGestartet = useRef(false);
+  const angemeldet = !!useKontoZustand().konto;
+
+  // Zurück von Google (oder aus dem Anmeldelink): Die Sitzung kommt erst nach dem Laden an.
+  useEffect(() => {
+    if (angemeldet && (konto.art === 'offen' || konto.art === 'laedt' || konto.art === 'link')) setKonto({ art: 'gesichert' });
+  }, [angemeldet, konto.art, setKonto]);
+
+  const googleStarten = async () => {
+    if (!mitGoogle) return;
+    setFehler(undefined);
+    setKonto({ art: 'laedt' });
+    const r = await mitGoogle('/willkommen');
+    if (!r.ok) {
+      setKonto({ art: 'offen' });
+      setFehler(r.fehler ?? 'Die Anmeldung mit Google hat nicht geklappt. Versuche es noch einmal.');
+    }
+  };
+
+  useEffect(() => {
+    if (!google || googleGestartet.current || konto.art !== 'offen') return;
+    googleGestartet.current = true;
+    void googleStarten();
+    // nur einmal beim Öffnen von der Website
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [google, konto.art]);
 
   if (konto.art === 'lokal')
     return (
@@ -90,6 +132,16 @@ export function SchrittKonto({ konto, setKonto }: { konto: KontoStand; setKonto:
         void anfordern();
       }}
     >
+      {mitGoogle && (
+        <>
+          <Zeile>
+            <Button type="button" variante="sekundaer" onClick={() => void googleStarten()} disabled={konto.art === 'laedt'}>
+              Mit Google anmelden
+            </Button>
+          </Zeile>
+          <Meta>Oder ohne Google:</Meta>
+        </>
+      )}
       <Segmente
         label="Anmelden mit"
         wert={weg}

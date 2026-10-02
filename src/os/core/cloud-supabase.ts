@@ -410,6 +410,16 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
       }
     },
 
+    async mitGoogle(zurueck) {
+      try {
+        const { error } = await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${ursprung}${appPfad(zurueck)}` } });
+        if (error) return { ok: false, fehler: fehlerText(error) };
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, fehler: fehlerText(e) };
+      }
+    },
+
     async codeBestaetigen(ziel, code) {
       const token = code.replace(/\D/g, '');
       if (token.length < 6) return { ok: false, fehler: 'Der Code hat 6 Ziffern.' };
