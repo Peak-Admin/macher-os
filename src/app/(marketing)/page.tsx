@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { WissenVignette, type WissenMotiv } from "@/components/sections/WissenVignette";
 import { PhoneMock, PlanBoardMock, VorschauRahmen } from "@/components/mocks";
 import {
   Ablauf,
@@ -201,13 +202,13 @@ const mobil = [
 
 const planung = ["Termine", "Mitarbeiter", "Qualifikationen", "Urlaub", "Fahrtzeiten", "Material", "Werkzeuge", "Fahrzeuge"];
 
-const wissen: { titel: string; text: string; href: string; icon: IconName }[] = [
+const wissen: { titel: string; text: string; href: string; icon: IconName; motiv?: WissenMotiv }[] = [
   { titel: "Blog", text: "Praxistipps fürs Handwerk", href: "/wissen/blog", icon: "book" },
-  { titel: "Webinare", text: "Live und als Aufzeichnung", href: "/wissen/webinare", icon: "play" },
-  { titel: "Akademie", text: "Kurse für Chef und Team", href: "/wissen/akademie", icon: "award" },
-  { titel: "Vorlagen", text: "Direkt nutzbar", href: "/wissen/vorlagen", icon: "file" },
-  { titel: "Rechner", text: "Stundensatz, Angebot & mehr", href: "/werkzeuge", icon: "calculator" },
-  { titel: "Checklisten", text: "Nichts mehr vergessen", href: "/wissen/vorlagen", icon: "clipboard" },
+  { titel: "Webinare", text: "Live und als Aufzeichnung", href: "/wissen/webinare", icon: "play", motiv: "webinare" },
+  { titel: "Akademie", text: "Kurse für Chef und Team", href: "/wissen/akademie", icon: "award", motiv: "akademie" },
+  { titel: "Vorlagen", text: "Direkt nutzbar", href: "/wissen/vorlagen", icon: "file", motiv: "vorlagen" },
+  { titel: "Rechner", text: "Stundensatz, Angebot & mehr", href: "/werkzeuge", icon: "calculator", motiv: "rechner" },
+  { titel: "Checklisten", text: "Nichts mehr vergessen", href: "/wissen/vorlagen", icon: "clipboard", motiv: "checklisten" },
 ];
 
 const faq: FaqItem[] = [
@@ -607,33 +608,39 @@ export default function HomePage() {
           <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-2">
             {wissen.map((w, n) => {
               const gross = n === 0;
+              // Töne nach Bedeutung, nicht alle gleich: Blog dunkel (Hauptkachel), dann hellgrün, beige, weiß im Wechsel
               const ton = gross
                 ? "bg-ink text-white lg:col-span-6 lg:row-span-2"
                 : n === 1
-                  ? "bg-beige text-ink lg:col-span-3"
+                  ? "bg-signal-soft text-ink ring-1 ring-primary/15 lg:col-span-3"
                   : n === 2
-                    ? "bg-white text-ink lg:col-span-3"
+                    ? "bg-beige text-ink ring-1 ring-beige-line lg:col-span-3"
                     : n === 3
-                      ? "bg-white text-ink lg:col-span-2"
+                      ? "bg-white text-ink ring-1 ring-line lg:col-span-2"
                       : n === 4
-                        ? "bg-beige text-ink lg:col-span-2"
-                        : "bg-white text-ink lg:col-span-2";
-              const dunkel = gross;
+                        ? "bg-beige text-ink ring-1 ring-beige-line lg:col-span-2"
+                        : "bg-signal-soft text-ink ring-1 ring-primary/15 lg:col-span-2";
               return (
-                <li key={w.titel} className={`${ton} ${gross ? "sm:col-span-2" : ""} rounded-2xl ${dunkel ? "" : "ring-1 ring-beige-line"}`}>
+                <li
+                  key={w.titel}
+                  className={`${ton} ${gross ? "sm:col-span-2" : ""} rounded-2xl shadow-[inset_0_1px_0_rgb(255_255_255/70%),0_14px_30px_-22px_color-mix(in_srgb,var(--color-ink)_45%,transparent)] transition-shadow duration-200 hover:shadow-[inset_0_1px_0_rgb(255_255_255/70%),0_22px_40px_-22px_color-mix(in_srgb,var(--color-ink)_55%,transparent)]`}
+                >
                   <Link
                     href={w.href}
-                    className={`group flex h-full flex-col rounded-2xl p-6 transition-transform duration-150 ease-out hover:-translate-y-0.5 ${gross ? "min-h-64 lg:p-8" : "min-h-44"}`}
+                    className={`group relative flex h-full flex-col rounded-2xl p-6 transition-transform duration-150 ease-out hover:-translate-y-0.5 ${gross ? "min-h-64 lg:p-8" : "min-h-56"}`}
                   >
                     {gross ? (
                       <Fenster icon={w.icon} ton="dunkel" className="-mx-2 -mt-2" />
                     ) : (
-                      <span className="inline-flex size-11 items-center justify-center rounded-xl bg-white text-signal-dark ring-1 ring-line">
-                        <Icon name={w.icon} className="size-5" />
-                      </span>
+                      <>
+                        {w.motiv && <WissenVignette motiv={w.motiv} />}
+                        <span className="absolute right-4 top-4 hidden size-8 items-center justify-center rounded-full bg-white/80 text-signal-dark opacity-0 ring-1 ring-line transition-[opacity,translate] duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:opacity-100 sm:inline-flex">
+                          <Icon name="arrow-up-right" className="size-4" />
+                        </span>
+                      </>
                     )}
-                    <span className={`mt-auto pt-6 font-display font-bold leading-tight ${gross ? "text-4xl" : "text-xl"}`}>{w.titel}</span>
-                    <span className={`mt-1 ${dunkel ? "text-white/75" : "text-muted"} ${gross ? "text-lg" : ""}`}>{w.text}</span>
+                    <span className={`mt-auto pt-5 font-display font-bold leading-tight ${gross ? "text-4xl" : "text-xl"}`}>{w.titel}</span>
+                    <span className={`mt-1 ${gross ? "text-lg text-white/75" : "text-muted"}`}>{w.text}</span>
                     {gross && (
                       <span className="mt-6 inline-flex items-center gap-1.5 font-semibold text-accent">
                         Zum Blog <Icon name="arrow-right" className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
