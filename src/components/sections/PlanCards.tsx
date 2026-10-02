@@ -12,11 +12,11 @@ export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "
           <div
             key={p.id}
             className={`relative flex flex-col rounded-2xl p-6 ${
-              p.hervorgehoben ? "bg-ink text-white ring-2 ring-signal" : "border border-line bg-white"
+              p.hervorgehoben ? "bg-ink text-white ring-2 ring-brand" : "border border-line bg-white"
             }`}
           >
             {p.hervorgehoben && (
-              <span className="absolute -top-3 left-6 rounded-full bg-signal px-3 py-0.5 text-xs font-bold text-ink">
+              <span className="absolute -top-3 left-6 rounded bg-accent px-3 py-0.5 text-xs font-bold text-ink">
                 Am beliebtesten
               </span>
             )}
@@ -40,7 +40,7 @@ export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "
             <Link
               href={p.cta.href}
               className={`mt-6 rounded-lg py-3 text-center font-bold transition-colors ${
-                p.hervorgehoben ? "bg-signal text-ink hover:bg-signal-dark" : "bg-ink text-white hover:bg-ink-soft"
+                p.hervorgehoben ? "bg-white text-ink hover:bg-sand" : "bg-signal text-white hover:bg-signal-dark"
               }`}
             >
               {p.cta.label}

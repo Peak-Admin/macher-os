@@ -18,6 +18,10 @@ Handwerker sollen sich auf ihr Handwerk konzentrieren können, nicht auf Zettelw
 - **Material & Lager** – Bestände und Bestellungen im Griff
 - **Dokumentation** – Fotos, Notizen und Abnahmen pro Auftrag
 
+## Design
+
+Gestaltung und Tonalität folgen dem [Brand & Software Design Playbook](docs/design/brand-playbook.md).
+
 ## Entwicklung
 
 Die Marketing-Website ist eine Next.js-App. Siehe `CLAUDE.md` für Struktur und Regeln und `docs/marketing-website-struktur.md` für die Informationsarchitektur.

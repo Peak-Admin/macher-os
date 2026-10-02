@@ -109,7 +109,7 @@ export function Header() {
           </Link>
           <Link
             href={cta.primary.href}
-            className="rounded-lg bg-signal px-4 py-2 text-[0.95rem] font-bold text-ink hover:bg-signal-dark"
+            className="rounded-lg bg-signal px-4 py-2 text-[0.95rem] font-bold text-white hover:bg-signal-dark"
           >
             {cta.primary.label}
           </Link>
@@ -117,7 +117,7 @@ export function Header() {
 
         {/* Mobil: primärer CTA bleibt sichtbar */}
         <div className="ml-auto flex items-center gap-2 lg:hidden">
-          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg bg-signal px-3 py-2 text-sm font-bold text-ink">
+          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg bg-signal px-3 py-2 text-sm font-bold text-white">
             {cta.primary.label}
           </Link>
           <button
@@ -146,7 +146,7 @@ function MegaPanel({ item }: { item: Extract<NavItem, { mega: object }> }) {
       <div className={`grid gap-8 ${gridCols} ${wide ? "" : "max-w-3xl"}`}>
         {columns.map((col) => (
           <div key={col.titel}>
-            <p className="font-display text-sm font-bold uppercase tracking-wider text-signal-dark">{col.titel}</p>
+            <p className="text-sm font-bold font-tagline uppercase tracking-wider text-signal-dark">{col.titel}</p>
             {col.beschreibung && <p className="mt-1 text-sm text-muted">{col.beschreibung}</p>}
             <ul className="mt-4 space-y-0.5">
               {col.links.map((l) => (
@@ -200,7 +200,7 @@ function MobileMenu() {
                   <div className="space-y-5 pb-4">
                     {item.mega.columns.map((col) => (
                       <div key={col.titel}>
-                        <p className="text-xs font-bold uppercase tracking-wider text-signal-dark">{col.titel}</p>
+                        <p className="text-xs font-bold font-tagline uppercase tracking-wider text-signal-dark">{col.titel}</p>
                         <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1">
                           {col.links.map((l) => (
                             <li key={l.label}>
@@ -229,7 +229,7 @@ function MobileMenu() {
           )}
         </ul>
         <div className="mt-6 grid gap-3">
-          <Link href={cta.primary.href} className="rounded-lg bg-signal py-3 text-center font-bold text-ink">
+          <Link href={cta.primary.href} className="rounded-lg bg-signal py-3 text-center font-bold text-white">
             {cta.primary.label}
           </Link>
           <Link href={cta.secondary.href} className="rounded-lg bg-white py-3 text-center font-semibold ring-1 ring-line">

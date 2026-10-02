@@ -38,9 +38,9 @@ export function Flow({ items, dark = false }: { items: string[]; dark?: boolean 
       {items.map((item, i) => (
         <li key={item} className="flex items-center gap-2 sm:gap-3">
           <span
-            className={`rounded-full px-4 py-2 text-sm font-semibold sm:text-base ${
+            className={`rounded px-4 py-2 text-sm font-semibold sm:text-base ${
               i === items.length - 1
-                ? "bg-moss text-white"
+                ? "bg-signal text-white"
                 : dark
                   ? "bg-white/10 text-white ring-1 ring-white/20"
                   : "bg-white text-ink ring-1 ring-line"

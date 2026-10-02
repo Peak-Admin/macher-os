@@ -2,13 +2,15 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon } from "./Icon";
 
-type Variant = "primary" | "secondary" | "dark" | "light";
+type Variant = "primary" | "secondary" | "dark" | "light" | "onDark";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-signal text-ink hover:bg-signal-dark shadow-[0_1px_0_rgba(0,0,0,0.15)]",
-  secondary: "bg-white text-ink ring-1 ring-inset ring-line hover:ring-ink/40",
+  primary: "bg-signal text-white hover:bg-signal-dark",
+  secondary: "bg-white text-signal-dark ring-1 ring-inset ring-signal-dark/60 hover:bg-hover",
   dark: "bg-ink text-white hover:bg-ink-soft",
   light: "bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/20",
+  /** Hauptaktion auf dunklen Markenflächen */
+  onDark: "bg-accent text-ink hover:bg-white",
 };
 
 export function ButtonLink({
@@ -27,12 +29,12 @@ export function ButtonLink({
   const sizes = {
     sm: "h-9 px-4 text-sm",
     md: "h-11 px-5 text-[0.95rem]",
-    lg: "h-13 px-7 text-base",
+    lg: "h-12 px-6 text-lg",
   };
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap transition-colors ${sizes[size]} ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md font-semibold whitespace-nowrap transition-colors duration-150 ease-out ${sizes[size]} ${variants[variant]} ${className}`}
     >
       {children}
     </Link>

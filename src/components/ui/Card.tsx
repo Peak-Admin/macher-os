@@ -23,8 +23,8 @@ export function Card({
   const body = (
     <>
       {icon && <IconTile name={icon} tone={iconTone} className="mb-4" />}
-      {eyebrow && <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted">{eyebrow}</div>}
-      <h3 className="font-display text-lg font-bold leading-snug">
+      {eyebrow && <div className="mb-2 text-xs font-semibold font-tagline uppercase tracking-wider text-muted">{eyebrow}</div>}
+      <h3 className="font-display text-xl font-semibold leading-snug">
         {title}
         {href && (
           <Icon
@@ -88,7 +88,7 @@ export function Badge({
     ink: "bg-ink text-white",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${tones[tone]}`}>
+    <span className={`inline-flex items-center rounded px-2.5 py-0.5 text-xs font-semibold ${tones[tone]}`}>
       {children}
     </span>
   );

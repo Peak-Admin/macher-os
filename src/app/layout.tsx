@@ -1,10 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Inter } from "next/font/google";
+import { Barlow, Poppins } from "next/font/google";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-const archivo = Archivo({ variable: "--font-archivo", subsets: ["latin"], weight: ["600", "700", "800", "900"] });
+const barlow = Barlow({
+  variable: "--font-barlow",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+const poppins = Poppins({ variable: "--font-poppins", subsets: ["latin"], weight: ["600"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -22,13 +26,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f4",
+  themeColor: "#f7fafb",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="de" className={`${inter.variable} ${archivo.variable} antialiased`}>
-      <body className="flex min-h-dvh flex-col font-sans">{children}</body>
+    <html lang="de" className={`${barlow.variable} ${poppins.variable} antialiased`}>
+      <body className="flex min-h-dvh flex-col font-sans text-ink">{children}</body>
     </html>
   );
 }

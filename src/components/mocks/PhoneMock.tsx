@@ -15,15 +15,15 @@ export function PhoneMock({ className = "" }: { className?: string }) {
           <span>100%</span>
         </div>
         <div className="space-y-3 p-4">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-muted">Nächster Einsatz · 11:30</p>
+          <p className="text-[0.7rem] font-semibold font-tagline uppercase tracking-wider text-muted">Nächster Einsatz · 11:30</p>
           <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-line">
             <p className="font-display text-base font-bold leading-tight">Wallbox montieren</p>
             <p className="mt-1 text-xs text-muted">Fam. Petersen · Lindenstr. 12</p>
             <div className="mt-3 flex flex-wrap gap-1.5">
-              <span className="rounded-full bg-moss-soft px-2 py-0.5 text-[0.65rem] font-semibold text-moss">
+              <span className="rounded bg-moss-soft px-2 py-0.5 text-[0.65rem] font-semibold text-moss">
                 Material im Wagen
               </span>
-              <span className="rounded-full bg-sky-soft px-2 py-0.5 text-[0.65rem] font-semibold text-sky">
+              <span className="rounded bg-sky-soft px-2 py-0.5 text-[0.65rem] font-semibold text-sky">
                 18 Min. Fahrt
               </span>
             </div>
@@ -46,7 +46,7 @@ export function PhoneMock({ className = "" }: { className?: string }) {
               </span>
             ))}
           </div>
-          <span className="flex items-center justify-center gap-2 rounded-xl bg-signal py-3 text-sm font-bold text-ink">
+          <span className="flex items-center justify-center gap-2 rounded-xl bg-signal py-3 text-sm font-bold text-white">
             <Icon name="play" className="size-4" /> Auftrag starten
           </span>
           <span className="flex items-center justify-center gap-2 rounded-xl bg-white py-2.5 text-xs font-semibold ring-1 ring-line">

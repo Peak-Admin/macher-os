@@ -17,19 +17,19 @@ export function FinalCta({
   secondary?: boolean;
 }) {
   return (
-    <section className="bg-ink text-white">
-      <Container className="relative overflow-hidden py-20 sm:py-28">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-24 -top-24 size-96 rounded-full bg-signal/20 blur-3xl"
-        />
+    <section className="relative overflow-hidden bg-ink text-white">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-32 -top-32 size-[32rem] rounded-full bg-brand/25 blur-3xl"
+      />
+      <Container className="relative py-20 sm:py-28">
         <div className="relative max-w-3xl">
           <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-6xl">
             {title}
           </h2>
           <p className="mt-5 max-w-xl text-lg text-white/75">{intro}</p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <ButtonLink href={primaryHref} size="lg">
+            <ButtonLink href={primaryHref} size="lg" variant="onDark">
               {primaryLabel}
             </ButtonLink>
             {secondary && (

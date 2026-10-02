@@ -16,7 +16,7 @@ const rows: { name: string; rolle: string; blocks: { start: number; len: number;
     rolle: "Meister",
     blocks: [
       { start: 0, len: 1, label: "Besichtigung", color: "bg-moss-soft text-moss" },
-      { start: 1, len: 3, label: "Wallbox + PV Petersen", color: "bg-signal text-ink" },
+      { start: 1, len: 3, label: "Wallbox + PV Petersen", color: "bg-signal text-white" },
     ],
   },
   {
@@ -48,7 +48,7 @@ export function PlanBoardMock() {
     >
       <div className="flex items-center justify-between border-b border-line px-4 py-3">
         <span className="font-display text-sm font-bold">Plan · KW 42</span>
-        <span className="rounded-full bg-moss-soft px-2.5 py-0.5 text-xs font-semibold text-moss">
+        <span className="rounded bg-moss-soft px-2.5 py-0.5 text-xs font-semibold text-moss">
           Auslastung 86 %
         </span>
       </div>

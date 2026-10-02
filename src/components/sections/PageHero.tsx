@@ -38,7 +38,7 @@ export function PageHero({
         <div className={`grid items-center gap-12 ${visual ? "lg:grid-cols-[1.05fr_1fr]" : ""}`}>
           <div className="max-w-3xl">
             {eyebrow && (
-              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">{eyebrow}</p>
+              <p className="mb-4 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">{eyebrow}</p>
             )}
             <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl lg:text-6xl">
               {title}

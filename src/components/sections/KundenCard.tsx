@@ -19,7 +19,7 @@ export function KundenCard({ slug }: { slug: KundeSlug }) {
       <div className="relative flex h-36 items-end bg-[linear-gradient(135deg,var(--color-ink),var(--color-ink-soft))] p-5">
         <div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(255,106,43,0.45),transparent_55%)]"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(47,146,80,0.5),transparent_55%)]"
         />
         <span className="relative font-display text-4xl font-extrabold text-white/90">{initialen}</span>
         <span className="absolute right-4 top-4">
@@ -27,7 +27,7 @@ export function KundenCard({ slug }: { slug: KundeSlug }) {
         </span>
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+        <p className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">
           {gewerk.kurz} · {k.mitarbeiter} Mitarbeiter · {k.ort}
         </p>
         <p className="mt-1 font-display text-lg font-bold">{k.betrieb}</p>

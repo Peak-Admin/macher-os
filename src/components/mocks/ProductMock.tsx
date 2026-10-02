@@ -67,7 +67,7 @@ export function ProductMock({ active = "Heute" }: { active?: "Heute" | "Aufträg
           <div className="rounded-xl border border-line bg-white">
             {[
               ["08:00", "Zählerschrank tauschen", "Lukas · Musterweg 4", "bg-sky"],
-              ["11:30", "Wallbox montieren", "Ali · Lindenstr. 12", "bg-signal"],
+              ["11:30", "Wallbox montieren", "Ali · Lindenstr. 12", "bg-brand"],
               ["14:00", "Besichtigung Altbau", "Jana · Am Hang 7", "bg-moss"],
             ].map(([time, title, sub, color]) => (
               <div key={time} className="flex items-center gap-3 border-b border-line px-3 py-2.5 last:border-0">
@@ -80,8 +80,8 @@ export function ProductMock({ active = "Heute" }: { active?: "Heute" | "Aufträg
               </div>
             ))}
           </div>
-          <div className="flex items-center gap-2 rounded-xl border border-signal/40 bg-signal-soft p-3 text-xs sm:text-sm">
-            <Icon name="box" className="size-4 shrink-0 text-signal-dark" />
+          <div className="flex items-center gap-2 rounded-xl border border-warning/30 bg-warning-soft p-3 text-xs sm:text-sm">
+            <Icon name="box" className="size-4 shrink-0 text-warning" />
             <span>
               <b>Material fehlt:</b> 2× Fehlerstromschutzschalter für Mittwoch
             </span>

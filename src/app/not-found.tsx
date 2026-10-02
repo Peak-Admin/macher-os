@@ -8,7 +8,7 @@ export default function NotFound() {
       <Header />
       <main className="flex-1">
         <Container size="narrow" className="py-24 sm:py-32">
-          <p className="font-display text-sm font-bold uppercase tracking-widest text-signal-dark">Fehler 404</p>
+          <p className="text-sm font-bold font-tagline uppercase tracking-widest text-signal-dark">Fehler 404</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
             Diese Seite gibt es nicht.
           </h1>

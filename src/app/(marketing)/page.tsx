@@ -130,13 +130,13 @@ export default function HomePage() {
         />
         <Container className="relative grid items-center gap-14 py-14 sm:py-20 lg:grid-cols-[1fr_1.1fr] lg:py-24">
           <div>
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-semibold ring-1 ring-line">
+            <p className="mb-5 inline-flex items-center gap-2 rounded bg-white px-3 py-1 text-sm font-semibold ring-1 ring-line">
               <span className="size-2 rounded-full bg-moss" /> Das Betriebssystem für Handwerker
             </p>
             <h1 className="font-display text-5xl font-black leading-[0.98] tracking-tight text-balance sm:text-6xl lg:text-7xl">
               Dein Betrieb.
               <br />
-              <span className="text-signal-dark">Eine Software.</span>
+              <span className="text-brand">Eine Software.</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
               Aufträge, Mitarbeiter, Planung und Büroarbeit in einem einfachen Betriebssystem für Handwerker.
@@ -170,7 +170,7 @@ export default function HomePage() {
       <Section tone="ink">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Macher erledigt</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Macher erledigt</p>
             <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
               Weniger organisieren. Mehr machen.
             </h2>
@@ -179,7 +179,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/funktionen/automatisch-erledigen"
-              className="mt-8 inline-flex items-center gap-1.5 font-bold text-signal underline decoration-2 underline-offset-4 hover:text-white"
+              className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
               So arbeitet Macher <Icon name="arrow-right" className="size-4" />
             </Link>
@@ -187,7 +187,7 @@ export default function HomePage() {
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {machtMacher.map((m) => (
               <li key={m.text} className="flex items-center gap-3 rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
-                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-signal/15 text-signal">
+                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent/15 text-accent">
                   <Icon name={m.icon} className="size-5" />
                 </span>
                 <span className="font-semibold leading-snug">{m.text}</span>
@@ -272,7 +272,7 @@ export default function HomePage() {
             />
             <ul className="mt-8 flex flex-wrap gap-2">
               {planung.map((p) => (
-                <li key={p} className="rounded-full bg-white px-3.5 py-1.5 text-sm font-semibold ring-1 ring-line">
+                <li key={p} className="rounded bg-white px-3.5 py-1.5 text-sm font-semibold ring-1 ring-line">
                   {p}
                 </li>
               ))}
@@ -321,14 +321,14 @@ export default function HomePage() {
             <ul className="mt-5 grid grid-cols-2 gap-3">
               {["passende Funktionen", "Begriffe", "Vorlagen", "Abläufe", "Checklisten", "Schulungen"].map((x) => (
                 <li key={x} className="flex items-center gap-2">
-                  <Icon name="check" className="size-4 text-signal" /> {x}
+                  <Icon name="check" className="size-4 text-accent" /> {x}
                 </li>
               ))}
             </ul>
             <p className="mt-6 border-t border-white/15 pt-5 text-white/75">
               Bestehende Kunden, Mitarbeiter und Artikel einfach übernehmen.
             </p>
-            <ButtonLink href={cta.primary.href} className="mt-6">
+            <ButtonLink href={cta.primary.href} variant="onDark" className="mt-6">
               Kostenlos starten <Icon name="arrow-right" className="size-4" />
             </ButtonLink>
           </div>

@@ -1,26 +1,50 @@
 @import "tailwindcss";
 
+/*
+ * Tokens nach dem Brand & Software Design Playbook (docs/design/brand-playbook.md, Abschnitt 4 und 14).
+ * Komponenten nutzen nur diese Namen – keine festen HEX-Werte.
+ */
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-archivo), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-barlow), sans-serif;
+  --font-display: var(--font-barlow), sans-serif;
+  --font-tagline: var(--font-poppins), Arial, sans-serif;
 
-  /* Anthrazit – Text, dunkle Flächen */
-  --color-ink: #15181d;
-  --color-ink-soft: #2a2f37;
-  /* Warmes Papier – Seitenhintergrund */
-  --color-paper: #faf8f4;
-  --color-sand: #f1ede5;
-  --color-line: #e3ded4;
-  --color-muted: #5d636d;
-  /* Signal-Orange – primäre Aktion */
-  --color-signal: #ff6a2b;
-  --color-signal-dark: #e5531a;
-  --color-signal-soft: #fff0e8;
-  /* Ergänzungsfarben für Status/Illustrationen */
-  --color-moss: #2f7d5b;
-  --color-moss-soft: #e6f3ec;
-  --color-sky: #2563a6;
-  --color-sky-soft: #e7f0fa;
+  /* Markendunkel – Überschriften, dunkle Markenflächen */
+  --color-ink: #0e130c;
+  --color-ink-soft: #1c2619;
+  /* Arbeitsfläche, Grüngrau-Fläche, Linien, Textgrau */
+  --color-paper: #f7fafb;
+  --color-sand: #edf0e9;
+  --color-line: #d9d9d9;
+  --color-line-dark: #484848;
+  --color-hover: #eef1f2;
+  --color-muted: #374040;
+  /* Aktion: tiefes CTA-Grün, Hover/kleiner grüner Text: dunkles Textgrün */
+  --color-signal: #06480c;
+  --color-signal-dark: #1f6135;
+  --color-signal-soft: #e5efe7;
+  /* Markengrün und Akzentgrün (Akzent v. a. auf dunklen Flächen) */
+  --color-brand: #2f9250;
+  --color-accent: #69af44;
+  /* Status: erfolgreich (grün), neutral/in Bearbeitung (grau) */
+  --color-moss: #2f9250;
+  --color-moss-soft: #e6f1e9;
+  --color-sky: #374040;
+  --color-sky-soft: #eef1f2;
+  /* Kampagnen und Warnungen – sparsam */
+  --color-campaign: #e69433;
+  --color-warning: #854d0e;
+  --color-warning-soft: #fefce8;
+  --color-danger: #b42318;
+  --color-danger-soft: #fef3f2;
+
+  /* Kleine Radien: Controls 4 px, Karten 5–8 px, Dialoge 8 px */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-2xl: 8px;
+  --radius-3xl: 8px;
 }
 
 html {
@@ -34,11 +58,11 @@ body {
 
 ::selection {
   background: var(--color-signal);
-  color: var(--color-ink);
+  color: #fff;
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-signal);
+  outline: 2px solid var(--color-signal-dark);
   outline-offset: 2px;
 }
 
@@ -47,4 +71,14 @@ details > summary {
 }
 details > summary::-webkit-details-marker {
   display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
