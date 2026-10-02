@@ -5,12 +5,15 @@
  * kein Plus, kein Hamburger-Menü. Lokale Navigation (höchstens vier Ziele) steht im Inhaltsbereich.
  * Unter den vier Bereichen höchstens drei persönliche Favoriten (ausgewählt im Modulverzeichnis unter „Betrieb“),
  * mobil im Profilmenü.
+ * Die Seitenleiste lässt sich komplett einklappen (schmale Leiste nur mit Icons) und wieder ausklappen (Strg B);
+ * die Wahl wird je Mitarbeiter gespeichert.
  */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { oeffne } from '@core/overlay';
 import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
+import { useEinstellung } from '@core/einstellungen';
 import { initialen, personName } from '@core/format';
 import { modulPfad } from '@core/modul';
 import { Avatar, Icon, Meldung } from '@ui/index';
@@ -23,47 +26,74 @@ export function Shell({ children }: { children: ReactNode }) {
   const pfad = useLocation().pathname;
   const ort = ortVonPfad(pfad);
   const aktiv = ort?.haupt.id;
+  const ich = useIch();
+  const [eingeklappt, setzeEingeklappt] = useEinstellung<boolean>(`navigation.eingeklappt.${ich?.id ?? 'alle'}`, false);
+  const umschalten = () => setzeEingeklappt(!eingeklappt);
 
   useEffect(() => {
     const taste = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      if (!(e.metaKey || e.ctrlKey)) return;
+      const k = e.key.toLowerCase();
+      if (k === 'k') {
         e.preventDefault();
         oeffne('suche');
+      } else if (k === 'b') {
+        e.preventDefault();
+        umschalten();
       }
     };
     window.addEventListener('keydown', taste);
     return () => window.removeEventListener('keydown', taste);
-  }, []);
+  });
 
   return (
-    <div className="mm-app">
+    <div className={`mm-app ${eingeklappt ? 'mm-app--eingeklappt' : ''}`}>
       <a href="#inhalt" className="mm-skip">
         Zum Inhalt springen
       </a>
       <aside className="mm-sidebar" aria-label="Hauptnavigation">
-        <Link to="/heute" className="mm-logo">
-          <span className="mm-logo-zeichen" aria-hidden>
-            M
-          </span>
-          <span>
-            Macher <strong>OS</strong>
-          </span>
-        </Link>
+        <div className="mm-leiste-kopf">
+          <Link to="/heute" className="mm-logo" aria-label="Macher OS, zu Heute" title={eingeklappt ? 'Macher OS' : undefined}>
+            <span className="mm-logo-zeichen" aria-hidden>
+              M
+            </span>
+            <span className="mm-leiste-text">
+              Macher <strong>OS</strong>
+            </span>
+          </Link>
+          <button
+            type="button"
+            className="mm-leiste-umschalter"
+            aria-expanded={!eingeklappt}
+            aria-keyshortcuts="Control+B"
+            aria-label={eingeklappt ? 'Navigation ausklappen' : 'Navigation einklappen'}
+            title={`${eingeklappt ? 'Navigation ausklappen' : 'Navigation einklappen'} (Strg B)`}
+            onClick={umschalten}
+          >
+            <Icon name="leiste" />
+          </button>
+        </div>
         <div className="mm-leiste-werkzeuge">
           <SuchenOderFragen />
           <Glocke />
         </div>
         <nav className="mm-nav" aria-label="Hauptbereiche">
           {STRUKTUR.map((b) => (
-            <Link key={b.id} to={b.pfad} className={`mm-nav-haupt ${aktiv === b.id ? 'mm-nav-haupt--aktiv' : ''}`} aria-current={aktiv === b.id ? 'page' : undefined}>
+            <Link
+              key={b.id}
+              to={b.pfad}
+              className={`mm-nav-haupt ${aktiv === b.id ? 'mm-nav-haupt--aktiv' : ''}`}
+              aria-current={aktiv === b.id ? 'page' : undefined}
+              title={eingeklappt ? b.titel : undefined}
+            >
               <span className="mm-nav-haupt-icon">
                 <Icon name={b.icon} />
               </span>
-              {b.titel}
+              <span className="mm-leiste-text">{b.titel}</span>
             </Link>
           ))}
         </nav>
-        <Favoriten />
+        <Favoriten eingeklappt={eingeklappt} />
         <Profil oben />
       </aside>
 
@@ -109,7 +139,7 @@ function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
   return (
     <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K" title="Suchen oder Macher fragen (Strg K)">
       <Icon name="suche" size={18} />
-      <span className="mm-leiste-suche-text">Suchen oder fragen</span>
+      <span className="mm-leiste-suche-text mm-leiste-text">Suchen oder fragen</span>
     </button>
   );
 }
@@ -117,12 +147,18 @@ function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
 function Glocke() {
   const ungelesen = useUngelesen();
   return (
-    <button type="button" className="mm-leiste-zeile" aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} ungelesen` : ''}`} onClick={() => oeffne('benachrichtigungen')}>
+    <button
+      type="button"
+      className="mm-leiste-zeile"
+      aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} ungelesen` : ''}`}
+      title="Benachrichtigungen"
+      onClick={() => oeffne('benachrichtigungen')}
+    >
       <span className="mm-nav-haupt-icon mm-glocke">
         <Icon name="glocke" />
         {ungelesen > 0 && <span className="mm-glocke-zahl">{ungelesen > 9 ? '9+' : ungelesen}</span>}
       </span>
-      <span className="mm-leiste-zeile-text">Benachrichtigungen</span>
+      <span className="mm-leiste-zeile-text mm-leiste-text">Benachrichtigungen</span>
     </button>
   );
 }
@@ -148,7 +184,7 @@ function Profil({ oben }: { oben?: boolean }) {
         onClick={() => setOffen(!offen)}
       >
         <Avatar text={initialen(ich)} farbe={ich.farbe} />
-        {oben && <span className="mm-profil-name">{personName(ich)}</span>}
+        {oben && <span className="mm-profil-name mm-leiste-text">{personName(ich)}</span>}
         {!oben && ungelesen > 0 && <span className="mm-glocke-zahl">{ungelesen > 9 ? '9+' : ungelesen}</span>}
       </button>
       {offen && (
@@ -189,12 +225,12 @@ function Profil({ oben }: { oben?: boolean }) {
 }
 
 /** Höchstens drei persönliche Abkürzungen – flach, ein Klick. Auswahl im Modulverzeichnis unter „Betrieb“. */
-function Favoriten() {
+function Favoriten({ eingeklappt }: { eingeklappt: boolean }) {
   const { module } = useFavoriten();
   const pfad = useLocation().pathname;
   return (
     <nav className="mm-nav-favoriten" aria-label="Favoriten">
-      <h2 className="mm-nav-titel">Favoriten</h2>
+      <h2 className="mm-nav-titel mm-leiste-text">Favoriten</h2>
       {module.length ? (
         <ul className="mm-nav-liste">
           {module.map((m) => {
@@ -202,16 +238,21 @@ function Favoriten() {
             const an = pfad === ziel || pfad.startsWith(`${ziel}/`);
             return (
               <li key={m.id}>
-                <Link to={ziel} className={`mm-nav-favorit ${an ? 'mm-nav-favorit--an' : ''}`} aria-current={an ? 'page' : undefined}>
+                <Link
+                  to={ziel}
+                  className={`mm-nav-favorit ${an ? 'mm-nav-favorit--an' : ''}`}
+                  aria-current={an ? 'page' : undefined}
+                  title={eingeklappt ? m.titel : undefined}
+                >
                   <Icon name={m.icon ?? 'stern'} size={18} />
-                  <span>{m.titel}</span>
+                  <span className="mm-leiste-text">{m.titel}</span>
                 </Link>
               </li>
             );
           })}
         </ul>
       ) : (
-        <p className="mm-nav-leer">
+        <p className="mm-nav-leer mm-leiste-text">
           Markiere bis zu drei Module unter <Link to="/betrieb">Betrieb</Link> mit dem Stern.
         </p>
       )}
