@@ -18,7 +18,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { oeffne } from '@core/overlay';
-import { db, useDatenstand, useSpeicherStatus } from '@core/db';
+import { db, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { useEinstellung } from '@core/einstellungen';
 import { personName } from '@core/format';
@@ -27,6 +27,7 @@ import type { Mitarbeiter } from '@core/objects';
 import { Auswahl, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
 import { Personenbild } from '@ui/person';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
+import { useInboxZahl } from '@modules/benachrichtigungen/Inbox';
 import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
 import { useAbo } from '@modules/abo/stand';
 import { BASIS } from '@core/basis';
@@ -242,10 +243,9 @@ function LeistenGriff({ breite, eingeklappt, setzeBreite, umschalten }: { breite
   );
 }
 
+/** Zahl an der Glocke: nur was gerade Aufmerksamkeit braucht (Jetzt + Aktion nötig) – nie „ungelesen“ */
 function useUngelesen() {
-  useDatenstand();
-  const ich = useIch();
-  return db.benachrichtigungen.where((b) => !b.gelesen && (!b.fuerMitarbeiterId || b.fuerMitarbeiterId === ich?.id)).length;
+  return useInboxZahl();
 }
 
 const istMac = () => typeof navigator !== 'undefined' && /mac|iphone|ipad/i.test(navigator.platform || navigator.userAgent);
@@ -277,7 +277,7 @@ function Glocke() {
     <button
       type="button"
       className="mm-leiste-zeile"
-      aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} ungelesen` : ''}`}
+      aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} brauchen dich` : ''}`}
       title="Benachrichtigungen"
       onClick={() => oeffne('benachrichtigungen')}
     >
@@ -307,7 +307,7 @@ function Profil({ oben }: { oben?: boolean }) {
         className="mm-profil-knopf"
         aria-expanded={offen}
         aria-haspopup="true"
-        aria-label={`Profil von ${personName(ich)}${ungelesen && !oben ? `, ${ungelesen} ungelesene Benachrichtigungen` : ''}`}
+        aria-label={`Profil von ${personName(ich)}${ungelesen && !oben ? `, ${ungelesen} Benachrichtigungen brauchen dich` : ''}`}
         onClick={() => setOffen(!offen)}
       >
         <Personenbild m={ich} dekorativ />

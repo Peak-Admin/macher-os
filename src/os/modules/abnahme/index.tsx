@@ -65,7 +65,7 @@ export default defineModul({
             erledigt('abnahme.abrechnung', `${a.nummer} nach der Abnahme in „Abrechnung“ verschoben`, { bezug: { typ: 'auftraege', id: a.id } });
           }
           for (const m of db.mitarbeiter.where((x) => x.aktiv && x.rolle === 'buero'))
-            benachrichtigen(`Abnahme unterschrieben: ${a.titel}`, { text: 'Die Schlussrechnung kann raus.', bezug: { typ: 'auftraege', id: a.id }, fuer: m.id });
+            benachrichtigen(`Abnahme unterschrieben: ${a.titel}`, { text: 'Die Schlussrechnung kann raus.', bezug: { typ: 'auftraege', id: a.id }, fuer: m.id, art: 'abnahme.rechnung', grund: 'Du schreibst die Rechnungen.' });
         }),
     },
   ],

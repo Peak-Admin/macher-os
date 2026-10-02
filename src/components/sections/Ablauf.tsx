@@ -188,7 +188,7 @@ export function Ablauf() {
                     >
                       <Icon name={erledigt ? "check" : x.icon} className="size-6" />
                     </span>
-                    <span className={`text-xs font-semibold tabular-nums ${an ? "text-muted" : "text-white/60"}`}>
+                    <span className={`text-sm font-semibold tabular-nums ${an ? "text-muted" : "text-white/60"}`}>
                       Schritt {n + 1}
                     </span>
                     <span className="font-display text-lg font-bold leading-tight">{x.titel}</span>

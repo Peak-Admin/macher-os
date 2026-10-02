@@ -16,7 +16,7 @@ export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "
             }`}
           >
             {p.hervorgehoben && (
-              <span className="absolute -top-3 left-6 rounded bg-accent px-3 py-0.5 text-xs font-bold text-ink">
+              <span className="absolute -top-3 left-6 rounded bg-accent px-3 py-0.5 text-sm font-bold text-ink">
                 Empfohlen
               </span>
             )}
@@ -32,7 +32,7 @@ export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "
                   {/* Vorläufige Preise direkt am Preis kennzeichnen */}
                   {preiseVorlaeufig && (
                     <span
-                      className={`ml-1 self-center rounded-sm px-1.5 text-xs font-semibold ${p.hervorgehoben ? "bg-white/15 text-white" : "bg-sand text-muted"}`}
+                      className={`ml-1 self-center rounded-sm px-1.5 text-sm font-semibold ${p.hervorgehoben ? "bg-white/15 text-white" : "bg-sand text-muted"}`}
                     >
                       vorläufig
                     </span>

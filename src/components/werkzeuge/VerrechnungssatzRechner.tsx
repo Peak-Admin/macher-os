@@ -135,7 +135,7 @@ export function VerrechnungssatzRechner() {
               <table className="mt-4 w-full text-sm">
                 <caption className="sr-only">Aufschlüsselung des Verrechnungssatzes je Stunde</caption>
                 <thead>
-                  <tr className="text-left text-xs font-tagline uppercase tracking-wider text-muted">
+                  <tr className="text-left text-sm font-tagline uppercase tracking-wider text-muted">
                     <th scope="col" className="pb-2 font-semibold">Baustein</th>
                     <th scope="col" className="pb-2 text-right font-semibold">je Stunde</th>
                     <th scope="col" className="pb-2 text-right font-semibold">Anteil</th>

@@ -141,6 +141,77 @@
   }
 }
 
+/*
+ * Formularfeld der Website (UX-Spezifikation 5.3): 48 px hoch, erkennbarer Rahmen (#7a8780, 3,75:1), 8 px Radius,
+ * 16 px Schrift, weiß. Fokus über den globalen 3-px-Ring. Für <textarea> zusätzlich `h-auto py-3` setzen.
+ */
+@utility feld {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 3rem;
+  padding-inline: 0.75rem;
+  border: 1px solid var(--color-line-dark);
+  border-radius: 8px;
+  background-color: #fff;
+  color: var(--color-ink);
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: border-color 140ms ease-out;
+  &::placeholder {
+    color: var(--color-muted);
+  }
+  &:hover {
+    border-color: var(--color-muted);
+  }
+  &:focus-visible {
+    border-color: var(--color-primary);
+  }
+  &[aria-invalid="true"] {
+    border-color: var(--color-danger);
+  }
+}
+
+/* Feldbeschriftung: dauerhaft oberhalb, 16 px halbfett (UX-Spezifikation 5.3) */
+@utility feld-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/*
+ * Nebenaktion (UX-Spezifikation 5.1, „secondary“): weiß, erkennbarer Rand, dunkelgrüne Schrift, 48 px hoch.
+ * Deaktiviert mit eigener Fläche und Schrift statt Transparenz.
+ */
+@utility btn-zweit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding-inline: 1.25rem;
+  border-radius: 12px;
+  background-color: #fff;
+  color: var(--color-signal-dark);
+  box-shadow: inset 0 0 0 1px var(--color-line-dark);
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 140ms ease-out;
+  &:hover {
+    background-color: var(--color-signal-soft);
+  }
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-muted);
+    background-color: var(--color-sand);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+}
+
 /* Dunkle Karte auf Markendunkel: leicht aufgehellte Fläche, feiner heller Rahmen, 12 px Radius. */
 @utility karte-dunkel {
   border-radius: 12px;
@@ -203,14 +274,13 @@ body {
   color: var(--color-ink);
 }
 
-/* Keine Silbentrennung in kurzen Wörtern. Nur lange Komposita (ab 12 Zeichen, z. B. „Baustellenabnahme“,
-   „Stundenverrechnungssatz“) dürfen auf schmalen Bildschirmen getrennt werden – sonst ragen sie über den Rand. */
+/* Keine automatische Silbentrennung in Überschriften (UX-Spezifikation 3). Sehr lange Komposita
+   („Stundenverrechnungssatz“) brechen nur um, wenn sie sonst über den Rand ragen; gezielt mit &shy; trennen. */
 h1,
 h2,
 h3 {
   overflow-wrap: break-word;
-  hyphens: auto;
-  hyphenate-limit-chars: 12 6 6;
+  hyphens: manual;
   text-wrap: balance;
 }
 

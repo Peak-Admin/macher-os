@@ -310,7 +310,7 @@ export function portalEingabe(e: OeffentlicheEingabe): string {
     benachrichtigen(`Antwort auf Angebot nicht übernommen: ${db.kunden.get(kundeId)?.name ?? 'Kunde'}`, {
       text: `${String(d.name ?? '')} wollte das Angebot ${d.entscheidung === 'abgelehnt' ? 'ablehnen' : 'annehmen'}: ${r.fehler} Bitte kurz anrufen.`,
       bezug: { typ: 'angebote', id: String(d.angebotId ?? '') },
-      wichtig: true,
+      art: 'angebot.antwort_offen',
     });
     return r.fehler;
   }

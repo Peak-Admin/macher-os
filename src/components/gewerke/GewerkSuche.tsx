@@ -96,7 +96,7 @@ export function GewerkSuche({ begriffe, beispiele }: { begriffe: Suchbegriff[]; 
             }}
             placeholder="Was macht dein Betrieb? z. B. Kälteanlagenbauer"
             aria-describedby={listId}
-            className="h-13 w-full rounded-lg border border-line bg-white pl-12 pr-4 text-base outline-none transition placeholder:text-muted focus:border-ink focus:ring-2 focus:ring-signal/40"
+            className="feld h-13 pl-12"
           />
         </div>
         <button

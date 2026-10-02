@@ -445,7 +445,7 @@ function Heute({ gehe, z, setZ }: { gehe: (a: Ansicht) => void; z: HeuteZustand;
         <span className="relative inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-white text-ink">
           <Icon name="bell" className="size-4" />
           {offen > 0 && (
-            <span className="absolute -right-1 -top-1 rounded-full bg-primary px-1.5 text-[10px] font-bold text-white">
+            <span className="absolute -right-1 -top-1 rounded bg-primary px-1.5 text-[10px] font-bold text-white">
               <span className="sr-only">Offene Entscheidungen: </span>
               {offen}
             </span>

@@ -40,9 +40,9 @@ export function HandyAusschnitt({ kopf, zeilen }: { kopf: string; zeilen: Zeile[
                   </span>
                   <span className={`min-w-0 flex-1 text-sm font-semibold leading-tight ${an ? "text-muted line-through" : "text-ink"}`}>{z.text}</span>
                   {an ? (
-                    <span className="mini-ein shrink-0 rounded bg-signal-soft px-2 py-0.5 text-xs font-semibold text-moss">Erledigt</span>
+                    <span className="mini-ein shrink-0 rounded bg-signal-soft px-2 py-0.5 text-sm font-semibold text-moss">Erledigt</span>
                   ) : (
-                    z.status && <span className="shrink-0 rounded bg-signal-soft px-2 py-0.5 text-xs font-semibold text-signal-dark">{z.status}</span>
+                    z.status && <span className="shrink-0 rounded bg-signal-soft px-2 py-0.5 text-sm font-semibold text-signal-dark">{z.status}</span>
                   )}
                 </button>
               </li>
@@ -110,7 +110,7 @@ export function PlanAusschnitt({
             <PlanZeile key={z.name} name={z.name} balken={z.balken} />
           ))}
         </div>
-        <p className="mt-4 text-xs text-muted">Tipp auf einen hellen Einsatz bestätigt ihn.</p>
+        <p className="mt-4 text-sm text-muted">Tipp auf einen hellen Einsatz bestätigt ihn.</p>
       </div>
       <span className="absolute left-5 top-6 block size-24 overflow-hidden rounded-full bg-white shadow-[0_12px_28px_-10px_rgb(16_44_33/0.45)] ring-4 ring-white">
         <Image src={objekte[objekt].src} alt="" fill sizes="96px" className="object-cover" />
@@ -123,7 +123,7 @@ function PlanZeile({ name, balken }: { name: string; balken: [start: number, lae
   const [bestaetigt, setBestaetigt] = useState<Record<number, boolean>>({});
   return (
     <div className="flex items-center gap-3">
-      <span className="w-14 shrink-0 text-xs font-semibold text-muted">{name}</span>
+      <span className="w-14 shrink-0 text-sm font-semibold text-muted">{name}</span>
       <span className="relative h-7 flex-1 rounded-md bg-app-ruhig">
         {balken.map(([start, laenge, ton]) => {
           const voll = ton === "voll" || bestaetigt[start];

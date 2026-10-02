@@ -52,14 +52,14 @@ function RechnerVorschau() {
             ["Gewinn", `${s.gewinn} %`],
           ].map(([l, w]) => (
             <div key={l}>
-              <p className="mb-1 text-xs font-semibold text-muted">{l}</p>
+              <p className="mb-1 text-sm font-semibold text-muted">{l}</p>
               <p className="rounded-lg bg-paper px-3 py-2 text-right font-semibold tabular-nums ring-1 ring-line">{w}</p>
             </div>
           ))}
         </div>
       </div>
       <div className="-mt-4 ml-6 rounded-2xl bg-ink p-5 text-white shadow-xl sm:ml-12">
-        <p className="text-xs font-semibold font-tagline uppercase tracking-[0.12em] text-white/60">Dein Stundensatz netto</p>
+        <p className="text-sm font-semibold font-tagline uppercase tracking-[0.12em] text-on-dark">Dein Stundensatz netto</p>
         <p className="mt-1 font-display text-4xl font-extrabold tabular-nums">{euro(r.netto)}</p>
         <dl className="mt-4 divide-y divide-white/10 border-t border-white/10 text-sm">
           {zeilen.map(([l, w]) => (

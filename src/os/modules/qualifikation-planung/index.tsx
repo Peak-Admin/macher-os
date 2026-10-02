@@ -75,7 +75,7 @@ export default defineModul({
           if (datumVon(t.start) < ctx.heute) return;
           const probleme = pruefeQualifikation(ctx, t).filter((p) => p.ergebnis === 'problem');
           if (!probleme.length) return;
-          benachrichtigen(`Qualifikation fehlt: ${t.titel}`, { text: probleme.map((p) => `${p.text} ${p.loesung ?? ''}`).join(' '), bezug: { typ: 'termine', id: t.id }, wichtig: true });
+          benachrichtigen(`Qualifikation fehlt: ${t.titel}`, { text: probleme.map((p) => `${p.text} ${p.loesung ?? ''}`).join(' '), bezug: { typ: 'termine', id: t.id }, art: 'qualifikation.fehlt' });
           erledigt(AUTOMATION, `Einsatz geprüft: Qualifikation fehlt bei „${t.titel}“`, { bezug: { typ: 'termine', id: t.id } });
         };
         const a = on('termine.created', (e) => pruefe(e.objekt as Termin));

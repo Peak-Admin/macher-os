@@ -33,6 +33,9 @@ export function tagesplanVerschicken(jetzt = new Date()): number {
       text: `Los geht's ${zeitText(erster).split('–')[0]} mit „${erster.titel}“${wo ? ` (${wo})` : ''}.`,
       bezug: { typ: 'termine', id: erster.id },
       fuer: m.id,
+      art: 'tag.termine',
+      grund: 'Du bist heute eingeplant.',
+      schluessel: `tag.termine|${tag}|${m.id}`,
     });
     n++;
   }

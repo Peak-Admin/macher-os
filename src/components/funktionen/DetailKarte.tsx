@@ -11,7 +11,7 @@ export function DetailKarte({ detail, label }: { detail: DetailVisual; label: st
         <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-line bg-paper px-5 py-3">
           <span className="min-w-0 text-[0.7rem] font-semibold font-tagline uppercase tracking-wider text-muted">{detail.kopf}</span>
           {detail.status && (
-            <span className={`rounded-md px-2.5 py-0.5 text-xs font-semibold ${tonEtikett[detail.status.ton]}`}>
+            <span className={`rounded-md px-2.5 py-0.5 text-sm font-semibold ${tonEtikett[detail.status.ton]}`}>
               {detail.status.text}
             </span>
           )}

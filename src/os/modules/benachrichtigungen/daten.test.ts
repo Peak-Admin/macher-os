@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, setAktuellerNutzer, zuruecksetzen } from '@core/db';
 import { emit } from '@core/events';
-import type { Benachrichtigung } from '@core/objects';
-import { archivieren, benachrichtigenAutomation, fuerMich, meldungsGruppen, zurueckholen } from './daten';
+import { meinPosteingang } from '@core/macher';
+import { starteAufmerksamkeit } from '@core/aufmerksamkeit';
+import { benachrichtigenAutomation, faelligeAufgaben } from './daten';
 import abwesenheitenModul from '@modules/abwesenheiten/index';
 
 describe('Benachrichtigungen', () => {
@@ -18,7 +19,9 @@ describe('Benachrichtigungen', () => {
     chef = db.mitarbeiter.create({ vorname: 'Max', nachname: 'Macher', rolle: 'chef', wochenstunden: 40, urlaubstageJahr: 30, kostensatz: 0, aktiv: true });
     jonas = db.mitarbeiter.create({ vorname: 'Jonas', nachname: 'Becker', rolle: 'monteur', wochenstunden: 40, urlaubstageJahr: 30, kostensatz: 0, aktiv: true });
     kundeId = db.kunden.create({ art: 'privat', name: 'Familie Hoffmann', ansprechpartner: [] }).id;
-    stopp = benachrichtigenAutomation.start();
+    const a = benachrichtigenAutomation.start();
+    const b = starteAufmerksamkeit();
+    stopp = () => (a(), b());
   });
 
   const fuer = (id: string) => db.benachrichtigungen.where((b) => b.fuerMitarbeiterId === id);
@@ -70,39 +73,42 @@ describe('Benachrichtigungen', () => {
     expect(fuer(jonas.id)[0].titel).toBe('Neue Aufgabe für dich: Leiter prüfen');
   });
 
-  it('filtert für mich und sortiert neueste zuerst', () => {
-    db.benachrichtigungen.create({ titel: 'alt', gelesen: false, fuerMitarbeiterId: jonas.id });
-    db.benachrichtigungen.create({ titel: 'alle', gelesen: false });
-    db.benachrichtigungen.create({ titel: 'chef', gelesen: false, fuerMitarbeiterId: chef.id });
-    expect(fuerMich(db.benachrichtigungen.all(), jonas.id).map((b) => b.titel).sort()).toEqual(['alle', 'alt']);
+  it('Angebot angenommen: verschwindet, sobald der Auftrag eingeplant ist – ohne dass jemand die Inbox öffnet', () => {
+    const auftrag = db.auftraege.create({ nummer: 'A-1', titel: 'Bad', art: 'projekt', phase: 'angebot', kundeId });
+    const an = db.angebote.create({ nummer: 'AN-1', auftragId: auftrag.id, kundeId, titel: 'Bad', positionen: [], status: 'versendet', datum: '2026-10-01', gueltigBis: '2026-10-30', version: 1 });
+    db.angebote.update(an.id, { status: 'angenommen' });
+    expect(meinPosteingang(chef).zaehler).toBe(1);
+    db.termine.create({ titel: 'Bad', art: 'einsatz', auftragId: auftrag.id, start: '2026-10-12T07:00:00.000Z', ende: '2026-10-12T15:00:00.000Z', mitarbeiterIds: [jonas.id], status: 'geplant' } as never);
+    expect(meinPosteingang(chef).zaehler).toBe(0);
+    expect(fuer(chef.id)[0].geloestAm).toBeTruthy();
   });
 
-  it('gruppiert Meldungen zum selben Objekt zu einem Eintrag mit Zähler, neueste zuerst', () => {
-    const bezug = { typ: 'auftraege' as const, id: 'a1' };
-    const b = (titel: string, zeit: string, extra: Partial<Benachrichtigung> = {}): Benachrichtigung => ({ id: titel, titel, gelesen: true, erstelltAm: `2026-10-01T${zeit}:00.000Z`, geaendertAm: '', ...extra });
-    const liste = [b('eins', '08:00', { bezug }), b('zwei', '09:00', { bezug, gelesen: false }), b('drei', '07:00', { bezug, wichtig: true }), b('ohne Objekt', '10:00')];
-    const g = meldungsGruppen(liste, 'posteingang');
-    expect(g.map((x) => [x.neueste.titel, x.eintraege.length])).toEqual([['ohne Objekt', 1], ['zwei', 3]]);
-    expect(g[1]).toMatchObject({ ungelesen: true, wichtig: true });
-    expect(g[0].ungelesen).toBe(false);
+  it('Kundennachricht: gelesen = weg; mehrere Nachrichten zum Auftrag werden gebündelt', () => {
+    const auftrag = db.auftraege.create({ nummer: 'A-1', titel: 'Bad Müller', art: 'projekt', phase: 'beauftragt', kundeId });
+    const n1 = db.nachrichten.create({ kanal: 'email', richtung: 'ein', kundeId, auftragId: auftrag.id, text: 'Frage 1', gelesen: false });
+    db.nachrichten.create({ kanal: 'email', richtung: 'ein', kundeId, auftragId: auftrag.id, text: 'Frage 2', gelesen: false });
+    const inbox = meinPosteingang(chef);
+    expect(inbox.aktion).toHaveLength(1);
+    expect(inbox.aktion[0]).toMatchObject({ titel: 'Auftrag Bad Müller', zusammenfassung: '2 Kundennachrichten' });
+    db.nachrichten.update(n1.id, { gelesen: true });
+    expect(meinPosteingang(chef).zaehler).toBe(1);
   });
 
-  it('zeigt beim Öffnen Neues weiter als neu, obwohl es schon gelesen gespeichert ist', () => {
-    const b = db.benachrichtigungen.create({ titel: 'x', gelesen: true });
-    expect(meldungsGruppen([b], 'posteingang', new Set([b.id]))[0].ungelesen).toBe(true);
+  it('Aufgabe delegiert: der alte Eintrag verschwindet, der neue Zuständige bekommt ihn', () => {
+    const lisa = db.mitarbeiter.create({ vorname: 'Lisa', nachname: 'Klein', rolle: 'monteur', wochenstunden: 40, urlaubstageJahr: 30, kostensatz: 0, aktiv: true });
+    setAktuellerNutzer(chef.id);
+    const a = db.aufgaben.create({ titel: 'Leiter prüfen', zustaendigId: jonas.id, erledigt: false, prioritaet: 'normal', faellig: '2026-01-01' });
+    expect(meinPosteingang(jonas).zaehler).toBe(1);
+    db.aufgaben.update(a.id, { zustaendigId: lisa.id });
+    expect(meinPosteingang(jonas).zaehler).toBe(0);
+    expect(meinPosteingang(lisa).zaehler).toBe(1);
   });
 
-  it('archiviert (gilt als gelesen) und holt zurück', () => {
-    const bezug = { typ: 'kunden' as const, id: 'k1' };
-    db.benachrichtigungen.create({ titel: 'a', gelesen: false, bezug });
-    db.benachrichtigungen.create({ titel: 'b', gelesen: false, bezug });
-    const [g] = meldungsGruppen(db.benachrichtigungen.all(), 'posteingang');
-    archivieren(g.eintraege);
-    expect(meldungsGruppen(db.benachrichtigungen.all(), 'posteingang')).toHaveLength(0);
-    const archiv = meldungsGruppen(db.benachrichtigungen.all(), 'archiv');
-    expect(archiv[0].eintraege).toHaveLength(2);
-    expect(db.benachrichtigungen.all().every((x) => x.gelesen)).toBe(true);
-    zurueckholen(archiv[0].eintraege);
-    expect(meldungsGruppen(db.benachrichtigungen.all(), 'posteingang')[0].eintraege).toHaveLength(2);
+  it('überfällige Aufgaben einmal je Fälligkeit – auch bei wiederholter Prüfung', () => {
+    db.aufgaben.create({ titel: 'Eigene Aufgabe', zustaendigId: jonas.id, erledigt: false, prioritaet: 'hoch', faellig: '2026-01-01' });
+    db.benachrichtigungen.all().forEach((b) => db.benachrichtigungen.purge(b.id));
+    expect(faelligeAufgaben()).toBe(1);
+    expect(faelligeAufgaben()).toBe(0);
+    expect(meinPosteingang(jonas).jetzt).toHaveLength(1);
   });
 });

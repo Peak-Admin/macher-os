@@ -85,6 +85,8 @@ export default defineModul({
           benachrichtigen(`Deine Route heute: ${r.stopps.length} Stopps`, {
             text: `${r.geschaetzt ? 'ca. ' : ''}${Math.round(r.kmGesamt)} km, ${r.minutenGesamt} min Fahrt. Route: ${r.mapsLink}`,
             fuer: m.id,
+            art: 'tag.route',
+            grund: 'Du fährst heute die Einsätze.',
           });
           gesendet.push(m.id);
           neu.push(personName(m));

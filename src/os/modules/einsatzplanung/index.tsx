@@ -68,7 +68,7 @@ export default defineModul({
           if (!betroffen.length) return;
           const m = db.mitarbeiter.get(a.mitarbeiterId);
           const titel = `${personName(m)}: ${ABWESENHEIT_LABEL[a.art]} – ${betroffen.length === 1 ? '1 Termin' : `${betroffen.length} Termine`} umplanen`;
-          benachrichtigen(titel, { text: `${datum(a.von)} bis ${datum(a.bis)}. Die Termine stehen unter „Braucht dich“.`, bezug: { typ: 'termine', id: betroffen[0].id }, wichtig: true });
+          benachrichtigen(titel, { text: `${datum(a.von)} bis ${datum(a.bis)}. Die Termine stehen unter „Braucht dich“.`, bezug: { typ: 'termine', id: betroffen[0].id }, art: 'termine.umplanen', grund: 'Du planst die Einsätze.' });
           erledigt('einsatzplanung.abwesenheit-pruefen', `Betroffene Termine gefunden: ${personName(m)}`, {
             text: betroffen.map((t) => `${t.titel} (${datumKurz(t.start)})`).join(', '),
             bezug: { typ: 'abwesenheiten', id: a.id },
