@@ -10,16 +10,20 @@ import '@fontsource/poppins/600.css';
 import './ui/base.css';
 import { ladeModule } from './shell/module';
 import { starteAutomationen } from './core/macher';
-import { setAktuellerNutzer } from './core/db';
+import { initDb, setAktuellerNutzer } from './core/db';
 import { ichId } from './core/session';
 import { App } from './shell/App';
 
-ladeModule();
-setAktuellerNutzer(ichId());
-starteAutomationen();
+async function start() {
+  await initDb();
+  ladeModule();
+  setAktuellerNutzer(ichId());
+  starteAutomationen();
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
+}
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+void start();

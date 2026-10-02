@@ -13,7 +13,7 @@
  * - Suchtreffer, Schnellerfassung, „Neu anlegen“-Einträge und Beispieldaten beisteuern.
  */
 import type { ComponentType } from 'react';
-import type { Bezug, ID, ObjektTyp, Rolle } from './objects';
+import type { Bezug, ID, Rolle, SammlungsName } from './objects';
 
 export type Bereich = 'heute' | 'auftraege' | 'plan' | 'betrieb' | 'macher';
 export type BetriebGruppe = 'team' | 'material' | 'werkzeuge' | 'geld' | 'unternehmen';
@@ -77,7 +77,7 @@ export interface Treffer {
 }
 
 export interface ObjektTab {
-  objekt: ObjektTyp;
+  objekt: SammlungsName;
   titel: string;
   component: ComponentType<{ id: ID }>;
   /** Pain-Gewicht: wichtigere Tabs zuerst */
@@ -90,7 +90,7 @@ export interface ObjektTab {
 
 /** Kompakter Block in der rechten Spalte / Kopf einer Detailansicht */
 export interface ObjektPanel {
-  objekt: ObjektTyp;
+  objekt: SammlungsName;
   component: ComponentType<{ id: ID }>;
   gewicht?: number;
 }
@@ -129,7 +129,7 @@ export interface ModulDef {
   /** Kurzer Status in der Betrieb-Übersicht, z. B. „3 Prüfungen fällig“ */
   kurzinfo?: () => { text: string; ton?: Ton } | undefined;
   /** Detailansicht eines Objekttyps gehört diesem Modul */
-  detail?: { objekt: ObjektTyp; pfad: (id: ID) => string }[];
+  detail?: { objekt: SammlungsName; pfad: (id: ID) => string }[];
   tabs?: ObjektTab[];
   panels?: ObjektPanel[];
   hinweise?: () => HinweisVorschlag[];
@@ -196,14 +196,14 @@ export function pfadZu(b: Bezug | undefined): string | undefined {
   return undefined;
 }
 
-export function tabsFuer(objekt: ObjektTyp): ObjektTab[] {
+export function tabsFuer(objekt: SammlungsName): ObjektTab[] {
   return module
     .flatMap((m) => m.tabs ?? [])
     .filter((t) => t.objekt === objekt)
     .sort((a, b) => (b.gewicht ?? 50) - (a.gewicht ?? 50));
 }
 
-export function panelsFuer(objekt: ObjektTyp): ObjektPanel[] {
+export function panelsFuer(objekt: SammlungsName): ObjektPanel[] {
   return module
     .flatMap((m) => m.panels ?? [])
     .filter((t) => t.objekt === objekt)
@@ -220,6 +220,11 @@ export function alleErstellen() {
 
 export function alleAutomationen(): (Automation & { modulId: string })[] {
   return module.flatMap((m) => (m.automationen ?? []).map((a) => ({ ...a, modulId: m.id })));
+}
+
+/** Ist eine Aktion registriert? (keine toten Knöpfe anzeigen) */
+export function aktionVorhanden(aktion: string): boolean {
+  return module.some((m) => !!m.aktionen?.[aktion]);
 }
 
 export function aktionAusfuehren(aktion: string, payload: unknown): string | void {

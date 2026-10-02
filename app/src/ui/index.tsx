@@ -38,11 +38,16 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   laedtText?: string;
   breit?: boolean;
   klein?: boolean;
-  /** als Link rendern */
+  /** als App-Link rendern */
   to?: string;
+  /** als externen Link rendern (Navigation, tel:, mailto:, Download) */
+  href?: string;
+  /** bei `href`: im neuen Tab öffnen */
+  neuerTab?: boolean;
+  download?: string;
 }
 
-export function Button({ variante = 'primaer', icon, laedt, laedtText, breit, klein, to, className, children, ...rest }: ButtonProps) {
+export function Button({ variante = 'primaer', icon, laedt, laedtText, breit, klein, to, href, neuerTab, download, className, children, ...rest }: ButtonProps) {
   const klasse = cx('mm-btn', `mm-btn--${variante}`, breit && 'mm-btn--breit', klein && 'mm-btn--klein', className);
   const inhalt = (
     <>
@@ -52,9 +57,23 @@ export function Button({ variante = 'primaer', icon, laedt, laedtText, breit, kl
   );
   if (to) {
     return (
-      <Link to={to} className={klasse} aria-label={rest['aria-label']}>
+      <Link to={to} className={klasse} aria-label={rest['aria-label']} onClick={rest.onClick as never}>
         {inhalt}
       </Link>
+    );
+  }
+  if (href) {
+    return (
+      <a
+        href={href}
+        className={klasse}
+        aria-label={rest['aria-label']}
+        onClick={rest.onClick as never}
+        download={download}
+        {...(neuerTab ? { target: '_blank', rel: 'noreferrer' } : {})}
+      >
+        {inhalt}
+      </a>
     );
   }
   return (

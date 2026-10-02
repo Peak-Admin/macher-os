@@ -2,7 +2,7 @@
  * Einrichtung nach dem Onboarding: Betrieb, Leistungen, Material, Qualifikationen
  * aus der Gewerk-Vorlage – plus gekennzeichnete Beispieldaten für den direkten Start.
  */
-import { batch, db, zuruecksetzen } from './db';
+import { alleSammlungen, batch, db, zuruecksetzen } from './db';
 import { gewerkVorlage } from './gewerke';
 import { alleModule } from './modul';
 import { heute, plusTage, summen, zeitpunkt } from './format';
@@ -107,7 +107,7 @@ export function einrichten(a: OnboardingAntworten) {
 /** Alle Beispieldaten entfernen – echte Daten bleiben */
 export function beispieleEntfernen() {
   batch(() => {
-    for (const col of Object.values(db)) {
+    for (const col of alleSammlungen()) {
       col.allMitGeloeschten()
         .filter((x) => x.beispiel)
         .forEach((x) => col.purge(x.id));

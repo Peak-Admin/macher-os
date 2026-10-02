@@ -61,7 +61,7 @@ export function FotosSeite() {
             <NotizListe eintraege={notizen} mitAuftrag />
           </Stapel>
         )}
-        <Meta>Belegter Speicher in diesem Browser: etwa {groesseText(speicherBelegt() * 2)}. Fotos werden auf höchstens 1600 Pixel verkleinert.</Meta>
+        <Meta>Belegter Speicher in diesem Browser: etwa {groesseText(speicherBelegt())}. Fotos werden auf höchstens 1600 Pixel verkleinert.</Meta>
       </Stapel>
     </Seite>
   );

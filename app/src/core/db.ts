@@ -7,26 +7,44 @@
  * - Jede Änderung erzeugt ein Ereignis (Zeitstrahl/Audit) und informiert Abonnenten.
  * - Löschen ist reversibel (Soft Delete).
  *
- * Speicherung aktuell lokal (localStorage). Die API ist so geschnitten, dass sie
- * später 1:1 gegen ein Backend (z. B. Supabase mit RLS) getauscht werden kann.
+ * Speicherung lokal im Browser: IndexedDB (genug Platz für Fotos und Dateien), Rückfall
+ * auf localStorage. Die API ist so geschnitten, dass sie später 1:1 gegen ein Backend
+ * (z. B. Supabase mit RLS) getauscht werden kann.
  */
 import { useSyncExternalStore, useMemo } from 'react';
 import type { Basis, Bezug, ID, ObjektMap, ObjektTyp, Ereignis } from './objects';
 import { emit } from './events';
 
 const SPEICHER_KEY = 'macher-os:v1';
+const IDB_NAME = 'macher-os';
+const IDB_STORE = 'stand';
 
 type Tabelle = Record<ID, Basis>;
 type Daten = Record<string, Tabelle>;
 
-let daten: Daten = laden();
+let daten: Daten = ladenLocal();
 let version = 0;
 const listeners = new Set<() => void>();
-const definiert = new Set<string>();
-let speichernGeplant = false;
+const sammlungen = new Map<string, Collection<Basis>>();
+let speichernGeplant: ReturnType<typeof setTimeout> | undefined;
 let aktuellerNutzer: ID | undefined;
+let idb: IDBDatabase | undefined;
 
-function laden(): Daten {
+export interface SpeicherStatus {
+  ort: 'indexeddb' | 'localstorage' | 'arbeitsspeicher';
+  fehler?: string;
+  /** belegte und verfügbare Bytes laut Browser (Schätzung) */
+  belegt?: number;
+  verfuegbar?: number;
+}
+let status: SpeicherStatus = { ort: globalThis.localStorage ? 'localstorage' : 'arbeitsspeicher' };
+const statusListener = new Set<() => void>();
+function setzeStatus(s: Partial<SpeicherStatus>) {
+  status = { ...status, ...s };
+  statusListener.forEach((l) => l());
+}
+
+function ladenLocal(): Daten {
   try {
     const roh = globalThis.localStorage?.getItem(SPEICHER_KEY);
     return roh ? (JSON.parse(roh) as Daten) : {};
@@ -35,17 +53,109 @@ function laden(): Daten {
   }
 }
 
+function idbAnfrage<T>(r: IDBRequest<T>): Promise<T> {
+  return new Promise((ok, fehler) => {
+    r.onsuccess = () => ok(r.result);
+    r.onerror = () => fehler(r.error);
+  });
+}
+
+/**
+ * Beim App-Start einmal aufrufen (vor dem ersten Rendern). Öffnet IndexedDB und lädt den Stand;
+ * vorhandene localStorage-Daten werden einmalig übernommen.
+ */
+export async function initDb(): Promise<void> {
+  if (!globalThis.indexedDB) return;
+  try {
+    const open = indexedDB.open(IDB_NAME, 1);
+    open.onupgradeneeded = () => open.result.createObjectStore(IDB_STORE);
+    idb = await idbAnfrage(open);
+    const gespeichert = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get('daten'));
+    if (gespeichert) {
+      daten = gespeichert as Daten;
+    } else if (Object.keys(daten).length) {
+      await schreibeIdb();
+    }
+    try {
+      globalThis.localStorage?.removeItem(SPEICHER_KEY);
+    } catch {
+      /* egal */
+    }
+    setzeStatus({ ort: 'indexeddb', fehler: undefined });
+    void schaetzePlatz();
+    version++;
+    listeners.forEach((l) => l());
+  } catch (e) {
+    idb = undefined;
+    console.warn('IndexedDB nicht verfügbar – speichere im localStorage.', e);
+  }
+}
+
+async function schreibeIdb() {
+  if (!idb) return;
+  const tx = idb.transaction(IDB_STORE, 'readwrite');
+  tx.objectStore(IDB_STORE).put(daten, 'daten');
+  await new Promise<void>((ok, fehler) => {
+    tx.oncomplete = () => ok();
+    tx.onerror = () => fehler(tx.error);
+    tx.onabort = () => fehler(tx.error);
+  });
+}
+
+async function schaetzePlatz() {
+  try {
+    const e = await navigator.storage?.estimate?.();
+    if (e) setzeStatus({ belegt: e.usage, verfuegbar: e.quota });
+  } catch {
+    /* egal */
+  }
+}
+
+const SPEICHER_FEHLER = 'Deine letzten Änderungen konnten nicht dauerhaft gespeichert werden. Der Speicher ist voll oder gesperrt.';
+
 function speichern() {
   if (speichernGeplant) return;
-  speichernGeplant = true;
-  queueMicrotask(() => {
-    speichernGeplant = false;
+  speichernGeplant = setTimeout(async () => {
+    speichernGeplant = undefined;
+    if (idb) {
+      try {
+        await schreibeIdb();
+        if (status.fehler) setzeStatus({ fehler: undefined });
+        void schaetzePlatz();
+      } catch {
+        setzeStatus({ fehler: SPEICHER_FEHLER });
+      }
+      return;
+    }
     try {
       globalThis.localStorage?.setItem(SPEICHER_KEY, JSON.stringify(daten));
+      if (status.fehler) setzeStatus({ fehler: undefined });
     } catch {
-      // Speicher voll oder nicht verfügbar – Daten bleiben im Arbeitsspeicher.
+      setzeStatus({ fehler: SPEICHER_FEHLER });
     }
-  });
+  }, 150);
+}
+
+/** Speicherort, Fehler und Platz – z. B. für Fotos: vor großen Uploads prüfen */
+export function speicherStatus(): SpeicherStatus {
+  return status;
+}
+
+export function useSpeicherStatus(): SpeicherStatus {
+  return useSyncExternalStore(
+    (l) => (statusListener.add(l), () => statusListener.delete(l)),
+    () => status,
+    () => status,
+  );
+}
+
+/** Passen weitere `bytes` noch in den Speicher? (bei IndexedDB anhand der Browser-Schätzung) */
+export function platzFuer(bytes: number): boolean {
+  if (status.ort === 'indexeddb') {
+    if (status.verfuegbar == null || status.belegt == null) return true;
+    return status.belegt + bytes < status.verfuegbar * 0.95;
+  }
+  return true;
 }
 
 let batchTiefe = 0;
@@ -142,13 +252,24 @@ function standardText(aktion: string) {
  * so kann kein Objekttyp doppelt existieren.
  */
 export function defineCollection<T extends Basis>(name: string): Collection<T> {
-  if (definiert.has(name)) {
+  if (sammlungen.has(name)) {
     throw new Error(
       `Sammlung "${name}" existiert bereits. Jedes Objekt gibt es genau einmal – nutze die bestehende Sammlung.`,
     );
   }
-  definiert.add(name);
-  return collection<T>(name);
+  const c = collection<T>(name);
+  sammlungen.set(name, c as unknown as Collection<Basis>);
+  return c;
+}
+
+/** Zugriff auf eine beliebige Sammlung über ihren Namen (auch Modul-Sammlungen) */
+export function sammlung<T extends Basis = Basis>(name: string): Collection<T> | undefined {
+  return sammlungen.get(name) as Collection<T> | undefined;
+}
+
+/** Alle registrierten Sammlungen (Kern und Module) */
+export function alleSammlungen(): Collection<Basis>[] {
+  return [...sammlungen.values()];
 }
 
 function collection<T extends Basis>(name: string): Collection<T> {
@@ -200,6 +321,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
       tabelle(name)[id] = neu;
       protokoll(name, 'restored', neu);
       geaendert();
+      emit({ typ: `${name}.restored`, sammlung: name, objekt: neu });
     },
     purge(id) {
       delete tabelle(name)[id];
@@ -276,7 +398,7 @@ export const db: KernCollections = Object.fromEntries(
 /** Generischer Zugriff über einen Bezug */
 export function aufloesen(b: Bezug | undefined): Basis | undefined {
   if (!b) return undefined;
-  return tabelle(b.typ)[b.id];
+  return daten[b.typ]?.[b.id];
 }
 
 /** Zeitstrahl eines Objekts (neueste zuerst) */

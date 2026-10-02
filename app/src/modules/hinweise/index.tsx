@@ -8,6 +8,6 @@ export default defineModul({
   beschreibung: 'Holt dich nur dann dazu, wenn eine Entscheidung oder Freigabe nötig ist.',
   icon: 'achtung',
   gewicht: 75,
-  navigation: 'versteckt',
+  navigation: 'haupt',
   routen: [{ pfad: '', element: HinweiseAnsicht }],
 });

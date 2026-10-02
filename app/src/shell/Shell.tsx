@@ -6,10 +6,10 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { BEREICHE, alleErstellen, modulPfad, moduleIn, type Bereich } from '@core/modul';
 import { oeffne } from '@core/overlay';
-import { db, useDatenstand } from '@core/db';
+import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { initialen, personName } from '@core/format';
-import { Avatar, Icon } from '@ui/index';
+import { Avatar, Icon, Meldung } from '@ui/index';
 import './shell.css';
 
 const BEREICH_ICON: Record<string, string> = { heute: 'heute', auftraege: 'auftraege', plan: 'plan', betrieb: 'betrieb' };
@@ -56,6 +56,7 @@ export function Shell({ children }: { children: ReactNode }) {
             </div>
           ))}
         </nav>
+        <MacherLinks />
         <NutzerWechsel />
       </aside>
       {menueOffen && <div className="mm-sidebar-schleier" onClick={() => setMenueOffen(false)} />}
@@ -80,6 +81,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
         </header>
         <main id="inhalt" className="mm-inhalt" tabIndex={-1}>
+          <SpeicherWarnung />
           {children}
         </main>
       </div>
@@ -188,6 +190,35 @@ function NutzerWechsel() {
           ))}
         </select>
       </label>
+    </div>
+  );
+}
+
+/** Macher arbeitet über allen Modulen – Hinweise & Automationen sind hier erreichbar */
+function MacherLinks() {
+  const module = moduleIn('macher').filter((m) => m.navigation === 'haupt' && m.routen?.length);
+  if (!module.length) return null;
+  return (
+    <ul className="mm-nav-macher" aria-label="Macher">
+      {module.map((m) => (
+        <li key={m.id}>
+          <NavLink to={modulPfad(m)} className={({ isActive }) => `mm-nav-unterlink ${isActive ? 'mm-nav-unterlink--aktiv' : ''}`}>
+            <Icon name={m.icon ?? 'macher'} size={16} /> {m.titel}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function SpeicherWarnung() {
+  const s = useSpeicherStatus();
+  if (!s.fehler) return null;
+  return (
+    <div style={{ maxWidth: 1120, margin: '0 auto 24px' }}>
+      <Meldung ton="achtung" titel="Nicht gespeichert">
+        {s.fehler} Sichere deine Daten unter Betrieb › Einstellungen und lösche nicht mehr benötigte Fotos oder Dateien.
+      </Meldung>
     </div>
   );
 }

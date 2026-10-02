@@ -9,7 +9,7 @@ export default defineModul({
   beschreibung: 'Führt wiederkehrende Verwaltungsarbeit nach festen Regeln automatisch aus.',
   icon: 'wiederholen',
   gewicht: 60,
-  navigation: 'versteckt',
+  navigation: 'haupt',
   routen: [{ pfad: '', element: Uebersicht }],
   automationen: [pruefungAutomation],
 });

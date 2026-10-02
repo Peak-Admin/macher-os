@@ -3,34 +3,59 @@
  * Auswahlfelder für Kernobjekte. Module verwenden diese, statt eigene zu bauen.
  */
 import { useState, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { db, zeitstrahl, useDatenstand } from '@core/db';
 import { panelsFuer, pfadZu, tabsFuer } from '@core/modul';
 import { datum, personName, relativ, uhrzeit } from '@core/format';
-import type { Bezug, ID, ObjektTyp } from '@core/objects';
+import type { Bezug, ID, SammlungsName } from '@core/objects';
 import { Auswahl, Leer, Liste, ListenZeile, Meta, Tabs } from './index';
 
-/** Tabs, die andere Module in diese Detailansicht einhängen. `eigene` kommen zuerst. */
-export function ObjektTabs({ objekt, id, eigene = [] }: { objekt: ObjektTyp; id: ID; eigene?: { id: string; titel: string; inhalt: ReactNode; zaehler?: number }[] }) {
+/**
+ * Tabs, die andere Module in diese Detailansicht einhängen, gemischt mit eigenen Tabs.
+ * Reihenfolge nach `gewicht` (eigene ohne Gewicht: 100 = vorn; `ende: true` = ganz hinten, z. B. Verlauf).
+ * Starttab per URL `?tab=<titel oder id>`.
+ */
+export function ObjektTabs({
+  objekt,
+  id,
+  eigene = [],
+}: {
+  objekt: SammlungsName;
+  id: ID;
+  eigene?: { id: string; titel: string; inhalt: ReactNode; zaehler?: number; gewicht?: number; ende?: boolean }[];
+}) {
   useDatenstand();
+  const [params, setParams] = useSearchParams();
   const fremde = tabsFuer(objekt).filter((t) => !t.sichtbar || t.sichtbar(id));
   const alle = [
-    ...eigene.map((e) => ({ id: e.id, titel: e.titel, zaehler: e.zaehler, render: () => e.inhalt })),
-    ...fremde.map((t) => ({ id: t.titel, titel: t.titel, zaehler: t.zaehler?.(id), render: () => <t.component id={id} /> })),
-  ];
-  const [aktiv, setAktiv] = useState(alle[0]?.id ?? '');
+    ...eigene.map((e) => ({ id: e.id, titel: e.titel, zaehler: e.zaehler, gewicht: e.ende ? -1 : (e.gewicht ?? 100), render: () => e.inhalt })),
+    ...fremde.map((t) => ({ id: t.titel, titel: t.titel, zaehler: t.zaehler?.(id), gewicht: t.gewicht ?? 50, render: () => <t.component id={id} /> })),
+  ].sort((a, b) => b.gewicht - a.gewicht);
+  const [aktiv, setAktiv] = useState(() => {
+    const wunsch = params.get('tab');
+    return alle.find((t) => t.id === wunsch || t.titel === wunsch)?.id ?? alle[0]?.id ?? '';
+  });
   const tab = alle.find((t) => t.id === aktiv) ?? alle[0];
   if (!tab) return null;
   return (
     <div className="mm-stapel" style={{ gap: 16 }}>
-      <Tabs tabs={alle.map(({ id: i, titel, zaehler }) => ({ id: i, titel, zaehler }))} aktiv={tab.id} onWechsel={setAktiv} />
+      <Tabs
+        tabs={alle.map(({ id: i, titel, zaehler }) => ({ id: i, titel, zaehler }))}
+        aktiv={tab.id}
+        onWechsel={(t) => {
+          setAktiv(t);
+          const p = new URLSearchParams(params);
+          p.set('tab', t);
+          setParams(p, { replace: true });
+        }}
+      />
       <div role="tabpanel">{tab.render()}</div>
     </div>
   );
 }
 
 /** Kontextblöcke, die Module in die Seitenspalte einer Detailansicht einhängen */
-export function ObjektPanels({ objekt, id }: { objekt: ObjektTyp; id: ID }) {
+export function ObjektPanels({ objekt, id }: { objekt: SammlungsName; id: ID }) {
   useDatenstand();
   return (
     <>

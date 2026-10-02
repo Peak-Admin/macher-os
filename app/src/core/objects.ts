@@ -35,11 +35,17 @@ export interface Adresse {
   ort: string;
 }
 
-/** Verweis auf ein beliebiges Objekt (generische Beziehungsschicht) */
+/**
+ * Verweis auf ein beliebiges Objekt (generische Beziehungsschicht).
+ * `typ` ist eine Kernsammlung oder der Name einer Modul-Sammlung (z. B. `servicevertraege`).
+ */
 export interface Bezug {
-  typ: ObjektTyp;
+  typ: SammlungsName;
   id: ID;
 }
+
+/** Name einer Kern- oder Modul-Sammlung */
+export type SammlungsName = ObjektTyp | (string & {});
 
 // ---------------------------------------------------------------- Betrieb
 
