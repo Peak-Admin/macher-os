@@ -38,11 +38,15 @@ describe('Phasen', () => {
 });
 
 describe('Nächster Schritt', () => {
+  const ohneQuali = (id: string) => id !== 'anfrage.qualifizieren';
+  it('Anfrage → „Anfrage bearbeiten“, wenn das Anfragen-Modul da ist', () => {
+    expect(naechsterSchritt(auftrag({}), kontext())).toMatchObject({ label: 'Anfrage bearbeiten', aktion: 'anfrage.qualifizieren', payload: { auftragId: 'x' } });
+  });
   it('Projekt-Anfrage → Besichtigung planen', () => {
-    expect(naechsterSchritt(auftrag({}), kontext())?.aktion).toBe('besichtigung.planen');
+    expect(naechsterSchritt(auftrag({}), kontext({ aktionDa: ohneQuali }))?.aktion).toBe('besichtigung.planen');
   });
   it('Kundendienst-Anfrage → annehmen und einplanen', () => {
-    const s = naechsterSchritt(auftrag({ art: 'kundendienst' }), kontext())!;
+    const s = naechsterSchritt(auftrag({ art: 'kundendienst' }), kontext({ aktionDa: ohneQuali }))!;
     expect(s.aktion).toBe('plan.einplanen');
     expect(s.vorherPhase).toBe('beauftragt');
   });
@@ -74,6 +78,18 @@ describe('Nächster Schritt', () => {
     const s = naechsterSchritt(auftrag({ phase: 'abrechnung' }), kontext({ rechnungen: [r] }))!;
     expect(s.aktion).toBe('rechnung.erstellen');
     expect(s.payload).toEqual({ auftragId: 'x', art: 'schluss' });
+  });
+  it('Angebotsentwurf → „Angebot senden“, beauftragt → „Einsatz planen“, fertig → „Rechnung erstellen“', () => {
+    const an = { ...basis, id: 'an1', status: 'entwurf' } as Angebot;
+    expect(naechsterSchritt(auftrag({ phase: 'angebot' }), kontext({ angebote: [an] }))?.label).toBe('Angebot senden');
+    expect(naechsterSchritt(auftrag({ phase: 'beauftragt' }), kontext())?.label).toBe('Einsatz planen');
+    expect(naechsterSchritt(auftrag({ phase: 'abrechnung' }), kontext())?.label).toBe('Rechnung erstellen');
+  });
+  it('offene, überfällige Rechnung → „Zahlung erinnern“', () => {
+    const r = { ...basis, id: 'r1', art: 'rechnung', status: 'versendet', faelligAm: plusTage(heute(), -3) } as Rechnung;
+    expect(naechsterSchritt(auftrag({ phase: 'abrechnung' }), kontext({ rechnungen: [r] }))).toMatchObject({ label: 'Zahlung erinnern', pfad: '/rechnungen/r1' });
+    const nochNicht = { ...r, faelligAm: plusTage(heute(), 3) };
+    expect(naechsterSchritt(auftrag({ phase: 'abrechnung' }), kontext({ rechnungen: [nochNicht] }))?.label).toBe('Rechnung ansehen');
   });
   it('erledigt und Bewertung schon angefragt → kein Schritt mehr', () => {
     expect(naechsterSchritt(auftrag({ phase: 'erledigt' }), kontext())?.aktion).toBe('bewertung.anfragen');
