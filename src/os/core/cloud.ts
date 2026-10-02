@@ -40,6 +40,8 @@ export interface PushNachricht {
   pfad?: string;
   /** Aktionen direkt in der Benachrichtigung, z. B. Urlaub genehmigen */
   aktionen?: { aktion: string; label: string; payload?: unknown }[];
+  /** gleiche Mitteilungen zusammenfassen (z. B. `takt-tagesbrief`) */
+  tag?: string;
 }
 
 export interface Konto {

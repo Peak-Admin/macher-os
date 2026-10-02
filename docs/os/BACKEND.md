@@ -7,7 +7,8 @@ Jeder Dienst ist einzeln zuschaltbar – fehlt ein Schlüssel, antwortet die zug
 `501 { fehler: "nicht verbunden" }` und die App nutzt den lokalen Rückfall (z. B. eigenes Mail-Programm).
 
 Dauer: etwa 45 Minuten. Du brauchst Zugang zu Vercel (Team „01 Peak Atlas Web“, Projekt `macher-os-app`) und zum DNS deiner Domain.
-Server-Funktionen: `src/app/api/cloud/*` und `src/app/api/cron/*` (Next.js Route Handler), Helfer in `src/server/cloud/`.
+Server-Funktionen: `src/app/api/cloud/*`, `src/app/api/cron/*` und `src/app/api/takte/*` (Next.js Route Handler), Helfer in `src/server/cloud/`
+(Takte: Planung und Server-Aktionen in `src/os/server/takte/`).
 
 ---
 
@@ -131,12 +132,18 @@ Hat ein Mitarbeiter kein Gerät mit Push, geht die Nachricht als E-Mail raus (we
 | `WHATSAPP_TOKEN`, `WHATSAPP_NUMMER_ID`, `WHATSAPP_VORLAGE` | Meta (Schritt 4b) | nein |
 | `CRON_SECRET` | selbst erzeugt | nein |
 | `DATEI_GEHEIMNIS` | selbst erzeugt (optional) | nein |
+| `TAKTE_GEHEIMNIS` | selbst erzeugt (optional, sonst `CRON_SECRET`) – signiert die Knöpfe in Takt-Mitteilungen | nein |
 | `APP_URL` | deine Domain | nein |
 
 3. **Deployments → … → Redeploy**. Wichtig: `NEXT_PUBLIC_*`-Werte werden beim Bauen eingesetzt – nach jeder Änderung
    an ihnen neu deployen.
 4. Vercel-Tarif: Für alle Server-Funktionen aller Pakete und Crons, die öfter als einmal täglich laufen
    (z. B. Tagesbrief), braucht es **Vercel Pro**. Der Cron `/api/cron/taeglich` läuft täglich um 03:17 UTC.
+5. Takte (`/api/takte/cron`): Vercel Hobby erlaubt nur tägliche Crons – deshalb steht in `vercel.json`
+   `"schedule": "30 4 * * *"` (04:30 UTC = 6:30 Uhr Sommerzeit). Die feinen Zeiten (Dein Tag 6:30, Tagesbrief 7:00,
+   Zeiten bestätigen 16:30, Wochenbilanz Fr 15:00) plant bis dahin der Browser-Planer, solange Macher OS offen ist;
+   Browser und Server teilen sich „zuletzt zugestellt“, nichts kommt doppelt. **Mit Vercel Pro** den Zeitplan auf
+   `"*/15 * * * *"` stellen – dann stellt der Server alle Takte pünktlich zu, auch wenn niemand die App offen hat.
 
 ## 8. Prüfen, ob alles läuft
 
@@ -151,6 +158,7 @@ Hat ein Mitarbeiter kein Gerät mit Push, geht die Nachricht als E-Mail raus (we
    erscheint „Kunde hat den Link aus der E-Mail geöffnet“.
 6. Profil (oben rechts) → **Konto & Geräte → Benachrichtigungen einschalten** → Gerät erscheint in der Liste.
 7. Cron von Hand testen: `curl -H "Authorization: Bearer $CRON_SECRET" https://<domain>/api/cron/taeglich`.
+   Takte ohne Versand: `curl -H "Authorization: Bearer $CRON_SECRET" "https://<domain>/api/takte/cron?trocken=1"`.
 
 Fehlersuche: Vercel → Projekt → **Logs** (Server-Funktionen), Supabase → **Logs** (Auth/DB).
 Eine Server-Funktion mit `501 nicht verbunden` heißt: der zugehörige Schlüssel fehlt oder ist leer.

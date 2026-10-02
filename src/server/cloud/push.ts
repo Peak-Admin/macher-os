@@ -12,7 +12,10 @@ export interface PushNachricht {
   titel: string;
   text?: string;
   pfad?: string;
-  aktionen?: { aktion: string; label: string; payload?: unknown }[];
+  /** Aktionen in der Mitteilung; `schluessel` = signiert, damit der Service Worker direkt entscheiden kann (Takte) */
+  aktionen?: { aktion: string; label: string; payload?: unknown; schluessel?: string }[];
+  /** gleiche Mitteilungen zusammenfassen (z. B. `takt-tagesbrief`) */
+  tag?: string;
 }
 
 export const pushVerbunden = () => !!(env('VAPID_PUBLIC_KEY') ?? env('NEXT_PUBLIC_VAPID_PUBLIC_KEY')) && !!env('VAPID_PRIVATE_KEY');
@@ -28,6 +31,7 @@ export async function pushAnMitarbeiter(
   betriebId: string,
   n: PushNachricht,
   sender: Pick<typeof webpush, 'sendNotification'> = webpush,
+  opts: { emailRueckfall?: boolean } = {},
 ): Promise<{ geraete: number; email: boolean }> {
   const mitglieder = await rest<{ nutzer_id: string }[]>(
     k,
@@ -36,7 +40,7 @@ export async function pushAnMitarbeiter(
   if (!mitglieder.length) return { geraete: 0, email: false };
   const ids = mitglieder.map((m) => m.nutzer_id).join(',');
   const abos = await rest<Abo[]>(k, `push_abos?nutzer_id=in.(${ids})&select=nutzer_id,abo`);
-  const nutzlast = JSON.stringify({ titel: n.titel, text: n.text, pfad: n.pfad, aktionen: n.aktionen });
+  const nutzlast = JSON.stringify({ titel: n.titel, text: n.text, pfad: n.pfad, aktionen: n.aktionen, tag: n.tag });
   let geraete = 0;
   if (abos.length && pushVerbunden()) {
     const vapid = {
@@ -59,7 +63,7 @@ export async function pushAnMitarbeiter(
       }),
     );
   }
-  if (geraete > 0 || !emailVerbunden()) return { geraete, email: false };
+  if (geraete > 0 || opts.emailRueckfall === false || !emailVerbunden()) return { geraete, email: false };
   // Rückfall E-Mail
   for (const m of mitglieder) {
     const r = await fetch(`${k.url}/auth/v1/admin/users/${m.nutzer_id}`, { headers: { apikey: k.serviceKey, authorization: `Bearer ${k.serviceKey}` } });
@@ -71,7 +75,7 @@ export async function pushAnMitarbeiter(
       an: u.email,
       betreff: n.titel,
       text: n.text ?? n.titel,
-      link: basis && n.pfad ? `${basis.replace(/\/$/, '')}/os${n.pfad}` : undefined,
+      link: basis && n.pfad ? `${basis.replace(/\/$/, '')}${n.pfad === '/os' || n.pfad.startsWith('/os/') ? '' : '/os'}${n.pfad}` : undefined,
       linkText: 'In Macher OS öffnen',
       absenderName: 'Macher OS',
     });
