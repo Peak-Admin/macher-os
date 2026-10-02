@@ -150,7 +150,7 @@
 .mm-heute-gruss span { font-weight: 500; font-size: 18px; color: var(--mm-text); }
 .mm-heute-block { display: flex; flex-direction: column; gap: 12px; }
 .mm-heute-blocktitel { font: 600 13px/18px var(--mm-font-eyebrow); letter-spacing: 1px; text-transform: uppercase; color: var(--mm-brand-text); }
-.mm-einsatz { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-left: 4px solid var(--mm-brand); border-radius: var(--mm-radius-card); }
+.mm-einsatz { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); }
 .mm-einsatz-kunde { font: 700 28px/34px var(--mm-font); color: var(--mm-black); }
 .mm-einsatz-aufgabe { font-size: 18px; line-height: 26px; color: var(--mm-text); }
 .mm-einsatz .mm-meta a, .mm-textlink { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; color: var(--mm-link); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }

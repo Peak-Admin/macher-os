@@ -52,9 +52,7 @@ export function BlogBlocks({ blocks }: { blocks: BlogBlock[] }) {
             return (
               <aside
                 key={i}
-                className={`mt-6 rounded-lg border-l-4 p-5 ${
-                  b.ton === "achtung" ? "border-signal bg-signal-soft" : "border-sky bg-sky-soft"
-                }`}
+                className={`mt-6 rounded-lg p-5 ${b.ton === "achtung" ? "bg-signal-soft" : "bg-sky-soft"}`}
               >
                 {b.titel && (
                   <p className="flex items-center gap-2 font-semibold text-ink">
