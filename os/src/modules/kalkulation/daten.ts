@@ -21,6 +21,11 @@ export interface KalkZeile {
   material: Cent;
   /** Fremdleistung (Subunternehmer, Miete) je Einheit */
   fremd: Cent;
+  /**
+   * Fester Verkaufspreis je Einheit (aus dem Leistungskatalog oder von Hand).
+   * Gesetzt = dieser Preis gilt, die Kalkulation zeigt die Marge daneben. Leer = kalkulierter Preis.
+   */
+  festpreis?: Cent;
 }
 
 export interface Kalkulation extends Basis {
@@ -52,14 +57,19 @@ export interface ZeilenErgebnis {
   materialZuschlag: Cent;
   selbstkosten: Cent;
   wagnisGewinn: Cent;
+  /** Preis aus Selbstkosten + Wagnis & Gewinn */
+  kalkuliert: Cent;
+  /** gültiger Verkaufspreis: Festpreis, sonst kalkuliert */
   preis: Cent;
   einheitspreis: Cent;
   deckungsbeitrag: Cent;
+  /** Preis minus Selbstkosten – was nach allen Kosten übrig bleibt */
+  marge: Cent;
 }
 
 export interface Ergebnis {
   zeilen: ZeilenErgebnis[];
-  summe: Omit<ZeilenErgebnis, 'id' | 'einheitspreis'> & { dbProzent: number };
+  summe: Omit<ZeilenErgebnis, 'id' | 'einheitspreis'> & { dbProzent: number; margeProzent: number };
   /** Was eine Stunde Lohn mit allen Zuschlägen kostet */
   verrechnungssatz: Cent;
 }
@@ -75,7 +85,8 @@ export function rechneZeile(z: KalkZeile, k: Pick<Kalkulation, 'lohnkosten' | 'g
   const materialZuschlag = rund((material * k.materialZuschlagProzent) / 100);
   const selbstkosten = lohn + gemeinkosten + material + materialZuschlag + fremd;
   const wagnisGewinn = rund((selbstkosten * k.wagnisGewinnProzent) / 100);
-  const preis = selbstkosten + wagnisGewinn;
+  const kalkuliert = selbstkosten + wagnisGewinn;
+  const preis = z.festpreis != null ? rund(z.menge * z.festpreis) : kalkuliert;
   const einzelkosten = lohn + material + fremd;
   return {
     id: z.id,
@@ -88,9 +99,11 @@ export function rechneZeile(z: KalkZeile, k: Pick<Kalkulation, 'lohnkosten' | 'g
     materialZuschlag,
     selbstkosten,
     wagnisGewinn,
+    kalkuliert,
     preis,
-    einheitspreis: z.menge > 0 ? rund(preis / z.menge) : 0,
+    einheitspreis: z.festpreis ?? (z.menge > 0 ? rund(preis / z.menge) : 0),
     deckungsbeitrag: preis - einzelkosten,
+    marge: preis - selbstkosten,
   };
 }
 
@@ -99,6 +112,7 @@ export function rechne(k: Pick<Kalkulation, 'zeilen' | 'lohnkosten' | 'gemeinkos
   const s = (f: keyof Omit<ZeilenErgebnis, 'id'>) => zeilen.reduce((x, z) => x + z[f], 0);
   const preis = s('preis');
   const deckungsbeitrag = s('deckungsbeitrag');
+  const marge = s('marge');
   return {
     zeilen,
     summe: {
@@ -111,9 +125,12 @@ export function rechne(k: Pick<Kalkulation, 'zeilen' | 'lohnkosten' | 'gemeinkos
       materialZuschlag: s('materialZuschlag'),
       selbstkosten: s('selbstkosten'),
       wagnisGewinn: s('wagnisGewinn'),
+      kalkuliert: s('kalkuliert'),
       preis,
       deckungsbeitrag,
       dbProzent: preis > 0 ? Math.round((deckungsbeitrag / preis) * 1000) / 10 : 0,
+      marge,
+      margeProzent: preis > 0 ? Math.round((marge / preis) * 1000) / 10 : 0,
     },
     verrechnungssatz: rund(k.lohnkosten * (1 + k.gemeinkostenProzent / 100) * (1 + k.wagnisGewinnProzent / 100)),
   };
@@ -148,7 +165,18 @@ export function materialAufschlag(artikel: Artikel[]): number | undefined {
 
 export function zeileAusLeistung(l: Leistung, artikel: Artikel[], menge = 1): KalkZeile {
   const mat = (l.material ?? []).reduce((s, m) => s + (artikel.find((a) => a.id === m.artikelId)?.ek ?? 0) * m.menge, 0);
-  return { id: neueId('k'), text: l.name, menge, einheit: l.einheit, leistungId: l.id, minuten: l.minuten ?? (l.einheit === 'h' ? 60 : 0), material: rund(mat), fremd: 0 };
+  return {
+    id: neueId('k'),
+    text: l.name,
+    menge,
+    einheit: l.einheit,
+    leistungId: l.id,
+    minuten: l.minuten ?? (l.einheit === 'h' ? 60 : 0),
+    material: rund(mat),
+    fremd: 0,
+    // Katalogpreis gilt; die Kalkulation zeigt, ob er die Kosten deckt
+    festpreis: l.preis > 0 ? l.preis : undefined,
+  };
 }
 
 export function zeileAusArtikel(a: Artikel, menge = 1): KalkZeile {

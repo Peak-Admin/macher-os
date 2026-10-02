@@ -32,7 +32,7 @@ describe('Aufmaß → Kalkulation → Angebot', () => {
     kalkulationUebernehmen(k.id);
     const ang = kalkulationUebernehmen(k.id)!;
     expect(ang.positionen).toHaveLength(1);
-    // 6 × 0,5 h × 40 € = 120 € + 60 € GK = 180 € + 10 % = 198 € → 33 € je Stück
-    expect(ang.positionen[0]).toMatchObject({ menge: 6, einzelpreis: 3300 });
+    // Katalogpreis gilt (45 €); kalkuliert wären 6 × 0,5 h × 40 € = 120 € + 60 € GK = 180 € + 10 % = 198 € → 33 € je Stück
+    expect(ang.positionen[0]).toMatchObject({ menge: 6, einzelpreis: 4500 });
   });
 });

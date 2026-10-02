@@ -4,7 +4,7 @@ import { setzeEinstellung, einstellung } from '@core/einstellungen';
 import { euro, zahl } from '@core/format';
 import { useDarf } from '@core/session';
 import type { Einheit, ID } from '@core/objects';
-import { Auswahl, BeispielMarke, Button, Eingabe, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, ZweiSpalten, useBestaetigen, useToast, ZahlEingabe } from '@ui/index';
+import { Auswahl, BeispielMarke, Button, Eingabe, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, ZweiSpalten, useBestaetigen, useToast, ZahlEingabe } from '@ui/index';
 import { ObjektLink } from '@ui/objekt';
 import { EINHEITEN } from '@modules/angebote/Positionen';
 import { kalkulationUebernehmen, zeilenAusAufmass } from './uebernahme';
@@ -53,10 +53,18 @@ function ZeileKarte({ z, k, onChange, onWeg }: { z: KalkZeile; k: Kalkulation; o
           <ZahlEingabe label={`Min. je ${z.einheit}`} wert={z.minuten} onWert={(n) => set({ minuten: n ?? 0 })} />
           <ZahlEingabe label={`Material € je ${z.einheit}`} wert={z.material} cent onWert={(n) => set({ material: n ?? 0 })} />
           <ZahlEingabe label={`Fremd € je ${z.einheit}`} wert={z.fremd} cent onWert={(n) => set({ fremd: n ?? 0 })} />
+          <ZahlEingabe
+            label={`Preis € je ${z.einheit}`}
+            wert={z.festpreis}
+            cent
+            onWert={(n) => set({ festpreis: n ?? undefined })}
+            hilfe={z.festpreis == null ? `Leer = kalkuliert (${euro(z.menge > 0 ? Math.round(r.kalkuliert / z.menge) : 0)})` : `Kalkuliert: ${euro(z.menge > 0 ? Math.round(r.kalkuliert / z.menge) : 0)}`}
+          />
         </div>
         <div className="mm-zeile" style={{ justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
           <span className="mm-meta">
-            {zahl(Math.round(r.stunden * 100) / 100)} Std. · Kosten {euro(r.selbstkosten)} · DB {euro(r.deckungsbeitrag)}
+            {zahl(Math.round(r.stunden * 100) / 100)} Std. · Kosten {euro(r.selbstkosten)} · Marge {euro(r.marge)}{' '}
+            {r.marge < 0 ? <Status ton="achtung">Unter Selbstkosten</Status> : r.preis < r.kalkuliert ? <Status ton="neutral">Unter kalkuliertem Preis</Status> : null}
           </span>
           <strong className="mm-number">
             {euro(r.einheitspreis)} / {z.einheit} · {euro(r.preis)}
@@ -171,9 +179,12 @@ export function KalkulationEditor() {
                 {e.summe.fremd > 0 && <Zeile label="Fremdleistung" wert={euro(e.summe.fremd)} />}
                 <Zeile label="Selbstkosten" wert={euro(e.summe.selbstkosten)} stark />
                 <Zeile label={`+ Wagnis & Gewinn ${zahl(k.wagnisGewinnProzent)} %`} wert={euro(e.summe.wagnisGewinn)} />
+                <Zeile label="Kalkulierter Preis" wert={euro(e.summe.kalkuliert)} />
                 <Zeile label="Angebotspreis netto" wert={euro(e.summe.preis)} stark />
+                <Zeile label={`Marge nach allen Kosten (${zahl(e.summe.margeProzent)} %)`} wert={euro(e.summe.marge)} stark />
                 <Zeile label={`Deckungsbeitrag (${zahl(e.summe.dbProzent)} %)`} wert={euro(e.summe.deckungsbeitrag)} />
-                <Meta>Deckungsbeitrag = Preis minus Lohn, Material und Fremdleistung. Davon zahlst du Miete, Fahrzeuge, Büro – und verdienst.</Meta>
+                {e.summe.marge < 0 && <Meldung ton="achtung">Dein Preis deckt die Selbstkosten nicht. Prüfe Preise oder Zeiten.</Meldung>}
+                <Meta>Katalogpreise gelten, die Kalkulation zeigt, was dir davon bleibt. Marge = Preis minus Selbstkosten (inkl. Gemeinkosten). Deckungsbeitrag = Preis minus Lohn, Material und Fremdleistung.</Meta>
               </Stapel>
             </Karte>
             <Karte titel="Sätze & Zuschläge" kompakt>
