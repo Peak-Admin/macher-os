@@ -63,7 +63,7 @@ export const WIDGETS: WidgetDefinition[] = [
 
   // Abkürzungen
   { id: 'schnell', name: 'Schnell erledigen', description: 'Angebot, Rechnung, Foto, Zeit – direkt loslegen.', icon: 'start', objekt: 'akkuschrauber', kategorie: 'werkzeuge', component: SchnellWidget, availableSizes: beide, defaultSize: 'klein' },
-  { id: 'favoriten', name: 'Deine Favoriten', description: 'Deine drei Lieblingsmodule mit einem Tipp.', icon: 'stern', objekt: 'werkzeugwand', kategorie: 'werkzeuge', component: FavoritenWidget, availableSizes: ['klein'], defaultSize: 'klein', defaultSpalte: 'rechts' },
+  { id: 'favoriten', name: 'Deine Favoriten', description: 'Die Module aus deiner Seitenleiste mit einem Tipp.', icon: 'stern', objekt: 'werkzeugwand', kategorie: 'werkzeuge', component: FavoritenWidget, availableSizes: ['klein'], defaultSize: 'klein', defaultSpalte: 'rechts' },
   { id: 'notiz', name: 'Dein Merkzettel', description: 'Eine kurze Notiz nur für dich.', icon: 'notiz', kategorie: 'werkzeuge', component: NotizWidget, availableSizes: ['klein'], defaultSize: 'klein', defaultSpalte: 'rechts' },
 ];
 

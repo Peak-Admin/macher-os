@@ -422,8 +422,9 @@ export function SchnellWidget({ ich }: WidgetProps) {
 }
 
 export function FavoritenWidget() {
-  const { module } = useFavoriten();
-  if (!module.length) return <Meta>Markiere unter Betrieb bis zu drei Module mit dem Stern – sie erscheinen dann hier.</Meta>;
+  const { module: alle } = useFavoriten();
+  const module = alle.slice(0, 6);
+  if (!module.length) return <Meta>Leg Module mit dem Stern unter Betrieb in deine Seitenleiste – sie erscheinen dann hier.</Meta>;
   return (
     <ul className="mm-home-favoriten">
       {module.map((m) => (
