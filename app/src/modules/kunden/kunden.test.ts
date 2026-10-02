@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { db } from '@core/db';
+import { db, defineCollection } from '@core/db';
 import { on } from '@core/events';
-import type { Kunde } from '@core/objects';
+import type { Basis, Bezug, ID, Kunde } from '@core/objects';
 import { aehnlicheKunden, dublettenGruende, findeDubletten, kundenZusammenfuehren, naechsteKundennummer, normName, normTelefon, paarSchluessel } from './daten';
 
 const k = (x: Partial<Kunde>): Kunde => ({ id: x.id ?? Math.random().toString(36), erstelltAm: '', geaendertAm: '', art: 'privat', name: '', ansprechpartner: [], ...x });
@@ -69,6 +69,21 @@ describe('Kunden: Zusammenführen', () => {
     expect(db.kunden.get(quelle.id)?.geloeschtAm).toBeTruthy();
     expect(db.auftraege.all().filter((a) => a.kundeId === quelle.id)).toHaveLength(0);
     expect(event).toEqual({ zielId: ziel.id, quelleId: quelle.id });
+  });
+  it('hängt auch Verweise in Modul-Sammlungen um, der Zeitstrahl bleibt', () => {
+    const vertraege = defineCollection<Basis & { kundeId: ID; titel: string }>('test-kunden-vertraege');
+    const notizen = defineCollection<Basis & { bezug: Bezug; text: string }>('test-kunden-notizen');
+    const ziel = db.kunden.create({ art: 'privat', name: 'Petra Schulz', ansprechpartner: [] });
+    const quelle = db.kunden.create({ art: 'privat', name: 'P. Schulz', ansprechpartner: [] });
+    const v = vertraege.create({ kundeId: quelle.id, titel: 'Wartung' });
+    const notiz = notizen.create({ bezug: { typ: 'kunden', id: quelle.id }, text: 'Hund im Garten' });
+    const verlauf = db.ereignisse.where((e) => e.bezug.typ === 'kunden' && e.bezug.id === quelle.id).length;
+
+    expect(kundenZusammenfuehren(ziel.id, quelle.id)).toBe(2);
+    expect(vertraege.get(v.id)?.kundeId).toBe(ziel.id);
+    expect(notizen.get(notiz.id)?.bezug.id).toBe(ziel.id);
+    // ursprüngliche Einträge im Zeitstrahl der Quelle bleiben dort (plus Papierkorb- und Zusammenführen-Vermerk)
+    expect(db.ereignisse.where((e) => e.bezug.typ === 'kunden' && e.bezug.id === quelle.id).length).toBeGreaterThanOrEqual(verlauf);
   });
   it('verweigert Zusammenführen mit sich selbst', () => {
     const a = db.kunden.create({ art: 'privat', name: 'X', ansprechpartner: [] });

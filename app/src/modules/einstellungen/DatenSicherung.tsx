@@ -1,13 +1,13 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db, exportieren, importieren, useDatenstand } from '@core/db';
+import { db, importieren, useDatenstand } from '@core/db';
 import { datum, heute, relativ, uhrzeit, zahl } from '@core/format';
 import { setzeEinstellung, useEinstellung } from '@core/einstellungen';
 import { useDarf } from '@core/session';
 import { Button, Dialog, Karte, Meldung, Meta, Seite, Stapel, Zeile, useBestaetigen, useToast } from '@ui/index';
 import { dateiTeil, herunterladen } from '@modules/schnittstellen/daten';
 import { EinstellungenTabs } from './Navigation';
-import { LETZTE_SICHERUNG_KEY, beispielAnzahl, ohneBeispiele, papierkorbEintraege, sicherungErstellen, sicherungPruefen, type PruefErgebnis } from './daten';
+import { LETZTE_SICHERUNG_KEY, beispielAnzahl, beispieleEntfernenZaehlen, papierkorbEintraege, sicherungErstellen, sicherungPruefen, type PruefErgebnis } from './daten';
 
 export function sicherungHerunterladen() {
   const s = sicherungErstellen();
@@ -24,9 +24,8 @@ export function DatenSicherung() {
   const [letzte] = useEinstellung<string | undefined>(LETZTE_SICHERUNG_KEY, undefined);
   const datei = useRef<HTMLInputElement>(null);
   const [geprueft, setGeprueft] = useState<PruefErgebnis | null>(null);
-  const daten = exportieren();
-  const beispiele = beispielAnzahl(daten);
-  const papierkorb = papierkorbEintraege(daten).length;
+  const beispiele = beispielAnzahl();
+  const papierkorb = papierkorbEintraege().length;
 
   if (!admin)
     return (
@@ -64,9 +63,8 @@ export function DatenSicherung() {
 
   const beispieleWeg = async () => {
     if (!(await fragen('Beispieldaten entfernen?', `${zahl(beispiele)} Beispiel-Einträge (Kunden, Aufträge, Team …) werden endgültig gelöscht. Was du selbst angelegt hast, bleibt.`, 'Beispieldaten entfernen'))) return;
-    const r = ohneBeispiele(exportieren());
-    importieren(r.daten);
-    toast(`${zahl(r.entfernt)} Beispiel-Einträge entfernt. Jetzt gehört Macher ganz dir.`);
+    const entfernt = beispieleEntfernenZaehlen();
+    toast(`${zahl(entfernt)} Beispiel-Einträge entfernt. Jetzt gehört Macher ganz dir.`);
   };
 
   const onboarding = async () => {

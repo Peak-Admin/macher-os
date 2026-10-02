@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { pfadZu } from '@core/modul';
-import { PHASEN, type ObjektTyp } from '@core/objects';
+import { PHASEN } from '@core/objects';
 import { useDarf } from '@core/session';
 import { datum, euro, heute } from '@core/format';
 import { BeispielMarke, Button, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
@@ -165,7 +165,7 @@ export function VertragDetail() {
               </Karte>
             )}
             <Karte titel="Verlauf">
-              <Zeitstrahl bezug={{ typ: 'servicevertraege' as ObjektTyp, id: v.id }} max={8} />
+              <Zeitstrahl bezug={{ typ: 'servicevertraege', id: v.id }} max={8} />
             </Karte>
           </>
         }

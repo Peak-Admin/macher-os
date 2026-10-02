@@ -1,4 +1,4 @@
-import { defineModul, alleModule, type HinweisVorschlag } from '@core/modul';
+import { defineModul, aktionVorhanden, type HinweisVorschlag } from '@core/modul';
 import { db } from '@core/db';
 import { on } from '@core/events';
 import { erledigt } from '@core/macher';
@@ -13,7 +13,6 @@ import { BEWERTUNG_TEXT, nacharbeitAnlegen, naechsteReklamationsnummer, offen, p
 const REGEL_NACHARBEIT = 'reklamationen.nacharbeit';
 const REGEL_STATUS = 'reklamationen.status';
 const pfad = (id: string) => `/auftraege/reklamationen/${id}`;
-const registriert = (id: string) => alleModule().some((m) => !!m.aktionen?.[id]);
 
 function nacharbeitFuer(r: Reklamation | undefined) {
   if (!r || r.bewertung === 'offen' || r.nacharbeitAuftragId || !offen(r)) return;
@@ -122,7 +121,7 @@ export default defineModul({
           faellig: r.fristBis,
           bezug: nacharbeit ? { typ: 'auftraege', id: nacharbeit.id } : { typ: 'kunden', id: r.kundeId },
           pfad: pfad(r.id),
-          aktionen: nacharbeit && !termin && registriert('plan.einplanen') ? [{ aktion: 'plan.einplanen', label: 'Nacharbeit einplanen', primaer: true, payload: { auftragId: nacharbeit.id } }] : undefined,
+          aktionen: nacharbeit && !termin && aktionVorhanden('plan.einplanen') ? [{ aktion: 'plan.einplanen', label: 'Nacharbeit einplanen', primaer: true, payload: { auftragId: nacharbeit.id } }] : undefined,
         });
       }
       if (r.bewertung === 'offen') {
@@ -147,7 +146,7 @@ export default defineModul({
           bezug: { typ: 'auftraege', id: nacharbeit.id },
           fuerRollen: ['chef', 'buero'],
           pfad: pfad(r.id),
-          aktionen: registriert('angebot.erstellen') ? [{ aktion: 'angebot.erstellen', label: 'Angebot erstellen', primaer: true, payload: { auftragId: nacharbeit.id } }] : undefined,
+          aktionen: aktionVorhanden('angebot.erstellen') ? [{ aktion: 'angebot.erstellen', label: 'Angebot erstellen', primaer: true, payload: { auftragId: nacharbeit.id } }] : undefined,
         });
       }
     }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { db, useDatenstand, exportieren } from '@core/db';
+import { db, useDatenstand } from '@core/db';
 import { centAlsEingabe, centAus, euro } from '@core/format';
 import { ARBEITSWEISEN, GEWERKE } from '@core/gewerke';
 import type { Arbeitsweise, Betrieb, Gewerk } from '@core/objects';
@@ -12,7 +12,7 @@ import { fehlendeRechnungsangaben, ibanGueltig, papierkorbEintraege, ustIdFormat
 export function Betriebsdaten() {
   useDatenstand();
   const b = db.betrieb.get('betrieb');
-  const papierkorb = papierkorbEintraege(exportieren()).length;
+  const papierkorb = papierkorbEintraege().length;
   return (
     <Seite titel="Einstellungen" untertitel="Grunddaten deines Betriebs – sie stehen auf Angeboten und Rechnungen.">
       <Stapel abstand={24}>

@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { exportieren, useDatenstand } from '@core/db';
+import { useDatenstand } from '@core/db';
 import { relativ } from '@core/format';
 import { useDarf } from '@core/session';
 import { Button, Filter, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, Zeile, useBestaetigen, useToast } from '@ui/index';
 import { EinstellungenTabs } from './Navigation';
-import { papierkorbEintraege } from './daten';
-import { endgueltigLoeschen, wiederherstellen } from './Sammlungen';
+import { endgueltigLoeschen, papierkorbEintraege, wiederherstellen } from './daten';
 
 export function Papierkorb() {
   useDatenstand();
@@ -14,7 +13,7 @@ export function Papierkorb() {
   const darfLoeschen = useDarf('loeschen');
   const admin = useDarf('admin');
   const [art, setArt] = useState('alle');
-  const alle = papierkorbEintraege(exportieren());
+  const alle = papierkorbEintraege();
   const arten = [...new Set(alle.map((e) => e.art))].sort((a, b) => a.localeCompare(b, 'de'));
   const sichtbar = alle.filter((e) => art === 'alle' || e.art === art);
   const leerbar = alle.filter((e) => !e.aufbewahren);

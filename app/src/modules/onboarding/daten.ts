@@ -1,5 +1,5 @@
 /** Onboarding: Antworten → `einrichten()`, Kunden-CSV-Import und Zusammenfassung „Was ist vorbereitet?“. */
-import { batch, db, exportieren, type Neu } from '@core/db';
+import { batch, db, sammlung, type Neu } from '@core/db';
 import { gewerkVorlage } from '@core/gewerke';
 import { automationAn } from '@core/macher';
 import { alleAutomationen } from '@core/modul';
@@ -175,8 +175,7 @@ export interface Vorbereitet {
 }
 
 export function vorbereitet(): Vorbereitet[] {
-  const roh = exportieren();
-  const zaehle = (name: string) => Object.values(roh[name] ?? {}).filter((x) => !x.geloeschtAm).length;
+  const zaehle = (name: string) => sammlung(name)?.all().length ?? 0;
   const liste: Vorbereitet[] = [
     { label: 'Leistungen mit Preisen', anzahl: db.leistungen.all().length },
     { label: 'Artikel & Material', anzahl: db.artikel.all().length },

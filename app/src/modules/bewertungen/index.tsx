@@ -99,12 +99,8 @@ export default defineModul({
   init: () => {
     on('kunde.zusammengefuehrt', (e) => {
       const { zielId, quelleId } = e.daten as { zielId: ID; quelleId: ID };
-      for (const b of bewertungen.all()) {
-        const patch: { kundeId?: ID; empfohlenVonKundeId?: ID } = {};
-        if (b.kundeId === quelleId) patch.kundeId = zielId;
-        if (b.empfohlenVonKundeId === quelleId) patch.empfohlenVonKundeId = zielId;
-        if (Object.keys(patch).length) bewertungen.update(b.id, patch);
-      }
+      // `kundeId` hängt das Zusammenführen selbst um (alle Sammlungen) – hier nur der Empfehler
+      for (const b of bewertungen.where((x) => x.empfohlenVonKundeId === quelleId)) bewertungen.update(b.id, { empfohlenVonKundeId: zielId });
     });
   },
 

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { Betrieb } from '@core/objects';
-import { beispielAnzahl, fehlendeRechnungsangaben, ibanGueltig, objektTitel, ohneBeispiele, papierkorbEintraege, sicherungErstellen, sicherungPruefen, ustIdFormatOk } from './daten';
+import { db, zuruecksetzen } from '@core/db';
+import { vorlagen } from '@modules/vorlagen/daten';
+import { beispielAnzahl, beispieleEntfernenZaehlen, endgueltigLoeschen, fehlendeRechnungsangaben, ibanGueltig, objektTitel, papierkorbEintraege, sicherungErstellen, sicherungPruefen, ustIdFormatOk, wiederherstellen } from './daten';
 
 const b = (x: Partial<Betrieb> = {}) =>
   ({ id: 'betrieb', erstelltAm: '', geaendertAm: '', name: 'Elektro Muster', gewerk: 'elektro', arbeitsweisen: [], teamgroesse: 3, adresse: { strasse: '', plz: '', ort: '' }, telefon: '', email: '', stundensatz: 6800, zahlungszielTage: 14, ustSatz: 19, arbeitsbeginn: '07:00', arbeitsende: '16:00', onboardingFertig: true, ...x }) as Betrieb;
@@ -16,6 +18,9 @@ const daten = () => ({
   vorlagen: { v1: { id: 'v1', erstelltAm: '', geaendertAm: '', titel: 'Gruß', beispiel: true } },
   ereignisse: { e1: { id: 'e1', erstelltAm: '', geaendertAm: '', geloeschtAm: 'x' } },
 });
+
+/** Testdaten als Sammlungs-Quellen (wie `alleSammlungen()`) */
+const quellen = (d: ReturnType<typeof daten>) => Object.entries(d).map(([name, t]) => ({ name, allMitGeloeschten: () => Object.values(t) as never[] }));
 
 describe('Datensicherung', () => {
   it('erstellt und prüft eine Sicherung', () => {
@@ -41,22 +46,40 @@ describe('Datensicherung', () => {
 });
 
 describe('Beispieldaten', () => {
-  it('entfernt Beispiele aus allen Sammlungen, auch aus Modul-Sammlungen', () => {
-    const d = daten();
-    expect(beispielAnzahl(d)).toBe(2);
-    const r = ohneBeispiele(d);
-    expect(r.entfernt).toBe(2);
-    expect(Object.keys(r.daten.kunden)).toEqual(['k1', 'k3']);
-    expect(Object.keys(r.daten.vorlagen)).toEqual([]);
+  it('zählt Beispiele in allen Sammlungen, auch in Modul-Sammlungen', () => {
+    expect(beispielAnzahl(quellen(daten()))).toBe(2);
+  });
+  it('entfernt Beispiele über die Sammlungs-Registry, echte Daten bleiben', () => {
+    zuruecksetzen();
+    const echt = db.kunden.create({ art: 'privat', name: 'Echt', ansprechpartner: [] });
+    db.kunden.create({ art: 'privat', name: 'Beispiel', ansprechpartner: [], beispiel: true });
+    vorlagen.create({ schluessel: 'test.gruss', art: 'email', titel: 'Gruß', text: 'Hallo', beispiel: true });
+    expect(beispielAnzahl()).toBe(2);
+    expect(beispieleEntfernenZaehlen()).toBe(2);
+    expect(db.kunden.all().map((k) => k.id)).toEqual([echt.id]);
+    expect(vorlagen.allMitGeloeschten()).toEqual([]);
   });
 });
 
 describe('Papierkorb', () => {
   it('listet Gelöschtes, neueste zuerst, ohne interne Sammlungen', () => {
-    const p = papierkorbEintraege(daten());
+    const p = papierkorbEintraege(quellen(daten()));
     expect(p.map((x) => x.id)).toEqual(['r1', 'k3']);
     expect(p[0]).toMatchObject({ titel: 'R-2026-0001 · Wartung', art: 'Rechnung', aufbewahren: true });
     expect(p[1]).toMatchObject({ titel: 'Gelöscht', art: 'Kunde', aufbewahren: false });
+  });
+  it('stellt auch Einträge aus Modul-Sammlungen wieder her und löscht endgültig', () => {
+    zuruecksetzen();
+    const v = vorlagen.create({ schluessel: 'test.gruss', art: 'email', titel: 'Gruß', text: 'Hallo' });
+    const k = db.kunden.create({ art: 'privat', name: 'Weg', ansprechpartner: [] });
+    vorlagen.remove(v.id);
+    db.kunden.remove(k.id);
+    expect(papierkorbEintraege().map((e) => e.sammlung).sort()).toEqual(['kunden', 'vorlagen']);
+    wiederherstellen('vorlagen', v.id);
+    expect(vorlagen.get(v.id)?.geloeschtAm).toBeUndefined();
+    endgueltigLoeschen([{ sammlung: 'kunden', id: k.id }]);
+    expect(db.kunden.allMitGeloeschten()).toEqual([]);
+    expect(papierkorbEintraege()).toEqual([]);
   });
   it('findet lesbare Titel', () => {
     expect(objektTitel({ vorname: 'Jonas', nachname: 'Becker' })).toBe('Jonas Becker');

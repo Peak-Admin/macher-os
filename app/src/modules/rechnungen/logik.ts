@@ -2,13 +2,16 @@
  * Rechnungslogik: Summen, offene Beträge, Erstellen aus dem Auftrag, Pflichtangaben,
  * Festschreiben (GoBD), Storno. Reine Logik über `db` – ohne Oberfläche, mit Tests.
  */
-import { db, exportieren, neueId, vermerken } from '@core/db';
+import { db, neueId, vermerken } from '@core/db';
 import { emit } from '@core/events';
 import { einstellung } from '@core/einstellungen';
 import { datum, euro, heute, plusTage, summen, tageZwischen, type Summen } from '@core/format';
 import { naechsteNummer } from '@core/nummern';
 import type { Betrieb, Cent, Datum, ID, Kunde, Position, RechnungsArt } from '@core/objects';
 import { alleRechnungen, rechnungAendern, rechnungX, type RechnungX, type ZahlungX } from './typen';
+import { alsPositionen } from '@modules/material-am-auftrag/logik';
+import { materialAufschlagProzent } from '@modules/material-am-auftrag/daten';
+import { abrechenbareZu, alsAbgerechnetMarkieren, alsPosition, vonRechnungLoesen, type Zusatzleistung } from '@modules/zusatzleistungen/daten';
 
 export const ART_LABEL: Record<RechnungsArt, string> = {
   rechnung: 'Rechnung',
@@ -173,42 +176,9 @@ function stunden(start: string, ende: string, pause: number) {
 
 const viertel = (h: number) => Math.round(h * 4) / 4;
 
-/**
- * Zusatzleistungen gehören dem Paket „doku“. Wir lesen die Sammlung tolerant über die Rohdaten,
- * ohne sie zu importieren (Kernwunsch: lesender Zugriff auf fremde Sammlungen über den Namen).
- */
-interface ZusatzRoh {
-  id: ID;
-  auftragId?: ID;
-  titel?: string;
-  text?: string;
-  beschreibung?: string;
-  menge?: number;
-  einheit?: Position['einheit'];
-  einzelpreis?: Cent;
-  preis?: Cent;
-  betrag?: Cent;
-  abrechenbar?: boolean;
-  status?: string;
-  abgerechnetIn?: ID;
-  geloeschtAm?: string;
-}
-
-export function zusatzleistungenRoh(auftragId: ID): ZusatzRoh[] {
-  try {
-    const tab = (exportieren() as Record<string, Record<string, ZusatzRoh>>)['zusatzleistungen'];
-    if (!tab) return [];
-    return Object.values(tab).filter(
-      (z) =>
-        z.auftragId === auftragId &&
-        !z.geloeschtAm &&
-        z.abrechenbar !== false &&
-        !z.abgerechnetIn &&
-        !['abgelehnt', 'abgerechnet', 'verworfen', 'entwurf'].includes(z.status ?? ''),
-    );
-  } catch {
-    return [];
-  }
+/** Freigegebene, noch nicht abgerechnete Zusatzleistungen (Sammlung `zusatzleistungen`, Paket doku) */
+export function abrechenbareZusatzleistungen(auftragId: ID): Zusatzleistung[] {
+  return abrechenbareZu(auftragId);
 }
 
 function leistungszeitraumText(von?: Datum, bis?: Datum) {
@@ -306,16 +276,12 @@ export function rechnungsVorschau(auftragId: ID, art: RechnungsArt = 'rechnung',
     v.quellen.push(`Abrechnung nach Aufwand (Angebot ${angebot.nummer} nur als Richtwert)`);
   }
 
-  // 2. Verbrauchtes Material, noch nicht abgerechnet
-  const aufschlag = einstellung('rechnungen.materialAufschlag', 20);
-  const material = db.material.where((m) => m.auftragId === auftragId && m.status === 'verbraucht' && !m.abgerechnetIn);
-  for (const m of material) {
-    if (!nachAufwand && m.artikelId && angebotArtikel.has(m.artikelId)) continue;
-    const artikel = db.artikel.get(m.artikelId);
-    const preis = artikel?.vk ? artikel.vk : Math.round(m.ek * (1 + aufschlag / 100));
-    v.positionen.push(pos({ art: 'material', text: m.text, menge: m.menge, einheit: m.einheit, einzelpreis: preis, artikelId: m.artikelId }));
-    v.materialIds.push(m.id);
-  }
+  // 2. Verbrauchtes Material, noch nicht abgerechnet (Positionen wie im Modul „Material am Auftrag“)
+  const material = db.material
+    .where((m) => m.auftragId === auftragId && m.status === 'verbraucht' && !m.abgerechnetIn)
+    .filter((m) => nachAufwand || !m.artikelId || !angebotArtikel.has(m.artikelId));
+  v.positionen.push(...alsPositionen(material, (id) => db.artikel.get(id), materialAufschlagProzent()));
+  v.materialIds.push(...material.map((m) => m.id));
   if (v.materialIds.length) v.quellen.push(v.materialIds.length === 1 ? '1 verbrauchte Materialbuchung' : `${v.materialIds.length} verbrauchte Materialbuchungen`);
 
   // 3. Zeiten (nur nach Aufwand)
@@ -335,13 +301,11 @@ export function rechnungsVorschau(auftragId: ID, art: RechnungsArt = 'rechnung',
     if (zeiten.some((z) => !z.freigegeben)) v.hinweise.push('Einige Zeiten sind noch nicht freigegeben. Prüf die Stunden.');
   }
 
-  // 4. Abrechenbare Zusatzleistungen
+  // 4. Freigegebene Zusatzleistungen (Nachträge)
   const zusatzVergeben = schonAbgerechnet('zusatzleistungIds');
-  for (const z of zusatzleistungenRoh(auftragId)) {
+  for (const z of abrechenbareZusatzleistungen(auftragId)) {
     if (zusatzVergeben.has(z.id)) continue;
-    v.positionen.push(
-      pos({ art: 'leistung', text: z.titel ?? z.text ?? z.beschreibung ?? 'Zusatzleistung', menge: z.menge ?? 1, einheit: z.einheit ?? 'Psch', einzelpreis: z.einzelpreis ?? z.preis ?? z.betrag ?? 0 }),
-    );
+    v.positionen.push(alsPosition(z));
     v.zusatzleistungIds.push(z.id);
   }
   if (v.zusatzleistungIds.length) v.quellen.push(`${v.zusatzleistungIds.length === 1 ? '1 Zusatzleistung' : `${v.zusatzleistungIds.length} Zusatzleistungen`}`);
@@ -361,7 +325,7 @@ export function rechnungsVorschau(auftragId: ID, art: RechnungsArt = 'rechnung',
 
 /**
  * Rechnungsentwurf aus einem Auftrag. Gibt es schon einen Entwurf derselben Art, wird er zurückgegeben.
- * Material wird als abgerechnet markiert, damit nichts doppelt in Rechnung gestellt wird.
+ * Material und Zusatzleistungen werden als abgerechnet markiert, damit nichts doppelt in Rechnung gestellt wird.
  */
 export function rechnungErstellen(auftragId: ID, art: RechnungsArt = 'rechnung', opts: VorschauOptionen & { vonMacher?: boolean } = {}): RechnungX | undefined {
   const auftrag = db.auftraege.get(auftragId);
@@ -396,6 +360,7 @@ export function rechnungErstellen(auftragId: ID, art: RechnungsArt = 'rechnung',
   };
   const r = db.rechnungen.create(neu as Parameters<typeof db.rechnungen.create>[0]) as RechnungX;
   for (const id of v.materialIds) db.material.update(id, { abgerechnetIn: r.id }, { leise: true });
+  alsAbgerechnetMarkieren(v.zusatzleistungIds, r);
   vermerken({ typ: 'auftraege', id: auftragId }, 'rechnung.entwurf', `${ART_LABEL[art]} als Entwurf angelegt`);
   return r;
 }
@@ -417,11 +382,12 @@ export function freieRechnung(kundeId: ID): RechnungX {
   }) as RechnungX;
 }
 
-/** Entwurf verwerfen – Material wird wieder freigegeben. Festgeschriebene Rechnungen bleiben (GoBD). */
+/** Entwurf verwerfen – Material und Zusatzleistungen werden wieder freigegeben. Festgeschriebene Rechnungen bleiben (GoBD). */
 export function entwurfLoeschen(id: ID): boolean {
   const r = rechnungX(id);
   if (!r || r.status !== 'entwurf') return false;
   materialFreigeben(r.id);
+  vonRechnungLoesen(r.id);
   db.rechnungen.remove(id);
   return true;
 }
@@ -536,6 +502,7 @@ export function stornieren(id: ID, grund?: string): RechnungX | undefined {
   } as Parameters<typeof db.rechnungen.create>[0]) as RechnungX;
   rechnungAendern(id, { status: 'storniert', stornoDurchId: storno.id }, { text: `Storniert durch ${storno.nummer}` });
   materialFreigeben(id);
+  vonRechnungLoesen(id);
   if (r.auftragId) vermerken({ typ: 'auftraege', id: r.auftragId }, 'rechnung.storniert', `${r.nummer} storniert (${storno.nummer})`);
   return storno;
 }
@@ -571,6 +538,7 @@ export function korrekturEntwurf(id: ID): RechnungX | undefined {
     const m = db.material.get(mid);
     if (m && !m.abgerechnetIn) db.material.update(mid, { abgerechnetIn: neu.id }, { leise: true });
   }
+  alsAbgerechnetMarkieren(r.zusatzleistungIds ?? [], neu);
   return neu;
 }
 

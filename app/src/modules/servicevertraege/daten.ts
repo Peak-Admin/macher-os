@@ -4,7 +4,7 @@
  * werden nur per ID verwiesen.
  */
 import { batch, db, defineCollection, vermerken } from '@core/db';
-import { aktionAusfuehren, alleModule } from '@core/modul';
+import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { datum, heute, plusTage } from '@core/format';
 import { naechsteNummer } from '@core/nummern';
 import type { Auftrag, Basis, Cent, Datum, ID, Position } from '@core/objects';
@@ -145,10 +145,6 @@ export function faelligeAbrechnung(v: Servicevertrag, stichtag: Datum = heute())
 /** Betrag pro Monat (Anzeige) */
 export const preisMonat = (v: Pick<Servicevertrag, 'preisJahr'>) => Math.round(v.preisJahr / 12);
 
-function rechnungErstellenRegistriert() {
-  return alleModule().some((m) => !!m.aktionen?.['rechnung.erstellen']);
-}
-
 /**
  * Legt einen Abrechnungsauftrag für die fällige Periode an und lässt daraus einen
  * Rechnungsentwurf erstellen (`rechnung.erstellen`). Gibt die neuen IDs zurück.
@@ -175,7 +171,7 @@ export function abrechnen(vertragId: ID, stichtag: Datum = heute()): { auftragId
   ];
   if (v.leistungen.length) positionen.push({ id: 'sv2', art: 'text', text: `Enthalten: ${v.leistungen.join(', ')}`, menge: 0, einheit: 'Psch', einzelpreis: 0 });
 
-  if (rechnungErstellenRegistriert()) {
+  if (aktionVorhanden('rechnung.erstellen')) {
     aktionAusfuehren('rechnung.erstellen', { auftragId: auftrag.id, art: 'rechnung' });
   }
   let rechnung = db.rechnungen.where((r) => r.auftragId === auftrag.id).sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm))[0];

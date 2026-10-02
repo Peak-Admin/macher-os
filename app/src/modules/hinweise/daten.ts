@@ -1,6 +1,6 @@
 /** Hinweise & Freigaben: Filter, Zähler und Hilfen über `offeneHinweise()`. */
 import { db } from '@core/db';
-import { alleModule, pfadZu, type Ton } from '@core/modul';
+import { pfadZu, type Ton } from '@core/modul';
 import type { OffenerHinweis } from '@core/macher';
 import type { Hinweis } from '@core/objects';
 
@@ -24,11 +24,6 @@ export function zaehlen(liste: OffenerHinweis[]): Record<ArtFilter, number> {
   const z = { alle: liste.length, problem: 0, entscheidung: 0, freigabe: 0, info: 0 };
   for (const h of liste) z[h.art]++;
   return z;
-}
-
-/** Nur Aktionen anbieten, die ein Modul wirklich registriert hat */
-export function aktionVerfuegbar(id: string): boolean {
-  return alleModule().some((m) => !!m.aktionen?.[id]);
 }
 
 export function zielPfad(h: Pick<OffenerHinweis, 'pfad' | 'bezug'>): string | undefined {

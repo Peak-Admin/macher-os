@@ -293,7 +293,7 @@ export function BewerberDetail() {
             </Stapel>
             <Stapel abstand={8}>
               <strong>Verlauf</strong>
-              <Zeitstrahl bezug={{ typ: 'bewerber' as never, id: b.id }} max={10} />
+              <Zeitstrahl bezug={{ typ: 'bewerber', id: b.id }} max={10} />
             </Stapel>
           </Stapel>
         }

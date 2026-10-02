@@ -1,4 +1,4 @@
-import { defineModul, aktionAusfuehren } from '@core/modul';
+import { defineModul, aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { db } from '@core/db';
 import { on, type DbEvent } from '@core/events';
 import { passt } from '@core/format';
@@ -9,7 +9,6 @@ import { AuftraegeSeite, PipelineWidget } from './AuftraegeSeite';
 import { auftragHinweise } from './hinweise';
 import { istOffen, phaseLabel } from './logik';
 import {
-  aktionDa,
   aufgabeSicherstellen,
   auftragIdAus,
   auftragPfad,
@@ -70,7 +69,7 @@ export default defineModul({
     'auftrag.einplanen': (p) => {
       const id = auftragVon(p);
       if (!id) return;
-      if (aktionDa('plan.einplanen')) return aktionAusfuehren('plan.einplanen', { auftragId: id });
+      if (aktionVorhanden('plan.einplanen')) return aktionAusfuehren('plan.einplanen', { auftragId: id });
       aufgabeSicherstellen(id, 'Einsatz einplanen', 'auftrag');
       return auftragPfad(id);
     },

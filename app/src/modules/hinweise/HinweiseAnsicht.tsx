@@ -4,10 +4,10 @@ import { db, useDatenstand } from '@core/db';
 import { setzeEinstellung } from '@core/einstellungen';
 import { relativ } from '@core/format';
 import { hinweisAusblenden, hinweisErledigen, offeneHinweise, type OffenerHinweis } from '@core/macher';
-import { aktionAusfuehren } from '@core/modul';
+import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { istBuero, useIch } from '@core/session';
 import { Abschnitt, Button, Filter, Karte, Leer, Liste, ListenZeile, Meta, Segmente, Seite, Stapel, Status, Zeile, useToast } from '@ui/index';
-import { ARTEN, aktionVerfuegbar, artInfo, erledigteSeit, filtern, zaehlen, zielPfad, type ArtFilter } from './daten';
+import { ARTEN, artInfo, erledigteSeit, filtern, zaehlen, zielPfad, type ArtFilter } from './daten';
 
 export function HinweiseAnsicht() {
   useDatenstand();
@@ -66,7 +66,7 @@ function HinweisKarte({ h }: { h: OffenerHinweis }) {
   const toast = useToast();
   const info = artInfo(h.art);
   const ziel = zielPfad(h);
-  const aktionen = (h.aktionen ?? []).filter((a) => aktionVerfuegbar(a.aktion)).sort((a, b) => Number(!!b.primaer) - Number(!!a.primaer));
+  const aktionen = (h.aktionen ?? []).filter((a) => aktionVorhanden(a.aktion)).sort((a, b) => Number(!!b.primaer) - Number(!!a.primaer));
 
   const ausfuehren = (aktion: string, payload: unknown, label: string) => {
     try {

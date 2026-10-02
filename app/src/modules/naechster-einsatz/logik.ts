@@ -5,16 +5,12 @@
  */
 import { db } from '@core/db';
 import { emit } from '@core/events';
-import { aktionAusfuehren, alleModule } from '@core/modul';
+import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { datumVon, isoDatum, plusTage } from '@core/format';
 import type { ID, Termin } from '@core/objects';
 
 /** Termine, an denen tatsächlich jemand rausfährt bzw. vor Ort arbeitet */
 const VOR_ORT_ARTEN: Termin['art'][] = ['einsatz', 'wartung', 'besichtigung', 'abnahme', 'schulung'];
-
-export function aktionVorhanden(id: string): boolean {
-  return alleModule().some((m) => !!m.aktionen?.[id]);
-}
 
 export function laeuft(t: Termin) {
   return t.status === 'unterwegs' || t.status === 'vor_ort';

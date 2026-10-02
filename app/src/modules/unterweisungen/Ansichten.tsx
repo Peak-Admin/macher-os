@@ -264,7 +264,7 @@ export function UnterweisungDetail() {
             )}
             <Stapel abstand={8}>
               <strong>Verlauf</strong>
-              <Zeitstrahl bezug={{ typ: 'unterweisungen' as never, id: u.id }} max={10} />
+              <Zeitstrahl bezug={{ typ: 'unterweisungen', id: u.id }} max={10} />
             </Stapel>
           </Stapel>
         }

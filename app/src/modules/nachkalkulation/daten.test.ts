@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import type { Angebot, Artikel, Auftrag, Leistung, Mitarbeiter, Position, Rechnung, Zeiteintrag } from '@core/objects';
 import { leereBasis } from '../kosten/basis';
 import { lerneffekte, lerneffektSatz, nachkalkulation, positionsMaterial, positionsMinuten, sollFuer, ueberPlan } from './daten';
-import { kalkulationLesen } from './kalkulation';
+import { kalkulationFuer, kalkulationLesen } from './kalkulation';
+import { kalkulationen, rechne } from '@modules/kalkulation/daten';
+import { db, zuruecksetzen } from '@core/db';
 
 const basis = { id: '', erstelltAm: '', geaendertAm: '' };
 const ma: Mitarbeiter = { ...basis, id: 'm1', vorname: 'J', nachname: 'B', rolle: 'monteur', wochenstunden: 40, urlaubstageJahr: 30, kostensatz: 4000, aktiv: true };
@@ -118,9 +120,31 @@ describe('Lerneffekt', () => {
 });
 
 describe('Kalkulation lesen', () => {
-  it('liest übliche Feldnamen', () => {
-    expect(kalkulationLesen({ sollStunden: 4, materialEk: 1200 })).toEqual({ stunden: 4, material: 1200, kosten: undefined, netto: undefined });
-    expect(kalkulationLesen({ minuten: 90 })?.stunden).toBe(1.5);
-    expect(kalkulationLesen({ titel: 'x' })).toBeUndefined();
+  const kalk = {
+    zeilen: [{ id: 'z1', text: 'Dose setzen', menge: 6, einheit: 'Stk' as const, minuten: 30, material: 200, fremd: 0 }, { id: 'z2', text: 'Gerüst', menge: 1, einheit: 'Psch' as const, minuten: 0, material: 0, fremd: 5000 }],
+    lohnkosten: 4000,
+    gemeinkostenProzent: 50,
+    materialZuschlagProzent: 20,
+    wagnisGewinnProzent: 10,
+  };
+
+  it('rechnet Soll-Werte wie der Kalkulations-Editor', () => {
+    const s = kalkulationLesen(kalk)!;
+    expect(s.stunden).toBe(3);
+    expect(s.material).toBe(1200 + 5000);
+    expect(s.kosten).toBe(12000 + 1200 + 5000);
+    expect(s.netto).toBe(rechne(kalk).summe.preis);
+    expect(kalkulationLesen({ ...kalk, zeilen: [] })).toBeUndefined();
+  });
+
+  it('nimmt die Kalkulation aus der Sammlung des Moduls Kalkulation', () => {
+    zuruecksetzen();
+    kalkulationen.create({ auftragId: 'a1', titel: 'Alt', ...kalk });
+    expect(kalkulationFuer('a1')?.stunden).toBe(3);
+    expect(kalkulationFuer('a2')).toBeUndefined();
+    const an = db.angebote.create({ nummer: 'AN', auftragId: 'a1', kundeId: 'k1', titel: '', positionen: [], status: 'angenommen', datum: '2026-01-01', gueltigBis: '2026-02-01', version: 1 });
+    kalkulationen.create({ auftragId: 'a1', titel: 'Zum Angebot', ...kalk, zeilen: [kalk.zeilen[0]], angebotId: an.id });
+    expect(kalkulationFuer('a1')?.stunden).toBe(3);
+    expect(kalkulationFuer('a1')?.material).toBe(1200);
   });
 });

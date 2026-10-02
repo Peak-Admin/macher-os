@@ -234,7 +234,7 @@ export function MahnungDetail() {
               </Stapel>
             </Karte>
             <Karte titel="Verlauf" kompakt>
-              <Zeitstrahl bezug={{ typ: 'mahnungen' as never, id: m.id }} max={8} />
+              <Zeitstrahl bezug={{ typ: 'mahnungen', id: m.id }} max={8} />
             </Karte>
           </>
         }

@@ -8,6 +8,9 @@ export function statusSetzen(id: ID, status: Materialbuchung['status']) {
   return db.material.update(id, { status, datum: status === 'verbraucht' ? new Date().toISOString().slice(0, 10) : db.material.get(id)?.datum }, { text: `Material: ${status}` });
 }
 
+/** Aufschlag auf den EK für Material ohne Verkaufspreis (Prozent) – eine Einstellung für Rechnung und Material */
+export const materialAufschlagProzent = () => einstellung('material.aufschlag', 20);
+
 /**
  * Für das Paket Geld: verbrauchtes, offenes Material eines Auftrags als Rechnungspositionen.
  * Nach dem Versenden markiert die Automation „Material abgerechnet“ die Buchungen.
@@ -16,7 +19,7 @@ export function materialFuerRechnung(auftragId: ID): Position[] {
   return alsPositionen(
     db.material.where((b) => b.auftragId === auftragId),
     (id) => db.artikel.get(id),
-    einstellung('material.aufschlag', 20),
+    materialAufschlagProzent(),
   );
 }
 
