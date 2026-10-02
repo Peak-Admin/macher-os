@@ -147,10 +147,6 @@ export const partnerGruppen: {
   },
 ];
 
-/** Allgemeiner Hinweis über allen Rechtsseiten. */
-export const rechtsEntwurfHinweis =
-  "Entwurf – vor Veröffentlichung rechtlich prüfen lassen. Alle Angaben in [eckigen Klammern] sind Platzhalter und müssen ersetzt werden.";
-
 /** Anbieter von Macher OS. Angaben laut Impressum von mission-mittelstand.de. */
 export const firma = {
   name: "Mission Mittelstand",
