@@ -47,7 +47,9 @@ export function Shell({ children }: { children: ReactNode }) {
         <nav className="mm-nav" aria-label="Hauptbereiche">
           {STRUKTUR.map((b) => (
             <Link key={b.id} to={b.pfad} className={`mm-nav-haupt ${aktiv === b.id ? 'mm-nav-haupt--aktiv' : ''}`} aria-current={aktiv === b.id ? 'page' : undefined}>
-              <span className="mm-nav-haupt-icon"><Icon name={b.icon} /></span>
+              <span className="mm-nav-haupt-icon">
+                <Icon name={b.icon} />
+              </span>
               {b.titel}
             </Link>
           ))}

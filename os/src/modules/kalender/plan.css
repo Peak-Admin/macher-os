@@ -2,6 +2,8 @@
 
 .pl-kopfleiste { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; }
 .pl-kopfleiste > .mm-feld { min-width: 200px; flex: 0 1 260px; }
+.pl-kopfleiste > .mm-feld:has(.mm-segmente) { flex: 0 0 auto; min-width: 0; }
+.pl-kopfleiste .mm-segmente { flex-wrap: nowrap; }
 .pl-navi { display: flex; align-items: center; gap: 4px; }
 .pl-zeitraum { font-weight: 600; color: var(--mm-black); margin: 0 8px; white-space: nowrap; }
 
