@@ -35,22 +35,32 @@ Die wichtigsten Festlegungen in Kürze:
   Stockfotos als Ansprechpartner, mehrere bunte Hauptaktionen.
 - Jeder Screen braucht gestaltete Leer-, Lade-, Fehler- und Erfolgszustände und funktioniert bei 390 px Breite.
 
-## Marketing-Website (Next.js)
+## Website und Software (ein Next.js-Projekt)
 
 Next.js (App Router, Turbopack) + TypeScript + Tailwind CSS v4. Alles wird statisch erzeugt.
+Website und Software laufen in **einem** Projekt auf **einer** Domain: Website unter `/`, Macher OS (die Software) unter `/os`.
+Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 
 ### Befehle
 
 - `npm run dev` – Entwicklungsserver
 - `npm run build` – Produktions-Build (prüft auch TypeScript)
 - `npm run lint` – ESLint
+- `npm run typecheck` – TypeScript (Website und Software)
+- `npm test` – Tests der Software (vitest, `src/os/**/*.test.ts`)
 - `python3 scripts/playbook-sweep.py src` – zieht Klassen idempotent auf das Playbook nach (nach größeren Änderungen ausführen)
 - `node --experimental-strip-types src/content/werkzeuge/rechnen.test.mjs` – Tests der Rechner
 
 ### Struktur
 
-- `src/app/(marketing)/` – alle Marketingseiten mit Header + Footer
-- `src/app/(auth)/` – `/signup` und `/login` ohne Marketing-Navigation
+- `src/app/(marketing)/` – alle Marketingseiten mit Header + Footer (eigenes Root-Layout)
+- `src/app/(os)/os/` – Route `/os` mit eigenem Root-Layout; lädt die Software nur im Browser. Jede Adresse `/os/…`
+  zeigt per Rewrite (`next.config.ts`) diese Seite, den Rest regelt React Router (`basename` = `BASIS` aus `src/os/core/basis.ts`).
+  Links außerhalb des Routers (`window.open`, kopierte Links) immer mit `appPfad()` bauen.
+- `src/os/` – **Macher OS, die Software** (Module, Kern, UI). Regeln: `docs/os/MODULE.md`, `docs/os/PAKETE.md`.
+  Eigene Stile (`src/os/ui/*.css`, `--mm-*`), keine Tailwind-Klassen. Die Modulliste `src/os/shell/module-liste.ts`
+  erzeugt `scripts/os-module.mjs` automatisch (vor `dev`, `build`, `test`).
+- `/signup` und `/login` leiten in die Software (`/os/willkommen`, `/os/heute`)
 - `src/components/ui/` – Grundbausteine (Section, SectionHeading, ButtonLink, ArrowLink, Card, CheckList, Badge, Faq, Icon, Breadcrumbs)
 - `src/components/sections/` – wiederkehrende Abschnitte (PageHero, FinalCta, Steps, Flow, TrustRow, KundenCard, PlanCards)
 - `src/components/mocks/` – stilisierte Produktansichten (ProductMock, PhoneMock, PlanBoardMock)
