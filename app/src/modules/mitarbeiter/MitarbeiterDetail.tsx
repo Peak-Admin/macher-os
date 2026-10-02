@@ -59,7 +59,7 @@ export function MitarbeiterDetail() {
       }
     >
       <ZweiSpalten
-        haupt={<ObjektTabs objekt="mitarbeiter" id={m.id} eigene={[{ id: 'verlauf', titel: 'Verlauf', inhalt: <Zeitstrahl bezug={{ typ: 'mitarbeiter', id: m.id }} /> }]} />}
+        haupt={<ObjektTabs objekt="mitarbeiter" id={m.id} />}
         seite={
           <>
             <Karte titel="Kontakt" kompakt aktion={<Avatar text={initialen(m)} farbe={m.farbe} titel={personName(m)} />}>
@@ -98,6 +98,9 @@ export function MitarbeiterDetail() {
               )}
             </Karte>
             <ObjektPanels objekt="mitarbeiter" id={m.id} />
+            <Karte titel="Verlauf" kompakt>
+              <Zeitstrahl bezug={{ typ: 'mitarbeiter', id: m.id }} max={8} />
+            </Karte>
           </>
         }
       />

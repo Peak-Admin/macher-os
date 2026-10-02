@@ -29,10 +29,12 @@ export function wochenWerte(m: Mitarbeiter, montag: Datum): WochenWerte {
   const zeiten = db.zeiten.where((z) => z.mitarbeiterId === m.id && z.datum >= montag && z.datum <= tage[6]);
   const alleZeiten = db.zeiten.where((z) => z.mitarbeiterId === m.id && z.datum >= plusTage(montag, -1) && z.datum <= tage[6]);
   const abw = db.abwesenheiten.all();
+  // Soll zählt erst ab der ersten erfassten Zeit (wie im Stundenkonto)
+  const erste = db.zeiten.where((z) => z.mitarbeiterId === m.id).map((z) => z.datum).sort()[0];
   const probleme = tage.flatMap((d) => pruefeMitarbeiterTag(m.id, d, alleZeiten).probleme.map((text) => ({ tag: d, text })));
   return {
     ist: zeiten.reduce((s, z) => s + dauer(z, jetzt), 0),
-    soll: tage.filter((d) => d <= t).reduce((s, d) => s + sollTag(m, d, abw), 0),
+    soll: tage.filter((d) => d <= t && !!erste && d >= erste).reduce((s, d) => s + sollTag(m, d, abw), 0),
     offen: zeiten.filter((z) => z.ende && !z.freigegeben),
     probleme,
     laeuft: zeiten.some((z) => !z.ende),
@@ -47,7 +49,10 @@ export function ZeitenWoche() {
   const toast = useToast();
   const [fragen, bestaetigenElement] = useBestaetigen();
   const [params, setParams] = useSearchParams();
-  const montag = wochenStart(params.get('datum') ?? heute());
+  const tag = params.get('datum') ?? heute();
+  const montag = wochenStart(tag);
+  // Export-Monat: der gewählte Tag (in der aktuellen Woche: heute), damit Monatswechsel in der Woche passen
+  const exportMonat = (tag < montag || tag > plusTage(montag, 6) ? montag : tag).slice(0, 7);
   const sonntag = plusTage(montag, 6);
   const maParam = params.get('ma') ?? (buero ? TEAM : ich?.id ?? '');
   const maId = buero ? maParam : ich?.id ?? '';
@@ -83,7 +88,7 @@ export function ZeitenWoche() {
     });
   };
   const exportieren = () => {
-    const monat = montag.slice(0, 7);
+    const monat = exportMonat;
     const zeiten = db.zeiten.where((z) => z.datum.startsWith(monat) && (maId === TEAM || z.mitarbeiterId === maId));
     if (!zeiten.length) return toast('Für diesen Monat gibt es noch keine Zeiten.', { ton: 'achtung' });
     const csv = csvExport(zeiten, (id) => db.mitarbeiter.get(id), (id) => db.auftraege.get(id)?.nummer ?? '');
@@ -109,7 +114,7 @@ export function ZeitenWoche() {
         </Zeile>
         {(buero || personal) && (
           <Button klein variante="sekundaer" icon="download" onClick={exportieren}>
-            {`${new Intl.DateTimeFormat('de-DE', { month: 'long' }).format(new Date(montag + 'T12:00:00'))} als CSV`}
+            {`${new Intl.DateTimeFormat('de-DE', { month: 'long' }).format(new Date(exportMonat + '-15T12:00:00'))} als CSV`}
           </Button>
         )}
       </Zeile>
@@ -222,7 +227,8 @@ function PersonWoche({
       {tage.map((d) => {
         const tag = zeiten.filter((z) => z.datum === d).sort((a, b) => a.start.localeCompare(b.start));
         const summe = tag.reduce((s, z) => s + dauer(z, jetzt), 0);
-        const soll = sollTag(m, d, abw);
+        const erste = db.zeiten.where((z) => z.mitarbeiterId === m.id).map((z) => z.datum).sort()[0];
+        const soll = erste && d >= erste ? sollTag(m, d, abw) : 0;
         const a = abwesenheitAm(m.id, d, abw);
         const probleme = w.probleme.filter((p) => p.tag === d);
         if (!tag.length && !soll && !a) return null;
