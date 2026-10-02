@@ -1,14 +1,18 @@
 /**
  * Betrieb: vier Türen – Geld, Team, Ausstattung, Unternehmen.
  * Jede Kachel: Titel, kurze Erklärung, höchstens ein Hinweis. Keine Unterlisten, keine Kennzahlen davor.
- * Darunter ein ruhiger Link zu „Alle Module“ (Verzeichnis mit Suche und Favoriten).
+ *
+ * Darunter das Verzeichnis aller Module (mit Suche): Hier wählt man jedes Modul aus, auch die aus Aufträge und
+ * Planen, und markiert bis zu drei mit dem Stern als Favorit für die Navigation.
  */
+import { useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { modul } from '@core/modul';
+import { modul, modulPfad, type ModulDef } from '@core/modul';
 import { useDatenstand } from '@core/db';
 import { istBuero, useIch } from '@core/session';
-import { Icon, Seite, Status } from '@ui/index';
-import { STRUKTUR, sichtbareAnsichten, sichtbareZiele, zielPfad, type Kategorie } from './struktur';
+import { Abschnitt, Icon, Leer, Seite, Status, Suchfeld } from '@ui/index';
+import { STRUKTUR, modulVerzeichnis, sichtbareAnsichten, sichtbareZiele, zielPfad, type Kategorie } from './struktur';
+import { FAVORITEN_MAX, useFavoriten } from './favoriten';
 import type { Mitarbeiter } from '@core/objects';
 import { NichtGefunden } from './NichtGefunden';
 
@@ -35,8 +39,14 @@ export function BetriebSeite() {
   useDatenstand();
   const ich = useIch();
   const kategorien = KATEGORIEN.filter((k) => sichtbareZiele(k.ziele, ich).length > 0);
+  const [suche, setSuche] = useState('');
+  const sucht = suche.trim().length > 0;
   return (
-    <Seite titel="Betrieb" untertitel="Alles, was dein Betrieb dauerhaft braucht.">
+    <Seite titel="Betrieb" untertitel="Alles, was dein Betrieb dauerhaft braucht. Hier findest du jedes Modul.">
+      <div className="mm-modulsuche">
+        <Suchfeld wert={suche} onChange={setSuche} platzhalter="Modul finden …" />
+      </div>
+      {!sucht && (
       <ul className="mm-tueren">
         {kategorien.map((k) => {
           // Hinweise zu Verwaltung und Freigaben betreffen Chef und Büro
@@ -58,12 +68,71 @@ export function BetriebSeite() {
           );
         })}
       </ul>
-      <p className="mm-alle-module-link">
-        <Link to="/betrieb/module" className="mm-pfeillink">
-          Alle Module ansehen und Favoriten wählen <Icon name="weiter" size={16} />
-        </Link>
-      </p>
+      )}
+      <AlleModule suche={suche} />
     </Seite>
+  );
+}
+
+/** Verzeichnis aller Module, die du sehen darfst – gruppiert, mit Stern für die Favoriten */
+function AlleModule({ suche }: { suche: string }) {
+  const ich = useIch();
+  const favoriten = useFavoriten();
+  const woerter = suche.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const passt = (m: ModulDef) => woerter.every((w) => `${m.titel} ${m.beschreibung}`.toLowerCase().includes(w));
+  const gruppen = modulVerzeichnis(ich)
+    .map((g) => ({ ...g, module: g.module.filter(passt) }))
+    .filter((g) => g.module.length);
+
+  return (
+    <Abschnitt
+      titel="Alle Module"
+      hinweis={`Mit dem Stern holst du bis zu ${FAVORITEN_MAX} Module als Favorit in die Navigation (${favoriten.module.length} von ${FAVORITEN_MAX}).`}
+    >
+      {gruppen.length ? (
+        <div className="mm-verzeichnis">
+          {gruppen.map((g) => (
+            <section key={g.id} className="mm-verzeichnis-gruppe" aria-labelledby={`verzeichnis-${g.id}`}>
+              <h3 id={`verzeichnis-${g.id}`} className="mm-verzeichnis-titel">
+                {g.titel}
+              </h3>
+              <ul className="mm-liste">
+                {g.module.map((m) => {
+                  const an = favoriten.istFavorit(m.id);
+                  const gesperrt = !an && favoriten.voll;
+                  return (
+                    <li key={m.id} className="mm-verzeichnis-eintrag">
+                      <Link to={modulPfad(m)} className="mm-listenzeile mm-listenzeile--klickbar">
+                        <span className="mm-verzeichnis-icon" aria-hidden>
+                          <Icon name={m.icon ?? 'info'} size={20} />
+                        </span>
+                        <span className="mm-listenzeile-text">
+                          <span className="mm-listenzeile-titel">{m.titel}</span>
+                          <span className="mm-meta">{m.beschreibung}</span>
+                        </span>
+                      </Link>
+                      <button
+                        type="button"
+                        className={`mm-iconbtn mm-favorit ${an ? 'mm-favorit--an' : ''}`}
+                        aria-pressed={an}
+                        aria-disabled={gesperrt}
+                        aria-label={an ? `${m.titel} aus Favoriten entfernen` : `${m.titel} als Favorit markieren`}
+                        title={an ? 'Aus Favoriten entfernen' : gesperrt ? `Höchstens ${FAVORITEN_MAX} Favoriten. Entferne zuerst einen.` : 'Als Favorit in die Navigation'}
+                        onClick={() => !gesperrt && favoriten.umschalten(m.id)}
+                      >
+                        <Icon name="stern" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ))}
+        </div>
+      ) : (
+        <Leer titel="Kein Modul gefunden" text={`Zu „${suche.trim()}“ gibt es kein Modul. Versuch ein anderes Wort.`} />
+      )}
+    </Abschnitt>
   );
 }
 

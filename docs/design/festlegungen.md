@@ -35,23 +35,22 @@ Optional Flagge oder Icon vor dem Label (Vorbild: Länderwahl Deutschland · Ös
 - Website: `Umschalter` in `src/components/werkzeuge/felder.tsx`
 - Software: `Segmente` (`.mm-segmente`, `.mm-segment--an`), Tokens `--mm-switch-*`
 
-### Navigation: ein Klick, keine Unterpunkte
+### Navigation: vier Bereiche, höchstens drei Favoriten
 Die Seitennavigation ist **flach**. Jeder Eintrag führt mit einem Klick zum Ziel – keine aufklappenden
 Unterpunkte, keine zweite Ebene unter den Bereichen. Die Zielstruktur steht in [`docs/produkt/navigation.md`](../produkt/navigation.md).
 
-- **Feste Einträge:** nur die vier Bereiche Heute · Aufträge · Planen · Betrieb.
-- **Alle Module findet man unter „Betrieb“:** unter den vier Betrieb-Kacheln der Link „Alle Module ansehen und
-  Favoriten wählen“ (`/betrieb/module`). Das Verzeichnis zeigt jedes Modul an seinem Ort in der Struktur, mit Suchfeld
-  „Modul finden“. Es ist keine fünfte Kachel und kein Menüpunkt.
-- **Favoriten:** Jedes Modul lässt sich dort mit dem Stern markieren. Favoriten stehen zusätzlich in der Seitenleiste
-  unter „Favoriten“ – flach, ein Klick. Ohne Favoriten steht dort ein kurzer Hinweis mit Link zum Verzeichnis.
-- **Persönlich:** Favoriten speichert jeder Nutzer für sich, so passt jede Rolle (Chef, Büro, Monteur, Azubi) ihre
-  Navigation selbst an. Module, die eine Rolle nicht sehen darf, erscheinen auch nicht als Favorit.
-  Zum Start bekommt jede Rolle eine kleine Vorauswahl (`STANDARD_FAVORITEN`), bis der Nutzer sie selbst ändert.
+- **Fest:** nur die vier Bereiche Heute · Aufträge · Planen · Betrieb.
+- **Betrieb ist das Modulverzeichnis:** vier Kacheln, darunter alle Module, die der Nutzer sehen darf, mit Suchfeld
+  „Modul finden“. Kein fünfter Menüpunkt. (`/betrieb/module` leitet auf `/betrieb` weiter.)
+- **Favoriten:** Im Verzeichnis markiert man bis zu **drei** Module mit dem Stern. Sie stehen unter den vier Bereichen
+  in der Seitenleiste – flach, ein Klick. Ohne Favoriten steht dort ein kurzer Hinweis mit Link zu Betrieb.
+- **Persönlich:** Favoriten speichert jeder Nutzer für sich (Einstellung `navigation.favoriten.<mitarbeiterId>`).
+  Module, die eine Rolle nicht sehen darf, erscheinen auch nicht als Favorit. Zum Start bekommt jede Rolle drei
+  Favoriten (`STANDARD_FAVORITEN`), bis der Nutzer sie selbst ändert.
 - **Mobil:** Die untere Leiste bleibt bei den vier Bereichen. Favoriten stehen im Profilmenü (oben rechts).
 
-- Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis `AlleModuleSeite` in `os/src/shell/AlleModule.tsx`,
-  Speicherung `useFavoriten()` in `os/src/core/favoriten.ts` (Einstellung `navigation.favoriten.<mitarbeiterId>`)
+- Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis in `os/src/shell/Betrieb.tsx`,
+  Daten über `modulVerzeichnis()` (`struktur.ts`) und `useFavoriten()` (`os/src/shell/favoriten.ts`).
 
 ## Orientierungsbeispiele von Mission Mittelstand
 

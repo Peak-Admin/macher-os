@@ -22,7 +22,7 @@ Macher OS
 │   ├── Kalender          Kalender · Plantafel
 │   ├── Einplanen         offene Arbeit (automatische Planung als Aktion)
 │   └── Kapazität         Auslastung · Verfügbarkeit
-└── Betrieb               vier Kacheln
+└── Betrieb               vier Kacheln + Verzeichnis aller Module (Suche „Modul finden“, Stern = Favorit)
     ├── Geld              Rechnungen (+ Zahlungen, Mahnungen) · Ausgaben · Überblick · Steuerberater
     ├── Team              Mitarbeiter · Zeiten & Abwesenheit · Lernen & Nachweise · Bewerber
     ├── Ausstattung       Material (Katalog, Bestand) · Einkauf · Geräte & Fahrzeuge
@@ -33,8 +33,13 @@ Macher OS
 Der Baum wird nie als Menü gezeigt. Sichtbar ist immer nur die aktuelle Ebene:
 
 - **Global:** Seitenleiste (Desktop) bzw. untere Navigation (mobil) mit genau Heute · Aufträge · Planen · Betrieb.
-  Kein „+ Neu“, kein „Erfassen“, kein Plus, kein Hamburger-Menü. Darunter nur Profil (Benachrichtigungen,
-  Macher fragen, Mitarbeiter wechseln für die Vorführung). Suche oben, auch per Strg K.
+  Kein „+ Neu“, kein „Erfassen“, kein Plus, kein Hamburger-Menü. Die vier Bereiche haben in der Navigation keine
+  Unterpunkte. Darunter höchstens **drei Favoriten** des Nutzers (flach, ein Klick; mobil im Profilmenü), dann Profil
+  (Benachrichtigungen, Macher fragen, Mitarbeiter wechseln für die Vorführung). Suche oben, auch per Strg K.
+- **Betrieb als Modulverzeichnis:** Unter den vier Kacheln stehen alle Module, die der Nutzer sehen darf – gruppiert
+  nach Geld · Team · Ausstattung · Unternehmen, dann „Aus Aufträge“ und „Aus Planen“ – mit Suche „Modul finden“.
+  Mit dem Stern holt man bis zu drei Module als Favorit in die Navigation. Gespeichert je Mitarbeiter
+  (`navigation.favoriten.<id>`), Startauswahl je Rolle in `os/src/shell/favoriten.ts`.
 - **Lokal:** im Inhaltsbereich höchstens vier Ziele (gleich breit, mobil mit Kurzlabels, nie waagerecht scrollend),
   darunter – nur wenn nötig – höchstens vier Ansichten als Wechsler. Auf Detail-, Anlege- und Bearbeitungsseiten tritt
   die lokale Navigation zurück; der Hauptbereich bleibt markiert und die Seite hat einen Zurück-Link.
@@ -43,14 +48,6 @@ Der Baum wird nie als Menü gezeigt. Sichtbar ist immer nur die aktuelle Ebene:
   Abwesenheit · Lernen & Nachweise. Innerhalb eines Bereichs höchstens vier Teile, Dokumentarten per Auswahl statt Tabs.
   Neue Tabs anderer Module landen im Teil „Weiteres“, nie in einem fünften Bereich. Alte Links mit `?tab=Fotos` usw.
   funktionieren weiter.
-
-### Favoriten und Verzeichnis aller Module
-
-- **Betrieb › Alle Module** (`/betrieb/module`, Link unter den vier Kacheln): jedes Modul an seinem Ort in dieser
-  Struktur, mit Suche „Modul finden“. Kein Menüpunkt und keine fünfte Kachel.
-- **Favoriten:** Dort markiert jeder Nutzer Module mit dem Stern. Sie stehen zusätzlich in der Seitenleiste unter den vier
-  Bereichen (flach, ein Klick), mobil im Profilmenü. Gespeichert je Mitarbeiter (`navigation.favoriten.<id>`),
-  Startauswahl je Rolle in `STANDARD_FAVORITEN` (`os/src/core/favoriten.ts`). Rollenrechte gelten weiter.
 
 ## 2. Heute nach Rolle
 
