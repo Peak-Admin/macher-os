@@ -22,7 +22,7 @@ Macher OS
 │   ├── Kalender          Kalender · Plantafel
 │   ├── Einplanen         offene Arbeit (automatische Planung als Aktion)
 │   └── Kapazität         Auslastung · Verfügbarkeit
-└── Betrieb               vier Kacheln
+└── Betrieb               vier Kacheln + Verzeichnis aller Module (Suche „Modul finden“, Stern = Favorit)
     ├── Geld              Rechnungen (+ Zahlungen, Mahnungen) · Ausgaben · Überblick · Steuerberater
     ├── Team              Mitarbeiter · Zeiten & Abwesenheit · Lernen & Nachweise · Bewerber
     ├── Ausstattung       Material (Katalog, Bestand) · Einkauf · Geräte & Fahrzeuge
@@ -33,8 +33,13 @@ Macher OS
 Der Baum wird nie als Menü gezeigt. Sichtbar ist immer nur die aktuelle Ebene:
 
 - **Global:** Seitenleiste (Desktop) bzw. untere Navigation (mobil) mit genau Heute · Aufträge · Planen · Betrieb.
-  Kein „+ Neu“, kein „Erfassen“, kein Plus, kein Hamburger-Menü. Darunter nur Profil (Benachrichtigungen,
-  Macher fragen, Mitarbeiter wechseln für die Vorführung). Suche oben, auch per Strg K.
+  Kein „+ Neu“, kein „Erfassen“, kein Plus, kein Hamburger-Menü. Die vier Bereiche haben in der Navigation keine
+  Unterpunkte. Darunter höchstens **drei Favoriten** des Nutzers (flach, ein Klick; mobil im Profilmenü), dann Profil
+  (Benachrichtigungen, Macher fragen, Mitarbeiter wechseln für die Vorführung). Suche oben, auch per Strg K.
+- **Betrieb als Modulverzeichnis:** Unter den vier Kacheln stehen alle Module, die der Nutzer sehen darf – gruppiert
+  nach Geld · Team · Ausstattung · Unternehmen, dann „Aus Aufträge“ und „Aus Planen“ – mit Suche „Modul finden“.
+  Mit dem Stern holt man bis zu drei Module als Favorit in die Navigation. Gespeichert je Mitarbeiter
+  (`navigation.favoriten.<id>`), Startauswahl je Rolle in `os/src/shell/favoriten.ts`.
 - **Lokal:** im Inhaltsbereich höchstens vier Ziele (gleich breit, mobil mit Kurzlabels, nie waagerecht scrollend),
   darunter – nur wenn nötig – höchstens vier Ansichten als Wechsler. Auf Detail-, Anlege- und Bearbeitungsseiten tritt
   die lokale Navigation zurück; der Hauptbereich bleibt markiert und die Seite hat einen Zurück-Link.

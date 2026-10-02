@@ -2,6 +2,8 @@
  * App-Rahmen: genau vier feste Hauptbereiche (Heute · Aufträge · Planen · Betrieb).
  * Desktop: schmale Seitenleiste, mobil: untere Navigation. Keine Unterbäume, kein globales „Neu“,
  * kein Plus, kein Hamburger-Menü. Lokale Navigation (höchstens vier Ziele) steht im Inhaltsbereich.
+ * Unter den vier Bereichen höchstens drei persönliche Favoriten (ausgewählt im Modulverzeichnis unter „Betrieb“),
+ * mobil im Profilmenü.
  */
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -9,9 +11,11 @@ import { oeffne } from '@core/overlay';
 import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { initialen, personName } from '@core/format';
+import { modulPfad } from '@core/modul';
 import { Avatar, Icon, Meldung } from '@ui/index';
 import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
+import { useFavoriten } from './favoriten';
 import './shell.css';
 
 export function Shell({ children }: { children: ReactNode }) {
@@ -54,6 +58,7 @@ export function Shell({ children }: { children: ReactNode }) {
             </Link>
           ))}
         </nav>
+        <Favoriten />
         <Profil oben />
       </aside>
 
@@ -118,6 +123,7 @@ function Profil({ oben }: { oben?: boolean }) {
   const ich = useIch();
   const alle = db.mitarbeiter.use((m) => m.aktiv);
   const ungelesen = useUngelesen();
+  const favoriten = useFavoriten().module;
   const [offen, setOffen] = useState(false);
   const pfad = useLocation().pathname;
   useEffect(() => setOffen(false), [pfad]);
@@ -148,6 +154,11 @@ function Profil({ oben }: { oben?: boolean }) {
                 <button type="button" onClick={() => (setOffen(false), oeffne('macher'))}>
                   <Icon name="macher" /> Macher fragen
                 </button>
+                {favoriten.map((m) => (
+                  <Link key={m.id} to={modulPfad(m)} onClick={() => setOffen(false)}>
+                    <Icon name="stern" /> {m.titel}
+                  </Link>
+                ))}
               </>
             )}
             <label className="mm-profil-wechsel">
@@ -164,6 +175,37 @@ function Profil({ oben }: { oben?: boolean }) {
         </>
       )}
     </div>
+  );
+}
+
+/** Höchstens drei persönliche Abkürzungen – flach, ein Klick. Auswahl im Modulverzeichnis unter „Betrieb“. */
+function Favoriten() {
+  const { module } = useFavoriten();
+  const pfad = useLocation().pathname;
+  return (
+    <nav className="mm-nav-favoriten" aria-label="Favoriten">
+      <h2 className="mm-nav-titel">Favoriten</h2>
+      {module.length ? (
+        <ul className="mm-nav-liste">
+          {module.map((m) => {
+            const ziel = modulPfad(m);
+            const an = pfad === ziel || pfad.startsWith(`${ziel}/`);
+            return (
+              <li key={m.id}>
+                <Link to={ziel} className={`mm-nav-favorit ${an ? 'mm-nav-favorit--an' : ''}`} aria-current={an ? 'page' : undefined}>
+                  <Icon name={m.icon ?? 'stern'} size={18} />
+                  <span>{m.titel}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="mm-nav-leer">
+          Markiere bis zu drei Module unter <Link to="/betrieb">Betrieb</Link> mit dem Stern.
+        </p>
+      )}
+    </nav>
   );
 }
 

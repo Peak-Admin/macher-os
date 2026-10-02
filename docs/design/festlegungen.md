@@ -35,6 +35,14 @@ Optional Flagge oder Icon vor dem Label (Vorbild: Länderwahl Deutschland · Ös
 - Website: `Umschalter` in `src/components/werkzeuge/felder.tsx`
 - Software: `Segmente` (`.mm-segmente`, `.mm-segment--an`), Tokens `--mm-switch-*`
 
+### Navigation: vier Bereiche, höchstens drei Favoriten
+- **Fest:** Heute · Aufträge · Planen · Betrieb – ohne Unterpunkte in der Navigation, jeder Eintrag ein Klick.
+- **Favoriten:** darunter höchstens drei persönliche Abkürzungen, ausgewählt per Stern. Mobil im Profilmenü,
+  die untere Leiste bleibt bei vier Punkten.
+- **Betrieb ist das Modulverzeichnis:** vier Kacheln, darunter alle Module mit Suche „Modul finden“.
+- Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis in `os/src/shell/Betrieb.tsx`,
+  Daten über `modulVerzeichnis()` (`struktur.ts`) und `useFavoriten()` (`favoriten.ts`).
+
 ## Orientierungsbeispiele von Mission Mittelstand
 
 Vom Auftraggeber als Referenz geliefert. Nicht 1:1 kopieren, sondern Wirkung übernehmen.

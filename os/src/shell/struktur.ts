@@ -381,6 +381,32 @@ export function zielPfad(z: Ziel, ich: Mitarbeiter | undefined): string {
   return ansichtPfad(a);
 }
 
+// ------------------------------------------------------------------ Modulverzeichnis (Betrieb)
+
+export interface VerzeichnisGruppe {
+  id: string;
+  titel: string;
+  module: ModulDef[];
+}
+
+/**
+ * Alle Module mit eigener Ansicht, die dieser Nutzer sehen darf – gruppiert für das Verzeichnis unter „Betrieb“:
+ * zuerst Geld · Team · Ausstattung · Unternehmen, dann die Ansichten aus Aufträge und Planen.
+ * Module, die nur im Kontext erscheinen (Fotos, Heute-Bausteine …), stehen nicht darin.
+ */
+export function modulVerzeichnis(ich: Mitarbeiter | undefined): VerzeichnisGruppe[] {
+  const ausZielen = (ziele: Ziel[]) => {
+    const ids = sichtbareZiele(ziele, ich).flatMap((z) => sichtbareAnsichten(z, ich).flatMap((a) => a.module));
+    return [...new Set(ids)].filter((id) => modulSichtbar(id, ich)).map((id) => modul(id)!);
+  };
+  const betrieb = STRUKTUR.find((h) => h.id === 'betrieb')!;
+  const gruppen: VerzeichnisGruppe[] = [
+    ...betrieb.kategorien!.map((k) => ({ id: k.id, titel: k.titel, module: ausZielen(k.ziele) })),
+    ...STRUKTUR.filter((h) => h.ziele).map((h) => ({ id: h.id, titel: `Aus ${h.titel}`, module: ausZielen(h.ziele!) })),
+  ];
+  return gruppen.filter((g) => g.module.length);
+}
+
 // ------------------------------------------------------------------ Suche nach Funktionen
 
 /**

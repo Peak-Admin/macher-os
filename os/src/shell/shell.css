@@ -11,7 +11,7 @@
 .mm-logo { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 8px; color: var(--mm-black); text-decoration: none; font: 500 20px/1 var(--mm-font); }
 .mm-logo strong { font-weight: 900; }
 .mm-logo-zeichen { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--mm-radius-control); background: var(--mm-brand-deep); color: #fff; font-weight: 900; }
-.mm-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.mm-nav { display: flex; flex-direction: column; gap: 4px; flex: 0 0 auto; }
 .mm-nav-haupt {
   display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 8px;
   border-radius: var(--mm-radius-control); color: var(--mm-text); text-decoration: none; font-weight: 500;
@@ -32,6 +32,18 @@
 .mm-profil-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-profil-wechsel { display: flex; flex-direction: column; gap: 4px; padding: 8px 12px; }
 .mm-profil-wechsel select { min-height: 44px; padding: 0 8px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); font: inherit; }
+.mm-nav-favoriten { flex: 1; display: flex; flex-direction: column; gap: 4px; margin: 16px 0; padding-top: 16px; border-top: 1px solid var(--mm-border); }
+.mm-nav-titel { padding: 0 8px; font: 600 13px/18px var(--mm-font); color: var(--mm-muted-on-white); }
+.mm-nav-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.mm-nav-favorit {
+  display: flex; align-items: center; gap: 12px; min-height: 40px; padding: 6px 14px; border-radius: var(--mm-radius-control);
+  color: var(--mm-text); text-decoration: none; font-size: 15px; transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-nav-favorit span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-nav-favorit:hover { background: var(--mm-hover); }
+.mm-nav-favorit--an { color: var(--mm-brand-text); font-weight: 700; }
+.mm-nav-leer { padding: 0 8px; font-size: 14px; line-height: 20px; color: var(--mm-muted-on-white); }
+.mm-nav-leer a { color: var(--mm-link); }
 .mm-menue--oben { top: auto; bottom: calc(100% + 8px); left: 0; right: auto; }
 
 /* Hauptbereich */
@@ -52,8 +64,8 @@
 .mm-glocke-zahl { position: absolute; top: 6px; right: 4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--mm-brand-deep); color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; }
 .mm-neu { position: relative; }
 .mm-menue { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; min-width: 240px; margin: 0; padding: 8px; list-style: none; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-shadow-overlay); }
-.mm-menue > button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px; border: 0; background: none; border-radius: var(--mm-radius-control); cursor: pointer; text-align: left; font-weight: 500; }
-.mm-menue > button:hover { background: var(--mm-hover); }
+.mm-menue > button, .mm-menue > a { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px; border: 0; background: none; border-radius: var(--mm-radius-control); cursor: pointer; text-align: left; font-weight: 500; color: inherit; text-decoration: none; }
+.mm-menue > button:hover, .mm-menue > a:hover { background: var(--mm-hover); }
 .mm-schleier-unsichtbar { position: fixed; inset: 0; z-index: 25; }
 .mm-inhalt { flex: 1; padding: 32px; outline: none; }
 
@@ -116,6 +128,20 @@
 .mm-tuer-text { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; flex: 1; min-width: 0; }
 .mm-tuer-text strong { font: 700 22px/28px var(--mm-font); color: var(--mm-black); }
 .mm-tuer .mm-modulzeile-pfeil { align-self: center; flex-shrink: 0; }
+
+/* ---------- Betrieb: Verzeichnis aller Module */
+.mm-modulsuche { max-width: 480px; }
+.mm-verzeichnis { display: grid; grid-template-columns: 1fr; gap: 24px; }
+@media (min-width: 1024px) { .mm-verzeichnis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.mm-verzeichnis-gruppe { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mm-verzeichnis-titel { font: 700 18px/24px var(--mm-font); color: var(--mm-black); }
+.mm-verzeichnis-eintrag { display: flex; align-items: center; }
+.mm-verzeichnis-eintrag > a { flex: 1; min-width: 0; }
+.mm-verzeichnis-icon { display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border-radius: var(--mm-radius-control); background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); }
+.mm-favorit { flex-shrink: 0; margin-right: 8px; color: var(--mm-muted-on-white); }
+.mm-favorit--an { color: var(--mm-brand); }
+.mm-favorit--an svg { fill: currentColor; }
+.mm-favorit[aria-disabled='true'] { opacity: 0.4; cursor: not-allowed; }
 
 /* ---------- Heute: eine Zeile Begrüßung, höchstens drei Blöcke */
 .mm-heute { gap: 32px; }
