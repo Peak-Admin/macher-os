@@ -3,7 +3,10 @@ import { alleModule, modulPfad } from '@core/modul';
 import { db } from '@core/db';
 import { ToastProvider } from '@ui/index';
 import { Shell } from './Shell';
-import { Hub } from './Hub';
+import { HeuteSeite } from './Heute';
+import { BetriebSeite, KategorieWeiter } from './Betrieb';
+import { BereichWeiter } from './BereichWeiter';
+import { AlleModuleSeite } from './AlleModule';
 import { Erststart } from './Erststart';
 import { NichtGefunden } from './NichtGefunden';
 
@@ -31,10 +34,15 @@ export function App() {
                 <Shell>
                   <Routes>
                     <Route path="/" element={<Navigate to="/heute" replace />} />
-                    <Route path="/heute" element={<Hub bereich="heute" />} />
-                    <Route path="/auftraege" element={<Hub bereich="auftraege" />} />
-                    <Route path="/plan" element={<Hub bereich="plan" />} />
-                    <Route path="/betrieb" element={<Hub bereich="betrieb" />} />
+                    <Route path="/heute" element={<HeuteSeite />} />
+                    {/* Aufträge und Planen öffnen direkt ihre Standardansicht – keine Auswahlseite davor */}
+                    <Route path="/auftraege" element={<BereichWeiter bereich="auftraege" />} />
+                    <Route path="/plan" element={<BereichWeiter bereich="plan" />} />
+                    <Route path="/betrieb" element={<BetriebSeite />} />
+                    <Route path="/betrieb/module" element={<AlleModuleSeite />} />
+                    <Route path="/betrieb/:kategorie" element={<KategorieWeiter />} />
+                    {/* frühere Macher-Leiste: führt jetzt an den neuen Ort */}
+                    <Route path="/macher" element={<Navigate to="/heute/braucht-dich" replace />} />
                     {module.flatMap((m) =>
                       (m.routen ?? []).map((r) => {
                         const pfad = r.pfad.startsWith('/') ? r.pfad : modulPfad(m, r.pfad);

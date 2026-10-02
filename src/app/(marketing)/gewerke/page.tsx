@@ -1,17 +1,18 @@
 import Link from "next/link";
 import { EinrichtungMock } from "@/components/gewerke/Mocks";
 import { GewerkSuche } from "@/components/gewerke/GewerkSuche";
-import { FinalCta, PageHero } from "@/components/sections";
+import { BereichsKarte, DunkleHeadline, DunklerAbschnitt, FinalCta, FotoBuehne, PageHero } from "@/components/sections";
 import {
   ButtonLink,
   Faq,
   FaqJsonLd,
-  Icon,
   IconTile,
   Section,
   SectionHeading,
   type FaqItem,
 } from "@/components/ui";
+import { Foto } from "@/components/ui/Foto";
+import { gewerkBild } from "@/content/bilder";
 import { anpassungen, clusterInhalte, gewerkSuchbegriffe, topGewerkInhalte } from "@/content/gewerke";
 import { gewerkCluster, topGewerke } from "@/content/registry";
 import { pageMeta } from "@/lib/metadata";
@@ -59,7 +60,7 @@ export default function GewerkeHubPage() {
         eyebrow="Gewerke"
         title={
           <>
-            Macher OS für <span className="text-signal-dark">dein Handwerk</span>.
+            Macher OS für <span>dein Handwerk</span>.
           </>
         }
         intro="Wähle dein Gewerk. Macher OS passt Abläufe, Begriffe und Funktionen an deinen Betrieb an."
@@ -74,40 +75,34 @@ export default function GewerkeHubPage() {
           </>
         }
         trust={false}
-        visual={<EinrichtungMock />}
+        bild="seite/gewerke"
       />
 
-      {/* 2. Beliebte Gewerke */}
-      <Section tone="white" id="beliebte-gewerke" className="scroll-mt-20">
-        <SectionHeading
+      {/* 2. Beliebte Gewerke – Hochkant-Karten mit Fotos */}
+      <DunklerAbschnitt hintergrund="Gewerke" id="beliebte-gewerke" className="scroll-mt-20">
+        <DunkleHeadline
           eyebrow="Beliebte Gewerke"
-          title="Für deinen Betrieb gemacht."
+          gruen="Für deinen Betrieb"
+          rest="gemacht."
           intro="Für diese Gewerke gibt es ausführliche Seiten mit Abläufen, Vorlagen und Beispielen."
         />
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {topGewerke.map((g) => {
             const inhalt = topGewerkInhalte[g.slug];
             return (
               <li key={g.slug}>
-                <Link
+                <BereichsKarte
                   href={`/gewerke/${g.slug}`}
-                  className="group flex h-full flex-col rounded-lg border border-line bg-paper p-5 transition hover:-translate-y-0.5 hover:border-ink/30 hover:bg-white hover:shadow-lg hover:shadow-ink/5"
-                >
-                  <IconTile name={inhalt.icon} className="mb-4" />
-                  <span className="flex items-center gap-1.5 font-display text-lg font-bold leading-snug">
-                    {g.titel}
-                    <Icon
-                      name="arrow-right"
-                      className="size-4 shrink-0 text-signal-dark transition-transform group-hover:translate-x-0.5"
-                    />
-                  </span>
-                  <span className="mt-2 text-[0.95rem] leading-relaxed text-muted">{inhalt.teaser}</span>
-                </Link>
+                  bild={gewerkBild(g.slug)}
+                  titel={g.kurz}
+                  text={inhalt.teaser}
+                  icon={inhalt.icon}
+                />
               </li>
             );
           })}
         </ul>
-      </Section>
+      </DunklerAbschnitt>
 
       {/* 3. Alle Gewerk-Cluster */}
       <Section>
@@ -123,12 +118,21 @@ export default function GewerkeHubPage() {
               <li key={c.slug}>
                 <Link
                   href={`/gewerke/${c.slug}`}
-                  className="group flex h-full gap-3 rounded-lg bg-white p-4 ring-1 ring-line transition hover:ring-ink/40"
+                  className="group flex h-full flex-col overflow-hidden rounded-lg bg-white ring-1 ring-line transition duration-150 ease-out hover:-translate-y-0.5 hover:ring-ink/40"
                 >
-                  <IconTile name={inhalt.icon} tone="sky" className="size-10" />
-                  <span className="min-w-0">
-                    <span className="block font-display font-bold leading-snug">{c.titel}</span>
-                    <span className="mt-1 block text-sm leading-snug text-muted">{inhalt.teaser}</span>
+                  <span className="relative block aspect-[16/9] overflow-hidden bg-ink">
+                    <Foto
+                      bild={gewerkBild(c.slug)}
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                      className="transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+                    />
+                  </span>
+                  <span className="flex flex-1 gap-3 p-4">
+                    <IconTile name={inhalt.icon} tone="sky" className="size-10" />
+                    <span className="min-w-0">
+                      <span className="block font-display font-bold leading-snug">{c.titel}</span>
+                      <span className="mt-1 block text-sm leading-snug text-muted">{inhalt.teaser}</span>
+                    </span>
                   </span>
                 </Link>
               </li>
@@ -151,11 +155,16 @@ export default function GewerkeHubPage() {
 
       {/* 5. Anpassungsprinzip */}
       <Section tone="white">
-        <SectionHeading
-          eyebrow="So passt sich Macher OS an"
-          title="Eine Software. Für jedes Gewerk eingerichtet."
-          intro="Du wählst dein Gewerk – Macher OS verändert, was du jeden Tag siehst. Hier ein Beispiel pro Bereich."
-        />
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
+          <SectionHeading
+            eyebrow="So passt sich Macher OS an"
+            title="Eine Software. Für jedes Gewerk eingerichtet."
+            intro="Du wählst dein Gewerk – Macher OS verändert, was du jeden Tag siehst. Hier ein Beispiel pro Bereich."
+          />
+          <FotoBuehne bild="alltag/werkstatt">
+            <EinrichtungMock />
+          </FotoBuehne>
+        </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {anpassungen.map((a) => (
             <div key={a.bereich} className="flex flex-col rounded-lg border border-line bg-paper p-5">
@@ -183,10 +192,10 @@ export default function GewerkeHubPage() {
       </Section>
 
       {/* FAQ */}
-      <Section containerSize="narrow">
-        <SectionHeading title="Häufige Fragen zu Gewerken" />
-        <div className="mt-8">
-          <Faq items={faq} />
+      <Section tone="ink" containerSize="narrow">
+        <DunkleHeadline gruen="Häufige Fragen" rest="zu Gewerken" />
+        <div className="mt-10">
+          <Faq items={faq} dark />
         </div>
         <FaqJsonLd items={faq} />
       </Section>
@@ -196,6 +205,7 @@ export default function GewerkeHubPage() {
         title="Dein Gewerk. Deine Abläufe. Eine Software."
         intro="Wähle beim Start dein Gewerk – Macher OS richtet Begriffe, Vorlagen und Abläufe für dich ein."
         primaryLabel="Macher OS für meinen Betrieb einrichten"
+        bild="alltag/team"
       />
     </>
   );

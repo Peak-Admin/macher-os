@@ -40,7 +40,7 @@ export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "
             <Link
               href={p.cta.href}
               className={`mt-6 rounded-lg py-3 text-center font-bold transition-colors ${
-                p.hervorgehoben ? "bg-white text-ink hover:bg-sand" : "bg-signal text-white hover:bg-signal-dark"
+                p.hervorgehoben ? "bg-white text-ink hover:bg-sand" : "btn-primaer"
               }`}
             >
               {p.cta.label}

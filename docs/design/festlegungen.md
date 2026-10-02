@@ -6,10 +6,12 @@ weil sie jüngere, ausdrücklich bestätigte Entscheidungen enthält.
 ## Bestätigte Bausteine
 
 ### Primärbutton
-Tiefes CTA-Grün `#06480C`, weiße Schrift Barlow 600, 4 px Radius, leichter Schatten erlaubt beim großen Einstiegs-CTA.
+Markengrün `#2F9250`, weiße Schrift **Barlow 700 in 19 px**, Hover `#1F6135`, 4 px Radius, leichter Schatten erlaubt beim großen Einstiegs-CTA.
+Weiß auf `#2F9250` hat 3,9:1 – das reicht nur für große Schrift (ab 19 px fett). Die Buttonschrift darf deshalb nicht kleiner werden.
+Kleine weiße Texte auf Grün (Badges, Schrittnummern, Mini-Buttons in Mocks) bleiben auf tiefem Grün `#06480C`.
 Vorbild: Startseiten-CTA „Jetzt Erstgespräch buchen“ (optional mit kleinem Personenbild links).
 
-- Website: `bg-signal text-white hover:bg-signal-dark`
+- Website: Utility `btn-primaer` (`src/app/globals.css`, Tokens `--color-primary`, `--color-primary-hover`); `ButtonLink` Variante `primary`
 - Software: `.mm-btn--primaer` (`--mm-action`)
 
 ### Themen-Icon-Kacheln
@@ -19,6 +21,9 @@ Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon 
 - Website: Utility `icon-kachel` (`src/app/globals.css`)
 - Software: Tokens `--mm-icon-tile` / `--mm-on-icon-tile`; Klassen `.mm-modulkachel-icon`, `.mm-modulzeile-icon`,
   `.mm-auswahlkarte-icon`, `.mm-leer-icon`
+
+- Sidebar (Software): Der aktive Hauptbereich zeigt sein Icon als Kachel (32 px, weißes Icon auf `#69AF44`)
+  und das Label fett – kein Zeilen-Hintergrund, kein Randstreifen. Inaktive Icons bleiben ohne Kachel in Textfarbe.
 
 Funktionale Icons (Pfeile, Schließen, Menü, Status) bleiben in Textfarbe ohne Kachel.
 
@@ -32,19 +37,20 @@ Optional Flagge oder Icon vor dem Label (Vorbild: Länderwahl Deutschland · Ös
 
 ### Navigation: ein Klick, keine Unterpunkte
 Die Seitennavigation ist **flach**. Jeder Eintrag führt mit einem Klick zum Ziel – keine aufklappenden
-Unterpunkte, keine zweite Ebene unter den Bereichen.
+Unterpunkte, keine zweite Ebene unter den Bereichen. Die Zielstruktur steht in [`docs/produkt/navigation.md`](../produkt/navigation.md).
 
-- **Feste Einträge:** nur die vier Bereiche Heute · Aufträge · Plan · Betrieb (plus die globalen Macher-Links unten).
-- **Alle Module stecken in „Betrieb“:** Die Betrieb-Seite ist zugleich das Verzeichnis aller Module (Betrieb-Gruppen
-  und die Module von Heute, Aufträge, Plan), mit Suchfeld „Modul finden“. Neue Module müssen dort auffindbar sein.
-- **Favoriten:** Jedes Modul lässt sich mit dem Stern als Favorit markieren. Favoriten stehen zusätzlich in der
-  Navigation unter „Favoriten“ – ebenfalls flach, ein Klick. Ohne Favoriten zeigt der Abschnitt einen kurzen Hinweis.
+- **Feste Einträge:** nur die vier Bereiche Heute · Aufträge · Planen · Betrieb.
+- **Alle Module findet man unter „Betrieb“:** unter den vier Betrieb-Kacheln der Link „Alle Module ansehen und
+  Favoriten wählen“ (`/betrieb/module`). Das Verzeichnis zeigt jedes Modul an seinem Ort in der Struktur, mit Suchfeld
+  „Modul finden“. Es ist keine fünfte Kachel und kein Menüpunkt.
+- **Favoriten:** Jedes Modul lässt sich dort mit dem Stern markieren. Favoriten stehen zusätzlich in der Seitenleiste
+  unter „Favoriten“ – flach, ein Klick. Ohne Favoriten steht dort ein kurzer Hinweis mit Link zum Verzeichnis.
 - **Persönlich:** Favoriten speichert jeder Nutzer für sich, so passt jede Rolle (Chef, Büro, Monteur, Azubi) ihre
   Navigation selbst an. Module, die eine Rolle nicht sehen darf, erscheinen auch nicht als Favorit.
   Zum Start bekommt jede Rolle eine kleine Vorauswahl (`STANDARD_FAVORITEN`), bis der Nutzer sie selbst ändert.
-- Mobil: Unterleiste mit den vier Bereichen; Favoriten im Menü.
+- **Mobil:** Die untere Leiste bleibt bei den vier Bereichen. Favoriten stehen im Profilmenü (oben rechts).
 
-- Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis `AlleModule` in `os/src/shell/Hub.tsx`,
+- Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis `AlleModuleSeite` in `os/src/shell/AlleModule.tsx`,
   Speicherung `useFavoriten()` in `os/src/core/favoriten.ts` (Einstellung `navigation.favoriten.<mitarbeiterId>`)
 
 ## Orientierungsbeispiele von Mission Mittelstand

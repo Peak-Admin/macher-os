@@ -26,7 +26,7 @@ Gestaltung und Tonalität folgen dem [Brand & Software Design Playbook](docs/des
 
 | Ordner | Inhalt |
 |---|---|
-| `os/` | **Macher OS – die Software** (React + Vite): 81 Module in den Bereichen Heute · Aufträge · Plan · Betrieb, plus Macher (Assistenz & Automation) |
+| `os/` | **Macher OS – die Software** (React + Vite): 81 Module, sichtbar in genau vier Bereichen Heute · Aufträge · Planen · Betrieb (Zielstruktur: [`docs/produkt/navigation.md`](docs/produkt/navigation.md)) |
 | `src/` | Marketing-Website (Next.js) |
 | `docs/` | Design-Playbook, Produkt-Modulliste (`docs/produkt/module.md`), Website-Struktur |
 

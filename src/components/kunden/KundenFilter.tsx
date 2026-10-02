@@ -1,7 +1,6 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
-import { KundenCard } from "@/components/sections/KundenCard";
+import { useId, useMemo, useState, type ReactNode } from "react";
 import { Icon } from "@/components/ui";
 import type { FunktionSlug, KundeSlug, TopGewerkSlug } from "@/content/registry";
 import type { Groesse } from "@/content/kunden";
@@ -15,8 +14,11 @@ export function KundenFilter({
   gewerke,
   groessen,
   funktionen,
+  karten,
 }: {
   eintraege: Eintrag[];
+  /** Fertig gerenderte Karten je Story – die Fotos werden auf dem Server ausgewählt. */
+  karten: Record<KundeSlug, ReactNode>;
   gewerke: Option<TopGewerkSlug>[];
   groessen: Option<Groesse>[];
   funktionen: Option<FunktionSlug>[];
@@ -79,7 +81,7 @@ export function KundenFilter({
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {treffer.map((e) => (
             <li key={e.slug} className="flex [&>a]:w-full">
-              <KundenCard slug={e.slug} />
+              {karten[e.slug]}
             </li>
           ))}
         </ul>

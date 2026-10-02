@@ -1,5 +1,6 @@
-import { FinalCta, PageHero } from "@/components/sections";
+import { BereichsKarte, DunkleHeadline, FinalCta, FotoBuehne, PageHero } from "@/components/sections";
 import { ArrowLink, Card, Faq, FaqJsonLd, IconTile, Section, SectionHeading } from "@/components/ui";
+import { gewerkBild } from "@/content/bilder";
 import { clusterInhalte, topGewerkInhalte } from "@/content/gewerke";
 import { gewerkCluster, topGewerke, type GewerkClusterSlug } from "@/content/registry";
 import { arbeitsweiseIcon, ChipLink, FunktionLink } from "./Bausteine";
@@ -19,7 +20,7 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
         eyebrow={c.seoTitel}
         title={c.heroTitel}
         intro={c.intro}
-        visual={<GewerkTagMock betrieb="Dein Betrieb" label={reg.titel} tag={c.tag} chips={c.berufe.slice(0, 4)} />}
+        bild={gewerkBild(slug)}
       />
 
       {/* Welche Berufe dazugehören */}
@@ -38,6 +39,11 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
             ))}
           </ul>
         </div>
+        <FotoBuehne bild="alltag/werkstatt" className="mt-14">
+          <div className="mx-auto max-w-2xl">
+            <GewerkTagMock betrieb="Dein Betrieb" label={reg.titel} tag={c.tag} chips={c.berufe.slice(0, 4)} />
+          </div>
+        </FotoBuehne>
       </Section>
 
       {/* Typische Arbeitsweisen */}
@@ -100,13 +106,19 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
           }
         />
         {tops.length > 0 && (
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {tops.map((t) => (
-              <Card key={t.slug} title={`Macher OS für ${topGewerkInhalte[t.slug].name}`} icon={topGewerkInhalte[t.slug].icon} href={`/gewerke/${t.slug}`}>
-                {topGewerkInhalte[t.slug].teaser}
-              </Card>
+              <li key={t.slug}>
+                <BereichsKarte
+                  href={`/gewerke/${t.slug}`}
+                  bild={gewerkBild(t.slug)}
+                  titel={t.kurz}
+                  text={topGewerkInhalte[t.slug].teaser}
+                  icon={topGewerkInhalte[t.slug].icon}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
         )}
         <ul className="mt-8 flex flex-wrap gap-2.5">
           {verwandt.map((v) => (
@@ -121,10 +133,10 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
       </Section>
 
       {/* FAQ */}
-      <Section tone="white" containerSize="narrow">
-        <SectionHeading title="Häufige Fragen" />
-        <div className="mt-8">
-          <Faq items={c.faq} />
+      <Section tone="ink" containerSize="narrow">
+        <DunkleHeadline gruen="Häufige" rest="Fragen" />
+        <div className="mt-10">
+          <Faq items={c.faq} dark />
         </div>
         <FaqJsonLd items={c.faq} />
       </Section>

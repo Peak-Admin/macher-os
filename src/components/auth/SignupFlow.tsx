@@ -340,7 +340,7 @@ export function SignupFlow() {
           )}
           <button
             type="submit"
-            className="inline-flex h-12 items-center gap-2 rounded-lg bg-signal px-6 font-bold text-white transition-colors hover:bg-signal-dark"
+            className="inline-flex h-12 items-center gap-2 rounded-lg btn-primaer px-6 transition-colors"
           >
             {schritt === SCHRITTE - 1 ? "Einrichten" : "Weiter"} <Icon name="arrow-right" className="size-4" />
           </button>

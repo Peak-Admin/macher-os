@@ -89,6 +89,60 @@ export function Button({ variante = 'primaer', icon, laedt, laedtText, breit, kl
   );
 }
 
+export interface MenueAktion {
+  label: string;
+  icon?: IconName;
+  onClick?: () => void;
+  to?: string;
+}
+
+/**
+ * „Weitere Aktionen“: höchstens vier passende Aktionen zum geöffneten Vorgang – keine Funktionssammlung.
+ * Mehr als vier Einträge werden abgeschnitten (Entwurfsbudget).
+ */
+export function AktionsMenue({ aktionen, label = 'Weitere Aktionen', klein }: { aktionen: MenueAktion[]; label?: string; klein?: boolean }) {
+  const [offen, setOffen] = useState(false);
+  const navigate = useNavigate();
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!offen) return;
+    const weg = (e: KeyboardEvent) => e.key === 'Escape' && setOffen(false);
+    window.addEventListener('keydown', weg);
+    ref.current?.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus();
+    return () => window.removeEventListener('keydown', weg);
+  }, [offen]);
+  const liste = aktionen.slice(0, 4);
+  if (!liste.length) return null;
+  return (
+    <div className="mm-aktionsmenue" ref={ref}>
+      <Button variante="tertiaer" klein={klein} icon="mehr" aria-expanded={offen} aria-haspopup="menu" onClick={() => setOffen(!offen)}>
+        {label}
+      </Button>
+      {offen && (
+        <>
+          <div className="mm-aktionsmenue-schleier" onClick={() => setOffen(false)} />
+          <div className="mm-aktionsmenue-liste" role="menu" aria-label={label}>
+            {liste.map((a) => (
+              <button
+                key={a.label}
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setOffen(false);
+                  if (a.to) navigate(a.to);
+                  a.onClick?.();
+                }}
+              >
+                {a.icon && <Icon name={a.icon} />} {a.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 /** Nur-Icon-Button – immer mit Label für Screenreader */
 export function IconButton({ icon, label, className, ...rest }: { icon: IconName; label: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (

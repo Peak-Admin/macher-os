@@ -9,7 +9,7 @@
   transition: background-color var(--mm-motion-fast) ease-out, border-color var(--mm-motion-fast) ease-out, color var(--mm-motion-fast) ease-out;
 }
 .mm-btn:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 3px; }
-.mm-btn--primaer { background: var(--mm-action); color: var(--mm-on-action); }
+.mm-btn--primaer { background: var(--mm-action); color: var(--mm-on-action); font-size: 19px; font-weight: 700; }
 .mm-btn--primaer:hover:not(:disabled) { background: var(--mm-action-hover); }
 .mm-btn--primaer:active:not(:disabled) { background: var(--mm-dark); }
 .mm-btn--sekundaer:active:not(:disabled), .mm-btn--tertiaer:active:not(:disabled) { background: var(--mm-soft-green); }
@@ -228,7 +228,7 @@
 .mm-meldung--aktiv { background: var(--mm-soft-green); border-color: var(--mm-success-border); }
 
 /* ---------- Tabs & Filter */
-.mm-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--mm-border); overflow-x: auto; scrollbar-width: thin; }
+.mm-tabs { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--mm-border); }
 .mm-tab { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 14px; border: 0; background: none; font-weight: 500; color: var(--mm-text); cursor: pointer; white-space: nowrap; }
 .mm-tab:hover { color: var(--mm-black); background: var(--mm-hover); }
 .mm-tab:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: -2px; }
@@ -313,3 +313,20 @@
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / 18px no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / 18px no-repeat;
 }
+
+/* Weitere Aktionen (höchstens vier) */
+.mm-aktionsmenue { position: relative; display: inline-flex; }
+.mm-aktionsmenue-schleier { position: fixed; inset: 0; z-index: 25; }
+.mm-aktionsmenue-liste { position: absolute; left: 0; top: calc(100% + 4px); z-index: 30; min-width: 240px; max-width: calc(100vw - 32px); padding: 8px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-shadow-overlay); }
+.mm-aktionsmenue-liste button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px; border: 0; background: none; border-radius: var(--mm-radius-control); cursor: pointer; text-align: left; font: inherit; font-weight: 500; color: var(--mm-text); }
+.mm-aktionsmenue-liste button:hover, .mm-aktionsmenue-liste button:focus-visible { background: var(--mm-hover); }
+
+/* Detailbereiche: höchstens vier, mobil gleich breit statt umbrechend oder scrollend */
+@media (max-width: 767px) {
+  .mm-tabs { flex-wrap: nowrap; gap: 0; }
+  .mm-tab { flex: 1 1 0; min-width: 0; justify-content: center; padding: 8px 4px; font-size: 15px; white-space: normal; text-align: center; }
+  .mm-tab-zaehler { display: none; }
+}
+/* In einem Detailbereich ist die Hauptaktion der Seite oben; Aktionen im Bereich treten zurück */
+.mm-objekt-bereich .mm-btn--primaer:not(dialog *), .mm-heute-block .mm-btn--primaer:not(dialog *) { background: var(--mm-surface); color: var(--mm-brand-text); border-color: var(--mm-brand-text); box-shadow: none; }
+.mm-objekt-bereich .mm-btn--primaer:not(dialog *):hover:not(:disabled), .mm-heute-block .mm-btn--primaer:not(dialog *):hover:not(:disabled) { background: var(--mm-soft-green); }

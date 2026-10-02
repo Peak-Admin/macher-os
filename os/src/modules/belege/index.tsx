@@ -35,7 +35,7 @@ export default defineModul({
     return neu ? { text: neu === 1 ? '1 Beleg zu prüfen' : `${neu} Belege zu prüfen`, ton: 'aktiv' } : undefined;
   },
   schnell: [{ id: 'beleg', label: 'Beleg fotografieren', icon: 'kamera', component: BelegSchnell, gewicht: 45 }],
-  erstellen: [{ label: 'Beleg erfassen', pfad: '/betrieb/belege/neu', gewicht: 35 }],
+  erstellen: [{ label: 'Beleg fotografieren', pfad: '/betrieb/belege/neu', gewicht: 35 }],
   tabs: [
     {
       objekt: 'auftraege',

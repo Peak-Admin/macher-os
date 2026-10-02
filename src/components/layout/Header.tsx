@@ -109,7 +109,7 @@ export function Header() {
           </Link>
           <Link
             href={cta.primary.href}
-            className="rounded-lg bg-signal px-4 py-2 text-[0.95rem] font-bold text-white hover:bg-signal-dark"
+            className="rounded-lg btn-primaer px-4 py-1.5"
           >
             {cta.primary.label}
           </Link>
@@ -117,7 +117,7 @@ export function Header() {
 
         {/* Mobil: primärer CTA bleibt sichtbar */}
         <div className="ml-auto flex items-center gap-2 lg:hidden">
-          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg bg-signal px-3 py-2 text-sm font-bold text-white">
+          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg btn-primaer px-3 py-1.5">
             {cta.primary.label}
           </Link>
           <button
@@ -229,7 +229,7 @@ function MobileMenu() {
           )}
         </ul>
         <div className="mt-6 grid gap-3">
-          <Link href={cta.primary.href} className="rounded-lg bg-signal py-3 text-center font-bold text-white">
+          <Link href={cta.primary.href} className="rounded-lg btn-primaer py-3 text-center">
             {cta.primary.label}
           </Link>
           <Link href={cta.secondary.href} className="rounded-lg bg-white py-3 text-center font-semibold ring-1 ring-line">

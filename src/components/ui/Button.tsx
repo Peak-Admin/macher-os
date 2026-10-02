@@ -5,7 +5,7 @@ import { Icon } from "./Icon";
 type Variant = "primary" | "secondary" | "dark" | "light" | "onDark";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-signal text-white hover:bg-signal-dark",
+  primary: "btn-primaer",
   secondary: "bg-white text-signal-dark ring-1 ring-inset ring-signal-dark/60 hover:bg-hover",
   dark: "bg-ink text-white hover:bg-ink-soft",
   light: "bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/20",
@@ -27,14 +27,17 @@ export function ButtonLink({
   className?: string;
 }) {
   const sizes = {
-    sm: "h-9 px-4 text-sm",
-    md: "h-11 px-5 text-[0.95rem]",
-    lg: "h-12 px-6 text-lg",
+    sm: "h-9 px-4",
+    md: "h-11 px-5",
+    lg: "h-12 px-6",
   };
+  // Primärbutton bringt Schriftgröße und -stärke selbst mit (btn-primaer, 19 px fett).
+  const schrift =
+    variant === "primary" ? "" : { sm: "text-sm font-semibold", md: "text-[0.95rem] font-semibold", lg: "text-lg font-semibold" }[size];
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-md font-semibold whitespace-nowrap transition-colors duration-150 ease-out ${sizes[size]} ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap transition-colors duration-150 ease-out ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
     >
       {children}
     </Link>

@@ -66,7 +66,7 @@ export function ZusatzErfassen({ fertig, auftragId }: { fertig: () => void; auft
         speichern();
       }}
     >
-      <AuftragAuswahl label="Auftrag" wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />
+      {!auftragId && <AuftragAuswahl label="Auftrag" wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />}
       {fehler.auftrag && <Meldung ton="achtung">{fehler.auftrag}</Meldung>}
       <Segmente
         label="Preis nach"

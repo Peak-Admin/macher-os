@@ -37,7 +37,7 @@ export default defineModul({
     { pfad: 'neu', element: ReklamationNeu },
     { pfad: ':id', element: ReklamationDetail },
   ],
-  erstellen: [{ label: 'Mangel aufnehmen', pfad: '/auftraege/reklamationen/neu', gewicht: 40 }],
+  erstellen: [{ label: 'Mangel melden', pfad: '/auftraege/reklamationen/neu', gewicht: 40 }],
   schnell: [{ id: 'mangel', label: 'Mangel melden', icon: 'schild', component: MangelSchnell, gewicht: 35 }],
   tabs: [
     {

@@ -1,13 +1,14 @@
 import { ProductMock } from "@/components/mocks";
-import { FinalCta, Flow, PageHero } from "@/components/sections";
+import { FinalCta, Flow, MissionMittelstand, MissionMittelstandFoto, PageHero } from "@/components/sections";
 import { ArrowLink, ButtonLink, Card, Icon, Section, SectionHeading } from "@/components/ui";
 import { KONTAKT_EMAIL, werte } from "@/content/unternehmen";
 import { pageMeta } from "@/lib/metadata";
+import { herausgeber } from "@/lib/site";
 
 export const metadata = pageMeta({
   title: "Über uns",
   description:
-    "Warum es Macher OS gibt: ein Betriebssystem für Handwerksbetriebe, das Büroarbeit abnimmt. Einfach vorne. Vollständig hinten.",
+    "Macher OS ist ein Joint-Venture-Projekt von Mission Mittelstand: ein Betriebssystem für Handwerksbetriebe, das Büroarbeit abnimmt. Einfach vorne. Vollständig hinten.",
   path: "/ueber-uns",
 });
 
@@ -23,9 +24,10 @@ export default function UeberUnsPage() {
   return (
     <>
       <PageHero
+        bild="seite/ueber-uns"
         eyebrow="Über Macher OS"
-        title="Wir bauen die Software, die das Handwerk verdient."
-        intro="Handwerker sollen machen, nicht verwalten. Macher OS nimmt ihnen so viel Büroarbeit ab wie möglich – damit mehr Zeit für Kunden, Baustelle und Feierabend bleibt."
+        title="Software von Mission Mittelstand. Gemacht fürs Handwerk."
+        intro={`Macher OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. Handwerker sollen machen, nicht verwalten – deshalb nimmt Macher OS so viel Büroarbeit ab wie möglich. Damit mehr Zeit für Kunden, Baustelle und Feierabend bleibt.`}
         breadcrumbs={[{ label: "Über uns" }]}
         actions="none"
       />
@@ -102,13 +104,22 @@ export default function UeberUnsPage() {
         </div>
       </Section>
 
-      {/* 4. Team – bewusst ohne Namen und Fotos */}
+      {/* 4. Mission Mittelstand */}
+      <MissionMittelstand
+        id="mission-mittelstand"
+        title="Hinter Macher OS steht Mission Mittelstand."
+      />
+
+      {/* 5. Team */}
       <Section>
-        <SectionHeading
-          eyebrow="Team"
-          title="Das Team stellt sich bald vor."
-          intro="Bis dahin: Das ist uns bei der Arbeit wichtig."
-        />
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <SectionHeading
+            eyebrow="Team"
+            title="Ein Team, das Betriebe von innen kennt."
+            intro={`Macher OS entsteht gemeinsam mit ${herausgeber.name}. Das ist uns bei der Arbeit wichtig:`}
+          />
+          <MissionMittelstandFoto />
+        </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {werte.map((w) => (
             <Card key={w.titel} title={w.titel} icon={w.icon}>
@@ -121,7 +132,7 @@ export default function UeberUnsPage() {
         </ArrowLink>
       </Section>
 
-      {/* 5. Partner */}
+      {/* 6. Partner */}
       <Section tone="sand" tight>
         <div className="flex flex-wrap items-center justify-between gap-6">
           <div className="max-w-2xl">
@@ -135,7 +146,7 @@ export default function UeberUnsPage() {
         </div>
       </Section>
 
-      {/* 6. Kontakt */}
+      {/* 7. Kontakt */}
       <Section tone="white">
         <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
           <SectionHeading
@@ -153,7 +164,7 @@ export default function UeberUnsPage() {
         </div>
       </Section>
 
-      {/* 7. CTA */}
+      {/* 8. CTA */}
       <FinalCta />
     </>
   );

@@ -2,24 +2,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { adresseText, datumKurz, datumVon, heute, mapsLink, personName, telLink } from '@core/format';
 import { aktionAusfuehren, aktionVorhanden, pfadZu } from '@core/modul';
-import { oeffne } from '@core/overlay';
 import { istBuero, useIch } from '@core/session';
 import type { Termin } from '@core/objects';
-import { ObjektPanels } from '@ui/objekt';
-import { BeispielMarke, Button, Icon, Karte, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, useToast, Zeile } from '@ui/index';
+import { ErfassenKnopf, ObjektPanels, erfassenAktion } from '@ui/objekt';
+import { AktionsMenue, BeispielMarke, Button, Icon, Karte, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, useToast, Zeile, type MenueAktion } from '@ui/index';
 import { AufgabeZeile } from '@modules/mein-tag/teile';
 import { TERMIN_ART_LABEL, TERMIN_STATUS_LABEL, zeitText } from '@modules/mein-tag/logik';
 import { einsatzBeenden, einsatzLosfahren, einsatzStarten, laeuft, naechsterEinsatz, telefonFuer } from './logik';
-
-/** Link-Button für externe Ziele (Karten-App, Telefon) – `Button to` kann nur interne Pfade. */
-function LinkKnopf({ href, icon, children, primaer }: { href: string; icon: string; children: string; primaer?: boolean }) {
-  return (
-    <a className={`mm-btn mm-btn--${primaer ? 'primaer' : 'sekundaer'}`} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
-      <Icon name={icon} />
-      <span>{children}</span>
-    </a>
-  );
-}
 
 function wannText(t: Termin) {
   const tag = datumVon(t.start);
@@ -27,11 +16,86 @@ function wannText(t: Termin) {
   return `${d}, ${zeitText(t)}`;
 }
 
-/** Der Einsatz kompakt und vollständig: Ort, Zugang, Anrufen, Arbeit, Start/Ende. */
-export function EinsatzKarte({ t, kompakt }: { t: Termin; kompakt?: boolean }) {
-  useDatenstand();
+/** Die eine zustandsabhängige Hauptaktion: Losfahren → Arbeit starten → Arbeit abschließen */
+export function hauptaktion(t: Termin): { label: string; icon: string; fn: () => string | void; erfolg: string } | undefined {
+  if (t.status === 'geplant' || t.status === 'bestaetigt') return { label: 'Losfahren', icon: 'auto', fn: () => einsatzLosfahren(t.id), erfolg: 'Gute Fahrt. Status: unterwegs.' };
+  if (t.status === 'unterwegs') return { label: 'Arbeit starten', icon: 'start', fn: () => einsatzStarten(t.id), erfolg: 'Du bist vor Ort. Die Arbeit läuft.' };
+  if (t.status === 'vor_ort') return { label: 'Arbeit abschließen', icon: 'stop', fn: () => einsatzBeenden(t.id), erfolg: 'Einsatz abgeschlossen.' };
+  return undefined;
+}
+
+function useAusfuehren() {
   const toast = useToast();
   const navigate = useNavigate();
+  return (fn: () => string | void, erfolg: string) => {
+    try {
+      const ziel = fn();
+      toast(erfolg);
+      if (ziel) navigate(ziel);
+    } catch {
+      toast('Das hat nicht geklappt. Versuche es erneut.', { ton: 'achtung' });
+    }
+  };
+}
+
+function oberzeile(t: Termin) {
+  if (t.status === 'vor_ort') {
+    const z = db.zeiten.all().find((x) => x.terminId === t.id && x.art === 'arbeit' && !x.ende);
+    return z ? `Arbeit läuft seit ${z.start} Uhr` : 'Arbeit läuft';
+  }
+  if (t.status === 'unterwegs') return 'Du bist unterwegs';
+  return `Dein nächster Einsatz · ${wannText(t)}`;
+}
+
+/** Kompakt für „Heute“: Kunde, Aufgabe, Ort, Zugang – und genau eine Hauptaktion. */
+export function EinsatzKurz({ t }: { t: Termin }) {
+  useDatenstand();
+  const ausfuehren = useAusfuehren();
+  const auftrag = db.auftraege.get(t.auftragId);
+  const ort = db.orte.get(t.ortId ?? auftrag?.ortId);
+  const kunde = db.kunden.get(t.kundeId ?? auftrag?.kundeId ?? ort?.kundeId);
+  const adresse = ort?.adresse ?? kunde?.adresse;
+  const karte = mapsLink(adresse);
+  const haupt = hauptaktion(t);
+  return (
+    <section className="mm-einsatz" aria-labelledby={`einsatz-${t.id}`}>
+      <p className="mm-oberzeile">{oberzeile(t)}</p>
+      <h2 id={`einsatz-${t.id}`} className="mm-einsatz-kunde">
+        {kunde?.name ?? t.titel} <BeispielMarke zeigen={t.beispiel} />
+      </h2>
+      {kunde && <p className="mm-einsatz-aufgabe">{t.titel}</p>}
+      {adresse && (
+        <p className="mm-meta">
+          {adresseText(adresse)}
+          {ort?.hinweise ? <> · <strong>{ort.hinweise}</strong></> : null}
+          {karte && (
+            <>
+              {' · '}
+              <a href={karte} target="_blank" rel="noreferrer">
+                Route
+              </a>
+            </>
+          )}
+        </p>
+      )}
+      <Zeile abstand={8}>
+        {haupt && (
+          <Button icon={haupt.icon} onClick={() => ausfuehren(haupt.fn, haupt.erfolg)}>
+            {haupt.label}
+          </Button>
+        )}
+        <Button variante="tertiaer" to={`/heute/naechster-einsatz/${t.id}`} icon="pfeilRechts">
+          Details
+        </Button>
+      </Zeile>
+    </section>
+  );
+}
+
+/** Der Einsatz vollständig: Ort, Zugang, Anrufen, Arbeit – eine Hauptaktion, zwei direkte Aktionen, wenige weitere. */
+export function EinsatzKarte({ t }: { t: Termin }) {
+  useDatenstand();
+  const ausfuehren = useAusfuehren();
   const auftrag = db.auftraege.get(t.auftragId);
   const ort = db.orte.get(t.ortId ?? auftrag?.ortId);
   const kunde = db.kunden.get(t.kundeId ?? auftrag?.kundeId ?? ort?.kundeId);
@@ -44,36 +108,47 @@ export function EinsatzKarte({ t, kompakt }: { t: Termin; kompakt?: boolean }) {
   const team = t.mitarbeiterIds.map((id) => db.mitarbeiter.get(id)).filter(Boolean);
   const laufend = laeuft(t);
   const offen = t.status === 'geplant' || t.status === 'bestaetigt';
+  const haupt = hauptaktion(t);
   const bericht = aktionVorhanden('bericht.erstellen') && auftrag;
 
-  const ausfuehren = (fn: () => string | void, erfolg: string) => {
-    try {
-      const ziel = fn();
-      toast(erfolg);
-      if (ziel) navigate(ziel);
-    } catch {
-      toast('Das hat nicht geklappt. Versuche es erneut.', { ton: 'achtung' });
-    }
-  };
+  const weitere: MenueAktion[] = [
+    ...(offen ? [{ label: 'Direkt mit der Arbeit starten', icon: 'start', onClick: () => ausfuehren(() => einsatzStarten(t.id), 'Einsatz gestartet.') }] : []),
+    ...erfassenAktion('material', auftrag?.id),
+    ...erfassenAktion('zeit', auftrag?.id),
+    ...(bericht && t.status === 'vor_ort' ? [{ label: 'Bericht schreiben', icon: 'dokument', onClick: () => ausfuehren(() => aktionAusfuehren('bericht.erstellen', { auftragId: auftrag.id, terminId: t.id }), 'Bericht angelegt.') }] : []),
+    ...erfassenAktion('mangel', auftrag?.id),
+  ];
 
   return (
     <Karte
-      oberzeile={laufend ? (t.status === 'vor_ort' ? 'Läuft gerade' : 'Unterwegs') : `Nächster Einsatz · ${TERMIN_ART_LABEL[t.art]}`}
+      oberzeile={laufend ? (t.status === 'vor_ort' ? 'Arbeit läuft' : 'Unterwegs') : `${TERMIN_ART_LABEL[t.art]} · ${wannText(t)}`}
       titel={
         <>
-          {t.titel} <BeispielMarke zeigen={t.beispiel} />
+          {kunde?.name ?? t.titel} <BeispielMarke zeigen={t.beispiel} />
         </>
       }
       aktion={<Status ton={laufend ? 'aktiv' : 'neutral'}>{TERMIN_STATUS_LABEL[t.status]}</Status>}
     >
       <Stapel abstand={16}>
         <Stapel abstand={4}>
+          {kunde && <strong>{t.titel}</strong>}
           <Meta>
-            <strong>{wannText(t)}</strong>
-            {kunde ? ` · ${kunde.name}` : ''}
-            {auftrag ? ` · ${auftrag.nummer}` : ''}
+            {wannText(t)}
+            {auftrag ? ` · Auftrag ${auftrag.nummer}` : ''}
           </Meta>
           {(ort || kunde?.adresse) && <Meta>{adresseText(ort?.adresse ?? kunde?.adresse)}</Meta>}
+          <Zeile abstand={16}>
+            {karte && (
+              <a className="mm-textlink" href={karte} target="_blank" rel="noreferrer">
+                <Icon name="route" size={16} /> Navigation starten
+              </a>
+            )}
+            {tel && (
+              <a className="mm-textlink" href={telLink(tel.nummer)!}>
+                <Icon name="telefon" size={16} /> {tel.wer} anrufen
+              </a>
+            )}
+          </Zeile>
         </Stapel>
 
         {ort?.hinweise && (
@@ -84,73 +159,44 @@ export function EinsatzKarte({ t, kompakt }: { t: Termin; kompakt?: boolean }) {
         )}
 
         <Zeile abstand={8}>
-          {karte && <LinkKnopf href={karte} icon="route">Navigation starten</LinkKnopf>}
-          {tel && <LinkKnopf href={telLink(tel.nummer)!} icon="telefon">{`${tel.wer} anrufen`}</LinkKnopf>}
+          {haupt && (
+            <Button icon={haupt.icon} onClick={() => ausfuehren(haupt.fn, haupt.erfolg)}>
+              {haupt.label}
+            </Button>
+          )}
+          <ErfassenKnopf aktion="foto" auftragId={auftrag?.id} />
+          <ErfassenKnopf aktion="notiz" auftragId={auftrag?.id} variante="tertiaer" />
+          <AktionsMenue aktionen={weitere} />
         </Zeile>
 
-        {!kompakt && (auftrag?.beschreibung || t.notiz) && (
+        {(auftrag?.beschreibung || t.notiz) && (
           <Stapel abstand={4}>
             <strong>Was zu tun ist</strong>
             {t.notiz && <p>{t.notiz}</p>}
             {auftrag?.beschreibung && <p>{auftrag.beschreibung}</p>}
           </Stapel>
         )}
-        {kompakt && (auftrag?.beschreibung || t.notiz) && <Meta>{(t.notiz || auftrag?.beschreibung || '').slice(0, 140)}{(t.notiz || auftrag?.beschreibung || '').length > 140 ? ' …' : ''}</Meta>}
 
         {aufgaben.length > 0 && (
           <Stapel abstand={8}>
             <strong>Offene Aufgaben ({aufgaben.length})</strong>
             <Liste>
-              {aufgaben.slice(0, kompakt ? 3 : 20).map((a) => (
+              {aufgaben.slice(0, 20).map((a) => (
                 <AufgabeZeile key={a.id} a={a} />
               ))}
             </Liste>
           </Stapel>
         )}
 
-        {!kompakt && team.length > 1 && <Meta>Mit dabei: {team.map((m) => personName(m)).join(', ')}</Meta>}
+        {team.length > 1 && <Meta>Mit dabei: {team.map((m) => personName(m)).join(', ')}</Meta>}
 
-        <Zeile abstand={8}>
-          {offen && (
-            <Button icon="start" onClick={() => ausfuehren(() => einsatzStarten(t.id), 'Einsatz gestartet.')}>
-              Einsatz starten
+        {auftrag && (
+          <div>
+            <Button variante="tertiaer" to={pfadZu({ typ: 'auftraege', id: auftrag.id }) ?? `/auftrag/${auftrag.id}`} icon="auftraege">
+              Ganzen Auftrag öffnen
             </Button>
-          )}
-          {t.status === 'unterwegs' && (
-            <Button icon="start" onClick={() => ausfuehren(() => einsatzStarten(t.id), 'Du bist vor Ort. Einsatz läuft.')}>
-              Bin vor Ort
-            </Button>
-          )}
-          {t.status === 'vor_ort' && (
-            <Button icon="stop" onClick={() => ausfuehren(() => einsatzBeenden(t.id), 'Einsatz beendet.')}>
-              Einsatz beenden
-            </Button>
-          )}
-          {offen && (
-            <Button variante="sekundaer" icon="auto" onClick={() => ausfuehren(() => einsatzLosfahren(t.id), 'Gute Fahrt. Status: unterwegs.')}>
-              Losfahren
-            </Button>
-          )}
-          <Button variante="sekundaer" icon="kamera" onClick={() => oeffne('schnell', { auftragId: auftrag?.id })}>
-            Erfassen
-          </Button>
-          {bericht && t.status === 'vor_ort' && (
-            <Button variante="tertiaer" icon="notiz" onClick={() => ausfuehren(() => aktionAusfuehren('bericht.erstellen', { auftragId: auftrag.id, terminId: t.id }), 'Bericht angelegt.')}>
-              Bericht schreiben
-            </Button>
-          )}
-          {kompakt ? (
-            <Button variante="tertiaer" to={`/heute/naechster-einsatz/${t.id}`} icon="pfeilRechts">
-              Details
-            </Button>
-          ) : (
-            auftrag && (
-              <Button variante="tertiaer" to={pfadZu({ typ: 'auftraege', id: auftrag.id }) ?? `/auftrag/${auftrag.id}`} icon="auftraege">
-                Zum Auftrag
-              </Button>
-            )
-          )}
-        </Zeile>
+          </div>
+        )}
       </Stapel>
     </Karte>
   );
@@ -167,7 +213,7 @@ export function NaechsterEinsatzWidget() {
     if (ich.rolle === 'chef' || ich.rolle === 'buero') return null;
     return <Leer icon="auto" titel="Kein Einsatz geplant" text="In den nächsten zwei Wochen ist für dich kein Einsatz eingeplant." />;
   }
-  return <EinsatzKarte t={t} kompakt />;
+  return <EinsatzKurz t={t} />;
 }
 
 function EinsatzSeiteInhalt({ t }: { t: Termin }) {

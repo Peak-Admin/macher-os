@@ -14,8 +14,9 @@ Verbindlich für jedes Modul in `os/src/modules/<id>/`.
      Checklisten-Vorlage). Dann im eigenen Modul: `export const vertraege = defineCollection<Vertrag>('vertraege')`
      in `src/modules/<id>/daten.ts`. Der Name ist global eindeutig; doppelte Namen werfen einen Fehler.
      Vorher prüfen, ob ein anderes Modul diese Sammlung schon anbietet – dann deren Export importieren.
-2. **Module sind Sichten.** Sie hängen sich über `defineModul` in die App: Routen, Hub-Widget, Tabs in fremden
-   Detailansichten, Hinweise, Automationen, Suche, Schnellerfassung, „Neu“-Einträge, Beispieldaten.
+2. **Module sind Sichten.** Sie hängen sich über `defineModul` in die App: Routen, Tabs in fremden
+   Detailansichten, Hinweise, Automationen, Suche, Erfassungsformulare, Beispieldaten.
+   **Wo** ein Modul in der Oberfläche erscheint, entscheidet allein `src/shell/struktur.ts` (siehe Abschnitt 7).
 3. **Keine Kerndateien ändern** (`src/core/*`, `src/ui/*`, `src/shell/*`). Fehlt dort etwas, im eigenen Modul lösen
    und im Abschlussbericht vermerken („Kernwunsch: …“).
 4. **Pareto: 20 % Oberfläche, 80 % Ergebnis.** Höchstens 3–4 Hauptansichten je Modul. Was automatisch gehen kann,
@@ -40,21 +41,21 @@ Siehe `src/modules/kunden/` als Referenz.
 
 | Feld | Zweck |
 |---|---|
-| `bereich`, `gruppe` | Heute · Aufträge · Plan · Betrieb (+ Gruppe im Betrieb) oder `macher` (global) |
-| `gewicht` | Pain-Score 1–100 → Reihenfolge in Navigation und Hub |
-| `navigation` | `haupt` / `hub` (auf der Bereichsseite und im Modulverzeichnis unter „Betrieb“), `versteckt` (nur per Link). Die Seitennavigation hat **keine Unterpunkte** – Module kommen nur als Favorit des Nutzers hinein. |
+| `bereich`, `gruppe` | Bestimmt nur noch den URL-Präfix (`/<bereich>/<id>`). Der sichtbare Ort steht in `src/shell/struktur.ts`. |
+| `gewicht` | Pain-Score 1–100 → Reihenfolge von Tabs, Hinweisen, Suche |
+| `navigation` | ohne Wirkung auf die Navigation (Altfeld) |
 | `routen` | relativ zu `/<bereich>/<id>`; `''` = Startansicht, `':id'` = Detail |
 | `vollbildRouten` | ohne App-Rahmen (z. B. Kundenbereich `/k/:token`, Onboarding `/willkommen`) |
-| `hubWidget` | kompakter Block auf der Bereichsseite (nur wenn wirklich wichtig) |
-| `kurzinfo` | 1 Statuszeile für die Kachel in „Betrieb“ |
+| `hubWidget` | Altfeld, wird nicht mehr angezeigt (Heute und Betrieb sind fest gestaltet) |
+| `kurzinfo` | 1 Statuszeile; ein Text mit `ton: 'achtung'` kann als einziger Hinweis auf der Betrieb-Kachel erscheinen |
 | `detail` | dieses Modul besitzt die Detailansicht von Objekttyp X → `pfadZu(bezug)` findet sie |
-| `tabs` / `panels` | in Detailansichten anderer Objekte einhängen (z. B. Tab „Fotos“ am Auftrag) |
+| `tabs` / `panels` | in Detailansichten anderer Objekte einhängen (z. B. Tab „Fotos“ am Auftrag). Tabs werden in höchstens vier Bereiche gebündelt (`OBJEKT_BEREICHE` in `@ui/objekt`) – ein neuer Tab erzeugt nie einen fünften Bereich. |
 | `hinweise` | live berechnete Punkte für „Braucht dich“ |
 | `aktionen` | Funktionen für Hinweis-Buttons (`{ 'rechnung.mahnen': (payload) => ... }`) |
 | `automationen` | Regeln, die automatisch laufen (`start()` registriert Event-Handler über `on()`) |
 | `suche` | Treffer für die globale Suche |
-| `schnell` | Formulare im „Schnell erfassen“-Blatt (Foto, Zeit, Material …) |
-| `erstellen` | Einträge im globalen „Neu“-Menü |
+| `schnell` | Erfassungsformular (Foto, Zeit, Material …), das ein **beschrifteter Knopf im Kontext** direkt öffnet: `<ErfassenKnopf aktion="foto" auftragId={id} />` oder `erfassenAktion(...)` für „Weitere Aktionen“. Es gibt keine Auswahl „Was möchtest du erfassen?“. |
+| `erstellen` | Verzeichnis der Erstellungsabläufe (kein Menü mehr). Der Knopf gehört als Hauptaktion auf die passende Liste. |
 | `global` | global gerenderte Komponente (Overlays) |
 | `seed` | Startdaten für eigene Sammlungen nach dem Onboarding (`beispiel: true` setzen) |
 
@@ -79,13 +80,13 @@ Siehe `src/modules/kunden/` als Referenz.
 - Feiertage & Arbeitstage nur aus `@core/kalender`: `feiertage(jahr, bundesland?)`, `istFeiertag`, `istArbeitstag(datum, arbeitstage?)`
   (Einstellungen `plan.arbeitstage`, `plan.bundesland`)
 - Verfügbarkeit (wer ist wann frei, freie Slots/Fenster, Abwesenheit am Tag, Stunden) nur aus `@modules/verfuegbarkeit/daten`
-- `oeffne('suche' | 'macher' | 'schnell' | 'benachrichtigungen')`, `useOverlay(name)`
+- `oeffne('suche' | 'macher' | 'benachrichtigungen')`, `useOverlay(name)`; Erfassen nur mit konkreter Aktion: `erfassen('foto', auftragId)`
 - Geld immer in **Cent** (ganzzahlig). Datum `YYYY-MM-DD`, Zeitpunkte ISO.
 
 ## 5. UI
 
 Nur Bausteine aus `@ui/index` und `@ui/objekt` verwenden (Seite, Karte, Liste, ListenZeile, Tabelle, Status, Button,
-Eingabe, Auswahl, Dialog, Tabs, Filter, Leer, Meldung, Kennzahl …). Gemeinsame Eingaben (`@ui/eingaben`): `ZahlEingabe`,
+Eingabe, Auswahl, Dialog, Tabs, Filter, Leer, Meldung, Kennzahl, AktionsMenue, ErfassenKnopf …). Gemeinsame Eingaben (`@ui/eingaben`): `ZahlEingabe`,
 `GeldEingabe`, `zahlAus`, `DateiKnopf`, `DateiFeld`, `bildVerkleinern`, `dateiLesen`, `UnterschriftFeld`. Druck/PDF
 (`@ui/druck`): `Briefbogen`, `Druckrahmen`, `DruckNichtGefunden`, `briefkopf()`. Kein eigenes CSS außer minimalem Layout
 (Inline-Styles oder eine kleine `<modul>.css` mit `--mm-*`-Tokens). Das finale Design passiert zentral.
@@ -99,3 +100,20 @@ Status immer als Text (`<Status ton="achtung">Überfällig</Status>`), nie nur F
 ```
 cd os && npx tsc -b && npx vitest run && npx vite build
 ```
+
+## 7. Navigation und Wachstum (verbindlich)
+
+Leitsatz: **Viele Fähigkeiten im Produkt. Wenige Entscheidungen auf jedem Screen.**
+
+- Globale Navigation ist fest: **Heute · Aufträge · Planen · Betrieb**. Kein globales „+ Neu“, kein „Erfassen“-Menü,
+  kein Plus in der unteren Navigation, kein Hamburger-Menü.
+- Jedes Modul steht in `src/shell/struktur.ts` genau einmal – als **Ansicht** eines Ziels (höchstens vier je Ziel) oder
+  als **Kontext** (geöffnet am Objekt, per Suche oder Link). `src/shell/struktur.test.ts` schlägt fehl, wenn ein Modul
+  fehlt oder eine Ebene mehr als vier Ziele hat.
+- Eine neue Funktion erzeugt **nie automatisch einen Menüpunkt**. Vor dem Einhängen beantworten: Welche Aufgabe löst sie?
+  Zu welchem Bereich gehört sie? Gehört sie eigentlich an ein Objekt (meist den Auftrag)? Wie ist sie innerhalb der
+  Vier-Punkte-Struktur erreichbar? Welche Rolle braucht sie wann? Welche bestehende Oberfläche lässt sich nutzen?
+- Budgets je Screen: höchstens eine dominante Hauptaktion (`Seite aktion`), höchstens zwei zurückhaltende Aktionen,
+  weitere über `AktionsMenue` (höchstens vier Einträge). Listenvorschauen höchstens drei Einträge plus „Alle …“.
+- Erstellen passiert im Kontext mit konkretem Verb („Foto hinzufügen“, „Auftrag anlegen“), nie mit „Neu“ oder „+“ allein.
+- Suchbegriffe für Funktionen (`stichworte` in `struktur.ts`) pflegen, damit Seltenes über die Suche auffindbar bleibt.

@@ -31,7 +31,7 @@ export function ReklamationListe() {
     <Seite
       titel="Reklamationen"
       untertitel="Mängel aufnehmen, Gewährleistung prüfen lassen, Nacharbeit fristgerecht erledigen."
-      aktion={<Button icon="plus" to="/auftraege/reklamationen/neu">Mangel aufnehmen</Button>}
+      aktion={<Button icon="plus" to="/auftraege/reklamationen/neu">Mangel melden</Button>}
     >
       {alle.length > 0 && (
         <>
@@ -56,7 +56,7 @@ export function ReklamationListe() {
             <Leer
               titel="Keine Reklamationen"
               text="Meldet ein Kunde einen Mangel, nimm ihn hier auf. Macher prüft die Gewährleistung und legt die Nacharbeit an."
-              aktion={<Button to="/auftraege/reklamationen/neu">Mangel aufnehmen</Button>}
+              aktion={<Button to="/auftraege/reklamationen/neu">Mangel melden</Button>}
               icon="schild"
             />
           )
