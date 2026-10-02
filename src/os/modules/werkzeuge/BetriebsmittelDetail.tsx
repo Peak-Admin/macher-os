@@ -8,6 +8,7 @@ import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import { ERGEBNIS_LABEL, faelligkeit, intervall, pruefhistorie } from '../pruefungen/daten';
 import { PruefungDialog } from '../pruefungen/PruefungDialog';
 import { artikelAmOrt, bestandAm, fahrzeugOrt } from '../lager/daten';
+import { FahrzeugbildKnopf, FahrzeugKarte } from '../fahrzeuge/FahrzeugKarte';
 import { AusgabeDialog, DefektDialog } from './Dialoge';
 import { ART_LABEL, ART_MODUL, ausgeben, ausstattung, bmx, fahrzeugText, statusVon, wiederEinsatzbereit, woIst, zurueckgeben, type BetriebsmittelX } from './daten';
 
@@ -65,6 +66,14 @@ export function BetriebsmittelDetail() {
               <Meldung ton="achtung" titel="Defekt gemeldet" aktion={<Button klein variante="sekundaer" onClick={() => (wiederEinsatzbereit(b.id), toast(`${b.name} ist wieder einsatzbereit.`))}>Wieder einsatzbereit</Button>}>
                 {b.notiz?.split('\n').filter((z) => z.startsWith('Defekt')).pop() ?? 'Nicht verwenden, bis es repariert ist.'}
               </Meldung>
+            )}
+            {istFahrzeug && (
+              <Stapel abstand={8}>
+                <FahrzeugKarte f={b} />
+                <div>
+                  <FahrzeugbildKnopf f={b} />
+                </div>
+              </Stapel>
             )}
             <Karte titel={istFahrzeug ? 'Fahrer' : 'Wo ist es?'}>
               <Stapel abstand={12}>

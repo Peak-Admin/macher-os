@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
-import { heute, initialen, passt, personName } from '@core/format';
+import { heute, passt, personName } from '@core/format';
 import { istBuero, useDarf, useIch } from '@core/session';
-import { Avatar, BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Seite, Stapel, Status, Suchfeld } from '@ui/index';
+import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Seite, Stapel, Status, Suchfeld } from '@ui/index';
 import { abwesenheitAm, ART_LABEL } from '@modules/abwesenheiten/daten';
+import { Personenbild } from './profilbild';
 import { ROLLE_LABEL, istAktiv, sortiert } from './team';
 
 type Ansicht = 'aktiv' | 'ausgetreten';
@@ -59,7 +60,7 @@ export function MitarbeiterListe() {
             <ListenZeile
               key={m.id}
               to={`/betrieb/mitarbeiter/${m.id}`}
-              links={<Avatar text={initialen(m)} farbe={m.farbe} />}
+              links={<Personenbild m={m} />}
               titel={
                 <>
                   {personName(m)} <BeispielMarke zeigen={m.beispiel} />

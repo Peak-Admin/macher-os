@@ -1,0 +1,63 @@
+/* Fahrzeugkarten – Fahrer, Auto, Kennzeichen, Ampel */
+.fz-raster { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+@media (max-width: 767px) { .fz-raster { grid-template-columns: 1fr; gap: 12px; } }
+
+.fz-karte {
+  display: flex; align-items: center; gap: 16px; padding: 16px;
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card);
+  background: var(--mm-surface); box-shadow: var(--mm-shadow-card);
+  color: var(--mm-text); text-decoration: none; min-width: 0;
+}
+.fz-karte--klickbar { transition: border-color var(--mm-motion-fast) ease-out; }
+.fz-karte--klickbar:hover { border-color: var(--mm-brand); }
+.fz-karte--klickbar:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+
+.fz-links { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; flex-shrink: 0; }
+.fz-bildflaeche { position: relative; width: 200px; height: 96px; }
+.fz-person { position: absolute; left: 0; top: 0; z-index: 1; display: inline-flex; border-radius: 50%; box-shadow: 0 0 0 3px var(--mm-surface); }
+.fz-person-leer {
+  display: inline-grid; place-items: center; width: 64px; height: 64px; border-radius: 50%;
+  border: 1px dashed var(--mm-border-dark); background: var(--mm-hover); color: var(--mm-text);
+}
+.fz-auto { position: absolute; left: 40px; right: 0; bottom: 0; height: 80px; display: flex; align-items: flex-end; justify-content: flex-end; }
+.fz-foto { width: 100%; height: 100%; object-fit: cover; border-radius: var(--mm-radius-control); }
+.fz-silhouette { width: 160px; height: 64px; }
+.fz-silhouette-karosserie { fill: var(--mm-dark); }
+.fz-silhouette-scheibe { fill: var(--mm-hover); }
+.fz-silhouette-rad { fill: var(--mm-border-dark); stroke: var(--mm-surface); stroke-width: 2; }
+.fz-silhouette-felge { fill: var(--mm-border); }
+.fz-fahrer { max-width: 200px; font: 600 14px/20px var(--mm-font); color: var(--mm-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.fz-rechts { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex: 1; min-width: 0; text-align: right; }
+/* Kennzeichen wie ein Schild: dunkler Rand, weiße Fläche */
+.fz-kennzeichen {
+  display: inline-block; max-width: 100%; padding: 0 8px; border: 2px solid var(--mm-dark); border-radius: var(--mm-radius-control);
+  background: var(--mm-surface); color: var(--mm-black); font: 700 22px/32px var(--mm-font); letter-spacing: 0.5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.fz-kennzeichen--leer { border-style: dashed; border-color: var(--mm-border-dark); color: var(--mm-text); font-size: 16px; font-weight: 600; }
+.fz-modell { font: 400 16px/22px var(--mm-font); color: var(--mm-text); overflow-wrap: anywhere; }
+
+.fz-status { display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; padding: 2px 8px; border: 1px solid; border-radius: var(--mm-radius-control); font: 600 14px/20px var(--mm-font); }
+.fz-status--frei { background: var(--mm-success-surface); color: var(--mm-brand-deep); border-color: var(--mm-success-border); }
+.fz-status--belegt { background: var(--mm-warning-surface); color: var(--mm-warning); border-color: var(--mm-warning-border); }
+.fz-status--gesperrt { background: var(--mm-danger-surface); color: var(--mm-danger); border-color: var(--mm-danger-border); }
+.fz-info { font: 400 14px/20px var(--mm-font); color: var(--mm-text); }
+
+/* Mini-Ampel */
+.fz-ampel { display: inline-flex; gap: 3px; padding: 3px; border-radius: 4px; background: var(--mm-dark); }
+.fz-licht { width: 8px; height: 8px; border-radius: 50%; background: var(--mm-border-dark); }
+.fz-licht--an.fz-licht--frei { background: var(--mm-brand-accent); }
+.fz-licht--an.fz-licht--belegt { background: var(--mm-warning-border); }
+.fz-licht--an.fz-licht--gesperrt { background: var(--mm-danger); box-shadow: 0 0 0 1px var(--mm-danger-border); }
+
+/* Schmale Handys: Bild etwas kleiner, Text bekommt Platz */
+@media (max-width: 420px) {
+  .fz-karte { gap: 12px; padding: 12px; }
+  .fz-bildflaeche { width: 144px; height: 76px; }
+  .fz-silhouette { width: 112px; height: 45px; }
+  .fz-auto { left: 32px; height: 60px; }
+  .fz-fahrer { max-width: 144px; }
+  .fz-kennzeichen { font-size: 19px; line-height: 28px; padding: 0 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .fz-karte--klickbar { transition: none; } }
