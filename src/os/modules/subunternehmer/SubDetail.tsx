@@ -98,7 +98,7 @@ export function SubDetail() {
               </Liste>
             </Karte>
             <Karte titel="Nachweise" aktion={<Button variante="sekundaer" klein icon="plus" onClick={() => setNachweisOffen(true)}>Nachweis erfassen</Button>}>
-              <Liste leer={<Leer titel="Noch keine Nachweise" text="Erfasse mindestens die Freistellungsbescheinigung nach § 48b EStG – mit Ablaufdatum." icon="schild" />}>
+              <Liste leer={<Leer skizze titel="Noch keine Nachweise" text="Erfasse mindestens die Freistellungsbescheinigung nach § 48b EStG – mit Ablaufdatum." icon="schild" />}>
                 {nachweise.map((n) => {
                   const st = nachweisStatus(n, t);
                   const doc = db.dokumente.get(n.dokumentId);

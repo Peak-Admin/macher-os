@@ -53,7 +53,7 @@ export function AuftragRechnungenTab({ id }: { id: ID }) {
           Weitere Optionen
         </Button>
       </Zeile>
-      {liste.length ? <RechnungsZeilen liste={liste} /> : <Leer titel="Noch keine Rechnung" text="Erstelle die Rechnung mit einem Klick – Positionen kommen aus Angebot, Material und Zeiten." icon="euro" />}
+      {liste.length ? <RechnungsZeilen liste={liste} /> : <Leer skizze titel="Noch keine Rechnung" text="Erstelle die Rechnung mit einem Klick – Positionen kommen aus Angebot, Material und Zeiten." icon="euro" />}
     </Stapel>
   );
 }
@@ -74,7 +74,7 @@ export function KundeRechnungenTab({ id }: { id: ID }) {
       {liste.length ? (
         <RechnungsZeilen liste={liste} />
       ) : (
-        <Leer titel="Noch keine Rechnungen" text="Rechnungen entstehen aus den Aufträgen dieses Kunden." aktion={<Button variante="sekundaer" to={`/betrieb/rechnungen/neu?kunde=${id}`}>Freie Rechnung schreiben</Button>} icon="euro" />
+        <Leer skizze titel="Noch keine Rechnungen" text="Rechnungen entstehen aus den Aufträgen dieses Kunden." aktion={<Button variante="sekundaer" to={`/betrieb/rechnungen/neu?kunde=${id}`}>Freie Rechnung schreiben</Button>} icon="euro" />
       )}
     </Stapel>
   );

@@ -7,7 +7,16 @@ import { useEffect, useRef, useState, type FocusEvent, type MouseEvent } from "r
 import { BtnPfeil } from "@/components/ui/Button";
 import { GlasIcon } from "@/os/ui/glas";
 import { Icon } from "@/components/ui/Icon";
-import { cta, mainNav, type Mega, type MegaGewerk, type MegaGruppe, type MegaVorschau, type NavItem } from "@/lib/site";
+import {
+  cta,
+  mainNav,
+  type Mega,
+  type MegaGewerk,
+  type MegaGruppe,
+  type MegaHighlight,
+  type MegaVorschau,
+  type NavItem,
+} from "@/lib/site";
 import { Logo } from "./Logo";
 
 type MegaItem = NavItem & { mega: Mega };
@@ -260,13 +269,13 @@ function MegaPanel({ item, maxHoehe }: { item: MegaItem; maxHoehe: string }) {
         ) : (
           <div
             className={`grid items-start gap-8 ${
-              mega.vorschau ? "grid-cols-[repeat(3,minmax(0,1fr))_minmax(240px,1.25fr)]" : "grid-cols-3"
+              mega.vorschau || mega.highlight ? "grid-cols-[repeat(3,minmax(0,1fr))_minmax(240px,1.25fr)]" : "grid-cols-3"
             }`}
           >
             {mega.gruppen.map((gr) => (
               <Gruppe key={gr.titel} gruppe={gr} />
             ))}
-            {mega.vorschau && <Vorschau vorschau={mega.vorschau} />}
+            {mega.highlight ? <Highlight highlight={mega.highlight} /> : mega.vorschau && <Vorschau vorschau={mega.vorschau} />}
           </div>
         )}
         <div className="mt-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-line pt-4">
@@ -325,6 +334,26 @@ function Vorschau({ vorschau }: { vorschau: MegaVorschau }) {
       <span className="mb-4 block text-sm leading-normal text-muted">{vorschau.text}</span>
       <span className="mt-auto text-base font-semibold text-signal-dark underline underline-offset-4 group-hover:text-ink">
         {vorschau.aktion}
+      </span>
+    </Link>
+  );
+}
+
+/** Hervorgehobene Box (Integrationen im Menü „Funktionen“): echte Logos, ein Satz, ein Ziel. */
+function Highlight({ highlight }: { highlight: MegaHighlight }) {
+  return (
+    <Link href={highlight.href} className="group flex min-w-0 flex-col self-stretch rounded-xl bg-signal-soft p-5 text-ink">
+      <ul className="grid grid-cols-4 gap-2" aria-hidden>
+        {highlight.logos.map((l) => (
+          <li key={l.logo + l.name} className="flex aspect-square items-center justify-center rounded-lg border border-line bg-white">
+            <Image src={`/logos/integrationen/${l.logo}`} alt="" width={28} height={28} unoptimized className="size-7 object-contain" />
+          </li>
+        ))}
+      </ul>
+      <span className="mt-4 mb-2 block text-xl font-semibold leading-tight">{highlight.titel}</span>
+      <span className="mb-4 block text-sm leading-normal text-muted">{highlight.text}</span>
+      <span className="mt-auto text-base font-semibold text-signal-dark underline underline-offset-4 group-hover:text-ink">
+        {highlight.aktion}
       </span>
     </Link>
   );
@@ -544,7 +573,12 @@ function MobileUnteransicht({ mega }: { mega: Mega }) {
           </div>
         ))}
       </div>
-      {/* Die Vorschau folgt nur bei Wissen – nach den Links, damit sie den Zugang nicht verdrängt */}
+      {/* Highlight (Funktionen) bzw. Vorschau (Wissen) folgen nach den Links, damit sie den Zugang nicht verdrängen */}
+      {mega.highlight && (
+        <div className="mt-6 max-w-sm">
+          <Highlight highlight={mega.highlight} />
+        </div>
+      )}
       {mega.art === "wissen" && mega.vorschau && (
         <div className="mt-6 max-w-sm">
           <Vorschau vorschau={mega.vorschau} />

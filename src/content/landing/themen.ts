@@ -229,6 +229,7 @@ export const schnittstellen: Landing = {
   vorteile: {
     eyebrow: "Heute verfügbar",
     titel: "Das geht schon heute.",
+    bild: "fenster",
     karten: [
       { titel: "DATEV", text: "Rechnungen und Belege im DATEV-Format an deinen Steuerberater übergeben.", icon: "calculator" },
       { titel: "GAEB", text: "Leistungsverzeichnis aus einer Ausschreibung einlesen – die Positionen landen im Angebot.", icon: "file" },

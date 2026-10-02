@@ -1,35 +1,35 @@
-import type { FaqItem, IconName } from "@/components/ui";
+import type { FaqItem, SkizzenMotiv } from "@/components/ui";
 
 /** Inhalte für `/hilfe/daten-uebernehmen` (Abschnitt 23). */
 
-export const uebernehmbareDaten: { titel: string; text: string; icon: IconName }[] = [
-  { titel: "Kunden", text: "Namen, Anschriften, Ansprechpartner, Telefon und E-Mail.", icon: "user" },
-  { titel: "Mitarbeiter", text: "Namen, Kontaktdaten, Rollen und Qualifikationen.", icon: "users" },
-  { titel: "Artikel & Material", text: "Bezeichnung, Einheit, Einkaufspreis, Aufschlag und Lieferant.", icon: "box" },
-  { titel: "Offene Aufträge", text: "Was gerade läuft oder bald startet – mit Kunde, Ort und Beschreibung.", icon: "clipboard" },
-  { titel: "Dokumente", text: "Angebote, Rechnungen, Pläne und Fotos als Datei am richtigen Kunden oder Auftrag.", icon: "file" },
+export const uebernehmbareDaten: { titel: string; text: string; skizze: SkizzenMotiv }[] = [
+  { titel: "Kunden", text: "Namen, Anschriften, Ansprechpartner, Telefon und E-Mail.", skizze: "kunden" },
+  { titel: "Mitarbeiter", text: "Namen, Kontaktdaten, Rollen und Qualifikationen.", skizze: "mitarbeiter" },
+  { titel: "Artikel & Material", text: "Bezeichnung, Einheit, Einkaufspreis, Aufschlag und Lieferant.", skizze: "material" },
+  { titel: "Offene Aufträge", text: "Was gerade läuft oder bald startet – mit Kunde, Ort und Beschreibung.", skizze: "auftraege" },
+  { titel: "Dokumente", text: "Angebote, Rechnungen, Pläne und Fotos als Datei am richtigen Kunden oder Auftrag.", skizze: "dokumente" },
 ];
 
-export const datenQuellen: { titel: string; text: string; icon: IconName }[] = [
+export const datenQuellen: { titel: string; text: string; skizze: SkizzenMotiv }[] = [
   {
     titel: "Excel und CSV",
     text: "Die meisten Listen liegen als Tabelle vor. Macher OS erkennt die Spalten und du ordnest sie zu.",
-    icon: "layers",
+    skizze: "tabelle",
   },
   {
     titel: "Andere Handwerkersoftware",
     text: "Fast jede Software kann Daten als Tabelle exportieren. Diesen Export übernimmst du wie eine Excel-Datei.",
-    icon: "monitor",
+    skizze: "software-export",
   },
   {
     titel: "Großhändler-Daten",
     text: "Artikel und Preise kommen per Datanorm-Datei direkt vom Großhändler.",
-    icon: "warehouse",
+    skizze: "datanorm",
   },
   {
     titel: "Kontakte aus Handy und Mailprogramm",
     text: "Kontakte als vCard oder Export aus deinem Mailprogramm, zum Beispiel Outlook.",
-    icon: "smartphone",
+    skizze: "handy-kontakte",
   },
 ];
 

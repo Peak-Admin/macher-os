@@ -3,7 +3,7 @@ import type { ObjektSchluessel } from "@/lib/objekte";
 import Link from "next/link";
 import { FunktionKarte, VerbindungsDiagramm } from "@/components/funktionen";
 import { AppVorschau, VorschauRahmen } from "@/components/mocks";
-import { FinalCta, PageHero, MissionMittelstandStreifen } from "@/components/sections";
+import { FinalCta, IntegrationenHighlight, PageHero, MissionMittelstandStreifen } from "@/components/sections";
 import {
   ArrowLink,
   ButtonLink,
@@ -244,7 +244,7 @@ export default function FunktionenPage() {
                   className="mt-4 flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
                 >
                   {f.titel}
-                  {funktionInhalte[f.slug].bald && <span className="font-semibold text-white/70">(kommt bald)</span>}
+                  {funktionInhalte[f.slug].aufAnfrage && <span className="font-semibold text-white/70">(auf Anfrage)</span>}
                   <Icon name="arrow-right" className="size-4" />
                 </Link>
               ))}
@@ -289,6 +289,9 @@ export default function FunktionenPage() {
           <VerbindungsDiagramm />
         </div>
       </Section>
+
+      {/* 4b. Integrationen – kein eigener Navigationspunkt, sie gehören zu den Funktionen */}
+      <IntegrationenHighlight />
 
       {/* 5. Gewerkspezifische Anpassung */}
       <Section tone="sand">

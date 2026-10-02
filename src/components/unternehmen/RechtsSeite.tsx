@@ -1,6 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 import { Breadcrumbs, Container, Icon, zone } from "@/components/ui";
-import { type RechtsAbschnitt } from "@/content/unternehmen";
+import { rechtStand, type RechtsAbschnitt } from "@/content/unternehmen";
 
 /** Hebt Platzhalter wie „[Firmenname]“ sichtbar hervor. */
 export function MitPlatzhaltern({ text }: { text: string }) {
@@ -44,7 +44,7 @@ export function EntwurfHinweis() {
 export function RechtsSeite({
   titel,
   intro,
-  stand = "[Datum]",
+  stand = rechtStand,
   abschnitte,
   inhaltsverzeichnis = true,
   children,
@@ -56,6 +56,7 @@ export function RechtsSeite({
   inhaltsverzeichnis?: boolean;
   children?: ReactNode;
 }) {
+  const offen = [stand, ...abschnitte.flatMap((a) => [...(a.absaetze ?? []), ...(a.liste ?? [])])].some((t) => /\[[^\]]+\]/.test(t));
   return (
     <>
       <section {...zone("beige")}>
@@ -66,9 +67,11 @@ export function RechtsSeite({
           <p className="mt-3 text-sm text-muted">
             Stand: <MitPlatzhaltern text={stand} />
           </p>
-          <div className="mt-6">
-            <EntwurfHinweis />
-          </div>
+          {offen && (
+            <div className="mt-6">
+              <EntwurfHinweis />
+            </div>
+          )}
         </Container>
       </section>
       <section {...zone("weiss", "py-12 sm:py-16")}>

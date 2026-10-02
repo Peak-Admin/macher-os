@@ -22,7 +22,9 @@
 }
 .mm-nav-haupt:hover { background: var(--mm-surface-subtle); color: var(--mm-text); }
 .mm-nav-haupt-icon { display: grid; place-items: center; flex-shrink: 0; width: 24px; height: 24px; color: currentColor; }
-.mm-nav-haupt-icon svg { width: 20px; height: 20px; }
+.mm-nav-haupt-icon svg:not([data-glas]) { width: 20px; height: 20px; }
+/* Navigation mit Glas-Icons (Oktober 2026): etwas größer als das Strich-Icon, damit das Motiv lesbar bleibt */
+.mm-nav-haupt-icon:has(> [data-glas]) { width: 28px; height: 28px; margin: -2px; }
 .mm-nav-haupt--aktiv, .mm-nav-haupt--aktiv:hover { color: var(--mm-brand-ink); background: var(--mm-brand-soft); font-weight: 650; }
 .mm-menue-titel { padding: 12px 12px 4px; border-top: 1px solid var(--mm-border); margin-top: 4px; }
 .mm-profil { position: relative; }
@@ -32,7 +34,6 @@
 .mm-profil-knopf .mm-glocke-zahl { top: 2px; right: 0; }
 .mm-profil-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-profil-wechsel { display: flex; flex-direction: column; gap: 4px; padding: 8px 12px; }
-.mm-profil-wechsel select { min-height: 44px; padding: 0 8px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); font: inherit; }
 .mm-nav-favoriten { flex: 1; display: flex; flex-direction: column; gap: 4px; margin: 16px 0; padding-top: 16px; border-top: 1px solid var(--mm-border); }
 .mm-nav-titel { padding: 0 12px; font: 600 14px/20px var(--mm-font); color: var(--mm-text-secondary); }
 .mm-nav-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -143,7 +144,7 @@
 .mm-offline, .mm-installieren { max-width: var(--mm-content-max); margin: 0 auto 16px; }
 .mm-installieren {
   display: flex; flex-direction: column; gap: 8px; padding: 12px 12px 16px 16px;
-  background: var(--mm-surface); border: 1px solid var(--mm-border); border-left: 4px solid var(--mm-brand); border-radius: var(--mm-radius-card);
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card);
 }
 .mm-installieren-kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--mm-black); font-size: 17px; }
 .mm-installieren p { margin: 0; color: var(--mm-text); font-size: 15px; line-height: 22px; }

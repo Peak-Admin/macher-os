@@ -33,6 +33,10 @@ export interface Adresse {
   strasse: string;
   plz: string;
   ort: string;
+  /** Adresszusatz, z. B. „Hinterhaus, 2. OG“ */
+  zusatz?: string;
+  /** Land, wenn nicht Deutschland */
+  land?: string;
 }
 
 /**
@@ -232,7 +236,7 @@ export const PHASEN: { id: Phase; label: string }[] = [
 export type Auftragsart = 'kundendienst' | 'projekt' | 'wartung' | 'reklamation' | 'werkstatt';
 
 export interface Auftrag extends Basis {
-  nummer: string; // "A-2026-0042"
+  nummer: string; // Projektnummer "2610-001" (YYMM-XXX); ältere Aufträge "A-2026-0042"
   titel: string;
   art: Auftragsart;
   phase: Phase;
@@ -244,6 +248,8 @@ export interface Auftrag extends Basis {
   dringend?: boolean;
   /** verantwortlich im Büro / Bauleitung */
   verantwortlichId?: ID;
+  /** Mitarbeiter, die am Auftrag arbeiten (Projektteam) */
+  mitarbeiterIds?: ID[];
   /** gewünschter Zeitraum des Kunden, Freitext */
   wunschtermin?: string;
   /** geschätzte Arbeitsstunden für die Planung */
@@ -454,6 +460,8 @@ export interface Beleg extends Basis {
   ust: Cent;
   auftragId?: ID;
   kategorie?: string; // "Material", "Fahrzeug", "Werkzeug" …
+  /** Betriebsbereich (Lager, Büro, Fahrzeuge …), wenn der Beleg zu keinem Auftrag gehört – entweder Auftrag oder Bereich */
+  bereich?: string;
   faelligAm?: Datum;
   status: 'neu' | 'geprueft' | 'bezahlt';
   dokumentId?: ID;
@@ -519,6 +527,42 @@ export interface Nachricht extends Basis {
   text: string;
   gelesen: boolean;
   betreff?: string;
+  /** nur `kanal: 'telefon'`: Gesprächsdaten (z. B. vom Telefonassistenten) – siehe `modules/telefon` */
+  anruf?: AnrufDetails;
+}
+
+/** Dringlichkeit eines Anrufs, wie der Telefonassistent sie einordnet */
+export type AnrufDringlichkeit = 'normal' | 'dringend' | 'notfall';
+
+/**
+ * Ein Anruf ist eine `Nachricht` mit `kanal: 'telefon'` (eine Business-Realität). Was der Telefonassistent dazu weiß,
+ * steht hier – Anrufer, Kunde und Auftrag stehen wie immer in der Nachricht selbst.
+ */
+export interface AnrufDetails {
+  quelle: 'ki-assistent' | 'manuell';
+  /** Gesprächs-ID beim Telefonanbieter – gegen doppelte Zustellung */
+  anrufId?: string;
+  anbieter?: string;
+  /** Nummer des Anrufers (wie übermittelt) */
+  nummer?: string;
+  beginn: Zeitpunkt;
+  dauerSekunden?: number;
+  zusammenfassung?: string;
+  /** abgefragte Felder: anliegen, name, adresse, dringlichkeit, rueckrufnummer, erreichbarkeit … */
+  felder?: Record<string, string>;
+  dringlichkeit: AnrufDringlichkeit;
+  /** woran der Notfall erkannt wurde (Stichwort oder Einschätzung des Assistenten) */
+  notfallGrund?: string;
+  /** bei `status: 'neu'` der Vorschlag des Assistenten, danach das, was Macher daraus gemacht hat */
+  ergebnis?: 'anfrage' | 'rueckruf' | 'notiz' | 'weitergeleitet';
+  transkript?: { wer: 'anrufer' | 'assistent'; text: string }[];
+  /** an wen der Notfall ging (Bereitschaft) */
+  weitergeleitetAn?: ID;
+  /** der Anbieter hat den Anrufer schon im Gespräch zur Bereitschaft durchgestellt */
+  durchgestellt?: boolean;
+  /** neu = vom Anbieter abgelegt, noch nicht in Anfrage/Rückruf übersetzt */
+  status: 'neu' | 'verarbeitet' | 'fehler';
+  fehler?: string;
 }
 
 export type BetriebsmittelArt = 'werkzeug' | 'maschine' | 'fahrzeug';
@@ -586,6 +630,8 @@ export interface Benachrichtigung extends Basis {
   fuerMitarbeiterId?: ID;
   gelesen: boolean;
   wichtig?: boolean;
+  /** aus dem Posteingang ins Archiv gelegt (bleibt erhalten, zählt nicht mehr als neu) */
+  archiviert?: boolean;
 }
 
 /** Wer eine Änderung ausgelöst hat: Mensch, Automation, Macher (KI), Import, Abgleich */

@@ -3,7 +3,7 @@ import { db } from '@core/db';
 import { datum, relativ } from '@core/format';
 import type { ID } from '@core/objects';
 import { useDarf } from '@core/session';
-import { Button, Karte, Leer, Meta, Seite, Stapel, Status, Tabelle, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { Button, FensterSkizze, Karte, Leer, Meta, Seite, Stapel, Status, Tabelle, Zeile, useBestaetigen, useToast } from '@ui/index';
 import { aktiverZugang, portalLink, portalzugaenge, zugangErzeugen, zugangPruefen, zugangVerlaengern, zugangWiderrufen, type Portalzugang } from './daten';
 
 async function kopieren(text: string): Promise<boolean> {
@@ -31,7 +31,10 @@ export function KundenbereichPanel({ id }: { id: ID }) {
   if (!z)
     return (
       <Karte titel="Kundenbereich" kompakt>
-        <Stapel abstand={8}>
+        <div className="mm-einstieg" style={{ gap: 8 }}>
+          <span className="mm-fenster" aria-hidden>
+            <FensterSkizze icon="link" rahmen="handy" />
+          </span>
           <Meta>Der Kunde sieht dort Termine, Angebote, Rechnungen und freigegebene Unterlagen – und kann Angebote direkt annehmen.</Meta>
           {darf ? (
             <div>
@@ -50,7 +53,7 @@ export function KundenbereichPanel({ id }: { id: ID }) {
           ) : (
             <Meta>Einen Link kann das Büro oder der Chef erzeugen.</Meta>
           )}
-        </Stapel>
+        </div>
       </Karte>
     );
 
@@ -109,7 +112,7 @@ export function Zugaenge() {
         zeilen={zeilen}
         schluessel={(z) => z.id}
         zeilenLink={(z) => `/auftraege/kunden/${z.kundeId}`}
-        leer={<Leer titel="Noch kein Kunde hat einen Link" text="Öffne einen Kunden und klick bei „Kundenbereich“ auf „Link erzeugen“. Beim Versand eines Angebots legt Macher den Link automatisch an." icon="link" aktion={<Button variante="sekundaer" to="/auftraege/kunden">Zu den Kunden</Button>} />}
+        leer={<Leer skizze titel="Noch kein Kunde hat einen Link" text="Öffne einen Kunden und klick bei „Kundenbereich“ auf „Link erzeugen“. Beim Versand eines Angebots legt Macher den Link automatisch an." icon="link" aktion={<Button variante="sekundaer" to="/auftraege/kunden">Zu den Kunden</Button>} />}
         spalten={[
           { titel: 'Kunde', wert: (z) => kunden.find((k) => k.id === z.kundeId)?.name ?? '–', sortierWert: (z) => kunden.find((k) => k.id === z.kundeId)?.name ?? '' },
           { titel: 'Status', wert: statusVon },

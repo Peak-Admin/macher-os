@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
+import { nummerAnzeige } from '@core/nummern';
 import { useIch } from '@core/session';
 import { datumKurz, heute, passt } from '@core/format';
 import type { Auftrag, Auftragsart, ID, Phase } from '@core/objects';
@@ -151,7 +152,7 @@ export function Pipeline({ imHub }: { imHub?: boolean }) {
                         {z.a.titel} <BeispielMarke zeigen={z.a.beispiel} />
                       </>
                     }
-                    untertitel={[z.a.nummer, z.kunde, z.ort, z.schritt].filter(Boolean).join(' · ')}
+                    untertitel={[nummerAnzeige(z.a.nummer), z.kunde, z.ort, z.schritt].filter(Boolean).join(' · ')}
                     rechts={<Merkmale z={z} />}
                   />
                 ))}
@@ -183,7 +184,7 @@ function AuftragKarte({ z }: { z: PZeile }) {
           {z.a.titel} <BeispielMarke zeigen={z.a.beispiel} />
         </span>
         <span className="mm-meta">{[z.kunde, z.ort].filter(Boolean).join(' · ')}</span>
-        <span className="mm-meta">{z.schritt ? `${z.a.nummer} · ${z.schritt}` : z.a.nummer}</span>
+        <span className="mm-meta">{z.schritt ? `${nummerAnzeige(z.a.nummer)} · ${z.schritt}` : nummerAnzeige(z.a.nummer)}</span>
         <Zeile abstand={4}>
           <Merkmale z={z} />
         </Zeile>
@@ -210,7 +211,7 @@ function Merkmale({ z }: { z: PZeile }) {
 export function meineAuftraege(ichId: ID | undefined): Set<ID> {
   const s = new Set<ID>();
   if (!ichId) return s;
-  db.auftraege.all().forEach((a) => a.verantwortlichId === ichId && s.add(a.id));
+  db.auftraege.all().forEach((a) => (a.verantwortlichId === ichId || a.mitarbeiterIds?.includes(ichId)) && s.add(a.id));
   db.termine.all().forEach((t) => t.auftragId && t.mitarbeiterIds.includes(ichId) && s.add(t.auftragId));
   db.aufgaben.all().forEach((x) => x.auftragId && !x.erledigt && x.zustaendigId === ichId && s.add(x.auftragId));
   return s;
@@ -246,7 +247,7 @@ export function Archiv() {
                 {a.titel} <BeispielMarke zeigen={a.beispiel} />
               </>
             }
-            untertitel={[a.nummer, db.kunden.get(a.kundeId)?.name, a.verlorenGrund].filter(Boolean).join(' · ')}
+            untertitel={[nummerAnzeige(a.nummer), db.kunden.get(a.kundeId)?.name, a.verlorenGrund].filter(Boolean).join(' · ')}
             rechts={<Status ton={phaseTon(a.phase)}>{phaseLabel(a.phase)}</Status>}
           />
         ))}

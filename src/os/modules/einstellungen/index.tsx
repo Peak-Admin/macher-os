@@ -8,7 +8,7 @@ import { Papierkorb } from './Papierkorb';
 import { LETZTE_SICHERUNG_KEY, fehlendeRechnungsangaben } from './daten';
 
 const SEITEN = [
-  { worte: /einstellung|betrieb|adresse|steuer|ust|iban|bank|zahlungsziel|arbeitszeit|kleinunternehmer|stundensatz/i, titel: 'Betriebsdaten', untertitel: 'Name, Adresse, Steuer, Bank, Stundensatz', pfad: '/betrieb/einstellungen' },
+  { worte: /einstellung|betrieb|adresse|steuer|ust|iban|bank|zahlungsziel|arbeitszeit|kleinunternehmer|stundensatz|betriebsbereich|kostenstelle/i, titel: 'Betriebsdaten', untertitel: 'Name, Adresse, Steuer, Bank, Stundensatz, Betriebsbereiche', pfad: '/betrieb/einstellungen' },
   { worte: /sicherung|backup|export|import|beispiel|onboarding|einrichtung|zurücksetzen/i, titel: 'Daten & Sicherung', untertitel: 'Sicherung, Beispieldaten, Einrichtung', pfad: '/betrieb/einstellungen/daten' },
   { worte: /papierkorb|gelöscht|wiederherstellen/i, titel: 'Papierkorb', untertitel: 'Gelöschtes wiederherstellen', pfad: '/betrieb/einstellungen/papierkorb' },
 ];

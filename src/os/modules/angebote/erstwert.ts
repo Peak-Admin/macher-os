@@ -5,15 +5,18 @@
 import { db, neueId, vermerken } from '@core/db';
 import type { Versand } from '@core/cloud';
 import { benachrichtigen } from '@core/macher';
-import { datum, euro } from '@core/format';
+import { datum, euro, heute } from '@core/format';
 import { messen } from '@core/messung';
 import { naechsteNummer } from '@core/nummern';
-import type { Angebot, Bezug, Einheit, ID, Kunde, Leistung, Position } from '@core/objects';
+import type { Angebot, Bezug, ID, Kunde, Position } from '@core/objects';
 import { aktiverZugang, portalLink, zugangErzeugen } from '@modules/kundenbereich/daten';
-import { positionenErkennen, satzAnfang, type Erkannt } from '@modules/start/sprache';
+import { frage, type GatewayKontext } from '@core/gateway';
+import { darf, ich } from '@core/session';
+import { satzAnfang, type Erkannt } from '@modules/start/sprache';
 import { dokumentVersendet, sendenMitRueckfall, type SendeErgebnis } from '@modules/start/daten';
 import { absenderVon, dokumentHtml, zeilenAus } from '@modules/start/emailHtml';
 import { angebotSummen, neuesAngebot, positionAusArtikel, positionAusLeistung, versenden } from './daten';
+import { POSITIONEN_VORSCHLAGEN, vorschlagAusRegeln, type PositionsVorschlag } from './vorschlag';
 
 // ------------------------------------------------------------------ Positionen aus Text/Sprache
 
@@ -49,50 +52,20 @@ const pause = (ms: number) => new Promise((ok) => setTimeout(ok, ms));
 
 
 /**
- * Optional besser über Claude (Server-Funktion `os/api/ki/positionen.ts`). Ohne Schlüssel antwortet sie 501,
- * ohne Server gibt es keine Antwort – dann gilt der lokale Parser. Preise kommen immer aus dem Katalog.
- */
-export async function kiErkennen(text: string, leistungen: Leistung[], ms = 4000): Promise<Position[] | undefined> {
-  if (typeof fetch === 'undefined') return undefined;
-  const abbruch = new AbortController();
-  const t = setTimeout(() => abbruch.abort(), ms);
-  try {
-    const res = await fetch(KI_PFAD, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ text, katalog: leistungen.map((l) => ({ id: l.id, name: l.name, einheit: l.einheit })) }),
-      signal: abbruch.signal,
-    });
-    if (!res.ok || !res.headers.get('content-type')?.includes('json')) return undefined;
-    const daten = (await res.json()) as { positionen?: { leistungId?: string | null; text?: string; menge?: number; einheit?: string }[] };
-    if (!Array.isArray(daten.positionen) || !daten.positionen.length) return undefined;
-    return daten.positionen.map((p) => {
-      const l = leistungen.find((x) => x.id === p.leistungId);
-      const menge = typeof p.menge === 'number' && p.menge > 0 ? p.menge : 1;
-      if (l) return positionAusLeistung(l, menge);
-      return { id: neueId('p'), art: 'pauschal', text: satzAnfang(p.text ?? ''), menge, einheit: (p.einheit as Einheit) || 'Stk', einzelpreis: 0 };
-    });
-  } catch {
-    return undefined;
-  } finally {
-    clearTimeout(t);
-  }
-}
-
-/**
- * Erst echte KI (falls eingerichtet). Ohne Schlüssel: KI-Demo – derselbe Katalog-Abgleich, als Demo beschriftet.
- * Ohne Server (offline, lokale Entwicklung ohne API): Katalog-Abgleich.
+ * Freitext oder Sprache → Positionsvorschlag, ausschließlich über den Macher AI Gateway (`offer.positions.suggest`):
+ * zuerst Regeln (Katalog-Abgleich, Mengen, Einheiten, genannte Beträge), ein angeschlossenes Modell verbessert nur.
+ * Ohne Server, ohne Schlüssel oder bei Ausfall gelten die Regeln. Preise kommen aus dem Katalog oder aus dem Satz.
  */
 export async function positionenAusText(text: string, opts: { ki?: boolean; demoPauseMs?: number } = {}): Promise<Erkennung> {
-  const leistungen = db.leistungen.where((l) => l.aktiv);
   const modus = opts.ki === false ? 'aus' : await kiModus();
-  if (modus === 'ki') {
-    const ki = await kiErkennen(text, leistungen);
-    if (ki) return { positionen: ki, quelle: 'ki' };
-  }
+  const k: GatewayKontext = { heute: heute(), jetzt: new Date(), ich: ich(), darf: (r) => darf(r) };
+  const r = await frage<PositionsVorschlag>(text, k, { absicht: POSITIONEN_VORSCHLAGEN });
+  if (r.verweigert === 'rechte') return { positionen: [], quelle: 'katalog' };
+  // Modul nicht geladen (z. B. in einem Test): dieselben Regeln, ohne Modell
+  const v: PositionsVorschlag = r.ergebnis ?? { positionen: vorschlagAusRegeln(text, db.leistungen.where((l) => l.aktiv), db.artikel.where((a) => a.aktiv)), quelle: 'regeln' };
+  if (v.quelle === 'ki') return { positionen: v.positionen, quelle: 'ki' };
   if (modus === 'demo') await pause(opts.demoPauseMs ?? 600);
-  const artikel = db.artikel.where((a) => a.aktiv);
-  return { positionen: positionenErkennen(text, leistungen, artikel).map(erkanntAlsPosition), quelle: modus === 'demo' ? 'demo' : 'katalog' };
+  return { positionen: v.positionen, quelle: modus === 'demo' ? 'demo' : 'katalog' };
 }
 
 // ------------------------------------------------------------------ Kunde

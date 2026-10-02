@@ -41,6 +41,7 @@ import {
   entwurfLoeschen,
   festschreiben,
   korrekturEntwurf,
+  korrigieren,
   nummerArt,
   optionenSetzen,
   offenerBetrag,
@@ -80,7 +81,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
   const toast = useToast();
   const [fragen, bestaetigung] = useBestaetigen();
   const [senden, setSenden] = useState(false);
-  const [storno, setStorno] = useState(false);
+  const [storno, setStorno] = useState<'storno' | 'korrektur'>();
   const [zahlung, setZahlung] = useState(false);
   const b = aktuellerBetrieb();
   const k = db.kunden.get(r.kundeId);
@@ -216,9 +217,14 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
             ) : (
               r.status !== 'storniert' &&
               !r.stornoFuerId && (
-                <Button variante="tertiaer" icon="x" onClick={() => setStorno(true)}>
-                  Rechnung stornieren
-                </Button>
+                <>
+                  <Button variante="sekundaer" icon="stift" onClick={() => setStorno('korrektur')}>
+                    Rechnung korrigieren
+                  </Button>
+                  <Button variante="tertiaer" icon="x" onClick={() => setStorno('storno')}>
+                    Nur stornieren
+                  </Button>
+                </>
               )
             )}
             <ObjektPanels objekt="rechnungen" id={r.id} />
@@ -244,7 +250,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
             : undefined
         }
       />
-      <StornoDialog r={r} offen={storno} onSchliessen={() => setStorno(false)} />
+      <StornoDialog r={r} modus={storno} onSchliessen={() => setStorno(undefined)} />
       <ZahlungDialog rechnungId={r.id} offen={zahlung} onSchliessen={() => setZahlung(false)} />
       {bestaetigung}
     </Seite>
@@ -424,38 +430,49 @@ function ZahlungenListe({ r, onNeu }: { r: RechnungX; onNeu: () => void }) {
 
 // ------------------------------------------------------------------ Dialoge
 
-function StornoDialog({ r, offen, onSchliessen }: { r: RechnungX; offen: boolean; onSchliessen: () => void }) {
+function StornoDialog({ r, modus, onSchliessen }: { r: RechnungX; modus?: 'storno' | 'korrektur'; onSchliessen: () => void }) {
   const [grund, setGrund] = useState('');
   const navigate = useNavigate();
   const toast = useToast();
   const gezahlt = zahlungenZu(r.id).reduce((s, z) => s + z.betrag, 0);
+  const korrektur = modus === 'korrektur';
+  const ausfuehren = () => {
+    if (korrektur) {
+      const k = korrigieren(r.id, grund.trim() || undefined);
+      if (!k) return toast('Die Rechnung konnte nicht korrigiert werden.', { ton: 'achtung' });
+      toast(`Stornorechnung ${k.storno.nummer} erstellt. Ändere jetzt den Entwurf und schick ihn neu.`);
+      onSchliessen();
+      navigate(`/betrieb/rechnungen/${k.entwurf.id}`);
+      return;
+    }
+    const s = stornieren(r.id, grund.trim() || undefined);
+    if (!s) return;
+    toast(`Stornorechnung ${s.nummer} erstellt.`);
+    onSchliessen();
+    navigate(pfadZu({ typ: 'rechnungen', id: s.id }) ?? `/betrieb/rechnungen/${s.id}`);
+  };
   return (
     <Dialog
-      offen={offen}
+      offen={!!modus}
       onSchliessen={onSchliessen}
-      titel={`${r.nummer} stornieren`}
+      titel={korrektur ? `${r.nummer} korrigieren` : `${r.nummer} stornieren`}
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>
             Abbrechen
           </Button>
-          <Button
-            variante="gefahr"
-            onClick={() => {
-              const s = stornieren(r.id, grund.trim() || undefined);
-              if (!s) return;
-              toast(`Stornorechnung ${s.nummer} erstellt.`);
-              onSchliessen();
-              navigate(pfadZu({ typ: 'rechnungen', id: s.id }) ?? `/betrieb/rechnungen/${s.id}`);
-            }}
-          >
-            Stornieren
+          <Button variante={korrektur ? 'primaer' : 'gefahr'} onClick={ausfuehren}>
+            {korrektur ? 'Stornieren und Entwurf öffnen' : 'Stornieren'}
           </Button>
         </>
       }
     >
       <Stapel>
-        <p>Macher erstellt eine Stornorechnung mit eigener Nummer, die alle Beträge aufhebt. Die Originalrechnung bleibt erhalten. Danach kannst du eine korrigierte Rechnung erstellen.</p>
+        {korrektur ? (
+          <p>Eine festgeschriebene Rechnung darfst du nicht mehr ändern. Macher storniert sie mit einer Stornorechnung und legt dir eine Kopie als Entwurf an. Den änderst du und schickst ihn neu.</p>
+        ) : (
+          <p>Macher erstellt eine Stornorechnung mit eigener Nummer, die alle Beträge aufhebt. Die Originalrechnung bleibt erhalten.</p>
+        )}
         <Eingabe label="Grund" optional value={grund} onChange={(e) => setGrund(e.target.value)} placeholder="z. B. falscher Stundensatz" />
         {gezahlt > 0 && (
           <Meldung ton="achtung">

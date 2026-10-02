@@ -40,7 +40,7 @@ export function Briefkopf() {
         )}
         <Karte titel="Logo">
           <Stapel>
-            {e.logo ? <img src={e.logo} alt="Dein Logo" style={{ maxWidth: 240, maxHeight: 96, objectFit: 'contain', alignSelf: 'flex-start' }} /> : <Leer titel="Noch kein Logo" text="Lade dein Logo als PNG oder JPG hoch. Macher verkleinert es automatisch." icon="kamera" />}
+            {e.logo ? <img src={e.logo} alt="Dein Logo" style={{ maxWidth: 240, maxHeight: 96, objectFit: 'contain', alignSelf: 'flex-start' }} /> : <Leer skizze titel="Noch kein Logo" text="Lade dein Logo als PNG oder JPG hoch. Macher verkleinert es automatisch." icon="kamera" />}
             {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
             {admin && (
               <Zeile>

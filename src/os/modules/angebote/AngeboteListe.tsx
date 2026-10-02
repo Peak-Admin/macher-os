@@ -108,7 +108,16 @@ export function AngeboteListe() {
         <Liste
           leer={
             q || ansicht.zeitraum !== 'alle' || ansicht.auftragId ? (
-              <Leer titel="Keine Treffer" text="Zu dieser Suche oder diesem Filter gibt es kein Angebot." icon="suche" />
+              <Leer
+                titel="Keine Treffer"
+                text="Zu dieser Suche oder diesem Filter gibt es kein Angebot."
+                icon="suche"
+                aktion={
+                  <Button variante="sekundaer" onClick={() => (setQ(''), ansicht.setZeitraum('alle'), ansicht.setAuftragId(''))}>
+                    Filter zurücksetzen
+                  </Button>
+                }
+              />
             ) : (
               <Leer
                 titel={sicht === 'offen' ? 'Kein Angebot wartet auf Antwort' : 'Hier ist nichts'}
@@ -189,7 +198,7 @@ export function AngeboteTab({ id, kunde }: { id: ID; kunde?: boolean }) {
   };
   return (
     <Stapel abstand={12}>
-      <Liste leer={<Leer titel="Noch kein Angebot" text={kunde ? 'Angebote entstehen am Auftrag.' : 'Schreib das Angebot direkt aus diesem Auftrag.'} aktion={kunde ? undefined : <Button icon="plus" onClick={erstellen}>Angebot erstellen</Button>} icon="dokument" />}>
+      <Liste leer={<Leer skizze="dokument" titel="Noch kein Angebot" text={kunde ? 'Angebote entstehen am Auftrag.' : 'Schreib das Angebot direkt aus diesem Auftrag.'} aktion={kunde ? undefined : <Button icon="plus" onClick={erstellen}>Angebot erstellen</Button>} icon="dokument" />}>
         {liste.map((a) => (
           <AngebotZeile key={a.id} a={a} ohneKunde={!kunde} betragsart={betragsart} />
         ))}

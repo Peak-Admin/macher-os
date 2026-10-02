@@ -62,7 +62,7 @@ export function AbnahmeListe() {
           </Karte>
         )}
         <Karte titel="Abgeschlossen">
-          <Liste leer={<Leer titel="Noch keine Abnahmen" text="Starte eine Abnahme, wenn die Arbeit fertig ist. Der Kunde unterschreibt direkt auf deinem Handy." icon="unterschrift" />}>
+          <Liste leer={<Leer skizze titel="Noch keine Abnahmen" text="Starte eine Abnahme, wenn die Arbeit fertig ist. Der Kunde unterschreibt direkt auf deinem Handy." icon="unterschrift" />}>
             {fertig.map((a) => (
               <AbnahmeZeile key={a.id} a={a} />
             ))}
@@ -119,7 +119,7 @@ export function AbnahmeTab({ id }: { id: ID }) {
           </Button>
         </div>
       )}
-      <Liste leer={<Leer titel="Noch keine Abnahme" text={auftrag?.phase === 'abnahme' ? 'Die Arbeit ist fertig – hol dir jetzt die Unterschrift vom Kunden.' : 'Wenn die Arbeit fertig ist, startest du hier die Abnahme.'} icon="unterschrift" />}>
+      <Liste leer={<Leer skizze titel="Noch keine Abnahme" text={auftrag?.phase === 'abnahme' ? 'Die Arbeit ist fertig – hol dir jetzt die Unterschrift vom Kunden.' : 'Wenn die Arbeit fertig ist, startest du hier die Abnahme.'} icon="unterschrift" />}>
         {[...liste]
           .sort((a, b) => b.datum.localeCompare(a.datum))
           .map((a) => (

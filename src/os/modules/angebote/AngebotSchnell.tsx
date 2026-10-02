@@ -132,7 +132,7 @@ export function AngebotSchnell() {
         <Karte>
           <SchrittKopf nr={2} titel="Positionen" />
           <Stapel abstand={16}>
-            <PositionenSchnell positionen={positionen} onChange={(p) => (setPositionen(p), setFehler({ ...fehler, positionen: undefined }))} />
+            <PositionenSchnell vorschlag positionen={positionen} onChange={(p) => (setPositionen(p), setFehler({ ...fehler, positionen: undefined }))} />
             {fehler.positionen && <Meldung ton="achtung">{fehler.positionen}</Meldung>}
             {positionen.length > 0 && (
               <div className="mm-schnell-summe">

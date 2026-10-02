@@ -12,17 +12,20 @@ import {
   useState,
   type ButtonHTMLAttributes,
   type InputHTMLAttributes,
+  type KeyboardEvent as TastenEreignis,
   type ReactNode,
   type SelectHTMLAttributes,
   type TextareaHTMLAttributes,
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ThemenIcon } from './glas';
+import { FensterSkizze } from './fenster';
+import { glasFuer, ThemenIcon, type GlasIconName } from './glas';
 import { Icon, type IconName } from './icons';
 import type { Ton } from '@core/modul';
 import './ui.css';
 
-export { GlasIcon, ThemenIcon, type GlasIconName } from './glas';
+export { GlasIcon, ThemenIcon, glasFuer, type GlasIconName } from './glas';
+export { FensterSkizze, SkizzenKachel } from './fenster';
 import { MacherAsset, type ObjektSchluessel } from './asset';
 export { Icon } from './icons';
 export { MacherAsset, type ObjektSchluessel } from './asset';
@@ -198,6 +201,16 @@ export function Eingabe({ label, hilfe, fehler, optional, className, ...rest }: 
   );
 }
 
+type AuswahlOption = { wert: string; label: string };
+
+/** Ab so vielen Einträgen bekommt die Liste ein Suchfeld */
+const AUSWAHL_SUCHE_AB = 9;
+
+/**
+ * Auswahlfeld im Macher-Design (statt Browser-Standard). Muster „Select-only Combobox“ (WAI-ARIA):
+ * Knopf öffnet eine Liste; Pfeiltasten, Pos1/Ende, Enter/Leertaste, Esc und Tippen springen zum Eintrag.
+ * Lange Listen bekommen ein Suchfeld. Die API bleibt wie beim `<select>`: `value` + `onChange(e => e.target.value)`.
+ */
 export function Auswahl({
   label,
   hilfe,
@@ -205,27 +218,232 @@ export function Auswahl({
   optional,
   optionen,
   leer,
-  ...rest
-}: SelectHTMLAttributes<HTMLSelectElement> & {
+  value,
+  defaultValue,
+  onChange,
+  disabled,
+  className,
+  name,
+}: Omit<SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> & {
   label: string;
   hilfe?: string;
   fehler?: string;
   optional?: boolean;
-  optionen: { wert: string; label: string }[];
+  optionen: AuswahlOption[];
   /** Text für „nichts gewählt“ */
   leer?: string;
+  onChange?: (e: { target: { value: string; name?: string }; currentTarget: { value: string; name?: string } }) => void;
 }) {
+  const [eigener, setEigener] = useState(() => (defaultValue == null ? '' : String(defaultValue)));
+  const aktuell = value === undefined ? eigener : value == null ? '' : String(value);
+  const [offen, setOffen] = useState(false);
+  const [aktiv, setAktiv] = useState(0);
+  const [suche, setSuche] = useState('');
+  const [lage, setLage] = useState<{ links: number; breite: number; oben?: number; unten?: number; hoehe: number }>();
+  const knopf = useRef<HTMLButtonElement>(null);
+  const liste = useRef<HTMLUListElement>(null);
+  const sucheRef = useRef<HTMLInputElement>(null);
+  const tippen = useRef({ text: '', zeit: 0 });
+  const listId = useId();
+
+  const alle: AuswahlOption[] = leer != null ? [{ wert: '', label: leer }, ...optionen] : optionen;
+  const mitSuche = optionen.length >= AUSWAHL_SUCHE_AB;
+  const sichtbar = suche ? alle.filter((o) => o.wert !== '' && o.label.toLowerCase().includes(suche.toLowerCase())) : alle;
+  const gewaehlt = alle.find((o) => o.wert === aktuell);
+  const optionId = (i: number) => `${listId}-o${i}`;
+
+  const platzieren = useCallback(() => {
+    const r = knopf.current?.getBoundingClientRect();
+    if (!r) return;
+    const rand = 8;
+    const breite = Math.min(Math.max(r.width, 320), window.innerWidth - 2 * rand);
+    const links = Math.max(rand, Math.min(r.left, window.innerWidth - breite - rand));
+    const unten = window.innerHeight - r.bottom - rand;
+    const oben = r.top - rand;
+    const nachOben = unten < 240 && oben > unten;
+    const hoehe = Math.min(360, Math.max(120, nachOben ? oben - 4 : unten - 4));
+    setLage(nachOben ? { links, breite, unten: window.innerHeight - r.top + 4, hoehe } : { links, breite, oben: r.bottom + 4, hoehe });
+  }, []);
+
+  const oeffnen = () => {
+    if (disabled) return;
+    const i = alle.findIndex((o) => o.wert === aktuell);
+    setSuche('');
+    setAktiv(i < 0 ? 0 : i);
+    platzieren();
+    setOffen(true);
+  };
+  const schliessen = (fokus = true) => {
+    setOffen(false);
+    if (fokus) knopf.current?.focus();
+  };
+  const waehlen = (o: AuswahlOption | undefined) => {
+    if (!o) return;
+    if (value === undefined) setEigener(o.wert);
+    if (o.wert !== aktuell) onChange?.({ target: { value: o.wert, name }, currentTarget: { value: o.wert, name } });
+    schliessen();
+  };
+
+  // Außerhalb klicken schließt; Scrollen/Größe ändern setzt die Liste neu an
+  useEffect(() => {
+    if (!offen) return;
+    const klick = (e: PointerEvent) => {
+      const z = e.target as Node;
+      if (!knopf.current?.contains(z) && !liste.current?.parentElement?.contains(z)) schliessen(false);
+    };
+    const neu = (e: Event) => {
+      if (liste.current?.parentElement?.contains(e.target as Node)) return;
+      platzieren();
+    };
+    document.addEventListener('pointerdown', klick);
+    window.addEventListener('resize', neu);
+    window.addEventListener('scroll', neu, true);
+    if (mitSuche) sucheRef.current?.focus();
+    return () => {
+      document.removeEventListener('pointerdown', klick);
+      window.removeEventListener('resize', neu);
+      window.removeEventListener('scroll', neu, true);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offen]);
+
+  // aktiven Eintrag sichtbar halten
+  useEffect(() => {
+    if (offen) document.getElementById(optionId(aktiv))?.scrollIntoView({ block: 'nearest' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offen, aktiv, suche]);
+
+  const tasten = (e: TastenEreignis) => {
+    const imSuchfeld = e.currentTarget === sucheRef.current;
+    if (!offen) {
+      if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(e.key)) {
+        e.preventDefault();
+        oeffnen();
+      }
+      return;
+    }
+    const n = sichtbar.length;
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setAktiv((a) => Math.min(n - 1, a + 1));
+        return;
+      case 'ArrowUp':
+        e.preventDefault();
+        setAktiv((a) => Math.max(0, a - 1));
+        return;
+      case 'Home':
+        if (imSuchfeld) return;
+        e.preventDefault();
+        setAktiv(0);
+        return;
+      case 'End':
+        if (imSuchfeld) return;
+        e.preventDefault();
+        setAktiv(n - 1);
+        return;
+      case 'PageDown':
+        e.preventDefault();
+        setAktiv((a) => Math.min(n - 1, a + 8));
+        return;
+      case 'PageUp':
+        e.preventDefault();
+        setAktiv((a) => Math.max(0, a - 8));
+        return;
+      case 'Enter':
+        e.preventDefault();
+        waehlen(sichtbar[aktiv]);
+        return;
+      case ' ':
+        if (imSuchfeld) return;
+        e.preventDefault();
+        waehlen(sichtbar[aktiv]);
+        return;
+      case 'Escape':
+        e.preventDefault();
+        e.stopPropagation();
+        schliessen();
+        return;
+      case 'Tab':
+        schliessen(false);
+        return;
+    }
+    // Tippen springt zum ersten passenden Eintrag (ohne Suchfeld)
+    if (!imSuchfeld && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const jetzt = Date.now();
+      const t = tippen.current;
+      t.text = jetzt - t.zeit > 700 ? e.key.toLowerCase() : t.text + e.key.toLowerCase();
+      t.zeit = jetzt;
+      const i = sichtbar.findIndex((o) => o.label.toLowerCase().startsWith(t.text));
+      if (i >= 0) setAktiv(i);
+    }
+  };
+
   return (
     <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>
       {(id, beschrieben) => (
-        <select id={id} className="mm-input mm-select" aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest}>
-          {leer != null && <option value="">{leer}</option>}
-          {optionen.map((o) => (
-            <option key={o.wert} value={o.wert}>
-              {o.label}
-            </option>
-          ))}
-        </select>
+        <div className={cx('mm-auswahl', offen && 'mm-auswahl--offen', className)}>
+          <button
+            ref={knopf}
+            id={id}
+            type="button"
+            role="combobox"
+            className="mm-input mm-auswahl-knopf"
+            aria-haspopup="listbox"
+            aria-expanded={offen}
+            aria-controls={offen ? listId : undefined}
+            aria-activedescendant={offen && !mitSuche && sichtbar[aktiv] ? optionId(aktiv) : undefined}
+            aria-invalid={!!fehler || undefined}
+            aria-describedby={beschrieben}
+            disabled={disabled}
+            onClick={() => (offen ? schliessen() : oeffnen())}
+            onKeyDown={tasten}
+          >
+            <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>{gewaehlt?.label ?? leer ?? 'Bitte wählen'}</span>
+            <Icon name="runter" size={20} />
+          </button>
+          {name && <input type="hidden" name={name} value={aktuell} />}
+          {offen && lage && (
+            <div
+              className="mm-auswahl-liste"
+              style={{ left: lage.links, width: lage.breite, top: lage.oben, bottom: lage.unten, maxHeight: lage.hoehe }}
+            >
+              {mitSuche && (
+                <div className="mm-auswahl-suche">
+                  <Icon name="suche" size={18} />
+                  <input
+                    ref={sucheRef}
+                    type="text"
+                    value={suche}
+                    placeholder="Suchen"
+                    aria-label={`${label}: Liste durchsuchen`}
+                    aria-controls={listId}
+                    aria-activedescendant={sichtbar[aktiv] ? optionId(aktiv) : undefined}
+                    onChange={(e) => (setSuche(e.target.value), setAktiv(0))}
+                    onKeyDown={tasten}
+                  />
+                </div>
+              )}
+              <ul ref={liste} id={listId} role="listbox" aria-label={label} tabIndex={-1}>
+                {sichtbar.map((o, i) => (
+                  <li
+                    key={o.wert || '__leer'}
+                    id={optionId(i)}
+                    role="option"
+                    aria-selected={o.wert === aktuell}
+                    className={cx('mm-auswahl-option', i === aktiv && 'mm-auswahl-option--aktiv', o.wert === '' && 'mm-auswahl-option--leer')}
+                    onPointerMove={() => i !== aktiv && setAktiv(i)}
+                    onClick={() => waehlen(o)}
+                  >
+                    <span>{o.label}</span>
+                    {o.wert === aktuell && <Icon name="check" size={18} />}
+                  </li>
+                ))}
+                {!sichtbar.length && <li className="mm-auswahl-nichts">Nichts gefunden</li>}
+              </ul>
+            </div>
+          )}
+        </div>
       )}
     </Feld>
   );
@@ -300,49 +518,75 @@ export function Segmente<T extends string>({ label, wert, optionen, onChange }: 
   );
 }
 
-/** Große Auswahlkarten für geführte Abläufe (KI-Check-Muster) */
+/**
+ * Große Auswahlkarten für geführte Abläufe (KI-Check-Muster).
+ * Aufbau „buehne“ (nach Stripe): oben eine ruhige Bühne mit großem Motiv, darunter Titel und Erklärung.
+ * Standard: Bühne bei 2–3 Optionen mit Icon oder Vorschau, sonst kompakte Zeilen.
+ * `gesperrt` macht eine Option sichtbar, aber nicht wählbar – mit Grund als Text.
+ */
 export function AuswahlKarten<T extends string>({
   wert,
   optionen,
   onChange,
   mehrfach,
   label,
+  aufbau,
 }: {
   label: string;
   wert: T | T[];
-  optionen: { wert: T; label: string; text?: string; icon?: IconName }[];
+  optionen: { wert: T; label: string; text?: string; icon?: IconName; vorschau?: ReactNode; gesperrt?: string }[];
   onChange: (v: T | T[]) => void;
   mehrfach?: boolean;
+  aufbau?: 'zeile' | 'buehne';
 }) {
   const gewaehlt = (w: T) => (Array.isArray(wert) ? wert.includes(w) : wert === w);
+  const buehne = aufbau ? aufbau === 'buehne' : optionen.length >= 2 && optionen.length <= 3 && optionen.every((o) => o.icon || o.vorschau);
   return (
-    <div className="mm-auswahlkarten" role={mehrfach ? 'group' : 'radiogroup'} aria-label={label}>
-      {optionen.map((o) => (
-        <button
-          key={o.wert}
-          type="button"
-          role={mehrfach ? 'checkbox' : 'radio'}
-          aria-checked={gewaehlt(o.wert)}
-          className={cx('mm-auswahlkarte', gewaehlt(o.wert) && 'mm-auswahlkarte--an')}
-          onClick={() => {
-            if (mehrfach) {
-              const liste = Array.isArray(wert) ? wert : [];
-              onChange(liste.includes(o.wert) ? liste.filter((x) => x !== o.wert) : [...liste, o.wert]);
-            } else onChange(o.wert);
-          }}
-        >
-          {o.icon && (
-            <span className="mm-auswahlkarte-icon">
-              <ThemenIcon name={o.icon} />
+    <div className={cx('mm-auswahlkarten', buehne && 'mm-auswahlkarten--buehne')} role={mehrfach ? 'group' : 'radiogroup'} aria-label={label}>
+      {optionen.map((o) => {
+        const an = gewaehlt(o.wert);
+        const hinweisId = o.gesperrt ? `auswahl-${label}-${o.wert}-gesperrt`.replace(/\s+/g, '-') : undefined;
+        return (
+          <button
+            key={o.wert}
+            type="button"
+            role={mehrfach ? 'checkbox' : 'radio'}
+            aria-checked={an}
+            aria-disabled={o.gesperrt ? true : undefined}
+            aria-describedby={hinweisId}
+            className={cx('mm-auswahlkarte', an && 'mm-auswahlkarte--an', o.gesperrt && 'mm-auswahlkarte--gesperrt')}
+            onClick={() => {
+              if (o.gesperrt) return;
+              if (mehrfach) {
+                const liste = Array.isArray(wert) ? wert : [];
+                onChange(liste.includes(o.wert) ? liste.filter((x) => x !== o.wert) : [...liste, o.wert]);
+              } else onChange(o.wert);
+            }}
+          >
+            {buehne ? (
+              <span className="mm-auswahlkarte-buehne" aria-hidden="true">
+                {o.vorschau ?? (o.icon && <ThemenIcon name={o.icon} size={64} strichGroesse={32} />)}
+              </span>
+            ) : (
+              o.icon && (
+                <span className="mm-auswahlkarte-icon">
+                  <ThemenIcon name={o.icon} />
+                </span>
+              )
+            )}
+            <span className="mm-auswahlkarte-text">
+              <strong>{o.label}</strong>
+              {o.text && <span className="mm-meta">{o.text}</span>}
+              {o.gesperrt && (
+                <span id={hinweisId} className="mm-auswahlkarte-sperre">
+                  <Icon name="schloss" size={16} /> {o.gesperrt}
+                </span>
+              )}
             </span>
-          )}
-          <span className="mm-auswahlkarte-text">
-            <strong>{o.label}</strong>
-            {o.text && <span className="mm-meta">{o.text}</span>}
-          </span>
-          {gewaehlt(o.wert) && <Icon name="check" className="mm-auswahlkarte-check" />}
-        </button>
-      ))}
+            {an && <Icon name="check" className="mm-auswahlkarte-check" />}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -609,6 +853,7 @@ export function ListenZeile({
   to,
   onClick,
   aktiv,
+  aktion,
 }: {
   titel: ReactNode;
   untertitel?: ReactNode;
@@ -617,6 +862,8 @@ export function ListenZeile({
   to?: string;
   onClick?: () => void;
   aktiv?: boolean;
+  /** sichtbare Nebenaktion neben der Zeile (eigener Knopf, per Tab erreichbar – nicht nur per Hover) */
+  aktion?: ReactNode;
 }) {
   const inhalt = (
     <>
@@ -630,7 +877,7 @@ export function ListenZeile({
   );
   const klasse = cx('mm-listenzeile', (to || onClick) && 'mm-listenzeile--klickbar', aktiv && 'mm-listenzeile--aktiv');
   return (
-    <li>
+    <li className={aktion ? 'mm-listenzeile-mit-aktion' : undefined}>
       {to ? (
         <Link to={to} className={klasse}>
           {inhalt}
@@ -642,6 +889,7 @@ export function ListenZeile({
       ) : (
         <div className={klasse}>{inhalt}</div>
       )}
+      {aktion && <span className="mm-listenzeile-aktion">{aktion}</span>}
     </li>
   );
 }
@@ -718,7 +966,10 @@ export function Tabelle<T>({ zeilen, spalten, schluessel, onZeile, zeilenLink, l
 
 // ------------------------------------------------------------------ Zustände
 
-/** Leerzustände zeigen ein vertrautes Werkzeug-Objekt statt eines abstrakten Icons (docs/design/visual-assets.md, Abschnitt 7). */
+/**
+ * Leerzustände zu diesen Themen zeigen automatisch die Fenster-Skizze (früher ein Objektfoto, Oktober 2026 ersetzt).
+ * Die Werte bleiben als Vorschlag, falls eine Ansicht ausdrücklich ein Foto will (`objekt`).
+ */
 const LEER_OBJEKT: Partial<Record<IconName, ObjektSchluessel>> = {
   auftraege: 'klemmbrett',
   liste: 'klemmbrett',
@@ -742,11 +993,38 @@ const LEER_OBJEKT: Partial<Record<IconName, ObjektSchluessel>> = {
   start: 'werkzeugkiste',
 };
 
-export function Leer({ titel, text, aktion, icon = 'info', objekt }: { titel: string; text?: string; aktion?: ReactNode; icon?: IconName; objekt?: ObjektSchluessel | null }) {
-  const bild = objekt === null ? undefined : (objekt ?? LEER_OBJEKT[icon]);
+/**
+ * Leerzustand. `skizze` zeigt statt Objektfoto bzw. Icon die Fenster-Skizze (Drahtgitter mit Glas-Icon) – für den
+ * ersten Start einer Ansicht („Noch keine Rechnung“), nicht für Suche ohne Treffer, fehlende Rechte oder „gibt es nicht“.
+ * `true` nimmt das Glas-Icon zu `icon`, ein Name wählt ein anderes.
+ */
+export function Leer({
+  titel,
+  text,
+  aktion,
+  icon = 'info',
+  objekt,
+  skizze,
+  rahmen = 'fenster',
+}: {
+  titel: string;
+  text?: string;
+  aktion?: ReactNode;
+  icon?: IconName;
+  objekt?: ObjektSchluessel | null;
+  skizze?: boolean | GlasIconName;
+  rahmen?: 'fenster' | 'handy';
+}) {
+  // Ein Foto nur noch, wenn eine Ansicht es ausdrücklich will; sonst Skizze für alle früheren Foto-Themen.
+  const bild = objekt ?? undefined;
+  const mitSkizze = !bild && objekt !== null && (skizze || LEER_OBJEKT[icon]);
   return (
     <div className="mm-leer">
-      {bild ? (
+      {mitSkizze ? (
+        <span className="mm-fenster mm-leer-skizze" aria-hidden>
+          <FensterSkizze icon={typeof skizze === 'string' ? skizze : (glasFuer[icon] ?? 'info')} rahmen={rahmen} />
+        </span>
+      ) : bild ? (
         <MacherAsset asset={bild} groesse="gross" />
       ) : (
         <span className="mm-leer-icon">

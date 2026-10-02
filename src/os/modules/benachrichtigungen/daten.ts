@@ -26,6 +26,52 @@ export function alleGelesen(liste: Benachrichtigung[]) {
   for (const b of liste) if (!b.gelesen) db.benachrichtigungen.update(b.id, { gelesen: true }, { leise: true });
 }
 
+// ------------------------------------------------------------------ Posteingang & Archiv (wie Notion)
+
+export type Ablage = 'posteingang' | 'archiv';
+
+/** Einträge zum selben Objekt erscheinen als ein Eintrag mit Zähler */
+export interface MeldungsGruppe {
+  schluessel: string;
+  /** neuester Eintrag – liefert Titel, Text, Zeit und Ziel */
+  neueste: Benachrichtigung;
+  eintraege: Benachrichtigung[];
+  ungelesen: boolean;
+  wichtig: boolean;
+}
+
+/**
+ * Posteingang oder Archiv, gruppiert nach Objekt (`bezug`), neueste Gruppe zuerst.
+ * Einträge ohne Objekt stehen für sich. `ungelesenIds`: was beim Öffnen noch neu war – wird angezeigt,
+ * obwohl es inzwischen als gelesen gespeichert ist.
+ */
+export function meldungsGruppen(liste: Benachrichtigung[], ablage: Ablage, ungelesenIds?: ReadonlySet<ID>): MeldungsGruppe[] {
+  const gruppen = new Map<string, MeldungsGruppe>();
+  const sortiert = [...liste].filter((b) => !!b.archiviert === (ablage === 'archiv')).sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm));
+  for (const b of sortiert) {
+    const schluessel = b.bezug ? `${b.bezug.typ}:${b.bezug.id}` : `einzeln:${b.id}`;
+    const neu = !b.gelesen || !!ungelesenIds?.has(b.id);
+    const g = gruppen.get(schluessel);
+    if (!g) gruppen.set(schluessel, { schluessel, neueste: b, eintraege: [b], ungelesen: neu, wichtig: !!b.wichtig });
+    else {
+      g.eintraege.push(b);
+      g.ungelesen ||= neu;
+      g.wichtig ||= !!b.wichtig;
+    }
+  }
+  return [...gruppen.values()];
+}
+
+/** Ins Archiv legen (gilt damit auch als gelesen) */
+export function archivieren(liste: Benachrichtigung[]) {
+  for (const b of liste) if (!b.archiviert) db.benachrichtigungen.update(b.id, { archiviert: true, gelesen: true }, { leise: true });
+}
+
+/** Aus dem Archiv zurück in den Posteingang */
+export function zurueckholen(liste: Benachrichtigung[]) {
+  for (const b of liste) if (b.archiviert) db.benachrichtigungen.update(b.id, { archiviert: false }, { leise: true });
+}
+
 const ABWESENHEIT: Record<Abwesenheit['art'], string> = { urlaub: 'Urlaub', krank: 'Krankmeldung', schule: 'Berufsschule', schulung: 'Schulung', frei: 'Freier Tag', sonstiges: 'Abwesenheit' };
 
 /** Chef und Büro – optional nur mit einem bestimmten Recht */

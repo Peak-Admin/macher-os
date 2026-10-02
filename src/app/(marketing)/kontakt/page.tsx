@@ -3,6 +3,7 @@ import { ArrowLink, Section } from "@/components/ui";
 import { AnliegenFormular } from "@/components/unternehmen/AnliegenFormular";
 import { KONTAKT_EMAIL, kontaktAnliegen, PRESSE_EMAIL, SUPPORT_EMAIL } from "@/content/unternehmen";
 import { pageMeta } from "@/lib/metadata";
+import { cta } from "@/lib/site";
 
 export const metadata = pageMeta({
   title: "Kontakt",
@@ -54,8 +55,8 @@ export default function KontaktPage() {
             </div>
             <div>
               <p className="text-muted">Lieber erst selbst schauen?</p>
-              <ArrowLink href="/demo" className="mt-2">
-                Demo ansehen
+              <ArrowLink href={cta.secondary.href} className="mt-2">
+                {cta.secondary.label}
               </ArrowLink>
             </div>
           </aside>

@@ -51,7 +51,7 @@ export function KalkulationListe() {
             q ? (
               <Leer titel="Keine Treffer" icon="suche" />
             ) : (
-              <Leer titel="Noch keine Kalkulation" text="Kalkuliere größere Aufträge, bevor du anbietest – Lohnkosten und Zuschläge sind schon aus deinem Betrieb vorbelegt." aktion={<Button onClick={() => setNeu(true)}>Kalkulation anlegen</Button>} icon="euro" />
+              <Leer skizze="rechner" titel="Noch keine Kalkulation" text="Kalkuliere größere Aufträge, bevor du anbietest – Lohnkosten und Zuschläge sind schon aus deinem Betrieb vorbelegt." aktion={<Button onClick={() => setNeu(true)}>Kalkulation anlegen</Button>} icon="euro" />
             )
           }
         >
@@ -114,7 +114,7 @@ export function KalkulationTab({ id }: { id: ID }) {
   const anlegen = () => navigate(`/auftraege/kalkulation/${kalkulationAnlegen(id).id}`);
   return (
     <Stapel abstand={12}>
-      <Liste leer={<Leer titel="Noch keine Kalkulation" text="Rechne Stunden, Material und Zuschläge durch – der Preis geht direkt ins Angebot." aktion={<Button icon="plus" onClick={anlegen}>Kalkulation anlegen</Button>} icon="euro" />}>
+      <Liste leer={<Leer skizze="rechner" titel="Noch keine Kalkulation" text="Rechne Stunden, Material und Zuschläge durch – der Preis geht direkt ins Angebot." aktion={<Button icon="plus" onClick={anlegen}>Kalkulation anlegen</Button>} icon="euro" />}>
         {liste.map((k) => (
           <KalkZeile key={k.id} k={k} mitKunde={false} />
         ))}

@@ -69,7 +69,7 @@ export function Posteingang() {
             liste.length ? (
               <Leer titel="Alles gelesen" text="Keine neuen Nachrichten. Gut so." icon="check" />
             ) : (
-              <Leer titel="Noch keine Nachrichten" text="Nachrichten entstehen am Auftrag: im Tab „Nachrichten“ schreibst du Kunden oder dem Team." icon="chat" />
+              <Leer skizze titel="Noch keine Nachrichten" text="Nachrichten entstehen am Auftrag: im Tab „Nachrichten“ schreibst du Kunden oder dem Team." icon="chat" />
             )
           }
         >

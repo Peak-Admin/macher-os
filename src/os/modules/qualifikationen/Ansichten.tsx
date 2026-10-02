@@ -77,11 +77,11 @@ export function QualifikationenSeite() {
             <Meta>Tippe auf eine Zeile, um alle Nachweise der Person zu sehen. Auf dem Handy seitlich wischen.</Meta>
           </Stapel>
         ) : (
-          <Leer titel="Noch keine Matrix" text="Lege Mitarbeiter und Qualifikationen an, dann siehst du hier, wer was darf." icon="schild" />
+          <Leer skizze titel="Noch keine Matrix" text="Lege Mitarbeiter und Qualifikationen an, dann siehst du hier, wer was darf." icon="schild" />
         ))}
       {ansicht === 'liste' && (
         <Stapel abstand={12}>
-          <Liste leer={<Leer titel="Noch keine Qualifikationen" text="Lege an, was in deinem Betrieb zählt: Fachkraft, Führerschein, Herstellerschulung …" icon="schild" />}>
+          <Liste leer={<Leer skizze titel="Noch keine Qualifikationen" text="Lege an, was in deinem Betrieb zählt: Fachkraft, Führerschein, Herstellerschulung …" icon="schild" />}>
             {qualis.map((q) => {
               const mit = team.filter((m) => {
                 const n = aktuellerNachweis(nachweise, m.id, q.id);
@@ -334,7 +334,7 @@ export function MitarbeiterQualiTab({ id }: { id: ID }) {
   const aktuell = nachweise.filter((n) => aktuellerNachweis(nachweise, id, n.qualifikationId)?.id === n.id);
   return (
     <Stapel abstand={16}>
-      <Liste leer={<Leer titel="Noch keine Nachweise" text="Trag Führerschein, Fachkraft-Nachweis oder Zertifikate ein." icon="schild" />}>
+      <Liste leer={<Leer skizze titel="Noch keine Nachweise" text="Trag Führerschein, Fachkraft-Nachweis oder Zertifikate ein." icon="schild" />}>
         {aktuell.map((n) => {
           const q = db.qualifikationen.get(n.qualifikationId);
           const s = statusAnzeige(n, t);

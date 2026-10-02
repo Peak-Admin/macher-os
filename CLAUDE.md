@@ -14,9 +14,14 @@ Für **jede** Oberfläche, jedes Mockup und jeden UI-Text gilt die UX- und Desig
 (z. B. Logo, Bildsprache, Markenauftakt). Leitsatz: „Das sieht ordentlich aus. Das verstehe ich. Damit kann ich arbeiten.“
 
 Bildsprache: **[`docs/design/visual-assets.md`](docs/design/visual-assets.md)** – „das digitale Werkzeug“. Echte Fotos von
-Handwerksobjekten (Register `src/lib/objekte.ts`; Website `<Objekt>`, Card-Prop `objekt`; Software `<MacherAsset>`, `Leer` zeigt
-automatisch ein passendes Objekt) als ruhige Ebene – ein starkes Objekt pro Karte, nie in Listen, Tabellen, Formularen.
+Handwerksobjekten (Register `src/lib/objekte.ts`; Website `<Objekt>`, Card-Prop `objekt`) als ruhige Ebene – ein starkes
+Objekt pro Karte, nie in Listen, Tabellen, Formularen. **In der Software** stehen statt Objektfotos Zeichnungen: Türen und
+Widget-Köpfe `<SkizzenKachel>`, `Leer` zeigt automatisch die Fenster-Skizze (`MacherAsset` nur noch, wenn ausdrücklich gewollt).
 Fotos von Mission Mittelstand / Matthias Aumann nur mit Freigabe des Betreibers (siehe `missionMittelstandBilder`).
+Karten, die eine Funktion kurz erklären, zeigen statt Foto oder Icon eine abstrakte **Skizze** (`<Skizze motiv="angebote" />`,
+Card-Prop `skizze`) oder eine **UI-Ebene** mit Beispieldaten (`<UiEbene>`). Einstiegs- und Teaserkarten (erste Schritte,
+Schnittstellen, „Kommt bald“) zeigen die **Fenster-Skizze**: Drahtgitter-Fenster mit grauem Glas-Icon (`src/os/ui/fenster.tsx`,
+Website `<Fenster>` bzw. Card-Prop `fenster`). Regeln: `docs/design/festlegungen.md`.
 
 Reihenfolge bei Zielkonflikten: 1. Aufgabe verstehen und erledigen · 2. Orientierung, Lesbarkeit, Fehlertoleranz ·
 3. konsistente, ruhige Gestaltung · 4. Markenwirkung und Dekoration.
@@ -29,7 +34,7 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
 - **Farben:** ein Grün für alle Hauptaktionen: `#0d6b45` (Hover `#095436`, aktiv `#073f29`), helle Grünfläche `#e8f2ec`,
   dunkles Grün für Text/Links `#164c34`, Waldgrün `#102c21` für dunkle Markenflächen.
   Canvas `#f5f6f3`, Flächen `#ffffff`, ruhige Fläche `#eef1ed`, Text `#222c26`, Sekundärtext `#536057`,
-  Linien `#dce2dc`, Feldrahmen `#7a8780`. Status: Warnung `#765000` auf `#fff4d6`, Gefahr `#a02b24` auf `#fdeceb`,
+  Linien `#dce2dc` (Software seit Oktober 2026 in sanftem Beige: Canvas `#fbf9f5`, ruhige Fläche `#f5f2ec`, Linien `#e8e3da`), Feldrahmen `#7a8780`. Status: Warnung `#765000` auf `#fff4d6`, Gefahr `#a02b24` auf `#fdeceb`,
   Erfolg `#1f6040` auf `#e8f2ec`. Akzentgrün `#69af44` nur auf dunklen Flächen. Orange `#e69433` nur für Kampagnen.
   EU-Blau `#003399` (Token `eu` / `--mm-eu`) nur für den Vertrauenskasten (DSGVO, Server in Frankfurt, EU AI Act).
 - **Form:** Radien Controls 8 px, Karten/Panels 12 px, Menüs/Dialoge 16 px; flach, feine Schatten.
@@ -41,12 +46,14 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
 - **App-Flächen:** deckend und ruhig – kein Foto und kein Glas (`backdrop-filter`) hinter Daten, Formularen, Listen.
 - **Icons:** Themen-Icons ab ca. 32 px sind Glas-Icons (`src/os/ui/glas.tsx`, eine Quelle für Website und Software;
   Website über `IconTile`, Software über `ThemenIcon`). Bedien-Icons und alles Kleinere bleiben Strich-Icons.
+  Die Navigation der Software (Seitenleiste, untere Leiste, Favoriten) zeigt ebenfalls Glas-Icons.
   Neue Motive in `glas.tsx` ergänzen. Details: `docs/design/festlegungen.md`.
 - **Status:** immer Text + optional Icon, nie nur Farbe. Neutral als Standard; Rot nur für echte Sperre/Gefahr („Nicht verwenden“).
 - **Tonalität:** direkte Du-Ansprache („du“, „dein“ klein), konkrete Verben („Auftrag anlegen“), kurze Sätze, keine erfundenen Zahlen.
 - **Bewegung:** 140–180 ms ease-out, keine Layoutsprünge, `prefers-reduced-motion` respektieren. Markenintro nur beim Erstkontakt.
 - **Vermeiden:** durchscheinende Fotos hinter Arbeitsinhalt, nur per Hover/Swipe/Drag-and-drop erreichbare Aktionen,
-  reine Icon-Navigation, globales Plus-Menü, Auto-Carousels, mehrere konkurrierende Grüntöne, kleine kontrastarme Schrift.
+  reine Icon-Navigation, globales Plus-Menü, Auto-Carousels,
+  farbige Akzentstreifen an Kanten (links/oben an Karten, Bannern, Listenzeilen – stattdessen Fläche, Rahmen oder Punkt), mehrere konkurrierende Grüntöne, kleine kontrastarme Schrift.
 - Jeder Screen braucht gestaltete Leer-, Lade-, Fehler- und Erfolgszustände und funktioniert ab 320 px Breite ohne waagerechten Überlauf.
 
 ## Website und Software (ein Next.js-Projekt)
@@ -145,5 +152,9 @@ Visuelle Sprache: Für macher-os gelten das Brand Playbook und die Festlegungen 
 **KI:** Jede KI-Funktion läuft über den Macher AI Gateway (`src/os/core/gateway.ts`, Strategie und Stand:
 [`docs/os/KI-GATEWAY.md`](docs/os/KI-GATEWAY.md)). Kein Modul spricht direkt mit einem Modell; Module melden Absichten
 und Aktionen über `defineModul({ gateway })` an. Regeln vor Jev vor Luna vor stärkerem Modell; kritische Aktionen immer bestätigen.
+
+**Integrationen:** vier Säulen – Macher Connect (Pipedream), Macher Format Engine, Macher Universal Connectors,
+Macher Handwerk Connect. Bauplan, Priorität (Score) und Logo-Regeln: [`docs/os/INTEGRATIONEN.md`](docs/os/INTEGRATIONEN.md).
+Website-Daten `src/content/integrationen.ts`. Keine „Kommt“-Phase: intern prüfen, dann direkt bauen – auf der Website ohne Status-Abzeichen.
 
 Größere Module werden mit einer **Master Build Specification** (§66) und der **Peak Build Sequence** (§65) geplant.

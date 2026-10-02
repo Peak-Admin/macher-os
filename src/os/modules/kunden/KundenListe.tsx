@@ -72,7 +72,7 @@ export function KundenListe() {
                 }
               />
             ) : (
-              <Leer titel="Noch keine Kunden" text="Lege deinen ersten Kunden an. Er wird auch automatisch angelegt, wenn eine Anfrage reinkommt." aktion={
+              <Leer skizze titel="Noch keine Kunden" text="Lege deinen ersten Kunden an. Er wird auch automatisch angelegt, wenn eine Anfrage reinkommt." aktion={
                   <Zeile>
                     <Button to="/auftraege/kunden/neu">Kunde anlegen</Button>
                     <Button variante="sekundaer" icon="upload" to="/betrieb/import?art=kunden">Kunden aus Excel übernehmen</Button>

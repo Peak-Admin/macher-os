@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { datum, euro, heute, passt, tageZwischen } from '@core/format';
 import { useDarf } from '@core/session';
-import { BeispielMarke, Button, Filter, Kennzahl, Leer, Raster, Seite, Suchfeld, Tabelle } from '@ui/index';
-import { istUeberfaellig, listenBetrag, nummerText, offenerBetrag, ART_LABEL, ENTWURF_TAGE } from './logik';
+import { Auswahl, BeispielMarke, Button, Filter, Kennzahl, Leer, Raster, Seite, Suchfeld, Tabelle, Zeile, useToast } from '@ui/index';
+import { istUeberfaellig, listenBetrag, nummerText, offenerBetrag, ENTWURF_TAGE } from './logik';
 import { alleRechnungen, type RechnungX } from './typen';
 import { RechnungStatus } from './teile';
 import { FinanzFilter, ListenSumme, auftragOptionen, useFinanzAnsicht, useZuletztBearbeitet } from '@ui/listen';
 import { summeNach } from '@ui/listen-logik';
-
+import { LISTEN_ART_LABEL, listenArt, rechnungenCsv, type ListenArt } from './liste';
+import { herunterladen } from './xrechnung';
 
 type F = 'offen' | 'entwurf' | 'ueberfaellig' | 'bezahlt' | 'alle';
 
@@ -19,6 +20,8 @@ export function RechnungenListe() {
   const zuletzt = useZuletztBearbeitet('rechnungen');
   const [filter, setFilter] = useState<F>('offen');
   const [q, setQ] = useState('');
+  const [art, setArt] = useState<ListenArt | ''>('');
+  const toast = useToast();
   if (!darf) return <KeinZugriff />;
 
   const alle = alleRechnungen();
@@ -38,7 +41,7 @@ export function RechnungenListe() {
   };
   const zeilen = alle
     .filter(passtFilter)
-    .filter((r) => ansicht.passt(r))
+    .filter((r) => ansicht.passt(r) && (!art || listenArt(r) === art))
     .filter((r) => !q || passt(q, r.nummer, r.titel, db.kunden.get(r.kundeId)?.name, db.auftraege.get(r.auftragId)?.nummer))
     .sort((a, b) => (a.status === 'entwurf' ? -1 : 0) - (b.status === 'entwurf' ? -1 : 0) || b.datum.localeCompare(a.datum) || b.nummer.localeCompare(a.nummer));
 
@@ -46,6 +49,10 @@ export function RechnungenListe() {
   const offenSumme = offen.reduce((s, r) => s + offenerBetrag(r), 0);
   const ueber = alle.filter((r) => istUeberfaellig(r));
   const entwuerfe = alle.filter((r) => r.status === 'entwurf');
+  const csv = () => {
+    herunterladen(`rechnungen-${heute()}.csv`, rechnungenCsv(zeilen), 'text/csv');
+    toast(zeilen.length === 1 ? '1 Rechnung als CSV heruntergeladen.' : `${zeilen.length} Rechnungen als CSV heruntergeladen.`);
+  };
   const alteEntwuerfe = entwuerfe.filter((r) => tageZwischen(r.erstelltAm.slice(0, 10), heute()) > ENTWURF_TAGE);
 
   return (
@@ -64,6 +71,16 @@ export function RechnungenListe() {
       <FinanzFilter
         ansicht={ansicht}
         auftraege={auftragOptionen(alle.map((r) => r.auftragId))}
+        ohneAuftrag
+        zusatz={
+          <Auswahl
+            label="Art"
+            value={art}
+            leer="Alle Arten"
+            onChange={(e) => setArt(e.target.value as ListenArt | '')}
+            optionen={(Object.keys(LISTEN_ART_LABEL) as ListenArt[]).map((a) => ({ wert: a, label: LISTEN_ART_LABEL[a] }))}
+          />
+        }
         suche={<Suchfeld wert={q} onChange={setQ} platzhalter="Nummer, Kunde, Auftrag …" />}
         status={
           <Filter
@@ -85,7 +102,7 @@ export function RechnungenListe() {
         schluessel={(r) => r.id}
         zeilenLink={(r) => `/betrieb/rechnungen/${r.id}`}
         leer={
-          q || filter !== 'offen' || ansicht.zeitraum !== 'alle' || ansicht.auftragId ? (
+          q || art || filter !== 'offen' || ansicht.zeitraum !== 'alle' || ansicht.auftragId ? (
             <Leer titel="Keine Rechnungen gefunden" text="Ändere den Filter oder die Suche." icon="suche" />
           ) : (
             <Leer
@@ -111,10 +128,16 @@ export function RechnungenListe() {
             wert: (r) => (
               <>
                 {db.kunden.get(r.kundeId)?.name ?? '–'}
-                <div className="mm-meta">{r.stornoFuerId ? 'Storno' : ART_LABEL[r.art]} · {r.titel}</div>
+                <div className="mm-meta">{LISTEN_ART_LABEL[listenArt(r)]} · {r.titel}</div>
               </>
             ),
             sortierWert: (r) => db.kunden.get(r.kundeId)?.name ?? '',
+          },
+          {
+            titel: 'Auftrag',
+            wert: (r) => <span style={{ whiteSpace: 'nowrap' }}>{db.auftraege.get(r.auftragId)?.nummer ?? '–'}</span>,
+            sortierWert: (r) => db.auftraege.get(r.auftragId)?.nummer ?? '',
+            nebensaechlich: true,
           },
           { titel: 'Datum', wert: (r) => (r.status === 'entwurf' ? '–' : datum(r.datum)), sortierWert: (r) => r.datum, nebensaechlich: true },
           { titel: 'Fällig', wert: (r) => (r.status === 'entwurf' ? '–' : datum(r.faelligAm)), sortierWert: (r) => r.faelligAm, nebensaechlich: true },
@@ -135,6 +158,13 @@ export function RechnungenListe() {
         betragsart={ansicht.betragsart}
         summe={euro(summeNach(ansicht.betragsart, zeilen.map((r) => ({ netto: listenBetrag(r, 'netto'), brutto: listenBetrag(r, 'brutto') }))))}
       />
+      {zeilen.length > 0 && (
+        <Zeile>
+          <Button variante="sekundaer" icon="download" onClick={csv}>
+            Als CSV herunterladen
+          </Button>
+        </Zeile>
+      )}
     </Seite>
   );
 }

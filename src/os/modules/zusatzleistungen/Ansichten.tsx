@@ -101,7 +101,7 @@ export function ZusatzListe() {
             alle.length ? (
               <Leer titel="Hier ist nichts" text="In diesem Status gibt es keine Nachträge." icon="check" />
             ) : (
-              <Leer titel="Noch keine Nachträge" text="Macht ihr vor Ort mehr als beauftragt? Erfass es sofort – sonst geht es bei der Rechnung verloren." aktion={<Button onClick={() => setNeu(true)}>Nachtrag erfassen</Button>} icon="plus" />
+              <Leer skizze titel="Noch keine Nachträge" text="Macht ihr vor Ort mehr als beauftragt? Erfass es sofort – sonst geht es bei der Rechnung verloren." aktion={<Button onClick={() => setNeu(true)}>Nachtrag erfassen</Button>} icon="plus" />
             )
           }
         >

@@ -95,7 +95,7 @@ export function BewerberNeu() {
   const [f, setF] = useState({ vorname: '', nachname: '', telefon: '', email: '', quelle: '', eingegangenAm: heute(), notiz: '' });
   const [fehler, setFehler] = useState<Record<string, string>>({});
   if (!darf) return <KeinZugriff />;
-  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
   const speichern = () => {
     const e: Record<string, string> = {};
     if (!f.vorname.trim() && !f.nachname.trim()) e.vorname = 'Trag mindestens einen Namen ein.';

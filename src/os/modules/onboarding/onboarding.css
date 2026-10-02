@@ -13,6 +13,7 @@
 .ob-frage-kopf { display: flex; flex-direction: column; gap: 8px; }
 .ob-frage-kopf h1 { margin: 0; font-size: 32px; line-height: 1.2; font-weight: 700; color: var(--mm-black); }
 .ob-frage-kopf p { margin: 0; }
+.ob-frage-kopf--mitte { align-items: center; text-align: center; }
 /* „Keine Website? Gewerk auswählen“: darf ab 320 px umbrechen statt über den Rand zu laufen */
 .ob-ohne-website .mm-btn { white-space: normal; text-align: left; }
 .ob-ohne-website .mm-btn > svg { flex-shrink: 0; }

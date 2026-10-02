@@ -66,7 +66,7 @@ export const STRUKTUR: Hauptbereich[] = [
     titel: 'Heute',
     pfad: '/heute',
     icon: 'heute',
-    kontext: ['braucht-dich', 'naechster-einsatz', 'mein-tag', 'schnell-erfassen', 'hinweise', 'suche', 'macher-fragen', 'benachrichtigungen', 'takte', 'onboarding', 'start', 'konto'],
+    kontext: ['braucht-dich', 'naechster-einsatz', 'mein-tag', 'schnell-erfassen', 'hinweise', 'suche', 'macher-fragen', 'benachrichtigungen', 'takte', 'onboarding', 'start', 'konto', 'rueckmeldung'],
   },
   {
     id: 'auftraege',

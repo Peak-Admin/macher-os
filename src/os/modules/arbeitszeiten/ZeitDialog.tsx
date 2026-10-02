@@ -17,7 +17,7 @@ export function ZeitDialog({
   offen: boolean;
   onSchliessen: () => void;
   eintrag?: Zeiteintrag;
-  vorgabe?: { datum?: Datum; mitarbeiterId?: ID };
+  vorgabe?: { datum?: Datum; mitarbeiterId?: ID; auftragId?: ID };
 }) {
   const ich = useIch();
   const toast = useToast();
@@ -30,14 +30,14 @@ export function ZeitDialog({
     ende: eintrag?.ende ?? '',
     pause: String(eintrag?.pauseMinuten ?? 0),
     art: eintrag?.art ?? ('arbeit' as Zeiteintrag['art']),
-    auftragId: eintrag?.auftragId ?? '',
+    auftragId: eintrag?.auftragId ?? vorgabe?.auftragId ?? '',
     notiz: eintrag?.notiz ?? '',
     grund: '',
   });
   const [f, setF] = useState(leer);
   const [fehler, setFehler] = useState<string>();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => (offen ? (setF(leer()), setFehler(undefined)) : undefined), [offen, eintrag?.id, vorgabe?.datum, vorgabe?.mitarbeiterId]);
+  useEffect(() => (offen ? (setF(leer()), setFehler(undefined)) : undefined), [offen, eintrag?.id, vorgabe?.datum, vorgabe?.mitarbeiterId, vorgabe?.auftragId]);
 
   const gesperrt = !!eintrag?.freigegeben && !buero;
   /** Abgeschlossene Zeit ändern = Korrektur → Grund ist Pflicht, Verlauf bleibt am Eintrag */

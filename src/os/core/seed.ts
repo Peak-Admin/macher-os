@@ -10,6 +10,7 @@ import { heute, plusTage, summen, zeitpunkt } from './format';
 import type { Arbeitsweise, Betrieb, Gewerk, ID, Mitarbeiter, Position, Rolle } from './objects';
 import { setzeIch } from './session';
 import { betriebsSchluessel } from './betriebe';
+import { projektPraefix } from './projektnummer';
 
 export interface OnboardingAntworten {
   betriebName: string;
@@ -248,10 +249,15 @@ export function hatEchtenBetrieb(): boolean {
   return !!db.betrieb.get('betrieb')?.onboardingFertig && !istSpielwiese();
 }
 
-/** Spielwiese öffnen: echte Daten zur Seite legen, Beispielbetrieb des Gewerks einrichten */
+/**
+ * Spielwiese öffnen: echte Daten zur Seite legen, Beispielbetrieb des Gewerks einrichten.
+ * Ist die Spielwiese schon offen, bleibt sie – nur bei einem anderen Gewerk wird der Beispielbetrieb neu angelegt
+ * (die zur Seite gelegten echten Daten bleiben dabei unberührt).
+ */
 export async function spielwieseStarten(gewerk: Gewerk = 'elektro'): Promise<void> {
-  if (istSpielwiese()) return;
-  if (hatEchtenBetrieb()) {
+  if (istSpielwiese()) {
+    if (db.betrieb.get('betrieb')?.gewerk === gewerk) return;
+  } else if (hatEchtenBetrieb()) {
     const stand = exportieren();
     await speicher.schreiben(stand);
     // nur weiter, wenn die Sicherung wirklich lesbar ist – sonst ginge beim Zurückwechseln etwas verloren
@@ -395,7 +401,7 @@ function beispielDaten(chef: Mitarbeiter, qualiIds: ID[], artikelIds: ID[]) {
       leistungId: l.id,
     }));
 
-  const nr = (i: number) => `A-${new Date().getFullYear()}-${String(i).padStart(4, '0')}`;
+  const nr = (i: number) => `${projektPraefix()}-${String(i).padStart(3, '0')}`;
   const auftrag = (i: number, x: Partial<Parameters<typeof db.auftraege.create>[0]>) =>
     db.auftraege.create({
       nummer: nr(i),

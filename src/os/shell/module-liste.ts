@@ -70,6 +70,7 @@ import m_qualifikationen from '../modules/qualifikationen';
 import m_rechnungen from '../modules/rechnungen';
 import m_reklamationen from '../modules/reklamationen';
 import m_rollen from '../modules/rollen';
+import m_rueckmeldung from '../modules/rueckmeldung';
 import m_schnell_erfassen from '../modules/schnell-erfassen';
 import m_schnittstellen from '../modules/schnittstellen';
 import m_schulungen from '../modules/schulungen';
@@ -162,6 +163,7 @@ export const modulListe: [string, ModulDef][] = [
   ['rechnungen', m_rechnungen],
   ['reklamationen', m_reklamationen],
   ['rollen', m_rollen],
+  ['rueckmeldung', m_rueckmeldung],
   ['schnell-erfassen', m_schnell_erfassen],
   ['schnittstellen', m_schnittstellen],
   ['schulungen', m_schulungen],

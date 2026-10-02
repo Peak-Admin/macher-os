@@ -10,19 +10,19 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { modul, modulPfad, type ModulDef } from '@core/modul';
 import { useDatenstand } from '@core/db';
 import { istBuero, useIch } from '@core/session';
-import { Abschnitt, Icon, Leer, Seite, Status, Suchfeld, MacherAsset, ThemenIcon, type ObjektSchluessel } from '@ui/index';
+import { Abschnitt, Icon, Leer, Seite, SkizzenKachel, Status, Suchfeld, ThemenIcon } from '@ui/index';
 import { STRUKTUR, modulVerzeichnis, sichtbareAnsichten, sichtbareZiele, zielPfad, type Kategorie } from './struktur';
 import { FAVORITEN_MAX, useFavoriten } from './favoriten';
 import type { Mitarbeiter } from '@core/objects';
 import { NichtGefunden } from './NichtGefunden';
 
 const KATEGORIEN = STRUKTUR.find((h) => h.id === 'betrieb')!.kategorien!;
-/** Jede Tür zeigt ein vertrautes Werkzeug-Objekt (docs/design/visual-assets.md, Abschnitt 7) – das Label bleibt die Information. */
-const TUER_OBJEKT: Record<string, ObjektSchluessel | undefined> = {
-  geld: 'bleistift',
-  team: 'handschuhe',
-  ausstattung: 'akkuschrauber',
-  unternehmen: 'schraubenschluessel',
+/** Glas-Icon je Tür für die Fenster-Skizze (früher ein Objektfoto) – das Label bleibt die Information. */
+const TUER_ICON: Record<string, string | undefined> = {
+  geld: 'euro',
+  team: 'team',
+  ausstattung: 'werkzeug',
+  unternehmen: 'einstellungen',
 };
 
 /** Der wichtigste Hinweis einer Kategorie (nur „Aufmerksamkeit“ – Routine bleibt still) */
@@ -61,13 +61,7 @@ export function BetriebSeite() {
           return (
             <li key={k.id}>
               <Link to={`/betrieb/${k.id}`} className="mm-tuer">
-                {TUER_OBJEKT[k.id] ? (
-                  <MacherAsset asset={TUER_OBJEKT[k.id]!} groesse="mittel" />
-                ) : (
-                  <span className="mm-modulkachel-icon" aria-hidden>
-                    <ThemenIcon name={k.icon} />
-                  </span>
-                )}
+                <SkizzenKachel icon={TUER_ICON[k.id] ?? k.icon} groesse="mittel" />
                 <span className="mm-tuer-text">
                   <strong>{k.titel}</strong>
                   <span className="mm-meta">{k.text}</span>

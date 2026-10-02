@@ -44,7 +44,7 @@ export function Webhooks() {
         )}
         <Liste
           leer={
-            <Leer
+            <Leer skizze
               titel="Noch kein Webhook"
               text="Trag die Adresse deines Programms ein und wähl, worüber es Bescheid bekommen soll – z. B. „Rechnung bezahlt“."
               icon="stecker"

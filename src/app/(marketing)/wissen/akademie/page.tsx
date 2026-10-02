@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FinalCta, PageHero } from "@/components/sections";
-import { ArrowLink, ButtonLink, CheckList, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
+import { ArrowLink, ButtonLink, CheckList, Fenster, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
 import { FunktionLinks } from "@/components/wissen/Teile";
 import { topGewerke } from "@/content/registry";
 import { kurse, lernbereiche, rollen, type Kurs } from "@/content/wissen/akademie";
@@ -75,9 +75,9 @@ export default function AkademiePage() {
           {lernbereiche.map((l) => {
             const anzahl = kurse.filter((k) => k.lernbereich === l.titel).length;
             return (
-              <div key={l.titel} className="rounded-lg border border-line bg-paper p-6">
-                <IconTile name={l.icon} />
-                <h3 className="mt-4 font-display text-lg font-bold">{l.titel}</h3>
+              <div key={l.titel} className="rounded-lg border border-line bg-paper p-6 text-center">
+                <Fenster icon={l.icon} flaeche="weiss" className="-mx-2 -mt-2" />
+                <h3 className="mt-5 font-display text-lg font-bold">{l.titel}</h3>
                 <p className="mt-1 text-muted">{l.text}</p>
                 <p className="mt-3 text-sm font-semibold">
                   {anzahl} {anzahl === 1 ? "Kurs" : "Kurse"}
@@ -179,6 +179,7 @@ export default function AkademiePage() {
             </Link>
           </div>
           <div className="karte-dunkel p-6 sm:p-8">
+            <Fenster icon="award" ton="dunkel" className="mb-6" />
             <CheckList
               items={[
                 "Kurse und eigene Schulungen zuweisen",

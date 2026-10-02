@@ -888,3 +888,12 @@ export function vorbereitet(): Vorbereitet[] {
 }
 
 export const gewerkLabel = (g: Gewerk) => gewerkVorlage(g).label;
+
+/**
+ * Gewerk für die Demo aus der Adresse (`/demo?gewerk=…`). Die Website nennt den allgemeinen Betrieb „allgemein“,
+ * die Software „sonstiges“. Unbekannt oder leer → Elektro (Standard der Spielwiese).
+ */
+export function demoGewerk(wert: string | null | undefined): Gewerk {
+  if (wert === 'allgemein') return 'sonstiges';
+  return GEWERKE.find((g) => g.id === wert)?.id ?? 'elektro';
+}

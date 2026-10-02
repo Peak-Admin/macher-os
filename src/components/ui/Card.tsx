@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import type { ObjektSchluessel } from "@/lib/objekte";
 import { Icon, IconTile, type IconName } from "./Icon";
 import { Objekt } from "./Objekt";
+import { Fenster } from "./Fenster";
+import { Skizze, type SkizzenMotiv } from "./Skizze";
 
 /** Einfache Karte. Mit `href` wird die ganze Karte klickbar. */
 export function Card({
@@ -13,11 +15,17 @@ export function Card({
   iconTone,
   eyebrow,
   objekt,
+  skizze,
+  fenster = false,
   className = "",
 }: {
   title: ReactNode;
   /** Objektbild oben in der Karte (statt Icon) – ein starkes Objekt pro Karte */
   objekt?: ObjektSchluessel;
+  /** Abstrakte Skizze einer Funktion oben in der Karte (statt Icon) – wenn die Karte eine Funktion kurz erklärt */
+  skizze?: SkizzenMotiv;
+  /** Fenster-Skizze mit dem Glas-Icon zu `icon` oben in der Karte (statt Icon) – für Einstiege und Schnittstellen */
+  fenster?: boolean;
   children?: ReactNode;
   href?: string;
   icon?: IconName;
@@ -29,6 +37,10 @@ export function Card({
     <>
       {objekt ? (
         <Objekt objekt={objekt} className="-mx-2 -mt-2 mb-5" />
+      ) : skizze ? (
+        <Skizze motiv={skizze} className="-mx-2 -mt-2 mb-5" />
+      ) : fenster && icon ? (
+        <Fenster icon={icon} className="-mx-2 -mt-2 mb-5" />
       ) : (
         icon && <IconTile name={icon} tone={iconTone} className="mb-4" />
       )}
@@ -45,7 +57,8 @@ export function Card({
       {children && <div className="mt-2 text-[0.95rem] leading-relaxed text-muted">{children}</div>}
     </>
   );
-  const base = `group block rounded-2xl border border-line bg-white p-6 shadow-[0_1px_2px_rgb(14_19_12/0.04)] ${className}`;
+  // Mit Fenster-Skizze ist die Karte ein Einstieg: Skizze und kurzer Text stehen mittig
+  const base = `group block rounded-2xl border border-line bg-white p-6 shadow-[0_1px_2px_rgb(14_19_12/0.04)] ${fenster && icon ? "text-center" : ""} ${className}`;
   if (href) {
     return (
       <Link href={href} className={`${base} transition hover:-translate-y-0.5 hover:border-ink/30 hover:shadow-lg hover:shadow-ink/5`}>

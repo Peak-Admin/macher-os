@@ -203,6 +203,11 @@ export function Icon({ name, className = "size-5" }: { name: IconName; className
   );
 }
 
+/** Nur die Pfade eines Icons (Raster 24 × 24) – zum Einsetzen in eigene SVG-Zeichnungen wie `Skizze`. */
+export function IconPfade({ name }: { name: IconName }) {
+  return paths[name];
+}
+
 /**
  * Strich-Icon → Glas-Icon (`@/os/ui/glas`). Themen-Icons ab ca. 32 px erscheinen überall als Glas-Icon;
  * Bedien-Icons (Pfeile, Schließen, Menü, Plus) haben bewusst keins.
@@ -251,6 +256,11 @@ const glas: Partial<Record<IconName, GlasIconName>> = {
   check: "erledigt",
   achtung: "achtung",
 };
+
+/** Glas-Motiv zum Strich-Icon (oder `undefined`, wenn es keins gibt). */
+export function glasName(name: IconName): GlasIconName | undefined {
+  return glas[name];
+}
 
 /**
  * Themen-Icon für Karten und Abschnitte: das Glas-Icon zum Strich-Icon (Standard 44 px, mit `size-*` änderbar).

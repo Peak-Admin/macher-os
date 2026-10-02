@@ -1,38 +1,54 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { PhoneMock, PlanBoardMock, VorschauRahmen } from "@/components/mocks";
 import {
   Ablauf,
   Alltag,
-  BereichsKarte,
   DunkleHeadline,
   FinalCta,
   FotoBuehne,
-  KundenCard,
+  IntegrationenHighlight,
+  KartenReihe,
   PlanCards,
   MissionMittelstand,
+  ReihenKarte,
   StartHero,
+  type KartenTon,
 } from "@/components/sections";
 import {
+  BelegStapel,
+  HandyAusschnitt,
+  Hinweis,
+  IconAussage,
+  PlanAusschnitt,
+  ZitatAnsicht,
+} from "@/components/sections/ReihenAnsichten";
+import {
   ArrowLink,
-  Zone,
+  Badge,
   ButtonLink,
   CheckList,
   Faq,
   FaqJsonLd,
+  Fenster,
   Icon,
   IconTile,
   Karte3D,
-  Objekt,
   Section,
   SectionHeading,
+  UiEbene,
+  UiStatus,
+  UiZeile,
+  Zone,
   type FaqItem,
   type IconName,
 } from "@/components/ui";
 import { gewerkBild } from "@/content/bilder";
+import { topGewerkInhalte } from "@/content/gewerke";
+import { kundenStories } from "@/content/kunden";
 import { kernaengste, weitereEinwaende } from "@/content/einwaende";
 import { testTage } from "@/content/preise";
-import { kunden, topGewerke } from "@/content/registry";
-import type { ObjektSchluessel } from "@/lib/objekte";
+import { kunden, topGewerke, type GewerkSlug } from "@/content/registry";
 import { cta, herausgeber, site } from "@/lib/site";
 
 export const metadata = {
@@ -54,42 +70,72 @@ const machtMacher: { text: string; icon: IconName }[] = [
 ];
 
 /** Die vier Bereiche der Software – mit den Ansichten, die dort wirklich stehen. */
-const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSchluessel; href: string; inhalt: string[] }[] = [
+/** Jede Karte hat einen eigenen Ton und eine eigene Ansicht (Vorbild Feather) – nie vier gleiche Kacheln. */
+const bereiche: { titel: string; text: string; href: string; inhalt: string[]; ton: KartenTon; ansicht: ReactNode }[] = [
   {
     titel: "Heute",
     text: "Was jetzt wichtig ist.",
-    icon: "spark",
-    objekt: "werkzeugwand",
     href: "/funktionen",
     inhalt: ["Dein nächster Schritt", "Braucht deine Entscheidung", "Heute im Betrieb"],
+    ton: "hell",
+    ansicht: (
+      <HandyAusschnitt
+        kopf="Heute"
+        zeilen={[
+          { text: "Angebot freigeben", icon: "file", status: "Neu" },
+          { text: "Einsatz Lindenstraße", icon: "route" },
+          { text: "Material bestellen", icon: "box" },
+          { text: "Rechnung prüfen", icon: "euro" },
+        ]}
+      />
+    ),
   },
   {
     titel: "Aufträge",
     text: "Alles rund um Kunden und Arbeit.",
-    icon: "clipboard",
-    objekt: "klemmbrett",
     href: "/funktionen/auftraege",
     inhalt: ["Aufträge und Angebote", "Eingang mit neuen Anfragen", "Kunden und Service"],
+    ton: "foto",
+    ansicht: <Hinweis text="Angebot angenommen" className="inset-x-6 top-[42%]" />,
   },
   {
     titel: "Planen",
     text: "Was als Nächstes passiert.",
-    icon: "calendar",
-    objekt: "zollstock",
     href: "/funktionen/einsatzplanung",
     inhalt: ["Kalender und Plantafel", "Einplanen mit Vorschlag", "Kapazität im Team"],
+    ton: "beige",
+    ansicht: (
+      <PlanAusschnitt
+        objekt="zollstock"
+        kopf="Diese Woche"
+        zeilen={[
+          { name: "Kevin", balken: [[0, 38, "voll"], [44, 30, "hell"]] },
+          { name: "Lena", balken: [[10, 50, "voll"]] },
+          { name: "Tom", balken: [[0, 22, "hell"], [28, 46, "voll"]] },
+          { name: "Ayse", balken: [[18, 34, "voll"]] },
+        ]}
+      />
+    ),
   },
   {
     titel: "Betrieb",
     text: "Mitarbeiter, Material, Geld und Unternehmen.",
-    icon: "home",
-    objekt: "werkbank",
     href: "/funktionen/mitarbeiter",
     inhalt: ["Geld: Rechnungen und Belege", "Team: Menschen und Zeiten", "Ausstattung und Unternehmen"],
+    ton: "dunkel",
+    ansicht: (
+      <BelegStapel
+        eintraege={[
+          { titel: "Rechnung bezahlt", text: "Geld", icon: "euro" },
+          { titel: "Stunden vom Handy", text: "Team", icon: "clock" },
+          { titel: "Material im Lager", text: "Ausstattung", icon: "warehouse" },
+        ]}
+      />
+    ),
   },
 ];
 
-const gewerkIcons: Record<string, IconName> = {
+const gewerkIcons: Record<(typeof topGewerke)[number]["slug"], IconName> = {
   elektriker: "bolt",
   shk: "wrench",
   maler: "pen",
@@ -100,10 +146,46 @@ const gewerkIcons: Record<string, IconName> = {
   galabau: "map",
 };
 
-const feierabend: { text: string; icon: IconName }[] = [
-  { text: "Stundenzettel kommen vom Handy", icon: "smartphone" },
-  { text: "Rechnungen sind vorbereitet", icon: "euro" },
-  { text: "Offene Zahlungen im Blick", icon: "chart" },
+const kundenFoto: Record<(typeof topGewerke)[number]["slug"], GewerkSlug> = {
+  elektriker: "elektro-energie",
+  shk: "shk-gebaeudetechnik",
+  maler: "maler-boden-oberflaechen",
+  fliesenleger: "maler-boden-oberflaechen",
+  tischler: "holz-innenausbau",
+  dachdecker: "dach-gebaeudehuelle",
+  bau: "bau-rohbau",
+  galabau: "garten-aussenanlagen",
+};
+
+/** Drei Ergebnisse, jeweils mit einer UI-Ebene als Beleg (Beispieldaten). */
+const feierabend: { text: string; ort: string; zeilen: { links: ReactNode; rechts: ReactNode }[] }[] = [
+  {
+    text: "Stundenzettel kommen vom Handy",
+    ort: "Zeiten · Heute",
+    zeilen: [
+      { links: <b className="font-semibold">Max Berger</b>, rechts: <UiStatus ton="gut">Vom Handy</UiStatus> },
+      { links: "Sanierung Haus 24", rechts: <span className="font-semibold tabular-nums">7:45 Std.</span> },
+      { links: "Fahrtzeit", rechts: <span className="font-semibold tabular-nums">0:30 Std.</span> },
+    ],
+  },
+  {
+    text: "Rechnungen sind vorbereitet",
+    ort: "Rechnung · Entwurf",
+    zeilen: [
+      { links: <b className="font-semibold">Sanierung Haus 24</b>, rechts: <UiStatus ton="gut">Zum Prüfen</UiStatus> },
+      { links: "Stunden aus der App", rechts: <UiStatus>Übernommen</UiStatus> },
+      { links: "Material vom Einsatz", rechts: <UiStatus>Übernommen</UiStatus> },
+    ],
+  },
+  {
+    text: "Offene Zahlungen im Blick",
+    ort: "Zahlungen",
+    zeilen: [
+      { links: <b className="font-semibold">Rechnung Schulz</b>, rechts: <UiStatus ton="gut">Bezahlt</UiStatus> },
+      { links: <b className="font-semibold">Rechnung Weber</b>, rechts: <UiStatus>Offen</UiStatus> },
+      { links: "Erinnerung vorbereitet", rechts: <UiStatus ton="warnung">Wartet auf dich</UiStatus> },
+    ],
+  },
 ];
 
 const mobil = [
@@ -188,74 +270,83 @@ export default function HomePage() {
       {/* 3. Ablauf – vier klickbare Schritte */}
       <Ablauf />
 
-      {/* 4. Vier Bereiche */}
+      {/* 4. Vier Bereiche – Kartenreihe: jede Karte anders (Handy, Foto mit Hinweis, Plantafel, dunkle Belege) */}
       <Zone ton="weiss">
         <Section tone="transparent">
-          <SectionHeading
+          <KartenReihe
             eyebrow="Vier Bereiche"
-            title="Alles da. Trotzdem einfach."
-            intro="Macher OS ist in vier Bereiche aufgeteilt. Mehr musst du dir nicht merken."
-          />
-          <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {bereiche.map((b, n) => (
-              <li key={b.titel}>
-                <Karte3D href={b.href} innen="flex flex-col rounded-2xl border border-line bg-white p-6">
-                  <Objekt objekt={b.objekt} className="-mx-2 -mt-2 mb-5" sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw" />
-                  <div className="flex items-center justify-between">
-                    <IconTile name={b.icon} className="karte-3d-tief size-12" />
-                    <span className="font-display text-sm font-bold tabular-nums text-muted">0{n + 1}</span>
-                  </div>
-                  <h3 className="mt-6 font-display text-2xl font-bold text-ink">{b.titel}</h3>
-                  <p className="mt-1 text-muted">{b.text}</p>
-                  <ul className="mt-5 flex-1 space-y-2 border-t border-line pt-4 text-[0.95rem]">
-                    {b.inhalt.map((x) => (
-                      <li key={x} className="flex items-center gap-2">
-                        <Icon name="check" className="size-4 shrink-0 text-primary" /> {x}
-                      </li>
-                    ))}
-                  </ul>
-                  <span className="mt-5 inline-flex items-center gap-1.5 font-semibold text-signal-dark">
-                    Ansehen <Icon name="arrow-right" className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
-                  </span>
-                </Karte3D>
-              </li>
+            titel="Alles da. Trotzdem einfach."
+            nachsatz="Mehr musst du dir nicht merken."
+          >
+            {bereiche.map((b) => (
+              <ReihenKarte
+                key={b.titel}
+                titel={b.titel}
+                href={b.href}
+                ton={b.ton}
+                bild={b.ton === "foto" ? "gewerk/shk-gebaeudetechnik" : undefined}
+                ansicht={b.ansicht}
+                linkText={`${b.titel} ansehen`}
+                details={
+                  <>
+                    <p>{b.text}</p>
+                    <ul className="mt-4 space-y-2">
+                      {b.inhalt.map((x) => (
+                        <li key={x} className="flex items-center gap-2">
+                          <Icon name="check" className="size-4 shrink-0 text-primary" /> {x}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                }
+              />
             ))}
-          </ul>
+          </KartenReihe>
           <ArrowLink href="/funktionen" className="mt-8">
             Alle Funktionen ansehen
           </ArrowLink>
         </Section>
       </Zone>
 
-      {/* 5. Gewerke */}
+      {/* 5. Gewerke – Kartenreihe: Fotos im Wechsel mit hellen Karten und Glas-Icons */}
       <Zone ton="dunkel">
         <Section tone="transparent">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <DunkleHeadline
+          <KartenReihe
+            dunkel
             eyebrow="Gewerke"
-            gruen="Für deinen Betrieb"
-            rest="gemacht."
-            intro="Wähle dein Gewerk – Macher OS passt Begriffe, Vorlagen und Abläufe an."
-          />
+            titel="Für deinen Betrieb gemacht."
+            nachsatz="Passend zu deinem Gewerk."
+          >
+            {topGewerke.map((g, n) => {
+              // Wechsel: Foto · helle Karte mit Glas-Icon · Foto mit Hinweis · grüne Karte mit Glas-Icon
+              const art = (["foto", "beige", "foto-hinweis", "gruen"] as const)[n % 4];
+              const teaser = topGewerkInhalte[g.slug].teaser;
+              return (
+                <ReihenKarte
+                  key={g.slug}
+                  ton={art === "foto" || art === "foto-hinweis" ? "foto" : art}
+                  titel={g.kurz}
+                  href={`/gewerke/${g.slug}`}
+                  bild={gewerkBild(g.slug)}
+                  ansicht={
+                    art === "foto-hinweis" ? (
+                      <Hinweis text={`Vorlagen für ${g.kurz}`} className="left-6 top-8" />
+                    ) : art === "beige" || art === "gruen" ? (
+                      <IconAussage icon={gewerkIcons[g.slug]} text={teaser} />
+                    ) : undefined
+                  }
+                  linkText={`Macher OS für ${g.kurz}`}
+                  details={<p>{teaser}</p>}
+                />
+              );
+            })}
+          </KartenReihe>
           <Link
             href="/gewerke"
-            className="inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
+            className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
           >
             Alle Gewerke <Icon name="arrow-right" className="size-4" />
           </Link>
-        </div>
-        <ul className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {topGewerke.map((g) => (
-            <li key={g.slug}>
-              <BereichsKarte
-                href={`/gewerke/${g.slug}`}
-                bild={gewerkBild(g.slug)}
-                titel={g.kurz}
-                icon={gewerkIcons[g.slug] ?? "wrench"}
-              />
-            </li>
-          ))}
-        </ul>
         </Section>
       </Zone>
 
@@ -283,26 +374,31 @@ export default function HomePage() {
         </Section>
       </Zone>
 
+      {/* 6b. Integrationen – Highlight mit echten Logos und den vier Säulen */}
+      <IntegrationenHighlight />
+
       {/* 7. Feierabend statt Papierkram – alles in Boxen */}
       <Zone ton="weiss">
         <Section tone="transparent">
-          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]">
-            <SectionHeading
-              eyebrow="Feierabend statt Papierkram"
-              title="Kein Küchentisch-Büro mehr am Abend."
-              intro="Angebote, Stundenzettel, Rechnungen: Was früher abends liegen blieb, bereitet Macher OS tagsüber vor. Du prüfst und schickst ab."
-            />
-            <ul className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-              {feierabend.map((p) => (
-                <li key={p.text}>
-                  <Karte3D innen="flex h-full flex-col gap-4 rounded-2xl bg-beige p-5 ring-1 ring-beige-line">
-                    <IconTile name={p.icon} className="karte-3d-tief size-11" />
-                    <span className="font-display text-lg font-bold leading-snug text-ink">{p.text}</span>
-                  </Karte3D>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <SectionHeading
+            eyebrow="Feierabend statt Papierkram"
+            title="Kein Küchentisch-Büro mehr am Abend."
+            intro="Angebote, Stundenzettel, Rechnungen: Was früher abends liegen blieb, bereitet Macher OS tagsüber vor. Du prüfst und schickst ab."
+          />
+          <ul className="mt-10 grid gap-4 lg:grid-cols-3">
+            {feierabend.map((p) => (
+              <li key={p.text}>
+                <Karte3D innen="group flex h-full flex-col gap-5 rounded-2xl bg-white p-5 ring-1 ring-line">
+                  <UiEbene ort={p.ort}>
+                    {p.zeilen.map((z, i) => (
+                      <UiZeile key={i} links={z.links} rechts={z.rechts} />
+                    ))}
+                  </UiEbene>
+                  <span className="font-display text-lg font-bold leading-snug text-ink">{p.text}</span>
+                </Karte3D>
+              </li>
+            ))}
+          </ul>
           <ArrowLink href="/funktionen/automatisch-erledigen" className="mt-8">
             So arbeitet Macher
           </ArrowLink>
@@ -370,15 +466,44 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 10. Kunden */}
+      {/* 10. Kunden – Kartenreihe im Wechsel Foto · Zitat dunkel · Zitat hell; alle Stories sind Beispiele und so markiert */}
       <Zone ton="weiss">
         <Section tone="transparent">
-          <SectionHeading eyebrow="Kunden" title="Von Machern für Macher." />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {kunden.slice(0, 3).map((k) => (
-              <KundenCard key={k.slug} slug={k.slug} />
+          <KartenReihe eyebrow="Kunden" titel="Von Machern für Macher." nachsatz="So arbeiten Betriebe wie deiner.">
+            {kunden.map((k, n) => (
+              <ReihenKarte
+                key={k.slug}
+                // Wechsel: Foto mit Ergebnis · dunkles Zitat · helles Zitat
+                ton={(["foto", "dunkel", "beige"] as const)[n % 3]}
+                titel={n % 3 === 0 ? k.ergebnis : k.betrieb}
+                href={`/kunden/${k.slug}`}
+                // Anderes Foto als in der Gewerke-Reihe, damit kein Bild doppelt auf der Seite steht
+                bild={gewerkBild(kundenFoto[k.gewerk])}
+                ansicht={
+                  n % 3 === 0 ? undefined : (
+                    <ZitatAnsicht
+                      text={kundenStories[k.slug].zitat.text}
+                      rolle={kundenStories[k.slug].zitat.rolle}
+                      dunkel={n % 3 === 1}
+                    />
+                  )
+                }
+                marke={<Badge>Beispiel</Badge>}
+                linkText="Story lesen"
+                details={
+                  <>
+                    <p className="font-semibold text-ink">{n % 3 === 0 ? k.betrieb : k.ergebnis}</p>
+                    <p className="text-muted">
+                      {topGewerke.find((g) => g.slug === k.gewerk)!.kurz} · {k.mitarbeiter} Mitarbeiter · {k.ort}
+                    </p>
+                    <p className="mt-3">
+                      Beispielgeschichte mit Symbolbild: Sie zeigt, wie ein typischer Betrieb mit Macher OS arbeitet.
+                    </p>
+                  </>
+                }
+              />
             ))}
-          </div>
+          </KartenReihe>
           <ArrowLink href="/kunden" className="mt-8">
             Alle Kunden ansehen
           </ArrowLink>
@@ -500,13 +625,13 @@ export default function HomePage() {
                     href={w.href}
                     className={`group flex h-full flex-col rounded-2xl p-6 transition-transform duration-150 ease-out hover:-translate-y-0.5 ${gross ? "min-h-64 lg:p-8" : "min-h-44"}`}
                   >
-                    <span
-                      className={`inline-flex size-11 items-center justify-center rounded-xl ${
-                        dunkel ? "bg-white/10 text-accent" : "bg-white text-signal-dark ring-1 ring-line"
-                      }`}
-                    >
-                      <Icon name={w.icon} className="size-5" />
-                    </span>
+                    {gross ? (
+                      <Fenster icon={w.icon} ton="dunkel" className="-mx-2 -mt-2" />
+                    ) : (
+                      <span className="inline-flex size-11 items-center justify-center rounded-xl bg-white text-signal-dark ring-1 ring-line">
+                        <Icon name={w.icon} className="size-5" />
+                      </span>
+                    )}
                     <span className={`mt-auto pt-6 font-display font-bold leading-tight ${gross ? "text-4xl" : "text-xl"}`}>{w.titel}</span>
                     <span className={`mt-1 ${dunkel ? "text-white/75" : "text-muted"} ${gross ? "text-lg" : ""}`}>{w.text}</span>
                     {gross && (

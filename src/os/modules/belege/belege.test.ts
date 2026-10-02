@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { db } from '@core/db';
 import { heute, plusTage, zeitpunkt } from '@core/format';
 import { testBetrieb, vorTagen } from '../rechnungen/testdaten';
-import type { BelegX } from '../rechnungen/typen';
+import { belegAendern, type BelegX } from '../rechnungen/typen';
 import {
   alsBezahlt,
   alsGeprueft,
@@ -133,6 +133,15 @@ describe('Ablauf: Neu → Prüfen → Zuordnen → Freigeben → Bezahlt', () =>
     expect(z.status).toBe('neu');
     expect(z.freigegebenAm).toBeUndefined();
     expect(belegSchritt(z)).toBe('pruefen');
+  });
+
+  it('ein Betriebsbereich gilt als zugeordnet; ein Auftrag ersetzt den Bereich', () => {
+    const b = neu();
+    alsGeprueft(b.id);
+    belegAendern(b.id, { bereich: 'Fahrzeuge' });
+    expect(belegSchritt(belegX(b.id)!)).toBe('freigeben');
+    auftragZuordnen(b.id, t.auftrag.id);
+    expect(belegX(b.id)).toMatchObject({ auftragId: t.auftrag.id, bereich: undefined });
   });
 
   it('alte Daten bleiben gültig: „geprüft“ ohne Prüfstempel gilt als zahlbereit', () => {

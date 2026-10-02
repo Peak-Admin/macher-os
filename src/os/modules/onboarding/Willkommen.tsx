@@ -8,7 +8,7 @@ import { GEWERKE, vorlageFuer, type FachrichtungId } from '@core/gewerke';
 import type { Gewerk } from '@core/objects';
 import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
 import { DATEN_VERTRAUEN } from '@core/vertrauen';
-import { Button, Eingabe, Icon, MacherOrb, Meldung, Meta, Oberzeile, useBestaetigen, type IconName } from '@ui/index';
+import { Button, Eingabe, FensterSkizze, Icon, MacherOrb, Meldung, Meta, Oberzeile, useBestaetigen, type IconName } from '@ui/index';
 import {
   briefkopfErkennen,
   briefkopfLuecken,
@@ -53,7 +53,7 @@ export function Willkommen() {
  */
 const VORTEILE = ['Kostenlos starten – ohne Kreditkarte', 'In wenigen Minuten startklar', 'Du musst keine Software lernen', 'Kostenlose Hilfe beim Einrichten'];
 
-function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
+export function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
   return (
     <div className="ob-rahmen">
       <header className={`ob-marke${vorteile ? ' ob-marke--vorteile' : ''}`}>
@@ -552,7 +552,10 @@ function SchonEingerichtet({ onNeu }: { onNeu: () => void }) {
     : [];
   return (
     <div className="ob-ablauf">
-      <div className="ob-frage-kopf">
+      <span className="mm-fenster" aria-hidden>
+        <FensterSkizze icon="erledigt" />
+      </span>
+      <div className="ob-frage-kopf ob-frage-kopf--mitte">
         <h1>{b?.name} ist schon eingerichtet</h1>
         <p>Du kannst direkt weiterarbeiten.</p>
       </div>
@@ -607,7 +610,10 @@ function AufDerSpielwiese({ onNeu }: { onNeu: () => void }) {
   };
   return (
     <div className="ob-ablauf">
-      <div className="ob-frage-kopf">
+      <span className="mm-fenster" aria-hidden>
+        <FensterSkizze icon="start" />
+      </span>
+      <div className="ob-frage-kopf ob-frage-kopf--mitte">
         <Oberzeile>Spielwiese</Oberzeile>
         <h1>Du bist gerade auf der Spielwiese</h1>
         <p>Alles hier sind Beispieldaten. {gesichert ? 'Deine echten Daten liegen sicher zur Seite und kommen unverändert zurück.' : 'Wenn du deinen eigenen Betrieb einrichtest, verschwinden sie vollständig.'}</p>
@@ -628,7 +634,10 @@ function Einladung({ betrieb }: { betrieb: string }) {
   const verbunden = cloudAktiv() && !!cloud().konto();
   return (
     <div className="ob-ablauf">
-      <div className="ob-frage-kopf">
+      <span className="mm-fenster" aria-hidden>
+        <FensterSkizze icon="handy" rahmen="handy" />
+      </span>
+      <div className="ob-frage-kopf ob-frage-kopf--mitte">
         <Oberzeile>Einladung</Oberzeile>
         <h1>{betrieb ? `${betrieb} hat dich eingeladen` : 'Du wurdest eingeladen'}</h1>
         <p>Über Macher OS bekommst du deine Einsätze, Adressen und Aufgaben aufs Handy.</p>

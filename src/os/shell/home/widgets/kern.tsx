@@ -4,7 +4,7 @@
  * persönlicher Kontakt + Support, News + Workshops + Produktneuigkeiten.
  */
 import { Link } from 'react-router-dom';
-import { Avatar, BeispielMarke, Button, Icon, MacherAsset, Status, ThemenIcon, type ObjektSchluessel } from '@ui/index';
+import { Avatar, BeispielMarke, Button, FensterSkizze, glasFuer, Icon, Status, ThemenIcon, type GlasIconName } from '@ui/index';
 import { Skelett, LadeFehler } from '../Rahmen';
 import { homeMessen } from '../messen';
 import { bezugKennung, useArbeit, useNaechsteAktionen } from '../quellen/hooks';
@@ -46,10 +46,18 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
   if (a.type === 'onboarding' && p?.schritte?.some((s) => !s.erledigt)) return <Einrichtung a={a} danach={danach} />;
   return (
     <div className="mm-home-naechster">
-      <div className="mm-home-naechster-kopf">
-        <span className="mm-home-kachel" aria-hidden>
-          <ThemenIcon name={a.icon} size={44} />
+      {/* Einrichtung ist ein Einstieg: Fenster-Skizze statt Kachel. Alle anderen Schritte sind Arbeit und bleiben schlicht. */}
+      {a.type === 'onboarding' && (
+        <span className="mm-fenster" aria-hidden>
+          <FensterSkizze icon={glasFuer[a.icon] ?? 'start'} />
         </span>
+      )}
+      <div className="mm-home-naechster-kopf">
+        {a.type !== 'onboarding' && (
+          <span className="mm-home-kachel" aria-hidden>
+            <ThemenIcon name={a.icon} size={44} />
+          </span>
+        )}
         <div className="mm-home-naechster-text">
           <h3 className="mm-home-naechster-titel">{a.title}</h3>
           <p>{a.description}</p>
@@ -110,12 +118,12 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
 
 // ------------------------------------------------------------------ Einrichtung (Setup / First Value)
 
-/** Kurze visuelle Erklärung je Einrichtungsschritt (`startHaken` im Modul start) – ein Objekt, ein Satz. */
-const SCHRITT_ERKLAERUNG: Record<string, { objekt: ObjektSchluessel; text: string }> = {
-  betrieb: { objekt: 'werkzeugkiste', text: 'Name, Anschrift und Logo – damit deine Angebote und Rechnungen gleich richtig aussehen.' },
-  gewerk: { objekt: 'wasserwaage', text: 'Dein Gewerk bestimmt, welche Leistungen, Vorlagen und Prüfungen Macher dir vorschlägt.' },
-  kunden: { objekt: 'klemmbrett', text: 'Übernimm Kunden und Preise aus Excel oder deinem alten Programm. Macher erkennt die Spalten selbst.' },
-  team: { objekt: 'handschuhe', text: 'Leg dein Team an. Dann verteilst du Einsätze und jeder sieht seine Termine.' },
+/** Kurze visuelle Erklärung je Einrichtungsschritt (`startHaken` im Modul start) – eine Fenster-Skizze, ein Satz. */
+const SCHRITT_ERKLAERUNG: Record<string, { icon: GlasIconName; text: string }> = {
+  betrieb: { icon: 'haus', text: 'Name, Anschrift und Logo – damit deine Angebote und Rechnungen gleich richtig aussehen.' },
+  gewerk: { icon: 'werkzeug', text: 'Dein Gewerk bestimmt, welche Leistungen, Vorlagen und Prüfungen Macher dir vorschlägt.' },
+  kunden: { icon: 'import', text: 'Übernimm Kunden und Preise aus Excel oder deinem alten Programm. Macher erkennt die Spalten selbst.' },
+  team: { icon: 'mitarbeiter', text: 'Leg dein Team an. Dann verteilst du Einsätze und jeder sieht seine Termine.' },
 };
 
 export function Einrichtung({ a, danach }: { a: NextAction; danach: NextAction[] }) {
@@ -155,7 +163,9 @@ export function Einrichtung({ a, danach }: { a: NextAction; danach: NextAction[]
           )}
         </div>
         <div className="mm-home-setup-aktiv">
-          {erklaerung ? <MacherAsset asset={erklaerung.objekt} groesse="mittel" /> : <ThemenIcon name="start" size={64} />}
+          <span className="mm-fenster" aria-hidden>
+            <FensterSkizze icon={erklaerung?.icon ?? 'start'} />
+          </span>
           <p className="mm-meta">Jetzt dran</p>
           <h4 className="mm-home-setup-titel">{aktiv.titel}</h4>
           <p>{erklaerung?.text ?? a.description}</p>
@@ -270,7 +280,10 @@ export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
   const wege = kontaktWege(p ?? {});
   if (!p) {
     return (
-      <div className="mm-home-kontakt">
+      <div className="mm-home-kontakt mm-einstieg">
+        <span className="mm-fenster" aria-hidden>
+          <FensterSkizze icon="kontakt" />
+        </span>
         <p className="mm-home-leer-titel">Wir sind für dich da.</p>
         <p>Unser Team hilft dir bei Fragen weiter.</p>
         <div className="mm-home-kontakt-aktionen">

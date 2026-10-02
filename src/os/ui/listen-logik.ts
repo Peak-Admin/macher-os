@@ -144,6 +144,11 @@ export const betragNach = (art: Betragsart, b: { netto: Cent; brutto: Cent }): C
 export const summeNach = (art: Betragsart, liste: readonly { netto: Cent; brutto: Cent }[]): Cent => liste.reduce((s, b) => s + betragNach(art, b), 0);
 
 /** Filter für Zeitraum und Auftrag (Status bleibt Sache der jeweiligen Liste) */
+/** Auftragsfilter „Ohne Auftrag“ (z. B. Rechnungen ohne Auftragsbezug) */
+export const OHNE_AUFTRAG = 'ohne';
+
 export function passtFinanzFilter(o: { datum?: Datum; auftragId?: ID }, f: { zeitraum: Zeitraum; auftragId?: ID }, tag: Datum): boolean {
-  return imZeitraum(o.datum, f.zeitraum, tag) && (!f.auftragId || o.auftragId === f.auftragId);
+  if (!imZeitraum(o.datum, f.zeitraum, tag)) return false;
+  if (!f.auftragId) return true;
+  return f.auftragId === OHNE_AUFTRAG ? !o.auftragId : o.auftragId === f.auftragId;
 }

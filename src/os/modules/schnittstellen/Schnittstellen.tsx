@@ -1,10 +1,52 @@
 import { useState } from 'react';
 import { useDatenstand } from '@core/db';
 import { darf, useIch } from '@core/session';
-import { Abschnitt, Button, Dialog, Karte, Leer, Meta, Raster, Seite, Stapel, Status, Zeile } from '@ui/index';
-import { connectoren, KATEGORIEN, VERBINDUNGSART, ZUSTAND_LABEL, ZUSTAND_TON, type Connector } from './connectoren';
+import { Abschnitt, Button, Dialog, FensterSkizze, Karte, Leer, Meta, Raster, Seite, Stapel, Status, Textfeld, Zeile, useToast, type GlasIconName } from '@ui/index';
+import { connectoren, KATEGORIEN, VERBINDUNGSART, ZUSTAND_LABEL, ZUSTAND_TON, type Connector, type Kategorie } from './connectoren';
+import { anfrage, anfrageMailto, anfrageSpeichern } from './anfragen';
 
-/** Integration Hub: ruhige Kartenliste „Verbinden“ – Technisches steht hinter „Weitere Optionen“ */
+/** Glas-Icon je Verbindung für die Fenster-Skizze; sonst das Icon des Bereichs. */
+const CONNECTOR_ICON: Partial<Record<string, GlasIconName>> = {
+  kontoauszug: 'liste',
+  bankverbindung: 'rechnung',
+  datev: 'rechner',
+  lexware: 'ordner',
+  datanorm: 'lager',
+  'ids-connect': 'einkauf',
+  oci: 'suche',
+  ugl: 'dokument',
+  'shk-connect': 'werkzeug',
+  gaeb: 'vorlagen',
+  kalenderdatei: 'kalender',
+  'google-kalender': 'wiederholen',
+  'microsoft-kalender': 'bildschirm',
+  email: 'mail',
+  telefon: 'telefon',
+  json: 'import',
+  webhooks: 'stecker',
+  api: 'link',
+};
+
+const iconFuer = (c: Connector): GlasIconName => CONNECTOR_ICON[c.id] ?? KATEGORIE_ICON[c.kategorie];
+
+/** Glas-Icon je Bereich (Ausweich für Verbindungen ohne eigenes Icon). */
+const KATEGORIE_ICON: Record<Kategorie, GlasIconName> = {
+  banking: 'rechnung',
+  buchhaltung: 'rechner',
+  grosshandel: 'lager',
+  ausschreibung: 'liste',
+  kalender: 'kalender',
+  kommunikation: 'mail',
+  plattform: 'stecker',
+  ablage: 'ordner',
+  vertrieb: 'person',
+  daten: 'import',
+};
+
+/**
+ * Integration Hub: ruhige Kartenliste „Verbinden“ – Technisches steht hinter „Weitere Optionen“.
+ * Was noch nicht gebaut ist, verbindet man per Anfrage: „Verbinden“ öffnet „Anfrage senden“.
+ */
 export function Schnittstellen() {
   useDatenstand();
   const ich = useIch();
@@ -14,10 +56,12 @@ export function Schnittstellen() {
     ...k,
     liste: sichtbar.filter((c) => c.kategorie === k.id).sort((a, b) => Number(b.verfuegbar) - Number(a.verfuegbar)),
   })).filter((g) => g.liste.length);
-  const verfuegbar = sichtbar.filter((c) => c.verfuegbar).length;
 
   return (
-    <Seite titel="Schnittstellen" untertitel={`Verbinde Macher mit deinen anderen Programmen. ${verfuegbar} von ${sichtbar.length} gehen schon – wir sagen ehrlich, was noch kommt.`}>
+    <Seite
+      titel="Schnittstellen"
+      untertitel={`Verbinde Macher mit deinen anderen Programmen – ${sichtbar.length} Integrationen. Fehlt dir eine Verbindung, sende uns eine Anfrage: Wir richten sie für dich ein.`}
+    >
       <Stapel abstand={32}>
         {!gruppen.length && <Leer titel="Keine Verbindungen für dich" text="Verbindungen zu Bank, Buchhaltung und Großhandel richtet das Büro ein." icon="stecker" />}
         {gruppen.map((g) => (
@@ -40,20 +84,35 @@ function ConnectorKarte({ c, onMehr }: { c: Connector; onMehr: () => void }) {
   return (
     <Karte titel={c.titel} oberzeile={VERBINDUNGSART[c.art].titel}>
       <Stapel abstand={12}>
+        <span className="mm-fenster" aria-hidden>
+          <FensterSkizze icon={iconFuer(c)} />
+        </span>
         <Meta>{c.text}</Meta>
         <div>
           <Status ton={ZUSTAND_TON[s.zustand]}>{ZUSTAND_LABEL[s.zustand]}</Status>
-          <Meta>{s.text}</Meta>
+          {s.zustand !== 'geplant' && <Meta>{s.text}</Meta>}
         </div>
         <Zeile>
-          {c.pfad && c.aktion && (
-            <Button klein variante={c.verfuegbar ? 'sekundaer' : 'tertiaer'} to={c.pfad}>
+          {c.verfuegbar && c.pfad && c.aktion && (
+            <Button klein variante="sekundaer" to={c.pfad}>
               {c.aktion}
             </Button>
           )}
-          <Button klein variante="tertiaer" onClick={onMehr}>
-            {c.verfuegbar ? 'Weitere Optionen' : 'Mehr erfahren'}
-          </Button>
+          {!c.verfuegbar && (
+            <Button klein variante="sekundaer" icon="link" onClick={onMehr}>
+              {s.zustand === 'angefragt' ? 'Anfrage ansehen' : 'Verbinden'}
+            </Button>
+          )}
+          {!c.verfuegbar && c.pfad && c.aktion && (
+            <Button klein variante="tertiaer" to={c.pfad}>
+              {c.aktion}
+            </Button>
+          )}
+          {c.verfuegbar && (
+            <Button klein variante="tertiaer" onClick={onMehr}>
+              Weitere Optionen
+            </Button>
+          )}
         </Zeile>
       </Stapel>
     </Karte>
@@ -62,6 +121,7 @@ function ConnectorKarte({ c, onMehr }: { c: Connector; onMehr: () => void }) {
 
 function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchliessen: () => void }) {
   if (!c) return null;
+  if (!c.verfuegbar) return <AnfrageDialog key={c.id} c={c} onSchliessen={onSchliessen} />;
   const s = c.status();
   return (
     <Dialog
@@ -69,7 +129,7 @@ function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchl
       onSchliessen={onSchliessen}
       titel={c.titel}
       aktionen={
-        c.pfad && c.aktion && c.verfuegbar ? (
+        c.pfad && c.aktion ? (
           <Button to={c.pfad} onClick={onSchliessen}>
             {c.aktion}
           </Button>
@@ -81,6 +141,9 @@ function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchl
       }
     >
       <Stapel>
+        <span className="mm-fenster" aria-hidden>
+          <FensterSkizze icon={iconFuer(c)} />
+        </span>
         <p>{c.text}</p>
         <div>
           <Status ton={ZUSTAND_TON[s.zustand]}>{ZUSTAND_LABEL[s.zustand]}</Status>
@@ -108,6 +171,59 @@ function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchl
             </ul>
           </details>
         )}
+      </Stapel>
+    </Dialog>
+  );
+}
+
+/** Verbinden, was es noch nicht gibt: Anfrage mit kurzer Notiz – gespeichert im Betrieb und per E-Mail an uns */
+function AnfrageDialog({ c, onSchliessen }: { c: Connector; onSchliessen: () => void }) {
+  const toast = useToast();
+  const vorher = anfrage(c.id);
+  const [notiz, setNotiz] = useState(vorher?.notiz ?? '');
+  const s = c.status();
+
+  const senden = () => {
+    anfrageSpeichern(c.id, c.titel, notiz);
+    window.location.href = anfrageMailto(c.titel, notiz);
+    toast(`Anfrage für ${c.titel} gespeichert – sende die E-Mail in deinem Mail-Programm ab.`);
+    onSchliessen();
+  };
+
+  return (
+    <Dialog
+      offen
+      onSchliessen={onSchliessen}
+      titel={/verbinden$/i.test(c.titel) ? c.titel : `${c.titel} verbinden`}
+      aktionen={
+        <>
+          <Button variante="sekundaer" onClick={onSchliessen}>
+            Abbrechen
+          </Button>
+          <Button icon="mail" onClick={senden}>
+            {vorher ? 'Anfrage erneut senden' : 'Anfrage senden'}
+          </Button>
+        </>
+      }
+    >
+      <Stapel>
+        <p>{c.text}</p>
+        <div>
+          <Status ton={ZUSTAND_TON[s.zustand]}>{ZUSTAND_LABEL[s.zustand]}</Status>
+          <Meta>
+            {vorher
+              ? s.text
+              : 'Diese Verbindung richten wir auf Anfrage ein. Wir schauen sie uns an, bauen sie und melden uns, sobald du verbinden kannst.'}
+          </Meta>
+        </div>
+        <Textfeld
+          label="Wofür brauchst du die Verbindung?"
+          optional
+          hilfe="Zum Beispiel: „Anfragen aus unserem Gmail-Postfach sollen am Auftrag landen.“"
+          value={notiz}
+          onChange={(e) => setNotiz(e.target.value)}
+        />
+        <Meta>Die Anfrage geht per E-Mail an unser Integrationsteam – mit Betriebsname und Kontakt, ohne weitere Daten.</Meta>
       </Stapel>
     </Dialog>
   );
