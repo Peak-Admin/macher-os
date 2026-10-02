@@ -4,6 +4,7 @@ import { auftaktBilder, gewerkBildnachweise, missionMittelstandBilder, type Bild
 import { gewerkCluster, topGewerke } from "@/content/registry";
 import { pageMeta } from "@/lib/metadata";
 import { objekte } from "@/lib/objekte";
+import { ausgehend } from "@/lib/link/ausgehend";
 
 export const metadata = {
   ...pageMeta({
@@ -27,7 +28,7 @@ function Liste({ titel, bilder }: { titel: string; bilder: (Bildnachweis & { wo?
             <span className="text-muted">
               {b.fotograf} ·{" "}
               {b.quelleUrl ? (
-                <a href={b.quelleUrl} className="text-signal-dark underline underline-offset-2" rel="noopener noreferrer">
+                <a href={ausgehend(b.quelleUrl)} className="text-signal-dark underline underline-offset-2" rel="noopener noreferrer">
                   {b.quelle}
                 </a>
               ) : (
@@ -35,7 +36,7 @@ function Liste({ titel, bilder }: { titel: string; bilder: (Bildnachweis & { wo?
               )}{" "}
               ·{" "}
               {b.lizenzUrl ? (
-                <a href={b.lizenzUrl} className="text-signal-dark underline underline-offset-2" rel="noopener noreferrer">
+                <a href={ausgehend(b.lizenzUrl)} className="text-signal-dark underline underline-offset-2" rel="noopener noreferrer">
                   {b.lizenz}
                 </a>
               ) : (
