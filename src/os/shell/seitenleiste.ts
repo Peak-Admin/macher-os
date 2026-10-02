@@ -235,3 +235,10 @@ export function modulUmschalten(l: Leiste, modulId: string): Leiste {
 }
 
 export const voll = (l: Leiste) => zaehlen(l.eintraege) >= LEISTE_MAX;
+
+/** Breite der Seitenleiste (ziehbar, je Mitarbeiter gespeichert) */
+export const BREITE_STANDARD = 264;
+export const BREITE_MIN = 200;
+export const BREITE_MAX = 400;
+/** Gespeicherte Breite auf den erlaubten Bereich begrenzen */
+export const leisteBreite = (b: unknown) => (typeof b === 'number' && Number.isFinite(b) ? Math.round(Math.min(BREITE_MAX, Math.max(BREITE_MIN, b))) : BREITE_STANDARD);

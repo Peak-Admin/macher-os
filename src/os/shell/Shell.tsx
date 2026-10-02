@@ -15,7 +15,7 @@
  *
  * Außerdem hier: PWA (Service Worker registrieren, Installieren-Hinweis) und Offline-Hinweis.
  */
-import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { oeffne } from '@core/overlay';
 import { db, useDatenstand, useSpeicherStatus } from '@core/db';
@@ -34,6 +34,7 @@ import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
 import { BetriebWechsler } from './BetriebWechsler';
 import { DeineLeiste, useLeistenZiele } from './Seitenleiste';
+import { BREITE_MAX, BREITE_MIN, BREITE_STANDARD, leisteBreite } from './seitenleiste';
 import './shell.css';
 
 /** Monteur und Azubi bekommen am Handy die schlanke Monteur-App */
@@ -57,6 +58,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const ich = useIch();
   const [eingeklappt, setzeEingeklappt] = useEinstellung<boolean>(`navigation.eingeklappt.${ich?.id ?? 'alle'}`, false);
   const umschalten = () => setzeEingeklappt(!eingeklappt);
+  const [breite, setzeBreite] = useEinstellung<number>(`navigation.breite.${ich?.id ?? 'alle'}`, BREITE_STANDARD);
   const monteur = istMonteurRolle(ich);
   const tab = monteurTab(pfad, aktiv);
   const eingang = useEingangsZahl();
@@ -79,7 +81,7 @@ export function Shell({ children }: { children: ReactNode }) {
   });
 
   return (
-    <div className={`mm-app ${eingeklappt ? 'mm-app--eingeklappt' : ''}`}>
+    <div className={`mm-app ${eingeklappt ? 'mm-app--eingeklappt' : ''}`} style={{ '--mm-sidebar-width': `${leisteBreite(breite)}px` } as CSSProperties}>
       <a href="#inhalt" className="mm-skip">
         Zum Inhalt springen
       </a>
@@ -144,6 +146,7 @@ export function Shell({ children }: { children: ReactNode }) {
         {!monteur && <DeineLeiste eingeklappt={eingeklappt} />}
         <Profil oben />
       </aside>
+      <LeistenGriff breite={leisteBreite(breite)} eingeklappt={eingeklappt} setzeBreite={setzeBreite} umschalten={umschalten} />
 
       <div className="mm-hauptbereich">
         <header className="mm-kopf-mobil">
@@ -185,6 +188,57 @@ export function Shell({ children }: { children: ReactNode }) {
         </nav>
       )}
     </div>
+  );
+}
+
+/**
+ * Rand zwischen Seitenleiste und Inhalt (nach Peak One): ziehen ändert die Breite (200–400 px), ein Klick klappt
+ * die Leiste ein oder aus. Tastatur: Pfeiltasten ±16 px, Pos1/Ende Minimum/Maximum, Enter klappt ein/aus.
+ */
+function LeistenGriff({ breite, eingeklappt, setzeBreite, umschalten }: { breite: number; eingeklappt: boolean; setzeBreite: (b: number) => void; umschalten: () => void }) {
+  const start = useRef<{ x: number; b: number; bewegt: boolean } | null>(null);
+  const setzeLive = (b: number) => document.querySelector<HTMLElement>('.mm-app')?.style.setProperty('--mm-sidebar-width', `${leisteBreite(b)}px`);
+  return (
+    <button
+      type="button"
+      className="mm-leiste-griff"
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Breite der Seitenleiste"
+      aria-valuemin={BREITE_MIN}
+      aria-valuemax={BREITE_MAX}
+      aria-valuenow={breite}
+      title="Ziehen zum Anpassen · Klicken zum Einklappen"
+      onPointerDown={(e) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        start.current = { x: e.clientX, b: breite, bewegt: false };
+        e.currentTarget.dataset.zieht = '';
+        document.querySelector<HTMLElement>('.mm-app')?.setAttribute('data-zieht', '');
+      }}
+      onPointerMove={(e) => {
+        const s = start.current;
+        if (!s) return;
+        const dx = e.clientX - s.x;
+        if (Math.abs(dx) > 3) s.bewegt = true;
+        if (s.bewegt && !eingeklappt) setzeLive(s.b + dx);
+      }}
+      onPointerUp={(e) => {
+        const s = start.current;
+        start.current = null;
+        delete e.currentTarget.dataset.zieht;
+        document.querySelector<HTMLElement>('.mm-app')?.removeAttribute('data-zieht');
+        if (!s) return;
+        if (!s.bewegt) umschalten();
+        else if (!eingeklappt) setzeBreite(leisteBreite(s.b + e.clientX - s.x));
+      }}
+      onClick={(e) => e.detail === 0 && umschalten()}
+      onKeyDown={(e) => {
+        const neu = e.key === 'ArrowLeft' ? breite - 16 : e.key === 'ArrowRight' ? breite + 16 : e.key === 'Home' ? BREITE_MIN : e.key === 'End' ? BREITE_MAX : null;
+        if (neu === null || eingeklappt) return;
+        e.preventDefault();
+        setzeBreite(leisteBreite(neu));
+      }}
+    />
   );
 }
 
