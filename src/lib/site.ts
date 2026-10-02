@@ -33,18 +33,20 @@ export const herausgeber = {
   },
 };
 
-export const cta = {
-  primary: { label: "Kostenlos testen", href: "/signup" },
-  secondary: { label: "Demo ansehen", href: "/demo" },
-  login: { label: "Anmelden", href: "/login" },
-};
-
-/** Die Software selbst (eigenes Vercel-Projekt aus `os/`) */
+/** Die Software selbst (eigenes Vercel-Projekt aus `os/`). Ohne Login: Daten bleiben im Browser. */
 export const app = {
   url: "https://macher-os-app.vercel.app",
   /** Einrichtung, optional mit vorausgewähltem Gewerk der Software (`elektro`, `shk`, …) */
   einrichten: (gewerk?: string) =>
     `https://macher-os-app.vercel.app/willkommen${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
+};
+
+/** „Kostenlos testen“ führt direkt in die Einrichtung von Macher OS – ohne Konto, ohne Login. */
+export const cta = {
+  primary: { label: "Kostenlos testen", href: app.einrichten() },
+  secondary: { label: "Demo ansehen", href: "/demo" },
+  /** Wer schon eingerichtet hat, kommt direkt zu „Heute“ (ohne Einrichtung leitet die App zur Einrichtung) */
+  login: { label: "App öffnen", href: `${app.url}/heute` },
 };
 
 /** Gewerk-Slugs der Website → Gewerk der Software */
@@ -241,7 +243,7 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
       { label: "Preise", href: "/preise" },
       { label: "Demo", href: "/demo" },
       { label: "App", href: "/app" },
-      { label: "Kostenlos testen", href: "/signup" },
+      { label: "Kostenlos testen", href: app.einrichten() },
     ],
   },
   {

@@ -1,3 +1,4 @@
+import { app } from "@/lib/site";
 /**
  * Preispläne. ACHTUNG: Platzhalterwerte – vor dem Livegang durch die echten
  * Preise ersetzen. Alle Preise netto pro Monat.
@@ -24,7 +25,7 @@ export const plaene: Plan[] = [
     jaehrlich: 32,
     nutzer: "1 Chef + 1 Mitarbeiter",
     vorteile: ["Anfragen, Angebote & Rechnungen", "Kalender & Termine", "App für die Baustelle", "Vorlagen für dein Gewerk"],
-    cta: { label: "Kostenlos testen", href: "/signup?plan=solo" },
+    cta: { label: "Kostenlos testen", href: app.einrichten() },
   },
   {
     id: "team",
@@ -41,7 +42,7 @@ export const plaene: Plan[] = [
       "Macher erledigt Büroarbeit automatisch",
     ],
     hervorgehoben: true,
-    cta: { label: "Kostenlos testen", href: "/signup?plan=team" },
+    cta: { label: "Kostenlos testen", href: app.einrichten() },
   },
   {
     id: "betrieb",
@@ -57,7 +58,7 @@ export const plaene: Plan[] = [
       "Nachkalkulation & Auswertungen",
       "Rechte und Rollen",
     ],
-    cta: { label: "Kostenlos testen", href: "/signup?plan=betrieb" },
+    cta: { label: "Kostenlos testen", href: app.einrichten() },
   },
   {
     id: "unternehmen",

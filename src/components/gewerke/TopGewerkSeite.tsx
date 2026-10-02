@@ -1,3 +1,4 @@
+import { app, appGewerk } from "@/lib/site";
 import Link from "next/link";
 import { BereichsKarte, BildText, DunkleHeadline, FinalCta, Flow, FotoBuehne, KundenCard, PageHero } from "@/components/sections";
 import {
@@ -333,6 +334,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
       <FinalCta
         title={`Macher OS für ${g.name}. Jetzt ausprobieren.`}
         intro={`Starte kostenlos. Macher OS richtet sich beim Start für ${reg.titel} ein – mit Begriffen, Vorlagen und Abläufen aus deinem Gewerk.`}
+        primaryHref={app.einrichten(appGewerk[slug])}
       />
     </>
   );
