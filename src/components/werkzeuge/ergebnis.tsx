@@ -90,7 +90,7 @@ export function ErgebnisKarte({
         {unterzeile && <div className="mt-2 text-sm text-white/70">{unterzeile}</div>}
         {meldung && <EingabeHinweis>{meldung}</EingabeHinweis>}
         {children && <dl className="mt-6 divide-y divide-white/10 border-t border-white/10">{children}</dl>}
-        {hinweis && <p className="mt-5 text-xs leading-relaxed text-white/55">{hinweis}</p>}
+        {hinweis && <p className="mt-5 text-sm leading-relaxed text-on-dark">{hinweis}</p>}
       </div>
       <ErgebnisAktionen text={zusammenfassung} betreff={betreff} />
     </section>
@@ -112,7 +112,7 @@ export function ErgebnisZeile({
     <div className="flex items-baseline justify-between gap-4 py-2.5">
       <dt className={`text-sm ${betont ? "font-semibold text-white" : "text-white/70"}`}>
         {label}
-        {zusatz && <span className="block text-xs text-white/50">{zusatz}</span>}
+        {zusatz && <span className="block text-sm text-white/70">{zusatz}</span>}
       </dt>
       <dd className={`shrink-0 text-right tabular-nums ${betont ? "font-display text-lg font-bold" : "font-semibold"}`}>
         {wert}
@@ -159,13 +159,13 @@ export function ErgebnisAktionen({ text, betreff }: { text: string; betreff: str
 
   const mailHref = `mailto:?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(text)}`;
   const knopf =
-    "inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold whitespace-nowrap transition-colors";
+    "inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-lg px-4 text-base font-semibold whitespace-nowrap transition-colors";
 
   return (
     <div className="border-t border-white/10 bg-white/5 p-4 print:hidden">
-      <p className="mb-3 text-xs font-semibold font-tagline uppercase tracking-[0.12em] text-white/55">Ergebnis speichern oder senden</p>
+      <p className="mb-3 text-sm font-semibold text-on-dark">Ergebnis speichern oder senden</p>
       <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={kopieren} className={`${knopf} bg-signal text-white hover:bg-signal-dark`}>
+        <button type="button" onClick={kopieren} className={`${knopf} bg-primary text-white hover:bg-primary-hover`}>
           <Icon name="clipboard" className="size-4" /> Kopieren
         </button>
         <button

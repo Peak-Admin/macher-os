@@ -29,10 +29,10 @@ export function KundenCard({ slug }: { slug: KundeSlug }) {
         <span className="absolute right-3 top-3">
           <Badge>Beispiel</Badge>
         </span>
-        <span className="absolute bottom-3 left-4 text-xs font-semibold text-white/80">Symbolbild</span>
+        <span className="absolute bottom-3 left-4 text-sm font-semibold text-white/80">Symbolbild</span>
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <p className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">
+        <p className="text-sm font-semibold font-tagline uppercase tracking-wider text-muted">
           {gewerk.kurz} · {k.mitarbeiter} Mitarbeiter · {k.ort}
         </p>
         <p className="mt-1 font-display text-lg font-bold">{k.betrieb}</p>

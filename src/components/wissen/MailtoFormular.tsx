@@ -42,26 +42,26 @@ export function MailtoFormular({
   }
 
   const feld =
-    "h-11 w-full rounded-lg border border-line bg-white px-3 outline-none focus:border-ink/40 focus:ring-2 focus:ring-signal/40";
+    "feld";
 
   return (
     <form onSubmit={absenden} className="grid gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor={`${id}-name`} className="mb-1.5 block text-sm font-semibold">
+          <label htmlFor={`${id}-name`} className="feld-label">
             Dein Name
           </label>
           <input id={`${id}-name`} name="name" required autoComplete="name" className={feld} />
         </div>
         <div>
-          <label htmlFor={`${id}-betrieb`} className="mb-1.5 block text-sm font-semibold">
+          <label htmlFor={`${id}-betrieb`} className="feld-label">
             Betrieb <span className="font-normal text-muted">(optional)</span>
           </label>
           <input id={`${id}-betrieb`} name="betrieb" autoComplete="organization" className={feld} />
         </div>
       </div>
       <div>
-        <label htmlFor={`${id}-gewerk`} className="mb-1.5 block text-sm font-semibold">
+        <label htmlFor={`${id}-gewerk`} className="feld-label">
           Gewerk <span className="font-normal text-muted">(optional)</span>
         </label>
         <select id={`${id}-gewerk`} name="gewerk" className={feld} defaultValue="">
@@ -75,14 +75,14 @@ export function MailtoFormular({
         </select>
       </div>
       <div>
-        <label htmlFor={`${id}-nachricht`} className="mb-1.5 block text-sm font-semibold">
+        <label htmlFor={`${id}-nachricht`} className="feld-label">
           Frage oder Wunsch <span className="font-normal text-muted">(optional)</span>
         </label>
         <textarea
           id={`${id}-nachricht`}
           name="nachricht"
           rows={3}
-          className="w-full rounded-lg border border-line bg-white px-3 py-2 outline-none focus:border-ink/40 focus:ring-2 focus:ring-signal/40"
+          className="feld h-auto py-3"
         />
       </div>
       <button

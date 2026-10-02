@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Container, Icon, IconTile, zone, type IconName, type ZonenTon } from "@/components/ui";
+import { Container, Icon, IconTile, Karte3D, zone, type IconName, type ZonenTon } from "@/components/ui";
 import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import type { BildKey } from "@/content/bilder";
 
@@ -213,11 +213,15 @@ export function FotoBuehne({
   children: ReactNode;
   className?: string;
 }) {
+  // Wie die übrigen Karten mit leichtem 3D-Effekt (Neigung zur Maus, Lichtfleck) – auf Touch und bei reduzierter Bewegung flach
   return (
-    <div className={`relative isolate overflow-hidden rounded-lg bg-ink px-4 py-10 sm:px-10 sm:py-14 ${className}`}>
+    <Karte3D
+      className={className}
+      innen="isolate overflow-hidden rounded-2xl bg-ink px-4 py-10 sm:px-10 sm:py-14"
+    >
       <Foto bild={bild} sizes="(min-width: 1024px) 50vw, 100vw" className="-z-10" />
       <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-ink/85 via-ink/35 to-ink/10" />
       <div className="relative">{children}</div>
-    </div>
+    </Karte3D>
   );
 }

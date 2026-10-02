@@ -115,13 +115,13 @@ export function ZahlFeld({
     <div className="min-w-0">
       <label
         htmlFor={id}
-        className={labelVersteckt ? "sr-only" : "mb-1.5 block text-sm font-semibold leading-snug text-ink"}
+        className={labelVersteckt ? "sr-only" : "feld-label text-ink"}
       >
         {label}
       </label>
       <div
-        className={`flex items-stretch overflow-hidden rounded-lg bg-white ring-1 ring-inset transition focus-within:ring-2 ${
-          fehler ? "ring-signal-dark focus-within:ring-signal-dark" : "ring-line focus-within:ring-ink"
+        className={`flex items-stretch overflow-hidden rounded-lg bg-white ring-1 ring-inset transition has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-primary ${
+          fehler ? "ring-danger" : "ring-line-dark hover:ring-muted"
         }`}
       >
         <input
@@ -135,14 +135,14 @@ export function ZahlFeld({
           onBlur={onBlur}
           aria-invalid={fehler ? true : undefined}
           aria-describedby={beschreibung || undefined}
-          className={`w-full min-w-0 bg-transparent text-right font-semibold tabular-nums text-ink outline-none ${
-            kompakt ? "h-10 px-2.5 text-[0.95rem]" : "h-11 px-3 text-base"
+          className={`w-full min-w-0 bg-transparent text-right font-semibold tabular-nums text-ink focus-visible:outline-none ${
+            kompakt ? "h-12 px-2.5 text-base" : "h-12 px-3 text-base"
           }`}
         />
         {einheit && (
           <span
             aria-hidden
-            className={`flex shrink-0 items-center border-l border-line bg-paper text-sm font-medium text-muted ${
+            className={`flex shrink-0 items-center border-l border-line-dark bg-sand text-sm font-medium text-muted ${
               kompakt ? "px-2" : "px-3"
             }`}
           >
@@ -152,13 +152,13 @@ export function ZahlFeld({
       </div>
       {einheit && <span className="sr-only">in {einheit}</span>}
       {hinweis && (
-        <p id={`${id}-hinweis`} className="mt-1 text-xs leading-snug text-muted">
+        <p id={`${id}-hinweis`} className="mt-1.5 text-sm leading-snug text-muted">
           {hinweis}
         </p>
       )}
       {fehler && (
-        <p id={`${id}-fehler`} className="mt-1 flex items-center gap-1 text-xs font-semibold text-signal-dark">
-          <Icon name="x" className="size-3.5 shrink-0" />
+        <p id={`${id}-fehler`} className="mt-1.5 flex items-center gap-1 text-sm font-semibold text-danger">
+          <Icon name="x" className="size-4 shrink-0" />
           {fehler}
         </p>
       )}
@@ -205,7 +205,7 @@ export function Umschalter<T extends string>({
   const id = useId();
   return (
     <div role="radiogroup" aria-labelledby={`${id}-label`} className="min-w-0">
-      <p id={`${id}-label`} className="mb-1.5 text-sm font-semibold">
+      <p id={`${id}-label`} className="feld-label">
         {label}
       </p>
       {/* Heller Umschalter (UX-Spezifikation 5.2): ruhige Spur, gewählte Option weiß mit Rand – keine dunklen Balken */}
@@ -213,7 +213,7 @@ export function Umschalter<T extends string>({
         {optionen.map((o) => (
           <label
             key={o.wert}
-            className={`flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-md border px-4 py-2 text-center transition-colors duration-150 ease-out has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
+            className={`flex min-h-12 flex-1 cursor-pointer items-center justify-center rounded-md border px-4 py-2 text-center transition-colors duration-150 ease-out has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
               wert === o.wert ? "border-line-dark bg-white font-semibold text-signal-dark" : "border-transparent font-medium text-muted hover:bg-white"
             }`}
           >
@@ -245,7 +245,7 @@ export function Schalter({
   hinweis?: string;
 }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3">
+    <label className="flex min-h-12 cursor-pointer items-start gap-3 py-1">
       <input
         type="checkbox"
         checked={checked}
@@ -253,8 +253,8 @@ export function Schalter({
         className="mt-0.5 size-5 shrink-0 cursor-pointer rounded accent-[var(--color-signal-dark)]"
       />
       <span>
-        <span className="text-sm font-semibold">{label}</span>
-        {hinweis && <span className="block text-xs text-muted">{hinweis}</span>}
+        <span className="font-semibold">{label}</span>
+        {hinweis && <span className="block text-sm text-muted">{hinweis}</span>}
       </span>
     </label>
   );
@@ -279,16 +279,14 @@ export function Auswahl<T extends string>({
 }) {
   return (
     <div className="min-w-0">
-      <label htmlFor={id} className={labelVersteckt ? "sr-only" : "mb-1.5 block text-sm font-semibold"}>
+      <label htmlFor={id} className={labelVersteckt ? "sr-only" : "feld-label"}>
         {label}
       </label>
       <select
         id={id}
         value={wert}
         onChange={(e) => onChange(e.target.value as T)}
-        className={`w-full rounded-lg bg-white px-2.5 font-semibold text-ink ring-1 ring-inset ring-line outline-none focus:ring-2 focus:ring-ink ${
-          kompakt ? "h-10 text-[0.95rem]" : "h-11"
-        }`}
+        className={`feld font-semibold ${kompakt ? "px-2.5" : ""}`}
       >
         {optionen.map((o) => (
           <option key={o.wert} value={o.wert}>
