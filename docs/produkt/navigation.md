@@ -210,4 +210,3 @@ Offen bzw. nicht vollständig geprüft:
 - Breite Tabellen (z. B. Qualifikationsmatrix) scrollen mobil innerhalb ihrer Karte.
 - Detailseiten mit vielen Seitenpanels (Termin, Auftrag) wurden nicht einzeln auf Panel-Anzahl gekürzt.
 - Schutz ungespeicherter Eingaben beim Verlassen: nicht neu gebaut, nur bestehendes Verhalten der Formulare.
-- Kalender-Ansichtswahl (Tag/Woche/Monat) bricht am Desktop unschön um (bestehend).
