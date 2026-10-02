@@ -105,7 +105,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
       {/* 6. Auf Handy und Computer */}
       <Section tone="white">
         <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.3fr]">
-          <div className="order-2 lg:order-1">
+          <div className="order-2 min-w-0 lg:order-1">
             <FunktionsHandy handy={f.geraete.handyVisual} label={`Macher OS App auf dem Handy: ${titel}`} />
           </div>
           <div className="order-1 lg:order-2">

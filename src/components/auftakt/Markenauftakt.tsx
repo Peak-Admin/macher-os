@@ -12,8 +12,6 @@ const DAUER_STILL = 1800;
 const HOECHSTENS_WARTEN = 8000;
 /** Ausblenden (passt zur Transition in `auftakt.css`). */
 const AUSBLENDEN = 900;
-/** Bis hierhin darf ein früher Klick den vom Browser blockierten Ton noch freigeben (s). */
-const TON_FREIGABE_BIS = 1.2;
 const LAUTSTAERKE = 0.65;
 
 type Phase = "bereit" | "laeuft" | "still" | "geht" | "weg";
@@ -31,12 +29,13 @@ function softwareBereit() {
 }
 
 /**
- * Markenauftakt „Für ein neues Wirtschaftswunder“: läuft einmal pro Sitzung vor Website oder Software.
+ * Markenauftakt „Für ein neues Wirtschaftswunder“: läuft einmal pro Gerät beim Erstkontakt (Website oder Einrichtung).
  * Das Kopf-Skript (`auftaktSkript`) entscheidet vor dem ersten Bild, ob er erscheint. Überspringen per Knopf oder Escape.
  * `wartenAufSoftware`: Das Schlussbild bleibt stehen, bis Macher OS `OS_BEREIT_EREIGNIS` meldet (höchstens 8 s länger).
  */
 export function Markenauftakt({ wartenAufSoftware = false }: { wartenAufSoftware?: boolean }) {
   const [phase, setPhase] = useState<Phase>("bereit");
+  const [tonAn, setTonAn] = useState(false);
   const buehne = useRef<HTMLElement>(null);
   const ton = useRef<HTMLAudioElement>(null);
   const gestartet = useRef(0);
@@ -79,14 +78,9 @@ export function Markenauftakt({ wartenAufSoftware = false }: { wartenAufSoftware
     // Nicht freigegeben: Die Bühne bleibt per CSS unsichtbar, Bilder und Ton werden nicht geladen.
     if (html.dataset.auftakt !== "an") return;
     try {
-      sessionStorage.setItem(AUFTAKT_SCHLUESSEL, "1");
+      localStorage.setItem(AUFTAKT_SCHLUESSEL, "1");
     } catch {
-      /* privater Modus: dann eben bei jedem Aufruf */
-    }
-    // Bilder (loading="lazy") und Ton laden nur, wenn der Auftakt wirklich läuft.
-    if (ton.current) {
-      ton.current.preload = "auto";
-      ton.current.load();
+      /* ohne Speicher erscheint der Auftakt gar nicht (siehe Kopf-Skript) */
     }
 
     // Alles andere auf der Seite ist während des Auftakts nicht erreichbar (Tastatur, Screenreader).
@@ -133,39 +127,23 @@ export function Markenauftakt({ wartenAufSoftware = false }: { wartenAufSoftware
     };
   }, [phase, wartenAufSoftware, verlassen]);
 
-  // Klang: einmal beim Start anfragen. Blockiert der Browser, gibt ein früher Klick ihn frei – später nicht mehr.
-  useEffect(() => {
-    if (phase !== "laeuft") return;
+  // Klang nur auf ausdrücklichen Wunsch („Mit Ton“) – nie automatisch. Tabwechsel stoppt ihn.
+  const tonStarten = () => {
     const audio = ton.current;
-    if (!audio) return;
+    if (!audio || beendet.current) return;
+    setTonAn(true);
     audio.volume = LAUTSTAERKE;
-    const freigabe = new AbortController();
-    const spielen = (abSekunde: number) => {
-      audio.currentTime = abSekunde;
-      return audio.play();
-    };
-    spielen(0).catch((fehler: unknown) => {
-      if (!(fehler instanceof DOMException) || fehler.name !== "NotAllowedError") return;
-      const nochmal = (e: Event) => {
-        if (e instanceof KeyboardEvent && e.key === "Escape") return;
-        if (e.target instanceof Element && e.target.closest("button")) return;
-        freigabe.abort();
-        const vergangen = (performance.now() - gestartet.current) / 1000;
-        if (vergangen <= TON_FREIGABE_BIS && !beendet.current && !document.hidden) spielen(vergangen).catch(() => {});
-      };
-      document.addEventListener("pointerdown", nochmal, { signal: freigabe.signal });
-      document.addEventListener("keydown", nochmal, { signal: freigabe.signal });
-      setTimeout(() => freigabe.abort(), TON_FREIGABE_BIS * 1000);
-    });
+    audio.currentTime = Math.max(0, (performance.now() - gestartet.current) / 1000);
+    audio.play().catch(() => setTonAn(false));
+  };
+  useEffect(() => {
+    if (!tonAn) return;
     const sichtbarkeit = () => {
       if (document.hidden) tonAus(false);
     };
     document.addEventListener("visibilitychange", sichtbarkeit);
-    return () => {
-      freigabe.abort();
-      document.removeEventListener("visibilitychange", sichtbarkeit);
-    };
-  }, [phase, tonAus]);
+    return () => document.removeEventListener("visibilitychange", sichtbarkeit);
+  }, [tonAn, tonAus]);
 
   // Ausblenden, danach aus dem Dokument nehmen und die Seite freigeben.
   useEffect(() => {
@@ -201,9 +179,16 @@ export function Markenauftakt({ wartenAufSoftware = false }: { wartenAufSoftware
           <span className="mm-auftakt-trenner" />
           <span className="mm-auftakt-ausgabe">Ein neuer Anfang</span>
         </div>
-        <button type="button" className="mm-auftakt-weiter" onClick={verlassen}>
-          Intro überspringen
-        </button>
+        <span className="mm-auftakt-knoepfe">
+          {!tonAn && (phase === "laeuft" || phase === "still") && (
+            <button type="button" className="mm-auftakt-weiter" onClick={tonStarten}>
+              Mit Ton
+            </button>
+          )}
+          <button type="button" className="mm-auftakt-weiter" onClick={verlassen}>
+            Intro überspringen
+          </button>
+        </span>
       </header>
 
       <div className="mm-auftakt-mitte">

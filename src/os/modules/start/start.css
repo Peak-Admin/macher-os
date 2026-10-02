@@ -57,3 +57,28 @@ details.mm-mehr[open] > summary { margin-bottom: var(--mm-space-3); }
 .mm-start-haken-box--an { background: var(--mm-brand-deep); border-color: var(--mm-brand-deep); }
 .mm-start-haken-text { flex: 1; min-width: 160px; }
 .mm-start-haken li.erledigt .mm-start-haken-text { text-decoration: line-through; color: var(--mm-muted-on-white); }
+
+/* „Dein Start“ auf Heute: eine kompakte Fortschrittszeile, Schritte erst nach dem Öffnen */
+.mm-start-zeile { background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); }
+.mm-start-zeile > summary {
+  display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; min-height: 56px; padding: 6px 8px 6px 16px;
+  cursor: pointer; list-style: none; border-radius: inherit;
+}
+.mm-start-zeile > summary::-webkit-details-marker { display: none; }
+.mm-start-zeile > summary:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.mm-start-zeile-text { color: var(--mm-text); }
+.mm-start-zeile-text strong { color: var(--mm-black); }
+.mm-start-zeile-balken { flex: 1 1 80px; max-width: 200px; }
+.mm-start-zeile-knopf {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-left: auto; padding: 0 12px;
+  border: 1px solid var(--mm-brand-text); border-radius: var(--mm-radius-control); color: var(--mm-brand-text); font-weight: 600;
+  transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-start-zeile > summary:hover .mm-start-zeile-knopf { background: var(--mm-soft-green); }
+.mm-start-zeile[open] > summary { border-bottom: 1px solid var(--mm-border); border-radius: var(--mm-radius-card) var(--mm-radius-card) 0 0; }
+.mm-start-zeile .mm-start-haken { padding: 12px 16px 16px; }
+@media (max-width: 639px) {
+  .mm-start-zeile > summary { padding: 8px 8px 8px 12px; }
+  .mm-start-zeile-knopf { margin-left: 0; width: 100%; justify-content: center; }
+  .mm-start-zeile-balken { max-width: none; }
+}

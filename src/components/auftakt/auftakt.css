@@ -101,6 +101,11 @@ html[data-auftakt="an"] .mm-auftakt {
   height: 13px;
   background: var(--a-linie);
 }
+.mm-auftakt-knoepfe {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+}
 .mm-auftakt-weiter {
   min-height: 44px;
   padding: 0 4px;

@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7fafb",
+  themeColor: "#f5f6f3",
 };
 
 /** Root-Layout der Marketing-Website. Die Software unter `/os` hat ein eigenes Root-Layout (`src/app/(os)`). */

@@ -1,44 +1,70 @@
-/* Design-Tokens nach Brand Playbook Mission Mittelstand, Abschnitt 14. Nur diese Werte verwenden. */
+/*
+ * Design-Tokens von Macher OS nach der verbindlichen UX- und Designspezifikation (docs/design/ux-spezifikation.md,
+ * Abschnitt 3). Sie ersetzt bei Widerspruch Playbook und frühere Festlegungen. Nur diese Werte verwenden.
+ * Die Namen (--mm-*) bleiben, damit alle Komponenten ohne zweites Theme auf dieselben Werte zugreifen.
+ */
 :root {
-  --mm-brand: #2f9250;
+  /* Marke und Aktion: ein Grün für alle gleichartigen Aktionen */
+  --mm-brand: #0d6b45;
+  --mm-brand-hover: #095436;
+  --mm-brand-active: #073f29;
+  --mm-brand-soft: #e8f2ec;
+  --mm-brand-ink: #164c34;
+  --mm-forest: #102c21;
+  /* Akzentgrün nur auf dunklen Markenflächen (Kontrast auf Weiß reicht nicht) */
   --mm-brand-accent: #69af44;
-  --mm-brand-deep: #06480c;
-  --mm-brand-text: #1f6135;
-  --mm-dark: #0e130c;
-  --mm-black: #000000;
-  --mm-text: #374040;
-  --mm-muted-on-white: #767676;
-  --mm-canvas: #f7fafb;
+  --mm-brand-deep: var(--mm-brand-ink);
+  --mm-brand-text: var(--mm-brand-ink);
+  --mm-dark: var(--mm-forest);
+
+  /* Text, Flächen, Linien */
+  --mm-black: #222c26;
+  --mm-text: #222c26;
+  --mm-text-secondary: #536057;
+  --mm-text-muted: #626e65;
+  --mm-muted-on-white: var(--mm-text-muted);
+  --mm-canvas: #f5f6f3;
   --mm-surface: #ffffff;
-  --mm-border: #d9d9d9;
-  --mm-border-dark: #484848;
-  --mm-hover: #eef1f2;
-  --mm-soft-green: #edf0e9;
+  --mm-surface-subtle: #eef1ed;
+  --mm-hover: var(--mm-surface-subtle);
+  --mm-soft-green: var(--mm-brand-soft);
+  /* dekorative Trennlinien */
+  --mm-border: #dce2dc;
+  /* erkennbare Feldbegrenzung (3,75:1 auf Weiß) */
+  --mm-border-dark: #7a8780;
+  --mm-control-border: var(--mm-border-dark);
   --mm-campaign-orange: #e69433;
 
   --mm-font: 'Barlow', sans-serif;
   --mm-font-eyebrow: 'Poppins', Arial, sans-serif;
 
-  /* Primärbutton: Markengrün, Schrift 19 px fett (große Schrift → AA mit 3,9:1) */
+  /* Primärbutton: Weiß auf #0d6b45 hat 6,55:1 – reicht auch für 16 px */
   --mm-action: var(--mm-brand);
-  --mm-action-hover: var(--mm-brand-text);
+  --mm-action-hover: var(--mm-brand-hover);
+  --mm-action-active: var(--mm-brand-active);
   --mm-on-action: #ffffff;
-  /* Themen-Icon-Kacheln: helles Akzentgrün, weiße Linien (Festlegung macher-os) */
-  --mm-icon-tile: var(--mm-brand-accent);
-  --mm-on-icon-tile: #ffffff;
-  /* Wechsler (Segmente): dunkle Leiste, aktives Segment Markengrün, weiße Schrift */
-  --mm-switch-bg: #1c2619;
-  --mm-switch-active: var(--mm-brand);
-  --mm-on-switch: #ffffff;
-  --mm-link: var(--mm-brand-text);
-  --mm-focus: var(--mm-brand-text);
-  --mm-radius-control: 4px;
-  --mm-radius-card: 6px;
-  --mm-radius-panel: 8px;
-  --mm-control-height: 44px;
-  --mm-sidebar-width: 240px;
+  /* Icon-Flächen: helles Markengrün, Icon in dunklem Grün (ein Grünton für alles) */
+  --mm-icon-tile: var(--mm-brand-soft);
+  --mm-on-icon-tile: var(--mm-brand-ink);
+  /* Wechsler (Segmente, Ansichten): heller, kompakter Umschalter – nie dunkle Balken */
+  --mm-switch-bg: var(--mm-surface-subtle);
+  --mm-switch-active: var(--mm-surface);
+  --mm-switch-active-border: var(--mm-control-border);
+  --mm-on-switch: var(--mm-text-secondary);
+  --mm-on-switch-active: var(--mm-brand-ink);
+  --mm-link: var(--mm-brand-ink);
+  --mm-focus: var(--mm-brand);
+
+  /* Form: Controls 8 px, Karten und Panels 12 px, Menüs und Dialoge 16 px */
+  --mm-radius-control: 8px;
+  --mm-radius-card: 12px;
+  --mm-radius-panel: 16px;
+  /* Felder und Buttons: 48 px – sicheres Touch-Ziel. Kleine Buttons: 36 px (Maus), 44 px (Touch) */
+  --mm-control-height: 48px;
+  --mm-sidebar-width: 232px;
   --mm-topbar-height: 64px;
-  --mm-content-max: 1360px;
+  --mm-content-max: 1280px;
+  --mm-form-max: 800px;
   --mm-space-1: 4px;
   --mm-space-2: 8px;
   --mm-space-3: 12px;
@@ -47,33 +73,29 @@
   --mm-space-8: 32px;
   --mm-space-12: 48px;
   --mm-space-16: 64px;
-  --mm-shadow-card: 0 1px 2px rgb(14 19 12 / 6%);
-  --mm-shadow-overlay: 0 8px 24px rgb(14 19 12 / 12%);
-  /* Glas (Macher OS auf dem Werkstattfoto): milchiges Weiß mit Unschärfe, heller Rand */
-  --mm-glass: rgb(255 255 255 / 66%);
-  --mm-glass-inhalt: rgb(255 255 255 / 80%);
-  --mm-glass-karte: rgb(255 255 255 / 72%);
-  --mm-glass-leiste: rgb(255 255 255 / 90%);
-  --mm-glass-rand: rgb(255 255 255 / 60%);
-  --mm-glass-blur: blur(24px) saturate(140%);
-  --mm-glass-schatten: 0 8px 32px rgb(14 19 12 / 18%);
-  --mm-motion-fast: 150ms;
-  --mm-motion-panel: 220ms;
+  --mm-shadow-card: 0 1px 2px rgb(16 44 33 / 4%);
+  --mm-shadow-overlay: 0 16px 40px rgb(16 44 33 / 12%), 0 2px 8px rgb(16 44 33 / 5%);
+  /* Schatten für Flächen, die über einem Foto liegen (nur Einrichtung; Arbeitsflächen bleiben flach) */
+  --mm-shadow-photo: 0 8px 32px rgb(16 44 33 / 18%);
+  --mm-motion-fast: 140ms;
+  --mm-motion-panel: 180ms;
+  --mm-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
-  --mm-danger: #b42318;
-  --mm-danger-surface: #fef3f2;
-  --mm-warning: #854d0e;
-  --mm-warning-surface: #fefce8;
+  /* Status: Farbe immer nur zusätzlich zu Text */
+  --mm-danger: #a02b24;
+  --mm-danger-surface: #fdeceb;
+  --mm-danger-border: #f2c4c0;
+  --mm-warning: #765000;
+  --mm-warning-surface: #fff4d6;
+  --mm-warning-border: #ecd38f;
+  --mm-success: #1f6040;
+  --mm-success-surface: #e8f2ec;
+  --mm-success-border: #c3dacb;
 
-  /* Abgeleitete Flächen/Ränder für Status und Meldungen (aus Markengrün bzw. Funktionsfarben) */
-  --mm-success-surface: #e6f2e9;
-  --mm-success-border: #c9d6c0;
-  --mm-warning-border: #f1e3a8;
-  --mm-danger-border: #f3c5c0;
-  /* Auf der dunklen Markenfläche */
+  /* Auf dunklen Markenflächen */
   --mm-on-dark: #ffffff;
-  --mm-on-dark-muted: #c9d1c6;
-  --mm-focus-on-dark: var(--mm-brand-accent);
+  --mm-on-dark-muted: #e0e9e3;
+  --mm-focus-on-dark: #c3e8cf;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -6,34 +6,39 @@ macher-os ist ein Handwerks-OS (siehe `README.md`). Projektsprache ist Deutsch.
 
 ## Design & Marke – verbindlich
 
-Für **jede** Oberfläche, jedes Mockup und jeden UI-Text gilt das Brand & Software Design Playbook:
-**[`docs/design/brand-playbook.md`](docs/design/brand-playbook.md)** (Mission Mittelstand, v1.0).
+Für **jede** Oberfläche, jedes Mockup und jeden UI-Text gilt die UX- und Designspezifikation (Oktober 2026):
+**[`docs/design/ux-spezifikation.md`](docs/design/ux-spezifikation.md)**.
+**Sie überschreibt alle bisherigen Designvorgaben.** Das Brand Playbook
+([`docs/design/brand-playbook.md`](docs/design/brand-playbook.md)) und die älteren Festlegungen
+([`docs/design/festlegungen.md`](docs/design/festlegungen.md)) gelten nur noch, wo die Spezifikation nichts sagt
+(z. B. Logo, Bildsprache, Markenauftakt). Leitsatz: „Das sieht ordentlich aus. Das verstehe ich. Damit kann ich arbeiten.“
 
-Zusätzlich gelten die bestätigten Festlegungen und Orientierungsbeispiele in
-**[`docs/design/festlegungen.md`](docs/design/festlegungen.md)** (Primärbutton, Icon-Kacheln, Wechsler, Referenzmuster) –
-bei Widerspruch haben sie Vorrang vor dem Playbook.
+Reihenfolge bei Zielkonflikten: 1. Aufgabe verstehen und erledigen · 2. Orientierung, Lesbarkeit, Fehlertoleranz ·
+3. konsistente, ruhige Gestaltung · 4. Markenwirkung und Dekoration.
 
-Vor UI-Arbeit lesen: Abschnitte 2–5 (Marke, Farben, Schrift), 6–11 (Layout, Komponenten, Tonalität, Screens),
-14 (Design-Tokens als CSS-Start), 16 (Abnahmecheckliste).
+Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die Software, `src/app/globals.css` für die Website):
 
-Die wichtigsten Festlegungen in Kürze:
-
-- **Schrift:** Barlow (400–900) für alles; Poppins 600 nur für kleine Oberzeilen in Versalien. Kein Ersatz durch Inter/System-Fonts.
-- **Farben:** nur die Palette aus Abschnitt 4 / Tokens aus Abschnitt 14 (`--mm-*`).
-  - Primärbutton: Markengrün `#2F9250`, weiße Schrift 19 px fett (darunter reicht der Kontrast nicht). Hover `#1F6135`.
-  - Tiefes Grün `#06480C` für kleine weiße Texte auf Grün (Badges, Schrittnummern).
-  - Kleine grüne Links/Texte: `#1F6135`.
-  - Arbeitsfläche hell: `#F7FAFB`, Karten `#FFFFFF`, Linien `#D9D9D9`, Text `#374040`.
-  - Orange `#E69433` nur für Kampagnen, nie als konkurrierende Hauptaktion.
-- **Form:** kleine Radien (Controls 4 px, Karten 5–8 px, Dialoge 8 px), überwiegend flach, feine Schatten.
-- **Raster:** 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 px. Sidebar 240 px, Topbar 64 px, max. Inhaltsbreite 1360 px.
-- **Controls:** Höhe 44 px, Label oberhalb jedes Feldes, sichtbarer 2-px-Fokusring.
-- **Status:** immer Text + optional Icon, nie nur Farbe (neutral / in Bearbeitung / erfolgreich / Aufmerksamkeit).
+- **Schrift:** Barlow für alles; Poppins 600 nur für kurze Marketing-Überzeilen in Versalien. Kein Fontwechsel.
+  App-Text 16 px, Feldbeschriftungen 16 px, 14 px nur für Metadaten und Hilfetexte. Abschnittstitel in normaler Schreibweise,
+  keine automatische Silbentrennung in Überschriften und Navigation.
+- **Farben:** ein Grün für alle Hauptaktionen: `#0d6b45` (Hover `#095436`, aktiv `#073f29`), helle Grünfläche `#e8f2ec`,
+  dunkles Grün für Text/Links `#164c34`, Waldgrün `#102c21` für dunkle Markenflächen.
+  Canvas `#f5f6f3`, Flächen `#ffffff`, ruhige Fläche `#eef1ed`, Text `#222c26`, Sekundärtext `#536057`,
+  Linien `#dce2dc`, Feldrahmen `#7a8780`. Status: Warnung `#765000` auf `#fff4d6`, Gefahr `#a02b24` auf `#fdeceb`,
+  Erfolg `#1f6040` auf `#e8f2ec`. Akzentgrün `#69af44` nur auf dunklen Flächen. Orange `#e69433` nur für Kampagnen.
+- **Form:** Radien Controls 8 px, Karten/Panels 12 px, Menüs/Dialoge 16 px; flach, feine Schatten.
+- **Raster:** 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 px. App: Sidebar 232 px, Topbar 64 px, Inhalt max. 1280 px, Formulare max. 800 px.
+- **Controls:** Buttons und Felder 48 px hoch, Label oberhalb, sichtbarer 3-px-Fokusring. Primärbutton: Weiß auf `#0d6b45`, 16 px halbfett.
+  Genau eine gefüllte grüne Hauptaktion je Aufgabe; häufige Nebenaktionen sichtbar.
+- **Steuerelemente:** Bereichsnavigation als unterstrichene Reihe, untergeordnete Ansichten als heller Umschalter –
+  keine dunklen Balken, keine dunklen Filterflächen.
+- **App-Flächen:** deckend und ruhig – kein Foto und kein Glas (`backdrop-filter`) hinter Daten, Formularen, Listen.
+- **Status:** immer Text + optional Icon, nie nur Farbe. Neutral als Standard; Rot nur für echte Sperre/Gefahr („Nicht verwenden“).
 - **Tonalität:** direkte Du-Ansprache („du“, „dein“ klein), konkrete Verben („Auftrag anlegen“), kurze Sätze, keine erfundenen Zahlen.
-- **Bewegung:** 120–180 ms ease-out, keine Layoutsprünge, `prefers-reduced-motion` respektieren.
-- **Vermeiden:** große Pillen-Radien überall, beliebiges Smaragdgrün, lila/blaue KI-Verläufe, Versalien im Arbeitsalltag,
-  Stockfotos als Ansprechpartner, mehrere bunte Hauptaktionen.
-- Jeder Screen braucht gestaltete Leer-, Lade-, Fehler- und Erfolgszustände und funktioniert bei 390 px Breite.
+- **Bewegung:** 140–180 ms ease-out, keine Layoutsprünge, `prefers-reduced-motion` respektieren. Markenintro nur beim Erstkontakt.
+- **Vermeiden:** durchscheinende Fotos hinter Arbeitsinhalt, nur per Hover/Swipe/Drag-and-drop erreichbare Aktionen,
+  reine Icon-Navigation, globales Plus-Menü, Auto-Carousels, mehrere konkurrierende Grüntöne, kleine kontrastarme Schrift.
+- Jeder Screen braucht gestaltete Leer-, Lade-, Fehler- und Erfolgszustände und funktioniert ab 320 px Breite ohne waagerechten Überlauf.
 
 ## Website und Software (ein Next.js-Projekt)
 
@@ -50,6 +55,8 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - `npm test` – Tests der Software (vitest, `src/os/**/*.test.ts`)
 - `python3 scripts/playbook-sweep.py src` – zieht Klassen idempotent auf das Playbook nach (nach größeren Änderungen ausführen)
 - `node --experimental-strip-types src/content/werkzeuge/rechnen.test.mjs` – Tests der Rechner
+- `npm run test:ux` – Verhaltenstest der Website-Navigation im echten Browser (Playwright; Server muss laufen)
+- `node scripts/ux/screenshots.mjs <ordner>` – Vorher-/Nachher-Screenshots der Kernseiten (Spielwiese, 390/1440 px)
 
 ### Struktur
 
@@ -83,11 +90,16 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - Keine erfundenen Fakten als echt ausgeben: Kundenstories sind als „Beispiel“ markiert,
   keine erfundenen Kennzahlen, Zertifikate oder Firmendaten. Preise in `src/content/preise.ts` sind Platzhalter.
 - Dynamische Routen: `generateStaticParams` + `export const dynamicParams = false`; `params` ist ein Promise.
-- Farben/Fonts nur über die Tokens in `src/app/globals.css` – sie bilden das Playbook ab
-  (`primary` = Primärbutton `#2F9250`, `signal` = tiefes Grün `#06480C`, `signal-dark` = Textgrün `#1F6135`, `brand` = Markengrün `#2F9250`,
-  `accent` = Akzentgrün `#69AF44` für dunkle Flächen, `ink` = Markendunkel, `paper` = Arbeitsfläche,
-  `line`, `muted`; `font-display` = Barlow, `font-tagline` = Poppins für Oberzeilen). Keine festen HEX-Werte in Komponenten.
-- Primäraktion: `btn-primaer` (bzw. `ButtonLink` Variante `primary`). Auf dunklen Flächen Akzente mit `text-accent`.
+- Farben/Fonts nur über die Tokens in `src/app/globals.css` – sie bilden die UX-Spezifikation ab
+  (`primary`/`brand` = Aktionsgrün `#0d6b45`, `signal`/`signal-dark` = dunkles Grün `#164c34` für Text und Badges,
+  `signal-soft` = helle Grünfläche, `accent` = Akzentgrün nur auf dunklen Flächen, `ink` = Waldgrün `#102c21`,
+  `paper` = Canvas, `line`, `muted` = Sekundärtext, `logo` = Logogrün; `font-display` = Barlow, `font-tagline` = Poppins).
+  Keine festen HEX-Werte in Komponenten.
+- Primäraktion: `btn-primaer` (bzw. `ButtonLink` Variante `primary`), mind. 48 px hoch. Auf dunklen Flächen Akzente mit `text-accent`.
+- Website-Navigation: Daten in `mainNav` (`src/lib/site.ts`), Kopf in `src/components/layout/Header.tsx`.
+  Desktop ab 1200 px (`nav:`-Breakpoint), Mega-Menüs per Klick, höchstens vier Links je Gruppe, nur echte Ziele.
+  Darunter ein modaler `<dialog>` (`showModal`). Kein `backdrop-filter`/`transform` am Kopf (macht ihn zum Bezugsrahmen
+  für fest positionierte Kinder).
 
 ## Verbindlicher Architektur- & Produktstandard
 

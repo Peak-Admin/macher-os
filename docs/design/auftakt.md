@@ -1,6 +1,7 @@
 # Markenauftakt (Preloader)
 
-„Für ein neues Wirtschaftswunder“ – läuft **einmal pro Browser-Sitzung** vor Website (`/`) und Software (`/os`).
+„Für ein neues Wirtschaftswunder“ – läuft **einmal pro Gerät beim Erstkontakt**: vor der Website (`/`) oder vor der Einrichtung
+(`/os/willkommen`). Vor täglichen Arbeitswegen der Software (`/os/heute` usw.) erscheint er nie (UX-Spezifikation 6.6).
 Code: `src/components/auftakt/` (`Markenauftakt.tsx`, `auftakt.css`, `skript.ts`), Dateien: `public/auftakt/`.
 
 ## Ablauf (ca. 6 s)
@@ -16,14 +17,13 @@ Code: `src/components/auftakt/` (`Markenauftakt.tsx`, `auftakt.css`, `skript.ts`
 
 ## Regeln
 
-- Ein Skript im `<head>` beider Root-Layouts entscheidet vor dem ersten Bild (`sessionStorage` `mm-auftakt`).
-  Ohne JavaScript, bei automatisierten Browsern (`navigator.webdriver`) und bei Folgeaufrufen erscheint nichts,
-  Bilder und Ton werden dann nicht geladen.
+- Ein Skript im `<head>` beider Root-Layouts entscheidet vor dem ersten Bild (`localStorage` `mm-auftakt`).
+  Ohne JavaScript, ohne Speicher, bei automatisierten Browsern (`navigator.webdriver`), auf Arbeitswegen der Software
+  und bei Folgeaufrufen – auch in neuen Sitzungen – erscheint nichts, Bilder und Ton werden dann nicht geladen.
 - `?auftakt` in der Adresse erzwingt den Auftakt (zum Ansehen und Abnehmen).
 - Reduzierte Bewegung: Schlussbild ohne Animation, nach 1,8 s weiter.
-- Klang (`klang.mp3`, synthetisch komponiert, ohne Fremdsamples): wird einmal beim Start angefragt. Blockiert der
-  Browser den Autostart, gibt ein Klick in den ersten 1,2 s ihn frei – kein späterer Start. Überspringen blendet aus,
-  Tabwechsel stoppt.
+- Klang (`klang.mp3`, synthetisch komponiert, ohne Fremdsamples): startet **nie automatisch**, nur über den Knopf
+  „Mit Ton“. Überspringen blendet aus, Tabwechsel stoppt.
 - Schrift: Barlow/Poppins nach Playbook (der Entwurf nutzte Switzer – nicht übernommen).
 - Bewusste Ausnahme von Playbook-Abschnitt 10 (Bewegung 120–180 ms): einmaliger Markenmoment, kein Arbeitsbereich.
 

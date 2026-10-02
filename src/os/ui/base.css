@@ -10,15 +10,16 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 h1, h2, h3, h4 { margin: 0; color: var(--mm-black); font-family: var(--mm-font); }
-h1 { font: 700 32px/38px var(--mm-font); letter-spacing: -0.5px; }
-h2 { font: 600 24px/30px var(--mm-font); }
-h3 { font: 600 20px/26px var(--mm-font); }
+/* Seitentitel 26–32 px, Abschnittstitel 20 px – normale Schreibweise, keine Silbentrennung in kurzen Überschriften */
+h1 { font: 700 clamp(26px, 2.2vw, 32px)/1.2 var(--mm-font); letter-spacing: -0.02em; text-wrap: balance; }
+h2 { font: 600 22px/28px var(--mm-font); letter-spacing: -0.01em; }
+h3 { font: 600 20px/27px var(--mm-font); letter-spacing: -0.01em; }
 h4 { font: 600 16px/24px var(--mm-font); }
 p { margin: 0; }
 a { color: var(--mm-link); }
 button, input, select, textarea { font: inherit; color: inherit; }
 code, kbd, pre, samp { font-family: var(--mm-font); }
-:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
 .mm-number, td.num, .num { font-variant-numeric: tabular-nums; }
 /* Start: solange die lokale Datenbank öffnet, oder wenn sie nicht öffnen kann */
 .mm-start { display: grid; place-content: center; gap: 8px; min-height: 100%; padding: 24px; text-align: center; color: var(--mm-text); }

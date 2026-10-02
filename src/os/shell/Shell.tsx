@@ -21,7 +21,7 @@ import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { useEinstellung } from '@core/einstellungen';
 import { initialen, personName } from '@core/format';
-import { modul, modulPfad } from '@core/modul';
+import { alleModule, modul, modulPfad } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
 import { Avatar, Button, Icon, IconButton, Meldung } from '@ui/index';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
@@ -135,6 +135,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <Profil />
         </header>
         <main id="inhalt" className="mm-inhalt" tabIndex={-1}>
+          {alleModule().map((m) => (m.leiste ? <m.leiste key={m.id} /> : null))}
           <OfflineHinweis />
           <InstallHinweis />
           <SpeicherWarnung />

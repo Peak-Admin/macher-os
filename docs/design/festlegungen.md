@@ -1,11 +1,19 @@
 # macher-os – Design-Festlegungen
 
+> **Seit Oktober 2026 gilt vorrangig die [UX- und Designspezifikation](ux-spezifikation.md).** Sie überschreibt alle
+> bisherigen Designvorgaben – auch diese Datei und das Playbook. Abgelöst sind insbesondere:
+> Primärbutton `#2F9250` mit 19 px (jetzt `#0d6b45`, 16 px halbfett, 48 px hoch), Icon-Kacheln in Akzentgrün mit weißen Linien
+> (jetzt helle Grünfläche `#e8f2ec` mit dunkelgrünem Icon), der dunkle Wechsler `#1C2619` (jetzt heller Umschalter),
+> die aktive Sidebar-Kachel (jetzt hellgrüne Zeile, dunkelgrüne Schrift), kleine Radien 4–8 px (jetzt 8/12/16 px),
+> Controls 44 px (jetzt 48 px) und das Glas über dem Werkstattfoto (Arbeitsflächen sind jetzt deckend).
+> Weiter gültig: vier feste Bereiche, flache Navigation, Favoriten, Orientierungsbeispiele für Website-Bildsprache.
+
 Ergänzt das [Brand & Software Design Playbook](brand-playbook.md). Bei Widerspruch gilt diese Datei,
-weil sie jüngere, ausdrücklich bestätigte Entscheidungen enthält.
+weil sie jüngere, ausdrücklich bestätigte Entscheidungen enthält – außer gegenüber der UX-Spezifikation (siehe oben).
 
 ## Bestätigte Bausteine
 
-### Primärbutton
+### Primärbutton (abgelöst – siehe UX-Spezifikation 5.1)
 Markengrün `#2F9250`, weiße Schrift **Barlow 700 in 19 px**, Hover `#1F6135`, 4 px Radius, leichter Schatten erlaubt beim großen Einstiegs-CTA.
 Weiß auf `#2F9250` hat 3,9:1 – das reicht nur für große Schrift (ab 19 px fett). Die Buttonschrift darf deshalb nicht kleiner werden.
 Kleine weiße Texte auf Grün (Badges, Schrittnummern, Mini-Buttons in Mocks) bleiben auf tiefem Grün `#06480C`.
@@ -21,7 +29,7 @@ Nur für diesen einen Einstiegsmoment – im Arbeitsalltag bleibt der flache Pri
 
 - Software: `WeiterButton` in `src/os/modules/onboarding/Willkommen.tsx`, Klassen `.ob-weiter*`
 
-### Themen-Icon-Kacheln
+### Themen-Icon-Kacheln (abgelöst – helle Grünfläche, dunkelgrünes Icon)
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.
 Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon allein darf keine Information tragen).
 
@@ -34,7 +42,7 @@ Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon 
 
 Funktionale Icons (Pfeile, Schließen, Menü, Status) bleiben in Textfarbe ohne Kachel.
 
-### Wechsler (Segmente)
+### Wechsler (Segmente) (abgelöst – heller Umschalter, UX-Spezifikation 5.2)
 Dunkle Leiste `#1C2619`, Segmente ohne Trennlinien, aktives Segment Markengrün `#2F9250`, alle Labels weiß.
 Inaktiv beim Hover: Weiß mit 8 % Deckkraft. Fokus: 2-px-Ring in Akzentgrün innerhalb des Segments. Höhe 44 px.
 Optional Flagge oder Icon vor dem Label (Vorbild: Länderwahl Deutschland · Österreich · Schweiz).

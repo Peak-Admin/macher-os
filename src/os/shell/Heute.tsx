@@ -1,17 +1,18 @@
 /**
- * Heute: öffnen und sofort wissen, was ansteht. Höchstens drei Blöcke, je nach Rolle:
- * - Monteur: eigener Einsatz · Dein Tag · Braucht deine Entscheidung
- * - Inhaber: (laufender eigener Einsatz) · Braucht deine Entscheidung · Heute im Betrieb · Dein Tag
- * - Büro: Eingang · Einplanen · Braucht deine Entscheidung
- * Solange der Start nicht geschafft ist, steht „Dein Start“ (3 Haken) bei Inhaber und Büro ganz oben.
- * Leere Blöcke zeigen immer einen konkreten nächsten Schritt – nie eine leere Fläche.
- * Listen zeigen höchstens drei Einträge und einen klar benannten Weg zur vollständigen Liste.
- * Die Begrüßung ist eine Zeile. Navigation und Rechte bleiben für alle gleich.
+ * Heute: öffnen und sofort wissen, was ansteht. Die Rolle kommt aus dem Rechtesystem (`ich.rolle`), Navigation und
+ * Rechte bleiben für alle gleich – hier ändert sich nur die Reihenfolge:
+ * - Monteur: nächster bzw. laufender Einsatz · weitere Termine und Aufgaben heute · eigene Entscheidungen
+ * - Inhaber: (laufender eigener Einsatz) · wichtigste Entscheidung · heutiger Ablauf im Betrieb · weitere Entscheidungen
+ * - Büro: (laufender eigener Einsatz) · wichtigste Entscheidung · Eingang · Einplanen · weitere Entscheidungen
+ * Solange der Start nicht geschafft ist, steht er als kompakte Fortschrittszeile oben – nicht als Block vor dem Tag.
+ * Normale Entscheidungen: anfangs höchstens drei, die vollständige Liste mit Anzahl einen Klick entfernt.
+ * Akute Sicherheitswarnungen („nicht verwenden“) zählen nicht gegen dieses Limit und stehen immer ganz oben.
+ * Leere Blöcke zeigen immer einen konkreten nächsten Schritt – nie eine leere Fläche. Die Begrüßung ist eine Zeile.
  */
 import { useState, type ReactNode } from 'react';
 import { useDatenstand } from '@core/db';
 import { heute } from '@core/format';
-import { offeneHinweise } from '@core/macher';
+import { offeneHinweise, type OffenerHinweis } from '@core/macher';
 import { modul } from '@core/modul';
 import { darf, useIch } from '@core/session';
 import type { Mitarbeiter, Termin } from '@core/objects';
@@ -55,22 +56,31 @@ export function HeuteSeite() {
   const rolle = ich.rolle;
   const einsatz = naechsterEinsatz(ich.id);
 
+  const hinweise = offeneHinweise({ rolle: ich.rolle, mitarbeiterId: ich.id });
+  const laufend = einsatz && laeuft(einsatz) ? <EinsatzKurz key="e" t={einsatz} /> : null;
+
   let bloecke: ReactNode[];
   if (rolle === 'chef') {
     bloecke = [
-      einsatz && laeuft(einsatz) ? <EinsatzKurz key="e" t={einsatz} /> : null,
-      startOffen && darf('geld') ? <StartKarte key="s" /> : null,
-      <Entscheidungen key="h" ich={ich} immer />,
+      laufend,
+      <Entscheidungen key="h" liste={hinweise} teil="erste" />,
       <BetriebHeute key="b" />,
+      <Entscheidungen key="w" liste={hinweise} teil="weitere" />,
       <DeinTag key="t" ich={ich} ohne={einsatz} />,
     ];
   } else if (rolle === 'buero') {
-    bloecke = [einsatz && laeuft(einsatz) ? <EinsatzKurz key="e" t={einsatz} /> : null, startOffen && darf('geld') ? <StartKarte key="s" /> : null, <Eingang key="a" />, <Einplanen key="o" />, <Entscheidungen key="h" ich={ich} immer />];
+    bloecke = [
+      laufend,
+      <Entscheidungen key="h" liste={hinweise} teil="erste" />,
+      <Eingang key="a" />,
+      <Einplanen key="o" />,
+      <Entscheidungen key="w" liste={hinweise} teil="weitere" />,
+    ];
   } else {
     bloecke = [
       einsatz ? <EinsatzKurz key="e" t={einsatz} /> : <Meldung key="e" titel="Kein Einsatz geplant">In den nächsten zwei Wochen ist für dich nichts eingeplant. Frag im Büro, wenn du etwas erwartest.</Meldung>,
       <DeinTag key="t" ich={ich} ohne={einsatz} />,
-      <Entscheidungen key="h" ich={ich} />,
+      <Entscheidungen key="h" liste={hinweise} teil="alle" />,
     ];
   }
 
@@ -79,17 +89,43 @@ export function HeuteSeite() {
       <h1 className="mm-heute-gruss">
         {gruss()}, {ich.vorname}. <span>{tagFormat.format(new Date())}</span>
       </h1>
-      {/* höchstens drei Blöcke – leere Blöcke (null) zählen nicht */}
-      {bloecke.filter(Boolean).slice(0, 3)}
+      {(rolle === 'chef' || rolle === 'buero') && startOffen && darf('geld') && <StartKarte />}
+      {/* höchstens vier Blöcke (Büro mit eigenem laufendem Einsatz: fünf, damit der Weg zu allen Entscheidungen bleibt) –
+          leere Blöcke (null) zählen nicht */}
+      {bloecke.filter(Boolean).slice(0, rolle === 'buero' ? 5 : 4)}
     </div>
   );
 }
 
-/** Braucht deine Entscheidung: nur zugeordnete Themen, die drei wichtigsten. */
-function Entscheidungen({ ich, immer }: { ich: Mitarbeiter; immer?: boolean }) {
-  const liste = offeneHinweise({ rolle: ich.rolle, mitarbeiterId: ich.id });
-  if (!liste.length) {
-    return immer ? (
+/**
+ * Entscheidungen, aufgeteilt nach Rolle:
+ * - `erste`: Sicherheitswarnungen (immer alle) und die wichtigste normale Entscheidung – ganz oben
+ * - `weitere`: die nächsten normalen Entscheidungen gebündelt nach dem Tagesablauf, mit Weg zur vollständigen Liste
+ * - `alle`: Sicherheitswarnungen und die drei wichtigsten (Monteur)
+ * Insgesamt stehen anfangs höchstens drei normale Einträge auf Heute.
+ */
+function Entscheidungen({ liste, teil }: { liste: OffenerHinweis[]; teil: 'erste' | 'weitere' | 'alle' }) {
+  const sicherheit = liste.filter((h) => h.sicherheit);
+  const normal = liste.filter((h) => !h.sicherheit);
+  const alle = liste.length > VORSCHAU ? { to: '/heute/braucht-dich', label: `Alle ${liste.length} Entscheidungen ansehen` } : undefined;
+
+  if (teil === 'weitere') {
+    const weitere = normal.slice(1, VORSCHAU);
+    if (!weitere.length) return null;
+    return (
+      <Block titel="Weitere Entscheidungen" alle={alle}>
+        <Liste>
+          {weitere.map((h) => (
+            <HinweisZeile key={h.schluessel} h={h} kompakt />
+          ))}
+        </Liste>
+      </Block>
+    );
+  }
+
+  const zeigen = [...sicherheit, ...normal.slice(0, teil === 'erste' ? 1 : VORSCHAU)];
+  if (!zeigen.length) {
+    return teil === 'erste' ? (
       <Block titel="Braucht deine Entscheidung">
         <Meldung ton="erfolg" titel="Nichts brennt.">
           Macher meldet sich hier, sobald etwas deine Entscheidung braucht.
@@ -98,9 +134,9 @@ function Entscheidungen({ ich, immer }: { ich: Mitarbeiter; immer?: boolean }) {
     ) : null;
   }
   return (
-    <Block titel="Braucht deine Entscheidung" alle={liste.length > VORSCHAU ? { to: '/heute/braucht-dich', label: `Alle ${liste.length} ansehen` } : undefined}>
+    <Block titel="Braucht deine Entscheidung" alle={teil === 'alle' || normal.length <= 1 ? alle : undefined}>
       <Liste>
-        {liste.slice(0, VORSCHAU).map((h) => (
+        {zeigen.map((h) => (
           <HinweisZeile key={h.schluessel} h={h} kompakt />
         ))}
       </Liste>

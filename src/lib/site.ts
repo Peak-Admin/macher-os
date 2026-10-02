@@ -68,165 +68,151 @@ export const appGewerk: Record<string, string> = {
 };
 
 export type NavLink = { label: string; href: string };
-export type MegaColumn = {
+/** Gruppe im Mega-Menü: höchstens vier Hauptlinks, Titel in normaler Schreibweise. */
+export type MegaGruppe = { titel: string; links: NavLink[] };
+/** Eine einzige, vollständig klickbare Vorschau rechts im Menü – nur mit echtem Bild einer vorhandenen Seite. */
+export type MegaVorschau = {
+  href: string;
+  bild: { src: string; alt: string; breite: number; hoehe: number };
   titel: string;
-  beschreibung?: string;
-  links: (NavLink & { beschreibung?: string })[];
-  cta?: NavLink;
+  text: string;
+  aktion: string;
 };
-export type NavItem =
-  | { label: string; href: string; mega?: undefined }
-  | { label: string; href: string; mega: { columns: MegaColumn[]; footer?: NavLink[]; cta?: NavLink } };
+/** Gewerk als Bildzeile: kleines echtes Foto + ausgeschriebener Name. */
+export type MegaGewerk = NavLink & { bild: string };
+export type Mega =
+  | { art: "funktionen" | "wissen"; gruppen: MegaGruppe[]; vorschau?: MegaVorschau; abschluss: NavLink[] }
+  | { art: "gewerke"; gewerke: MegaGewerk[]; abschluss: NavLink[] };
+export type NavItem = { label: string; href: string; mega?: Mega };
 
 const f = (slug: string) => `/funktionen/${slug}`;
 const g = (slug: string) => `/gewerke/${slug}`;
 
+/**
+ * Hauptnavigation der Website. Das Menü erklärt das Produkt und erleichtert die Auswahl – es ist keine Sitemap.
+ * Jeder Link führt auf eine bestehende Seite, deren Inhalt die Beschriftung abdeckt. Was hier fehlt, bleibt über
+ * „Alle Funktionen“, „Alle Gewerke“ und „Wissen“ erreichbar (siehe `docs/design/festlegungen.md`, Website-Navigation).
+ */
 export const mainNav: NavItem[] = [
   {
     label: "Funktionen",
     href: "/funktionen",
     mega: {
-      columns: [
+      art: "funktionen",
+      gruppen: [
         {
           titel: "Aufträge",
-          beschreibung: "Vom ersten Kundenkontakt bis zur bezahlten Rechnung.",
           links: [
             { label: "Anfragen", href: f("anfragen") },
-            { label: "Telefon & Empfang", href: f("telefon") },
-            { label: "Kunden", href: f("kunden") },
-            { label: "Aufträge", href: f("auftraege") },
-            { label: "Aufmaß", href: f("aufmass") },
-            { label: "Kalkulation", href: f("kalkulation") },
-            { label: "Angebote", href: f("angebote") },
-            { label: "Fotos & Dokumentation", href: f("dokumentation") },
-            { label: "Rechnungen & Zahlungen", href: f("rechnungen") },
+            { label: "Angebote schreiben", href: f("angebote") },
+            { label: "Aufträge bearbeiten", href: f("auftraege") },
+            { label: "Rechnungen schreiben", href: f("rechnungen") },
           ],
         },
         {
           titel: "Planen",
-          beschreibung: "Alles richtig einplanen, bevor es zum Problem wird.",
           links: [
-            { label: "Kalender", href: f("kalender") },
-            { label: "Terminbuchung", href: f("kalender") },
-            { label: "Einsatzplanung", href: f("einsatzplanung") },
-            { label: "Mitarbeiterplanung", href: f("einsatzplanung") },
-            { label: "Material bereit?", href: f("material") },
-            { label: "Werkzeug & Fahrzeug bereit?", href: f("fahrzeuge") },
-            { label: "Automatische Planung", href: f("einsatzplanung") },
+            { label: "Kalender & Termine", href: f("kalender") },
+            { label: "Einsätze & Mitarbeiter", href: f("einsatzplanung") },
+            { label: "Material planen", href: f("material") },
+            { label: "Fahrzeuge planen", href: f("fahrzeuge") },
           ],
         },
         {
           titel: "Betrieb",
-          beschreibung: "Alles, was der Betrieb dauerhaft braucht.",
           links: [
             { label: "Mitarbeiter", href: f("mitarbeiter") },
             { label: "Arbeitszeiten", href: f("zeiterfassung") },
-            { label: "Qualifikationen", href: f("qualifikationen") },
-            { label: "Schulungen", href: f("schulungen") },
             { label: "Material & Lager", href: f("lager") },
-            { label: "Einkauf & Lieferanten", href: f("einkauf") },
-            { label: "Werkzeuge", href: f("werkzeuge") },
-            { label: "Fahrzeuge", href: f("fahrzeuge") },
-            { label: "Kosten & Auswertungen", href: f("auswertung") },
+            { label: "Kosten & Auswertung", href: f("auswertung") },
           ],
-        },
-        {
-          titel: "Macher erledigt",
-          beschreibung: "Büroarbeit, die Macher OS möglichst automatisch übernimmt.",
-          links: [
-            { label: "Anrufe aufnehmen", href: f("telefon") },
-            { label: "Anfragen erfassen", href: f("anfragen") },
-            { label: "Termine abstimmen", href: f("kalender") },
-            { label: "Angebote vorbereiten", href: f("angebote") },
-            { label: "Aufträge einplanen", href: f("einsatzplanung") },
-            { label: "Rechnungen vorbereiten", href: f("rechnungen") },
-            { label: "Zahlungen verfolgen", href: f("zahlungen") },
-          ],
-          cta: { label: "Was Macher automatisch erledigt", href: f("automatisch-erledigen") },
         },
       ],
-      cta: { label: "Alle Funktionen ansehen", href: "/funktionen" },
+      vorschau: {
+        href: "/demo",
+        bild: {
+          src: "/bilder/vorschau/einsatz.webp",
+          alt: "Ausschnitt aus Macher OS: ein Einsatz mit Uhrzeit, Kunde, Aufgabe und Adresse (Beispieldaten)",
+          breite: 720,
+          hoehe: 450,
+        },
+        titel: "Ein Einsatz. Alles dabei.",
+        text: "Kunde, Termin und Aufgabe an einem Ort.",
+        aktion: "Beispiel ansehen",
+      },
+      abschluss: [
+        { label: "Alle Funktionen ansehen", href: "/funktionen" },
+        { label: "So arbeitet Macher automatisch", href: f("automatisch-erledigen") },
+      ],
     },
   },
   {
     label: "Gewerke",
     href: "/gewerke",
     mega: {
-      columns: [
-        {
-          titel: "Beliebte Gewerke",
-          links: [
-            { label: "Elektriker", href: g("elektriker") },
-            { label: "SHK / Sanitär & Heizung", href: g("shk") },
-            { label: "Maler & Lackierer", href: g("maler") },
-            { label: "Fliesenleger", href: g("fliesenleger") },
-            { label: "Tischler & Schreiner", href: g("tischler") },
-            { label: "Dachdecker", href: g("dachdecker") },
-            { label: "Maurer & Bau", href: g("bau") },
-            { label: "Garten- & Landschaftsbau", href: g("galabau") },
-          ],
-        },
-        {
-          titel: "Weitere Bereiche",
-          links: [
-            { label: "Metall & Maschinen", href: g("metall-maschinen") },
-            { label: "Fahrzeug & Werkstatt", href: g("fahrzeug-werkstatt") },
-            { label: "Gebäude & Service", href: g("gebaeude-service") },
-            { label: "Glas & Fenster", href: g("glas-fenster-sonnenschutz") },
-            { label: "Lebensmittel", href: g("lebensmittelhandwerk") },
-            { label: "Gesundheit", href: g("gesundheitshandwerk") },
-            { label: "Gestaltung", href: g("textil-gestaltung-werbetechnik") },
-            { label: "Weitere Gewerke", href: g("weitere-gewerke") },
-          ],
-        },
+      art: "gewerke",
+      gewerke: [
+        { label: "Elektriker", href: g("elektriker"), bild: "/bilder/gewerke/elektriker.jpg" },
+        { label: "Sanitär, Heizung & Klima", href: g("shk"), bild: "/bilder/gewerke/shk.jpg" },
+        { label: "Maler & Lackierer", href: g("maler"), bild: "/bilder/gewerke/maler.jpg" },
+        { label: "Fliesenleger", href: g("fliesenleger"), bild: "/bilder/gewerke/fliesenleger.jpg" },
+        { label: "Tischler & Schreiner", href: g("tischler"), bild: "/bilder/gewerke/tischler.jpg" },
+        { label: "Dachdecker", href: g("dachdecker"), bild: "/bilder/gewerke/dachdecker.jpg" },
+        { label: "Maurer & Bau", href: g("bau"), bild: "/bilder/gewerke/bau.jpg" },
+        { label: "Garten- & Landschaftsbau", href: g("galabau"), bild: "/bilder/gewerke/galabau.jpg" },
       ],
-      cta: { label: "Alle Gewerke ansehen", href: "/gewerke" },
+      abschluss: [
+        { label: "Alle Gewerke ansehen", href: "/gewerke" },
+        { label: "Dein Gewerk fehlt? Weitere Gewerke", href: g("weitere-gewerke") },
+      ],
     },
   },
   {
     label: "Wissen",
     href: "/wissen",
     mega: {
-      columns: [
+      art: "wissen",
+      gruppen: [
         {
-          titel: "Wissen",
+          titel: "Praxistipps",
           links: [
-            { label: "Blog", href: "/wissen/blog", beschreibung: "Praxistipps, Neuigkeiten und Ideen fürs Handwerk." },
-            { label: "Webinare", href: "/wissen/webinare", beschreibung: "Live-Sessions und Aufzeichnungen." },
-            { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen", beschreibung: "Direkt nutzbar im Betriebsalltag." },
-            { label: "Macher Akademie", href: "/wissen/akademie", beschreibung: "Kurse für Unternehmer und Mitarbeiter." },
-            { label: "Kundenwissen", href: "/kunden", beschreibung: "Arbeitsweisen aus anderen Betrieben." },
+            { label: "Blog", href: "/wissen/blog" },
+            { label: "Webinare", href: "/wissen/webinare" },
+            { label: "Macher Akademie", href: "/wissen/akademie" },
           ],
         },
         {
-          titel: "Hilfe",
+          titel: "Vorlagen & Rechner",
           links: [
-            { label: "Schnellstart", href: "/hilfe/schnellstart", beschreibung: "In wenigen Minuten loslegen." },
-            { label: "Hilfe-Center", href: "/hilfe-center", beschreibung: "Antworten und Anleitungen." },
-            { label: "Kontakt & Support", href: "/hilfe/kontakt", beschreibung: "Persönliche Hilfe." },
-            { label: "Daten übernehmen", href: "/hilfe/daten-uebernehmen", beschreibung: "Kunden, Mitarbeiter, Artikel übernehmen." },
-            { label: "Macher OS einrichten", href: "/hilfe/schnellstart", beschreibung: "Gewerk, Leistungen, Rollen." },
+            { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen" },
+            { label: "Stundensatz berechnen", href: "/werkzeuge/stundensatz-rechner" },
+            { label: "Angebot berechnen", href: "/werkzeuge/angebots-rechner" },
+            { label: "Alle Rechner", href: "/werkzeuge" },
           ],
         },
         {
-          titel: "Werkzeuge",
+          titel: "Hilfe beim Start",
           links: [
-            { label: "Stundensatz-Rechner", href: "/werkzeuge/stundensatz-rechner" },
-            { label: "Stundenverrechnungssatz-Rechner", href: "/werkzeuge/stundenverrechnungssatz-rechner" },
-            { label: "Angebots-Rechner", href: "/werkzeuge/angebots-rechner" },
-            { label: "Materialaufschlag-Rechner", href: "/werkzeuge/materialaufschlag-rechner" },
-            { label: "Fahrtkosten-Rechner", href: "/werkzeuge/fahrtkosten-rechner" },
-            { label: "Deckungsbeitrags-Rechner", href: "/werkzeuge/deckungsbeitrags-rechner" },
+            { label: "Schnellstart", href: "/hilfe/schnellstart" },
+            { label: "Daten übernehmen", href: "/hilfe/daten-uebernehmen" },
+            { label: "Hilfe-Center", href: "/hilfe-center" },
+            { label: "Kontakt & Support", href: "/hilfe/kontakt" },
           ],
-          cta: { label: "Alle Werkzeuge ansehen", href: "/werkzeuge" },
         },
       ],
-      footer: [
-        { label: "Demo ansehen", href: "/demo" },
-        { label: "App herunterladen", href: "/app" },
-        { label: "Kunden ansehen", href: "/kunden" },
-        { label: "Hilfe-Center", href: "/hilfe-center" },
-      ],
+      vorschau: {
+        href: "/wissen/vorlagen/checkliste-baustellenabnahme",
+        bild: {
+          src: "/bilder/vorschau/vorlage-baustellenabnahme.webp",
+          alt: "Vorschau der Vorlage „Checkliste Baustellenabnahme“",
+          breite: 720,
+          hoehe: 450,
+        },
+        titel: "Checkliste Baustellenabnahme",
+        text: "Vorlage zum Drucken oder als PDF speichern.",
+        aktion: "Vorlage ansehen",
+      },
+      abschluss: [{ label: "Alles aus Wissen ansehen", href: "/wissen" }],
     },
   },
   { label: "Kunden", href: "/kunden" },

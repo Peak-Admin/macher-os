@@ -189,7 +189,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
       {/* 8. Mobile Baustelle / Außendienst */}
       <Section>
         <div className="grid items-center gap-14 lg:grid-cols-2">
-          <div className="order-2 lg:order-1">
+          <div className="order-2 min-w-0 lg:order-1">
             <FotoBuehne bild="alltag/handy">
               <GewerkPhoneMock einsatz={g.mobil.einsatz} />
             </FotoBuehne>

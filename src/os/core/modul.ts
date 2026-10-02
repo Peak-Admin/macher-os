@@ -53,6 +53,8 @@ export interface HinweisVorschlag {
   aktionen?: { aktion: string; label: string; primaer?: boolean; payload?: unknown }[];
   /** Pfad, den „Öffnen“ ansteuert */
   pfad?: string;
+  /** Akute Sicherheitswarnung (z. B. Gerät mit überfälliger Prüfung: nicht verwenden). Zählt nie gegen ein Mengenlimit. */
+  sicherheit?: boolean;
 }
 
 export interface Automation {
@@ -144,6 +146,8 @@ export interface ModulDef {
   erstellen?: { label: string; pfad: string; gewicht?: number }[];
   /** Global gerenderte Komponente (Overlays, Tastenkürzel …) */
   global?: ComponentType;
+  /** Kompakte Zeile oben im Inhalt, im normalen Layoutfluss (z. B. Hinweis „Spielwiese“) – nie schwebend über Daten */
+  leiste?: ComponentType;
   /** Beispieldaten für eigene Sammlungen nach dem Onboarding */
   seed?: () => void;
   /** Nur für diese Rollen in der Navigation */
@@ -152,7 +156,8 @@ export interface ModulDef {
   init?: () => void;
 }
 
-export type Ton = 'neutral' | 'aktiv' | 'erfolg' | 'achtung';
+/** Status-Töne. `gefahr` nur für eine tatsächliche Sperre oder Gefahr („Nicht verwenden“) – immer mit eindeutigem Text. */
+export type Ton = 'neutral' | 'aktiv' | 'erfolg' | 'achtung' | 'gefahr';
 
 export function defineModul(def: ModulDef): ModulDef {
   return { gewicht: 50, navigation: 'haupt', ...def };

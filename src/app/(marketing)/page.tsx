@@ -281,7 +281,7 @@ export default function HomePage() {
       {/* 6. Mobiles Arbeiten – Handy vor Baustellenfoto */}
       <Section tone="white">
         <div className="grid items-center gap-14 lg:grid-cols-2">
-          <div className="order-2 lg:order-1">
+          <div className="order-2 min-w-0 lg:order-1">
             <FotoBuehne bild="alltag/handy">
               <PhoneMock />
             </FotoBuehne>

@@ -6,7 +6,7 @@ export function PhoneMock({ className = "" }: { className?: string }) {
     <div
       role="img"
       aria-label="Macher OS App auf dem Handy: nächster Einsatz mit Navigation, Fotos und Unterschrift"
-      className={`mx-auto w-[280px] rounded-[2.5rem] border-[10px] border-ink bg-ink shadow-2xl shadow-ink/30 ${className}`}
+      className={`mx-auto w-[280px] max-w-full rounded-[2.5rem] border-[10px] border-ink bg-ink shadow-2xl shadow-ink/30 ${className}`}
     >
       <div className="overflow-hidden rounded-[1.8rem] bg-paper">
         <div className="flex items-center justify-between bg-ink px-5 pb-3 pt-2 text-[0.65rem] text-white/80">

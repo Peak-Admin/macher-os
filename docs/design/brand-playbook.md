@@ -1,4 +1,9 @@
 # Mission Mittelstand
+
+> **Hinweis (Oktober 2026):** Vorrangig gilt die [UX- und Designspezifikation](ux-spezifikation.md). Sie überschreibt
+> dieses Playbook bei Widerspruch (Farben, Radien, Controls, Steuerelemente). Das Playbook bleibt Quelle für Marke,
+> Logo und Bildsprache, soweit die Spezifikation dazu nichts sagt.
+
 ## Brand & Software Design Playbook
 
 **Version 1.0 · Referenzstand: 2. Oktober 2026 · Sprache: Deutsch**

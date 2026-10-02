@@ -11,5 +11,5 @@ export default defineModul({
   gewicht: 40,
   navigation: 'versteckt',
   vollbildRouten: [{ pfad: '/willkommen', element: Willkommen }],
-  global: SpielwieseLeiste,
+  leiste: SpielwieseLeiste,
 });

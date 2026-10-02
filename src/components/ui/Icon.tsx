@@ -5,6 +5,8 @@
 const paths = {
   "arrow-right": <path d="M5 12h14M13 6l6 6-6 6" />,
   "chevron-down": <path d="m6 9 6 6 6-6" />,
+  "chevron-right": <path d="m9 6 6 6-6 6" />,
+  "chevron-left": <path d="m15 6-6 6 6 6" />,
   "arrow-up-right": <path d="M7 17 17 7M8 7h9v9" />,
   frage: (
     <>
