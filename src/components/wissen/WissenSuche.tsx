@@ -39,7 +39,7 @@ export function WissenSuche({ eintraege }: { eintraege: WissenEintrag[] }) {
           onChange={(ev) => setQuery(ev.target.value)}
           placeholder="Wonach suchst du?"
           autoComplete="off"
-          className="h-14 w-full rounded-lg border border-line bg-white pl-12 pr-4 text-lg shadow-sm outline-none placeholder:text-muted focus:border-ink/40 focus:ring-2 focus:ring-signal/40"
+          className="feld h-14 pl-12 text-lg"
         />
       </div>
       {!aktiv && (
@@ -50,7 +50,7 @@ export function WissenSuche({ eintraege }: { eintraege: WissenEintrag[] }) {
               key={v}
               type="button"
               onClick={() => setQuery(v)}
-              className="rounded-md bg-white px-2.5 py-1 font-medium ring-1 ring-line hover:ring-ink/40"
+              className="inline-flex min-h-11 items-center rounded-lg bg-white px-3 font-medium ring-1 ring-inset ring-line-dark hover:bg-signal-soft"
             >
               {v}
             </button>

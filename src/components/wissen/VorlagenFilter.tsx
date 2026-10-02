@@ -44,13 +44,13 @@ export function VorlagenFilter({
   );
 
   const select =
-    "h-11 w-full rounded-lg border border-line bg-white px-3 font-medium outline-none focus:border-ink/40 focus:ring-2 focus:ring-signal/40";
+    "feld font-medium";
 
   return (
     <div>
       <div className="grid gap-4 rounded-lg border border-line bg-white p-5 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
         <div>
-          <label htmlFor={idThema} className="mb-1.5 block text-sm font-semibold">
+          <label htmlFor={idThema} className="feld-label">
             Thema
           </label>
           <select id={idThema} value={thema} onChange={(e) => setThema(e.target.value)} className={select}>
@@ -63,7 +63,7 @@ export function VorlagenFilter({
           </select>
         </div>
         <div>
-          <label htmlFor={idGewerk} className="mb-1.5 block text-sm font-semibold">
+          <label htmlFor={idGewerk} className="feld-label">
             Gewerk
           </label>
           <select id={idGewerk} value={gewerk} onChange={(e) => setGewerk(e.target.value)} className={select}>
@@ -82,7 +82,7 @@ export function VorlagenFilter({
             setGewerk("");
           }}
           disabled={!thema && !gewerk}
-          className="h-11 rounded-lg px-4 font-semibold text-ink ring-1 ring-inset ring-line hover:ring-ink/40 disabled:opacity-40"
+          className="btn-zweit"
         >
           Zurücksetzen
         </button>

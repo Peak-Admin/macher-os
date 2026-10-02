@@ -73,17 +73,17 @@ export function AutomatischSeite() {
               </div>
               <div className="grid md:grid-cols-[1fr_1fr_0.8fr]">
                 <div className="border-b border-line p-5 sm:p-6 md:border-b-0 md:border-r">
-                  <p className="mb-2 text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Vorher</p>
+                  <p className="mb-2 text-sm font-semibold font-tagline uppercase tracking-wider text-muted">Vorher</p>
                   <p className="leading-relaxed text-ink-soft">{a.vorher}</p>
                 </div>
                 <div className="border-b border-line bg-moss-soft/60 p-5 sm:p-6 md:border-b-0 md:border-r">
-                  <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold font-tagline uppercase tracking-wider text-moss">
+                  <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold font-tagline uppercase tracking-wider text-moss">
                     <Icon name="spark" className="size-3.5" /> Mit Macher
                   </p>
                   <p className="font-semibold leading-relaxed">{a.nachher}</p>
                 </div>
                 <div className="p-5 sm:p-6">
-                  <p className="mb-2 text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Du entscheidest</p>
+                  <p className="mb-2 text-sm font-semibold font-tagline uppercase tracking-wider text-muted">Du entscheidest</p>
                   <p className="leading-relaxed text-ink-soft">{a.duEntscheidest}</p>
                 </div>
               </div>

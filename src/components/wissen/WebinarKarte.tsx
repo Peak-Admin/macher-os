@@ -5,7 +5,7 @@ import { webinarHref, webinarStatusLabel, type Webinar } from "@/content/wissen/
 export function WebinarStatusLabel({ status }: { status: Webinar["status"] }) {
   const ton = status === "aufzeichnung" ? "bg-moss-soft text-moss" : "bg-signal-soft text-signal-dark";
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-semibold ${ton}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-sm font-semibold ${ton}`}>
       <Icon name={status === "aufzeichnung" ? "play" : "calendar"} className="size-3.5" />
       {webinarStatusLabel[status]}
     </span>
@@ -20,7 +20,7 @@ export function WebinarKarte({ webinar }: { webinar: Webinar }) {
     >
       <div className="flex flex-wrap items-center gap-2">
         <WebinarStatusLabel status={webinar.status} />
-        <span className="text-xs font-medium text-muted">ca. {webinar.dauer} Min.</span>
+        <span className="text-sm font-medium text-muted">ca. {webinar.dauer} Min.</span>
       </div>
       <h3 className="mt-3 font-display text-xl font-bold leading-snug text-balance group-hover:text-signal-dark">
         {webinar.titel}

@@ -30,7 +30,7 @@ export function PreisRechner() {
             <button
               type="button"
               onClick={() => setLeute((n) => Math.max(1, n - 1))}
-              className="flex size-11 items-center justify-center rounded border border-line text-xl font-bold hover:border-ink focus-visible:outline-2 focus-visible:outline-signal"
+              className="flex size-12 items-center justify-center rounded-lg border border-line-dark bg-white text-xl font-bold text-signal-dark hover:bg-signal-soft"
               aria-label="Eine Person weniger"
             >
               −
@@ -43,12 +43,12 @@ export function PreisRechner() {
               max={500}
               value={leute}
               onChange={(e) => setLeute(Math.min(500, Math.max(1, Number(e.target.value) || 1)))}
-              className="h-11 w-24 rounded border border-line px-3 text-center font-display text-xl font-bold focus-visible:outline-2 focus-visible:outline-signal"
+              className="feld h-12 w-24 text-center font-display text-xl font-bold"
             />
             <button
               type="button"
               onClick={() => setLeute((n) => Math.min(500, n + 1))}
-              className="flex size-11 items-center justify-center rounded border border-line text-xl font-bold hover:border-ink focus-visible:outline-2 focus-visible:outline-signal"
+              className="flex size-12 items-center justify-center rounded-lg border border-line-dark bg-white text-xl font-bold text-signal-dark hover:bg-signal-soft"
               aria-label="Eine Person mehr"
             >
               +
@@ -62,7 +62,7 @@ export function PreisRechner() {
             {(["monatlich", "jaehrlich"] as const).map((z) => (
               <label
                 key={z}
-                className={`flex min-h-11 cursor-pointer items-center rounded-md border px-5 py-2 text-base transition-colors has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
+                className={`flex min-h-12 cursor-pointer items-center rounded-md border px-5 py-2 text-base transition-colors has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
                   zahlweise === z ? "border-line-dark bg-white font-semibold text-signal-dark" : "border-transparent font-medium text-muted hover:bg-white"
                 }`}
               >
@@ -96,7 +96,7 @@ export function PreisRechner() {
             >
               <div className="flex items-center justify-between gap-2">
                 <p className="font-display text-xl font-extrabold">{p.name}</p>
-                {aktiv && <span className="rounded bg-signal px-2 py-0.5 text-xs font-bold text-white">Passt zu euch</span>}
+                {aktiv && <span className="rounded-md bg-signal-soft px-2 py-1 text-sm font-semibold text-signal-dark">Passt zu euch</span>}
               </div>
               <p className="mt-1 text-sm text-muted">{p.fuer}</p>
               <p className="mt-5 flex items-baseline gap-1.5">
@@ -109,7 +109,7 @@ export function PreisRechner() {
                   </>
                 )}
               </p>
-              <p className="mt-1 text-xs text-muted">
+              <p className="mt-1 text-sm text-muted">
                 {preis === null ? "Persönliches Angebot" : zahlweise === "jaehrlich" ? "netto, jährlich im Voraus" : "netto, monatlich kündbar"}
                 {preiseVorlaeufig && preis !== null ? " · vorläufig" : ""}
               </p>

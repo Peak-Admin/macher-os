@@ -56,7 +56,7 @@ export function QrPlatzhalter({ className = "" }: { className?: string }) {
           <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} className="fill-ink" />
         ))}
       </svg>
-      <figcaption className="mt-3 text-center text-xs text-muted">
+      <figcaption className="mt-3 text-center text-sm text-muted">
         Platzhalter – QR-Code folgt,
         <br />
         sobald die App verfügbar ist.

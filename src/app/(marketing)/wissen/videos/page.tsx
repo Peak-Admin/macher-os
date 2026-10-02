@@ -13,7 +13,7 @@ export const metadata = pageMeta({
 
 function StatusKommtBald() {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full bg-warning-soft px-3 py-1 text-sm font-semibold text-warning">
+    <span className="inline-flex items-center gap-2 rounded bg-warning-soft px-3 py-1 text-sm font-semibold text-warning">
       <Icon name="clock" className="size-4 shrink-0" />
       {videoStatus}
     </span>

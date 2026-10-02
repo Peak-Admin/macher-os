@@ -27,7 +27,7 @@ export function HandyAusschnitt({ kopf, zeilen }: { kopf: string; zeilen: Zeile[
               </span>
               <span className="min-w-0 flex-1 text-sm font-semibold leading-tight text-ink">{z.text}</span>
               {z.status && (
-                <span className="shrink-0 rounded-full bg-signal-soft px-2 py-0.5 text-xs font-semibold text-signal-dark">
+                <span className="shrink-0 rounded bg-signal-soft px-2 py-0.5 text-sm font-semibold text-signal-dark">
                   {z.status}
                 </span>
               )}
@@ -70,7 +70,7 @@ export function PlanAusschnitt({
         <div className="mt-6 space-y-3">
           {zeilen.map((z) => (
             <div key={z.name} className="flex items-center gap-3">
-              <span className="w-14 shrink-0 text-xs font-semibold text-muted">{z.name}</span>
+              <span className="w-14 shrink-0 text-sm font-semibold text-muted">{z.name}</span>
               <span className="relative h-7 flex-1 rounded-md bg-paper">
                 {z.balken.map(([start, laenge, ton]) => (
                   <span

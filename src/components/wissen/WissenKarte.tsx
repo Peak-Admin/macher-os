@@ -23,7 +23,7 @@ const typTon: Record<WissenTyp, string> = {
 /** Kleines Typ-Label mit Icon, z. B. „Artikel“ oder „Webinar“. */
 export function TypLabel({ typ }: { typ: WissenTyp }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-semibold ${typTon[typ]}`}>
+    <span className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-sm font-semibold ${typTon[typ]}`}>
       <Icon name={typIcons[typ]} className="size-3.5" />
       {typ}
     </span>
@@ -39,7 +39,7 @@ export function WissenKarte({ eintrag, kompakt = false }: { eintrag: WissenEintr
     >
       <div className="flex flex-wrap items-center gap-2">
         <TypLabel typ={eintrag.typ} />
-        {eintrag.meta && <span className="text-xs font-medium text-muted">{eintrag.meta}</span>}
+        {eintrag.meta && <span className="text-sm font-medium text-muted">{eintrag.meta}</span>}
       </div>
       <h3 className="mt-3 font-display text-lg font-bold leading-snug text-balance group-hover:text-signal-dark">
         {eintrag.titel}

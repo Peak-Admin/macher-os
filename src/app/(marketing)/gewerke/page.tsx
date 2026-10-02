@@ -176,13 +176,13 @@ export default function GewerkeHubPage() {
                 </div>
               </div>
               <div className="mt-5 flex-1 space-y-2 text-sm">
-                <p className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Beispiel {a.gewerk}</p>
+                <p className="text-sm font-semibold font-tagline uppercase tracking-wider text-muted">Beispiel {a.gewerk}</p>
                 <div className="rounded-md bg-white p-3 ring-1 ring-line">
-                  <span className="block text-xs font-semibold text-muted">Ohne Anpassung</span>
+                  <span className="block text-sm font-semibold text-muted">Ohne Anpassung</span>
                   <span className="text-muted line-through decoration-muted/40">{a.vorher}</span>
                 </div>
                 <div className="rounded-md bg-moss-soft p-3 ring-1 ring-moss/30">
-                  <span className="block text-xs font-semibold text-moss">Für dein Gewerk</span>
+                  <span className="block text-sm font-semibold text-moss">Für dein Gewerk</span>
                   <span className="font-semibold text-ink">{a.nachher}</span>
                 </div>
               </div>

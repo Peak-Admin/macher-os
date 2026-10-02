@@ -59,7 +59,7 @@ export function HilfeSuche({
           onChange={(e) => setSuche(e.target.value)}
           placeholder="Wobei brauchst du Hilfe? z. B. Rechnung, Urlaub, App"
           autoComplete="off"
-          className="h-14 w-full rounded-xl border border-line bg-white pl-12 pr-4 text-base text-ink shadow-sm outline-none transition focus:border-ink"
+          className="feld h-14 pl-12"
         />
       </div>
 
@@ -71,8 +71,8 @@ export function HilfeSuche({
               key={v}
               type="button"
               onClick={() => setSuche(v)}
-              className={`rounded-md px-3 py-1 font-semibold ring-1 transition ${
-                dunkel ? "ring-white/25 hover:bg-white/10" : "bg-white ring-line hover:ring-ink/40"
+              className={`inline-flex min-h-11 items-center rounded-lg px-3 font-semibold ring-1 ring-inset transition ${
+                dunkel ? "ring-white/40 hover:bg-white/10" : "bg-white ring-line-dark hover:bg-signal-soft"
               }`}
             >
               {v}

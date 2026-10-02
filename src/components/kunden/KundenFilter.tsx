@@ -67,7 +67,7 @@ export function KundenFilter({
           type="button"
           onClick={zuruecksetzen}
           disabled={!aktiv}
-          className="h-11 rounded-lg px-4 text-sm font-semibold text-ink ring-1 ring-inset ring-line transition hover:ring-ink/40 disabled:cursor-not-allowed disabled:opacity-40"
+          className="btn-zweit"
         >
           Zurücksetzen
         </button>
@@ -120,7 +120,7 @@ function FilterSelect<T extends string>({
   const id = useId();
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">
+      <label htmlFor={id} className="text-base font-semibold">
         {label}
       </label>
       <div className="relative">
@@ -128,7 +128,7 @@ function FilterSelect<T extends string>({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value as T | "")}
-          className="h-11 w-full appearance-none rounded-lg bg-paper pl-3 pr-9 text-[0.95rem] font-semibold ring-1 ring-inset ring-line hover:ring-ink/40"
+          className="feld appearance-none pr-9 font-semibold"
         >
           <option value="">{alle}</option>
           {options.map((o) => (

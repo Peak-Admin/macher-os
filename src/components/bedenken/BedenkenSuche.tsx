@@ -40,7 +40,7 @@ export function BedenkenSuche({ eintraege, vorschlaege = [] }: { eintraege: FaqI
           onChange={(e) => setSuche(e.target.value)}
           placeholder="z. B. Daten, Kosten, Mitarbeiter"
           autoComplete="off"
-          className="h-14 w-full rounded-lg border border-line-dark bg-white pl-12 pr-4 text-base text-ink outline-none transition focus-visible:ring-[3px] focus-visible:ring-primary/40"
+          className="feld h-14 pl-12"
         />
       </div>
 
@@ -53,7 +53,7 @@ export function BedenkenSuche({ eintraege, vorschlaege = [] }: { eintraege: FaqI
               type="button"
               onClick={() => setSuche(v)}
               aria-pressed={suche === v}
-              className="min-h-9 rounded-lg bg-white px-3 py-1 font-semibold text-ink ring-1 ring-line transition hover:ring-ink/40 aria-pressed:bg-signal-soft aria-pressed:ring-signal-dark"
+              className="min-h-11 rounded-lg bg-white px-3 font-semibold text-ink ring-1 ring-inset ring-line-dark transition hover:bg-signal-soft aria-pressed:bg-signal-soft aria-pressed:ring-signal-dark"
             >
               {v}
             </button>
@@ -85,7 +85,7 @@ export function BedenkenSuche({ eintraege, vorschlaege = [] }: { eintraege: FaqI
             <button
               type="button"
               onClick={() => setSuche("")}
-              className="mt-4 min-h-12 rounded-lg px-4 font-semibold text-signal-dark ring-1 ring-line hover:ring-ink/40"
+              className="btn-zweit mt-4"
             >
               Alle Bedenken zeigen
             </button>
