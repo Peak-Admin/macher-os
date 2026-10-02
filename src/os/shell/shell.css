@@ -1,4 +1,10 @@
-.mm-app { display: flex; min-height: 100vh; background: var(--mm-canvas); }
+.mm-app { display: flex; gap: 12px; min-height: 100vh; padding: 12px; background: var(--mm-dark); isolation: isolate; }
+/* Hintergrund: Werkstattfoto über die ganze Fläche; Sidebar, Topbar und Inhalt liegen als Glas darüber */
+.mm-app::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url('/bilder/os/werkstatt.webp') center / cover no-repeat;
+}
+@media print { .mm-app::before { display: none; } .mm-app { padding: 0; background: #fff; } }
 .mm-skip { position: absolute; left: -9999px; top: 8px; z-index: 200; padding: 8px 16px; background: var(--mm-action); color: #fff; border-radius: var(--mm-radius-control); }
 .mm-skip:focus { left: 8px; }
 
@@ -69,6 +75,8 @@
 .mm-app--eingeklappt .mm-nav-favorit { justify-content: center; padding: 6px 0; }
 .mm-app--eingeklappt .mm-nav-favoriten { margin: 0; padding-top: 16px; }
 /* Profilmenü neben die schmale Leiste legen, sonst schneidet die Leiste es ab */
+.mm-app--eingeklappt .mm-nav-haupt { position: relative; }
+.mm-app--eingeklappt .mm-nav-zahl { position: absolute; top: 2px; right: 6px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
 .mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 80px; bottom: 16px; }
 
 /* Hauptbereich */
@@ -120,6 +128,31 @@
   .mm-bottomnav-link--aktiv { color: var(--mm-brand-text); font-weight: 700; }
   .mm-bottomnav-link--aktiv svg { color: var(--mm-brand); }
 }
+
+/* Monteur-App: genau drei Tabs */
+@media (max-width: 1023px) {
+  .mm-bottomnav--monteur { grid-template-columns: repeat(3, 1fr); }
+  .mm-bottomnav--monteur .mm-bottomnav-link { font-size: 14px; }
+}
+
+/* Zahl neuer Einträge im Eingang (Text + Zahl, nicht nur Farbe) */
+.mm-nav-zahl { margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--mm-brand-deep); color: #fff; font: 700 12px/22px var(--mm-font); text-align: center; }
+.mm-lokalnav-zahl { margin-left: 6px; display: inline-block; vertical-align: middle; }
+.mm-bottomnav-icon { position: relative; display: inline-flex; }
+.mm-nav-zahl--klein { position: absolute; top: -6px; right: -12px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
+
+/* Offline und Installieren */
+.mm-offline, .mm-installieren { max-width: var(--mm-content-max); margin: 0 auto 16px; }
+.mm-installieren {
+  display: flex; flex-direction: column; gap: 8px; padding: 12px 12px 16px 16px;
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-left: 4px solid var(--mm-brand); border-radius: var(--mm-radius-card);
+}
+.mm-installieren-kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--mm-black); font-size: 17px; }
+.mm-installieren p { margin: 0; color: var(--mm-text); font-size: 15px; line-height: 22px; }
+@media (prefers-reduced-motion: no-preference) {
+  .mm-offline, .mm-installieren { animation: mm-einblenden 160ms ease-out; }
+}
+@keyframes mm-einblenden { from { opacity: 0; } to { opacity: 1; } }
 
 /* Lokale Navigation im Inhalt: höchstens vier Ziele, umbrechend statt waagerecht scrollend */
 .mm-lokal { width: 100%; max-width: var(--mm-content-max); margin: 0 auto 24px; display: flex; flex-direction: column; gap: 12px; }
@@ -190,4 +223,37 @@
   .mm-einsatz { padding: 16px; }
   .mm-einsatz-kunde { font-size: 24px; line-height: 30px; }
   .mm-einsatz .mm-btn--primaer { flex: 1 1 100%; }
+}
+
+/* ---------- Glas: Seitenleiste, Inhalt, Kopf und untere Leiste (mobil) schweben über dem Foto.
+   Die Unschärfe sitzt auf ::before, damit fest positionierte Kinder (Schleier, Toasts) am Fenster bleiben. */
+.mm-sidebar, .mm-kopf-mobil, .mm-inhalt, .mm-bottomnav { isolation: isolate; border: 1px solid var(--mm-glass-rand); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-glass-schatten); background: none; }
+.mm-sidebar::before, .mm-kopf-mobil::before, .mm-inhalt::before, .mm-bottomnav::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: var(--mm-glass); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur);
+}
+.mm-inhalt { position: relative; }
+.mm-inhalt::before { background: var(--mm-glass-inhalt); }
+.mm-sidebar { top: 12px; height: calc(100vh - 24px); border-right: 1px solid var(--mm-glass-rand); }
+.mm-leiste-suche { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
+.mm-nav-haupt:hover, .mm-nav-favorit:hover, .mm-profil-knopf:hover, .mm-leiste-zeile:hover { background: var(--mm-glass-karte); }
+.mm-nav-favoriten, .mm-profil--leiste { border-top-color: rgb(55 64 64 / 18%); }
+/* Karten und Listen im Inhalt: leicht durchscheinend */
+.mm-inhalt .mm-karte, .mm-inhalt .mm-liste, .mm-inhalt .mm-tabelle-rahmen, .mm-inhalt .mm-leer { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
+.mm-menue, .mm-aktionsmenue-liste { background: var(--mm-glass-inhalt); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur); border-color: var(--mm-glass-rand); }
+@media (max-width: 1023px) {
+  .mm-app { padding: 8px; gap: 8px; }
+  /* Kopf klebt beim Scrollen ganz oben, damit kein Inhalt über ihm durchscheint */
+  .mm-kopf-mobil { top: 0; border-bottom: 1px solid var(--mm-glass-rand); }
+  .mm-inhalt { margin-top: 8px; }
+  /* Kopf und untere Leiste liegen über scrollendem Text: deckender, damit nichts durchscheint */
+  .mm-kopf-mobil::before, .mm-bottomnav::before { background: var(--mm-glass-leiste); }
+  .mm-bottomnav { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); padding-bottom: 0; border-top: 1px solid var(--mm-glass-rand); }
+}
+@media print {
+  .mm-inhalt, .mm-inhalt .mm-karte, .mm-inhalt .mm-liste, .mm-inhalt .mm-tabelle-rahmen { border: 0; box-shadow: none; background: #fff; }
+  .mm-inhalt::before { display: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .mm-sidebar::before, .mm-kopf-mobil::before, .mm-inhalt::before, .mm-bottomnav::before { background: var(--mm-surface); }
 }

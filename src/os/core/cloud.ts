@@ -63,6 +63,11 @@ export interface Cloud {
   push(n: PushNachricht): Promise<void>;
   /** öffentlich lesbares Objekt hinter einem Token (Kundenbereich, Terminbuchung) */
   oeffentlichLesen<T = unknown>(art: 'portal' | 'buchung', token: string): Promise<T | undefined>;
+  /**
+   * Was ein Endkunde über einen öffentlichen Link tut (geöffnet, Nachricht, Angebot annehmen, Termin buchen) an den Betrieb
+   * schicken. Optional: fehlt es, nutzt der Kundenbereich die Server-Funktion `/api/oeffentlich/aktion`.
+   */
+  oeffentlichSenden?(e: { art: 'portal' | 'buchung'; token: string; typ: 'geoeffnet' | 'nachricht' | 'angebot' | 'buchung'; daten: Record<string, unknown> }): Promise<{ ok: true } | { ok: false; fehler: string }>;
   /** Datei ablegen, liefert URL */
   dateiAblegen(datei: Blob, name: string): Promise<string>;
 }

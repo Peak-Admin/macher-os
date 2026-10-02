@@ -29,6 +29,7 @@ import m_checklisten from '../modules/checklisten';
 import m_dateien from '../modules/dateien';
 import m_datev from '../modules/datev';
 import m_einarbeitung from '../modules/einarbeitung';
+import m_eingang from '../modules/eingang';
 import m_einsatzplanung from '../modules/einsatzplanung';
 import m_einstellungen from '../modules/einstellungen';
 import m_erledigt from '../modules/erledigt';
@@ -39,6 +40,7 @@ import m_fotos from '../modules/fotos';
 import m_hinweise from '../modules/hinweise';
 import m_kalender from '../modules/kalender';
 import m_kalkulation from '../modules/kalkulation';
+import m_konto from '../modules/konto';
 import m_kosten from '../modules/kosten';
 import m_kunden from '../modules/kunden';
 import m_kundenbereich from '../modules/kundenbereich';
@@ -114,6 +116,7 @@ export const modulListe: [string, ModulDef][] = [
   ['dateien', m_dateien],
   ['datev', m_datev],
   ['einarbeitung', m_einarbeitung],
+  ['eingang', m_eingang],
   ['einsatzplanung', m_einsatzplanung],
   ['einstellungen', m_einstellungen],
   ['erledigt', m_erledigt],
@@ -124,6 +127,7 @@ export const modulListe: [string, ModulDef][] = [
   ['hinweise', m_hinweise],
   ['kalender', m_kalender],
   ['kalkulation', m_kalkulation],
+  ['konto', m_konto],
   ['kosten', m_kosten],
   ['kunden', m_kunden],
   ['kundenbereich', m_kundenbereich],

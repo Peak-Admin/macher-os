@@ -126,3 +126,30 @@
   .ob-spielwiese { left: 8px; right: 8px; bottom: calc(72px + env(safe-area-inset-bottom)); max-width: none; padding: 8px 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .ob-regler input[type='range'] { transition: none; } }
+
+/* ---------- Glas wie in der App: Werkstattfoto über die ganze Fläche, Marke und Inhalt schweben darüber */
+.ob-rahmen { position: relative; isolation: isolate; padding: 12px 12px 48px; background: var(--mm-dark); }
+.ob-rahmen::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url('/bilder/os/werkstatt.webp') center / cover no-repeat;
+}
+.ob-marke { max-width: 1360px; margin: 0 auto 24px; border: 1px solid var(--mm-glass-rand); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-glass-schatten); }
+.ob-inhalt { position: relative; isolation: isolate; padding: 32px 32px 0; border: 1px solid var(--mm-glass-rand); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-glass-schatten); }
+.ob-inhalt::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: var(--mm-glass-inhalt); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur);
+}
+.ob-inhalt .mm-karte, .ob-inhalt .mm-liste, .ob-inhalt .mm-leer, .ob-quellen, .ob-preisliste { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
+.ob-navigation {
+  margin: 0 -32px; padding: 16px 32px; border-radius: 0 0 var(--mm-radius-panel) var(--mm-radius-panel);
+  background: var(--mm-glass-inhalt); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur); border-top-color: var(--mm-glass-rand);
+}
+@media (max-width: 600px) {
+  .ob-rahmen { padding: 8px 8px 32px; }
+  .ob-marke { margin-bottom: 8px; }
+  .ob-inhalt { padding: 24px 16px 0; }
+  .ob-navigation { margin: 0 -16px; padding: 16px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .ob-inhalt::before, .ob-navigation { background: var(--mm-surface); }
+}

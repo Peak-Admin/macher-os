@@ -6,8 +6,19 @@ import type { Angebot, ID } from '@core/objects';
 import { Portal } from './Portal';
 import { KundenbereichPanel, Zugaenge } from './Buero';
 import { aktiverZugang, portalzugaenge, zugangErzeugen } from './daten';
+import { eingabenVerarbeiten, eingabeVerarbeiter, portalEingabe, portalSichtenVeroeffentlichen, veroeffentlichenNoetig } from './oeffentlich';
 
 const REGEL = 'kundenbereich.link';
+const VEROEFFENTLICHEN = 'kundenbereich.oeffentlich';
+
+/** Änderungen bündeln: höchstens alle 2 Sekunden neu veröffentlichen */
+function entprellt(f: () => void, ms = 2000) {
+  let t: ReturnType<typeof setTimeout> | undefined;
+  return () => {
+    if (t) return;
+    t = setTimeout(() => ((t = undefined), f()), ms);
+  };
+}
 
 export default defineModul({
   id: 'kundenbereich',
@@ -39,9 +50,31 @@ export default defineModul({
           });
         }),
     },
+    {
+      id: VEROEFFENTLICHEN,
+      titel: 'Kundenbereich für Kunden bereitstellen',
+      beschreibung: 'Hält die Kundenbereiche aktuell, die deine Kunden auf ihrem eigenen Gerät öffnen, und übernimmt Antworten, Nachrichten und Annahmen von dort.',
+      standardAn: true,
+      minuten: 1,
+      start: () => {
+        const veroeffentlichen = () => {
+          if (veroeffentlichenNoetig()) portalSichtenVeroeffentlichen();
+        };
+        const spaeter = entprellt(veroeffentlichen);
+        const aus = on('*', (e) => {
+          if (e.typ.startsWith('oeffentliche_eingaben.')) eingabenVerarbeiten();
+          else if (!e.typ.startsWith('oeffentliche_sichten.') && !e.typ.startsWith('ereignisse.')) spaeter();
+        });
+        const takt = setInterval(() => (eingabenVerarbeiten(), veroeffentlichen()), 5 * 60_000);
+        eingabenVerarbeiten();
+        veroeffentlichen();
+        return () => (aus(), clearInterval(takt));
+      },
+    },
   ],
 
   init: () => {
+    eingabeVerarbeiter('portal', portalEingabe);
     // Zusammengeführte Kunden: Zugänge mitnehmen
     on('kunde.zusammengefuehrt', (e) => {
       const { zielId, quelleId } = e.daten as { zielId: ID; quelleId: ID };
