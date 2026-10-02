@@ -24,10 +24,10 @@ export type SchnellstartSchritt = {
 export const schnellstartSchritte: SchnellstartSchritt[] = [
   {
     id: "konto",
-    titel: "Konto erstellen",
-    dauer: "ca. 1 Minute",
-    text: "Name, E-Mail, Passwort. Mehr brauchst du nicht. Keine Kreditkarte, keine Verpflichtung.",
-    punkte: ["E-Mail-Adresse bestätigen", "Betriebsname und Anschrift eintragen"],
+    titel: "Kostenlos starten",
+    dauer: "ein Klick",
+    text: "Klick auf „Kostenlos testen“. Macher OS öffnet sich direkt – ohne Konto, ohne Passwort, ohne Kreditkarte.",
+    punkte: ["keine Anmeldung nötig", "Daten bleiben vorerst in deinem Browser"],
     icon: "user",
     artikel: "konto-erstellen",
   },

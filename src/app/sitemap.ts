@@ -6,7 +6,7 @@ import { vorlagen } from "@/content/wissen/vorlagen";
 import { webinare } from "@/content/wissen/webinare";
 import { site } from "@/lib/site";
 
-/** Rechtsseiten, Anmelden und Registrieren sind bewusst nicht enthalten (noindex). */
+/** Rechtsseiten sind bewusst nicht enthalten (noindex). */
 const statisch = [
   "/",
   "/funktionen",

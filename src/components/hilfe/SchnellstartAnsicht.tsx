@@ -60,10 +60,9 @@ const inhalt: Record<Ansicht, React.ReactNode> = {
   konto: (
     <>
       <p className="mb-3 font-display font-bold">Kostenlos starten</p>
-      <Zeile label="Name" wert="Jana Muster" />
-      <Zeile label="E-Mail" wert="jana@beispiel-betrieb.de" />
-      <Zeile label="Passwort" wert="••••••••••" />
-      <Knopf>Konto erstellen</Knopf>
+      <Zeile label="Konto" wert="nicht nötig" />
+      <Zeile label="Passwort" wert="nicht nötig" />
+      <Knopf>Kostenlos testen</Knopf>
     </>
   ),
   gewerk: (
