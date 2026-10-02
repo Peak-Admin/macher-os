@@ -289,7 +289,7 @@ export function Plantafel() {
       <div key={a.id} className="pt2-zeile" role="row">
         <div className="pt2-name" role="rowheader">
           <button type="button" className="pt2-projekt" style={{ background: farbe }} onClick={() => setAussehenId(a.id)} title={`${a.titel} – Aussehen und Einplanen`}>
-            <ProjektMarke auftragId={a.id} groesse={22} />
+            <ProjektMarke auftragId={a.id} groesse={20} />
             <span className="pt2-projekt-titel">{a.titel}</span>
           </button>
         </div>
@@ -315,7 +315,7 @@ export function Plantafel() {
                 {(sv.bis - sv.von + 1) * zoom.breite >= 180 && (
                   <span className="pt2-balken-leute">
                     {leute.slice(0, 3).map((m) => (
-                      <Personenbild key={m.id} m={m} groesse={20} />
+                      <Personenbild key={m.id} m={m} groesse={18} />
                     ))}
                   </span>
                 )}
@@ -345,7 +345,7 @@ export function Plantafel() {
       ...segmente.map((s) => ({ von: Math.max(0, s.von), bis: Math.min(n - 1, s.bis), art: 'termin' as const, s })),
     ];
     const verteilt = spuren(alle);
-    const anzahl = Math.max(1, ...verteilt.map((v) => v.spur + 1)) + (darfPlanen ? 1 : 0);
+    const anzahl = Math.max(1, ...verteilt.map((v) => v.spur + 1));
     const ueberlastet = geplanteStunden(m.id, von, bis, k) > verfuegbareStunden(m.id, von, bis, k);
 
     return (
@@ -373,7 +373,7 @@ export function Plantafel() {
             if (id && id !== m.id) ordne(id, ids.indexOf(m.id));
           }}
         >
-          <Personenbild m={m} groesse={32} />
+          <Personenbild m={m} groesse={28} />
           <span className="pt2-person">
             <Link to={`/betrieb/mitarbeiter/${m.id}`} className="pt-name-link" draggable={false}>
               {personName(m)}
@@ -387,7 +387,7 @@ export function Plantafel() {
             </span>
           )}
         </div>
-        <div className="pt2-spur" style={{ gridTemplateRows: `repeat(${anzahl}, var(--pt2-reihe))` }}>
+        <div className="pt2-spur" style={{ gridTemplateRows: `repeat(${anzahl}, var(--pt2-reihe))${darfPlanen ? ' 8px' : ''}` }}>
           {hintergrund(
             (d) =>
               darfPlanen && d >= heute() ? (
