@@ -4,7 +4,7 @@ import { db } from '@core/db';
 import { heute } from '@core/format';
 import { pfadZu } from '@core/modul';
 import { darf, useIch } from '@core/session';
-import { Button, Checkbox, Eingabe, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useToast } from '@ui/index';
+import { Button, Checkbox, Eingabe, Textfeld, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useToast } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
 import { fuehreAus, fuehrePlanAus, planRisiko, pruefePlan, type GatewayKontext } from '@core/gateway';
 import { BEISPIELFRAGEN, fragen as gatewayFragen, type Antwort, type AufgabeEntwurf, type PlanSchrittStand, type Vorschlag } from './assistent';
@@ -250,7 +250,9 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
   const toast = useToast();
   const navigate = useNavigate();
   const ich = useIch();
-  const pruefung = pruefePlan(v.plan, kontextFuer(ich));
+  // Texte (z. B. die Nachricht an den Kunden) lassen sich vor dem Bestätigen ändern
+  const [plan, setPlan] = useState(v.plan);
+  const pruefung = pruefePlan(plan, kontextFuer(ich));
   const erlaubt = (id: string) => !!pruefung.find((p) => p.id === id)?.erlaubt;
   const [auswahl, setAuswahl] = useState(() => v.plan.schritte.filter((s) => s.an !== false && erlaubt(s.id)).map((s) => s.id));
   const [laeuft, setLaeuft] = useState(false);
@@ -277,11 +279,11 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
   const ausfuehren = async () => {
     setLaeuft(true);
     try {
-      const r = await fuehrePlanAus(v.plan, kontextFuer(ich), { bestaetigt: true, auswahl: gewaehlt });
+      const r = await fuehrePlanAus(plan, kontextFuer(ich), { bestaetigt: true, auswahl: gewaehlt });
       const ergebnisse: PlanSchrittStand[] = r.map((x) =>
         x.status === 'uebersprungen' ? { id: x.id, label: x.label, status: x.status } : { id: x.id, label: x.label, status: x.status, text: x.ergebnis.text, bezug: x.ergebnis.ok ? x.ergebnis.bezug : undefined },
       );
-      setzeStatus({ status: 'ausgefuehrt', ergebnisse });
+      setzeStatus({ status: 'ausgefuehrt', ergebnisse, plan });
       const fehler = ergebnisse.filter((x) => x.status === 'fehler').length;
       toast(fehler ? `${fehler === 1 ? 'Ein Schritt hat' : `${fehler} Schritte haben`} nicht geklappt. Details stehen im Verlauf.` : 'Erledigt.', fehler ? { ton: 'achtung' } : undefined);
     } finally {
@@ -292,7 +294,7 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
   return (
     <Karte kompakt oberzeile="Entwurf – noch nicht ausgeführt" titel={v.plan.titel}>
       <div className="mm-stapel" style={{ gap: 12 }}>
-        {v.plan.schritte.map((s) => {
+        {plan.schritte.map((s) => {
           const p = pruefung.find((x) => x.id === s.id);
           const geht = !!p?.erlaubt;
           return (
@@ -313,6 +315,20 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
                 </span>
               )}
               {!geht && <Meta>Nicht möglich: {p?.grund}</Meta>}
+              {s.textFeld && (
+                <Textfeld
+                  label={s.textFeld.label}
+                  rows={6}
+                  value={String((s.daten as Record<string, unknown>)[s.textFeld.feld] ?? '')}
+                  disabled={laeuft}
+                  onChange={(e) =>
+                    setPlan((alt) => ({
+                      ...alt,
+                      schritte: alt.schritte.map((x) => (x.id === s.id && x.textFeld ? { ...x, daten: { ...(x.daten as Record<string, unknown>), [x.textFeld.feld]: e.target.value } } : x)),
+                    }))
+                  }
+                />
+              )}
             </div>
           );
         })}

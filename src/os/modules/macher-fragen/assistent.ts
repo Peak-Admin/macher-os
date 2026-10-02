@@ -11,9 +11,13 @@ import { db } from '@core/db';
 import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uhrzeit, datumVon, plusTage, wochenStart, tageZwischen } from '@core/format';
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
-import type { Angebot, Auftrag, Bezug, Datum, ID, Kunde, Mitarbeiter, Phase, Rechnung, Termin } from '@core/objects';
-import { aktionDef, frage as gatewayFrage, type AbsichtDef, type Plan, type PlanSchritt, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal } from '@core/gateway';
+import type { Angebot, Bezug, Datum, ID, Phase, Rechnung, Termin } from '@core/objects';
+import { frage as gatewayFrage, type AbsichtDef, type Plan, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal } from '@core/gateway';
 import { zeitraumAus, type Zeitraum } from './zeit';
+import { AKTIONS_ABSICHTEN } from './aktionen';
+import { FRAGE, LAUFEND, findeAuftrag, findeKunde, findeMitarbeiter, gross, klein, planAntwort, schritte, stand, woerter } from './hilfen';
+
+export { FRAGE, LAUFEND, findeAuftrag, findeKunde, findeMitarbeiter, gross, klein, planAntwort, schritte, stand };
 import { abwesenheitAm, anwesenheit, arbeitstagIm, geplanteStunden, kontextAusDb as planKontextAusDb, verfuegbareStunden } from '../verfuegbarkeit/daten';
 
 // ------------------------------------------------------------------ Schnittstelle
@@ -71,46 +75,13 @@ export const BEISPIELFRAGEN = [
   'Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag',
   'Was braucht mich gerade?',
   'Der Auftrag von Familie Hoffmann ist fertig',
+  'Verschieb den Termin bei Familie Hoffmann auf Montag',
 ];
 
 // ------------------------------------------------------------------ Hilfen
 
-const klein = (t: string) => t.toLowerCase();
 const anzahl = (n: number, eins: string, viele: string) => `${n} ${n === 1 ? eins : viele}`;
 const vid = () => Math.random().toString(36).slice(2, 10);
-const gross = (t: string) => (t ? t[0].toUpperCase() + t.slice(1) : t);
-
-const STOPP = new Set(['familie', 'frau', 'herr', 'firma', 'gmbh', 'kg', 'ohg', 'gbr', 'und', 'der', 'die', 'das', 'von', 'e.k.']);
-
-function woerter(t: string) {
-  return klein(t)
-    .replace(/[^\p{L}\p{N}\s-]/gu, ' ')
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
-/** Mitarbeiter, dessen Vor- oder Nachname als Wort im Text vorkommt */
-export function findeMitarbeiter(text: string): Mitarbeiter | undefined {
-  const w = new Set(woerter(text));
-  const alle = db.mitarbeiter.where((m) => m.aktiv);
-  return (
-    alle.find((m) => w.has(klein(m.vorname)) && w.has(klein(m.nachname))) ??
-    alle.find((m) => w.has(klein(m.vorname))) ??
-    alle.find((m) => m.nachname.length > 2 && w.has(klein(m.nachname)))
-  );
-}
-
-/** Kunde, dessen Namensbestandteile im Text vorkommen (beste Übereinstimmung) */
-export function findeKunde(text: string): Kunde | undefined {
-  const w = new Set(woerter(text));
-  let best: { k: Kunde; score: number } | undefined;
-  for (const k of db.kunden.all()) {
-    const teile = woerter(`${k.name} ${k.firma ?? ''}`).filter((x) => x.length >= 3 && !STOPP.has(x));
-    const score = teile.filter((x) => w.has(x)).length;
-    if (score > 0 && (!best || score > best.score)) best = { k, score };
-  }
-  return best?.k;
-}
 
 function rechnungOffen(r: Rechnung, ust: number) {
   const brutto = r.art === 'gutschrift' ? 0 : summen(r.positionen, ust).brutto;
@@ -131,7 +102,7 @@ function terminZeile(t: Termin, mitDatum: boolean): AntwortEintrag {
   };
 }
 
-const stand = (k: Kontext) => `Stand ${uhrzeit(k.jetzt.toISOString())} Uhr`;
+
 
 const KEIN_GELD: Antwort = {
   absicht: 'keine-berechtigung',
@@ -495,19 +466,6 @@ function suchen(k: Kontext, frage: string): Antwort {
 
 // ------------------------------------------------------------------ Aktionen vorbereiten (Pläne)
 
-const LAUFEND: Phase[] = ['in_arbeit', 'beauftragt', 'abnahme', 'abrechnung'];
-
-/** Auftrag aus Auftragsnummer oder Kundenname – bevorzugt in der Reihenfolge von `phasen`, dann zuletzt geändert */
-export function findeAuftrag(text: string, phasen: Phase[] = LAUFEND): Auftrag | undefined {
-  const nr = text.match(/\bA-\d{4}-\d{3,4}\b/i);
-  if (nr) return db.auftraege.where((a) => a.nummer.toLowerCase() === nr[0].toLowerCase())[0];
-  const kunde = findeKunde(text);
-  if (!kunde) return undefined;
-  return db.auftraege
-    .where((a) => a.kundeId === kunde.id && phasen.includes(a.phase))
-    .sort((a, b) => phasen.indexOf(a.phase) - phasen.indexOf(b.phase) || b.geaendertAm.localeCompare(a.geaendertAm))[0];
-}
-
 const ZAHLWORT: Record<string, number> = { ein: 1, eine: 1, einer: 1, zwei: 2, drei: 3, vier: 4, fünf: 5, sechs: 6, sieben: 7, acht: 8, neun: 9, zehn: 10, anderthalb: 1.5, eineinhalb: 1.5 };
 
 /** „zwei Stunden“, „1,5 Std.“, „eine halbe Stunde“, „45 Minuten“ → Minuten */
@@ -528,23 +486,6 @@ function taetigkeitAus(text: string): string | undefined {
   const m = text.match(/(?:stunden?|std\.?|minuten|min\.?)\s+(.+?)(?:\s+(?:auf|für|bei|beim|zum|zur|im|ins|in)\b.*)?[\s.!?]*$/i);
   const w = m?.[1]?.trim();
   return w && !/^(auf|für|bei|noch|bitte|drauf)$/i.test(w) ? gross(w) : undefined;
-}
-
-const sid = (n: number) => `s${n}`;
-
-/** Nur Schritte, deren Aktion ein Modul anbietet – keine toten Knöpfe */
-function schritte(liste: Omit<PlanSchritt, 'id'>[]): PlanSchritt[] {
-  return liste.filter((s) => !!aktionDef(s.aktion)).map((s, i) => ({ ...s, id: sid(i + 1) }));
-}
-
-function planAntwort(absicht: string, text: string, plan: Plan, grundlage: string): Antwort {
-  if (!plan.schritte.length) return { absicht: 'aktion-fehlt', text: 'Das kann Macher in deinem Betrieb noch nicht ausführen.' };
-  return {
-    absicht,
-    text,
-    vorschlaege: [{ id: vid(), art: 'plan', label: plan.titel, plan, status: 'entwurf' }],
-    grundlage,
-  };
 }
 
 /** „Der Müller-Auftrag ist fertig.“ → Arbeiten fertig melden, Rechnung vorbereiten, Plan freigeben, Bewertung anfragen */
@@ -646,7 +587,7 @@ function rechnungVorbereiten(k: Kontext, frage: string): Antwort {
   );
 }
 
-const FRAGE = /^\s*(welche|wie\s?viele|wann|was|zeig|gibt es|sind|ist)\b/;
+
 
 // ------------------------------------------------------------------ Absichten für den Gateway (Lane 0: Regeln)
 
@@ -675,6 +616,8 @@ export const ABSICHTEN: Def[] = [
     erkenne: (t) => /^erinnere?n?\s/.test(klein(t.trim())),
     beantworte: (t, _e, k) => aufgabeAnlegen(k, t, true),
   },
+  // Aktionen in anderen Modulen (Senden, Verschieben, Kunden schreiben …) – vor den Fragen geprüft
+  ...AKTIONS_ABSICHTEN,
   {
     id: 'job.finish',
     titel: 'Auftrag fertig melden (mehrere Schritte)',

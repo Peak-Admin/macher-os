@@ -13,7 +13,7 @@
  * Strategie: `docs/os/KI-GATEWAY.md`.
  */
 import { defineCollection, vermerken } from './db';
-import { einstellung } from './einstellungen';
+import { einstellung, setzeEinstellung } from './einstellungen';
 import { emit } from './events';
 import { alleModule } from './modul';
 import type { Basis, Bezug, Datum, ID, Mitarbeiter } from './objects';
@@ -82,7 +82,7 @@ export interface GatewayKontext {
   /** dieselbe Rechteprüfung wie für den Menschen – KI-Recht = Macher-OS-Recht */
   darf: (r: Recht) => boolean;
   kanal?: Kanal;
-  /** aktueller Anteil der KI-Kosten am Umsatz (0–1); fehlt er, gilt „ok“ */
+  /** Anteil der KI-Kosten am Monatsbeitrag (0–1); fehlt er, misst der Gateway selbst (`kostenAnteilMonat`) */
   kostenAnteil?: number;
 }
 
@@ -107,6 +107,11 @@ export interface AbsichtDef<A = unknown> {
   rechte?: Recht[];
   /** kleinste Lane, die diese Absicht beantworten kann (Standard 0) */
   lane?: Lane;
+  /**
+   * Geht mit Regeln, wird mit einem Modell besser (z. B. Nachricht formulieren): Ist diese Lane angeschlossen und im
+   * Kostenrahmen, schreibt das Modell; sonst bleibt es bei Lane 0. Fällt das Modell aus, ebenfalls Lane 0.
+   */
+  besserMit?: 2 | 3;
   /** Reihenfolge der Regelprüfung – kleiner zuerst (Standard 50) */
   rang?: number;
   /** Lane 0: Regel, die die Absicht ohne Modell erkennt */
@@ -117,7 +122,7 @@ export interface AbsichtDef<A = unknown> {
    * Minimum Necessary Context: nur diese Daten bekommt ein Modell zu sehen.
    * Ohne Angabe bekommt ein Modell keinen Unternehmenskontext.
    */
-  kontext?: (e: Erkennung, k: GatewayKontext) => unknown;
+  kontext?: (e: Erkennung, k: GatewayKontext, text: string) => unknown;
   /** Antwort erzeugen (Lane 0: aus den Daten; ab Lane 2 mit `modellText`) */
   beantworte: (text: string, e: Erkennung, k: GatewayKontext, hilfe: { modellText?: string }) => A;
 }
@@ -173,6 +178,32 @@ export interface ModellAdapter {
 
 const modelle = new Map<Lane, ModellAdapter>();
 
+// ------------------------------------------------------------------ Kostenmessung
+
+/**
+ * Bezugsgröße für den Kostenanteil: was der Betrieb im Monat für Macher OS zahlt (Cent, netto).
+ * Platzhalter wie `src/content/preise.ts` – Einstellung `ki.abo.monatCent`.
+ */
+export const ABO_MONAT_CENT = 8900;
+
+const monat = (d = new Date()) => d.toISOString().slice(0, 7);
+
+/** Modellkosten des laufenden Monats buchen (die Adapter melden sie nach jedem Aufruf). */
+export function kostenBuchen(cent: number, jetzt = new Date()) {
+  if (!(cent > 0)) return;
+  const key = `ki.kosten.${monat(jetzt)}`;
+  setzeEinstellung(key, einstellung(key, 0) + cent);
+}
+
+export function kostenMonat(jetzt = new Date()): number {
+  return einstellung(`ki.kosten.${monat(jetzt)}`, 0);
+}
+
+/** Anteil der KI-Kosten am Monatsbeitrag – steuert, welche Lanes noch erlaubt sind. */
+export function kostenAnteilMonat(jetzt = new Date()): number {
+  return kostenMonat(jetzt) / Math.max(1, einstellung('ki.abo.monatCent', ABO_MONAT_CENT));
+}
+
 export function registriereModell(m: ModellAdapter) {
   modelle.set(m.lane, m);
   return () => {
@@ -181,7 +212,7 @@ export function registriereModell(m: ModellAdapter) {
 }
 
 function modellFuer(lane: Lane, k: GatewayKontext): ModellAdapter | undefined {
-  if (lane === 0 || lane > hoechsteLane(kostenStufe(k.kostenAnteil ?? 0))) return undefined;
+  if (lane === 0 || lane > hoechsteLane(kostenStufe(k.kostenAnteil ?? kostenAnteilMonat(k.jetzt)))) return undefined;
   const m = modelle.get(lane);
   return m?.verfuegbar() ? m : undefined;
 }
@@ -284,7 +315,7 @@ async function verstehe(text: string, absichten: AbsichtDef[], k: GatewayKontext
   // Lane 1: günstige Klassifikation, nur wenn angeschlossen
   const jev = modellFuer(1, k);
   if (jev?.erkenne) {
-    const e = await jev.erkenne(text, absichten.filter((a) => !a.auffang).map((a) => ({ id: a.id, titel: a.titel })));
+    const e = await jev.erkenne(text, absichten.filter((a) => !a.auffang).map((a) => ({ id: a.id, titel: a.titel }))).catch(() => undefined);
     if (e && e.sicherheit >= MIN_SICHERHEIT && absichten.some((a) => a.id === e.absicht)) return { ...e, lane: 1 };
   }
   const auffang = absichten.find((a) => a.auffang);
@@ -310,7 +341,8 @@ export async function frage<A = unknown>(text: string, k: GatewayKontext): Promi
     return { absicht: def, erkennung: e, lane: e.lane, modell: LANES[e.lane].name, verweigert: 'rechte', fehlendeRechte: fehlend, protokollId: p.id };
   }
 
-  const lane = waehleLane(def.lane ?? 0, k);
+  let lane = waehleLane(def.lane ?? 0, k);
+  if (lane === 0 && def.besserMit) lane = waehleLane(def.besserMit, k) ?? 0;
   if (lane === undefined) {
     const p = protokolliere({ ...basis, absicht: def.id, sicherheit: e.sicherheit, lane: e.lane, modell: LANES[e.lane].name, ergebnis: 'verweigert', grund: 'modell-fehlt' });
     return { absicht: def, erkennung: e, lane: e.lane, modell: LANES[e.lane].name, verweigert: 'modell-fehlt', protokollId: p.id };
@@ -318,8 +350,17 @@ export async function frage<A = unknown>(text: string, k: GatewayKontext): Promi
 
   let modellText: string | undefined;
   const m = modellFuer(lane, k);
-  if (lane >= 2 && m?.schreibe) modellText = await m.schreibe(text, def.kontext?.(e, k));
-  const modell = m?.name ?? LANES[e.lane].name;
+  if (lane >= 2 && m?.schreibe) {
+    modellText = await m.schreibe(text, def.kontext?.(e, k, text)).catch(() => undefined);
+    if (modellText === undefined) {
+      if ((def.lane ?? 0) >= 2) {
+        const p = protokolliere({ ...basis, absicht: def.id, sicherheit: e.sicherheit, lane, modell: m.name, ergebnis: 'fehler', grund: 'modell-ausfall' });
+        return { absicht: def, erkennung: e, lane, modell: m.name, verweigert: 'modell-fehlt', protokollId: p.id };
+      }
+      lane = 0; // Regeln reichen
+    }
+  }
+  const modell = lane >= 2 && modellText !== undefined && m ? m.name : e.lane === 1 ? (modellFuer(1, k)?.name ?? LANES[1].name) : LANES[0].name;
 
   const ergebnis = def.beantworte(text, e, k, { modellText });
   const p = protokolliere({ ...basis, absicht: def.id, sicherheit: e.sicherheit, lane: Math.max(lane, e.lane) as Lane, modell, ergebnis: def.risiko === 'lesen' ? 'beantwortet' : 'vorgeschlagen' });
@@ -376,6 +417,8 @@ export interface PlanSchritt<D = unknown> extends Aktion<D> {
   label: string;
   /** vorausgewählt? (Standard: ja) */
   an?: boolean;
+  /** ein Textfeld in `daten`, das der Mensch vor dem Bestätigen ändern kann (z. B. die Nachricht an den Kunden) */
+  textFeld?: { feld: string; label: string };
 }
 
 export interface Plan {

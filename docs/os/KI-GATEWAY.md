@@ -27,6 +27,7 @@ Verstehen → Routen → Kontext → Rechte → günstigste ausreichende Lane
 | Prüfen | `AktionDef.pruefe` |
 | Bestätigung | `brauchtBestaetigung(risikoVon(risiko, rechte))` |
 | Ausführen | `fuehreAus(aktion, kontext, { bestaetigt })` → `AktionDef.fuehreAus` (Geschäftslogik des Moduls, auch asynchron) |
+| Modelle | `registriereModell` – im Browser über `verbindeModelle()` (`src/os/core/ki-modelle.ts`) |
 | Mehrere Schritte | `pruefePlan` → eine Bestätigung → `fuehrePlanAus` (siehe unten) |
 | Protokoll | Sammlung `ki-protokoll` (jede Frage und jede Aktion), Event `ki.aktion.ausgefuehrt` / `ki.<ergebnis>`, Eintrag `ki.aktion` im Zeitstrahl des betroffenen Objekts |
 
@@ -62,16 +63,34 @@ Eine Aktion, die `veroeffentlichen`, `loeschen`, `admin` oder `personal` braucht
 
 ### Lanes und Kosten
 
-| Lane | Name | Wofür | Stand |
-|---|---|---|---|
-| 0 | Regeln | Abfragen, Filter, Berechnungen, Regeln | aktiv – alle Absichten von „Macher fragen“ |
-| 1 | Jev | Absicht, Klassifikation, Namen/Daten herauslösen | Anschluss vorbereitet (`registriereModell`) |
-| 2 | Luna | Texte schreiben, zusammenfassen | Anschluss vorbereitet |
-| 3 | Stark | komplexe Planung, große Dokumente | Anschluss vorbereitet, nie Standard |
+| Lane | Name | Wofür | Modell (Standard) | Stand |
+|---|---|---|---|---|
+| 0 | Regeln | Abfragen, Filter, Berechnungen, Regeln | – | aktiv – alle Absichten haben Regeln |
+| 1 | Jev | Absicht erkennen, wenn keine Regel greift | `claude-haiku-4-5` | angeschlossen, wenn auf dem Server eingerichtet |
+| 2 | Luna | Texte an Kunden formulieren (`besserMit: 2`) | `claude-sonnet-5-5` | angeschlossen, wenn auf dem Server eingerichtet |
+| 3 | Stark | komplexe Planung, große Dokumente | `claude-opus-5-5` | angeschlossen, aber von keiner Absicht verlangt |
 
-Kostenrahmen (KI- und variable Infrastrukturkosten am Umsatz, `KOSTEN_GRENZEN`): Ziel ≤ 10 %, Warnung ab 15 %,
-Grenze 20 %. Bei Warnung ist Lane 3 gesperrt, an der Grenze laufen nur noch Regeln und Jev.
-Den aktuellen Anteil übergibt der Aufrufer als `kostenAnteil`; die Messung selbst folgt mit dem ersten Modell.
+**Anschluss:** `src/app/api/ki/gateway/route.ts` (Server) und `src/os/core/ki-modelle.ts` (Browser). Beim Start fragt
+`verbindeModelle()` (aus `macher-fragen` → `init`), welche Lanes eingerichtet sind, und meldet je Lane einen Adapter an.
+Der Schlüssel bleibt auf dem Server; der Browser schickt nur den Satz, die Liste der Absichten (Jev) oder den minimalen
+Kontext der Absicht (Luna). Fällt ein Modell aus, bleibt der Gateway bei Regeln bzw. der Vorlage.
+
+Umgebungsvariablen (Vercel → Projekt → Settings → Environment Variables):
+
+| Variable | Bedeutung |
+|---|---|
+| `ANTHROPIC_API_KEY` | Pflicht. Ohne Schlüssel bleibt alles bei Lane 0. |
+| `KI_MODELL_JEV`, `KI_MODELL_LUNA`, `KI_MODELL_STARK` | Modell je Lane umstellen |
+| `KI_LANES` | z. B. `1,2` – nur diese Lanes freigeben |
+
+**`besserMit`:** Eine Absicht, die mit Regeln funktioniert, aber mit einem Modell besser wird (Nachricht an den Kunden),
+nutzt Luna nur, wenn sie angeschlossen ist und der Kostenrahmen es erlaubt – sonst eine einfache Vorlage. Den Text kann der
+Mensch vor dem Senden ändern (`PlanSchritt.textFeld`).
+
+**Kostenrahmen** (`KOSTEN_GRENZEN`): Ziel ≤ 10 %, Warnung ab 15 %, Grenze 20 % – gemessen als Modellkosten des Monats
+(`kostenBuchen`, die Route meldet `kostenCent` je Aufruf) geteilt durch den Monatsbeitrag des Betriebs
+(Einstellung `ki.abo.monatCent`, Platzhalter 89 € wie in `src/content/preise.ts`). Bei Warnung ist Lane 3 gesperrt,
+an der Grenze laufen nur noch Regeln und Jev. Ein Aufrufer kann `kostenAnteil` auch selbst übergeben.
 
 ### Mehrschritt-Pläne
 
@@ -106,31 +125,52 @@ Auftrag A-2026-0007 abschließen
 |---|---|---|---|---|
 | `task.create` | macher-fragen | schreiben | schreiben | Aufgabe anlegen |
 | `time.track` | arbeitszeiten | schreiben | schreiben (für andere: planen) | abgeschlossenen Zeiteintrag anlegen, ab Arbeitsbeginn |
-| `invoice.create_draft` | rechnungen | schreiben | schreiben, geld | Rechnungsentwurf aus dem Auftrag (`rechnungErstellen`) – nie versendet |
-| `job.complete` | auftraege | schreiben | schreiben | Arbeiten fertig → Phase „Abnahme“ (erledigt wird der Auftrag erst mit der Zahlung) |
-| `job.release_plan` | einsatzplanung | schreiben | planen | künftige Einsätze des Auftrags absagen, Team wird frei |
-| `offer.send` | angebote | kritisch | veroeffentlichen | Angebot per E-Mail/SMS an den Kunden (`angebotSenden`) |
-| `review.request` | bewertungen | kritisch | veroeffentlichen | Bewertungsanfrage an den Kunden (`anfrageSenden`) |
+| `invoice.create_draft` | rechnungen | schreiben | schreiben, geld | Rechnungsentwurf aus dem Auftrag – nie versendet |
+| `invoice.send` | rechnungen | kritisch | geld, veroeffentlichen | Pflichtangaben prüfen, festschreiben (GoBD), mit XRechnung senden |
+| `job.complete` | auftraege | schreiben | schreiben | Arbeiten fertig → Phase „Abnahme“ |
+| `job.release_plan` | einsatzplanung | schreiben | planen | künftige Einsätze des Auftrags absagen |
+| `appointment.reschedule` | kalender | kritisch | planen | Termin verschieben (Dauer bleibt), prüft Konflikte im Team |
+| `message.send` | nachrichten | kritisch | veroeffentlichen | Nachricht per E-Mail/SMS an den Kunden, landet im Verlauf |
+| `offer.send` | angebote | kritisch | veroeffentlichen | Angebot per E-Mail/SMS an den Kunden |
+| `review.request` | bewertungen | kritisch | veroeffentlichen | Bewertungsanfrage an den Kunden |
+| `material.reserve` | material-am-auftrag | schreiben | schreiben | Material bereitlegen (zählt im Bedarf als reserviert), prüft freien Bestand |
+| `vacation.create` | abwesenheiten | schreiben | schreiben (für andere: personal) | Urlaub beantragen; mit Personalrecht direkt genehmigt |
+| `vacation.approve` | abwesenheiten | kritisch | personal | Antrag genehmigen, Mitarbeiter bekommt Bescheid |
+| `customer.create` | kunden | schreiben | schreiben | Kunde anlegen, warnt vor Dubletten |
 
 Jede Aktion liegt in `src/os/modules/<modul>/gateway.ts` und ruft nur die bestehende Geschäftslogik des Moduls auf.
 
 ### Intent-Library (Stand)
 
-Angemeldet von `macher-fragen` (Reihenfolge = Prüfreihenfolge):
-`task.create`, `reminder.create`, `job.finish` (Plan), `time.track`, `offer.send`, `invoice.create_draft`,
-`invoice.list`, `employee.availability`, `location.find`, `offer.list`, `request.list`, `attention.list`, `task.list`,
-`appointment.list`, `help`, `search` (Auffang).
+Angemeldet von `macher-fragen` (Reihenfolge = Prüfreihenfolge; `assistent.ts` und `aktionen.ts`):
+
+| Absicht | Beispiel | Ergebnis |
+|---|---|---|
+| `task.create`, `reminder.create` | „Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag“ | Entwurf Aufgabe |
+| `invoice.send` | „Schick die Rechnung an Familie Hoffmann“ | Plan mit 1 Schritt |
+| `appointment.reschedule` | „Die Baustelle Schneider verschiebt sich um zwei Tage“ | Termin verschieben + Kunden informieren (Luna oder Vorlage) |
+| `material.reserve` | „Reservier 20 Meter Mantelleitung für Hoffmann“ | Plan mit 1 Schritt |
+| `vacation.approve` | „Genehmige den Urlaub von Jonas“ | je Antrag ein Schritt |
+| `vacation.create` | „Ich brauche Urlaub vom 12.10. bis 16.10.“ | Antrag (Chef: direkt genehmigt) |
+| `customer.create` | „Leg einen neuen Kunden an: Bäckerei Schmidt GmbH, 0561 123456“ | Plan mit 1 Schritt |
+| `message.send` | „Schreib Familie Hoffmann, dass wir morgen gegen neun kommen“ | Entwurf zum Ändern (Luna oder Vorlage) |
+| `job.finish` | „Der Auftrag von Familie Hoffmann ist fertig“ | Plan mit bis zu 4 Schritten |
+| `time.track` | „Schreib bei Hoffmann zwei Stunden Nacharbeit auf“ | Plan mit 1 Schritt |
+| `offer.send` | „Schick das Angebot an Familie Hoffmann“ | Plan mit 1 Schritt |
+| `invoice.create_draft` | „Mach aus dem Auftrag von Schneider eine Rechnung“ | Plan mit 1 Schritt |
+| `invoice.list`, `employee.availability`, `location.find`, `offer.list`, `request.list`, `attention.list`, `task.list`, `appointment.list`, `help` | Fragen | Antwort aus den Daten |
+| `search` | alles andere | Suche (Auffang) |
 
 Neue IDs folgen dem Muster `<objekt>.<verb>` aus der Liste in Abschnitt B.3.
 
 ### Nächste Schritte
 
-1. Weitere Aktionen in den Besitzer-Modulen anmelden: `invoice.send`, `appointment.reschedule`, `message.send`,
-   `material.reserve`, `vacation.create` / `vacation.approve`, `customer.create`.
-2. Jev als Lane-1-Adapter anschließen (serverseitig, ohne Schlüssel im Browser).
-3. Kostenmessung je Betrieb und Monat → `kostenAnteil`.
-4. Luna für Texte (`message.draft`): Entwurf der Nachricht als Schritt vor `message.send`.
-5. Sprache: Speech-to-Text vor `frage(…, { kanal: 'sprache' })` – sonst nichts Neues.
+1. `/api/ki/positionen` (Angebotspositionen aus Diktat, `angebote/erstwert.ts`) spricht noch direkt mit dem Modell –
+   als Absicht mit `lane: 2` über den Gateway führen.
+2. Weitere Aktionen: `offer.update`, `job.create`, `employee.schedule` (Einsatz planen), `document.create`, `time.correct`.
+3. Anmeldung und Mandanten (Paket Fundament): Route hinter die Anmeldung, Kosten je Betrieb serverseitig messen statt im Browser.
+4. Sprache: Speech-to-Text vor `frage(…, { kanal: 'sprache' })` – sonst nichts Neues.
+5. Protokoll-Ansicht (`ki-protokoll`) für den Chef und Aufräumregel für alte Einträge.
 
 ---
 
