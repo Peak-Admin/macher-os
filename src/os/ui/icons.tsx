@@ -7,6 +7,7 @@ const pfade: Record<string, string> = {
   plan: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
   betrieb: 'M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6',
   plus: 'M12 5v14M5 12h14',
+  minus: 'M5 12h14',
   suche: 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4',
   macher: 'M12 3l1.8 4.6L18 9.5l-4.2 1.9L12 16l-1.8-4.6L6 9.5l4.2-1.9zM18 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z',
   glocke: 'M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0',

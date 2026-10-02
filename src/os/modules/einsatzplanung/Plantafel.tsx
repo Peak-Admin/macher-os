@@ -1,62 +1,45 @@
 /**
- * Plantafel: Mitarbeiter (Zeilen, frei anordenbar) × Tage (Woche oder Monat).
- * Auftrag wählen → in Zelle einplanen. Termine per Drag & Drop umsetzen. Urlaub und Krankheit als durchgehende Balken.
+ * Plantafel: oben die Projekte, darunter das Team – jeweils als durchgehende Balken über die Tage.
+ * Zoom mit − / +, Mitarbeiter frei anordnen, Projekte mit Bild, Emoji, Icon oder Farbe kennzeichnen.
+ * Fährt man über einen freien Tag eines Mitarbeiters, erscheint „+“ für einen neuen Termin.
  */
-import { useMemo, useState, type DragEvent, type ReactNode } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useMemo, useState, type CSSProperties, type DragEvent, type HTMLAttributes, type ReactNode } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { datumKurz, heute, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart, zahl } from '@core/format';
-import type { Abwesenheit, Datum, ID, Mitarbeiter, Termin } from '@core/objects';
+import type { Abwesenheit, Auftrag, Datum, ID, Mitarbeiter, Termin } from '@core/objects';
 import { useDarf } from '@core/session';
-import { Auswahl, Button, IconButton, Karte, Leer, Meldung, Meta, Seite, Segmente, Stapel, Status, Zeile, useToast } from '@ui/index';
+import { Auswahl, Button, Icon, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, useToast } from '@ui/index';
 import { TerminFormular, type TerminVorgabe } from '../kalender/TerminFormular';
-import { monatsAnfang, terminAmTag, termineIm, TERMINSTATUS } from '../kalender/daten';
+import { terminAmTag, termineIm, TERMINSTATUS } from '../kalender/daten';
 import { useSchmal } from '../kalender/hooks';
-import { abwesenheitAm, anwesenheit, geplanteStunden, kontextAusDb, restStunden, terminKonflikte, verfuegbareStunden, type Grund, type PlanKontext } from '../verfuegbarkeit/daten';
+import { abwesenheitAm, anwesenheit, arbeitstagIm, geplanteStunden, kontextAusDb, restStunden, terminKonflikte, verfuegbareStunden, type Grund } from '../verfuegbarkeit/daten';
 import { offenEinzuplanen } from '../offen/daten';
 import { ART_LABEL } from '../abwesenheiten/daten';
+import { auftragPfad } from '../auftraege/daten';
 import { Personenbild } from '../mitarbeiter/profilbild';
-import { darfTeamDaten, ROLLE_LABEL } from '../mitarbeiter/team';
+import { darfTeamDaten } from '../mitarbeiter/team';
 import { aufZelleVerschieben, vorbelegung } from './daten';
 import { geordnet, gespeicherteReihe, planReihen, reiheSpeichern, reiheZuruecksetzen, verschoben } from './reihenfolge';
+import { AussehenDialog, ProjektMarke, projektAussehen, projektFarbe } from './aussehen';
+import { laeufe, spuren, zusammenfassen, ZOOM, ZOOM_STANDARD, type Spanne } from './zeitleiste';
 import '../kalender/plan.css';
 import './plantafel.css';
 
 const WOCHENTAGE = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-type Ansicht = 'woche' | 'monat';
 const terminPfad = (id: string) => `/plan/kalender/termin/${id}`;
 const abwesenheitPfad = (id: string) => `/betrieb/abwesenheiten/${id}`;
 const wtag = (d: Datum) => WOCHENTAGE[(new Date(`${d}T12:00:00`).getDay() + 6) % 7];
-const tagZahl = (d: Datum) => d.slice(8, 10);
 const monatsTitel = (d: Datum) => new Date(`${d}T12:00:00`).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+const aktiveTermine = (liste: Termin[]) => liste.filter((t) => t.status !== 'abgesagt');
 
 function abwesenheitText(a: Abwesenheit, m: Mitarbeiter) {
   const art = darfTeamDaten(m.id) ? ART_LABEL[a.art] : 'Abwesend';
   return `${art}${a.halbtags ? ' (halber Tag)' : ''}${a.status === 'beantragt' ? ' · beantragt' : ''}`;
 }
 
-/** Durchgehender Balken für Urlaub, Krankheit, Schule … – über mehrere Tage verbunden */
-function AbwesenheitBalken({ a, m, start, ende, kompakt, laenge = 1 }: { a: Abwesenheit; m: Mitarbeiter; start: boolean; ende: boolean; kompakt?: boolean; laenge?: number }) {
-  const text = abwesenheitText(a, m);
-  const klasse = `pl-abw pl-abw--${a.art} ${a.status === 'beantragt' ? 'pl-abw--beantragt' : ''} ${start ? 'pl-abw--start' : ''} ${ende ? 'pl-abw--ende' : ''} ${kompakt ? 'pl-abw--kompakt' : ''}`;
-  const inhalt = start ? (
-    <span className="pl-abw-text" style={{ ['--laenge' as string]: laenge }}>
-      {text}
-    </span>
-  ) : <span className="sr-only">{text}</span>;
-  return darfTeamDaten(m.id) ? (
-    <Link to={abwesenheitPfad(a.id)} className={klasse} title={`${personName(m)}: ${text}`}>
-      {inhalt}
-    </Link>
-  ) : (
-    <span className={klasse} title={`${personName(m)}: ${text}`}>
-      {inhalt}
-    </span>
-  );
-}
-
-/** Terminbalken in der Wochenansicht: Zeit, Titel, Kunde und die Gesichter aller Eingeplanten */
-function TerminBalken({ t, m, gruende }: { t: Termin; m: Mitarbeiter; gruende?: Grund[] }) {
+/** Terminkarte fürs Handy: Zeit, Titel, Kunde und die Gesichter aller Eingeplanten */
+function TerminKarte({ t, m, gruende }: { t: Termin; m: Mitarbeiter; gruende?: Grund[] }) {
   const ma = t.mitarbeiterIds.map((id) => db.mitarbeiter.get(id)).filter((x): x is Mitarbeiter => !!x);
   const kunde = db.kunden.get(t.kundeId);
   const blockiert = gruende?.filter((g) => g.blockiert) ?? [];
@@ -64,21 +47,22 @@ function TerminBalken({ t, m, gruende }: { t: Termin; m: Mitarbeiter; gruende?: 
   return (
     <Link
       to={terminPfad(t.id)}
-      className={`pl-balken ${t.status === 'abgesagt' ? 'pl-balken--abgesagt' : ''} ${blockiert.length ? 'pl-balken--konflikt' : ''} ${t.art === 'besichtigung' ? 'pl-balken--ruhig' : ''}`}
-      style={{ ['--pl-farbe' as string]: m.farbe ?? undefined }}
+      className={`pl-balken ${t.status === 'abgesagt' ? 'pl-balken--abgesagt' : ''} ${blockiert.length ? 'pl-balken--konflikt' : ''}`}
+      style={{ ['--pl-farbe' as string]: m.farbe ?? undefined, background: t.auftragId ? projektFarbe(t.auftragId) : undefined }}
     >
       <span className="pl-balken-zeit">{t.ganztags ? 'Ganzer Tag' : `${uhrzeit(t.start)}–${uhrzeit(t.ende)}`}</span>
-      <strong>{t.titel}</strong>
+      <strong className="pt-karte-titel">
+        {t.auftragId && <ProjektMarke auftragId={t.auftragId} groesse={20} />}
+        {t.titel}
+      </strong>
       {kunde && <span className="pl-balken-meta">{kunde.name}</span>}
       <span className="pl-balken-fuss">
         <span className="pl-gesichter" aria-label={`Eingeplant: ${ma.map((x) => personName(x)).join(', ')}`}>
           {ma.slice(0, 4).map((x) => (
             <Personenbild key={x.id} m={x} groesse={24} />
           ))}
-          {ma.length > 4 && <span className="pl-gesichter-mehr">+{ma.length - 4}</span>}
         </span>
         {t.status !== 'geplant' && <Status ton={st.ton}>{st.label}</Status>}
-        {t.selbstGebucht && t.status === 'geplant' && <Status ton="aktiv">Bitte bestätigen</Status>}
       </span>
       {blockiert.length > 0 && (
         <span className="pl-balken-konflikt">
@@ -89,50 +73,59 @@ function TerminBalken({ t, m, gruende }: { t: Termin; m: Mitarbeiter; gruende?: 
   );
 }
 
-/** Auslastung als ruhiger Balken + Text (nie nur Farbe) */
-function Auslastung({ geplant, verfuegbar, kompakt }: { geplant: number; verfuegbar: number; kompakt?: boolean }) {
-  const anteil = verfuegbar > 0 ? Math.min(1, geplant / verfuegbar) : geplant > 0 ? 1 : 0;
-  const ueber = geplant > verfuegbar;
-  return (
-    <span className="pl-last">
-      <span className="pl-last-spur" aria-hidden>
-        <span className={`pl-last-wert ${ueber ? 'pl-last-wert--ueber' : ''}`} style={{ width: `${Math.round(anteil * 100)}%` }} />
-      </span>
-      <span className="pl-last-text">
-        {kompakt ? `${zahl(Math.round(geplant))} / ${zahl(Math.round(verfuegbar))} h` : `${zahl(geplant)} von ${zahl(verfuegbar)} h`}
-        {ueber ? ' · überlastet' : ''}
-      </span>
+/** Ein Balken in der Zeitleiste, platziert über Spalte (Tage) und Zeile (Spur). Offene Enden laufen über den Rand hinaus. */
+function Balken({
+  spanne,
+  spur,
+  offen,
+  children,
+  to,
+  titel,
+  klasse,
+  stil,
+  ziehen,
+}: {
+  spanne: Spanne;
+  spur: number;
+  offen?: { links?: boolean; rechts?: boolean };
+  children: ReactNode;
+  to?: string;
+  titel: string;
+  klasse?: string;
+  stil?: CSSProperties;
+  ziehen?: (e: DragEvent) => void;
+}) {
+  const style: CSSProperties = { gridColumn: `${spanne.von + 1} / ${spanne.bis + 2}`, gridRow: spur + 1, ...stil };
+  const cls = `pt2-balken ${offen?.links ? 'pt2-balken--links-offen' : ''} ${offen?.rechts ? 'pt2-balken--rechts-offen' : ''} ${klasse ?? ''}`;
+  return to ? (
+    <Link to={to} className={cls} style={style} title={titel} draggable={!!ziehen} onDragStart={ziehen}>
+      {children}
+    </Link>
+  ) : (
+    <span className={cls} style={style} title={titel}>
+      {children}
     </span>
   );
-}
-
-/** Abwesenheit am Tag und ob der Balken dort beginnt/endet (bezogen auf die sichtbaren Tage) */
-function abwesenheitsSegment(m: Mitarbeiter, tageListe: Datum[], i: number, k: PlanKontext) {
-  const a = abwesenheitAm(m.id, tageListe[i], k);
-  if (!a) return undefined;
-  const vorher = i > 0 ? abwesenheitAm(m.id, tageListe[i - 1], k) : undefined;
-  const nachher = i < tageListe.length - 1 ? abwesenheitAm(m.id, tageListe[i + 1], k) : undefined;
-  let laenge = 1;
-  while (i + laenge < tageListe.length && abwesenheitAm(m.id, tageListe[i + laenge], k)?.id === a.id) laenge++;
-  return { a, start: vorher?.id !== a.id, ende: nachher?.id !== a.id, laenge };
 }
 
 export function Plantafel() {
   useDatenstand();
   planReihen.use();
+  projektAussehen.use();
   const [sp, setSp] = useSearchParams();
+  const navigate = useNavigate();
   const schmal = useSchmal();
   const toast = useToast();
   const darfPlanen = useDarf('planen');
   const auftragId = sp.get('auftrag') ?? '';
   const auftrag = db.auftraege.get(auftragId || undefined);
-  const ansicht: Ansicht = sp.get('ansicht') === 'monat' ? 'monat' : 'woche';
-  const basis = sp.get('woche') ?? heute();
-  const woche = wochenStart(basis);
-  const monat = monatsAnfang(basis);
-  const tag = sp.get('tag') ?? (woche === wochenStart(heute()) ? heute() : woche);
-  const [wochenende, setWochenende] = useState(false);
+  const zoomStufe = Math.max(0, Math.min(ZOOM.length - 1, Number(sp.get('zoom') ?? ZOOM_STANDARD) || ZOOM_STANDARD));
+  const zoom = ZOOM[zoomStufe];
+  const ab = wochenStart(sp.get('ab') ?? sp.get('woche') ?? heute());
+  const tag = sp.get('tag') ?? heute();
   const [sortieren, setSortieren] = useState(false);
+  const [zu, setZu] = useState<{ projekte?: boolean; team?: boolean }>({});
+  const [aussehenId, setAussehenId] = useState<ID>();
   const [vorgabe, setVorgabe] = useState<TerminVorgabe>();
   const [zug, setZug] = useState<{ terminId: ID; vonMa: ID }>();
   const [ziel, setZiel] = useState<string>();
@@ -153,13 +146,22 @@ export function Plantafel() {
   );
   const darfOrdnen = darfPlanen && !schmal;
 
-  const von = ansicht === 'monat' ? monat : woche;
-  const bis = ansicht === 'monat' ? plusTage(monatsAnfang(monat, 1), -1) : plusTage(woche, 6);
-  const alleTage = tage(von, bis);
-  const termineZeitraum = termineIm(k.termine, von, bis);
-  const wochenendeBelegt = ansicht === 'woche' && termineZeitraum.some((t) => alleTage.slice(5).some((d) => terminAmTag(t, d)));
-  const zeigeWochenende = ansicht === 'monat' || wochenende || wochenendeBelegt;
-  const sichtbareTage = alleTage.filter((d) => zeigeWochenende || k.arbeitstage.includes(((new Date(`${d}T12:00:00`).getDay() + 6) % 7) + 1));
+  const von = ab;
+  const bis = plusTage(ab, zoom.tage - 1);
+  const sichtbareTage = tage(von, bis);
+  const n = sichtbareTage.length;
+  const termineZeitraum = aktiveTermine(termineIm(k.termine, von, bis));
+  const frei = (i: number) => !arbeitstagIm(k, sichtbareTage[i]);
+
+  /** Tage (Index) eines Termins im sichtbaren Zeitraum; offen = läuft über den Rand hinaus */
+  const spanneVon = (t: Termin): Spanne | undefined => {
+    const idx = sichtbareTage.map((d, i) => (terminAmTag(t, d) ? i : -1)).filter((i) => i >= 0);
+    if (!idx.length) return undefined;
+    const vorher = terminAmTag(t, plusTage(von, -1));
+    const nachher = terminAmTag(t, plusTage(bis, 1));
+    return { von: vorher ? -1 : idx[0], bis: nachher ? n : idx[idx.length - 1] };
+  };
+  const sichtbar = (s: Spanne): Spanne => ({ von: Math.max(0, s.von), bis: Math.min(n - 1, s.bis) });
 
   const konflikte = useMemo(() => {
     const m = new Map<ID, Map<ID, Grund[]>>();
@@ -167,11 +169,13 @@ export function Plantafel() {
     return m;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [termineZeitraum.map((t) => t.id + t.geaendertAm).join(), k.abwesenheiten.length]);
+  const blockiert = (t: Termin, maId: ID) => konflikte.get(t.id)?.get(maId)?.filter((g) => g.blockiert) ?? [];
 
+  // ---------------------------------------------------------------- Auftrag einplanen
   const offen = offenEinzuplanen(db.auftraege.all(), k.termine);
   const offenIds = new Set(offen.map((e) => e.auftrag.id));
   const weitere = db.auftraege.where((a) => ['anfrage', 'besichtigung', 'beauftragt', 'in_arbeit', 'abnahme'].includes(a.phase) && !offenIds.has(a.id));
-  const auftragLabel = (a: (typeof weitere)[number]) => `${a.nummer} · ${a.titel} (${db.kunden.get(a.kundeId)?.name ?? '–'})`;
+  const auftragLabel = (a: Auftrag) => `${a.nummer} · ${a.titel} (${db.kunden.get(a.kundeId)?.name ?? '–'})`;
   const optionen = [
     ...offen.map((e) => ({ wert: e.auftrag.id, label: `Ohne Termin: ${auftragLabel(e.auftrag)}` })),
     ...weitere.sort((a, b) => a.nummer.localeCompare(b.nummer)).map((a) => ({ wert: a.id, label: auftragLabel(a) })),
@@ -188,14 +192,6 @@ export function Plantafel() {
   const ordne = (id: ID, nach: number) => {
     const neu = verschoben(ids, id, nach);
     if (neu.join() !== ids.join()) reiheSpeichern(neu);
-  };
-  const reiheFallen = (zielId: ID) => (e: DragEvent) => {
-    e.preventDefault();
-    const id = e.dataTransfer.getData('text/x-reihe') || reiheZug;
-    setReiheZug(undefined);
-    setReiheZiel(undefined);
-    if (!id || id === zielId) return;
-    ordne(id, ids.indexOf(zielId));
   };
 
   // ---------------------------------------------------------------- Termine umsetzen
@@ -218,217 +214,300 @@ export function Plantafel() {
     });
   };
 
-  const ziehbar = (t: Termin, m: Mitarbeiter, inhalt: ReactNode, klasse?: string) => (
-    <div
-      key={t.id}
-      className={klasse}
-      draggable={darfPlanen && !schmal}
-      onDragStart={(e) => {
-        e.dataTransfer.setData('text/x-termin', t.id);
-        e.dataTransfer.setData('text/x-mitarbeiter', m.id);
-        e.dataTransfer.effectAllowed = 'move';
-        setZug({ terminId: t.id, vonMa: m.id });
-      }}
-      onDragEnd={() => (setZug(undefined), setZiel(undefined))}
-    >
-      {inhalt}
+  // ---------------------------------------------------------------- Projekte (Zeilen)
+  const projekte = (() => {
+    const nachAuftrag = new Map<ID, Termin[]>();
+    for (const t of termineZeitraum) if (t.auftragId && db.auftraege.get(t.auftragId)) nachAuftrag.set(t.auftragId, [...(nachAuftrag.get(t.auftragId) ?? []), t]);
+    const zeilen = [...nachAuftrag.entries()].map(([id, liste]) => {
+      const teile = liste.map((t) => ({ ...spanneVon(t)!, schluessel: id, t })).filter((x) => x.von != null);
+      return { auftrag: db.auftraege.get(id)!, segmente: zusammenfassen(teile, frei) };
+    });
+    zeilen.sort((a, b) => Math.min(...a.segmente.map((s) => s.von)) - Math.min(...b.segmente.map((s) => s.von)) || a.auftrag.nummer.localeCompare(b.auftrag.nummer));
+    if (auftrag && !nachAuftrag.has(auftrag.id)) zeilen.unshift({ auftrag, segmente: [] });
+    return zeilen;
+  })();
+
+  const schritt = Math.max(7, Math.round(zoom.tage / 4 / 7) * 7);
+
+  // ---------------------------------------------------------------- Bausteine der Tafel
+  const tagKlasse = (d: Datum, i: number) => `${frei(i) ? 'pt2-tag--frei' : ''} ${d === heute() ? 'pt2-tag--heute' : ''}`;
+
+  const kopf = (
+    <div className="pt2-zeile pt2-zeile--kopf">
+      <div className="pt2-name pt2-name--kopf" />
+      <div className="pt2-spur pt2-spur--kopf" style={{ gridTemplateRows: 'auto auto auto' }}>
+        {laeufe(sichtbareTage, (d) => d.slice(0, 7)).map((l) => (
+          <div key={l.schluessel} className="pt2-monat" style={{ gridColumn: `${l.von + 1} / ${l.bis + 2}`, gridRow: 1 }}>
+            {monatsTitel(sichtbareTage[l.von])}
+          </div>
+        ))}
+        {laeufe(sichtbareTage, (d) => `KW ${kalenderwoche(d)}`).map((l) => (
+          <div key={`${l.schluessel}-${l.von}`} className="pt2-kw" style={{ gridColumn: `${l.von + 1} / ${l.bis + 2}`, gridRow: 2 }}>
+            {l.bis - l.von >= 2 || zoom.breite >= 40 ? l.schluessel : ''}
+          </div>
+        ))}
+        {sichtbareTage.map((d, i) => (
+          <div key={d} className={`pt2-tagkopf ${tagKlasse(d, i)}`} style={{ gridColumn: i + 1, gridRow: 3 }} role="columnheader" aria-label={datumKurz(d)}>
+            <span className="pt2-tagkopf-wtag">{zoom.breite >= 26 ? wtag(d) : wtag(d)[0]}</span>
+            <span className="pt2-tagkopf-zahl">{Number(d.slice(8, 10))}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 
-  const kachel = (t: Termin, m: Mitarbeiter) => ziehbar(t, m, <TerminBalken t={t} m={m} gruende={konflikte.get(t.id)?.get(m.id)} />);
+  const hintergrund = (inhalt?: (d: Datum, i: number) => ReactNode, extra?: (d: Datum, i: number) => HTMLAttributes<HTMLDivElement>) =>
+    sichtbareTage.map((d, i) => {
+      const x = extra?.(d, i) ?? {};
+      return (
+        <div key={d} {...x} className={`pt2-tag ${tagKlasse(d, i)} ${x.className ?? ''}`} style={{ gridColumn: i + 1, gridRow: '1 / -1' }}>
+          {inhalt?.(d, i)}
+        </div>
+      );
+    });
 
-  const miniKachel = (t: Termin, m: Mitarbeiter) => {
-    const konflikt = !!konflikte.get(t.id)?.get(m.id)?.some((x) => x.blockiert);
-    const zeit = t.ganztags ? 'ganzer Tag' : `${uhrzeit(t.start)}–${uhrzeit(t.ende)}`;
-    return ziehbar(
-      t,
-      m,
-      <Link
-        to={terminPfad(t.id)}
-        className={`pl-mini ${konflikt ? 'pl-mini--konflikt' : ''} ${t.status === 'abgesagt' ? 'pl-mini--abgesagt' : ''}`}
-        style={{ ['--pl-farbe' as string]: m.farbe ?? undefined }}
-        title={`${t.titel} · ${zeit}${konflikt ? ' · Konflikt' : ''}`}
-        aria-label={`${t.titel}, ${datumKurz(t.start)}, ${zeit}${konflikt ? ', Konflikt' : ''}`}
-      />,
-      'pl-mini-griff',
+  const abschnitt = (schluessel: 'projekte' | 'team', titel: string, anzahl: number, aktion?: ReactNode) => (
+    <div className="pt2-zeile pt2-zeile--abschnitt">
+      <div className="pt2-name pt2-name--abschnitt">
+        <button type="button" className="pt2-auf" aria-expanded={!zu[schluessel]} onClick={() => setZu({ ...zu, [schluessel]: !zu[schluessel] })}>
+          <Icon name={zu[schluessel] ? 'weiter' : 'runter'} size={18} />
+          <span>{titel}</span>
+          <span className="pt-kopf-anzahl">{anzahl}</span>
+        </button>
+        {aktion}
+      </div>
+      <div className="pt2-spur pt2-spur--abschnitt" />
+    </div>
+  );
+
+  const projektZeile = (z: (typeof projekte)[number]) => {
+    const a = z.auftrag;
+    const farbe = projektFarbe(a.id);
+    const verteilt = spuren(z.segmente);
+    const anzahl = Math.max(1, ...verteilt.map((v) => v.spur + 1));
+    return (
+      <div key={a.id} className="pt2-zeile" role="row">
+        <div className="pt2-name" role="rowheader">
+          <button type="button" className="pt2-projekt" style={{ background: farbe }} onClick={() => setAussehenId(a.id)} title={`${a.titel} – Aussehen und Einplanen`}>
+            <ProjektMarke auftragId={a.id} groesse={22} />
+            <span className="pt2-projekt-titel">{a.titel}</span>
+          </button>
+        </div>
+        <div className="pt2-spur" style={{ gridTemplateRows: `repeat(${anzahl}, var(--pt2-reihe))` }}>
+          {hintergrund()}
+          {verteilt.map(({ eintrag: s, spur }, i) => {
+            const leute = [...new Set(s.teile.flatMap((x) => x.t.mitarbeiterIds))].map((id) => db.mitarbeiter.get(id)).filter((x): x is Mitarbeiter => !!x);
+            const konflikt = s.teile.some((x) => x.t.mitarbeiterIds.some((mid) => blockiert(x.t, mid).length));
+            const sv = sichtbar(s);
+            return (
+              <Balken
+                key={i}
+                spanne={sv}
+                spur={spur}
+                offen={{ links: s.von < 0, rechts: s.bis >= n }}
+                to={auftragPfad(a.id)}
+                titel={`${a.titel} · ${datumKurz(sichtbareTage[sv.von])} – ${datumKurz(sichtbareTage[sv.bis])}${konflikt ? ' · Konflikt' : ''}`}
+                klasse={konflikt ? 'pt2-balken--konflikt' : ''}
+                stil={{ background: farbe }}
+              >
+                {konflikt && <Icon name="achtung" size={16} />}
+                <span className="pt2-balken-text">{a.titel}</span>
+                {(sv.bis - sv.von + 1) * zoom.breite >= 180 && (
+                  <span className="pt2-balken-leute">
+                    {leute.slice(0, 3).map((m) => (
+                      <Personenbild key={m.id} m={m} groesse={20} />
+                    ))}
+                  </span>
+                )}
+              </Balken>
+            );
+          })}
+        </div>
+      </div>
     );
   };
 
-  const einplanenKnopf = (m: Mitarbeiter, d: Datum, inZelle = false) =>
-    darfPlanen && d >= heute() ? (
-      <button type="button" className={`pl-einplanen ${inZelle ? `pt-plus ${auftrag ? 'pt-plus--immer' : ''}` : ''}`} onClick={() => zelleOeffnen(m, d)} aria-label={`${auftrag ? `${auftrag.titel} einplanen` : 'Termin anlegen'}: ${personName(m)}, ${datumKurz(d)}`}>
-        + {auftrag ? 'Hier einplanen' : 'Termin'}
-      </button>
-    ) : null;
+  const mitarbeiterZeile = (m: Mitarbeiter, i: number) => {
+    const eigene = termineZeitraum.filter((t) => t.mitarbeiterIds.includes(m.id));
+    const teile = eigene.map((t) => ({ ...spanneVon(t)!, schluessel: t.auftragId, t })).filter((x) => x.von != null);
+    const segmente = zusammenfassen(teile, frei);
+    // Abwesenheiten als eigene Balken
+    const abw = new Map<ID, { a: Abwesenheit; von: number; bis: number }>();
+    sichtbareTage.forEach((d, j) => {
+      const a = abwesenheitAm(m.id, d, k);
+      if (!a) return;
+      const e = abw.get(a.id);
+      if (e) e.bis = j;
+      else abw.set(a.id, { a, von: j, bis: j });
+    });
+    const alle: (Spanne & { art: 'termin'; s: (typeof segmente)[number] } | Spanne & { art: 'abw'; x: { a: Abwesenheit } })[] = [
+      ...[...abw.values()].map((x) => ({ von: x.von, bis: x.bis, art: 'abw' as const, x })),
+      ...segmente.map((s) => ({ von: Math.max(0, s.von), bis: Math.min(n - 1, s.bis), art: 'termin' as const, s })),
+    ];
+    const verteilt = spuren(alle);
+    const anzahl = Math.max(1, ...verteilt.map((v) => v.spur + 1)) + (darfPlanen ? 1 : 0);
+    const ueberlastet = geplanteStunden(m.id, von, bis, k) > verfuegbareStunden(m.id, von, bis, k);
 
-  const vor = (n: number) => (ansicht === 'monat' ? monatsAnfang(monat, n) : plusTage(woche, 7 * n));
-  const zeitraumText =
-    ansicht === 'monat' ? monatsTitel(monat) : `KW ${kalenderwoche(woche)} · ${datumKurz(woche)} – ${datumKurz(plusTage(woche, 6))}`;
+    return (
+      <div key={m.id} className="pt2-zeile" role="row">
+        <div
+          className={`pt2-name pt2-name--person ${reiheZiel === m.id && reiheZug !== m.id ? 'pt-name--ziel' : ''} ${reiheZug === m.id ? 'pt-name--zieht' : ''} ${darfOrdnen ? 'pt-name--ziehbar' : ''}`}
+          role="rowheader"
+          draggable={darfOrdnen}
+          onDragStart={(e) => {
+            e.dataTransfer.setData('text/x-reihe', m.id);
+            e.dataTransfer.effectAllowed = 'move';
+            setReiheZug(m.id);
+          }}
+          onDragEnd={() => (setReiheZug(undefined), setReiheZiel(undefined))}
+          onDragOver={(e) => {
+            if (!reiheZug) return;
+            e.preventDefault();
+            if (reiheZiel !== m.id) setReiheZiel(m.id);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/x-reihe') || reiheZug;
+            setReiheZug(undefined);
+            setReiheZiel(undefined);
+            if (id && id !== m.id) ordne(id, ids.indexOf(m.id));
+          }}
+        >
+          <Personenbild m={m} groesse={32} />
+          <span className="pt2-person">
+            <Link to={`/betrieb/mitarbeiter/${m.id}`} className="pt-name-link" draggable={false}>
+              {personName(m)}
+            </Link>
+            {ueberlastet && <span className="pt2-ueberlastet">Überlastet</span>}
+          </span>
+          {sortieren && (
+            <span className="pt-ordnen">
+              <IconButton icon="hoch" label={`${personName(m)} nach oben`} disabled={i === 0} onClick={() => ordne(m.id, i - 1)} />
+              <IconButton icon="runter" label={`${personName(m)} nach unten`} disabled={i === mitarbeiter.length - 1} onClick={() => ordne(m.id, i + 1)} />
+            </span>
+          )}
+        </div>
+        <div className="pt2-spur" style={{ gridTemplateRows: `repeat(${anzahl}, var(--pt2-reihe))` }}>
+          {hintergrund(
+            (d) =>
+              darfPlanen && d >= heute() ? (
+                <button
+                  type="button"
+                  className={`pt2-plus ${auftrag ? 'pt2-plus--immer' : ''}`}
+                  onClick={() => zelleOeffnen(m, d)}
+                  aria-label={`${auftrag ? `${auftrag.titel} einplanen` : 'Termin anlegen'}: ${personName(m)}, ${datumKurz(d)}`}
+                >
+                  <Icon name="plus" size={18} />
+                </button>
+              ) : null,
+            (d) => {
+              const schluessel = `${m.id}|${d}`;
+              const a = anwesenheit(m.id, d, k);
+              return {
+                className: `${a.status === 'frei' || a.status === 'inaktiv' ? 'pt2-tag--frei' : ''} ${ziel === schluessel ? 'pt2-tag--ziel' : ''}`,
+                onDragOver: (e: DragEvent<HTMLDivElement>) => {
+                  if (!zug) return;
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'move';
+                  if (ziel !== schluessel) setZiel(schluessel);
+                },
+                onDragLeave: () => ziel === schluessel && setZiel(undefined),
+                onDrop: fallenLassen(m, d),
+              };
+            },
+          )}
+          {verteilt.map(({ eintrag: e, spur }, j) => {
+            if (e.art === 'abw') {
+              const a = e.x.a;
+              const text = abwesenheitText(a, m);
+              return (
+                <Balken
+                  key={`a${j}`}
+                  spanne={e}
+                  spur={spur}
+                  offen={{ links: e.von === 0 && abwesenheitAm(m.id, plusTage(von, -1), k)?.id === a.id, rechts: e.bis === n - 1 && abwesenheitAm(m.id, plusTage(bis, 1), k)?.id === a.id }}
+                  to={darfTeamDaten(m.id) ? abwesenheitPfad(a.id) : undefined}
+                  titel={`${personName(m)}: ${text}`}
+                  klasse={`pt2-abw pl-abw--${a.art} ${a.status === 'beantragt' ? 'pl-abw--beantragt' : ''}`}
+                >
+                  <span className="pt2-balken-text">{text}</span>
+                </Balken>
+              );
+            }
+            const s = e.s;
+            const einzel = s.teile.length === 1 ? s.teile[0].t : undefined;
+            const a = s.schluessel ? db.auftraege.get(s.schluessel) : undefined;
+            const gruende = s.teile.flatMap((x) => blockiert(x.t, m.id));
+            const titel = a?.titel ?? einzel?.titel ?? 'Termin';
+            const zeit = einzel && !einzel.ganztags && s.von === s.bis ? `${uhrzeit(einzel.start)}–${uhrzeit(einzel.ende)}` : '';
+            return (
+              <Balken
+                key={`t${j}`}
+                spanne={e}
+                spur={spur}
+                offen={{ links: s.von < 0, rechts: s.bis >= n }}
+                to={einzel ? terminPfad(einzel.id) : a ? auftragPfad(a.id) : undefined}
+                titel={`${titel}${zeit ? ` · ${zeit}` : ''}${gruende.length ? ` · Konflikt: ${[...new Set(gruende.map((g) => g.text))].join(', ')}` : ''}`}
+                klasse={`${gruende.length ? 'pt2-balken--konflikt' : ''} ${einzel?.status === 'geplant' || !einzel ? '' : 'pt2-balken--status'}`}
+                stil={{ background: a ? projektFarbe(a.id) : undefined }}
+                ziehen={
+                  einzel && darfPlanen
+                    ? (ev) => {
+                        ev.dataTransfer.setData('text/x-termin', einzel.id);
+                        ev.dataTransfer.setData('text/x-mitarbeiter', m.id);
+                        ev.dataTransfer.effectAllowed = 'move';
+                        setZug({ terminId: einzel.id, vonMa: m.id });
+                      }
+                    : undefined
+                }
+              >
+                {gruende.length > 0 && <Icon name="achtung" size={16} />}
+                {a && (e.bis - e.von + 1) * zoom.breite >= 72 && <ProjektMarke auftragId={a.id} groesse={18} />}
+                <span className="pt2-balken-text">
+                  {titel}
+                  {zeit && (e.bis - e.von + 1) * zoom.breite >= 200 ? <span className="pt2-balken-zeit"> · {zeit}</span> : null}
+                  {gruende.length > 0 && <span className="sr-only"> – Konflikt</span>}
+                </span>
+              </Balken>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const einplanenFeld = darfPlanen ? (
+    <div className="pt2-einplanen">
+      <Auswahl label="Projekt einplanen" value={auftragId} onChange={(e) => setze({ auftrag: e.target.value })} leer={optionen.length ? 'Projekt wählen' : 'Keine offenen Aufträge'} optionen={optionen} />
+    </div>
+  ) : null;
 
   const werkzeugleiste = (
-    <div className="pt-leiste">
-      <div className="pl-navi">
-        <IconButton icon="pfeilLinks" label={ansicht === 'monat' ? 'Voriger Monat' : 'Vorige Woche'} onClick={() => setze({ woche: vor(-1), tag: undefined })} />
-        <Button variante="tertiaer" onClick={() => setze({ woche: undefined, tag: undefined })}>
-          {ansicht === 'monat' ? 'Dieser Monat' : 'Diese Woche'}
-        </Button>
-        <IconButton icon="pfeilRechts" label={ansicht === 'monat' ? 'Nächster Monat' : 'Nächste Woche'} onClick={() => setze({ woche: vor(1), tag: undefined })} />
-        <span className="pl-zeitraum">{zeitraumText}</span>
-      </div>
-      <div className="pt-leiste-rechts">
-        {ansicht === 'woche' && !wochenendeBelegt && (
-          <Button variante="tertiaer" klein onClick={() => setWochenende(!wochenende)}>
-            {wochenende ? 'Wochenende ausblenden' : 'Wochenende zeigen'}
-          </Button>
-        )}
-        {darfOrdnen && (
-          <Button variante={sortieren ? 'sekundaer' : 'tertiaer'} klein icon={sortieren ? 'check' : 'liste'} onClick={() => setSortieren(!sortieren)}>
-            {sortieren ? 'Reihenfolge fertig' : 'Reihenfolge ändern'}
-          </Button>
-        )}
-        <Segmente
-          label="Zeitraum"
-          wert={ansicht}
-          optionen={[
-            { wert: 'woche', label: 'Woche' },
-            { wert: 'monat', label: 'Monat' },
-          ]}
-          onChange={(v) => setze({ ansicht: v === 'monat' ? 'monat' : undefined })}
-        />
-      </div>
-    </div>
-  );
-
-  const nameZelle = (m: Mitarbeiter, i: number) => {
-    const geplant = geplanteStunden(m.id, von, bis, k);
-    const verf = verfuegbareStunden(m.id, von, bis, k);
-    const unter = [ROLLE_LABEL[m.rolle], m.team].filter(Boolean).join(' · ');
-    return (
-      <div
-        key={m.id}
-        className={`pt-name ${reiheZiel === m.id && reiheZug !== m.id ? 'pt-name--ziel' : ''} ${reiheZug === m.id ? 'pt-name--zieht' : ''} ${darfOrdnen ? 'pt-name--ziehbar' : ''}`}
-        role="rowheader"
-        draggable={darfOrdnen}
-        onDragStart={(e) => {
-          e.dataTransfer.setData('text/x-reihe', m.id);
-          e.dataTransfer.effectAllowed = 'move';
-          setReiheZug(m.id);
-        }}
-        onDragEnd={() => (setReiheZug(undefined), setReiheZiel(undefined))}
-        onDragOver={(e) => {
-          if (!reiheZug) return;
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-          if (reiheZiel !== m.id) setReiheZiel(m.id);
-        }}
-        onDrop={reiheFallen(m.id)}
-      >
-        <Personenbild m={m} groesse={ansicht === 'monat' ? 32 : 40} />
-        <span className="pt-name-text">
-          <Link to={`/betrieb/mitarbeiter/${m.id}`} className="pt-name-link" draggable={false}>
-            {personName(m)}
-          </Link>
-          {ansicht === 'woche' && unter && <span className="pt-name-unter">{unter}</span>}
-          <Auslastung geplant={geplant} verfuegbar={verf} kompakt={ansicht === 'monat'} />
+    <div className="pt2-leiste">
+      {einplanenFeld ?? <span />}
+      <div className="pt2-steuerung">
+        <span className="pt2-zeitraum">
+          {datumKurz(von)} – {datumKurz(bis)}
         </span>
-        {sortieren && (
-          <span className="pt-ordnen">
-            <IconButton icon="hoch" label={`${personName(m)} nach oben`} disabled={i === 0} onClick={() => ordne(m.id, i - 1)} />
-            <IconButton icon="runter" label={`${personName(m)} nach unten`} disabled={i === mitarbeiter.length - 1} onClick={() => ordne(m.id, i + 1)} />
-          </span>
-        )}
+        <span className="pt2-gruppe">
+          <IconButton icon="pfeilLinks" label="Früher" onClick={() => setze({ ab: plusTage(ab, -schritt), woche: undefined })} />
+          <IconButton icon="pfeilRechts" label="Später" onClick={() => setze({ ab: plusTage(ab, schritt), woche: undefined })} />
+        </span>
+        <Button variante="sekundaer" onClick={() => setze({ ab: undefined, woche: undefined })}>
+          Heute
+        </Button>
+        <span className="pt2-gruppe">
+          <IconButton icon="minus" label="Mehr Tage zeigen" disabled={zoomStufe === 0} onClick={() => setze({ zoom: String(zoomStufe - 1) })} />
+          <IconButton icon="plus" label="Weniger Tage, größer zeigen" disabled={zoomStufe === ZOOM.length - 1} onClick={() => setze({ zoom: String(zoomStufe + 1) })} />
+        </span>
       </div>
-    );
-  };
-
-  const kopfZelle = (d: Datum) => {
-    const frei = !k.arbeitstage.includes(((new Date(`${d}T12:00:00`).getDay() + 6) % 7) + 1);
-    const klasse = `pt-kopf ${d === heute() ? 'pt-kopf--heute' : ''} ${frei ? 'pt-kopf--frei' : ''}`;
-    const inhalt = (
-      <>
-        <span className="pt-kopf-wtag">{ansicht === 'monat' ? wtag(d).slice(0, 2) : wtag(d)}</span>
-        <span className="pt-kopf-zahl">{tagZahl(d)}</span>
-      </>
-    );
-    return ansicht === 'monat' ? (
-      <button key={d} type="button" className={klasse} role="columnheader" onClick={() => setze({ ansicht: undefined, woche: d })} aria-label={`Woche ab ${datumKurz(d)} öffnen`}>
-        {inhalt}
-      </button>
-    ) : (
-      <div key={d} className={klasse} role="columnheader">
-        {inhalt}
-      </div>
-    );
-  };
-
-  const tagesZelle = (m: Mitarbeiter, d: Datum, i: number) => {
-    const a = anwesenheit(m.id, d, k);
-    const liste = termineIm(k.termine, d, d, { mitarbeiterId: m.id });
-    const seg = abwesenheitsSegment(m, sichtbareTage, i, k);
-    const schluessel = `${m.id}|${d}`;
-    const frei = a.status === 'frei' || a.status === 'inaktiv';
-    const monatlich = ansicht === 'monat';
-    return (
-      <div
-        key={schluessel}
-        role="gridcell"
-        className={`pt-zelle ${monatlich ? 'pt-zelle--monat' : ''} ${frei ? 'pt-zelle--frei' : ''} ${d === heute() ? 'pt-zelle--heute' : ''} ${ziel === schluessel ? 'pt-zelle--ziel' : ''}`}
-        onDragOver={(e) => {
-          if (!zug) return;
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-          if (ziel !== schluessel) setZiel(schluessel);
-        }}
-        onDragLeave={() => ziel === schluessel && setZiel(undefined)}
-        onDrop={fallenLassen(m, d)}
-      >
-        {seg && <AbwesenheitBalken a={seg.a} m={m} start={seg.start} ende={seg.ende} laenge={seg.laenge} kompakt={monatlich} />}
-        {!monatlich && a.status === 'inaktiv' && <span className="pt-zelle-hinweis">{a.text}</span>}
-        {!monatlich && a.status === 'frei' && !liste.length && !seg && <span className="pt-zelle-hinweis">{a.text}</span>}
-        {monatlich ? (
-          <>
-            {liste.slice(0, 3).map((t) => miniKachel(t, m))}
-            {liste.length > 3 && <span className="pt-mehr">+{liste.length - 3}</span>}
-            {auftrag && darfPlanen && d >= heute() && (
-              <button type="button" className="pt-mini-neu" onClick={() => zelleOeffnen(m, d)} aria-label={`${auftrag.titel} einplanen: ${personName(m)}, ${datumKurz(d)}`}>
-                +
-              </button>
-            )}
-          </>
-        ) : (
-          <>
-            {liste.map((t) => kachel(t, m))}
-            {einplanenKnopf(m, d, true)}
-          </>
-        )}
-      </div>
-    );
-  };
-
-  const legende = (
-    <div className="pt-legende" aria-label="Legende">
-      <span className="pt-legende-eintrag">
-        <span className="pl-abw pl-abw--urlaub pl-abw--start pl-abw--ende pt-legende-probe" /> Urlaub
-      </span>
-      <span className="pt-legende-eintrag">
-        <span className="pl-abw pl-abw--krank pl-abw--start pl-abw--ende pt-legende-probe" /> Krank
-      </span>
-      <span className="pt-legende-eintrag">
-        <span className="pl-abw pl-abw--schule pl-abw--start pl-abw--ende pt-legende-probe" /> Schule, Schulung, frei
-      </span>
-      <span className="pt-legende-eintrag">
-        <span className="pl-abw pl-abw--urlaub pl-abw--beantragt pl-abw--start pl-abw--ende pt-legende-probe" /> Beantragt
-      </span>
-      <span className="pt-legende-eintrag">
-        <span className="pt-legende-frei" /> Wochenende, Feiertag
-      </span>
     </div>
   );
 
   return (
     <Seite
-      titel="Einsatzplanung"
-      untertitel="Wer macht was – und wer ist wann weg. Konflikte siehst du sofort."
+      titel="Plantafel"
+      untertitel="Wer arbeitet wann an welchem Projekt – und wer ist weg."
       breit
       aktion={
         <Button variante="sekundaer" icon="kalender" to="/betrieb/abwesenheiten">
@@ -436,11 +515,6 @@ export function Plantafel() {
         </Button>
       }
     >
-      {darfPlanen && (
-        <div className="pl-kopfleiste">
-          <Auswahl label="Auftrag einplanen" value={auftragId} onChange={(e) => setze({ auftrag: e.target.value })} leer={optionen.length ? 'Auftrag wählen' : 'Keine offenen Aufträge'} optionen={optionen} />
-        </div>
-      )}
       {auftrag && (
         <Meldung
           ton="aktiv"
@@ -452,7 +526,7 @@ export function Plantafel() {
           }
         >
           {rest != null ? (rest > 0 ? `Noch ${zahl(rest)} h einzuplanen. ` : 'Die geschätzten Stunden sind verplant. ') : ''}
-          Tipp bei Mitarbeiter und Tag auf {ansicht === 'monat' ? '„+“' : '„Hier einplanen“'} – Macher schlägt die erste freie Zeit vor.
+          Tipp bei Mitarbeiter und Tag auf „+“ – Macher schlägt die erste freie Zeit vor.
         </Meldung>
       )}
 
@@ -460,17 +534,17 @@ export function Plantafel() {
         <Leer titel="Noch keine Mitarbeiter" text="Leg dein Team an, dann kannst du hier Einsätze verteilen." icon="team" />
       ) : schmal ? (
         <Stapel>
+          {einplanenFeld}
           <div className="pl-navi">
-            <IconButton icon="pfeilLinks" label="Vortag" onClick={() => setze({ tag: plusTage(tag, -1), woche: wochenStart(plusTage(tag, -1)) })} />
-            <Button variante="tertiaer" onClick={() => setze({ tag: undefined, woche: undefined })}>
+            <IconButton icon="pfeilLinks" label="Vortag" onClick={() => setze({ tag: plusTage(tag, -1) })} />
+            <Button variante="tertiaer" onClick={() => setze({ tag: undefined })}>
               Heute
             </Button>
-            <IconButton icon="pfeilRechts" label="Nächster Tag" onClick={() => setze({ tag: plusTage(tag, 1), woche: wochenStart(plusTage(tag, 1)) })} />
+            <IconButton icon="pfeilRechts" label="Nächster Tag" onClick={() => setze({ tag: plusTage(tag, 1) })} />
             <span className="pl-zeitraum">{datumKurz(tag)}</span>
           </div>
           {mitarbeiter.map((m) => {
             const a = anwesenheit(m.id, tag, k);
-            const ab = abwesenheitAm(m.id, tag, k);
             const liste = termineIm(k.termine, tag, tag, { mitarbeiterId: m.id });
             return (
               <Karte
@@ -485,10 +559,15 @@ export function Plantafel() {
                 aktion={a.status === 'da' ? <Status ton="erfolg">Da</Status> : <Status ton={a.status === 'abwesend' ? 'achtung' : 'neutral'}>{a.text}</Status>}
               >
                 <Stapel abstand={8}>
-                  {ab && <AbwesenheitBalken a={ab} m={m} start ende />}
-                  {liste.map((t) => kachel(t, m))}
+                  {liste.map((t) => (
+                    <TerminKarte key={t.id} t={t} m={m} gruende={konflikte.get(t.id)?.get(m.id)} />
+                  ))}
                   {!liste.length && <Meta>{a.status === 'da' ? 'Noch nichts geplant.' : 'Nicht verplanen.'}</Meta>}
-                  {einplanenKnopf(m, tag)}
+                  {darfPlanen && tag >= heute() && (
+                    <button type="button" className="pl-einplanen" onClick={() => zelleOeffnen(m, tag)}>
+                      + {auftrag ? 'Hier einplanen' : 'Termin'}
+                    </button>
+                  )}
                 </Stapel>
               </Karte>
             );
@@ -502,43 +581,66 @@ export function Plantafel() {
               ton="neutral"
               titel="Reihenfolge ändern"
               aktion={
-                eigeneReihe ? (
-                  <Button variante="tertiaer" klein onClick={reiheZuruecksetzen}>
-                    Standard wiederherstellen
+                <>
+                  {eigeneReihe && (
+                    <Button variante="tertiaer" klein onClick={reiheZuruecksetzen}>
+                      Standard wiederherstellen
+                    </Button>
+                  )}
+                  <Button variante="sekundaer" klein onClick={() => setSortieren(false)}>
+                    Fertig
                   </Button>
-                ) : undefined
+                </>
               }
             >
-              Mit den Pfeilen nach oben oder unten schieben – oder einen Namen auf einen anderen ziehen. Die Reihenfolge gilt für dein ganzes Team.
+              Mit den Pfeilen schieben – oder einen Namen auf einen anderen ziehen. Gilt für dein ganzes Team.
             </Meldung>
           )}
-          <div className="pt-rahmen">
-            <div
-              className={`pt-tafel ${ansicht === 'monat' ? 'pt-tafel--monat' : ''}`}
-              style={{
-                gridTemplateColumns:
-                  ansicht === 'monat' ? `minmax(196px, 216px) repeat(${sichtbareTage.length}, minmax(32px, 1fr))` : `minmax(220px, 248px) repeat(${sichtbareTage.length}, minmax(140px, 1fr))`,
-              }}
-              role="grid"
-              aria-label={`Plantafel ${zeitraumText}`}
-            >
-              <div className="pt-kopf pt-kopf--team" role="columnheader">
-                Team <span className="pt-kopf-anzahl">{mitarbeiter.length}</span>
-              </div>
-              {sichtbareTage.map(kopfZelle)}
-              {mitarbeiter.map((m, i) => (
-                <div key={m.id} className="pt-reihe" role="row">
-                  {nameZelle(m, i)}
-                  {sichtbareTage.map((d, j) => tagesZelle(m, d, j))}
-                </div>
-              ))}
+          <div className="pt2-rahmen">
+            <div className={`pt2-tafel ${zoom.breite < 40 ? 'pt2-tafel--eng' : ''}`} role="grid" aria-label={`Plantafel ${datumKurz(von)} bis ${datumKurz(bis)}`} style={{ ['--pt2-tage' as string]: n, ['--pt2-breite' as string]: `${zoom.breite}px` }}>
+              {kopf}
+              {abschnitt(
+                'projekte',
+                'Projekte',
+                projekte.length,
+                <IconButton icon="plus" label="Auftrag anlegen" className="pt2-mini" onClick={() => navigate('/auftraege/auftraege/neu')} />,
+              )}
+              {!zu.projekte &&
+                (projekte.length ? (
+                  projekte.map(projektZeile)
+                ) : (
+                  <div className="pt2-zeile">
+                    <div className="pt2-name pt2-leer">Keine Projekte in diesem Zeitraum</div>
+                    <div className="pt2-spur" style={{ gridTemplateRows: 'var(--pt2-reihe)' }}>
+                      {hintergrund()}
+                    </div>
+                  </div>
+                ))}
+              {abschnitt(
+                'team',
+                'Mitarbeiter',
+                mitarbeiter.length,
+                darfOrdnen ? <IconButton icon="mehr" label="Reihenfolge ändern" className="pt2-mini" aria-pressed={sortieren} onClick={() => setSortieren(!sortieren)} /> : undefined,
+              )}
+              {!zu.team && mitarbeiter.map(mitarbeiterZeile)}
             </div>
           </div>
-          {legende}
-          {darfPlanen && <Meta>Tipp: Termine kannst du mit der Maus auf einen anderen Mitarbeiter oder Tag ziehen. In der Monatsansicht öffnet ein Tipp auf den Tag die Woche.</Meta>}
         </Stapel>
       )}
 
+      <AussehenDialog
+        key={aussehenId}
+        auftrag={db.auftraege.get(aussehenId)}
+        onSchliessen={() => setAussehenId(undefined)}
+        onEinplanen={
+          darfPlanen
+            ? (id) => {
+                setAussehenId(undefined);
+                setze({ auftrag: id });
+              }
+            : undefined
+        }
+      />
       <TerminFormular
         offen={!!vorgabe}
         onSchliessen={() => setVorgabe(undefined)}
