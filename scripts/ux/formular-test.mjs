@@ -81,11 +81,7 @@ const kundeId = (await optionenVon(kundeFeld)).find((t) => t.includes('Familie M
 await waehle(kundeFeld, kundeId);
 pruefe(await page.getByText('Am Markt 1, 34117 Kassel').isVisible(), 'Neuer Kunde mit einem Ort: Adresse steht als Zusammenfassung da');
 await page.getByRole('button', { name: 'Adresse ändern' }).click();
-<<<<<<< HEAD
-await page.getByLabel('Leistungsort', { exact: true }).selectOption({ label: 'Andere Adresse eingeben' });
-=======
-await waehle(page.getByLabel('Einsatzort', { exact: true }), 'Andere Adresse eingeben');
->>>>>>> origin/claude/plantafel-visual-improvements-mxo476
+await waehle(page.getByLabel('Leistungsort', { exact: true }), 'Andere Adresse eingeben');
 await page.getByLabel('Straße und Hausnummer').fill('Bahnhofstraße 5');
 await page.getByLabel('Stadt', { exact: true }).fill('Kassel');
 await page.getByLabel('Projektname').fill('Außenbeleuchtung');
@@ -100,15 +96,9 @@ pruefe((await einsatzortArt()) === 'auswahl-leer', 'Mehrere Orte: keine stille V
 await page.getByLabel('Projektname').fill('Steckdosen im Bad erneuern');
 await knopf().click();
 const fokus = await page.evaluate(() => document.querySelector(`label[for="${document.activeElement?.id}"]`)?.textContent);
-<<<<<<< HEAD
 pruefe(fokus === 'Leistungsort' && /\/neu$/.test(page.url()), `Fehlender Leistungsort: kein Anlegen, Fokus springt zum Feld (${fokus})`);
-const offen = page.getByLabel('Leistungsort', { exact: true }).locator('option', { hasText: 'Adresse noch offen' });
-pruefe((await offen.count()) === 1, '„Adresse noch offen“ ist wählbar');
-=======
-pruefe(fokus === 'Einsatzort' && /\/neu$/.test(page.url()), `Fehlender Einsatzort: kein Anlegen, Fokus springt zum Feld (${fokus})`);
-const ortOptionen = await optionenVon(page.getByLabel('Einsatzort', { exact: true }));
-pruefe(ortOptionen.filter((t) => t.includes('Einsatzort noch offen')).length === 1, '„Einsatzort noch offen“ ist wählbar');
->>>>>>> origin/claude/plantafel-visual-improvements-mxo476
+const ortOptionen = await optionenVon(page.getByLabel('Leistungsort', { exact: true }));
+pruefe(ortOptionen.filter((t) => t.includes('Adresse noch offen')).length === 1, '„Adresse noch offen“ ist wählbar');
 
 // Weitere Angaben: Werte bleiben beim Zuklappen erhalten
 await page.goto(`${basis}/os/auftraege/auftraege/neu`, { waitUntil: 'networkidle' });

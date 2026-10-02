@@ -38,6 +38,9 @@ const KATEGORIE_ICON: Record<Kategorie, GlasIconName> = {
   kalender: 'kalender',
   kommunikation: 'mail',
   plattform: 'stecker',
+  ablage: 'ordner',
+  vertrieb: 'person',
+  daten: 'import',
 };
 
 /**
