@@ -37,7 +37,9 @@ export default defineModul({
     if (!b) return [];
     const liste = [];
     const fehlt = fehlendeRechnungsangaben(b);
-    if (fehlt.length) {
+    // Just in time: erst erinnern, wenn es schon echte Angebote oder Rechnungen gibt – vor dem ersten Senden fragt der Briefkopf-Check
+    const dokumente = db.angebote.all().some((a) => !a.beispiel) || db.rechnungen.all().some((r) => !r.beispiel);
+    if (fehlt.length && dokumente) {
       liste.push({
         schluessel: `einstellungen-rechnungsangaben:${fehlt.join(',')}`,
         art: 'problem' as const,

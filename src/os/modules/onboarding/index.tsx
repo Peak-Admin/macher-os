@@ -6,7 +6,7 @@ export default defineModul({
   id: 'onboarding',
   titel: 'Onboarding',
   bereich: 'macher',
-  beschreibung: 'Richtet Macher OS in unter fünf Minuten mit deinen eigenen Daten ein: Briefkopf, Kunden, Preise, Team.',
+  beschreibung: 'Magic Setup: eine Frage, Website angeben – Macher richtet Betrieb, Gewerk und Leistungen ein. Ohne Website ein Tipp aufs Gewerk.',
   icon: 'start',
   gewicht: 40,
   navigation: 'versteckt',

@@ -47,38 +47,13 @@ details.mm-mehr[open] > summary { margin-bottom: var(--mm-space-3); }
 .mm-vorschau .mm-druck-huelle { min-height: 0; padding: 0; background: transparent; }
 .mm-vorschau .mm-druck { min-height: 0; box-shadow: none; }
 
-/* Dein Start (Heute) */
-.mm-start-haken { display: grid; gap: var(--mm-space-2); margin: 0; padding: 0; list-style: none; }
-.mm-start-haken li { display: flex; align-items: center; gap: var(--mm-space-3); min-height: 44px; flex-wrap: wrap; }
-.mm-start-haken-box {
-  display: grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0;
-  border: 2px solid var(--mm-border-dark); border-radius: var(--mm-radius-control); color: var(--mm-on-action);
-}
-.mm-start-haken-box--an { background: var(--mm-brand-deep); border-color: var(--mm-brand-deep); }
-.mm-start-haken-text { flex: 1; min-width: 160px; }
-.mm-start-haken li.erledigt .mm-start-haken-text { text-decoration: line-through; color: var(--mm-muted-on-white); }
+/* Startseite: Erfolgszeile nach dem Magic Setup */
+.mm-start-fertig { display: flex; align-items: center; gap: var(--mm-space-3); color: var(--mm-text); }
+.mm-start-fertig-haken { display: grid; place-items: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--mm-success-surface); color: var(--mm-success); }
 
-/* „Dein Start“ auf Heute: eine kompakte Fortschrittszeile, Schritte erst nach dem Öffnen */
-.mm-start-zeile { background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); }
-.mm-start-zeile > summary {
-  display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; min-height: 56px; padding: 6px 8px 6px 16px;
-  cursor: pointer; list-style: none; border-radius: inherit;
-}
-.mm-start-zeile > summary::-webkit-details-marker { display: none; }
-.mm-start-zeile > summary:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
-.mm-start-zeile-text { color: var(--mm-text); }
-.mm-start-zeile-text strong { color: var(--mm-black); }
-.mm-start-zeile-balken { flex: 1 1 80px; max-width: 200px; }
-.mm-start-zeile-knopf {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-left: auto; padding: 0 12px;
-  border: 1px solid var(--mm-brand-text); border-radius: var(--mm-radius-control); color: var(--mm-brand-text); font-weight: 600;
-  transition: background-color var(--mm-motion-fast) ease-out;
-}
-.mm-start-zeile > summary:hover .mm-start-zeile-knopf { background: var(--mm-soft-green); }
-.mm-start-zeile[open] > summary { border-bottom: 1px solid var(--mm-border); border-radius: var(--mm-radius-card) var(--mm-radius-card) 0 0; }
-.mm-start-zeile .mm-start-haken { padding: 12px 16px 16px; }
-@media (max-width: 639px) {
-  .mm-start-zeile > summary { padding: 8px 8px 8px 12px; }
-  .mm-start-zeile-knopf { margin-left: 0; width: 100%; justify-content: center; }
-  .mm-start-zeile-balken { max-width: none; }
-}
+/* Briefkopf just in time (Dialog vor dem ersten Senden) */
+.mm-briefkopf-liste { display: grid; gap: var(--mm-space-2); margin: 0; padding: 0; list-style: none; }
+.mm-briefkopf-liste li { display: flex; align-items: flex-start; gap: var(--mm-space-3); color: var(--mm-text); overflow-wrap: anywhere; }
+.mm-briefkopf-icon { display: grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: var(--mm-success-surface); color: var(--mm-success); }
+.mm-briefkopf-fehlt .mm-briefkopf-icon { background: var(--mm-warning-surface); color: var(--mm-warning); }
+.mm-briefkopf-plz-ort { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: var(--mm-space-3); }

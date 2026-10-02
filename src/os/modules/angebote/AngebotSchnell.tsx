@@ -13,6 +13,7 @@ import type { Position } from '@core/objects';
 import { Button, Dialog, Eingabe, Karte, Meldung, Meta, Seite, Stapel, Textfeld, ZahlEingabe, useToast } from '@ui/index';
 import { kontaktArt, versandText, type SendeErgebnis } from '@modules/start/daten';
 import { KundeBlock, LEERER_KUNDE, PositionenSchnell, SchrittKopf, type KundeWahl } from '@modules/start/teile';
+import { useBriefkopfVorSenden } from '@modules/start/BriefkopfPruefen';
 import { AngebotBrief } from './AngebotDruck';
 import { KeinGeldRecht } from './AngebotDetail';
 import { angebotSummen, gueltigTage, nachfassenTage, standardEinleitung, ustSatz } from './daten';
@@ -39,6 +40,7 @@ export function AngebotSchnell() {
   const [sendet, setSendet] = useState(false);
   const [fehler, setFehler] = useState<{ kunde?: string; kontakt?: string; positionen?: string }>({});
   const [ergebnis, setErgebnis] = useState<{ angebotId: string; r: SendeErgebnis; kanal: 'email' | 'sms' }>();
+  const [briefkopfPruefen, briefkopfDialog] = useBriefkopfVorSenden('Angebot');
   db.leistungen.use();
 
   if (!geld) return <KeinGeldRecht />;
@@ -79,8 +81,14 @@ export function AngebotSchnell() {
 
   const anlegen = () => schnellAngebotAnlegen(kundeId(), positionen, { ...kopf, einleitung: kopf.einleitung || undefined });
 
-  const senden = async () => {
+  /** Erst prüfen, dann – falls nötig – kurz den Briefkopf ergänzen, dann senden */
+  const senden = () => {
     if (!pruefen() || !kanal) return;
+    briefkopfPruefen(() => void wirklichSenden());
+  };
+
+  const wirklichSenden = async () => {
+    if (!kanal) return;
     setSendet(true);
     try {
       const a = anlegen();
@@ -195,6 +203,7 @@ export function AngebotSchnell() {
           />
         </div>
       </Dialog>
+      {briefkopfDialog}
     </Seite>
   );
 }
