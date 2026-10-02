@@ -4,11 +4,12 @@
  * - Aus der Widget-Bibliothek ins Raster ziehen oder „Hinzufügen“ tippen.
  * - Größe: Klein (eine Spalte) oder Groß (volle Breite). Ausblenden mit einem Tipp.
  * - Ohne Maus: Griff fokussieren, Pfeil hoch/runter verschiebt, Pfeil links/rechts wechselt die Spalte.
- * Jede Änderung wird sofort für diesen Nutzer gespeichert.
+ * Jede Änderung wird sofort für diesen Nutzer gespeichert – und sofort sichtbar: Widgets gleiten an ihren neuen Platz,
+ * das geänderte Widget leuchtet kurz auf, und eine Meldung bestätigt die Änderung (mit „Rückgängig“).
  */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode, type RefObject } from 'react';
 import type { Mitarbeiter } from '@core/objects';
-import { AktionsMenue, Button, Dialog, Icon, IconButton, Status, Suchfeld, ThemenIcon, useBestaetigen, type MenueAktion } from '@ui/index';
+import { AktionsMenue, Button, Dialog, Icon, IconButton, Status, Suchfeld, ThemenIcon, useBestaetigen, useToast, type MenueAktion } from '@ui/index';
 import { passt } from '@core/format';
 import { groesseSetzen, kannSchritt, schritt, sichtbarSetzen, spalteSetzen, verschieben, type Ziel } from './layout';
 import { homeMessen } from './messen';
@@ -28,6 +29,42 @@ interface Zug {
 }
 
 const SCHWELLE = 6;
+/** so lange bleibt das zuletzt geänderte Widget markiert */
+const MARKIERT_MS = 1600;
+
+const wenigerBewegung = () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/**
+ * Live-Feedback beim Umordnen (FLIP): Nach jeder Änderung gleiten die Widgets von ihrem alten an den neuen Platz,
+ * neu hinzugekommene blenden weich ein. Nur Transform/Opacity, 180 ms ease-out – keine Layoutsprünge.
+ */
+function useGleiten(wurzel: RefObject<HTMLElement | null>) {
+  const vorher = useRef(new Map<string, DOMRect>());
+  useLayoutEffect(() => {
+    const el = wurzel.current;
+    if (!el) return;
+    const ruhig = wenigerBewegung();
+    const jetzt = new Map<string, DOMRect>();
+    for (const w of el.querySelectorAll<HTMLElement>('[data-home-widget]')) {
+      const id = w.dataset.homeWidget!;
+      if (typeof w.animate !== 'function') continue;
+      w.getAnimations?.().forEach((a) => a.cancel());
+      const r = w.getBoundingClientRect();
+      jetzt.set(id, r);
+      if (ruhig) continue;
+      const alt = vorher.current.get(id);
+      if (!alt) {
+        if (vorher.current.size) w.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 180, easing: 'ease-out' });
+        continue;
+      }
+      const dx = alt.left - r.left;
+      const dy = alt.top - r.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) continue;
+      w.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], { duration: 180, easing: 'ease-out' });
+    }
+    vorher.current = jetzt;
+  });
+}
 
 /** Ablageziel unter dem Zeiger bestimmen */
 function zielAn(x: number, y: number, ziehtId: string): Ziel | undefined | 'gleich' {
@@ -70,6 +107,10 @@ export function HomeEditor({
   const [ansage, setAnsage] = useState('');
   const [bibliothekOffen, setBibliothekOffen] = useState(false);
   const [fragen, bestaetigung] = useBestaetigen();
+  const toast = useToast();
+  const [markiert, setMarkiert] = useState<{ id: string; n: number } | null>(null);
+  const flaeche = useRef<HTMLDivElement>(null);
+  useGleiten(flaeche);
   const zugRef = useRef<Zug | null>(null);
   const layoutRef = useRef(layout);
   useLayoutEffect(() => {
@@ -81,10 +122,43 @@ export function HomeEditor({
   // Vorschau während des Ziehens: so sähe das Home nach dem Loslassen aus
   const vorschau = zug?.aktiv && zug.ziel ? verschieben(layout, zug.id, zug.ziel) : layout;
 
-  const aendern = (neu: HomeLayout, text: string, ereignis?: Parameters<typeof homeMessen>[0], id?: string) => {
+  const markieren = (id?: string) => {
+    if (id) setMarkiert((m) => ({ id, n: (m?.n ?? 0) + 1 }));
+  };
+
+  // Markierung nach kurzer Zeit lösen; das geänderte Widget in den sichtbaren Bereich holen
+  useEffect(() => {
+    if (!markiert) return;
+    const el = [...document.querySelectorAll<HTMLElement>('[data-home-widget]')].find((x) => x.dataset.homeWidget === markiert.id);
+    el?.scrollIntoView?.({ block: 'nearest', behavior: wenigerBewegung() ? 'auto' : 'smooth' });
+    const t = setTimeout(() => setMarkiert(null), MARKIERT_MS);
+    return () => clearTimeout(t);
+  }, [markiert]);
+
+  /**
+   * Änderung speichern und sichtbar bestätigen. `meldung: false` bei schnellen Tastatur-Schritten:
+   * dann reichen Markierung und Ansage für Screenreader, damit sich keine Meldungen stapeln.
+   */
+  const aendern = (neu: HomeLayout, text: string, ereignis?: Parameters<typeof homeMessen>[0], id?: string, meldung = true) => {
+    const alt = layoutRef.current;
     speichern(neu);
-    setAnsage(text);
+    markieren(id);
     if (ereignis) homeMessen(ereignis, id ? { widget: id } : undefined);
+    if (!meldung) {
+      setAnsage(text);
+      return;
+    }
+    setAnsage('');
+    toast(`${text} Gespeichert.`, {
+      aktion: {
+        label: 'Rückgängig',
+        onClick: () => {
+          speichern(alt);
+          markieren(id);
+          setAnsage('Rückgängig gemacht.');
+        },
+      },
+    });
   };
 
   // Zeiger-Ereignisse während eines Zugs global verfolgen
@@ -150,7 +224,7 @@ export function HomeEditor({
     else if (k.key === 'ArrowRight' && e.size === 'klein' && e.spalte === 'links') [neu, text] = [spalteSetzen(layout, e.widgetId, 'rechts'), 'in die rechte Spalte'];
     if (!neu) return;
     k.preventDefault();
-    aendern(neu, `${name(e.widgetId)} ${text} verschoben.`, 'home_widget_reordered', e.widgetId);
+    aendern(neu, `${name(e.widgetId)} ${text} verschoben.`, 'home_widget_reordered', e.widgetId, false);
     fokusAufGriff(e.widgetId);
   };
 
@@ -159,6 +233,7 @@ export function HomeEditor({
 
   const umhuellen = (e: WidgetEintrag, def: WidgetDefinition, widget: ReactNode) => {
     const zieht = zug?.aktiv && zug.id === e.widgetId;
+    const istMarkiert = !zieht && markiert?.id === e.widgetId;
     const menue: MenueAktion[] = [
       ...(kannSchritt(layout, e.widgetId, -1) ? [{ label: 'Nach oben', onClick: () => aendern(schritt(layout, e.widgetId, -1), `${def.name} nach oben verschoben.`, 'home_widget_reordered', e.widgetId) }] : []),
       ...(kannSchritt(layout, e.widgetId, 1) ? [{ label: 'Nach unten', onClick: () => aendern(schritt(layout, e.widgetId, 1), `${def.name} nach unten verschoben.`, 'home_widget_reordered', e.widgetId) }] : []),
@@ -172,7 +247,10 @@ export function HomeEditor({
         : []),
     ];
     return (
-      <div className={`mm-home-bearbeiten${zieht ? ' mm-home-bearbeiten--zieht' : ''}`}>
+      <div
+        className={`mm-home-bearbeiten${zieht ? ' mm-home-bearbeiten--zieht' : ''}${istMarkiert ? ` mm-home-bearbeiten--geaendert mm-home-bearbeiten--puls-${markiert!.n % 2 ? 'a' : 'b'}` : ''}`}
+        data-geaendert={istMarkiert || undefined}
+      >
         <div className="mm-home-werkzeug">
           <button
             type="button"
@@ -263,7 +341,7 @@ export function HomeEditor({
       </div>
 
       <div className="mm-home-editor-flaeche">
-        <div className="mm-home-editor-raster">
+        <div className="mm-home-editor-raster" ref={flaeche}>
           <HomeRaster
             layout={vorschau}
             defs={defs}
