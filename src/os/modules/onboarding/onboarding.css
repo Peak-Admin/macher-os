@@ -39,7 +39,6 @@
 .ob-gewerk-bild--ersatz { background: linear-gradient(150deg, var(--mm-dark) 0%, color-mix(in srgb, var(--mm-brand-deep) 70%, var(--mm-dark)) 100%); }
 .ob-gewerk-bild--ersatz::after { background: radial-gradient(circle at 25% 20%, color-mix(in srgb, var(--mm-brand-accent) 22%, transparent), transparent 55%); }
 .ob-gewerk-pfeile { position: absolute; right: -6%; bottom: -12%; height: 90%; color: color-mix(in srgb, var(--mm-brand) 40%, transparent); }
-.ob-gewerk-icon { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: rgb(255 255 255 / 40%); }
 .ob-gewerk-haken {
   position: absolute; top: 12px; right: 12px; z-index: 1; display: grid; place-items: center; width: 28px; height: 28px;
   border-radius: 50%; background: var(--mm-brand-deep); color: var(--mm-on-dark); box-shadow: 0 0 0 2px var(--mm-on-dark);

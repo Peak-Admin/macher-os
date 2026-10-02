@@ -278,20 +278,20 @@ function Ablauf({ onFertig }: { onFertig: () => void }) {
 }
 
 /**
- * Fotos aus dem Bildregister der Website (`public/bilder/gewerke/…`, siehe `docs/design/bilder.md`).
- * Fehlt ein Foto, zeigt die Karte eine Markenfläche mit Pfeilmotiv und Icon.
+ * Fotos aus dem Bildregister der Website (`public/bilder/gewerke/…`, Nachweise in `src/content/bilder.ts`).
+ * Fehlt ein Foto, bleibt eine Markenfläche mit Pfeilmotiv stehen.
  */
-const GEWERK_BILD: Record<Gewerk, { datei: string; icon: IconName }> = {
-  elektro: { datei: 'elektriker', icon: 'stecker' },
-  shk: { datei: 'shk', icon: 'werkzeug' },
-  maler: { datei: 'maler', icon: 'stift' },
-  dach: { datei: 'dachdecker', icon: 'betrieb' },
-  tischler: { datei: 'tischler', icon: 'werkzeug' },
-  fliesen: { datei: 'fliesenleger', icon: 'liste' },
-  garten: { datei: 'galabau', icon: 'ort' },
-  metall: { datei: 'metall-maschinen', icon: 'werkzeug' },
-  bau: { datei: 'bau', icon: 'lager' },
-  sonstiges: { datei: 'weitere-gewerke', icon: 'werkzeug' },
+const GEWERK_BILD: Record<Gewerk, { datei: string; position?: string }> = {
+  elektro: { datei: 'elektriker' },
+  shk: { datei: 'shk', position: 'center 25%' },
+  maler: { datei: 'maler', position: 'center 70%' },
+  dach: { datei: 'dachdecker' },
+  tischler: { datei: 'tischler' },
+  fliesen: { datei: 'fliesenleger', position: 'center 35%' },
+  garten: { datei: 'galabau', position: 'center 30%' },
+  metall: { datei: 'metall-maschinen' },
+  bau: { datei: 'bau', position: 'center 30%' },
+  sonstiges: { datei: 'weitere-gewerke' },
 };
 
 function GewerkKarten({ wert, onChange }: { wert?: Gewerk; onChange: (g: Gewerk) => void }) {
@@ -319,20 +319,17 @@ function GewerkKarten({ wert, onChange }: { wert?: Gewerk; onChange: (g: Gewerk)
 }
 
 function GewerkFoto({ gewerk }: { gewerk: Gewerk }) {
-  const { datei, icon } = GEWERK_BILD[gewerk];
+  const { datei, position } = GEWERK_BILD[gewerk];
   const [fehlt, setFehlt] = useState(false);
   return (
     <span className={`ob-gewerk-bild${fehlt ? ' ob-gewerk-bild--ersatz' : ''}`} aria-hidden="true">
       {fehlt ? (
-        <>
-          <svg viewBox="0 0 220 200" className="ob-gewerk-pfeile" fill="currentColor">
-            <path d="M0 0h52l70 100-70 100H0l70-100Z" />
-            <path d="M90 0h52l70 100-70 100H90l70-100Z" opacity=".55" />
-          </svg>
-          <Icon name={icon} size={32} className="ob-gewerk-icon" />
-        </>
+        <svg viewBox="0 0 220 200" className="ob-gewerk-pfeile" fill="currentColor">
+          <path d="M0 0h52l70 100-70 100H0l70-100Z" />
+          <path d="M90 0h52l70 100-70 100H90l70-100Z" opacity=".55" />
+        </svg>
       ) : (
-        <img src={`/bilder/gewerke/${datei}.jpg`} alt="" loading="lazy" decoding="async" onError={() => setFehlt(true)} />
+        <img src={`/bilder/gewerke/${datei}.jpg`} alt="" loading="lazy" decoding="async" style={position ? { objectPosition: position } : undefined} onError={() => setFehlt(true)} />
       )}
     </span>
   );
