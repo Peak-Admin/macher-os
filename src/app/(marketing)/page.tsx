@@ -3,17 +3,18 @@ import { PhoneMock, PlanBoardMock, VorschauRahmen } from "@/components/mocks";
 import {
   Ablauf,
   Alltag,
-  BereichsKarte,
   DunkleHeadline,
   FinalCta,
   FotoBuehne,
-  KundenCard,
+  KartenReihe,
   PlanCards,
   MissionMittelstand,
+  ReihenKarte,
   StartHero,
 } from "@/components/sections";
 import {
   ArrowLink,
+  Badge,
   Zone,
   ButtonLink,
   CheckList,
@@ -22,13 +23,13 @@ import {
   Icon,
   IconTile,
   Karte3D,
-  Objekt,
   Section,
   SectionHeading,
   type FaqItem,
   type IconName,
 } from "@/components/ui";
 import { gewerkBild } from "@/content/bilder";
+import { topGewerkInhalte } from "@/content/gewerke";
 import { kernaengste, weitereEinwaende } from "@/content/einwaende";
 import { testTage } from "@/content/preise";
 import { kunden, topGewerke } from "@/content/registry";
@@ -88,17 +89,6 @@ const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSch
     inhalt: ["Geld: Rechnungen und Belege", "Team: Menschen und Zeiten", "Ausstattung und Unternehmen"],
   },
 ];
-
-const gewerkIcons: Record<string, IconName> = {
-  elektriker: "bolt",
-  shk: "wrench",
-  maler: "pen",
-  fliesenleger: "layers",
-  tischler: "ruler",
-  dachdecker: "home",
-  bau: "warehouse",
-  galabau: "map",
-};
 
 const feierabend: { text: string; icon: IconName }[] = [
   { text: "Stundenzettel kommen vom Handy", icon: "smartphone" },
@@ -188,74 +178,69 @@ export default function HomePage() {
       {/* 3. Ablauf – vier klickbare Schritte */}
       <Ablauf />
 
-      {/* 4. Vier Bereiche */}
+      {/* 4. Vier Bereiche – Kartenreihe: Objektfoto oben, Titel unten, „+“ zeigt, was dort steht */}
       <Zone ton="weiss">
         <Section tone="transparent">
-          <SectionHeading
+          <KartenReihe
             eyebrow="Vier Bereiche"
-            title="Alles da. Trotzdem einfach."
-            intro="Macher OS ist in vier Bereiche aufgeteilt. Mehr musst du dir nicht merken."
-          />
-          <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {bereiche.map((b, n) => (
-              <li key={b.titel}>
-                <Karte3D href={b.href} innen="flex flex-col rounded-2xl border border-line bg-white p-6">
-                  <Objekt objekt={b.objekt} className="-mx-2 -mt-2 mb-5" sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw" />
-                  <div className="flex items-center justify-between">
-                    <IconTile name={b.icon} className="karte-3d-tief size-12" />
-                    <span className="font-display text-sm font-bold tabular-nums text-muted">0{n + 1}</span>
-                  </div>
-                  <h3 className="mt-6 font-display text-2xl font-bold text-ink">{b.titel}</h3>
-                  <p className="mt-1 text-muted">{b.text}</p>
-                  <ul className="mt-5 flex-1 space-y-2 border-t border-line pt-4 text-[0.95rem]">
-                    {b.inhalt.map((x) => (
-                      <li key={x} className="flex items-center gap-2">
-                        <Icon name="check" className="size-4 shrink-0 text-primary" /> {x}
-                      </li>
-                    ))}
-                  </ul>
-                  <span className="mt-5 inline-flex items-center gap-1.5 font-semibold text-signal-dark">
-                    Ansehen <Icon name="arrow-right" className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
-                  </span>
-                </Karte3D>
-              </li>
+            titel="Alles da. Trotzdem einfach."
+            nachsatz="Mehr musst du dir nicht merken."
+          >
+            {bereiche.map((b) => (
+              <ReihenKarte
+                key={b.titel}
+                titel={b.titel}
+                href={b.href}
+                objekt={b.objekt}
+                linkText={`${b.titel} ansehen`}
+                details={
+                  <>
+                    <p>{b.text}</p>
+                    <ul className="mt-4 space-y-2">
+                      {b.inhalt.map((x) => (
+                        <li key={x} className="flex items-center gap-2">
+                          <Icon name="check" className="size-4 shrink-0 text-primary" /> {x}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                }
+              />
             ))}
-          </ul>
+          </KartenReihe>
           <ArrowLink href="/funktionen" className="mt-8">
             Alle Funktionen ansehen
           </ArrowLink>
         </Section>
       </Zone>
 
-      {/* 5. Gewerke */}
+      {/* 5. Gewerke – Kartenreihe mit Fotos */}
       <Zone ton="dunkel">
         <Section tone="transparent">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <DunkleHeadline
+          <KartenReihe
+            dunkel
             eyebrow="Gewerke"
-            gruen="Für deinen Betrieb"
-            rest="gemacht."
-            intro="Wähle dein Gewerk – Macher OS passt Begriffe, Vorlagen und Abläufe an."
-          />
+            titel="Für deinen Betrieb gemacht."
+            nachsatz="Passend zu deinem Gewerk."
+          >
+            {topGewerke.map((g) => (
+              <ReihenKarte
+                key={g.slug}
+                art="foto"
+                titel={g.kurz}
+                href={`/gewerke/${g.slug}`}
+                bild={gewerkBild(g.slug)}
+                linkText={`Macher OS für ${g.kurz}`}
+                details={<p>{topGewerkInhalte[g.slug].teaser}</p>}
+              />
+            ))}
+          </KartenReihe>
           <Link
             href="/gewerke"
-            className="inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
+            className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
           >
             Alle Gewerke <Icon name="arrow-right" className="size-4" />
           </Link>
-        </div>
-        <ul className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {topGewerke.map((g) => (
-            <li key={g.slug}>
-              <BereichsKarte
-                href={`/gewerke/${g.slug}`}
-                bild={gewerkBild(g.slug)}
-                titel={g.kurz}
-                icon={gewerkIcons[g.slug] ?? "wrench"}
-              />
-            </li>
-          ))}
-        </ul>
         </Section>
       </Zone>
 
@@ -370,15 +355,33 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 10. Kunden */}
+      {/* 10. Kunden – Kartenreihe; alle Stories sind Beispiele und so markiert */}
       <Zone ton="weiss">
         <Section tone="transparent">
-          <SectionHeading eyebrow="Kunden" title="Von Machern für Macher." />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {kunden.slice(0, 3).map((k) => (
-              <KundenCard key={k.slug} slug={k.slug} />
+          <KartenReihe eyebrow="Kunden" titel="Von Machern für Macher." nachsatz="So arbeiten Betriebe wie deiner.">
+            {kunden.map((k) => (
+              <ReihenKarte
+                key={k.slug}
+                art="foto"
+                titel={k.ergebnis}
+                href={`/kunden/${k.slug}`}
+                bild={gewerkBild(k.gewerk)}
+                marke={<Badge>Beispiel</Badge>}
+                linkText="Story lesen"
+                details={
+                  <>
+                    <p className="font-semibold text-ink">{k.betrieb}</p>
+                    <p className="text-muted">
+                      {topGewerke.find((g) => g.slug === k.gewerk)!.kurz} · {k.mitarbeiter} Mitarbeiter · {k.ort}
+                    </p>
+                    <p className="mt-3">
+                      Beispielgeschichte mit Symbolbild: Sie zeigt, wie ein typischer Betrieb mit Macher OS arbeitet.
+                    </p>
+                  </>
+                }
+              />
             ))}
-          </div>
+          </KartenReihe>
           <ArrowLink href="/kunden" className="mt-8">
             Alle Kunden ansehen
           </ArrowLink>

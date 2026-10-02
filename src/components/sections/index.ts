@@ -10,3 +10,5 @@ export { Ablauf } from "./Ablauf";
 export { Alltag } from "./Alltag";
 export { StartHero } from "./StartHero";
 export { KernBereiche } from "./KernBereiche";
+export { KartenReihe } from "./KartenReihe";
+export { ReihenKarte } from "./ReihenKarte";
