@@ -144,6 +144,35 @@
   margin: 0 -32px; padding: 16px 32px; border-radius: 0 0 var(--mm-radius-panel) var(--mm-radius-panel);
   background: var(--mm-glass-inhalt); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur); border-top-color: var(--mm-glass-rand);
 }
+/* Anmeldung: Vorteile als Liste, Handwerkerfoto rechts mit schräger Kante (−17°) */
+.ob-vorteile { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; max-width: 55%; }
+.ob-vorteile li { display: flex; align-items: center; gap: 12px; font: 600 18px/24px var(--mm-font); color: var(--mm-on-dark); }
+.ob-vorteil-haken { display: grid; place-items: center; width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: var(--mm-brand-deep); color: var(--mm-on-dark); box-shadow: 0 0 0 1px var(--mm-brand-accent); }
+.ob-marke--vorteile .ob-marke-innen { max-width: 1360px; padding: 32px; }
+.ob-marke--vorteile::before, .ob-marke--vorteile::after { display: none; }
+.ob-marke-foto {
+  position: absolute; top: -32px; bottom: -32px; right: -32px; width: 42%; overflow: hidden; background: var(--mm-brand);
+  clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);
+}
+.ob-marke-foto img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 70% 30%; }
+/* grüner Streifen an der Schräge wie im Markenmotiv */
+.ob-marke-foto::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--mm-brand-deep) 10%, transparent), color-mix(in srgb, var(--mm-brand-deep) 30%, transparent));
+}
+.ob-marke--vorteile .ob-marke-innen { position: relative; overflow: visible; }
+.ob-marke--vorteile .ob-logo, .ob-marke--vorteile .ob-marke-statement, .ob-marke--vorteile .ob-vorteile, .ob-marke--vorteile .ob-zurueck-betrieb { position: relative; z-index: 1; }
+@media (max-width: 900px) {
+  .ob-marke-foto { width: 38%; }
+  .ob-vorteile { max-width: 60%; }
+}
+@media (max-width: 600px) {
+  .ob-marke--vorteile .ob-marke-innen { padding: 0 16px 24px; gap: 16px; }
+  .ob-marke-foto { position: relative; inset: auto; width: auto; margin: 0 -16px; aspect-ratio: 2 / 1; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 82%); }
+  .ob-marke--vorteile .ob-marke-statement { max-width: none; }
+  .ob-vorteile { max-width: none; gap: 8px; }
+  .ob-vorteile li { font-size: 16px; line-height: 22px; }
+}
 @media (max-width: 600px) {
   .ob-rahmen { padding: 8px 8px 32px; }
   .ob-marke { margin-bottom: 8px; }
