@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { neueId } from '@core/db';
 import { Button, Eingabe, IconButton, Karte, Meldung, Stapel, Textfeld, Zeile, useToast } from '@ui/index';
-import { FotoKnopf } from '../checklisten/FotoKnopf';
+import { FotoKnopf } from '@modules/fotos/FotoKnopf';
 import { arbeitsanweisungen, zeilen, type AnweisungsSchritt, type Arbeitsanweisung } from './daten';
 
 export function AnweisungFormular({ x, onFertig }: { x: Arbeitsanweisung; onFertig: () => void }) {
@@ -48,7 +48,7 @@ export function AnweisungFormular({ x, onFertig }: { x: Arbeitsanweisung; onFert
               <Stapel abstand={8}>
                 <Textfeld label={`Schritt ${i + 1}`} value={s.text} rows={2} onChange={(e) => setSchritt(i, { text: e.target.value })} />
                 <Zeile abstand={8}>
-                  <FotoKnopf titel={s.text || `Schritt ${i + 1}`} auftragId={x.auftragId} tags={['arbeitsanweisung']} label={s.fotoId ? 'Foto ersetzen' : 'Foto'} variante="tertiaer" onFoto={(fotoId) => setSchritt(i, { fotoId })} />
+                  <FotoKnopf titel={s.text || `Schritt ${i + 1}`} auftragId={x.auftragId} tags={['arbeitsanweisung']} label={s.fotoId ? 'Foto ersetzen' : 'Foto'} variante="tertiaer" onGespeichert={(fotoId) => setSchritt(i, { fotoId })} />
                   {s.fotoId && (
                     <Button variante="tertiaer" klein onClick={() => setSchritt(i, { fotoId: undefined })}>
                       Foto entfernen

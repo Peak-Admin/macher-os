@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
 import type { Materialbuchung } from '@core/objects';
-import { alsPositionen, inRechnung, mengeAus, naechsterStatus, offenFuerRechnung, summeEk } from './logik';
+import { alsPositionen, inRechnung, naechsterStatus, offenFuerRechnung, summeEk } from './logik';
+import { zahlAus } from '@ui/index';
 import { materialAbrechnen, materialAusAngebot, materialFuerRechnung } from './daten';
 
 const b = (x: Partial<Materialbuchung>): Materialbuchung => ({ id: Math.random().toString(36).slice(2), erstelltAm: '', geaendertAm: '', auftragId: 'a', text: 'Kabel', menge: 10, einheit: 'm', ek: 62, status: 'verbraucht', ...x });
@@ -15,7 +16,7 @@ describe('Material am Auftrag', () => {
   it('kennt den nächsten Status und Mengen mit Komma', () => {
     expect(naechsterStatus('geplant')).toBe('bestellt');
     expect(naechsterStatus('verbraucht')).toBeUndefined();
-    expect(mengeAus('2,5')).toBe(2.5);
+    expect(zahlAus('2,5')).toBe(2.5);
   });
   it('macht nur offenes, verbrauchtes Material zu Rechnungspositionen', () => {
     const l = [b({ id: '1', artikelId: 'art' }), b({ id: '2', abgerechnetIn: 'r' }), b({ id: '3', status: 'bereit' }), b({ id: '4', text: 'Freitext', ek: 1000, menge: 1 })];

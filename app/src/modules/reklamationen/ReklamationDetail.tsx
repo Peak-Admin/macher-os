@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
-import { aktionAusfuehren, alleModule } from '@core/modul';
+import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { datum, heute, relativ } from '@core/format';
-import { PHASEN, type ObjektTyp } from '@core/objects';
-import { Auswahl, BeispielMarke, Button, Dialog, Eingabe, Feld, FormRaster, Karte, Leer, Meta, Seite, Segmente, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useToast } from '@ui/index';
+import { PHASEN } from '@core/objects';
+import { Auswahl, BeispielMarke, Button, Dialog, Eingabe, FormRaster, Karte, Leer, Meta, Seite, Segmente, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useToast, DateiKnopf } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { BEWERTUNG_TEXT, fotosZu, GRUNDLAGEN, nacharbeitAnlegen, offen, pruefen, reklamationen, reklamationErledigen, type Bewertung, type Grundlage } from './daten';
 import { Pruefbox } from './Pruefbox';
@@ -12,7 +12,6 @@ import { ReklamationStatus } from './ReklamationListe';
 import { fotosSpeichern } from './ReklamationNeu';
 
 const PHASE = Object.fromEntries(PHASEN.map((p) => [p.id, p.label])) as Record<string, string>;
-const registriert = (id: string) => alleModule().some((m) => !!m.aktionen?.[id]);
 
 export function ReklamationDetail() {
   useDatenstand();
@@ -120,7 +119,7 @@ export function ReklamationDetail() {
                   <Meta>{nacharbeitTermin ? `Termin: ${datum(nacharbeitTermin.start)}` : 'Noch kein Termin.'}</Meta>
                   {istOffen && (
                     <Zeile>
-                      {!nacharbeitTermin && registriert('plan.einplanen') && (
+                      {!nacharbeitTermin && aktionVorhanden('plan.einplanen') && (
                         <Button klein variante="sekundaer" icon="kalender" onClick={() => {
                           const z = aktionAusfuehren('plan.einplanen', { auftragId: nacharbeit.id });
                           if (z) navigate(z);
@@ -128,7 +127,7 @@ export function ReklamationDetail() {
                           Einplanen
                         </Button>
                       )}
-                      {r.bewertung === 'kostenpflichtig' && registriert('angebot.erstellen') && (
+                      {r.bewertung === 'kostenpflichtig' && aktionVorhanden('angebot.erstellen') && (
                         <Button klein variante="sekundaer" onClick={() => {
                           const z = aktionAusfuehren('angebot.erstellen', { auftragId: nacharbeit.id });
                           if (z) navigate(z);
@@ -174,9 +173,11 @@ export function ReklamationDetail() {
                 ) : (
                   <Meta>Noch keine Fotos. Fotos sichern dich ab, wenn es später Streit gibt.</Meta>
                 )}
-                <Feld label="Foto hinzufügen" optional>
-                  {(fid) => <input id={fid} className="mm-input" type="file" accept="image/*" capture="environment" multiple disabled={laedt} onChange={(e) => void fotoHinzu(Array.from(e.target.files ?? []))} />}
-                </Feld>
+                <div>
+                  <DateiKnopf accept="image/*" kamera mehrfach onDateien={fotoHinzu} laedt={laedt} laedtText="Wird gespeichert …">
+                    Foto hinzufügen
+                  </DateiKnopf>
+                </div>
               </Stapel>
             </Karte>
 
@@ -187,7 +188,7 @@ export function ReklamationDetail() {
             )}
 
             <Karte titel="Verlauf">
-              <Zeitstrahl bezug={{ typ: 'reklamationen' as ObjektTyp, id: r.id }} max={10} />
+              <Zeitstrahl bezug={{ typ: 'reklamationen', id: r.id }} max={10} />
             </Karte>
           </>
         }

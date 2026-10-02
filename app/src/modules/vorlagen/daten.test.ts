@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
-import { briefkopf, fehlendePlatzhalter, kontextAus, platzhalterErsetzen, startVorlagen, vorlageAnwenden, vorlagen, betreffAnwenden } from './daten';
+import { fehlendePlatzhalter, kontextAus, platzhalterErsetzen, startVorlagen, vorlageAnwenden, vorlagen, betreffAnwenden } from './daten';
+import { briefkopf } from '@ui/index';
 
 beforeEach(() => {
   zuruecksetzen();

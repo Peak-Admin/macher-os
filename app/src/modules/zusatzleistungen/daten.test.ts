@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { db } from '@core/db';
 import type { Rechnung } from '@core/objects';
-import { abrechenbar, alsPosition, anRechnungHaengen, betrag, freigeben, positionenAnhaengen, rechnungNimmtNachtraege, vonRechnungLoesen, zahlAus, zusatzHinweise, zusatzleistungen } from './daten';
+import { abrechenbar, alsPosition, anRechnungHaengen, betrag, freigeben, positionenAnhaengen, rechnungNimmtNachtraege, vonRechnungLoesen, zusatzHinweise, zusatzleistungen } from './daten';
+import { zahlAus } from '@ui/index';
 
 function setup() {
   const k = db.kunden.create({ art: 'privat', name: 'K', ansprechpartner: [] });
@@ -15,7 +16,7 @@ describe('Zusatzleistungen', () => {
     expect(zahlAus('1,5')).toBe(1.5);
     expect(zahlAus('1.234,5')).toBe(1234.5);
     expect(zahlAus('2')).toBe(2);
-    expect(zahlAus('')).toBeNaN();
+    expect(zahlAus('')).toBeUndefined();
   });
 
   it('rechnet Beträge in Cent und baut Rechnungspositionen', () => {

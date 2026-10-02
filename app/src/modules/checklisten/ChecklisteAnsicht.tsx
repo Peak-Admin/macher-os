@@ -3,7 +3,7 @@ import { useIch } from '@core/session';
 import { personName, relativ } from '@core/format';
 import { Checkbox, Fortschritt, Liste, ListenZeile, Meta, Stapel, Status, Zeile } from '@ui/index';
 import { punktOffen, punktSetzen, stand, type Checkliste, type PunktStand } from './daten';
-import { FotoKnopf } from './FotoKnopf';
+import { FotoKnopf } from '@modules/fotos/FotoKnopf';
 
 /** Punkte einer Checkliste abhaken – groß genug für Handschuhe, Foto direkt am Punkt */
 export function ChecklisteAnsicht({ c }: { c: Checkliste }) {
@@ -47,7 +47,7 @@ function PunktZeile({ c, p }: { c: Checkliste; p: PunktStand }) {
               tags={['checkliste']}
               label={foto ? 'Neues Foto' : 'Foto'}
               variante={p.fotoPflicht && !foto ? 'sekundaer' : 'tertiaer'}
-              onFoto={(fotoId) => punktSetzen(c.id, p.id, { fotoId, erledigt: true }, ich?.id)}
+              onGespeichert={(fotoId) => punktSetzen(c.id, p.id, { fotoId, erledigt: true }, ich?.id)}
             />
           )}
         </Zeile>

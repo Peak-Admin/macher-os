@@ -3,7 +3,6 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { datum, euro, telLink, zahl } from '@core/format';
 import { useDarf, useIch } from '@core/session';
-import type { ObjektTyp } from '@core/objects';
 import { Abschnitt, Auswahl, BeispielMarke, Button, Dialog, Eingabe, FormRaster, IconButton, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { lagerorte, lagerortName } from '../lager/daten';
@@ -119,7 +118,7 @@ export function BestellungDetail() {
               </Karte>
             )}
             <Abschnitt titel="Verlauf">
-              <Zeitstrahl bezug={{ typ: 'bestellungen' as ObjektTyp, id: b.id }} />
+              <Zeitstrahl bezug={{ typ: 'bestellungen', id: b.id }} />
             </Abschnitt>
           </Stapel>
         }

@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { datum } from '@core/format';
-import { AuftragKopf, DruckNichtGefunden, DruckSeite } from '@modules/abnahme/Druck';
+import { Briefbogen, DruckNichtGefunden } from '@ui/index';
+import { AuftragKopf } from '@modules/abnahme/Druck';
 import { UnterschriftAnzeige } from '@modules/abnahme/Unterschrift';
 import { artLabel, berichte } from './daten';
 import { AufgabenListe, MaterialTabelle, ZeitenTabelle, useBerichtInhalt } from './Inhalt';
@@ -11,7 +12,7 @@ export function BerichtDruck() {
   const { fotos } = useBerichtInhalt(b);
   if (!b) return <DruckNichtGefunden was="Bericht" zurueck="/auftraege/berichte" />;
   return (
-    <DruckSeite titel={artLabel(b.art)} nummer={b.nummer} zurueck={`/auftraege/berichte/${b.id}`} beispiel={b.beispiel}>
+    <Briefbogen titel={artLabel(b.art)} nummer={b.nummer} zurueck={`/auftraege/berichte/${b.id}`} beispiel={b.beispiel}>
       <AuftragKopf auftragId={b.auftragId} extra={[['Datum', datum(b.datum)]]} />
       <h2>Ausgeführte Arbeiten</h2>
       <p style={{ whiteSpace: 'pre-wrap' }}>{b.taetigkeiten || 'Keine Angaben.'}</p>
@@ -53,7 +54,7 @@ export function BerichtDruck() {
       {fotos.length > 0 && (
         <>
           <h2>Fotos</h2>
-          <div className="doku-druck-fotos">
+          <div className="mm-druck-fotos">
             {fotos.map((f) => (
               <figure key={f.id} style={{ margin: 0 }}>
                 <img src={f.url} alt={f.titel} />
@@ -63,9 +64,9 @@ export function BerichtDruck() {
           </div>
         </>
       )}
-      <div className="doku-druck-unterschriften">
+      <div className="mm-druck-unterschriften">
         {b.unterschriftKunde ? <UnterschriftAnzeige daten={b.unterschriftKunde} rolle="Kunde" /> : <p className="mm-meta">Nicht vom Kunden unterschrieben.</p>}
       </div>
-    </DruckSeite>
+    </Briefbogen>
   );
 }

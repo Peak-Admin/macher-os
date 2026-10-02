@@ -3,11 +3,13 @@
  * Text und Preis werden beim Erfassen festgehalten, weil der Kunde genau diesen Stand freigibt
  * (wie eine Angebotsposition). Leistung, Fotos, Unterschrift und Rechnung sind nur Verweise.
  */
-import { db, defineCollection, vermerken } from '@core/db';
+import { defineCollection, vermerken } from '@core/db';
 import { euro } from '@core/format';
 import type { Auftrag, Basis, Cent, Einheit, ID, Position, Rechnung, Zeitpunkt } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
-import { unterschriftSpeichern, type UnterschriftDaten, type UnterschriftEingabe } from '@modules/abnahme/unterschrift';
+import { rechnungAendern, type RechnungX } from '@modules/rechnungen/typen';
+import { unterschriftSpeichern, type UnterschriftDaten } from '@modules/abnahme/unterschrift';
+import type { UnterschriftEingabe } from '@ui/index';
 
 export type Berechnung = 'leistung' | 'stunden' | 'pauschal';
 
@@ -40,12 +42,6 @@ export const STATUS_TEXT: Record<Zusatzleistung['status'], string> = {
   abgelehnt: 'Abgelehnt',
   abgerechnet: 'Abgerechnet',
 };
-
-/** "1,5" → 1.5; ungültig → NaN */
-export function zahlAus(s: string): number {
-  const t = s.trim().replace(/\s/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.');
-  return t ? Number(t) : NaN;
-}
 
 export const betrag = (z: Pick<Zusatzleistung, 'menge' | 'einzelpreis'>): Cent => Math.round(z.menge * z.einzelpreis);
 export const abrechenbar = (z: Zusatzleistung) => z.status === 'freigegeben' && !z.rechnungId;
@@ -138,14 +134,36 @@ export function ablehnen(id: ID, grund: string) {
   zusatzleistungen.update(id, { status: 'abgelehnt', ablehnGrund: grund.trim() || undefined }, { text: 'Vom Kunden abgelehnt' });
 }
 
+/** Freigegebene, noch nicht abgerechnete Nachträge eines Auftrags */
+export const abrechenbareZu = (auftragId: ID) => zusatzleistungen.where((z) => z.auftragId === auftragId && abrechenbar(z));
+
+/** Nachträge als abgerechnet in Rechnung `rechnung` markieren (nur noch abrechenbare) */
+export function alsAbgerechnetMarkieren(ids: ID[], rechnung: Pick<Rechnung, 'id' | 'nummer'>): number {
+  let n = 0;
+  for (const id of ids) {
+    const z = zusatzleistungen.get(id);
+    if (!z || z.geloeschtAm || !abrechenbar(z)) continue;
+    zusatzleistungen.update(id, { status: 'abgerechnet', rechnungId: rechnung.id }, { text: rechnung.nummer ? `In Rechnung ${rechnung.nummer} übernommen` : 'In Rechnungsentwurf übernommen' });
+    n++;
+  }
+  return n;
+}
+
 /** An neue Rechnung hängen (Automation) – gibt die Anzahl zurück */
 export function anRechnungHaengen(r: Rechnung): number {
   if (!rechnungNimmtNachtraege(r)) return 0;
-  const offen = zusatzleistungen.where((z) => z.auftragId === r.auftragId && abrechenbar(z));
+  const offen = abrechenbareZu(r.auftragId!);
   if (!offen.length) return 0;
-  db.rechnungen.update(r.id, { positionen: positionenAnhaengen(r.positionen, offen) }, { text: `${offen.length} freigegebene Nachträge übernommen` });
-  for (const z of offen) zusatzleistungen.update(z.id, { status: 'abgerechnet', rechnungId: r.id }, { text: `In Rechnung ${r.nummer} übernommen` });
-  return offen.length;
+  const vorher = (r as RechnungX).zusatzleistungIds ?? [];
+  rechnungAendern(
+    r.id,
+    { positionen: positionenAnhaengen(r.positionen, offen), zusatzleistungIds: [...vorher, ...offen.map((z) => z.id).filter((id) => !vorher.includes(id))] },
+    { text: `${offen.length} freigegebene Nachträge übernommen` },
+  );
+  return alsAbgerechnetMarkieren(
+    offen.map((z) => z.id),
+    r,
+  );
 }
 
 /** Rechnung storniert oder gelöscht → Nachträge wieder abrechenbar */

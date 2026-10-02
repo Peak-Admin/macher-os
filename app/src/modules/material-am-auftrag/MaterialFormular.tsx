@@ -3,9 +3,9 @@ import { db } from '@core/db';
 import { centAlsEingabe, centAus, euro, heute, passt } from '@core/format';
 import { useDarf, useIch } from '@core/session';
 import type { Einheit, ID, Materialbuchung } from '@core/objects';
-import { Auswahl, Button, Eingabe, FormRaster, IconButton, Liste, ListenZeile, Meta, Segmente, Stapel, Suchfeld, Zeile, useToast } from '@ui/index';
+import { Auswahl, Button, Eingabe, FormRaster, IconButton, Liste, ListenZeile, Meta, Segmente, Stapel, Suchfeld, Zeile, useToast, zahlAus } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
-import { STATUS_LABEL, STATUS_REIHE, mengeAus, type MaterialStatus } from './logik';
+import { STATUS_LABEL, STATUS_REIHE, type MaterialStatus } from './logik';
 
 const EINHEITEN: Einheit[] = ['Stk', 'm', 'm²', 'm³', 'kg', 'l', 'Psch', 'Pkt'];
 
@@ -46,12 +46,12 @@ export function MaterialFormular({ auftragId, onFertig, standardStatus = 'verbra
     setFehler((f) => ({ ...f, was: undefined }));
   };
   const schritt = (d: number) => {
-    const m = mengeAus(menge);
+    const m = (zahlAus(menge) ?? NaN);
     setMenge(String(Math.max(0, (Number.isFinite(m) ? m : 0) + d)).replace('.', ','));
   };
 
   const speichern = () => {
-    const m = mengeAus(menge);
+    const m = (zahlAus(menge) ?? NaN);
     const text = gewaehlt?.name ?? (freitext.trim() || q.trim());
     const f: typeof fehler = {};
     if (!auftrag) f.auftrag = 'Wähle den Auftrag, an dem das Material hängt.';

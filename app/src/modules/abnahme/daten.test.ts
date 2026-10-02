@@ -3,7 +3,7 @@ import { db } from '@core/db';
 import { on } from '@core/events';
 import { heute, plusTage } from '@core/format';
 import { abnahmeHinweise, abnahmeStarten, abnahmeUnterschreiben, abnahmen, ergebnis, mangelHinzufuegen, offeneMaengel } from './daten';
-import { unterschriftFehler } from './unterschrift';
+import { unterschriftFehler } from '@ui/index';
 
 function auftrag(phase: 'in_arbeit' | 'abnahme' = 'abnahme') {
   const k = db.kunden.create({ art: 'privat', name: 'Erika Muster', ansprechpartner: [] });

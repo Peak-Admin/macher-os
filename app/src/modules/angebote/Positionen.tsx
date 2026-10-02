@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { db } from '@core/db';
 import { euro, passt, positionSumme, zahl } from '@core/format';
 import type { Einheit, Position } from '@core/objects';
-import { Auswahl, Button, Checkbox, Dialog, Eingabe, IconButton, Leer, Liste, ListenZeile, Meta, Stapel, Status, Suchfeld, Tabs, useToast } from '@ui/index';
-import { ZahlEingabe } from './felder';
+import { Auswahl, Button, Checkbox, Dialog, Eingabe, IconButton, Leer, Liste, ListenZeile, Meta, Stapel, Status, Suchfeld, Tabs, useToast, ZahlEingabe } from '@ui/index';
 import { freiePosition, positionAusArtikel, positionAusLeistung } from './daten';
 
 export const EINHEITEN: Einheit[] = ['Stk', 'm', 'm²', 'm³', 'h', 'Psch', 'kg', 'l', 'Pkt', 'km'];

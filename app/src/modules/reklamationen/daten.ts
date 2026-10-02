@@ -5,7 +5,7 @@
 import { batch, db, defineCollection, vermerken } from '@core/db';
 import { einstellung } from '@core/einstellungen';
 import { datum, heute, plusTage, tageZwischen, plusMonate } from '@core/format';
-import { naechsteNummer } from '@core/nummern';
+import { naechsteNummer, naechsteNummerFuer } from '@core/nummern';
 import type { Auftrag, Basis, Datum, ID, Kanal } from '@core/objects';
 
 /** Rechtsgrundlage der Mängelhaftung */
@@ -130,15 +130,7 @@ export function grundlageVorschlag(auftrag: Auftrag | undefined): Grundlage {
 // ------------------------------------------------------------------ Nacharbeit & Status
 
 export function naechsteReklamationsnummer(jahr = new Date().getFullYear()) {
-  const start = `RK-${jahr}-`;
-  const max = reklamationen
-    .allMitGeloeschten()
-    .map((r) => r.nummer)
-    .filter((n) => n?.startsWith(start))
-    .map((n) => Number(n.slice(start.length)))
-    .filter(Number.isFinite)
-    .reduce((m, n) => Math.max(m, n), 0);
-  return `${start}${String(max + 1).padStart(3, '0')}`;
+  return naechsteNummerFuer('RK', reklamationen.allMitGeloeschten().map((r) => r.nummer), { jahr, stellen: 3 });
 }
 
 /** Nacharbeitsauftrag anlegen (idempotent: gibt vorhandenen zurück) */
@@ -207,28 +199,3 @@ export function fotosZu(id: ID) {
   return db.dokumente.where((d) => (d.tags ?? []).includes(fotoTag(id)));
 }
 
-/** Bild verkleinern (max. 1280 px, JPEG), damit der lokale Speicher nicht vollläuft */
-export function bildLesen(datei: File, max = 1280): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const leser = new FileReader();
-    leser.onerror = () => reject(new Error('Datei konnte nicht gelesen werden.'));
-    leser.onload = () => {
-      const url = String(leser.result);
-      if (!datei.type.startsWith('image/')) return resolve(url);
-      const img = new Image();
-      img.onerror = () => resolve(url);
-      img.onload = () => {
-        const f = Math.min(1, max / Math.max(img.width, img.height));
-        const c = document.createElement('canvas');
-        c.width = Math.round(img.width * f);
-        c.height = Math.round(img.height * f);
-        const ctx = c.getContext('2d');
-        if (!ctx) return resolve(url);
-        ctx.drawImage(img, 0, 0, c.width, c.height);
-        resolve(c.toDataURL('image/jpeg', 0.8));
-      };
-      img.src = url;
-    };
-    leser.readAsDataURL(datei);
-  });
-}

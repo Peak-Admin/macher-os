@@ -7,7 +7,9 @@ import { db, defineCollection, vermerken } from '@core/db';
 import { datumVon, heute, plusTage, minutenAus } from '@core/format';
 import type { Aufgabe, Basis, Datum, Dokument, Gewerk, ID, Materialbuchung, Termin, Zeiteintrag } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
-import { unterschriftSpeichern, type UnterschriftDaten, type UnterschriftEingabe } from '@modules/abnahme/unterschrift';
+import { unterschriftSpeichern, type UnterschriftDaten } from '@modules/abnahme/unterschrift';
+import { naechsteNummerFuer } from '@core/nummern';
+import type { UnterschriftEingabe } from '@ui/index';
 
 export type BerichtArt = 'tagesbericht' | 'regiebericht' | 'rapport' | 'pruefprotokoll';
 
@@ -52,13 +54,7 @@ export const berichte = defineCollection<Bericht>('berichte');
 // ------------------------------------------------------------------ reine Logik
 
 export function naechsteBerichtNummer(nummern: string[], jahr = new Date().getFullYear()): string {
-  const start = `BR-${jahr}-`;
-  const max = nummern
-    .filter((n) => n?.startsWith(start))
-    .map((n) => Number(n.slice(start.length)))
-    .filter(Number.isFinite)
-    .reduce((m, n) => Math.max(m, n), 0);
-  return `${start}${String(max + 1).padStart(4, '0')}`;
+  return naechsteNummerFuer('BR', nummern, { jahr });
 }
 
 /** Arbeitsminuten eines Zeiteintrags (ohne Pause). Laufende Einträge zählen 0. */

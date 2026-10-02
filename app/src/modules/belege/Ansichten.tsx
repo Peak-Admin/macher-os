@@ -24,12 +24,13 @@ import {
   ZweiSpalten,
   useBestaetigen,
   useToast,
+  GeldEingabe,
+  DateiKnopf,
 } from '@ui/index';
 import { AuftragAuswahl, ObjektLink, Zeitstrahl } from '@ui/objekt';
-import { GeldEingabe } from '../rechnungen/teile';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
 import { ART_LABEL, KATEGORIEN, alleBelege, belegX, brutto, dateiAblegen, lieferantName, naechsteFrist } from './logik';
-import { AuftragVorschlag, BelegFormular, DateiWahl, LieferantenListe, Vorschau, belegAusWerten, leereWerte, lieferantAus, type FormularWerte } from './Formular';
+import { AuftragVorschlag, BelegFormular, LieferantenListe, Vorschau, belegAusWerten, leereWerte, lieferantAus, type FormularWerte } from './Formular';
 
 const STATUS = { neu: { text: 'Neu', ton: 'aktiv' }, geprueft: { text: 'Geprüft', ton: 'neutral' }, bezahlt: { text: 'Bezahlt', ton: 'erfolg' } } as const;
 
@@ -244,9 +245,10 @@ export function BelegDetail() {
             <Karte titel="Beleg" kompakt>
               <Stapel abstand={8}>
                 {dok?.url ? <Vorschau url={dok.url} mime={dok.mime} /> : <Meta>Noch kein Foto.</Meta>}
-                <DateiWahl
-                  label={dok ? 'Foto ersetzen' : 'Beleg fotografieren'}
-                  onDatei={async (file) => {
+                <DateiKnopf
+                  accept="image/*,application/pdf"
+                  kamera
+                  onDateien={async ([file]) => {
                     try {
                       const d = await dateiAblegen(file, { auftragId: b.auftragId });
                       db.dokumente.update(d.id, { bezug: { typ: 'belege', id: b.id } }, { leise: true });
@@ -256,7 +258,9 @@ export function BelegDetail() {
                       toast('Das Foto konnte nicht gespeichert werden.', { ton: 'achtung' });
                     }
                   }}
-                />
+                >
+                  {dok ? 'Foto ersetzen' : 'Beleg fotografieren'}
+                </DateiKnopf>
               </Stapel>
             </Karte>
             {b.auftragId && (

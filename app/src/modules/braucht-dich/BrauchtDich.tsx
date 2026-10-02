@@ -6,7 +6,7 @@ import { aktionAusfuehren, pfadZu, type Ton } from '@core/modul';
 import { relativ } from '@core/format';
 import { istBuero, useIch } from '@core/session';
 import { Abschnitt, Button, Filter, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, useToast, Zeile } from '@ui/index';
-import { aktionVorhanden } from '@modules/naechster-einsatz/logik';
+import { aktionVorhanden } from '@core/modul';
 import { ART_LABEL, type HinweisArt, nachArt, sichtbareAktionen } from './logik';
 
 const ART_TON: Record<HinweisArt, Ton> = { problem: 'achtung', entscheidung: 'aktiv', freigabe: 'aktiv', info: 'neutral' };

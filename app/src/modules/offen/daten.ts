@@ -1,5 +1,5 @@
 /** Offen einzuplanen: Welche Aufträge und Besichtigungen haben noch keinen Termin? Reine Logik. */
-import { alleModule } from '@core/modul';
+import { aktionVorhanden } from '@core/modul';
 import { tageZwischen, isoDatum } from '@core/format';
 import type { Auftrag, Termin } from '@core/objects';
 import { kuenftigeTermine } from '../kalender/daten';
@@ -38,5 +38,5 @@ export function offenEinzuplanen(auftraege: Auftrag[], termine: Termin[], jetzt 
 
 /** Gibt es ein Modul, das automatische Planvorschläge macht (Paket planpruefung)? */
 export function vorschlagVerfuegbar(): boolean {
-  return alleModule().some((m) => !!m.aktionen?.['plan.vorschlag']);
+  return aktionVorhanden('plan.vorschlag');
 }

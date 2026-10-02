@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { adresseText, datumKurz, datumVon, heute, mapsLink, personName, telLink } from '@core/format';
-import { aktionAusfuehren, pfadZu } from '@core/modul';
+import { aktionAusfuehren, aktionVorhanden, pfadZu } from '@core/modul';
 import { oeffne } from '@core/overlay';
 import { istBuero, useIch } from '@core/session';
 import type { Termin } from '@core/objects';
@@ -9,7 +9,7 @@ import { ObjektPanels } from '@ui/objekt';
 import { BeispielMarke, Button, Icon, Karte, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, useToast, Zeile } from '@ui/index';
 import { AufgabeZeile } from '@modules/mein-tag/teile';
 import { TERMIN_ART_LABEL, TERMIN_STATUS_LABEL, zeitText } from '@modules/mein-tag/logik';
-import { aktionVorhanden, einsatzBeenden, einsatzLosfahren, einsatzStarten, laeuft, naechsterEinsatz, telefonFuer } from './logik';
+import { einsatzBeenden, einsatzLosfahren, einsatzStarten, laeuft, naechsterEinsatz, telefonFuer } from './logik';
 
 /** Link-Button für externe Ziele (Karten-App, Telefon) – `Button to` kann nur interne Pfade. */
 function LinkKnopf({ href, icon, children, primaer }: { href: string; icon: string; children: string; primaer?: boolean }) {

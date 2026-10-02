@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { db } from '@core/db';
 import { euro, heute } from '@core/format';
 import type { ID, Zahlung } from '@core/objects';
-import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Meta, Stapel, useToast } from '@ui/index';
+import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Meta, Stapel, useToast, GeldEingabe } from '@ui/index';
 import { offenerBetrag } from '../rechnungen/logik';
 import { rechnungX } from '../rechnungen/typen';
-import { GeldEingabe } from '../rechnungen/teile';
 import { skontoVorschlag, zahlungBuchen } from './logik';
 
 /** Zahlung erfassen – Teilzahlung oder Skonto in einem Schritt */

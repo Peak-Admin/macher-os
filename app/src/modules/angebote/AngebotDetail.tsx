@@ -4,9 +4,8 @@ import { db, useDatenstand } from '@core/db';
 import { datum, euro, heute, relativ, telLink } from '@core/format';
 import { useDarf } from '@core/session';
 import type { Angebot } from '@core/objects';
-import { Auswahl, BeispielMarke, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
+import { Auswahl, BeispielMarke, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, ZweiSpalten, useBestaetigen, useToast, ZahlEingabe } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
-import { ZahlEingabe } from './felder';
 import { PositionenEditor, PositionenTabelle } from './Positionen';
 import { ABLEHN_GRUENDE, alsNachgefasstMarkieren, STATUS_TEXT, STATUS_TON, ablehnen, angebotSummen, annehmen, istAktuelleVersion, laeuftBaldAb, mailtoLink, nachfassenFaellig, nachfassenTage, neueVersion, optionalSumme, ustSatz, versenden, versionen } from './daten';
 

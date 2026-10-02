@@ -3,9 +3,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { batch, db } from '@core/db';
 import { heute, plusTage } from '@core/format';
 import type { ID, Kanal } from '@core/objects';
-import { Auswahl, Button, Eingabe, Feld, FormRaster, Karte, Meta, Seite, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
+import { Auswahl, Button, Eingabe, FormRaster, Karte, Meta, Seite, Segmente, Stapel, Textfeld, useToast, DateiFeld, bildVerkleinern } from '@ui/index';
 import { KundeAuswahl } from '@ui/objekt';
-import { BEWERTUNG_TEXT, bildLesen, fotoTag, fristTage, GRUNDLAGEN, grundlageVorschlag, naechsteReklamationsnummer, pruefen, reklamationen, type Bewertung, type Grundlage } from './daten';
+import { BEWERTUNG_TEXT, fotoTag, fristTage, GRUNDLAGEN, grundlageVorschlag, naechsteReklamationsnummer, pruefen, reklamationen, type Bewertung, type Grundlage } from './daten';
 import { Pruefbox } from './Pruefbox';
 
 const KANAELE: { wert: Kanal; label: string }[] = [
@@ -19,14 +19,15 @@ const KANAELE: { wert: Kanal; label: string }[] = [
 
 /** Fotos als Dokumente speichern, mit Tag der Reklamation */
 export async function fotosSpeichern(dateien: File[], reklamationId: ID, auftragId: ID | undefined, beispiel?: boolean) {
-  const urls = await Promise.all(dateien.map((d) => bildLesen(d)));
+  const bilder = await Promise.all(dateien.map((d) => bildVerkleinern(d)));
   batch(() => {
-    urls.forEach((url, i) =>
+    bilder.forEach((b, i) =>
       db.dokumente.create({
         art: 'foto',
         titel: dateien[i].name || 'Foto Mangel',
-        url,
-        mime: 'image/jpeg',
+        url: b.url,
+        mime: b.mime,
+        groesse: b.bytes,
         auftragId,
         tags: ['reklamation', fotoTag(reklamationId)],
         beispiel,
@@ -142,9 +143,7 @@ export function ReklamationNeu() {
               <Eingabe label="Gemeldet am" type="date" value={f.gemeldetAm} onChange={(e) => setF((x) => ({ ...x, gemeldetAm: e.target.value, bewertung: undefined }))} fehler={fehler.gemeldetAm} />
               <Auswahl label="Gemeldet per" value={f.kanal} onChange={(e) => set('kanal', e.target.value as Kanal)} optionen={KANAELE} />
             </FormRaster>
-            <Feld label="Fotos vom Mangel" optional hilfe={dateien.length ? `${dateien.length} Foto(s) ausgewählt` : 'Am Handy öffnet sich direkt die Kamera.'}>
-              {(id) => <input id={id} className="mm-input" type="file" accept="image/*" capture="environment" multiple onChange={(e) => setDateien(Array.from(e.target.files ?? []))} />}
-            </Feld>
+            <DateiFeld label="Fotos vom Mangel" optional hilfe="Am Handy öffnet sich direkt die Kamera." accept="image/*" kamera mehrfach knopf="Fotos wählen" dateien={dateien} onDateien={(neu) => setDateien([...dateien, ...neu])} />
           </Stapel>
         </Karte>
 

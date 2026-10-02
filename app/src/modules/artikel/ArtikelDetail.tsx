@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { datum, euro, zahl } from '@core/format';
 import { useDarf } from '@core/session';
-import type { ObjektTyp } from '@core/objects';
 import { BeispielMarke, Button, Kennzahl, Karte, Leer, Liste, ListenZeile, Meta, Raster, Seite, Stapel, Status, ZweiSpalten } from '@ui/index';
 import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import { BuchenDialog } from '../lager/BuchenDialog';
@@ -106,7 +105,7 @@ export function ArtikelDetail() {
                     </Liste>
                   ),
                 },
-                { id: 'verlauf', titel: 'Verlauf', inhalt: <Zeitstrahl bezug={{ typ: 'artikel' as ObjektTyp, id: a.id }} /> },
+                { id: 'verlauf', titel: 'Verlauf', inhalt: <Zeitstrahl bezug={{ typ: 'artikel', id: a.id }} /> },
               ]}
             />
           </Stapel>

@@ -3,7 +3,7 @@ import { db, zuruecksetzen } from '@core/db';
 import { on } from '@core/events';
 import type { Angebot } from '@core/objects';
 import { ablehnen, angebotSummen, annehmen, istAktuelleVersion, laeuftBaldAb, nachfassenFaellig, neueVersion, neuesAngebot, optionalSumme, phaseVor, versenden } from './daten';
-import { zahlAus } from './felder';
+import { zahlAus } from '@ui/index';
 
 const ang = (x: Partial<Angebot>): Angebot => ({ id: 'a', erstelltAm: '', geaendertAm: '', nummer: 'AN-1', auftragId: 'x', kundeId: 'k', titel: '', positionen: [], status: 'versendet', datum: '2026-09-20', gueltigBis: '2026-10-20', versendetAm: '2026-09-23T10:00:00Z', version: 1, ...x });
 

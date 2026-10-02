@@ -5,10 +5,9 @@
  * Für andere Module:
  *   vorlageAnwenden('rechnung.text', kontextAus({ rechnungId }))  → fertiger Text
  *   betreffAnwenden('email.rechnung', kontext)                     → fertiger Betreff
- *   briefkopf()                                                    → Logo, Absender, Fußzeile
+ *   briefkopf() liegt in `@ui` (Druck/Briefbogen)                    → Logo, Absender, Fußzeile
  */
 import { db, defineCollection } from '@core/db';
-import { einstellung } from '@core/einstellungen';
 import { adresseText, datum, euro, heute, personName, summen, uhrzeit, zahl } from '@core/format';
 import type { Basis, Gewerk, ID } from '@core/objects';
 
@@ -152,38 +151,6 @@ export function kontextAus(q: { auftragId?: ID; kundeId?: ID; rechnungId?: ID; a
     if (leute.length) k2.mitarbeiter = leute.map((m) => personName(m)).join(', ');
   }
   return k2;
-}
-
-// ------------------------------------------------------------------ Briefkopf
-
-export interface BriefkopfEinstellung {
-  /** Logo als verkleinerte Data-URL */
-  logo?: string;
-  /** zusätzliche Zeile in der Fußzeile, z. B. Handwerkskammer, Geschäftsführer */
-  zusatz?: string;
-  zeigeBank: boolean;
-  zeigeSteuer: boolean;
-}
-
-export const BRIEFKOPF_KEY = 'vorlagen.briefkopf';
-export const BRIEFKOPF_STANDARD: BriefkopfEinstellung = { zeigeBank: true, zeigeSteuer: true };
-
-/** Briefkopf aus den Betriebsdaten – immer aktuell, nichts kopiert */
-export function briefkopf(e: BriefkopfEinstellung = einstellung(BRIEFKOPF_KEY, BRIEFKOPF_STANDARD)) {
-  const b = db.betrieb.get('betrieb');
-  const adresse = b?.adresse?.strasse ? adresseText(b.adresse) : '';
-  const fusszeilen = [
-    [b?.name, adresse].filter(Boolean).join(' · '),
-    [b?.telefon && `Tel. ${b.telefon}`, b?.email].filter(Boolean).join(' · '),
-    e.zeigeBank && b?.iban ? `IBAN ${ibanFormat(b.iban)}` : '',
-    e.zeigeSteuer ? [b?.steuernummer && `Steuernr. ${b.steuernummer}`, b?.ustId && `USt-IdNr. ${b.ustId}`].filter(Boolean).join(' · ') : '',
-    e.zusatz?.trim() ?? '',
-  ].filter(Boolean);
-  return { logo: e.logo, absenderzeile: [b?.name, adresse].filter(Boolean).join(' · '), fusszeilen };
-}
-
-export function ibanFormat(iban: string) {
-  return iban.replace(/\s/g, '').toUpperCase().replace(/(.{4})/g, '$1 ').trim();
 }
 
 // ------------------------------------------------------------------ Startvorlagen je Gewerk

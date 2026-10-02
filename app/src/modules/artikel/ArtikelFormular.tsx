@@ -4,8 +4,8 @@ import { db } from '@core/db';
 import { centAlsEingabe, centAus, euro } from '@core/format';
 import { useDarf } from '@core/session';
 import type { Artikel, Einheit } from '@core/objects';
-import { Auswahl, Button, Eingabe, FormRaster, Karte, Leer, Meta, Schalter, Seite, Stapel, useBestaetigen, useToast } from '@ui/index';
-import { ALLE_EINHEITEN, aufschlagProzent, kategorien, margeProzent, vkAusAufschlag, zahlAus } from './daten';
+import { Auswahl, Button, Eingabe, FormRaster, Karte, Leer, Meta, Schalter, Seite, Stapel, useBestaetigen, useToast, zahlAus } from '@ui/index';
+import { ALLE_EINHEITEN, aufschlagProzent, kategorien, margeProzent, vkAusAufschlag } from './daten';
 
 /** Aufschlag-Rechner: EK, Aufschlag und VK hängen zusammen – egal, welches Feld du änderst. */
 export function PreisRechner({ ek, vk, onChange }: { ek: string; vk: string; onChange: (p: { ek: string; vk: string }) => void }) {

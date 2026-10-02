@@ -2,7 +2,8 @@ import { useParams } from 'react-router-dom';
 import { db } from '@core/db';
 import { datum } from '@core/format';
 import { ERGEBNIS_TEXT, abnahmen, ergebnis } from './daten';
-import { AuftragKopf, DruckNichtGefunden, DruckSeite } from './Druck';
+import { Briefbogen, DruckNichtGefunden } from '@ui/index';
+import { AuftragKopf } from './Druck';
 import { UnterschriftAnzeige } from './Unterschrift';
 
 export function AbnahmeDruck() {
@@ -12,7 +13,7 @@ export function AbnahmeDruck() {
   const fotos = db.dokumente.use((d) => !!a?.fotoIds.includes(d.id), [a?.fotoIds.join()]);
   if (!a) return <DruckNichtGefunden was="Abnahme" zurueck="/auftraege/abnahme" />;
   return (
-    <DruckSeite titel="Abnahmeprotokoll" zurueck={`/auftraege/abnahme/${a.id}`} beispiel={a.beispiel}>
+    <Briefbogen titel="Abnahmeprotokoll" zurueck={`/auftraege/abnahme/${a.id}`} beispiel={a.beispiel}>
       <AuftragKopf
         auftragId={a.auftragId}
         extra={[
@@ -54,7 +55,7 @@ export function AbnahmeDruck() {
       {fotos.length > 0 && (
         <>
           <h2>Fotos</h2>
-          <div className="doku-druck-fotos">
+          <div className="mm-druck-fotos">
             {fotos.map((f) => (
               <figure key={f.id} style={{ margin: 0 }}>
                 <img src={f.url} alt={f.titel} />
@@ -68,9 +69,9 @@ export function AbnahmeDruck() {
         Der Auftraggeber bestätigt mit seiner Unterschrift die Abnahme der Leistung
         {a.mangelAufgabeIds.length ? ' unter Vorbehalt der oben aufgeführten Mängel.' : '.'}
       </p>
-      <div className="doku-druck-unterschriften">
+      <div className="mm-druck-unterschriften">
         {a.unterschriftKunde ? <UnterschriftAnzeige daten={a.unterschriftKunde} rolle="Auftraggeber" /> : <p className="mm-meta">Noch keine Unterschrift.</p>}
       </div>
-    </DruckSeite>
+    </Briefbogen>
   );
 }

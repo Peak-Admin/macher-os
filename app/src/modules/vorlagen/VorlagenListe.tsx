@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { passt } from '@core/format';
 import { useDarf } from '@core/session';
-import { Abschnitt, Auswahl, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Suchfeld, useToast } from '@ui/index';
-import { VORLAGEN_ARTEN, briefkopf, vorlagen, type VorlagenArt } from './daten';
+import { Abschnitt, Auswahl, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Suchfeld, useToast, briefkopf } from '@ui/index';
+import { VORLAGEN_ARTEN, vorlagen, type VorlagenArt } from './daten';
 
 export function VorlagenListe() {
   const navigate = useNavigate();

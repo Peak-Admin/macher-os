@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { db } from '@core/db';
 import { euro } from '@core/format';
-import { Auswahl, Button, Eingabe, FormRaster, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, Zeile, useToast } from '@ui/index';
-import { artikelImportieren, csvParsen, findeArtikel, IMPORT_FELDER, spaltenRaten, zahlAus, zeilenUmwandeln, type ImportZeile, type Zuordnung } from './daten';
+import { Auswahl, Button, Eingabe, FormRaster, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, Zeile, useToast, zahlAus, DateiFeld } from '@ui/index';
+import { artikelImportieren, csvParsen, findeArtikel, IMPORT_FELDER, spaltenRaten, zeilenUmwandeln, type ImportZeile, type Zuordnung } from './daten';
 
 const BEISPIEL = 'Artikelnummer;Bezeichnung;Einheit;EK;VK;Kategorie;EAN\nK-100;NYM-J 3x1,5 mm²;m;0,48;0,95;Kabel;4012345000017';
 
@@ -64,7 +64,7 @@ export function ArtikelImport() {
         )}
         <Karte titel="1. Datei wählen">
           <Stapel>
-            <Eingabe label="CSV-Datei" type="file" accept=".csv,.txt,text/csv" onChange={(e) => void datei(e.target.files?.[0])} hilfe="Vorhandene Artikel (gleiche Artikelnummer oder EAN) werden aktualisiert, nicht doppelt angelegt." />
+            <DateiFeld label="CSV-Datei" accept=".csv,.txt,text/csv" onDateien={([f]) => datei(f)} knopf="CSV-Datei wählen" hilfe="Vorhandene Artikel (gleiche Artikelnummer oder EAN) werden aktualisiert, nicht doppelt angelegt." />
             <Textfeld label="… oder Inhalt einfügen" optional rows={4} value={text} onChange={(e) => laden(e.target.value)} placeholder={BEISPIEL} />
             <Zeile>
               <Button klein variante="tertiaer" onClick={() => laden(BEISPIEL)}>

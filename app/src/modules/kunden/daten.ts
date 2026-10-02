@@ -5,10 +5,10 @@
  * Kunden, der bleibt. Der doppelte Kunde wandert in den Papierkorb. Es werden
  * keine Aufträge, Rechnungen o. Ä. kopiert.
  */
-import { batch, db, vermerken } from '@core/db';
+import { alleSammlungen, batch, db, vermerken } from '@core/db';
 import { emit } from '@core/events';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
-import type { Bezug, ID, Kunde } from '@core/objects';
+import type { Basis, Bezug, ID, Kunde } from '@core/objects';
 
 // ------------------------------------------------------------------ Normalisieren
 
@@ -133,31 +133,21 @@ export function kundenZusammenfuehren(zielId: ID, quelleId: ID): number {
   const text = `Kunde zusammengeführt: ${quelle.name} → ${ziel.name}`;
   let n = 0;
   batch(() => {
-    const kundeIdUmhaengen = <T extends { id: ID; kundeId?: ID }>(col: { where: (p: (t: T) => boolean) => T[]; update: (id: ID, p: Partial<T>, o?: { text?: string }) => unknown }) => {
-      for (const x of col.where((t) => t.kundeId === quelleId)) {
-        col.update(x.id, { kundeId: zielId } as Partial<T>, { text });
-        n++;
+    // Alle registrierten Sammlungen – Kern und Module (z. B. Serviceverträge, Reklamationen, Bewertungen).
+    // Der Zeitstrahl (`ereignisse`) bleibt unverändert: er dokumentiert, was war.
+    for (const col of alleSammlungen()) {
+      if (col.name === 'kunden' || col.name === 'ereignisse') continue;
+      for (const x of col.all() as (Basis & { kundeId?: ID; bezug?: Bezug })[]) {
+        if (x.kundeId === quelleId) {
+          col.update(x.id, { kundeId: zielId } as Partial<Basis>, { text });
+          n++;
+        }
+        if (istKunde(x.bezug, quelleId)) {
+          col.update(x.id, { bezug: { typ: 'kunden', id: zielId } } as Partial<Basis>, { text, leise: true });
+          n++;
+        }
       }
-    };
-    kundeIdUmhaengen(db.orte);
-    kundeIdUmhaengen(db.anlagen);
-    kundeIdUmhaengen(db.auftraege);
-    kundeIdUmhaengen(db.termine);
-    kundeIdUmhaengen(db.angebote);
-    kundeIdUmhaengen(db.rechnungen);
-    kundeIdUmhaengen(db.nachrichten);
-
-    const bezugUmhaengen = <T extends { id: ID; bezug?: Bezug }>(col: { where: (p: (t: T) => boolean) => T[]; update: (id: ID, p: Partial<T>, o?: { text?: string; leise?: boolean }) => unknown }) => {
-      for (const x of col.where((t) => istKunde(t.bezug, quelleId))) {
-        col.update(x.id, { bezug: { typ: 'kunden', id: zielId } } as Partial<T>, { text, leise: true });
-        n++;
-      }
-    };
-    bezugUmhaengen(db.aufgaben);
-    bezugUmhaengen(db.dokumente);
-    bezugUmhaengen(db.hinweise);
-    bezugUmhaengen(db.benachrichtigungen);
-    bezugUmhaengen(db.erledigungen);
+    }
 
     // Fehlende Angaben beim bleibenden Kunden ergänzen – die Quelle verschwindet danach.
     const vorhandeneAp = new Set(ziel.ansprechpartner.map((a) => normName(a.name)));
@@ -178,7 +168,7 @@ export function kundenZusammenfuehren(zielId: ID, quelleId: ID): number {
     db.kunden.remove(quelleId);
     vermerken({ typ: 'kunden', id: quelleId }, 'kunde.zusammengefuehrt', `In ${ziel.name} zusammengeführt`);
   });
-  // Andere Module (eigene Sammlungen mit kundeId) hängen ihre Verweise selbst um.
+  // Für weitere Verweisfelder (z. B. `empfohlenVonKundeId`) hören Module auf dieses Ereignis.
   emit({ typ: 'kunde.zusammengefuehrt', daten: { zielId, quelleId } });
   return n;
 }

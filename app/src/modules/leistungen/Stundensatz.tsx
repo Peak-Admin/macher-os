@@ -2,7 +2,7 @@ import { db } from '@core/db';
 import { centAus, euro } from '@core/format';
 import { useEinstellung } from '@core/einstellungen';
 import { useDarf } from '@core/session';
-import { Button, Eingabe, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, useToast } from '@ui/index';
+import { Button, Eingabe, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, useToast, zahlAus } from '@ui/index';
 import { istBetrag, stundensatzBerechnen, type StundensatzEingabe } from './daten';
 
 export const RECHNER_KEY = 'leistungen.stundensatzRechner';
@@ -11,18 +11,18 @@ export type RechnerFelder = Record<'lohn' | 'lnk' | 'bezahlt' | 'produktiv' | 'g
 
 export const LEERE_FELDER: RechnerFelder = { lohn: '', lnk: '', bezahlt: '', produktiv: '', gemein: '', mitarbeiter: '', gewinn: '' };
 
-const zahlAus = (s: string) => (s.trim() && /^\d+([.,]\d+)?$/.test(s.trim()) ? Number(s.trim().replace(',', '.')) : Number.NaN);
+const zahl = (s: string) => zahlAus(s) ?? Number.NaN;
 
 /** Eingaben aus dem Formular (Texte) in Rechenwerte übersetzen */
 export function rechnerEingabe(f: RechnerFelder): StundensatzEingabe {
   return {
     lohn: istBetrag(f.lohn) ? centAus(f.lohn) : Number.NaN,
-    lohnnebenkostenProzent: zahlAus(f.lnk),
-    bezahlteStunden: zahlAus(f.bezahlt),
-    produktiveStunden: zahlAus(f.produktiv),
+    lohnnebenkostenProzent: zahl(f.lnk),
+    bezahlteStunden: zahl(f.bezahlt),
+    produktiveStunden: zahl(f.produktiv),
     gemeinkostenJahr: istBetrag(f.gemein) ? centAus(f.gemein) : Number.NaN,
-    produktiveMitarbeiter: zahlAus(f.mitarbeiter),
-    gewinnProzent: zahlAus(f.gewinn),
+    produktiveMitarbeiter: zahl(f.mitarbeiter),
+    gewinnProzent: zahl(f.gewinn),
   };
 }
 

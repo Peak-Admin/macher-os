@@ -4,7 +4,7 @@
 import { aufloesen, db } from '@core/db';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
 import { aktionAusfuehren } from '@core/modul';
-import { aktionVorhanden } from '@modules/naechster-einsatz/logik';
+import { aktionVorhanden } from '@core/modul';
 import { isoDatum, plusTage, wochenStart } from '@core/format';
 import type { Aufgabe, Erledigung, ID, Mitarbeiter, Termin, Zeiteintrag } from '@core/objects';
 

@@ -3,7 +3,7 @@ import { db } from '@core/db';
 import { useEinstellung } from '@core/einstellungen';
 import { datum, heute, plusMonate } from '@core/format';
 import type { ID } from '@core/objects';
-import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
+import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Segmente, Stapel, Textfeld, useToast, DateiFeld, dateiLesen } from '@ui/index';
 import { ERGEBNIS_LABEL, intervall, PRUEFARTEN, pruefungDokumentieren, standardIntervall, type Ergebnis } from './daten';
 
 const MAX_BYTES = 2_000_000;
@@ -46,13 +46,13 @@ function PruefungFormular({ id, fertig }: { id: ID; fertig: () => void }) {
     try {
       let dokumentId: ID | undefined;
       if (datei) {
-        const url = await alsDataUrl(datei);
+        const d = await dateiLesen(datei);
         dokumentId = db.dokumente.create({
-          art: datei.type.startsWith('image/') ? 'foto' : 'pdf',
+          art: d.istBild ? 'foto' : 'pdf',
           titel: `${art}-Protokoll ${b.name} (${datum(tag)})`,
-          url,
-          mime: datei.type,
-          groesse: datei.size,
+          url: d.url,
+          mime: d.mime,
+          groesse: d.bytes,
           bezug: { typ: 'betriebsmittel', id },
           tags: ['pruefung'],
         }).id;
@@ -102,15 +102,7 @@ function PruefungFormular({ id, fertig }: { id: ID; fertig: () => void }) {
           <Eingabe label="Prüfer" value={pruefer} onChange={(e) => setPruefer(e.target.value)} fehler={f('pruefer')} placeholder="z. B. Elektro Meier oder TÜV Nord" />
           <Eingabe label="Intervall in Monaten" type="number" inputMode="numeric" min={1} max={120} value={monate} onChange={(e) => setMonate(e.target.value)} fehler={f('monate')} />
         </FormRaster>
-        <Eingabe
-          label="Prüfprotokoll"
-          type="file"
-          accept="application/pdf,image/*"
-          optional
-          hilfe="PDF oder Foto, max. 2 MB"
-          fehler={f('datei')}
-          onChange={(e) => setDatei(e.target.files?.[0])}
-        />
+        <DateiFeld label="Prüfprotokoll" optional hilfe="PDF oder Foto, max. 2 MB" fehler={f('datei')} accept="application/pdf,image/*" dateien={datei ? [datei] : []} onDateien={([d]) => setDatei(d)} />
         <Textfeld label="Bemerkung" optional value={bemerkung} onChange={(e) => setBemerkung(e.target.value)} placeholder="z. B. Zuleitung getauscht" />
         {ergebnis === 'nicht_bestanden' ? (
           <Meldung ton="achtung" titel="Gerät wird gesperrt">Es wird als defekt markiert und darf nicht verwendet werden, bis es repariert und erneut geprüft ist.</Meldung>
@@ -130,11 +122,3 @@ function PruefungFormular({ id, fertig }: { id: ID; fertig: () => void }) {
   );
 }
 
-function alsDataUrl(f: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(String(r.result));
-    r.onerror = () => reject(r.error);
-    r.readAsDataURL(f);
-  });
-}

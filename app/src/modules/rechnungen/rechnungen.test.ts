@@ -18,6 +18,7 @@ import {
 } from './logik';
 import { rechnungX, rechnungAendern } from './typen';
 import { kundeOhneAdresse, testBetrieb, vorTagen } from './testdaten';
+import { zusatzleistungen } from '@modules/zusatzleistungen/daten';
 
 let t: ReturnType<typeof testBetrieb>;
 
@@ -116,15 +117,40 @@ describe('Rechnung aus Auftrag', () => {
     expect(db.material.get(m.id)?.abgerechnetIn).toBeUndefined();
   });
 
-  it('liest Zusatzleistungen tolerant aus der fremden Sammlung', async () => {
-    const { defineCollection } = await import('@core/db');
-    const zus = defineCollection<{ id: string; erstelltAm: string; geaendertAm: string; auftragId: string; titel: string; preis: number; abrechenbar: boolean }>('zusatzleistungen');
-    zus.create({ auftragId: t.auftrag.id, titel: 'Zusätzliche Steckdose', preis: 8000, abrechenbar: true } as never);
-    zus.create({ auftragId: t.auftrag.id, titel: 'Kulanz', preis: 5000, abrechenbar: false } as never);
+  it('übernimmt freigegebene Zusatzleistungen und markiert sie als abgerechnet', () => {
+    const basis = { auftragId: t.auftrag.id, berechnung: 'pauschal' as const, menge: 1, einheit: 'Psch' as const, fotoIds: [] };
+    const frei = zusatzleistungen.create({ ...basis, text: 'Zusätzliche Steckdose', einzelpreis: 8000, status: 'freigegeben' });
+    const offen = zusatzleistungen.create({ ...basis, text: 'Noch ohne Freigabe', einzelpreis: 3000, status: 'offen' });
+    zusatzleistungen.create({ ...basis, text: 'Kulanz', einzelpreis: 5000, status: 'abgelehnt' });
     const v = rechnungsVorschau(t.auftrag.id);
-    expect(v.positionen.find((p) => p.text === 'Zusätzliche Steckdose')?.einzelpreis).toBe(8000);
-    expect(v.positionen.some((p) => p.text === 'Kulanz')).toBe(false);
-    expect(v.zusatzleistungIds).toHaveLength(1);
+    expect(v.positionen.find((p) => p.text === 'Zusatzleistung: Zusätzliche Steckdose')?.einzelpreis).toBe(8000);
+    expect(v.positionen.some((p) => /Kulanz|ohne Freigabe/.test(p.text))).toBe(false);
+    expect(v.zusatzleistungIds).toEqual([frei.id]);
+
+    const r = rechnungErstellen(t.auftrag.id)!;
+    expect(rechnungX(r.id)?.zusatzleistungIds).toEqual([frei.id]);
+    expect(zusatzleistungen.get(frei.id)).toMatchObject({ status: 'abgerechnet', rechnungId: r.id });
+    expect(zusatzleistungen.get(offen.id)?.status).toBe('offen');
+    // nichts doppelt: die nächste Vorschau kennt den Nachtrag nicht mehr
+    expect(rechnungsVorschau(t.auftrag.id, 'teil').zusatzleistungIds).toEqual([]);
+
+    entwurfLoeschen(r.id);
+    expect(zusatzleistungen.get(frei.id)).toMatchObject({ status: 'freigegeben', rechnungId: undefined });
+  });
+
+  it('gibt Zusatzleistungen beim Storno frei und hängt sie an den Korrekturentwurf', () => {
+    const z = zusatzleistungen.create({ auftragId: t.auftrag.id, berechnung: 'pauschal', menge: 1, einheit: 'Psch', fotoIds: [], text: 'Außenleuchte', einzelpreis: 18500, status: 'freigegeben' });
+    db.zeiten.create({ mitarbeiterId: 'm1', auftragId: t.auftrag.id, datum: heute(), start: '08:00', ende: '10:00', pauseMinuten: 0, art: 'arbeit', freigegeben: true } as Parameters<typeof db.zeiten.create>[0]);
+    const r = rechnungErstellen(t.auftrag.id)!;
+    expect(r.zusatzleistungIds).toEqual([z.id]);
+    expect(r.zeitIds).toHaveLength(1);
+    expect(festschreiben(r.id).ok).toBe(true);
+    stornieren(r.id);
+    expect(zusatzleistungen.get(z.id)?.status).toBe('freigegeben');
+    // Zeiten einer stornierten Rechnung sind wieder abrechenbar
+    expect(rechnungsVorschau(t.auftrag.id).zeitIds).toHaveLength(1);
+    const k = korrekturEntwurf(r.id)!;
+    expect(zusatzleistungen.get(z.id)).toMatchObject({ status: 'abgerechnet', rechnungId: k.id });
   });
 });
 

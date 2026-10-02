@@ -1,8 +1,12 @@
 /** Einstellungen: Datensicherung, Beispieldaten, Papierkorb und Prüfungen der Betriebsdaten – reine Logik. */
-import { exportieren } from '@core/db';
+import { alleSammlungen, batch, exportieren, sammlung, type Collection } from '@core/db';
+import { beispieleEntfernen } from '@core/seed';
 import { OBJEKT_LABEL, type Basis, type Betrieb, type ObjektTyp } from '@core/objects';
 
 type Daten = Record<string, Record<string, Basis>>;
+
+/** Was wir von einer Sammlung brauchen – im Betrieb alle registrierten Sammlungen (Kern und Module) */
+export type Quelle = Pick<Collection<Basis>, 'name' | 'allMitGeloeschten'>;
 
 export const SICHERUNG_FORMAT = 'macher-os-sicherung';
 export const LETZTE_SICHERUNG_KEY = 'einstellungen.letzteSicherung';
@@ -38,22 +42,16 @@ export function sicherungPruefen(json: unknown): PruefErgebnis {
   return { ok: true, daten: daten as Daten, erstelltAm: verpackt ? String(json.erstelltAm ?? '') || undefined : undefined, betrieb: betrieb.name, anzahl };
 }
 
-/** Beispieldaten aus allen Sammlungen (auch denen der Module) entfernen. Gibt die bereinigten Daten und die Anzahl zurück. */
-export function ohneBeispiele(daten: Daten): { daten: Daten; entfernt: number } {
-  let entfernt = 0;
-  const neu: Daten = {};
-  for (const [name, tabelle] of Object.entries(daten)) {
-    neu[name] = {};
-    for (const [id, obj] of Object.entries(tabelle)) {
-      if (obj.beispiel) entfernt++;
-      else neu[name][id] = obj;
-    }
-  }
-  return { daten: neu, entfernt };
+/** Anzahl der Beispiel-Einträge in allen Sammlungen (auch denen der Module) */
+export function beispielAnzahl(quellen: Quelle[] = alleSammlungen()): number {
+  return quellen.reduce((s, c) => s + c.allMitGeloeschten().filter((x) => x.beispiel).length, 0);
 }
 
-export function beispielAnzahl(daten: Daten): number {
-  return Object.values(daten).reduce((s, t) => s + Object.values(t).filter((x) => x.beispiel).length, 0);
+/** Beispieldaten aus allen registrierten Sammlungen entfernen – gibt die Anzahl zurück */
+export function beispieleEntfernenZaehlen(): number {
+  const n = beispielAnzahl();
+  beispieleEntfernen();
+  return n;
 }
 
 // ------------------------------------------------------------------ Papierkorb
@@ -89,16 +87,27 @@ export interface PapierkorbEintrag {
   aufbewahren: boolean;
 }
 
-export function papierkorbEintraege(daten: Daten): PapierkorbEintrag[] {
+export function papierkorbEintraege(quellen: Quelle[] = alleSammlungen()): PapierkorbEintrag[] {
   const liste: PapierkorbEintrag[] = [];
-  for (const [name, tabelle] of Object.entries(daten)) {
+  for (const { name, allMitGeloeschten } of quellen) {
     if (NICHT_IM_PAPIERKORB.has(name)) continue;
-    for (const obj of Object.values(tabelle)) {
+    for (const obj of allMitGeloeschten()) {
       if (!obj.geloeschtAm) continue;
       liste.push({ sammlung: name, id: obj.id, titel: objektTitel(obj as unknown as Record<string, unknown>), art: sammlungLabel(name), geloeschtAm: obj.geloeschtAm, aufbewahren: AUFBEWAHREN.has(name) });
     }
   }
   return liste.sort((a, b) => b.geloeschtAm.localeCompare(a.geloeschtAm));
+}
+
+/** Wiederherstellen über die Sammlung (mit Zeitstrahl-Eintrag und Event `<name>.restored`) */
+export function wiederherstellen(name: string, id: string) {
+  sammlung(name)?.restore(id);
+}
+
+export function endgueltigLoeschen(eintraege: { sammlung: string; id: string }[]) {
+  batch(() => {
+    for (const e of eintraege) sammlung(e.sammlung)?.purge(e.id);
+  });
 }
 
 // ------------------------------------------------------------------ Betriebsdaten

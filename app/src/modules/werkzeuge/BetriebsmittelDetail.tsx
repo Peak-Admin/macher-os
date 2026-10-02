@@ -3,7 +3,6 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { datum, euro, personName, zahl } from '@core/format';
 import { useDarf, useIch } from '@core/session';
-import type { ObjektTyp } from '@core/objects';
 import { BeispielMarke, Button, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, ZweiSpalten, useToast } from '@ui/index';
 import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import { ERGEBNIS_LABEL, faelligkeit, intervall, pruefhistorie } from '../pruefungen/daten';
@@ -130,7 +129,7 @@ export function BetriebsmittelDetail() {
                     </Liste>
                   ),
                 },
-                { id: 'verlauf', titel: 'Verlauf', inhalt: <Zeitstrahl bezug={{ typ: 'betriebsmittel' as ObjektTyp, id: b.id }} /> },
+                { id: 'verlauf', titel: 'Verlauf', inhalt: <Zeitstrahl bezug={{ typ: 'betriebsmittel', id: b.id }} /> },
               ]}
             />
           </Stapel>

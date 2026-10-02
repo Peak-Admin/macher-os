@@ -84,26 +84,3 @@ export function ergebnisFestlegen(terminId: ID, ergebnis: Ergebnis, grund?: stri
   }
 }
 
-/** Bild verkleinern (lange Kante max. `max` px), damit der lokale Speicher nicht vollläuft */
-export function bildVerkleinern(datei: File, max = 1280, qualitaet = 0.72): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const leser = new FileReader();
-    leser.onerror = () => reject(new Error('Datei konnte nicht gelesen werden.'));
-    leser.onload = () => {
-      const img = new Image();
-      img.onerror = () => reject(new Error('Das ist kein Bild.'));
-      img.onload = () => {
-        const f = Math.min(1, max / Math.max(img.width, img.height));
-        const c = document.createElement('canvas');
-        c.width = Math.round(img.width * f);
-        c.height = Math.round(img.height * f);
-        const ctx = c.getContext('2d');
-        if (!ctx) return resolve(String(leser.result));
-        ctx.drawImage(img, 0, 0, c.width, c.height);
-        resolve(c.toDataURL('image/jpeg', qualitaet));
-      };
-      img.src = String(leser.result);
-    };
-    leser.readAsDataURL(datei);
-  });
-}

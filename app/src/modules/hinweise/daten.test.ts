@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
-import { defineModul, registriereModule } from '@core/modul';
+import { aktionVorhanden, defineModul, registriereModule } from '@core/modul';
 import { hinweis, hinweisAusblenden, hinweisErledigen, offeneHinweise } from '@core/macher';
-import { aktionVerfuegbar, erledigteSeit, filtern, zaehlen, zielPfad } from './daten';
+import { erledigteSeit, filtern, zaehlen, zielPfad } from './daten';
 
 describe('Hinweise & Freigaben', () => {
   beforeEach(() => {
@@ -42,8 +42,8 @@ describe('Hinweise & Freigaben', () => {
   });
 
   it('bietet nur registrierte Aktionen an und findet das Ziel', () => {
-    expect(aktionVerfuegbar('x.tun')).toBe(true);
-    expect(aktionVerfuegbar('gibt.es.nicht')).toBe(false);
+    expect(aktionVorhanden('x.tun')).toBe(true);
+    expect(aktionVorhanden('gibt.es.nicht')).toBe(false);
     expect(zielPfad({ bezug: { typ: 'kunden', id: 'k1' } })).toBe('/k/k1');
     expect(zielPfad({ pfad: '/p', bezug: { typ: 'kunden', id: 'k1' } })).toBe('/p');
   });

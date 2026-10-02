@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Dokument, Termin } from '@core/objects';
-import { dataUrlBytes, fotosGefiltert, groesseText, laufenderAuftrag, nachherFehlt, skalierteGroesse, titelAusText } from './daten';
+import { fotosGefiltert, groesseText, laufenderAuftrag, nachherFehlt, titelAusText } from './daten';
+import { dataUrlBytes, skalierteGroesse } from '@ui/index';
 import { platzFrei } from './speicher';
 
 const basis = { erstelltAm: '2026-05-01T08:00:00.000Z', geaendertAm: '2026-05-01T08:00:00.000Z' };

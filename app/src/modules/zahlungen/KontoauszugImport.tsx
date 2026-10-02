@@ -3,7 +3,7 @@ import { useDatenstand } from '@core/db';
 import { db } from '@core/db';
 import { datum, euro } from '@core/format';
 import { useDarf } from '@core/session';
-import { Button, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, useToast } from '@ui/index';
+import { Button, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, useToast, DateiKnopf } from '@ui/index';
 import { offenePosten } from '../rechnungen/logik';
 import { rechnungX } from '../rechnungen/typen';
 import { KeinZugriff } from '../rechnungen/RechnungenListe';
@@ -64,10 +64,9 @@ export function KontoauszugImport() {
         <Stapel>
           <p>Exportiere die Umsätze aus deinem Online-Banking als CSV-Datei (Semikolon getrennt) und lade sie hier hoch. Macher erkennt die Rechnungsnummer im Verwendungszweck oder Betrag und Kunde.</p>
           <Zeile>
-            <label className="mm-btn mm-btn--primaer" style={{ cursor: 'pointer' }}>
-              <span>{laedt ? 'Wird gelesen …' : 'CSV-Datei wählen'}</span>
-              <input type="file" accept=".csv,.txt,text/csv" style={{ position: 'absolute', opacity: 0, width: 1, height: 1 }} onChange={(e) => datei(e.target.files?.[0])} />
-            </label>
+            <DateiKnopf variante="primaer" accept=".csv,.txt,text/csv" onDateien={([f]) => datei(f)} laedt={laedt} laedtText="Wird gelesen …">
+              CSV-Datei wählen
+            </DateiKnopf>
             {hatBeispiele && (
               <Button variante="tertiaer" onClick={() => lesen(beispielKontoauszug())}>
                 Mit Beispiel-Kontoauszug ausprobieren

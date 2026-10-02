@@ -5,11 +5,11 @@ import { db } from '@core/db';
 import { centAus, euro } from '@core/format';
 import type { ID } from '@core/objects';
 import { useIch } from '@core/session';
-import { Auswahl, Button, Eingabe, FormRaster, Meldung, Meta, Segmente, Status, Textfeld, Zeile, useToast } from '@ui/index';
+import { Auswahl, Button, Eingabe, FormRaster, Meldung, Meta, Segmente, Status, Textfeld, Zeile, useToast, zahlAus } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
 import { FotoKnopf } from '@modules/fotos/FotoKnopf';
 import { laufenderAuftrag } from '@modules/fotos/daten';
-import { betrag, zahlAus, zusatzleistungen, type Berechnung } from './daten';
+import { betrag, zusatzleistungen, type Berechnung } from './daten';
 
 export function ZusatzErfassen({ fertig, auftragId }: { fertig: () => void; auftragId?: ID }) {
   const toast = useToast();
@@ -28,7 +28,7 @@ export function ZusatzErfassen({ fertig, auftragId }: { fertig: () => void; auft
   const [fehler, setFehler] = useState<Record<string, string>>({});
 
   const leistung = leistungen.find((l) => l.id === leistungId);
-  const m = zahlAus(menge);
+  const m = zahlAus(menge) ?? NaN;
   const einzelpreis = berechnung === 'leistung' ? leistung?.preis ?? 0 : berechnung === 'stunden' ? betrieb?.stundensatz ?? 0 : centAus(preis);
   const summe = Number.isFinite(m) ? betrag({ menge: m, einzelpreis }) : 0;
 

@@ -24,10 +24,11 @@ import {
   ZweiSpalten,
   useBestaetigen,
   useToast,
+  UnterschriftFeld,
 } from '@ui/index';
 import { AuftragKurz, ObjektLink } from '@ui/objekt';
 import { Galerie } from '@modules/fotos/Galerie';
-import { UnterschriftAnzeige, UnterschriftFeld } from '@modules/abnahme/Unterschrift';
+import { UnterschriftAnzeige } from '@modules/abnahme/Unterschrift';
 import { STATUS_TEXT, ablehnen, abrechenbar, betrag, freigeben, freigebenAnders, zusatzleistungen, type Zusatzleistung } from './daten';
 import { ZusatzErfassen } from './Erfassen';
 

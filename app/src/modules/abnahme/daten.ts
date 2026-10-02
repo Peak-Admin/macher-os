@@ -8,7 +8,8 @@ import { emit } from '@core/events';
 import { heute, plusTage } from '@core/format';
 import type { Aufgabe, Auftrag, Basis, Datum, ID, Zeitpunkt } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
-import { unterschriftSpeichern, type UnterschriftDaten, type UnterschriftEingabe } from './unterschrift';
+import { unterschriftSpeichern, type UnterschriftDaten } from './unterschrift';
+import type { UnterschriftEingabe } from '@ui/index';
 
 export interface Abnahme extends Basis {
   auftragId: ID;

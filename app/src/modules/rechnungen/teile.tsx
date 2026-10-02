@@ -1,36 +1,11 @@
 /** Kleine gemeinsame Bausteine des Pakets „geld“ (nur aus UI-Bausteinen zusammengesetzt). */
-import { useEffect, useState, type InputHTMLAttributes } from 'react';
+import { useEffect, useState } from 'react';
 import { db } from '@core/db';
-import { centAlsEingabe, centAus, euro } from '@core/format';
-import type { Cent, ID } from '@core/objects';
+import { euro } from '@core/format';
+import type { ID } from '@core/objects';
 import { Button, Dialog, Eingabe, FormRaster, Meldung, Schalter, Stapel, Status, Zeile, useToast } from '@ui/index';
 import { statusText, type Mangel, type RechnungsSummen } from './logik';
 import type { RechnungX } from './typen';
-
-/** Geldbetrag eingeben – übernimmt den Wert beim Verlassen des Feldes */
-export function GeldEingabe({
-  label,
-  wert,
-  onWert,
-  ...rest
-}: { label: string; wert: Cent | undefined; onWert: (c: Cent) => void; hilfe?: string; fehler?: string; optional?: boolean } & Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'>) {
-  const [text, setText] = useState(centAlsEingabe(wert));
-  useEffect(() => setText(centAlsEingabe(wert)), [wert]);
-  return (
-    <Eingabe
-      label={label}
-      inputMode="decimal"
-      value={text}
-      onChange={(e) => setText(e.target.value)}
-      onBlur={() => {
-        const c = centAus(text);
-        onWert(c);
-        setText(centAlsEingabe(c));
-      }}
-      {...rest}
-    />
-  );
-}
 
 export function RechnungStatus({ r }: { r: RechnungX }) {
   const s = statusText(r);

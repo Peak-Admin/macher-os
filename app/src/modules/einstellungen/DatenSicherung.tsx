@@ -1,13 +1,13 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db, exportieren, importieren, useDatenstand } from '@core/db';
+import { db, importieren, useDatenstand } from '@core/db';
 import { datum, heute, relativ, uhrzeit, zahl } from '@core/format';
 import { setzeEinstellung, useEinstellung } from '@core/einstellungen';
 import { useDarf } from '@core/session';
-import { Button, Dialog, Karte, Meldung, Meta, Seite, Stapel, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { Button, Dialog, Karte, Meldung, Meta, Seite, Stapel, Zeile, useBestaetigen, useToast, DateiKnopf } from '@ui/index';
 import { dateiTeil, herunterladen } from '@modules/schnittstellen/daten';
 import { EinstellungenTabs } from './Navigation';
-import { LETZTE_SICHERUNG_KEY, beispielAnzahl, ohneBeispiele, papierkorbEintraege, sicherungErstellen, sicherungPruefen, type PruefErgebnis } from './daten';
+import { LETZTE_SICHERUNG_KEY, beispielAnzahl, beispieleEntfernenZaehlen, papierkorbEintraege, sicherungErstellen, sicherungPruefen, type PruefErgebnis } from './daten';
 
 export function sicherungHerunterladen() {
   const s = sicherungErstellen();
@@ -22,11 +22,9 @@ export function DatenSicherung() {
   const [fragen, bestaetigen] = useBestaetigen();
   const admin = useDarf('admin');
   const [letzte] = useEinstellung<string | undefined>(LETZTE_SICHERUNG_KEY, undefined);
-  const datei = useRef<HTMLInputElement>(null);
   const [geprueft, setGeprueft] = useState<PruefErgebnis | null>(null);
-  const daten = exportieren();
-  const beispiele = beispielAnzahl(daten);
-  const papierkorb = papierkorbEintraege(daten).length;
+  const beispiele = beispielAnzahl();
+  const papierkorb = papierkorbEintraege().length;
 
   if (!admin)
     return (
@@ -49,8 +47,6 @@ export function DatenSicherung() {
       setGeprueft(sicherungPruefen(JSON.parse(await f.text())));
     } catch {
       setGeprueft({ ok: false, fehler: 'Die Datei konnte nicht gelesen werden. Ist es eine Macher-Sicherung (.json)?' });
-    } finally {
-      if (datei.current) datei.current.value = '';
     }
   };
 
@@ -64,9 +60,8 @@ export function DatenSicherung() {
 
   const beispieleWeg = async () => {
     if (!(await fragen('Beispieldaten entfernen?', `${zahl(beispiele)} Beispiel-Einträge (Kunden, Aufträge, Team …) werden endgültig gelöscht. Was du selbst angelegt hast, bleibt.`, 'Beispieldaten entfernen'))) return;
-    const r = ohneBeispiele(exportieren());
-    importieren(r.daten);
-    toast(`${zahl(r.entfernt)} Beispiel-Einträge entfernt. Jetzt gehört Macher ganz dir.`);
+    const entfernt = beispieleEntfernenZaehlen();
+    toast(`${zahl(entfernt)} Beispiel-Einträge entfernt. Jetzt gehört Macher ganz dir.`);
   };
 
   const onboarding = async () => {
@@ -95,11 +90,10 @@ export function DatenSicherung() {
               <Button icon="download" onClick={herunter}>
                 Sicherung herunterladen
               </Button>
-              <Button variante="sekundaer" icon="upload" onClick={() => datei.current?.click()}>
+              <DateiKnopf accept="application/json,.json" onDateien={([f]) => dateiGewaehlt(f)}>
                 Sicherung einspielen
-              </Button>
+              </DateiKnopf>
             </Zeile>
-            <input ref={datei} type="file" accept="application/json,.json" hidden onChange={(e) => dateiGewaehlt(e.target.files?.[0])} />
             {geprueft && !geprueft.ok && <Meldung ton="achtung" titel="Diese Datei passt nicht">{geprueft.fehler}</Meldung>}
           </Stapel>
         </Karte>

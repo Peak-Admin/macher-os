@@ -5,14 +5,10 @@
 import { db } from '@core/db';
 import type { DbEvent } from '@core/events';
 import { erledigt } from '@core/macher';
-import { aktionAusfuehren, alleModule, pfadZu } from '@core/modul';
+import { aktionAusfuehren, aktionVorhanden, pfadZu } from '@core/modul';
 import { heute, plusTage } from '@core/format';
 import type { Auftrag, ID, Phase } from '@core/objects';
 import { alleEinsaetzeErledigt, istOffen, istVor, naechsterSchritt, phaseLabel, type Schritt, type SchrittKontext } from './logik';
-
-export function aktionDa(id: string): boolean {
-  return alleModule().some((m) => !!m.aktionen?.[id]);
-}
 
 export function auftragPfad(id: ID) {
   return `/auftrag/${id}`;
@@ -36,7 +32,7 @@ export function schrittKontext(a: Auftrag): SchrittKontext {
     angebote: db.angebote.where((x) => x.auftragId === a.id),
     rechnungen: db.rechnungen.where((r) => r.auftragId === a.id),
     heute: heute(),
-    aktionDa,
+    aktionDa: aktionVorhanden,
     pfadZu: (typ, id) => pfadZu({ typ, id }),
   };
 }
@@ -57,7 +53,7 @@ export function aufgabeSicherstellen(auftragId: ID, titel: string, quelle = 'mac
 export function schrittAusfuehren(a: Auftrag, s: Schritt): { pfad?: string; meldung?: string } {
   if (s.vorherPhase) setzePhase(a.id, s.vorherPhase);
   if (s.aktion) {
-    if (aktionDa(s.aktion)) {
+    if (aktionVorhanden(s.aktion)) {
       const ziel = aktionAusfuehren(s.aktion, s.payload);
       return { pfad: typeof ziel === 'string' ? ziel : undefined, meldung: typeof ziel === 'string' ? undefined : 'Erledigt.' };
     }

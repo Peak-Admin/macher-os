@@ -69,7 +69,11 @@ Siehe `src/modules/kunden/` als Referenz.
 - `benachrichtigen(titel, {...})`
 - `einstellung(key, standard)` / `useEinstellung`
 - `useIch()`, `darf('geld')`, `useDarf('geld')`, `istBuero()`
-- `naechsteNummer('rechnung')`, `summen(positionen, ust, rabatt)`, `euro(cent)`, `datum()`, `relativ()`, `passt(q, …)`
+- `naechsteNummer('rechnung')`; eigene Nummernkreise: `naechsteNummerFuer('BR', sammlung.allMitGeloeschten().map((x) => x.nummer))`
+- `summen(positionen, ust, rabatt)`, `euro(cent)`, `datum()`, `relativ()`, `passt(q, …)`
+- Fremde Modul-Sammlungen direkt importieren (`import { kalkulationen } from '@modules/kalkulation/daten'`) oder
+  generisch über `sammlung(name)` / `alleSammlungen()` – nie über `exportieren()` lesen
+- `aktionVorhanden('rechnung.erstellen')` – nur Knöpfe zeigen, deren Aktion ein Modul anbietet
 - Datum/Uhrzeit nur aus `@core/format`: `plusTage`, `plusMonate`, `tageZwischen`, `wochentag` (1 = Mo), `wochenStart`,
   `kalenderwoche`, `tage(von, bis)`, `minutenAus('07:30')`, `uhrAus(450)`, `minutenVon(iso)`, `lokal(datum, minuten)`
 - Feiertage & Arbeitstage nur aus `@core/kalender`: `feiertage(jahr, bundesland?)`, `istFeiertag`, `istArbeitstag(datum, arbeitstage?)`
@@ -81,7 +85,9 @@ Siehe `src/modules/kunden/` als Referenz.
 ## 5. UI
 
 Nur Bausteine aus `@ui/index` und `@ui/objekt` verwenden (Seite, Karte, Liste, ListenZeile, Tabelle, Status, Button,
-Eingabe, Auswahl, Dialog, Tabs, Filter, Leer, Meldung, Kennzahl …). Kein eigenes CSS außer minimalem Layout
+Eingabe, Auswahl, Dialog, Tabs, Filter, Leer, Meldung, Kennzahl …). Gemeinsame Eingaben (`@ui/eingaben`): `ZahlEingabe`,
+`GeldEingabe`, `zahlAus`, `DateiKnopf`, `DateiFeld`, `bildVerkleinern`, `dateiLesen`, `UnterschriftFeld`. Druck/PDF
+(`@ui/druck`): `Briefbogen`, `Druckrahmen`, `DruckNichtGefunden`, `briefkopf()`. Kein eigenes CSS außer minimalem Layout
 (Inline-Styles oder eine kleine `<modul>.css` mit `--mm-*`-Tokens). Das finale Design passiert zentral.
 
 Pflicht je Ansicht: Leerzustand (mit konkreter Handlung), Fehler/Validierung, Erfolgsmeldung (`useToast`),

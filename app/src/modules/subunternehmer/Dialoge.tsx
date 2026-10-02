@@ -1,12 +1,11 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { db, neueId } from '@core/db';
 import { centAlsEingabe, centAus, heute } from '@core/format';
 import type { ID } from '@core/objects';
 import { useDarf } from '@core/session';
-import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, useToast } from '@ui/index';
+import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, useToast, DateiKnopf, bildVerkleinern, dateiAlsDataUrl } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
 import { istBetrag } from '@modules/leistungen/daten';
-import { bildVerkleinern, dateiAlsDataUrl } from '@modules/vorlagen/bild';
 import { EINSATZ_STATUS, NACHWEIS_ARTEN, subunternehmer, type NachweisArt, type SubEinsatz } from './daten';
 import { subName } from './name';
 
@@ -98,7 +97,6 @@ export function EinsatzDialog({ offen, onSchliessen, subId, auftragId, einsatz }
 /** Nachweis (Freistellung, Unbedenklichkeit …) erfassen – mit Scan/Foto */
 export function NachweisDialog({ offen, onSchliessen, subId }: { offen: boolean; onSchliessen: () => void; subId: ID }) {
   const toast = useToast();
-  const datei = useRef<HTMLInputElement>(null);
   const [art, setArt] = useState<NachweisArt>('freistellung_48b');
   const [gueltigBis, setGueltigBis] = useState('');
   const [dokument, setDokument] = useState<{ url: string; name: string; mime: string } | undefined>();
@@ -106,12 +104,11 @@ export function NachweisDialog({ offen, onSchliessen, subId }: { offen: boolean;
   const [laedt, setLaedt] = useState(false);
   const info = NACHWEIS_ARTEN.find((a) => a.id === art);
 
-  const waehlen = async (d: File | undefined) => {
-    if (!d) return;
+  const waehlen = async ([d]: File[]) => {
     setFehler(undefined);
     setLaedt(true);
     try {
-      if (d.type.startsWith('image/')) setDokument({ url: await bildVerkleinern(d, 1800, 1800), name: d.name, mime: 'image/jpeg' });
+      if (d.type.startsWith('image/')) setDokument({ url: (await bildVerkleinern(d, { max: 1800 })).url, name: d.name, mime: 'image/jpeg' });
       else if (d.type === 'application/pdf') {
         if (d.size > 1_500_000) throw new Error('Die PDF ist zu groß (max. 1,5 MB). Fotografiere das Dokument stattdessen.');
         setDokument({ url: await dateiAlsDataUrl(d), name: d.name, mime: d.type });
@@ -155,11 +152,10 @@ export function NachweisDialog({ offen, onSchliessen, subId }: { offen: boolean;
         <Auswahl label="Art" value={art} onChange={(e) => setArt(e.target.value as NachweisArt)} optionen={NACHWEIS_ARTEN.map((a) => ({ wert: a.id, label: a.label }))} />
         {info?.text && <Meta>{info.text}</Meta>}
         <Eingabe label="Gültig bis" type="date" value={gueltigBis} onChange={(e) => setGueltigBis(e.target.value)} optional={art === 'sonstiges'} />
-        <input ref={datei} type="file" accept="image/*,application/pdf" hidden onChange={(e) => waehlen(e.target.files?.[0])} />
         <div>
-          <Button variante="sekundaer" icon="kamera" laedt={laedt} laedtText="Wird gelesen …" onClick={() => datei.current?.click()}>
+          <DateiKnopf accept="image/*,application/pdf" icon="kamera" onDateien={waehlen} laedt={laedt} laedtText="Wird gelesen …">
             {dokument ? 'Andere Datei wählen' : 'Foto oder PDF hinzufügen'}
-          </Button>
+          </DateiKnopf>
         </div>
         {dokument && <Meta>Ausgewählt: {dokument.name}</Meta>}
         {fehler && <Meldung ton="achtung">{fehler}</Meldung>}

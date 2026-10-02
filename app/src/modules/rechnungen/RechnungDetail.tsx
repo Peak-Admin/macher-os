@@ -29,6 +29,7 @@ import {
   Zeile,
   useBestaetigen,
   useToast,
+  GeldEingabe,
 } from '@ui/index';
 import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import {
@@ -47,7 +48,7 @@ import {
   type Mangel,
 } from './logik';
 import { rechnungAendern, rechnungX, type RechnungX } from './typen';
-import { GeldEingabe, MaengelListe, RechnungStatus, SummenListe } from './teile';
+import { MaengelListe, RechnungStatus, SummenListe } from './teile';
 import { xrechnungHerunterladen } from './xrechnung';
 import { KeinZugriff } from './RechnungenListe';
 import { ZahlungDialog } from '../zahlungen/ZahlungDialog';

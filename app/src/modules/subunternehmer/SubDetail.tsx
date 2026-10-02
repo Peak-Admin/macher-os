@@ -131,7 +131,7 @@ export function SubDetail() {
               </Liste>
             </Karte>
             <Karte titel="Verlauf">
-              <Zeitstrahl bezug={{ typ: 'subunternehmer' as never, id: s.id }} max={10} />
+              <Zeitstrahl bezug={{ typ: 'subunternehmer', id: s.id }} max={10} />
             </Karte>
           </Stapel>
         }

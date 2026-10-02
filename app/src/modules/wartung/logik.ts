@@ -6,7 +6,7 @@
 import { batch, db, vermerken } from '@core/db';
 import { einstellung } from '@core/einstellungen';
 import { erledigt } from '@core/macher';
-import { aktionAusfuehren, alleModule, pfadZu } from '@core/modul';
+import { aktionAusfuehren, aktionVorhanden, pfadZu } from '@core/modul';
 import { adresseText, datum, heute, plusTage, uhrzeit, plusMonate, wochenStart } from '@core/format';
 import { naechsteNummer } from '@core/nummern';
 import type { Anlage, Auftrag, Datum, ID, Termin } from '@core/objects';
@@ -254,9 +254,8 @@ export function kundeBenachrichtigen(auftragId: ID, text = benachrichtigungsText
 
 /** Terminvorschlag über die Planung holen (autoplanung → einsatzplanung → Auftrag) */
 export function terminVorschlagen(auftragId: ID): string | void {
-  const hat = (id: string) => alleModule().some((m) => !!m.aktionen?.[id]);
-  if (hat('plan.vorschlag')) return aktionAusfuehren('plan.vorschlag', { auftragId });
-  if (hat('plan.einplanen')) return aktionAusfuehren('plan.einplanen', { auftragId });
+  if (aktionVorhanden('plan.vorschlag')) return aktionAusfuehren('plan.vorschlag', { auftragId });
+  if (aktionVorhanden('plan.einplanen')) return aktionAusfuehren('plan.einplanen', { auftragId });
   return pfadZu({ typ: 'auftraege', id: auftragId });
 }
 

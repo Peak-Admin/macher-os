@@ -3,22 +3,12 @@ import { db } from '@core/db';
 import { heute } from '@core/format';
 import type { AbwesenheitsArt, ID } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
-import { Button, Checkbox, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
+import { Button, Checkbox, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, Textfeld, useToast, DateiFeld, dateiLesen } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
 import { ART_LABEL, arbeitstage, kollisionen, tageText, ueberschneidung, urlaubskonto, zeitraumText } from './daten';
 import { eintragen } from './logik';
 
 type Art = Extract<AbwesenheitsArt, 'urlaub' | 'krank' | 'schule' | 'frei' | 'sonstiges'>;
-
-/** Datei als Data-URL lesen (AU-Foto, Nachweis) */
-export function dateiLesen(file: File): Promise<string> {
-  return new Promise((ok, fehler) => {
-    const r = new FileReader();
-    r.onload = () => ok(String(r.result));
-    r.onerror = () => fehler(r.error);
-    r.readAsDataURL(file);
-  });
-}
 
 /** Antrag in Sekunden: Urlaub beantragen, krank melden, Berufsschule eintragen */
 export function AbwesenheitForm({ fertig, vorgabeArt = 'urlaub' }: { fertig?: (id: ID) => void; vorgabeArt?: Art }) {
@@ -53,12 +43,13 @@ export function AbwesenheitForm({ fertig, vorgabeArt = 'urlaub' }: { fertig?: (i
     try {
       const a = eintragen({ mitarbeiterId: m.id, art, von, bis, halbtags: halbtags || undefined, notiz: notiz.trim() || undefined }, { direktGenehmigt: personal });
       if (foto) {
+        const d = await dateiLesen(foto);
         db.dokumente.create({
-          art: foto.type === 'application/pdf' ? 'pdf' : 'foto',
+          art: d.istBild ? 'foto' : 'pdf',
           titel: `AU ${m.vorname} ${m.nachname} ${zeitraumText(a)}`,
-          url: await dateiLesen(foto),
-          mime: foto.type,
-          groesse: foto.size,
+          url: d.url,
+          mime: d.mime,
+          groesse: d.bytes,
           bezug: { typ: 'abwesenheiten', id: a.id },
           tags: ['au'],
         });
@@ -130,13 +121,7 @@ export function AbwesenheitForm({ fertig, vorgabeArt = 'urlaub' }: { fertig?: (i
         )}
       </Stapel>
       {art === 'krank' && (
-        <label className="mm-feld">
-          <span className="mm-label">
-            Foto der Krankmeldung <span className="mm-label-optional">(optional)</span>
-          </span>
-          <input type="file" accept="image/*,application/pdf" capture="environment" onChange={(e) => setFoto(e.target.files?.[0])} />
-          <span className="mm-hilfe">Die AU sehen nur du und der Chef.</span>
-        </label>
+        <DateiFeld label="Foto der Krankmeldung" optional hilfe="Die AU sehen nur du und der Chef." accept="image/*,application/pdf" kamera knopf="Foto aufnehmen" dateien={foto ? [foto] : []} onDateien={([f]) => setFoto(f)} />
       )}
       <Textfeld label="Notiz" optional rows={2} value={notiz} onChange={(e) => setNotiz(e.target.value)} />
       {fehler && (
