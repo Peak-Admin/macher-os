@@ -82,7 +82,7 @@ const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSch
     titel: "Betrieb",
     text: "Mitarbeiter, Material, Geld und Unternehmen.",
     icon: "home",
-    objekt: "werkzeugkiste",
+    objekt: "werkbank",
     href: "/funktionen/mitarbeiter",
     inhalt: ["Geld: Rechnungen und Belege", "Team: Menschen und Zeiten", "Ausstattung und Unternehmen"],
   },
