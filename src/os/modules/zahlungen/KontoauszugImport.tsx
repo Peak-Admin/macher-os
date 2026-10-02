@@ -1,34 +1,42 @@
 import { useState } from 'react';
-import { useDatenstand } from '@core/db';
-import { db } from '@core/db';
+import { db, useDatenstand } from '@core/db';
 import { datum, euro } from '@core/format';
 import { useDarf } from '@core/session';
 import { Button, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, useToast, DateiKnopf } from '@ui/index';
 import { offenePosten } from '../rechnungen/logik';
-import { rechnungX } from '../rechnungen/typen';
 import { KeinZugriff } from '../rechnungen/RechnungenListe';
-import { beispielKontoauszug, importAusfuehren, kontoauszugLesen, zuordnen, type Zuordnung } from './logik';
+import { beispielKontoauszug, kontoauszugLesen, type Umsatz } from './logik';
+import { camtLesen, istCamt } from './camt';
+import { abgleichen, einlesen, vorschau, type Bewertung, type AbgleichErgebnis } from './abgleich';
+import type { UmsatzQuelle } from './daten';
 
-const TON = { sicher: 'erfolg', unsicher: 'achtung', keine: 'neutral', doppelt: 'neutral' } as const;
-const LABEL = { sicher: 'Wird gebucht', unsicher: 'Zur Freigabe', keine: 'Nicht zugeordnet', doppelt: 'Schon gebucht' } as const;
+const TON = { eindeutig: 'erfolg', vorschlag: 'achtung', keine: 'neutral', doppelt: 'neutral' } as const;
+const LABEL = { eindeutig: 'Wird zugeordnet', vorschlag: 'Zum Prüfen', keine: 'Nicht zugeordnet', doppelt: 'Schon importiert' } as const;
+
+/** Kontoauszug lesen: CAMT.053 (XML) oder CSV */
+export function auszugLesen(text: string): { umsaetze: Umsatz[]; quelle: UmsatzQuelle; fehler?: string } {
+  if (istCamt(text)) return { ...camtLesen(text), quelle: 'camt' };
+  if (/^\s*</.test(text)) return { umsaetze: [], quelle: 'camt', fehler: 'Die XML-Datei ist kein Kontoauszug im CAMT-Format. Exportiere „CAMT.053“ oder CSV aus deinem Online-Banking.' };
+  return { ...kontoauszugLesen(text), quelle: 'csv' };
+}
 
 export function KontoauszugImport() {
   useDatenstand();
   const darf = useDarf('geld');
   const toast = useToast();
-  const [zuordnungen, setZuordnungen] = useState<Zuordnung[] | null>(null);
+  const [stand, setStand] = useState<{ umsaetze: Umsatz[]; quelle: UmsatzQuelle; bewertungen: Bewertung[]; beispiel?: boolean } | null>(null);
   const [fehler, setFehler] = useState<string>();
-  const [ergebnis, setErgebnis] = useState<{ gebucht: number; summe: number; freigaben: number } | null>(null);
+  const [ergebnis, setErgebnis] = useState<(AbgleichErgebnis & { doppelt: number }) | null>(null);
   const [laedt, setLaedt] = useState(false);
   if (!darf) return <KeinZugriff />;
 
-  const lesen = (text: string) => {
-    const { umsaetze, fehler: f } = kontoauszugLesen(text);
+  const lesen = (text: string, beispiel = false) => {
+    const { umsaetze, quelle, fehler: f } = auszugLesen(text);
     setErgebnis(null);
-    if (f) return (setFehler(f), setZuordnungen(null));
-    if (!umsaetze.length) return (setFehler('In der Datei sind keine Zahlungseingänge.'), setZuordnungen(null));
+    if (f) return (setFehler(f), setStand(null));
+    if (!umsaetze.length) return (setFehler('In der Datei sind keine Zahlungseingänge.'), setStand(null));
     setFehler(undefined);
-    setZuordnungen(zuordnen(umsaetze));
+    setStand({ umsaetze, quelle, bewertungen: vorschau(umsaetze), beispiel });
   };
 
   const datei = async (f: File | undefined) => {
@@ -36,7 +44,7 @@ export function KontoauszugImport() {
     setLaedt(true);
     try {
       const buf = await f.arrayBuffer();
-      // Viele Banken exportieren in Windows-1252 – UTF-8 zuerst, sonst Fallback
+      // Viele Banken exportieren CSV in Windows-1252 – UTF-8 zuerst, sonst Fallback
       let text = new TextDecoder('utf-8').decode(buf);
       if (text.includes('�')) text = new TextDecoder('windows-1252').decode(buf);
       lesen(text);
@@ -47,28 +55,33 @@ export function KontoauszugImport() {
     }
   };
 
-  const ausfuehren = () => {
-    if (!zuordnungen) return;
-    const e = importAusfuehren(zuordnungen);
-    setErgebnis(e);
-    setZuordnungen(null);
-    toast(e.gebucht ? `${e.gebucht === 1 ? '1 Zahlung' : `${e.gebucht} Zahlungen`} gebucht.` : 'Keine Zahlung automatisch gebucht.');
+  const uebernehmen = () => {
+    if (!stand) return;
+    const { neu, doppelt } = einlesen(stand.umsaetze, stand.quelle, { beispiel: stand.beispiel });
+    const e = abgleichen({ automatisch: true, ids: neu.map((u) => u.id) });
+    setErgebnis({ ...e, doppelt });
+    setStand(null);
+    toast(e.zugeordnet ? `${e.zugeordnet === 1 ? '1 Zahlung' : `${e.zugeordnet} Zahlungen`} zugeordnet.` : 'Keine Zahlung automatisch zugeordnet.', { ton: e.zugeordnet ? 'erfolg' : 'neutral' });
   };
 
-  const n = (s: Zuordnung['sicherheit']) => zuordnungen?.filter((z) => z.sicherheit === s).length ?? 0;
+  const n = (s: Bewertung['entscheidung']) => stand?.bewertungen.filter((b) => b.entscheidung === s).length ?? 0;
   const hatBeispiele = offenePosten().some((r) => r.beispiel);
+  const zuPruefen = (ergebnis?.vorschlaege ?? 0) + (ergebnis?.offen ?? 0);
 
   return (
     <Seite titel="Kontoauszug importieren" zurueck={{ to: '/betrieb/zahlungen', label: 'Zahlungen' }}>
       <Karte>
         <Stapel>
-          <p>Exportiere die Umsätze aus deinem Online-Banking als CSV-Datei (Semikolon getrennt) und lade sie hier hoch. Macher erkennt die Rechnungsnummer im Verwendungszweck oder Betrag und Kunde.</p>
+          <p>
+            Exportiere die Umsätze aus deinem Online-Banking als CAMT.053 (XML) oder CSV und lade die Datei hier hoch. Macher erkennt Rechnungsnummer, Betrag und Kunde – auch wenn
+            die Nummer verstümmelt ist.
+          </p>
           <Zeile>
-            <DateiKnopf variante="primaer" accept=".csv,.txt,text/csv" onDateien={([f]) => datei(f)} laedt={laedt} laedtText="Wird gelesen …">
-              CSV-Datei wählen
+            <DateiKnopf variante={stand ? 'sekundaer' : 'primaer'} accept=".csv,.txt,.xml,.camt,text/csv,application/xml,text/xml" onDateien={([f]) => datei(f)} laedt={laedt} laedtText="Wird gelesen …">
+              Kontoauszug wählen
             </DateiKnopf>
             {hatBeispiele && (
-              <Button variante="tertiaer" onClick={() => lesen(beispielKontoauszug())}>
+              <Button variante="tertiaer" onClick={() => lesen(beispielKontoauszug(), true)}>
                 Mit Beispiel-Kontoauszug ausprobieren
               </Button>
             )}
@@ -78,45 +91,61 @@ export function KontoauszugImport() {
       </Karte>
 
       {ergebnis && (
-        <Meldung ton="erfolg" titel="Import fertig" aktion={<Button klein variante="sekundaer" to="/betrieb/zahlungen">Zu den offenen Posten</Button>}>
-          {ergebnis.gebucht === 1 ? '1 Zahlung' : `${ergebnis.gebucht} Zahlungen`} über {euro(ergebnis.summe)} gebucht.
-          {ergebnis.freigaben ? ` ${ergebnis.freigaben === 1 ? '1 unsichere Zuordnung wartet' : `${ergebnis.freigaben} unsichere Zuordnungen warten`} unter „Braucht dich“ auf deine Freigabe.` : ''}
+        <Meldung
+          ton="erfolg"
+          titel="Import fertig"
+          aktion={
+            zuPruefen ? (
+              <Button klein variante="sekundaer" to="/betrieb/zahlungen/abgleich">
+                Jetzt zuordnen
+              </Button>
+            ) : (
+              <Button klein variante="sekundaer" to="/betrieb/zahlungen">
+                Zu den offenen Posten
+              </Button>
+            )
+          }
+        >
+          {ergebnis.zugeordnet === 1 ? '1 Zahlung' : `${ergebnis.zugeordnet} Zahlungen`} über {euro(ergebnis.summe)} zugeordnet.
+          {zuPruefen ? ` ${zuPruefen === 1 ? '1 Zahlung wartet' : `${zuPruefen} Zahlungen warten`} darauf, dass du sie zuordnest.` : ''}
+          {ergebnis.doppelt ? ` ${ergebnis.doppelt === 1 ? '1 Umsatz war' : `${ergebnis.doppelt} Umsätze waren`} schon importiert.` : ''}
         </Meldung>
       )}
 
-      {zuordnungen && (
+      {stand && (
         <Karte titel="Das hat Macher gefunden">
           <Stapel>
             <Meta>
-              {n('sicher')} sicher · {n('unsicher')} zur Freigabe · {n('keine')} ohne passende Rechnung{n('doppelt') ? ` · ${n('doppelt')} schon gebucht` : ''}
+              {n('eindeutig')} eindeutig · {n('vorschlag')} zum Prüfen · {n('keine')} ohne passende Rechnung{n('doppelt') ? ` · ${n('doppelt')} schon importiert` : ''}
             </Meta>
             <Liste>
-              {zuordnungen.map((z) => {
-                const r = rechnungX(z.rechnungId);
+              {stand.bewertungen.map((b, i) => {
+                const t = b.treffer[0];
+                const ziel = b.buchungen?.length && b.buchungen.length > 1 ? b.grund : t ? `${t.rechnung.nummer} (${db.kunden.get(t.rechnung.kundeId)?.name ?? ''})` : 'keine Rechnung';
                 return (
                   <ListenZeile
-                    key={z.umsatz.zeile}
-                    titel={`${euro(z.umsatz.betrag)} · ${z.umsatz.name || 'ohne Namen'}`}
-                    untertitel={`${datum(z.umsatz.datum)} · „${z.umsatz.zweck || '–'}“ → ${r ? `${r.nummer} (${db.kunden.get(r.kundeId)?.name ?? ''})` : 'keine Rechnung'} · ${z.grund}`}
-                    rechts={<Status ton={TON[z.sicherheit]}>{LABEL[z.sicherheit]}</Status>}
+                    key={`${b.umsatz.zeile}-${i}`}
+                    titel={`${euro(b.umsatz.betrag)} · ${b.umsatz.name || 'ohne Namen'}`}
+                    untertitel={`${datum(b.umsatz.datum)} · „${b.umsatz.zweck || '–'}“ → ${b.entscheidung === 'doppelt' ? b.grund : `${ziel}${b.ergebnis ? ` · ${b.ergebnis}` : ''}`}`}
+                    rechts={<Status ton={TON[b.entscheidung]}>{LABEL[b.entscheidung]}</Status>}
                   />
                 );
               })}
             </Liste>
             <Zeile>
-              <Button onClick={ausfuehren} disabled={!n('sicher') && !n('unsicher')}>
-                {n('sicher') ? `${n('sicher') === 1 ? '1 Zahlung' : `${n('sicher')} Zahlungen`} buchen` : 'Zur Freigabe ablegen'}
+              <Button onClick={uebernehmen} disabled={n('doppelt') === stand.bewertungen.length}>
+                {n('eindeutig') ? `${n('eindeutig') === 1 ? '1 Zahlung' : `${n('eindeutig')} Zahlungen`} zuordnen` : 'Umsätze übernehmen'}
               </Button>
-              <Button variante="tertiaer" onClick={() => setZuordnungen(null)}>
+              <Button variante="tertiaer" onClick={() => setStand(null)}>
                 Verwerfen
               </Button>
             </Zeile>
-            {n('unsicher') > 0 && <Meta>Unsichere Zuordnungen bucht Macher nicht selbst – sie landen als Freigabe unter „Braucht dich“.</Meta>}
+            {n('vorschlag') + n('keine') > 0 && <Meta>Was nicht eindeutig ist, bucht Macher nicht selbst – du ordnest es danach mit einem Klick zu.</Meta>}
           </Stapel>
         </Karte>
       )}
 
-      {!zuordnungen && !ergebnis && !offenePosten().length && <Leer titel="Keine offenen Rechnungen" text="Es gibt gerade nichts zuzuordnen. Du kannst trotzdem importieren – Macher meldet, was nicht passt." icon="check" />}
+      {!stand && !ergebnis && !offenePosten().length && <Leer titel="Keine offenen Rechnungen" text="Es gibt gerade nichts zuzuordnen. Du kannst trotzdem importieren – Macher meldet, was nicht passt." icon="check" />}
     </Seite>
   );
 }

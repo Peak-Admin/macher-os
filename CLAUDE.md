@@ -13,6 +13,11 @@ Für **jede** Oberfläche, jedes Mockup und jeden UI-Text gilt die UX- und Desig
 ([`docs/design/festlegungen.md`](docs/design/festlegungen.md)) gelten nur noch, wo die Spezifikation nichts sagt
 (z. B. Logo, Bildsprache, Markenauftakt). Leitsatz: „Das sieht ordentlich aus. Das verstehe ich. Damit kann ich arbeiten.“
 
+Bildsprache: **[`docs/design/visual-assets.md`](docs/design/visual-assets.md)** – „das digitale Werkzeug“. Echte Fotos von
+Handwerksobjekten (Register `src/lib/objekte.ts`; Website `<Objekt>`, Card-Prop `objekt`; Software `<MacherAsset>`, `Leer` zeigt
+automatisch ein passendes Objekt) als ruhige Ebene – ein starkes Objekt pro Karte, nie in Listen, Tabellen, Formularen.
+Fotos von Mission Mittelstand / Matthias Aumann nur mit Freigabe des Betreibers (siehe `missionMittelstandBilder`).
+
 Reihenfolge bei Zielkonflikten: 1. Aufgabe verstehen und erledigen · 2. Orientierung, Lesbarkeit, Fehlertoleranz ·
 3. konsistente, ruhige Gestaltung · 4. Markenwirkung und Dekoration.
 
@@ -26,6 +31,7 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
   Canvas `#f5f6f3`, Flächen `#ffffff`, ruhige Fläche `#eef1ed`, Text `#222c26`, Sekundärtext `#536057`,
   Linien `#dce2dc`, Feldrahmen `#7a8780`. Status: Warnung `#765000` auf `#fff4d6`, Gefahr `#a02b24` auf `#fdeceb`,
   Erfolg `#1f6040` auf `#e8f2ec`. Akzentgrün `#69af44` nur auf dunklen Flächen. Orange `#e69433` nur für Kampagnen.
+  EU-Blau `#003399` (Token `eu` / `--mm-eu`) nur für den Vertrauenskasten (DSGVO, Server in Frankfurt, EU AI Act).
 - **Form:** Radien Controls 8 px, Karten/Panels 12 px, Menüs/Dialoge 16 px; flach, feine Schatten.
 - **Raster:** 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 px. App: Sidebar 232 px, Topbar 64 px, Inhalt max. 1280 px, Formulare max. 800 px.
 - **Controls:** Buttons und Felder 48 px hoch, Label oberhalb, sichtbarer 3-px-Fokusring. Primärbutton: Weiß auf `#0d6b45`, 16 px halbfett.
@@ -92,6 +98,7 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 
 ### Regeln
 
+- Verkaufsargumente nur gegen einen Einwand aus `docs/produkt/einwaende.md` und nur, wenn sie heute stimmen.
 - Sprache: einfaches Deutsch, Handwerkersprache, kurze Sätze, „du“. Keine SaaS-/ERP-Begriffe
   („Mitarbeiter planen“ statt „Workforce Management“, „Werkzeuge“ statt „Tools“).
 - CTA-System: primär „Kostenlos testen“ (`/signup`), sekundär „Demo ansehen“ (`/demo`).
@@ -108,8 +115,12 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - Primäraktion: `btn-primaer` (bzw. `ButtonLink` Variante `primary`), mind. 48 px hoch. Auf dunklen Flächen Akzente mit `text-accent`.
 - Website-Navigation: Daten in `mainNav` (`src/lib/site.ts`), Kopf in `src/components/layout/Header.tsx`.
   Desktop ab 1200 px (`nav:`-Breakpoint), Mega-Menüs per Klick, höchstens vier Links je Gruppe, nur echte Ziele.
-  Darunter ein modaler `<dialog>` (`showModal`). Kein `backdrop-filter`/`transform` am Kopf (macht ihn zum Bezugsrahmen
-  für fest positionierte Kinder).
+  Darunter ein modaler `<dialog>` (`showModal`). Der Kopf ist ein fester Glas-Kopf nach Peak One, der auf dem Hero liegt
+  und der Box darunter folgt (`data-header-theme="dunkel" | "hell"`). `backdrop-filter` nur auf den eigenen Glasebenen
+  (`.kopf-glas`), nie auf `<header>` selbst (macht ihn zum Bezugsrahmen für fest positionierte Kinder).
+- Website-Abschnitte als Boxen (`Zone` aus `src/components/ui/Zone.tsx`, nach Peak One `mk-zone`): Rand zum Fenster,
+  Radius 12/16/24 px, Töne im Wechsel dunkelgrün · beige (`beige` = `#f4efe6`, Gegenfarbe) · weiß; Footer und
+  Abschluss-CTA sind ebenfalls Boxen.
 
 ## Verbindlicher Architektur- & Produktstandard
 

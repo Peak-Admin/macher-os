@@ -88,7 +88,7 @@
 .mm-home-schritte li.erledigt { color: var(--mm-text); }
 .mm-home-haken { display: grid; place-items: center; width: 20px; height: 20px; flex-shrink: 0; border: 2px solid var(--mm-border); border-radius: var(--mm-radius-control); }
 .mm-home-haken--an { border-color: var(--mm-brand-deep); background: var(--mm-brand-deep); color: #fff; }
-.mm-home-naechster-aktion { display: flex; }
+.mm-home-naechster-aktion { display: flex; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 479px) { .mm-home-naechster-aktion > .mm-btn { flex: 1; } .mm-home-naechster-titel { font-size: 21px; line-height: 27px; } }
 .mm-home-danach { border-top: 1px solid var(--mm-border); padding-top: 12px; }
 .mm-home-danach ul { list-style: none; margin: 4px 0 0; padding: 0; }
@@ -256,3 +256,8 @@
   .mm-home-datum::before { content: none; }
   .mm-home-kopf > .mm-btn { align-self: flex-start; }
 }
+.mm-home-widget-titelzeile { display: flex; align-items: center; gap: 12px; min-width: 0; }
+/* Ansprechpartner: echtes Teamfoto von Mission Mittelstand über der Person */
+.mm-home-kontakt-team { position: relative; margin: 0 0 4px; overflow: hidden; border-radius: var(--mm-radius-card); aspect-ratio: 16 / 7; background: var(--mm-surface-subtle); }
+.mm-home-kontakt-team img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mm-home-kontakt-team figcaption { position: absolute; left: 8px; bottom: 8px; padding: 2px 8px; border-radius: var(--mm-radius-control); background: rgb(16 44 33 / 80%); color: var(--mm-on-dark); font-size: 14px; font-weight: 600; }

@@ -25,13 +25,19 @@ describe('Dein nächster Schritt', () => {
     expect(naechsteAktionen(basis())).toEqual([]);
   });
 
-  it('während der Einrichtung: erster offener Schritt mit Fortschritt (Betrieb angelegt zählt mit)', () => {
-    const [a] = naechsteAktionen(basis({ einrichtung: haken([true, false, false]) }));
+  it('„Macher fertig machen“: optional, ausblendbar, mit Fortschritt und erstem offenen Schritt', () => {
+    const [a] = naechsteAktionen(basis({ einrichtung: haken([true, true, false, false]) }));
     expect(a.type).toBe('onboarding');
-    expect(a.title).toBe('Schritt 1 erledigen');
-    expect(a.actionUrl).toBe('/s/1');
+    expect(a.title).toBe('Macher fertig machen');
+    expect(a.actionLabel).toBe('Weiter einrichten');
+    expect(a.actionUrl).toBe('/s/2');
     expect(a.progress).toMatchObject({ erledigt: 2, gesamt: 4 });
-    expect(a.progress!.schritte![0]).toEqual({ titel: 'Betrieb angelegt', erledigt: true });
+    expect(a.ausblenden).toBe('start.karteAus');
+  });
+
+  it('echte Arbeit geht vor dem Einrichten', () => {
+    const liste = naechsteAktionen(basis({ einrichtung: haken([true, false]), anfragen: [{ id: 'a1', titel: 'Bad' }] }));
+    expect(liste.map((a) => a.type)).toEqual(['anfragen', 'onboarding']);
   });
 
   it('nach der Einrichtung wird es zur Next-Best-Action: Anfragen vor Angeboten vor Rechnungen', () => {

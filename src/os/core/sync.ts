@@ -12,6 +12,7 @@
  */
 import { useSyncExternalStore } from 'react';
 import { exportieren, fremdeAenderungen, rohObjekt, setzeSyncBeobachter, vermerken } from './db';
+import { alsAkteur } from './akteur';
 import { emit } from './events';
 import type { Basis, Ereignis, ID } from './objects';
 
@@ -308,7 +309,7 @@ export function starteSync(adapter: SyncAdapter, opt: SyncOptionen): SyncSteueru
     if (geschuetztGeaendert) schreiben(K_GESCHUETZT, JSON.stringify([...geschuetzt]));
     for (const v of vermerke) {
       try {
-        vermerken({ typ: v.sammlung, id: v.id }, 'sync.konflikt', konfliktText(v.konflikte), { konflikte: v.konflikte });
+        alsAkteur({ quelle: 'sync' }, () => vermerken({ typ: v.sammlung, id: v.id }, 'sync.konflikt', konfliktText(v.konflikte), { konflikte: v.konflikte }));
       } catch {
         /* z. B. Lesemodus – der Konflikt ist trotzdem aufgelöst */
       }

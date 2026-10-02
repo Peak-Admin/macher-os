@@ -161,7 +161,7 @@ export default function DatenUebernehmenPage() {
               ))}
             </ul>
             <ButtonLink href="/hilfe/kontakt" className="mt-7">
-              Hilfe anfragen <Icon name="arrow-right" className="size-4" />
+              Hilfe anfragen
             </ButtonLink>
           </div>
         </div>

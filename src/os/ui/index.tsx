@@ -23,7 +23,9 @@ import type { Ton } from '@core/modul';
 import './ui.css';
 
 export { GlasIcon, ThemenIcon, type GlasIconName } from './glas';
+import { MacherAsset, type ObjektSchluessel } from './asset';
 export { Icon } from './icons';
+export { MacherAsset, type ObjektSchluessel } from './asset';
 export type { IconName } from './icons';
 export * from './eingaben';
 export * from './druck';
@@ -711,12 +713,41 @@ export function Tabelle<T>({ zeilen, spalten, schluessel, onZeile, zeilenLink, l
 
 // ------------------------------------------------------------------ Zustände
 
-export function Leer({ titel, text, aktion, icon = 'info' }: { titel: string; text?: string; aktion?: ReactNode; icon?: IconName }) {
+/** Leerzustände zeigen ein vertrautes Werkzeug-Objekt statt eines abstrakten Icons (docs/design/visual-assets.md, Abschnitt 7). */
+const LEER_OBJEKT: Partial<Record<IconName, ObjektSchluessel>> = {
+  auftraege: 'klemmbrett',
+  liste: 'klemmbrett',
+  check: 'klemmbrett',
+  kalender: 'zollstock',
+  plan: 'zollstock',
+  uhr: 'zollstock',
+  team: 'handschuhe',
+  person: 'handschuhe',
+  paket: 'schrauben',
+  lager: 'schrauben',
+  werkzeug: 'akkuschrauber',
+  einstellungen: 'schraubenschluessel',
+  dokument: 'bauplan',
+  ordner: 'bauplan',
+  notiz: 'bleistift',
+  stift: 'bleistift',
+  auto: 'schluesselbund',
+  ort: 'schluesselbund',
+  wissen: 'werkzeugkiste',
+  start: 'werkzeugkiste',
+};
+
+export function Leer({ titel, text, aktion, icon = 'info', objekt }: { titel: string; text?: string; aktion?: ReactNode; icon?: IconName; objekt?: ObjektSchluessel | null }) {
+  const bild = objekt === null ? undefined : (objekt ?? LEER_OBJEKT[icon]);
   return (
     <div className="mm-leer">
-      <span className="mm-leer-icon">
-        <ThemenIcon name={icon} size={48} strichGroesse={24} />
-      </span>
+      {bild ? (
+        <MacherAsset asset={bild} groesse="gross" />
+      ) : (
+        <span className="mm-leer-icon">
+          <ThemenIcon name={icon} size={48} strichGroesse={24} />
+        </span>
+      )}
       <h3>{titel}</h3>
       {text && <p>{text}</p>}
       {aktion && <div className="mm-leer-aktion">{aktion}</div>}

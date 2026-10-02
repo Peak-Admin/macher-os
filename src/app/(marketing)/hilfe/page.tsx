@@ -1,3 +1,4 @@
+import { Objekt } from "@/components/ui/Objekt";
 import { cta } from "@/lib/site";
 import Link from "next/link";
 import { HilfeSuche } from "@/components/hilfe/HilfeSuche";
@@ -36,6 +37,7 @@ export default function HilfePage() {
         intro="Einrichten, Fragen klären, Daten mitnehmen. Hier findest du Antworten – und wenn nicht, sind wir persönlich für dich da."
         breadcrumbs={[{ label: "Hilfe" }]}
         actions="none"
+        visual={<Objekt objekt="werkzeugkiste" sizes="(min-width: 1024px) 480px, 90vw" className="shadow-popover" />}
       >
         <div className="mt-8 max-w-2xl">
           <HilfeSuche eintraege={hilfeSuchindex()} vorschlaege={["Rechnung", "Mitarbeiter", "Urlaub", "offline"]} />

@@ -19,6 +19,9 @@
   /* Arbeitsfläche, ruhige Fläche, Linien, Sekundärtext */
   --color-paper: #f5f6f3;
   --color-sand: #eef1ed;
+  /* Helles Beige als Gegenfarbe zu den grünen Boxen der Website (Wunsch Philipp, 02.10.2026) */
+  --color-beige: #f4efe6;
+  --color-beige-line: #e4dccd;
   --color-line: #dce2dc;
   --color-line-dark: #7a8780;
   --color-hover: #eef1ed;
@@ -43,6 +46,8 @@
   --color-sky-soft: #eef1ed;
   /* Kampagnen und Warnungen – sparsam */
   --color-campaign: #e69433;
+  /* EU-Blau: nur für den Vertrauenskasten (DSGVO, Server in Frankfurt, EU AI Act) – sonst nirgends */
+  --color-eu: #003399;
   --color-warning: #765000;
   --color-warning-soft: #fff4d6;
   --color-danger: #a02b24;
@@ -263,5 +268,174 @@ details > summary::-webkit-details-marker {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------- Startseite: Bühne, 3D-Karten, Ablauf */
+@layer components {
+  /*
+   * Hero als gerahmte Bühne (nach Peak One): eine dunkelgrüne Fläche mit Weißraum zum Rand,
+   * die ab 1024 px genau in den ersten Bildschirm passt (Kopf 64 px + 2 × 12 px Rand).
+   */
+  /* Dunkle Markenfläche mit sanftem Licht im Aktionsgrün – Hero und Footer */
+  .markenflaeche {
+    background-color: var(--color-ink);
+    background-image:
+      radial-gradient(70% 60% at 85% 20%, rgb(13 107 69 / 0.45), transparent 70%),
+      radial-gradient(60% 50% at 0% 100%, rgb(27 61 47 / 0.9), transparent 70%);
+    color: #fff;
+  }
+
+  /* 3D-Karte (src/components/ui/Karte3D.tsx) */
+  .karte-3d {
+    perspective: 900px;
+  }
+  .karte-3d-flaeche {
+    position: relative;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
+    transition: transform 180ms ease-out, box-shadow 180ms ease-out;
+    will-change: transform;
+  }
+  .karte-3d-flaeche[data-aktiv] {
+    transition: transform 60ms linear, box-shadow 180ms ease-out;
+    box-shadow: 0 24px 48px -24px rgb(16 44 33 / 0.35);
+  }
+  /* Ebenen, die vor der Karte schweben */
+  .karte-3d-tief {
+    transform: translateZ(28px);
+  }
+  .karte-3d-licht {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    background: radial-gradient(40% 40% at var(--lx, 50%) var(--ly, 50%), rgb(255 255 255 / 0.22), transparent 70%);
+    transition: opacity 180ms ease-out;
+  }
+  .karte-3d-flaeche[data-aktiv] .karte-3d-licht {
+    opacity: 1;
+  }
+  .karte-3d:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: 16px;
+  }
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .karte-3d-flaeche,
+    .karte-3d-flaeche[data-aktiv] {
+      transform: none;
+      transition: none;
+    }
+    .karte-3d-tief {
+      transform: none;
+    }
+    .karte-3d-licht {
+      display: none;
+    }
+  }
+
+  /* Ablauf-Banner: Fortschrittslinie zwischen den Schritten */
+  .ablauf-linie {
+    transform-origin: left center;
+    transition: transform 600ms ease-out;
+  }
+  .ablauf-schritt {
+    transition: transform 180ms ease-out, background-color 180ms ease-out, box-shadow 180ms ease-out, color 180ms ease-out;
+  }
+  .ablauf-detail {
+    animation: ablauf-ein 180ms ease-out both;
+  }
+  @keyframes ablauf-ein {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .vorschau-ein {
+    animation: ablauf-ein 160ms ease-out both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ablauf-linie,
+    .ablauf-schritt {
+      transition: none;
+    }
+    .ablauf-detail,
+    .vorschau-ein {
+      animation: none;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------- Website: Boxen (nach Peak One „mk-zone“) */
+@layer components {
+  /*
+   * Jeder Abschnitt ist eine schwebende Box mit Rand zum Fenster; die Töne wechseln sich ab:
+   * dunkelgrün · beige · weiß. `data-header-theme` sagt dem Glas-Kopf, ob er hell oder dunkel liest.
+   */
+  .zone {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin: 0.375rem 0.5rem;
+    border-radius: 12px;
+  }
+  @media (min-width: 640px) {
+    .zone {
+      margin: 0.75rem;
+      border-radius: 16px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .zone {
+      border-radius: 24px;
+    }
+  }
+  .zone-dunkel {
+    box-shadow: 0 30px 60px -24px rgb(16 44 33 / 0.45);
+  }
+  .zone-beige {
+    background-color: var(--color-beige);
+    color: var(--color-ink);
+  }
+  .zone-weiss {
+    background-color: #fff;
+    color: var(--color-ink);
+    box-shadow: 0 24px 50px -28px rgb(16 44 33 / 0.18), inset 0 0 0 1px rgb(16 44 33 / 0.07);
+  }
+
+  /* Hero-Box: volle Fensterhöhe, der Glas-Kopf liegt darauf */
+  .zone-hero {
+    min-height: calc(100svh - 0.75rem);
+  }
+  @media (min-width: 640px) {
+    .zone-hero {
+      min-height: calc(100svh - 1.5rem);
+    }
+  }
+  @media (min-width: 64rem) {
+    .zone-hero {
+      height: calc(100svh - 1.5rem);
+      min-height: 40rem;
+      max-height: 62rem;
+    }
+  }
+
+  /* Glas-Kopf: zwei Glasebenen, die je nach Fläche darunter überblenden */
+  .kopf-glas {
+    transition: opacity 400ms ease;
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kopf-glas {
+      transition: none;
+    }
   }
 }

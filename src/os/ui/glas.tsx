@@ -612,6 +612,7 @@ export const glasFuer: Partial<Record<string, GlasIconName>> = {
   liste: 'liste',
   chat: 'kontakt',
   download: 'import',
+  upload: 'import',
   link: 'link',
   filter: 'filter',
   lager: 'lager',

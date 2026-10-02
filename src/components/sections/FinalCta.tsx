@@ -5,7 +5,8 @@ import { cta } from "@/lib/site";
 import { TrustRow } from "./TrustRow";
 
 /**
- * Abschluss-CTA jeder Marketingseite – dunkler Abschnitt, eine klare Aktion.
+ * Abschluss-CTA jeder Marketingseite – weiße Box zwischen den Abschnitten davor und der grünen Footer-Box,
+ * eine klare Aktion.
  * Das Foto erscheint nur, wenn es vorhanden ist (keine Ersatzfläche als Dekoration).
  */
 export function FinalCta({
@@ -27,35 +28,35 @@ export function FinalCta({
 }) {
   const mitFoto = fotoVorhanden(bild);
   return (
-    <section className="relative isolate overflow-hidden border-t border-white/10 bg-ink text-white">
+    <section data-header-theme="hell" className="zone zone-weiss">
       {mitFoto && (
         <div className="relative h-56 sm:h-72 lg:absolute lg:inset-y-0 lg:left-0 lg:h-auto lg:w-[42%]">
           <Foto bild={bild} sizes="(min-width: 1024px) 42vw, 100vw" />
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent lg:bg-gradient-to-l lg:from-ink lg:via-ink/40 lg:to-transparent"
+            className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent lg:bg-gradient-to-l lg:from-white lg:via-white/40 lg:to-transparent"
           />
         </div>
       )}
 
       <Container className="relative py-14 sm:py-20 lg:py-28">
         <div className={mitFoto ? "lg:ml-[42%] lg:pl-12" : "max-w-3xl"}>
-          <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">{eyebrow}</p>
+          <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">{eyebrow}</p>
           <h2 className="mt-4 font-display text-4xl font-bold leading-[1.05] tracking-tight text-balance sm:text-5xl lg:text-6xl">
             {title}
           </h2>
-          <p className="mt-5 max-w-xl text-lg text-white/80">{intro}</p>
+          <p className="mt-5 max-w-xl text-lg text-muted">{intro}</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <ButtonLink href={primaryHref} size="lg" className="sm:min-w-64">
               {primaryLabel}
             </ButtonLink>
             {secondary && (
-              <ButtonLink href={cta.secondary.href} variant="light" size="lg">
+              <ButtonLink href={cta.secondary.href} variant="secondary" size="lg">
                 {cta.secondary.label}
               </ButtonLink>
             )}
           </div>
-          <TrustRow dark className="mt-7" />
+          <TrustRow className="mt-7" />
         </div>
       </Container>
     </section>

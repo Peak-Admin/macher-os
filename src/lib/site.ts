@@ -73,6 +73,7 @@ export type NavLink = { label: string; href: string };
 /** Eintrag im Mega-Menü: jeder Punkt trägt ein Glas-Icon (`GlasIcon`) vor dem Text. */
 export type MegaLink = NavLink & { icon: GlasIconName };
 /** Gruppe im Mega-Menü: höchstens vier Hauptlinks, Titel in normaler Schreibweise. */
+/** Gruppe im Mega-Menü: höchstens vier Hauptlinks, Titel in normaler Schreibweise (ohne Icon – die Einträge tragen es). */
 export type MegaGruppe = { titel: string; links: MegaLink[] };
 /** Eine einzige, vollständig klickbare Vorschau rechts im Menü – nur mit echtem Bild einer vorhandenen Seite. */
 export type MegaVorschau = {

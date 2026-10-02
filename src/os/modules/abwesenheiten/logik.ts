@@ -1,5 +1,6 @@
 /** Abwesenheiten: Antrag, Entscheidung, Krankmeldung, Hinweise – ohne React, damit testbar. */
 import { db, vermerken } from '@core/db';
+import { emit, on } from '@core/events';
 import { benachrichtigen } from '@core/macher';
 import type { HinweisVorschlag } from '@core/modul';
 import { datum, heute as heuteDatum, personName } from '@core/format';
@@ -24,6 +25,32 @@ export function eintragen(a: Antrag, opts: { direktGenehmigt?: boolean } = {}): 
   const x = db.abwesenheiten.create({ ...a, status: sofort ? 'genehmigt' : 'beantragt' });
   vermerken({ typ: 'mitarbeiter', id: a.mitarbeiterId }, 'abwesenheit.eingetragen', `${ART_LABEL[a.art]} ${zeitraumText(a)} ${sofort ? 'eingetragen' : 'beantragt'}`);
   return x;
+}
+
+/**
+ * Fachliches Ereignis `mitarbeiter.abwesend`: eine Abwesenheit ist wirksam geworden – sofort genehmigt
+ * angelegt (Krankheit, Berufsschule, vom Chef eingetragen) oder ein Antrag wurde genehmigt.
+ * Planung, Arbeitszeiten und Automationen hängen sich daran, ohne das Modul zu kennen.
+ */
+export function abwesendMelden(a: Abwesenheit | undefined, vorher?: Abwesenheit): boolean {
+  if (!a || a.geloeschtAm || a.status !== 'genehmigt' || vorher?.status === 'genehmigt') return false;
+  emit({
+    typ: 'mitarbeiter.abwesend',
+    sammlung: 'abwesenheiten',
+    objekt: a,
+    daten: { mitarbeiterId: a.mitarbeiterId, abwesenheitId: a.id, art: a.art, von: a.von, bis: a.bis, halbtags: !!a.halbtags },
+  });
+  return true;
+}
+
+/** Hört auf alle Wege, auf denen Abwesenheiten entstehen (Formular, Macher, Import) – einmal beim Start */
+export function abwesendBeobachten(): () => void {
+  const aus1 = on('abwesenheiten.created', (e) => abwesendMelden(e.objekt as Abwesenheit));
+  const aus2 = on('abwesenheiten.updated', (e) => abwesendMelden(e.objekt as Abwesenheit, e.vorher as Abwesenheit | undefined));
+  return () => {
+    aus1();
+    aus2();
+  };
 }
 
 export function entscheiden(id: ID, genehmigt: boolean): Abwesenheit | undefined {

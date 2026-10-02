@@ -11,7 +11,7 @@ import { db, defineCollection } from '@core/db';
 import { adresseText, datum, euro, heute, personName, summen, uhrzeit, zahl } from '@core/format';
 import type { Basis, Gewerk, ID } from '@core/objects';
 
-export type VorlagenArt = 'angebot' | 'rechnung' | 'mahnung' | 'email' | 'termin';
+export type VorlagenArt = 'angebot' | 'rechnung' | 'mahnung' | 'email' | 'termin' | 'dokument';
 
 export const VORLAGEN_ARTEN: { id: VorlagenArt; label: string; mitBetreff: boolean }[] = [
   { id: 'angebot', label: 'Angebot', mitBetreff: false },
@@ -19,6 +19,7 @@ export const VORLAGEN_ARTEN: { id: VorlagenArt; label: string; mitBetreff: boole
   { id: 'mahnung', label: 'Zahlungserinnerung & Mahnung', mitBetreff: true },
   { id: 'email', label: 'E-Mail', mitBetreff: true },
   { id: 'termin', label: 'Termin', mitBetreff: true },
+  { id: 'dokument', label: 'Auftragsbestätigung & Lieferschein', mitBetreff: false },
 ];
 
 export interface Vorlage extends Basis {
@@ -52,11 +53,43 @@ export const PLATZHALTER: { name: string; beschreibung: string }[] = [
   { name: 'betrieb_telefon', beschreibung: 'Telefon deines Betriebs' },
   { name: 'betrieb_email', beschreibung: 'E-Mail deines Betriebs' },
   { name: 'heute', beschreibung: 'Heutiges Datum' },
+  { name: 'kunde.name', beschreibung: 'Name des Kunden (wie {kunde})' },
+  { name: 'kunde.anrede', beschreibung: 'Briefanrede (wie {anrede})' },
+  { name: 'auftrag.titel', beschreibung: 'Titel des Auftrags (wie {auftrag})' },
+  { name: 'auftrag.nummer', beschreibung: 'Auftragsnummer' },
+  { name: 'dokument.art', beschreibung: 'Art des Dokuments, z. B. „Schlussrechnung“' },
+  { name: 'dokument.nummer', beschreibung: 'Nummer des Dokuments' },
+  { name: 'dokument.bezeichnung', beschreibung: 'z. B. „unseren Lieferschein LS-2026-0004“' },
+  { name: 'summe', beschreibung: 'Zahlbetrag bzw. Gesamtbetrag brutto' },
+  { name: 'summe.netto', beschreibung: 'Summe netto' },
+  { name: 'ausfuehrung', beschreibung: 'Geplante Ausführung, z. B. „vom 12.10. bis 14.10.2026“' },
+  { name: 'betrieb.iban', beschreibung: 'IBAN deines Betriebs' },
 ];
 
 export type Kontext = Record<string, string | number | undefined | null>;
 
-const MUSTER = /\{([a-zA-Z_äöüÄÖÜß]+)\}/g;
+/** `{name}` oder mit Punkt `{kunde.name}`, `{summe.netto}` */
+const MUSTER = /\{([a-zA-Z_äöüÄÖÜß][a-zA-Z0-9_äöüÄÖÜß]*(?:\.[a-zA-Z0-9_äöüÄÖÜß]+)*)\}/g;
+
+/** Punkt-Namen als zweite Schreibweise der bisherigen Platzhalter */
+const PUNKT_NAMEN: Record<string, string> = {
+  kunde: 'kunde.name',
+  anrede: 'kunde.anrede',
+  auftrag: 'auftrag.titel',
+  auftragsnummer: 'auftrag.nummer',
+  ort: 'auftrag.ort',
+  betrieb: 'betrieb.name',
+  betrieb_telefon: 'betrieb.telefon',
+  betrieb_email: 'betrieb.email',
+  datum: 'dokument.datum',
+};
+
+/** Ergänzt `{kunde.name}` usw. aus `{kunde}` usw. (vorhandene Werte bleiben) */
+export function mitPunktNamen(k: Kontext): Kontext {
+  const out: Kontext = { ...k };
+  for (const [flach, punkt] of Object.entries(PUNKT_NAMEN)) if (out[punkt] == null && k[flach] != null) out[punkt] = k[flach];
+  return out;
+}
 
 /** Ersetzt `{name}` durch Werte aus dem Kontext. Fehlende Werte bleiben als `{name}` stehen – so fällt die Lücke auf. */
 export function platzhalterErsetzen(text: string, kontext: Kontext): string {
@@ -89,7 +122,7 @@ export function vorlageFinden(idOderSchluessel: string): Vorlage | undefined {
 /** Platzhalter, die immer gefüllt sind (Betrieb, heute) */
 export function standardKontext(): Kontext {
   const b = db.betrieb.get('betrieb');
-  return { betrieb: b?.name, betrieb_telefon: b?.telefon, betrieb_email: b?.email, heute: datum(heute()) };
+  return mitPunktNamen({ betrieb: b?.name, betrieb_telefon: b?.telefon, betrieb_email: b?.email, 'betrieb.iban': b?.iban, heute: datum(heute()) });
 }
 
 /**
@@ -150,7 +183,7 @@ export function kontextAus(q: { auftragId?: ID; kundeId?: ID; rechnungId?: ID; a
     const leute = t.mitarbeiterIds.map((id) => db.mitarbeiter.get(id)).filter(Boolean);
     if (leute.length) k2.mitarbeiter = leute.map((m) => personName(m)).join(', ');
   }
-  return k2;
+  return mitPunktNamen(k2);
 }
 
 // ------------------------------------------------------------------ Startvorlagen je Gewerk
@@ -248,6 +281,31 @@ export function startVorlagen(gewerk: Gewerk): Omit<Vorlage, keyof Basis>[] {
       titel: 'E-Mail – Rückfrage zur Anfrage',
       betreff: 'Ihre Anfrage: {auftrag}',
       text: '{anrede},\n\nvielen Dank für Ihre Anfrage. Damit wir Ihnen schnell ein passendes Angebot machen können, schicken Sie uns bitte ein paar Fotos und, wenn vorhanden, die Maße.\n\nViele Grüße\n{betrieb}\n{betrieb_telefon}',
+    },
+    {
+      schluessel: 'auftragsbestaetigung.text',
+      art: 'dokument',
+      titel: 'Auftragsbestätigung – Einleitung',
+      text: `{kunde.anrede},\n\nvielen Dank für Ihren Auftrag „{auftrag.titel}“. Hiermit bestätigen wir Ihnen die folgenden ${leistung}:`,
+    },
+    {
+      schluessel: 'auftragsbestaetigung.schluss',
+      art: 'dokument',
+      titel: 'Auftragsbestätigung – Schluss',
+      text: 'Ausführung: {ausfuehrung}. Den genauen Termin stimmen wir rechtzeitig mit Ihnen ab.\n\nMit freundlichen Grüßen\n{betrieb.name}',
+    },
+    {
+      schluessel: 'lieferschein.text',
+      art: 'dokument',
+      titel: 'Lieferschein – Text',
+      text: 'Für „{auftrag.titel}“ haben wir folgendes Material geliefert. Bitte prüfen Sie die Lieferung und bestätigen Sie den Empfang mit Ihrer Unterschrift.',
+    },
+    {
+      schluessel: 'email.dokument',
+      art: 'email',
+      titel: 'E-Mail – Dokument senden',
+      betreff: '{dokument.art} {dokument.nummer}: {auftrag.titel}',
+      text: '{kunde.anrede},\n\nanbei erhalten Sie {dokument.bezeichnung} zu „{auftrag.titel}“.\n\nBei Fragen erreichen Sie uns unter {betrieb.telefon}.\n\nViele Grüße\n{betrieb.name}',
     },
     {
       schluessel: 'termin.bestaetigung',

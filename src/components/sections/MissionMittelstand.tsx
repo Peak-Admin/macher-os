@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Container, Icon } from "@/components/ui";
 import { FotoDatei, bildVorhanden } from "@/components/ui/Foto";
 import { herausgeber } from "@/lib/site";
@@ -65,8 +66,8 @@ export function HerausgeberMarke({ dark = false, className = "" }: { dark?: bool
 }
 
 const punkte = [
-  "Gemeinsam mit Mission Mittelstand entwickelt",
-  "Gebaut für Betriebe, wie Mission Mittelstand sie in der Beratung begleitet",
+  "Von Handwerkern für Handwerker entwickelt",
+  "Gebaut aus dem Alltag echter Betriebe – nicht am Schreibtisch",
   "Eine Software für Büro und Baustelle – kein Flickenteppich aus Programmen",
 ];
 
@@ -76,8 +77,8 @@ const punkte = [
  */
 export function MissionMittelstand({
   id,
-  title = "Aus der Beratung. Fürs Handwerk.",
-  intro = `Macher OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. ${herausgeber.name} begleitet Handwerksbetriebe und Mittelständler in der Beratung – Macher OS bringt diese Erfahrung in deinen Betriebsalltag.`,
+  title = "Von Handwerkern. Für Handwerker.",
+  intro = `Macher OS ist eine Mission Mittelstand: ein Projekt von ${herausgeber.name}, gemacht von Leuten, die den Betriebsalltag kennen – für Betriebe, die lieber arbeiten als verwalten.`,
 }: {
   id?: string;
   title?: string;
@@ -139,5 +140,48 @@ export function MissionMittelstandFoto({ className = "" }: { className?: string 
         }
       />
     </figure>
+  );
+}
+
+/**
+ * Kompakter Hinweis „Hinter Macher OS steht Mission Mittelstand“: echtes Teamfoto, Porträt von Matthias Aumann, Logo.
+ * Für Seiten, auf denen Vertrauen zählt (Funktionen, Preise, Hilfe, Kontakt, Gewerke).
+ */
+export function MissionMittelstandStreifen({ className = "" }: { className?: string }) {
+  const { person } = herausgeber;
+  return (
+    <section className={`bg-white py-12 sm:py-16 ${className}`}>
+      <Container>
+        <div className="grid items-center gap-8 overflow-hidden rounded-2xl border border-line bg-paper p-6 sm:p-8 lg:grid-cols-[1fr_1.1fr]">
+          <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] items-end gap-3">
+            <MissionMittelstandFoto className="rounded-xl" />
+            <figure className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-ink">
+              <FotoDatei
+                src={person.foto}
+                alt={`${person.name}, ${person.rolle}`}
+                sizes="200px"
+                className="object-cover object-top"
+                ersatz={<PorträtErsatz />}
+              />
+            </figure>
+          </div>
+          <div className="min-w-0">
+            <HerausgeberMarke className="h-8" />
+            <h2 className="mt-5 font-display text-2xl font-bold leading-tight text-balance sm:text-3xl">
+              Hinter Macher OS steht {herausgeber.name}.
+            </h2>
+            <p className="mt-3 text-lg leading-relaxed text-muted">
+              Von Handwerkern für Handwerker: Macher OS ist aus dem Alltag echter Betriebe gebaut, nicht am Schreibtisch.
+            </p>
+            <Link
+              href="/ueber-uns#mission-mittelstand"
+              className="mt-5 inline-flex min-h-11 items-center gap-1.5 font-semibold text-signal-dark underline underline-offset-4"
+            >
+              Mehr über uns <Icon name="arrow-right" className="size-4" />
+            </Link>
+          </div>
+        </div>
+      </Container>
+    </section>
   );
 }

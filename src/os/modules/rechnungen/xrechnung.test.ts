@@ -85,11 +85,12 @@ describe('XRechnung (UBL 2.1)', () => {
     expect(ref.getElementsByTagNameNS(CBC, 'ID')[0].textContent).toBe(r.nummer);
   });
 
-  it('weist bei Schlussrechnungen die Abschläge als PrepaidAmount aus', () => {
+  it('weist bei Schlussrechnungen die gezahlten Abschläge als PrepaidAmount aus', () => {
     db.angebote.create({ nummer: 'AN-1', auftragId: t.auftrag.id, kundeId: t.kunde.id, titel: 'x', positionen: [{ id: 'a', art: 'pauschal', text: 'Pauschale', menge: 1, einheit: 'Psch', einzelpreis: 100000 }], status: 'angenommen', datum: '2026-08-01', gueltigBis: '2026-09-01', version: 1 });
     const ab = rechnungErstellen(t.auftrag.id, 'abschlag', { prozent: 40 })!;
     rechnungAendern(ab.id, { leistungszeitraum: 'August 2026' });
     festschreiben(ab.id);
+    db.zahlungen.create({ rechnungId: ab.id, betrag: 47600, datum: '2026-08-10', art: 'ueberweisung' });
     const s = rechnungErstellen(t.auftrag.id, 'schluss')!;
     rechnungAendern(s.id, { leistungszeitraum: 'August 2026' });
     festschreiben(s.id);

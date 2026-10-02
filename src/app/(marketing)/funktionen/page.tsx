@@ -1,7 +1,9 @@
+import { Objekt } from "@/components/ui/Objekt";
+import type { ObjektSchluessel } from "@/lib/objekte";
 import Link from "next/link";
 import { FunktionKarte, VerbindungsDiagramm } from "@/components/funktionen";
 import { ProductMock } from "@/components/mocks";
-import { FinalCta, PageHero } from "@/components/sections";
+import { FinalCta, PageHero, MissionMittelstandStreifen } from "@/components/sections";
 import {
   ArrowLink,
   ButtonLink,
@@ -160,7 +162,11 @@ export default function FunktionenPage() {
                     : "border border-line bg-paper hover:border-ink/30 hover:shadow-lg hover:shadow-ink/5"
                 }`}
               >
-                <IconTile name={b.icon} tone={b.gruppe === "macher" ? "signal" : "ink"} />
+                {b.gruppe === "macher" ? (
+                  <IconTile name={b.icon} tone="signal" />
+                ) : (
+                  <Objekt objekt={{ auftraege: "klemmbrett", planen: "zollstock", betrieb: "handschuhe" }[b.gruppe as "auftraege" | "planen" | "betrieb"] as ObjektSchluessel} className="-mx-2 -mt-2" />
+                )}
                 <h3 className="mt-5 font-display text-2xl font-extrabold">{b.titel}</h3>
                 <p className={`mt-1 ${b.gruppe === "macher" ? "text-white/70" : "text-muted"}`}>{b.text}</p>
                 <p className={`mt-5 flex flex-wrap items-center gap-1.5 text-xs font-semibold ${b.gruppe === "macher" ? "text-white/80" : "text-ink-soft"}`}>
@@ -312,6 +318,8 @@ export default function FunktionenPage() {
       </Section>
 
       {/* 6. Final CTA */}
+      <MissionMittelstandStreifen />
+
       <FinalCta />
     </>
   );

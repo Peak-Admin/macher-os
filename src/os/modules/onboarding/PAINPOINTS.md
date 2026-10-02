@@ -30,18 +30,18 @@ Score = Frequenz (1–10) × Intensität (1–10).
 | 24 | Automationen müssen erst gefunden werden | 4 | 5 | 20 | Chef |
 | 25 | Teamgröße beeinflusst nichts | 3 | 4 | 12 | Chef |
 
-## Muss rein
+## Muss rein (Magic Setup, seit 02.10.2026 – Details `docs/os/ONBOARDING.md`)
 
-- Vollbild `/willkommen`, sechs Schritte, eine Frage je Schritt, Auswahlkarten, Fortschritt, Zurück ohne Datenverlust, Validierung je Schritt.
-- Leistungen aus `gewerkVorlage` vorausgewählt und abwählbar (Richtpreise).
-- Startdaten: Beispieldaten, Kunden-CSV (Semikolon/Komma/Tab, BOM, Anführungszeichen, Dubletten) oder leer.
-- Erfolgsseite „Dein Betrieb ist eingerichtet“ mit echten Zahlen (Leistungen, Artikel, Qualifikationen, Modul-Vorlagen wie Checklisten, aktive Regeln, Kunden) und „Zu Heute“.
-- Schnellstart „Beispielbetrieb einrichten“; Schutz bei bereits eingerichtetem Betrieb.
+- Vollbild `/willkommen`, eine einzige Frage („Welcher Betrieb bist du?“): Website → „Wir haben deinen Betrieb gefunden“ → los. Ohne Website ein Tipp aufs Gewerk.
+- Gewerk, Leistungen und Firmendaten aus der Website (KI), Gewerk sonst aus Stichworten (Regeln vor KI); Gewerk-Vorlage mit Richtpreisen, Abläufen, Checklisten, Feldern.
+- Danach sofort `/start`: Angebot erstellen · Kunden übernehmen · Auftrag anlegen.
+- Briefkopf, Kunden & Preise, Team: Just-in-Time Setup (Dialog vor dem ersten Senden, Haken „Macher fertig machen“ auf Home).
+- Spielwiese getrennt von echten Daten; Schutz bei bereits eingerichtetem Betrieb.
 
 ## Macher erledigt automatisch
 
-- `einrichten()` legt alles an; Modul-Seeds laufen automatisch; Automationen standardmäßig an.
+- `setupEinrichten()` legt alles an; Modul-Seeds laufen automatisch; Automationen standardmäßig an.
 
 ## Bewusst weggelassen (Pareto)
 
-- Mitarbeiter-/Artikel-/Leistungsimport, Logo/Briefkopf, Bankdaten – gehören in die jeweiligen Module bzw. Einstellungen.
+- Briefkopf, Kunden, Preise, Team, Betriebsgröße und Arbeitsweise im Setup – kommen, wenn sie gebraucht werden.

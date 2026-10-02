@@ -82,7 +82,7 @@ export const STRUKTUR: Hauptbereich[] = [
           { titel: 'Angebote', module: ['angebote'], recht: 'geld' },
           { titel: 'Aufgaben', module: ['aufgaben'] },
         ],
-        kontext: ['fotos', 'zusatzleistungen', 'abnahme', 'aufmass', 'berichte', 'kalkulation', 'checklisten', 'material-am-auftrag', 'arbeitsanweisungen', 'dateien'],
+        kontext: ['fotos', 'zusatzleistungen', 'abnahme', 'aufmass', 'berichte', 'kalkulation', 'checklisten', 'material-am-auftrag', 'arbeitsanweisungen', 'dateien', 'dokumente'],
         stichworte: ['Auftrag', 'Projekt', 'Baustelle', 'Angebot', 'Aufgabe', 'Foto', 'Aufmaß', 'Bericht', 'Abnahme', 'Kalkulation', 'Checkliste', 'Datei'],
       },
       {
@@ -292,7 +292,8 @@ export const STRUKTUR: Hauptbereich[] = [
               { titel: 'Verbindungen', module: ['schnittstellen', 'terminbuchung'] },
               { titel: 'Automationen', module: ['automatisch', 'erledigt'] },
             ],
-            stichworte: ['Einstellungen', 'Rollen', 'Rechte', 'Zugriff', 'Schnittstelle', 'Terminbuchung', 'Online buchen', 'Automation', 'Erledigt', 'Datensicherung', 'Papierkorb', 'Dein Plan', 'Abo', 'Bezahlen', 'Kündigen', 'Testphase'],
+            kontext: ['import', 'felder', 'ablauf'],
+            stichworte: ['Einstellungen', 'Rollen', 'Rechte', 'Zugriff', 'Schnittstelle', 'Terminbuchung', 'Online buchen', 'Automation', 'Erledigt', 'Datensicherung', 'Papierkorb', 'Dein Plan', 'Abo', 'Bezahlen', 'Kündigen', 'Testphase', 'Ablauf', 'Auftragsablauf', 'Daten übernehmen', 'Import', 'Excel', 'Eigene Felder'],
           },
         ],
       },

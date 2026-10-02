@@ -12,6 +12,7 @@ import { homeInhalte, useLaden } from '../quellen/inhalte';
 import { STATUS_TEXT } from '../quellen/arbeit';
 import type { NewsItem, NewsTyp, WidgetProps, WorkItem } from '../typen';
 import { darf } from '@core/session';
+import { setzeEinstellung } from '@core/einstellungen';
 
 // ------------------------------------------------------------------ Dein nächster Schritt
 
@@ -78,6 +79,11 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
         <Button to={a.actionUrl} icon="pfeilRechts" onClick={() => homeMessen('home_next_action_clicked', { typ: a.type })}>
           {a.actionLabel}
         </Button>
+        {a.ausblenden && (
+          <Button variante="tertiaer" onClick={() => (setzeEinstellung(a.ausblenden!, true), homeMessen('home_next_action_hidden', { typ: a.type }))}>
+            Ausblenden
+          </Button>
+        )}
       </div>
       {danach.length > 0 && (
         <div className="mm-home-danach">
@@ -190,6 +196,11 @@ export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
   }
   return (
     <div className={`mm-home-kontakt${groesse === 'gross' ? ' mm-home-kontakt--breit' : ''}`}>
+      {/* Echtes Teamfoto von Mission Mittelstand: Hinter dem Ansprechpartner steht ein ganzes Team */}
+      <figure className="mm-home-kontakt-team">
+        <img src="/bilder/mission-mittelstand/team.webp" alt="Das Team von Mission Mittelstand bei einer Besprechung" loading="lazy" decoding="async" />
+        <figcaption>Das Team von Mission Mittelstand</figcaption>
+      </figure>
       <div className="mm-home-kontakt-person">
         {p.avatarUrl ? <img src={p.avatarUrl} alt="" width={56} height={56} className="mm-home-kontakt-foto" /> : <Avatar text={initialenAus(p.name)} groesse={56} />}
         <div>
@@ -239,7 +250,7 @@ function NewsZeile({ n }: { n: NewsItem }) {
   return (
     <li className="mm-home-news">
       <span className="mm-home-news-icon" aria-hidden>
-        <Icon name={NEWS_ICON[n.type]} size={18} />
+        <ThemenIcon name={NEWS_ICON[n.type]} size={32} strichGroesse={18} />
       </span>
       <div className="mm-home-news-text">
         <span className="mm-meta">

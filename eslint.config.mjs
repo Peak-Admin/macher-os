@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Arbeitskopien paralleler Agenten (gitignored)
+    ".claude/**",
   ]),
   {
     // Macher OS (src/os) wurde bis zur Zusammenführung nicht mit diesen Regeln geprüft.

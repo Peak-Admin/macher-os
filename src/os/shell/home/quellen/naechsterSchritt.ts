@@ -6,6 +6,9 @@
 import type { Angebot, Auftrag, Bezug, Rechnung, Termin } from '@core/objects';
 import type { NextAction } from '../typen';
 
+/** Einstellung, mit der „Macher fertig machen“ weggeklickt wird (gleicher Schlüssel wie `START_AUS` im Modul start) */
+export const EINRICHTUNG_AUS = 'start.karteAus';
+
 export interface Einrichtungsschritt {
   id: string;
   titel: string;
@@ -36,7 +39,6 @@ export interface NaechsterSchrittStand {
 }
 
 const tageSeit = (iso: string, heute: string) => Math.floor((Date.parse(heute) - Date.parse(iso.slice(0, 10))) / 86_400_000);
-const mehrzahl = (n: number, eins: string, viele: string) => (n === 1 ? `1 ${eins}` : `${n} ${viele}`);
 
 export function naechsteAktionen(s: NaechsterSchrittStand): NextAction[] {
   const liste: NextAction[] = [];
@@ -59,22 +61,23 @@ export function naechsteAktionen(s: NaechsterSchrittStand): NextAction[] {
     });
   }
 
-  // Einrichtung: der Betrieb ist angelegt (sonst wäre man nicht hier) – plus die offenen Start-Haken
+  // „Macher fertig machen“: optional, wegklappbar, nach echter Arbeit – nie vor Anfragen oder Rechnungen
   const offen = s.einrichtung.filter((h) => !h.erledigt);
   if (s.darfGeld && offen.length) {
-    const schritte = [{ titel: 'Betrieb angelegt', erledigt: true }, ...s.einrichtung.map((h) => ({ titel: h.titel, erledigt: h.erledigt }))];
     const erster = offen[0];
+    const erledigt = s.einrichtung.length - offen.length;
     liste.push({
       id: `einrichtung:${erster.id}`,
       type: 'onboarding',
-      title: erster.aktion.label,
-      description: `Damit ist dein Betrieb startklar. Noch ${mehrzahl(offen.length, 'Schritt', 'Schritte')}.`,
-      priority: 90,
+      title: 'Macher fertig machen',
+      description: `Als Nächstes: ${erster.titel}. Komplett optional – du kannst das auch ausblenden.`,
+      priority: 40,
       icon: 'start',
-      progress: { erledigt: schritte.filter((x) => x.erledigt).length, gesamt: schritte.length, schritte },
-      actionLabel: 'Jetzt erledigen',
+      progress: { erledigt, gesamt: s.einrichtung.length, schritte: s.einrichtung.map((h) => ({ titel: h.titel, erledigt: h.erledigt })) },
+      actionLabel: 'Weiter einrichten',
       actionUrl: erster.aktion.pfad,
       completed: false,
+      ausblenden: EINRICHTUNG_AUS,
     });
   }
 

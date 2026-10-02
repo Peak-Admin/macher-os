@@ -49,8 +49,11 @@ Aktionsgrün auf dem Glas, weiß auf der hinteren Form. Keine Kachel dahinter. I
   (Website: `src/app/globals.css`, Software: `src/os/ui/tokens.css`)
 - Website: `IconTile` (`src/components/ui/Icon.tsx`) zeigt zum Strich-Icon automatisch das Glas-Icon (Standard 44 px);
   Mega-Menü 36 px
-- Software: `ThemenIcon` in Modulkacheln, Auswahl- und Start-Karten, Verzeichnis, Home-Kacheln und Leerzuständen;
-  die Kachelfläche entfällt, sobald ein Glas-Icon darin steht
+- Software: `ThemenIcon` in Modulkacheln, Auswahl- und Start-Karten, Verzeichnis, Home- und News-Kacheln und
+  Leerzuständen; die Kachelfläche entfällt, sobald ein Glas-Icon darin steht
+- Wo ein Objektbild (`MacherAsset`, `docs/design/visual-assets.md`) vorgesehen ist, bleibt das Foto; das Glas-Icon
+  ist die Form für alle übrigen Themen
+- Mega-Menü: Icons nur an den Einträgen, nicht zusätzlich an den Gruppenüberschriften (keine doppelten Motive)
 - Bedien-Icons (Pfeile, Schließen, Menü, Plus im Button, Haken im Button, Status) und alles unter 32 px bleiben
   Strich-Icons in Textfarbe – ebenso die Sidebar-Navigation
 - Neue Motive in `glas.tsx` ergänzen und in den Zuordnungen (`IconTile` bzw. `glasFuer`) eintragen

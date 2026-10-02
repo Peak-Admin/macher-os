@@ -7,7 +7,8 @@ import type { ID, Zeiteintrag } from '@core/objects';
 import { useIch } from '@core/session';
 import { Button, Eingabe, Karte, Meldung, Meta, Stapel, Status, Zeile, useToast } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
-import { ART_LABEL, dauer, jetztUhr, laufende, pauseBeenden, pauseSeit, pauseStarten, starten, stoppen, stunden } from './daten';
+import { ART_LABEL, dauer, jetztUhr, laufende, pauseBeenden, pauseSeit, pauseStarten, pflichtPause, starten, stoppen, stunden, tagAuswerten } from './daten';
+import { wochenStand } from './regelwerk';
 
 /** Rendert alle 30 Sekunden neu (laufende Uhr) */
 export function useTick(ms = 30_000) {
@@ -48,6 +49,10 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
     .where((x) => x.mitarbeiterIds.includes(ich.id) && datumVon(x.start) === t && x.status !== 'abgesagt' && x.status !== 'erledigt' && x.art !== 'intern')
     .sort((a, b) => a.start.localeCompare(b.start));
   const fuerAuftrag = auftragId ? db.auftraege.get(auftragId) : undefined;
+  // Der Monteur sieht nur seinen Stand – alle Regeln (Soll, Feiertage, Urlaub, Pausen) rechnet Macher
+  const stand = wochenStand(ich);
+  const heuteTag = tagAuswerten(db.zeiten.where((z) => z.mitarbeiterId === ich.id && z.datum === t), { jetzt });
+  const pauseFaellig = heuteTag.netto > 360 && heuteTag.pauseErfasst < pflichtPause(heuteTag.netto);
 
   const fertigMit = (text: string) => {
     toast(text);
@@ -107,7 +112,15 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
             </span>
             {pause ? <Status ton="aktiv">Pause seit {pause}</Status> : <Status ton="aktiv">seit {lauf.start}</Status>}
           </Zeile>
-          <Meta>Heute gesamt: {stunden(heuteMin)}{lauf.pauseMinuten ? ` · ${lauf.pauseMinuten} min Pause` : ''}</Meta>
+          <Meta>
+            Heute gesamt: {stunden(heuteMin)}
+            {lauf.pauseMinuten ? ` · ${lauf.pauseMinuten} min Pause` : ''} · {stand.text}
+          </Meta>
+          {pauseFaellig && !pause && (
+            <Meldung ton="achtung" titel="Zeit für eine Pause">
+              Du arbeitest heute schon über {heuteTag.netto > 540 ? 9 : 6} Stunden. Mach {pflichtPause(heuteTag.netto)} Minuten Pause – sonst zieht Macher sie zum Feierabend automatisch ab.
+            </Meldung>
+          )}
           <Zeile>
             {pause ? (
               <Button variante="sekundaer" icon="start" onClick={() => (pauseBeenden(lauf), toast('Weiter geht’s.'))}>
@@ -119,7 +132,7 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
               </Button>
             )}
             <Button icon="stop" onClick={() => stopp(lauf)}>
-              Stopp
+              Arbeit beenden
             </Button>
           </Zeile>
           <Stapel abstand={8}>
@@ -145,9 +158,12 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
   }
 
   return (
-    <Karte oberzeile="Stempeluhr" titel="Zeit starten">
+    <Karte oberzeile="Stempeluhr" titel="Arbeit starten">
       <Stapel abstand={16}>
-        {heuteMin > 0 && <Meta>Heute bisher: {stunden(heuteMin)}</Meta>}
+        <Meta>
+          {heuteMin > 0 ? `Heute bisher: ${stunden(heuteMin)} · ` : ''}
+          {stand.text}
+        </Meta>
         {(fuerAuftrag || termine.length > 0) && (
           <Stapel abstand={8}>
             {fuerAuftrag && (

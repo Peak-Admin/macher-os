@@ -1,4 +1,4 @@
-import { FinalCta, KundenCard, PageHero, Steps } from "@/components/sections";
+import { FinalCta, KundenCard, PageHero, Steps, MissionMittelstandStreifen } from "@/components/sections";
 import {
   ArrowLink,
   Badge,
@@ -145,6 +145,8 @@ export default function PreisePage() {
           columns={2}
         />
       </Section>
+
+      <MissionMittelstandStreifen />
 
       <FinalCta
         title="Starte heute. Zahl erst, wenn es passt."

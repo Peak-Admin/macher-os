@@ -10,9 +10,15 @@
  * Lanes: 0 = Regeln/Datenbank (kein Modell), 1 = Jev (Klassifikation), 2 = Luna (Standard-KI),
  * 3 = stärkeres Modell. Immer von unten nach oben. Ohne angeschlossenes Modell läuft alles in Lane 0.
  *
+ * Ausgeführt wird immer im Namen von Macher (`alsAkteur({ quelle: 'ai', id: 'macher' })`): Der Verlauf am Objekt zeigt
+ * „durch Macher“, und alles, was eine Aktion geändert hat, lässt sich über das Audit des Kerns zurücknehmen
+ * (`nimmZurueck`). Es gibt keinen zweiten Weg für KI-Aktionen.
+ *
  * Strategie: `docs/os/KI-GATEWAY.md`.
  */
-import { defineCollection, vermerken } from './db';
+import { alsAkteur, mitschneiden } from './akteur';
+import { allesRueckgaengig } from './audit';
+import { auditAusnehmen, defineCollection, vermerken } from './db';
 import { einstellung, setzeEinstellung } from './einstellungen';
 import { emit } from './events';
 import { alleModule } from './modul';
@@ -135,13 +141,24 @@ export interface AktionDef<D = unknown> {
   titel: string;
   risiko: Risiko;
   rechte?: Recht[];
+  /**
+   * Was sich nach dem Ausführen nicht zurückholen lässt („Gesendete Nachrichten bleiben gesendet.“).
+   * Gesetzt → die Oberfläche bietet kein „Rückgängig“ an und zeigt den Satz in der Vorschau.
+   */
+  endgueltig?: string;
   /** Fehlertext oder `undefined`, wenn die Daten passen */
   pruefe?: (daten: D, k: GatewayKontext) => string | undefined;
   /** führt die Geschäftslogik aus – nie das Modell selbst. Für verständliche Fehler `AktionsFehler` werfen. */
   fuehreAus: (daten: D, k: GatewayKontext) => AktionsRueckgabe | Promise<AktionsRueckgabe>;
 }
 
-export type AktionsRueckgabe = { bezug?: Bezug; text?: string } | void;
+/** Link, den der Mensch nach dem Ausführen selbst öffnet (mailto:, WhatsApp …) */
+export interface OeffnenLink {
+  label: string;
+  url: string;
+}
+
+export type AktionsRueckgabe = { bezug?: Bezug; text?: string; oeffnen?: OeffnenLink[] } | void;
 
 /** Fehler mit einem Text, den der Mensch lesen darf („Für Familie Hoffmann ist keine E-Mail hinterlegt.“) */
 export class AktionsFehler extends Error {}
@@ -256,7 +273,7 @@ export function aktionDef(id: string): AktionDef | undefined {
 
 // ------------------------------------------------------------------ Protokoll (Audit)
 
-export type ProtokollErgebnis = 'beantwortet' | 'vorgeschlagen' | 'ausgefuehrt' | 'verweigert' | 'fehler';
+export type ProtokollErgebnis = 'beantwortet' | 'vorgeschlagen' | 'ausgefuehrt' | 'zurueckgenommen' | 'verweigert' | 'fehler';
 
 export interface KiProtokoll extends Basis {
   mitarbeiterId?: ID;
@@ -279,10 +296,23 @@ export interface KiProtokoll extends Basis {
 }
 
 export const kiProtokoll = defineCollection<KiProtokoll>('ki-protokoll');
+// Das KI-Protokoll ist selbst ein Protokoll – keine Feldänderungen im Verlauf am Objekt
+auditAusnehmen('ki-protokoll');
 
-function protokolliere(p: Omit<KiProtokoll, keyof Basis>) {
+/**
+ * Das KI-Protokoll hält jede Frage und jede Aktion fest (Absicht, Lane, Modell, Bestätigung, Ablehnung) – für Kosten,
+ * Qualität und Nachvollziehbarkeit der KI. Fachlich relevant ist nur eine ausgeführte Aktion: Sie geht als Ereignis
+ * `macher.aktion_ausgefuehrt` (Katalog, Ereignisprotokoll, Webhooks) auf den Bus. Fragen, Vorschläge und Ablehnungen
+ * bleiben im KI-Protokoll und landen nicht noch einmal im Ereignisprotokoll.
+ */
+function protokolliere(p: Omit<KiProtokoll, keyof Basis>, opt: { aenderungen?: number } = {}) {
   const eintrag = kiProtokoll.create(p, { leise: true });
-  emit({ typ: p.ergebnis === 'ausgefuehrt' ? 'ki.aktion.ausgefuehrt' : `ki.${p.ergebnis}`, sammlung: 'ki-protokoll', objekt: eintrag });
+  if (p.ergebnis === 'ausgefuehrt')
+    emit({
+      typ: 'macher.aktion_ausgefuehrt',
+      ...(p.bezug ? { sammlung: p.bezug.typ, objekt: { id: p.bezug.id } as Basis } : {}),
+      daten: { aktion: p.aktion, absicht: p.absicht, lane: p.lane, bestaetigt: p.bestaetigt, mitarbeiterId: p.mitarbeiterId, protokollId: eintrag.id, aenderungen: opt.aenderungen },
+    });
   return eintrag;
 }
 
@@ -370,7 +400,17 @@ export async function frage<A = unknown>(text: string, k: GatewayKontext): Promi
 // ------------------------------------------------------------------ Pipeline: Ausführen
 
 export type AusfuehrErgebnis =
-  | { ok: true; bezug?: Bezug; text?: string; protokollId: ID }
+  | {
+      ok: true;
+      bezug?: Bezug;
+      text?: string;
+      protokollId: ID;
+      /** Verlaufseinträge (Audit), die die Aktion erzeugt hat – Grundlage für „Rückgängig“ (`nimmZurueck`) */
+      eintraege: ID[];
+      oeffnen?: OeffnenLink[];
+      /** gesetzt, wenn sich die Aktion nicht zurücknehmen lässt */
+      endgueltig?: string;
+    }
   | { ok: false; grund: 'unbekannt' | 'rechte' | 'ungueltig' | 'bestaetigung' | 'fehler'; text: string; protokollId: ID };
 
 /**
@@ -392,15 +432,37 @@ export async function fuehreAus<D>(a: Aktion<D>, k: GatewayKontext, opt: { besta
   if (brauchtBestaetigung(risikoVon(def.risiko, def.rechte)) && !opt.bestaetigt) return nein('bestaetigung', 'Bitte bestätige die Aktion zuerst.');
 
   try {
-    const r = (await def.fuehreAus(a.daten, k)) || {};
-    const p = protokolliere({ ...basis, bezug: r.bezug, ergebnis: 'ausgefuehrt' });
+    // Als Macher im Auftrag des Menschen: Audit zeigt „durch Macher“, die Verlaufseinträge werden für „Rückgängig“
+    // mitgeschnitten. Der Akteur gilt synchron – Aktionen, die nach einem `await` schreiben (Senden), sind `endgueltig`.
+    const lauf = alsAkteur({ quelle: 'ai', id: 'macher', mitarbeiterId: k.ich?.id, name: def.titel }, () => mitschneiden(() => def.fuehreAus(a.daten, k)));
+    const r = (await lauf.ergebnis) || {};
+    const p = protokolliere({ ...basis, bezug: r.bezug, ergebnis: 'ausgefuehrt' }, { aenderungen: lauf.eintraege.length });
     if (r.bezug) vermerken(r.bezug, 'ki.aktion', `${def.titel} – über Macher${opt.bestaetigt ? ', bestätigt' : ''}`, { protokollId: p.id });
-    return { ok: true, bezug: r.bezug, text: r.text, protokollId: p.id };
+    return { ok: true, bezug: r.bezug, text: r.text, protokollId: p.id, eintraege: lauf.eintraege, oeffnen: r.oeffnen, endgueltig: def.endgueltig };
   } catch (err) {
     if (err instanceof AktionsFehler) return nein('fehler', err.message);
     console.error(`Aktion ${a.aktion} fehlgeschlagen`, err);
     return nein('fehler', 'Das hat nicht geklappt. Versuche es erneut.');
   }
+}
+
+/**
+ * Rückgängig: nimmt alles zurück, was eine (oder mehrere) Aktionen geändert haben – über das Audit des Kerns
+ * (`allesRueckgaengig`, gleiche Sperren wie überall: festgeschriebene Rechnungen, Zahlungen …). Wird protokolliert.
+ */
+export function nimmZurueck(eintraege: ID[], k: Pick<GatewayKontext, 'ich' | 'kanal'>, bezug?: { aktion?: string; absicht?: string; plan?: string }): { ok: number; fehler: string[] } {
+  const r = allesRueckgaengig(eintraege);
+  protokolliere({
+    mitarbeiterId: k.ich?.id,
+    kanal: k.kanal ?? 'text',
+    lane: 0,
+    modell: LANES[0].name,
+    bestaetigt: true,
+    ...bezug,
+    ergebnis: r.ok ? 'zurueckgenommen' : 'fehler',
+    grund: r.fehler.length ? r.fehler.join(' ') : undefined,
+  });
+  return r;
 }
 
 // ------------------------------------------------------------------ Mehrschritt-Pläne

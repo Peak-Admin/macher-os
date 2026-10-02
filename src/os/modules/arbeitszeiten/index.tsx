@@ -2,13 +2,15 @@ import { defineModul } from '@core/modul';
 import { db } from '@core/db';
 import { on } from '@core/events';
 import { erledigt } from '@core/macher';
-import { heute, personName } from '@core/format';
+import { heute, personName, wochenStart } from '@core/format';
 import type { ID, Termin } from '@core/objects';
 import { ich } from '@core/session';
 import { darfTeamDaten } from '@modules/mitarbeiter/team';
 import { ART_LABEL, laufende, starten, stoppen } from './daten';
 import { einsatzBeenden, einsatzStarten, vergesseneBeenden, zeitenFreigeben, zeitenHinweise } from './einsatz';
 import { MitarbeiterZeitenTab, StempeluhrSeite, StundenkontoSeite } from './Ansichten';
+import { MonatSeite } from './MonatSeite';
+import { kontoHinweise } from './regelwerk';
 import { ZeitenWoche } from './ZeitenWoche';
 import { Stempeluhr } from './Stempeluhr';
 import { ZEIT_AKTIONEN } from './gateway';
@@ -18,18 +20,20 @@ export default defineModul({
   titel: 'Arbeitszeiten',
   bereich: 'betrieb',
   gruppe: 'team',
-  beschreibung: 'Stempeluhr mit einem Tap, Wochenübersicht, Stundenkonto und Export für den Lohn.',
+  beschreibung: 'Stempeluhr mit einem Tap, Wochenfreigabe, Stundenkonto mit Pausenregel nach ArbZG und Monatsübersicht für den Lohn.',
   icon: 'uhr',
   gewicht: 85,
   routen: [
     { pfad: '', element: StempeluhrSeite },
     { pfad: 'woche', element: ZeitenWoche },
     { pfad: 'konto', element: StundenkontoSeite },
+    { pfad: 'monat', element: MonatSeite },
   ],
   kurzinfo: () => {
     const laeuft = db.zeiten.where((z) => !z.ende && z.datum === heute()).length;
-    const offen = db.zeiten.where((z) => !!z.ende && !z.freigegeben && z.datum < heute()).length;
-    if (offen) return { text: `${offen} Zeiten zur Freigabe`, ton: 'achtung' };
+    // Freigabe wochenweise: offen ist, was aus abgeschlossenen Wochen noch nicht freigegeben ist
+    const offen = db.zeiten.where((z) => !!z.ende && !z.freigegeben && z.datum < wochenStart(heute())).length;
+    if (offen) return { text: offen === 1 ? '1 Zeit zur Freigabe' : `${offen} Zeiten zur Freigabe`, ton: 'achtung' };
     if (laeuft) return { text: laeuft === 1 ? '1 Person stempelt gerade' : `${laeuft} Personen stempeln gerade`, ton: 'aktiv' };
     return undefined;
   },
@@ -51,7 +55,7 @@ export default defineModul({
       component: ({ fertig, auftragId }) => <Stempeluhr fertig={fertig} auftragId={auftragId} />,
     },
   ],
-  hinweise: () => zeitenHinweise(),
+  hinweise: () => [...zeitenHinweise(), ...kontoHinweise()],
   gateway: { aktionen: [...ZEIT_AKTIONEN] },
   aktionen: {
     'einsatz.starten': (p) => {
@@ -70,9 +74,17 @@ export default defineModul({
       return `/betrieb/arbeitszeiten/woche?nachtrag=${datum}`;
     },
     'zeiten.freigeben': (p) => {
-      const { bis } = p as { bis: string };
-      zeitenFreigeben(bis);
-      return `/betrieb/arbeitszeiten/woche?datum=${bis}`;
+      const { bis, von } = p as { bis: string; von?: string };
+      zeitenFreigeben(bis, von);
+      return `/betrieb/arbeitszeiten/woche?datum=${von ?? bis}`;
+    },
+    'zeiten.pruefen': (p) => {
+      const { mitarbeiterId, datum } = p as { mitarbeiterId: ID; datum?: string };
+      return `/betrieb/arbeitszeiten/woche?ma=${mitarbeiterId}${datum ? `&datum=${datum}` : ''}`;
+    },
+    'zeiten.abbauen': (p) => {
+      const { mitarbeiterId } = p as { mitarbeiterId: ID };
+      return `/betrieb/abwesenheiten?art=frei&ma=${mitarbeiterId}`;
     },
   },
   automationen: [

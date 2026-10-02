@@ -172,3 +172,35 @@ npm install
 npm run typecheck && npm test && npm run build
 # Migrationen gegen ein lokales PostgreSQL: siehe supabase/tests/README.md
 ```
+
+## Bankverbindung und Webhooks (Integration Hub)
+
+Ohne diese Schritte funktioniert der Zahlungsabgleich weiter über den Datei-Import (CAMT.053 oder CSV unter
+**Betrieb → Zahlungen → Kontoauszug importieren**). Macher OS baut keine eigene Bankanbindung und kein eigenes OAuth:
+Die Anmeldung bei der Bank übernimmt ein Kontoinformationsdienst (Integrationspartner), der Umsätze per Webhook liefert.
+
+**Bank-Eingang** (`POST /api/eingang/bank?betrieb=<betriebId>`)
+1. Route anlegen: `src/app/api/eingang/bank/route.ts` mit
+   `export { bankEingang as POST } from '@/os/server/bank-eingang'; export const dynamic = 'force-dynamic';`
+2. `BANK_WEBHOOK_SECRET` erzeugen (`openssl rand -hex 32`) und in Vercel eintragen (geheim, nicht im Browser).
+   Denselben Wert beim Integrationspartner als Signatur-Geheimnis hinterlegen.
+3. Jede Lieferung trägt `x-macher-signatur: sha256=<HMAC-SHA256(Geheimnis, Inhalt)>`; ohne gültige Signatur → 401.
+   Ohne Service-Key oder Geheimnis → `501 nicht verbunden`.
+4. Inhalt: `{ "transaktionen": [{ "id", "datum", "betrag", "name", "iban", "zweck" }] }` – PSD2-Feldnamen
+   (`transactionId`, `bookingDate`, `transactionAmount.amount`, `remittanceInformationUnstructured`, `debtorName`,
+   `debtorAccount.iban`) werden ebenfalls erkannt. Nur Eingänge in Euro; Dubletten (gleiche ID) werden ignoriert.
+5. Der Server legt jeden Umsatz als Objekt der Sammlung `bankumsaetze` (Status `neu`) an. Die App von Chef oder Büro
+   gleicht ihn beim nächsten Abgleich automatisch ab (Automation „Zahlungseingänge den Rechnungen zuordnen“).
+6. Empfehlung: `bankumsaetze` in `sammlung_rechte` wie `zahlungen` auf Chef und Büro beschränken (Migration).
+
+Reine Logik und Tests: `src/os/server/bank.ts`, `src/os/server/signatur.ts` (`bank.test.ts`).
+
+**Webhooks (ausgehend)** – eingerichtet unter **Betrieb → Einstellungen → Verbindungen → Webhooks**.
+Die Oberfläche arbeitet gegen `WebhookQuelle` (`src/os/modules/schnittstellen/webhooks.ts`), Standard ist der
+Adapter `kernQuelle` auf die Kern-Sammlungen `webhooks` und `webhook_auslieferungen` (`src/os/core/ereignisse.ts`).
+Zustellung: POST mit JSON aus `webhookNutzlast()` (`{ id, type, event, created_at, source, actor, object, data }`),
+Kopfzeilen `x-macher-ereignis` (API-Name, z. B. `invoice.paid`) und `x-macher-signatur`
+(`webhookSignatur()` aus `src/os/server/signatur.ts`, Geheimnis je Webhook in der Einstellung
+`schnittstellen.webhook-geheimnisse`). Die serverseitige Zustellung (`setzeWebhookVersender`, `webhooksZustellen`) ist noch
+nicht verdrahtet – bis dahin zeigt die App „Wird zugestellt, sobald Macher OS mit der Cloud verbunden ist“.
+Empfehlung: `webhooks`, `webhook_auslieferungen` und `ereignisprotokoll` in `sammlung_rechte` auf Chef und Büro beschränken.
