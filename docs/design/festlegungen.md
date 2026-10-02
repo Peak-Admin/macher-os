@@ -14,6 +14,13 @@ Vorbild: Startseiten-CTA „Jetzt Erstgespräch buchen“ (optional mit kleinem 
 - Website: Utility `btn-primaer` (`src/app/globals.css`, Tokens `--color-primary`, `--color-primary-hover`); `ButtonLink` Variante `primary`
 - Software: `.mm-btn--primaer` (`--mm-action`)
 
+**Einstiegs-CTA (Einrichtung):** Der „Weiter“-Button im Onboarding folgt dem CTA von matthias-aumann.de:
+grüne Fläche mit hellem Innenrand und feinem 8-px-Würfelraster, 12 px Radius, 56 px hoch, weißer Kreis mit grünem Pfeil links.
+Beim Hover verschwindet der Kreis links und erscheint rechts. Schrift bleibt Barlow 700 in 19 px (Kontrast).
+Nur für diesen einen Einstiegsmoment – im Arbeitsalltag bleibt der flache Primärbutton.
+
+- Software: `WeiterButton` in `src/os/modules/onboarding/Willkommen.tsx`, Klassen `.ob-weiter*`
+
 ### Themen-Icon-Kacheln
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.
 Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon allein darf keine Information tragen).
