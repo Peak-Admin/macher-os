@@ -62,10 +62,10 @@ type Basis = {
   enthalten?: string[];
   meta: { title: string; description: string };
   /**
-   * Nur für angekündigte Funktionen, deren Modul noch nicht fertig ist. Die Seite zeigt dann sichtbar
-   * „Kommt bald“ und sagt, was heute schon geht – damit nichts als fertig verkauft wird, was es noch nicht gibt.
+   * Funktion wird auf Anfrage für den Betrieb eingerichtet (noch nicht in jedem Konto freigeschaltet).
+   * Die Seite zeigt dann sichtbar „Auf Anfrage“, sagt, was heute schon geht, und bietet „… anfragen“ als Hauptaktion.
    */
-  bald?: { text: string; heute: string[] };
+  aufAnfrage?: { text: string; heute: string[]; aktion: string };
   hero: { titel: string; problem: string; loesung: string };
   visual: FunktionsVisual;
   gewerke: { slug: GewerkSlug; text: string }[];
@@ -302,6 +302,16 @@ export const funktionInhalte: Inhalte = {
       title: "Telefonassistent für Handwerker – kein Anruf geht verloren",
       description:
         "Macher nimmt Anrufe an, wenn im Betrieb keiner frei ist, fragt das Anliegen ab und legt eine Notiz oder Anfrage an. Notfälle gehen direkt an den Bereitschaftsdienst.",
+    },
+    aufAnfrage: {
+      aktion: "Telefonassistent anfragen",
+      text: "Den Telefonassistenten, der Anrufe annimmt, richten wir für deinen Betrieb ein: deine Nummer, deine Begrüßung, deine Regeln für Notfälle. Schreib uns, wir melden uns mit den nächsten Schritten.",
+      heute: [
+        "Anrufe in Sekunden notieren: Nummer, Anliegen, Dringlichkeit",
+        "Bekannte Anrufer an der Nummer erkennen",
+        "Aus dem Anruf direkt eine Anfrage oder einen Rückruf mit Zuständigem machen",
+        "Erinnerung, wenn ein Rückruf überfällig ist",
+      ],
     },
     hero: {
       titel: "Jeder Anruf wird angenommen. Auch wenn du auf der Leiter stehst.",
@@ -3854,9 +3864,9 @@ export const funktionInhalte: Inhalte = {
       {
         titel: "Anrufe aufnehmen",
         icon: "phone",
-        funktion: "telefon",
+        funktion: "telefon-ki",
         vorher: "Anruf verpasst, auf der Mailbox ein halber Satz. Abends wartet ein Stapel Rückrufe.",
-        nachher: "Macher geht ran, fragt das Anliegen ab und legt dir eine Notiz mit Rückrufwunsch an.",
+        nachher: "Macher geht ran, fragt das Anliegen ab und legt dir eine Notiz mit Rückrufwunsch an. Den Telefonassistenten richten wir auf Anfrage für deinen Betrieb ein.",
         duEntscheidest: "wann Macher rangeht und was er fragt",
       },
       {

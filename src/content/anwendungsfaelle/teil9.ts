@@ -178,15 +178,16 @@ export const teil9 = {
 
   buchhaltung: {
     icon: "book",
-    kurz: "Belege und Buchungen so vorbereitet, dass dein Steuerberater nichts abtippen muss. Kommt bald – der DATEV-Export geht schon heute.",
+    kurz: "Belege und Buchungen so vorbereitet, dass dein Steuerberater nichts abtippen muss. Der DATEV-Export ist in jedem Konto drin, die Anbindung an dein Buchhaltungsprogramm richten wir auf Anfrage ein.",
     enthalten: ["Belege fotografieren und zuordnen", "Zahlungsabgleich per Kontoauszug", "DATEV-Export SKR03 und SKR04"],
     meta: {
       title: "Buchhaltung für Handwerker – Belege und Buchungen für den Steuerberater",
       description:
         "Macher OS ist kein Buchhaltungsprogramm. Es bereitet Rechnungen, Belege und Zahlungen so vor, dass dein Steuerberater sie ohne Abtippen übernimmt. Heute schon: DATEV-Export mit SKR03 oder SKR04.",
     },
-    bald: {
-      text: "Wir bauen aus, wie Macher OS Belege und Buchungen für deine Buchhaltung vorbereitet – damit dein Steuerberater oder dein Buchhaltungsprogramm sie ohne Abtippen übernimmt. Direkte Verbindungen zu DATEV Unternehmen online und Lexware Office sind geplant.",
+    aufAnfrage: {
+      aktion: "Buchhaltung anfragen",
+      text: "Die Übergabe an deinen Steuerberater oder dein Buchhaltungsprogramm richten wir mit dir ein – passend zu dem, womit dein Steuerberater arbeitet. Schreib uns, wir melden uns mit den nächsten Schritten.",
       heute: [
         "DATEV-Export als Buchungsstapel (EXTF) mit SKR03 oder SKR04",
         "Belege fotografieren, prüfen und dem Auftrag zuordnen",
@@ -338,9 +339,9 @@ export const teil9 = {
           "Nein. Macher OS ist kein Buchhaltungsprogramm und keine Steuerberatung. Es bereitet Rechnungen, Belege und Zahlungen vor. Buchen, Umsatzsteuer und Abschluss macht weiter dein Steuerberater.",
       },
       {
-        frage: "Ab wann geht das?",
+        frage: "Wie bekomme ich die Anbindung an mein Buchhaltungsprogramm?",
         antwort:
-          "Ein festes Datum nennen wir nicht. Den DATEV-Export, die Belege und den Zahlungsabgleich per Datei kannst du heute schon nutzen. Was dazukommt, siehst du in Macher OS unter „Schnittstellen“.",
+          "Über „Buchhaltung anfragen“. Wir klären mit dir, womit dein Steuerberater arbeitet, und richten die Übergabe ein. Den DATEV-Export, die Belege und den Zahlungsabgleich per Datei nutzt du ohne Anfrage in jedem Konto.",
       },
       {
         frage: "Was kann mein Steuerberater mit der Datei anfangen?",
@@ -360,15 +361,16 @@ export const teil9 = {
 
   dokumentenmanagement: {
     icon: "layers",
-    kurz: "Pläne, PDFs, Fotos und Berichte geordnet am Auftrag und schnell gefunden. Kommt bald als Ablage für alle Unterlagen im Betrieb.",
+    kurz: "Pläne, PDFs, Fotos und Berichte geordnet am Auftrag und schnell gefunden. Die Ablage für alle Unterlagen im Betrieb richten wir auf Anfrage ein.",
     enthalten: ["Dateien am Auftrag", "Zentrale Dateiliste mit Filter", "Suche über alles", "Für Kunden sichtbar"],
     meta: {
       title: "Dokumentenmanagement im Handwerk – Unterlagen geordnet und schnell gefunden",
       description:
-        "Pläne, PDFs, Fotos und Berichte liegen in Macher OS am richtigen Auftrag und sind über die Suche schnell gefunden. Eine Ablage für alle Unterlagen des Betriebs ist in Arbeit.",
+        "Pläne, PDFs, Fotos und Berichte liegen in Macher OS am richtigen Auftrag und sind über die Suche schnell gefunden. Die Ablage für alle Unterlagen des Betriebs richten wir auf Anfrage ein.",
     },
-    bald: {
-      text: "Wir bauen Macher OS zur Ablage für alle Unterlagen im Betrieb aus: auch am Kunden, am Einsatzort und am Mitarbeiter, mit mehr Platz je Datei.",
+    aufAnfrage: {
+      aktion: "Dokumentenablage anfragen",
+      text: "Die Ablage für alle Unterlagen im Betrieb – auch am Kunden, am Einsatzort und am Mitarbeiter, mit mehr Platz je Datei – richten wir für deinen Betrieb ein. Schreib uns, wir melden uns mit den nächsten Schritten.",
       heute: [
         "Pläne, PDFs und Dateien am Auftrag hochladen",
         "Zentrale Dateiliste mit Filter für Pläne, PDFs und Kundendateien",
@@ -514,9 +516,9 @@ export const teil9 = {
     },
     faq: [
       {
-        frage: "Ab wann geht das?",
+        frage: "Wie bekomme ich die Ablage für den ganzen Betrieb?",
         antwort:
-          "Ein festes Datum nennen wir nicht. Dateien am Auftrag, die zentrale Liste und die Suche kannst du heute schon nutzen. Die Ablage am Kunden, am Ort und am Mitarbeiter kommt danach.",
+          "Über „Dokumentenablage anfragen“. Wir richten sie für deinen Betrieb ein. Dateien am Auftrag, die zentrale Liste und die Suche nutzt du ohne Anfrage in jedem Konto.",
       },
       {
         frage: "Wie groß darf eine Datei sein?",
@@ -541,15 +543,16 @@ export const teil9 = {
 
   "ids-connect": {
     icon: "cart",
-    kurz: "Im Shop deines Großhändlers bestellen, der Warenkorb kommt zurück an den Auftrag. Kommt bald – DATANORM und Bestellungen per E-Mail gehen schon.",
+    kurz: "Im Shop deines Großhändlers bestellen, der Warenkorb kommt zurück an den Auftrag. Auf Anfrage für deinen Großhändler eingerichtet.",
     enthalten: ["Shop aus Macher OS öffnen", "Warenkorb als Bestellung zurück", "Preise und Verfügbarkeit"],
     meta: {
       title: "IDS Connect für Handwerker – Großhandel direkt aus Macher OS",
       description:
-        "Geplant: den Shop deines Großhändlers aus Macher OS öffnen und den Warenkorb als Bestellung zurück an den Auftrag holen. Heute schon: DATANORM-Import und Bestellungen je Lieferant per E-Mail.",
+        "Den Shop deines Großhändlers aus Macher OS öffnen und den Warenkorb als Bestellung zurück an den Auftrag holen. Wir richten IDS Connect auf Anfrage für deinen Großhändler ein.",
     },
-    bald: {
-      text: "Mit IDS Connect öffnest du den Online-Shop deines Großhändlers direkt aus Macher OS. Der Warenkorb kommt als Bestellung zurück – mit Preisen und Verfügbarkeit, am richtigen Auftrag.",
+    aufAnfrage: {
+      aktion: "IDS Connect anfragen",
+      text: "IDS Connect richten wir für deinen Großhändler ein. Dafür brauchen wir deine Kundennummer und einen Shop-Benutzer. Schreib uns, wir melden uns mit den nächsten Schritten.",
       heute: [
         "Artikel und Preise per DATANORM einlesen (Version 4 und 5)",
         "Materialbedarf aller Aufträge mit Fehlmengen je Lieferant",
@@ -584,8 +587,8 @@ export const teil9 = {
       hinweis: {
         icon: "cart",
         ton: "sky",
-        titel: "Kommt bald:",
-        text: "So soll der Warenkorb aus dem Shop am Auftrag ankommen. Heute bestellst du per E-Mail aus Macher.",
+        titel: "Aus dem Shop zurück:",
+        text: "6 Positionen stehen am Auftrag A-2026-127 – mit Menge und Preis.",
       },
     },
     problemTitel: "Bestellen heißt heute: zweimal tippen.",
@@ -609,7 +612,7 @@ export const teil9 = {
     ],
     loesung: {
       titel: "Vom Auftrag in den Shop – und zurück.",
-      text: "Mit IDS Connect öffnest du aus dem Auftrag heraus den Shop deines Großhändlers. Du bestellst wie gewohnt. Der Warenkorb kommt als Bestellung zurück an den Auftrag. Bis es so weit ist, liest du Artikel und Preise per DATANORM ein und bestellst je Lieferant per E-Mail aus Macher OS.",
+      text: "Mit IDS Connect öffnest du aus dem Auftrag heraus den Shop deines Großhändlers. Du bestellst wie gewohnt. Der Warenkorb kommt als Bestellung zurück an den Auftrag. Bis die Verbindung eingerichtet ist, liest du Artikel und Preise per DATANORM ein und bestellst je Lieferant per E-Mail aus Macher OS.",
       punkte: [
         "Shop aus dem Auftrag öffnen",
         "Warenkorb kommt als Bestellung zurück",
@@ -695,14 +698,14 @@ export const teil9 = {
     werkzeug: "materialaufschlag-rechner",
     faq: [
       {
-        frage: "Ab wann geht das?",
+        frage: "Wie bekomme ich IDS Connect?",
         antwort:
-          "Ein festes Datum nennen wir nicht. Bis dahin liest du Artikel und Preise per DATANORM ein und schickst Bestellungen je Lieferant per E-Mail aus Macher OS.",
+          "Über „IDS Connect anfragen“. Wir richten die Verbindung zu deinem Großhändler ein. Bis sie steht, liest du Artikel und Preise per DATANORM ein und schickst Bestellungen je Lieferant per E-Mail aus Macher OS.",
       },
       {
         frage: "Welche Großhändler werden unterstützt?",
         antwort:
-          "Geplant ist IDS Connect in Version 2.x. Ob dein Großhändler das anbietet, erfährst du bei ihm. Feste Partner nennen wir erst, wenn die Verbindung wirklich läuft.",
+          "Großhändler, die IDS Connect in Version 2.x anbieten. Ob deiner dazugehört, erfährst du bei ihm – oder wir klären es bei der Anfrage.",
       },
       {
         frage: "Was brauche ich dafür?",

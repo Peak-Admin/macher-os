@@ -244,7 +244,7 @@ export default function FunktionenPage() {
                   className="mt-4 flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
                 >
                   {f.titel}
-                  {funktionInhalte[f.slug].bald && <span className="font-semibold text-white/70">(kommt bald)</span>}
+                  {funktionInhalte[f.slug].aufAnfrage && <span className="font-semibold text-white/70">(auf Anfrage)</span>}
                   <Icon name="arrow-right" className="size-4" />
                 </Link>
               ))}

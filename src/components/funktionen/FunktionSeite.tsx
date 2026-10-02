@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FinalCta, KundenCard, PageHero, Steps } from "@/components/sections";
-import { ArrowLink, CheckList, Faq, FaqJsonLd, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
+import { ArrowLink, ButtonLink, CheckList, Faq, FaqJsonLd, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
 import {
   funktionGruppe,
   funktionInhalte,
@@ -10,6 +10,7 @@ import {
   type StandardSlug,
 } from "@/content/funktionen";
 import { funktionGruppen, gewerkHref, werkzeuge } from "@/content/registry";
+import { cta } from "@/lib/site";
 import { DetailKarte } from "./DetailKarte";
 import { FunktionKarte } from "./FunktionKarte";
 import { FunktionsHandy } from "./FunktionsHandy";
@@ -27,7 +28,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
       {/* 1. Hero: Problem + Lösung */}
       <PageHero
         breadcrumbs={[{ label: "Funktionen", href: "/funktionen" }, { label: titel }]}
-        eyebrow={`${gruppe.titel} · ${titel}${f.bald ? " · Kommt bald" : ""}`}
+        eyebrow={`${gruppe.titel} · ${titel}${f.aufAnfrage ? " · Auf Anfrage" : ""}`}
         title={f.hero.titel}
         intro={
           <>
@@ -35,8 +36,20 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
           </>
         }
         visual={<FunktionsMock visual={f.visual} label={`Produktansicht Macher OS: ${titel}`} />}
+        actions={
+          f.aufAnfrage ? (
+            <>
+              <ButtonLink href="/kontakt" size="lg">
+                {f.aufAnfrage.aktion}
+              </ButtonLink>
+              <ButtonLink href={cta.primary.href} variant="secondary" size="lg">
+                {cta.primary.label}
+              </ButtonLink>
+            </>
+          ) : undefined
+        }
       >
-        {f.bald && <BaldHinweis bald={f.bald} />}
+        {f.aufAnfrage && <AnfrageHinweis anfrage={f.aufAnfrage} />}
       </PageHero>
 
       {/* 2. Das Problem */}
@@ -214,20 +227,20 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
   );
 }
 
-/** Hinweis auf angekündigten Funktionsseiten: Status als Text, dazu was heute schon geht. */
-function BaldHinweis({ bald }: { bald: NonNullable<FunktionInhalt["bald"]> }) {
+/** Hinweis auf Funktionen, die auf Anfrage eingerichtet werden: Status als Text, dazu was heute schon geht. */
+function AnfrageHinweis({ anfrage }: { anfrage: NonNullable<FunktionInhalt["aufAnfrage"]> }) {
   return (
-    <div className="mt-8 rounded-xl border border-warning/30 bg-warning-soft p-5 text-warning">
-      <p className="flex items-center gap-2 font-display text-lg font-bold">
-        <Icon name="clock" className="size-5 shrink-0" /> Kommt bald
+    <div className="mt-8 rounded-xl border border-line bg-white p-5">
+      <p className="flex items-center gap-2 font-display text-lg font-bold text-signal-dark">
+        <Icon name="chat" className="size-5 shrink-0" /> Auf Anfrage
       </p>
-      <p className="mt-2 leading-relaxed text-ink">{bald.text}</p>
-      {bald.heute.length > 0 && (
+      <p className="mt-2 leading-relaxed">{anfrage.text}</p>
+      {anfrage.heute.length > 0 && (
         <>
-          <p className="mt-4 text-sm font-semibold text-ink">Heute schon in Macher OS:</p>
+          <p className="mt-4 text-sm font-semibold">Ohne Anfrage schon in jedem Konto:</p>
           <ul className="mt-2 grid gap-1.5">
-            {bald.heute.map((h) => (
-              <li key={h} className="flex items-start gap-2 text-[0.95rem] text-ink">
+            {anfrage.heute.map((h) => (
+              <li key={h} className="flex items-start gap-2 text-[0.95rem]">
                 <Icon name="check" className="mt-1 size-4 shrink-0 text-moss" />
                 <span>{h}</span>
               </li>
