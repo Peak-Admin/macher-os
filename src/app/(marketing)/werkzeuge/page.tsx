@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FinalCta, PageHero } from "@/components/sections";
+import { FinalCta, PageHero, MissionMittelstandStreifen } from "@/components/sections";
 import {
   ArrowLink,
   ButtonLink,
@@ -217,6 +217,8 @@ export default function WerkzeugeHub() {
       </Section>
 
       {/* 6. CTA */}
+      <MissionMittelstandStreifen />
+
       <FinalCta
         title="Macher OS kostenlos testen"
         intro="Die Rechner sind der Anfang. In Macher OS rechnen Angebote, Aufträge und Auswertungen automatisch mit deinen Zahlen."

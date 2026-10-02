@@ -1,0 +1,35 @@
+/* Einsatz vor Ort (Monteur, Handy, Handschuhe): große Flächen, wenige Entscheidungen. Nur Tokens aus tokens.css. */
+
+/* Hauptaktionen mindestens 56 px hoch – mit Handschuh treffbar */
+.ne-gross.mm-btn { min-height: 56px; padding-inline: 20px; }
+.ne-aktionen { display: flex; flex-wrap: wrap; gap: var(--mm-space-2); }
+.ne-aktionen > .mm-btn { flex: 1 1 200px; }
+
+/* Kacheln: Fotos, Sprache, Material, Checkliste, Problem melden, Kunde unterschreiben */
+.ne-kacheln { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mm-space-2); }
+@media (min-width: 768px) { .ne-kacheln { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ne-kachel.mm-btn {
+  min-height: 72px; flex-direction: column; gap: var(--mm-space-1); padding: var(--mm-space-3) var(--mm-space-2);
+  white-space: normal; text-align: center; line-height: 1.25;
+}
+.ne-kachel.mm-btn > svg { width: 28px; height: 28px; }
+
+/* Ruhiger Hinweis zum Senden (kein Alarm – arbeiten geht weiter) */
+.ne-sync { display: flex; align-items: center; gap: var(--mm-space-2); color: var(--mm-text); font-size: 15px; line-height: 22px; }
+.ne-sync > svg { flex-shrink: 0; color: var(--mm-brand-text); }
+
+/* Sprechen: großes Mikrofon */
+.ne-mikro.mm-btn { min-height: 72px; font-size: 19px; }
+.ne-mikro--aktiv.mm-btn { background: var(--mm-brand-deep); }
+.ne-mikro--aktiv.mm-btn > svg { animation: ne-puls 1.2s ease-out infinite; }
+@keyframes ne-puls { 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .ne-mikro--aktiv.mm-btn > svg { animation: none; } }
+
+/* „Passt das so?“ */
+.ne-pruefen { display: flex; flex-direction: column; gap: var(--mm-space-4); }
+.ne-pruefen-zeile { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--mm-space-2) var(--mm-space-4); padding-block: var(--mm-space-3); border-top: 1px solid var(--mm-border); }
+.ne-pruefen-zeile:first-child { border-top: 0; padding-top: 0; }
+.ne-pruefen-label { font-weight: 700; color: var(--mm-black); }
+.ne-pruefen-wert { display: flex; flex-direction: column; gap: var(--mm-space-1); min-width: 0; }
+.ne-pruefen-wert ul { margin: 0; padding-left: 20px; }
+@media (max-width: 520px) { .ne-pruefen-zeile { grid-template-columns: minmax(0, 1fr); gap: var(--mm-space-1); } }

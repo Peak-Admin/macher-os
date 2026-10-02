@@ -6,13 +6,14 @@ import { db } from '@core/db';
 import { emit } from '@core/events';
 import { erledigt } from '@core/macher';
 import type { HinweisVorschlag } from '@core/modul';
-import { datum, datumVon, heute as heuteDatum, minutenAus, personName, plusTage, uhrzeit, wochenStart } from '@core/format';
+import { datum, datumVon, heute as heuteDatum, kalenderwoche, minutenAus, personName, plusTage, uhrzeit, wochenStart } from '@core/format';
 import { istArbeitstag } from '@core/kalender';
 import type { Datum, ID, Zeiteintrag } from '@core/objects';
 import { ich } from '@core/session';
 import { abwesenheitAm } from '@modules/abwesenheiten/daten';
 import { istAktiv } from '@modules/mitarbeiter/team';
-import { jetztUhr, laufende, pruefeMitarbeiterTag, starten, stoppen } from './daten';
+import { autoPauseAn, jetztUhr, laufende, sollPlanTag, starten, stoppen, tagesProbleme } from './daten';
+import { freigeben } from './regelwerk';
 
 interface EinsatzPayload {
   terminId: ID;
@@ -67,11 +68,9 @@ export function vergesseneBeenden(t = heuteDatum()): number {
   return n;
 }
 
-/** Freigabe aller abgeschlossenen Zeiten bis einschließlich `bis` */
-export function zeitenFreigeben(bis: Datum): number {
-  const liste = db.zeiten.where((z) => !!z.ende && !z.freigegeben && z.datum <= bis);
-  liste.forEach((z) => db.zeiten.update(z.id, { freigegeben: true }, { text: 'Freigegeben' }));
-  return liste.length;
+/** Freigabe aller abgeschlossenen Zeiten bis einschließlich `bis` (optional ab `von`) – meldet `zeit.freigegeben` */
+export function zeitenFreigeben(bis: Datum, von?: Datum): number {
+  return freigeben(db.zeiten.where((z) => !!z.ende && !z.freigegeben && z.datum <= bis && (!von || z.datum >= von)));
 }
 
 // ------------------------------------------------------------------ Hinweise
@@ -100,11 +99,13 @@ export function zeitenHinweise(t = heuteDatum()): HinweisVorschlag[] {
 
   // 2. Keine Zeiten gestern (nur wer die Stempeluhr schon nutzt)
   const gestern = plusTage(t, -1);
-  if (istArbeitstag(gestern)) {
+  // Soll laut Arbeitszeitmodell (Teilzeit, Feiertage) – nicht nur die Arbeitstage des Betriebs
+  if (istArbeitstag(gestern) || db.mitarbeiter.all().some((m) => sollPlanTag(m, gestern) > 0)) {
     const abw = db.abwesenheiten.all();
     const ohne = db.mitarbeiter
       .where((m) => istAktiv(m, gestern) && m.rolle !== 'chef' && (!m.eintritt || m.eintritt <= gestern))
       .filter((m) => db.zeiten.where((z) => z.mitarbeiterId === m.id).length > 0)
+      .filter((m) => sollPlanTag(m, gestern) > 0)
       .filter((m) => !abwesenheitAm(m.id, gestern, abw))
       .filter((m) => !db.zeiten.where((z) => z.mitarbeiterId === m.id && z.datum === gestern).length);
     for (const m of ohne) {
@@ -131,41 +132,50 @@ export function zeitenHinweise(t = heuteDatum()): HinweisVorschlag[] {
       });
   }
 
-  // 3. ArbZG der letzten 14 Tage (nicht freigegebene Tage)
+  // 3. ArbZG der letzten 14 Tage (nicht freigegebene Tage). Fehlende Pausen zieht Macher automatisch ab –
+  //    dann bleibt ein leichterer Hinweis, damit das Büro mit dem Mitarbeiter sprechen kann.
+  const autoPause = autoPauseAn();
   const zeiten = db.zeiten.where((z) => z.datum >= plusTage(t, -15) && z.datum < t);
   const tage = new Set(zeiten.filter((z) => !z.freigegeben).map((z) => `${z.mitarbeiterId}|${z.datum}`));
   for (const k of tage) {
     const [maId, d] = k.split('|');
-    const p = pruefeMitarbeiterTag(maId, d, zeiten);
-    if (!p.probleme.length) continue;
+    const { probleme, pauseAuto } = tagesProbleme(maId, d, zeiten, autoPause);
+    if (!probleme.length) continue;
+    const nurPause = pauseAuto > 0 && probleme.length === 1;
     const m = db.mitarbeiter.get(maId);
     liste.push({
       schluessel: `arbzg:${maId}:${d}`,
       art: 'problem',
-      titel: `Arbeitszeitgesetz: ${m?.vorname ?? 'Mitarbeiter'} am ${datum(d)}`,
-      text: p.probleme.join(' · '),
+      titel: `${nurPause ? 'Pause fehlte' : 'Arbeitszeitgesetz'}: ${m?.vorname ?? 'Mitarbeiter'} am ${datum(d)}`,
+      text: probleme.join(' · '),
       bezug: { typ: 'mitarbeiter', id: maId },
-      gewicht: 50,
+      gewicht: nurPause ? 35 : 50,
       fuerRollen: ['chef', 'buero'],
+      aktionen: [{ aktion: 'zeiten.pruefen', label: 'Tag prüfen', primaer: true, payload: { mitarbeiterId: maId, datum: d } }],
       pfad: `/betrieb/arbeitszeiten/woche?ma=${maId}&datum=${d}`,
     });
   }
 
-  // 4. Freigabe durch das Büro (alles bis gestern; ältere Wochen wiegen schwerer)
-  const offen = db.zeiten.where((z) => !!z.ende && !z.freigegeben && z.datum < t);
-  if (offen.length) {
-    const namen = [...new Set(offen.map((z) => db.mitarbeiter.get(z.mitarbeiterId)?.vorname).filter(Boolean))];
-    const bis = gestern;
-    const alt = offen.some((z) => z.datum < wochenStart(t));
+  // 4. Wochenfreigabe durch Chef/Büro: je abgeschlossener Woche ein Hinweis (ältere Wochen wiegen schwerer)
+  const offen = db.zeiten.where((z) => !!z.ende && !z.freigegeben && z.datum < wochenStart(t));
+  const wochen = new Map<Datum, Zeiteintrag[]>();
+  for (const z of offen) {
+    const mo = wochenStart(z.datum);
+    wochen.set(mo, [...(wochen.get(mo) ?? []), z]);
+  }
+  for (const [montag, eintraege] of wochen) {
+    const sonntag = plusTage(montag, 6);
+    const namen = [...new Set(eintraege.map((z) => db.mitarbeiter.get(z.mitarbeiterId)?.vorname).filter(Boolean))];
     liste.push({
-      schluessel: `zeiten-freigeben:${bis}`,
+      schluessel: `zeiten-freigeben:${montag}`,
       art: 'freigabe',
-      titel: `${offen.length === 1 ? '1 Zeit' : `${offen.length} Zeiten`} bis ${datum(bis)} freigeben`,
+      titel: `Zeiten KW ${kalenderwoche(montag)} freigeben (${eintraege.length === 1 ? '1 Zeit' : `${eintraege.length} Zeiten`})`,
       text: `Von ${namen.join(', ')}. Danach gehen sie in die Lohnabrechnung.`,
-      gewicht: alt ? 50 : 30,
+      gewicht: montag < plusTage(wochenStart(t), -7) ? 55 : 45,
       fuerRollen: ['chef', 'buero'],
-      aktionen: [{ aktion: 'zeiten.freigeben', label: 'Alle freigeben', primaer: true, payload: { bis } }],
-      pfad: `/betrieb/arbeitszeiten/woche?datum=${bis}`,
+      faellig: plusTage(sonntag, 1),
+      aktionen: [{ aktion: 'zeiten.freigeben', label: 'Woche freigeben', primaer: true, payload: { von: montag, bis: sonntag } }],
+      pfad: `/betrieb/arbeitszeiten/woche?datum=${montag}`,
     });
   }
   return liste;

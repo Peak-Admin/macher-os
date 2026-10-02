@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { db } from '@core/db';
 import { euro } from '@core/format';
 import type { ID } from '@core/objects';
-import { Button, Dialog, Eingabe, FormRaster, Meldung, Schalter, Stapel, Status, Zeile, useToast } from '@ui/index';
-import { statusText, type Mangel, type RechnungsSummen } from './logik';
+import { Button, Dialog, Eingabe, FormRaster, Meldung, Meta, Schalter, Stapel, Status, Zeile, useToast } from '@ui/index';
+import { statusText, summenZeilen, type Mangel, type RechnungsSummen } from './logik';
 import type { RechnungX } from './typen';
 
 export function RechnungStatus({ r }: { r: RechnungX }) {
@@ -12,21 +12,19 @@ export function RechnungStatus({ r }: { r: RechnungX }) {
   return <Status ton={s.ton}>{s.text}</Status>;
 }
 
-/** Summenblock: Netto, USt, Brutto, Abzüge, Zahlbetrag */
+/** Summenblock: Netto, USt, Brutto, Abzüge, Einbehalt, Zahlbetrag (dieselben Zeilen wie im PDF) */
 export function SummenListe({ s, kleinunternehmer }: { s: RechnungsSummen; kleinunternehmer?: boolean }) {
-  const zeile = (label: string, wert: string, fett?: boolean) => (
-    <div className="mm-zeile" style={{ justifyContent: 'space-between', gap: 8, fontWeight: fett ? 700 : undefined }}>
-      <span>{label}</span>
-      <span className="mm-number">{wert}</span>
-    </div>
-  );
   return (
     <Stapel abstand={4}>
-      {zeile('Netto', euro(s.netto))}
-      {kleinunternehmer ? null : zeile(`USt ${s.ustSatz} %`, euro(s.ust))}
-      {zeile('Gesamt', euro(s.brutto), !s.abzuege.length)}
-      {s.abzuege.map((a) => zeile(`abzüglich ${a.nummer}`, euro(-a.brutto)))}
-      {s.abzuege.length ? zeile('Zahlbetrag', euro(s.zahlbetrag), true) : null}
+      {summenZeilen(s, kleinunternehmer).map((z) => (
+        <div key={z.label}>
+          <div className="mm-zeile" style={{ justifyContent: 'space-between', gap: 8, fontWeight: z.gesamt ? 700 : undefined }}>
+            <span>{z.label.replace(/^zzgl\. /, '')}</span>
+            <span className="mm-number">{euro(z.wert)}</span>
+          </div>
+          {z.klein && <Meta>{z.klein}</Meta>}
+        </div>
+      ))}
     </Stapel>
   );
 }

@@ -85,6 +85,9 @@ schreibt vor `dev`, `build` und `test` die Liste `src/os/shell/module-liste.ts` 
 - `oeffne('suche' | 'macher' | 'benachrichtigungen')`, `useOverlay(name)`; Erfassen nur mit konkreter Aktion: `erfassen('foto', auftragId)`
 - Geld immer in **Cent** (ganzzahlig). Datum `YYYY-MM-DD`, Zeitpunkte ISO.
 
+- `alsAkteur({ quelle: 'import', id: 'csv' }, () => …)` – Änderungen einem Akteur zuordnen (Abschnitt 8)
+- Ereignisse, Webhooks, Audit und Rückgängig: `@core/ereignisse`, `@core/audit`; KI-Aktionen nur über `@core/gateway` (Abschnitt 8)
+
 ## 5. UI
 
 Nur Bausteine aus `@ui/index` und `@ui/objekt` verwenden (Seite, Karte, Liste, ListenZeile, Tabelle, Status, Button,
@@ -119,3 +122,102 @@ Leitsatz: **Viele Fähigkeiten im Produkt. Wenige Entscheidungen auf jedem Scree
   weitere über `AktionsMenue` (höchstens vier Einträge). Listenvorschauen höchstens drei Einträge plus „Alle …“.
 - Erstellen passiert im Kontext mit konkretem Verb („Foto hinzufügen“, „Auftrag anlegen“), nie mit „Neu“ oder „+“ allein.
 - Suchbegriffe für Funktionen (`stichworte` in `struktur.ts`) pflegen, damit Seltenes über die Suche auffindbar bleibt.
+
+## 8. Ereignisse, Audit und Aktionen (Kern)
+
+### 8.1 Ereignisse (`@core/events`, `@core/ereignisse`)
+
+- **Datenereignisse** sendet die Datenschicht selbst: `<sammlung>.created|updated|removed|restored`.
+- **Fachliche Ereignisse** heißen `<objekt>.<partizip>` (deutsch) und stehen mit Beschreibung, Objekttyp und
+  englischem API-Namen im Katalog `EREIGNISSE` (`ereignisKatalog()`, `ereignisArt('invoice.paid')`, `apiName('rechnung.bezahlt')`).
+  Beispiele: `kunde.angelegt` (customer.created), `anfrage.eingegangen` (request.created), `angebot.versendet` (quote.sent),
+  `angebot.angenommen` (quote.accepted), `auftrag.angelegt` (job.created), `auftrag.eingeplant` (job.scheduled),
+  `auftrag.gestartet` (job.started), `auftrag.abgeschlossen` (job.completed), `auftrag.schritt_gewechselt` (job.stage_changed),
+  `rechnung.erstellt` (invoice.created), `rechnung.versendet` (invoice.sent), `rechnung.bezahlt` (invoice.paid),
+  `rechnung.ueberfaellig` (invoice.overdue), `zahlung.eingegangen` (payment.received), `mitarbeiter.abwesend` (employee.absent),
+  `material.knapp` (material.low_stock), `import.abgeschlossen` (import.completed) …
+- **Ableitung:** Viele fachliche Ereignisse leitet der Kern zentral aus Datenereignissen ab (`herkunft: 'abgeleitet'`),
+  z. B. Rechnung auf „bezahlt“ → `rechnung.bezahlt`, Auftrag auf „Erledigt“ → `auftrag.abgeschlossen`. Module müssen dafür
+  nichts tun. Abgeleitete Ereignisse kommen als Microtask direkt nach der Änderung an (`abgeleitet: true`). Sendet ein Modul
+  dasselbe Ereignis selbst – **synchron**, direkt neben der Änderung, mit demselben `objekt` –, wird die Ableitung verworfen.
+  Neue Ereignisse: im selben Schema benennen und im Katalog ergänzen (Kern).
+- **Senden:** `emit({ typ: 'import.abgeschlossen', sammlung: 'betrieb', objekt, daten: { anzahl } })` – `daten` klein halten (≤ 2 KB).
+- **Ereignisprotokoll** (`ereignisprotokoll`): jedes fachliche Ereignis mit `zeit`, `quelle` (user/automation/ai/import/sync),
+  `akteurId`, `mitarbeiterId`, `bezug`, `daten`. Lesen: `ereignisseSeit(seit?, { typ?, bezug? })`. Rotation: 90 Tage / 5000 Einträge
+  auf dem Gerät (`protokollAufraeumen`), der Server behält alles. Fristen (`rechnung.ueberfaellig`) prüft `pruefeFristen()` beim
+  Start und alle 30 Minuten.
+- **Webhooks** (Vertrag für die Oberfläche in `schnittstellen`):
+  - Sammlungen `webhooks` (`Webhook`: `name`, `url`, `ereignisse` = API-Namen oder `*`, `aktiv`, `zuletztZugestelltAm`, `letzterFehler`)
+    und `webhook_auslieferungen` (`WebhookAuslieferung`: `webhookId`, `ereignisId`, `api`, `status` wartend/zugestellt/fehler/aufgegeben,
+    `versuche`, `naechsterVersuch`, `antwortCode`, `fehler`).
+  - `webhookAnlegen({ name, url, ereignisse })` (prüft `webhookUrlPruefen(url)`: nur https, lokal auch http://localhost),
+    ändern/löschen über `webhooks.update/remove`.
+  - Passende Ereignisse landen automatisch in der Warteschlange (Beispieldaten nie). `webhookNutzlast(ereignis)` baut das JSON
+    (`id`, `type` = API-Name, `event`, `created_at`, `source`, `actor`, `object: { type, id, data }`, `data`).
+  - Versand: `setzeWebhookVersender(fn)` bindet einen Versender an (Server/Edge-Funktion); `webhooksZustellen()` stellt fällige zu,
+    `auslieferungErgebnis(id, { ok, code, fehler })` trägt Ergebnisse ein (Wiederholung nach 1, 5, 30, 120, 720 Minuten, danach
+    „aufgegeben“). Im Browser ist kein Versender gesetzt – die Warteschlange wird mit dem Konto abgeglichen und kann serverseitig
+    abgearbeitet werden. Das Signatur-Geheimnis steht nie im Webhook (`geheimnisGesetzt`, `geheimnisEnde` = letzte vier Zeichen);
+    die Oberfläche (`schnittstellen`, Adapter `kernQuelle`) zeigt es beim Anlegen einmal und legt es für die Zustellung ab
+    (`webhookGeheimnis(id)`). Abonniert werden deutsche Typen, API-Namen, `*` oder `rechnung.*` (`ereignisAbonniert`).
+  - Gruppen für Auswahllisten: `ereignisGruppe(typ)` („Geld“, „Team“ …).
+
+### 8.2 Audit und Rückgängig (`@core/audit`, `@core/akteur`)
+
+- Jede Änderung über `db.*` landet automatisch im Verlauf des Objekts (`ereignisse`, Zeitstrahl): `quelle`, `akteurId`,
+  `vonMitarbeiterId`, `aenderung` (created/updated/removed/restored) und bei Änderungen **nur die geänderten Felder** (`felder`
+  mit `vorher`/`nachher`; sehr große Werte nur als `gekuerzt`). Der Text ist Klartext: „Geändert: Status (Entwurf → Versendet)
+  – durch Macher“. Stille Änderungen (`{ leise: true }`) werden ebenfalls protokolliert, aber je Objekt und Akteur in einem
+  Eintrag „Bearbeitet: …“ zusammengefasst (30 Minuten).
+- **Akteur:** Standard ist der angemeldete Mensch. Automationen werden automatisch zugeordnet (Handler aus `start()` und
+  `pruefen()` laufen als `{ quelle: 'automation', id }`). Für Importe, Abgleich oder eigene Hintergrundarbeit:
+  `alsAkteur({ quelle: 'import', id: 'csv-kunden' }, () => …)` (gilt synchron; nach `await` erneut setzen).
+- Systemsammlungen ohne Feldprotokoll: `auditAusnehmen('meine_sammlung')` (z. B. Caches, Chatverlauf).
+- **Rückgängig:** `rueckgaengigGrund(ereignis)` (undefined = möglich), `rueckgaengig(ereignisId)` (Anlegen → Papierkorb, Löschen →
+  wiederherstellen, Ändern → vorher-Stand, nur wenn das Feld seitdem nicht weiter geändert wurde), `allesRueckgaengig(ids)`.
+  Sperren je Sammlung: `rueckgaengigSperre('rechnungen', (aktuell, e) => grund)` – festgeschriebene Rechnungen und Zahlungen
+  sind gesperrt. `mitschneiden(fn)` liefert die Verlaufseinträge, die `fn` erzeugt hat.
+- Sichtbar ist Audit nur als Verlauf am Objekt (`Zeitstrahl`) und unter Einstellungen › Papierkorb › „Letzte Änderungen“.
+  Kein eigenes Audit-Modul. Rotation: automatische Einträge 365 Tage / 20 000 auf dem Gerät (`verlaufAufraeumen`).
+
+### 8.3 Aktionen aus Sätzen – nur über den Gateway (`@core/gateway`)
+
+Es gibt **einen** Weg von einem Satz zu einer Aktion: den Macher AI Gateway (`docs/os/KI-GATEWAY.md`). Die frühere
+Action Engine (`@core/aktionen`, Feld `befehle`) ist darin aufgegangen und entfernt.
+
+- **Module melden an:** `defineModul({ gateway: { aktionen } })` im Besitzer-Modul (`src/os/modules/<modul>/gateway.ts`),
+  Absichten (`erkenne` → Plan) in `macher-fragen` (`assistent.ts`, `aktionen.ts`, `absichten.ts`). Eine Aktion ruft nur die
+  bestehende Geschäftslogik des Moduls auf – keine kopierte Fachlogik.
+- **Ablauf:** `frage()` → Absicht (Regeln, sonst Jev) → Rechte (`AbsichtDef.rechte` – ohne Recht keine Vorschau) → `Plan` als
+  Vorschau (Texte über `PlanSchritt.textFeld` änderbar) → `pruefePlan` → Bestätigung → `fuehrePlanAus`/`fuehreAus`.
+- **Risiko:** nur `lesen` / `schreiben` / `kritisch` (`risikoVon`). Geld zählt über das Recht `geld`; Senden, Löschen,
+  Personal und Einstellungen machen eine Aktion automatisch `kritisch`. Keine zweite Klassifikation. `kritisch` bestätigt der
+  Mensch im Chat ausdrücklich (Dialog).
+- **Ausführen als Macher:** `fuehreAus` läuft in `alsAkteur({ quelle: 'ai', id: 'macher', mitarbeiterId })` und schneidet die
+  Verlaufseinträge mit (`mitschneiden`) → Ergebnis `eintraege`. Der Akteur gilt synchron; was eine Aktion nach einem `await`
+  schreibt (Senden), läuft als Mensch – solche Aktionen sind `endgueltig`.
+- **Rückgängig:** `nimmZurueck(eintraege, kontext)` → `allesRueckgaengig` des Audits (mit allen Sperren, z. B. festgeschriebene
+  Rechnungen), protokolliert als `zurueckgenommen`. Aktionen mit `endgueltig: '…'` (Nachricht, Angebot, Rechnung, Mahnung senden)
+  bieten kein „Rückgängig“ an; der Satz steht in Vorschau und Ergebnis.
+- **Links statt Versand:** Eine Aktion kann `oeffnen: [{ label, url }]` zurückgeben (mailto: …) – der Mensch öffnet sie selbst.
+
+```ts
+// src/os/modules/mahnungen/gateway.ts
+export const MAHNUNG_AKTIONEN: AktionDef<{ rechnungId: ID }>[] = [{
+  id: 'invoice.remind', titel: 'Zahlungserinnerung freigegeben', risiko: 'kritisch', rechte: ['geld', 'veroeffentlichen'],
+  endgueltig: 'Was beim Kunden angekommen ist, lässt sich nicht zurückholen.',
+  pruefe: (d, k) => …,                       // Fehlertext oder undefined
+  fuehreAus: (d, k) => ({ bezug: { typ: 'rechnungen', id: d.rechnungId }, oeffnen: [{ label: 'E-Mail an …', url: 'mailto:…' }] }),
+}];
+```
+
+**Zwei Protokolle, zwei Zwecke:**
+
+| | `ki-protokoll` (Gateway) | `ereignisprotokoll` (Kern, 8.1) |
+|---|---|---|
+| Was | jede Frage und jede Aktion: Eingabe, Absicht, Sicherheit, Lane, Modell, bestätigt, verweigert/Fehler, zurückgenommen | fachliche Ereignisse des Betriebs |
+| Wofür | KI-Kosten und Lanes, Qualität der Erkennung, Nachvollziehbarkeit der KI | Automationen, Integrationen, Webhooks |
+| Verbindung | eine **ausgeführte** Aktion sendet genau ein Ereignis `macher.aktion_ausgefuehrt` (Bezug: das geänderte Objekt) | – |
+
+Fragen, Vorschläge und Ablehnungen gehen nicht auf den Bus und landen nicht im Ereignisprotokoll. Was eine Aktion an Daten
+ändert, steht wie jede Änderung im Verlauf am Objekt (8.2) – mit `quelle: 'ai'`.

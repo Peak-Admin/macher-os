@@ -4,9 +4,10 @@ import { db } from '@core/db';
 import { heute } from '@core/format';
 import { pfadZu } from '@core/modul';
 import { darf, useIch } from '@core/session';
-import { Button, Checkbox, Eingabe, Textfeld, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useToast } from '@ui/index';
+import { Button, Checkbox, Eingabe, Textfeld, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useBestaetigen, useToast } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
-import { fuehreAus, fuehrePlanAus, planRisiko, pruefePlan, type GatewayKontext } from '@core/gateway';
+import { rueckgaengigGrund } from '@core/audit';
+import { aktionDef, fuehreAus, fuehrePlanAus, nimmZurueck, planRisiko, pruefePlan, type GatewayKontext } from '@core/gateway';
 import { BEISPIELFRAGEN, fragen as gatewayFragen, type Antwort, type AufgabeEntwurf, type PlanSchrittStand, type Vorschlag } from './assistent';
 import { chat, type ChatEintrag } from './daten';
 import './macher.css';
@@ -256,9 +257,10 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
   const erlaubt = (id: string) => !!pruefung.find((p) => p.id === id)?.erlaubt;
   const [auswahl, setAuswahl] = useState(() => v.plan.schritte.filter((s) => s.an !== false && erlaubt(s.id)).map((s) => s.id));
   const [laeuft, setLaeuft] = useState(false);
+  const [bestaetigen, dialog] = useBestaetigen();
 
   const setzeStatus = (patch: Partial<typeof v>) => {
-    const antwort = eintrag.antwort!;
+    const antwort = chat.get(eintrag.id)?.antwort ?? eintrag.antwort!;
     chat.update(eintrag.id, { antwort: { ...antwort, vorschlaege: antwort.vorschlaege?.map((x) => (x.id === v.id ? ({ ...x, ...patch } as Vorschlag) : x)) } }, { leise: true });
   };
 
@@ -269,19 +271,51 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
       </Karte>
     );
 
-  if (v.status === 'ausgefuehrt') return <PlanErgebnis titel={v.plan.titel} ergebnisse={v.ergebnisse ?? []} gehe={(p) => (onNavigiert?.(), navigate(p))} />;
+  if (v.status === 'zurueckgenommen')
+    return (
+      <Karte kompakt oberzeile="Rückgängig gemacht" titel={v.plan.titel}>
+        <Meta>Macher hat die Änderungen zurückgenommen.</Meta>
+      </Karte>
+    );
+
+  if (v.status === 'ausgefuehrt') {
+    const gehe = (p: string) => {
+      if (/^(https?:|mailto:|tel:)/.test(p)) return void window.open(p, p.startsWith('http') ? '_blank' : '_self', 'noopener');
+      onNavigiert?.();
+      navigate(p);
+    };
+    // Rückgängig über das Audit des Kerns – nur Schritte, die nicht endgültig sind (nichts, was schon beim Kunden ist)
+    const eintraege = (v.ergebnisse ?? []).filter((e) => e.status === 'ausgefuehrt' && !e.endgueltig).flatMap((e) => e.eintraege ?? []);
+    const kannZurueck = eintraege.some((id) => !rueckgaengigGrund(db.ereignisse.get(id)));
+    const zurueck = () => {
+      const r = nimmZurueck(eintraege, kontextFuer(ich), { plan: v.plan.titel });
+      if (!r.ok) return toast(r.fehler[0] ?? 'Das lässt sich nicht mehr zurücknehmen.', { ton: 'achtung' });
+      setzeStatus({ status: 'zurueckgenommen' });
+      toast(r.fehler.length ? `Teilweise zurückgenommen: ${r.fehler[0]}` : 'Rückgängig gemacht.');
+    };
+    return <PlanErgebnis titel={v.plan.titel} ergebnisse={v.ergebnisse ?? []} gehe={gehe} zurueck={kannZurueck ? zurueck : undefined} />;
+  }
 
   const gewaehlt = auswahl.filter(erlaubt);
   const kritisch = planRisiko(pruefung, gewaehlt) === 'kritisch';
   const einzeln = v.plan.schritte.length === 1;
   const knopf = einzeln ? 'Ausführen' : gewaehlt.length === pruefung.filter((p) => p.erlaubt).length ? 'Alles ausführen' : `${gewaehlt.length} ${gewaehlt.length === 1 ? 'Schritt' : 'Schritte'} ausführen`;
 
+  // Was sich danach nicht zurückholen lässt (Senden an den Kunden …)
+  const endgueltig = [...new Set(plan.schritte.filter((s) => gewaehlt.includes(s.id)).map((s) => aktionDef(s.aktion)?.endgueltig).filter((x): x is string => !!x))];
+
   const ausfuehren = async () => {
+    // Kritisch (geht nach außen, Geld, Personal): ausdrücklich freigeben – ein zweiter Blick, bevor etwas rausgeht
+    if (kritisch && !(await bestaetigen(v.plan.titel, [...endgueltig, 'Erst mit deiner Freigabe führt Macher das aus.'].join(' '), knopf))) return;
     setLaeuft(true);
     try {
       const r = await fuehrePlanAus(plan, kontextFuer(ich), { bestaetigt: true, auswahl: gewaehlt });
       const ergebnisse: PlanSchrittStand[] = r.map((x) =>
-        x.status === 'uebersprungen' ? { id: x.id, label: x.label, status: x.status } : { id: x.id, label: x.label, status: x.status, text: x.ergebnis.text, bezug: x.ergebnis.ok ? x.ergebnis.bezug : undefined },
+        x.status === 'uebersprungen'
+          ? { id: x.id, label: x.label, status: x.status }
+          : x.ergebnis.ok
+            ? { id: x.id, label: x.label, status: x.status, text: x.ergebnis.text, bezug: x.ergebnis.bezug, eintraege: x.ergebnis.eintraege, oeffnen: x.ergebnis.oeffnen, endgueltig: x.ergebnis.endgueltig }
+            : { id: x.id, label: x.label, status: x.status, text: x.ergebnis.text },
       );
       setzeStatus({ status: 'ausgefuehrt', ergebnisse, plan });
       const fehler = ergebnisse.filter((x) => x.status === 'fehler').length;
@@ -333,6 +367,9 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
           );
         })}
         {kritisch && <Meta>Mindestens ein Schritt geht nach außen. Prüf ihn, bevor du bestätigst.</Meta>}
+        {endgueltig.map((t) => (
+          <Meta key={t}>{t}</Meta>
+        ))}
         <Zeile>
           <Button icon="check" onClick={ausfuehren} laedt={laeuft} disabled={!gewaehlt.length}>
             {knopf}
@@ -342,29 +379,51 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
           </Button>
         </Zeile>
       </div>
+      {dialog}
     </Karte>
   );
 }
 
-function PlanErgebnis({ titel, ergebnisse, gehe }: { titel: string; ergebnisse: PlanSchrittStand[]; gehe: (pfad: string) => void }) {
+function PlanErgebnis({ titel, ergebnisse, gehe, zurueck }: { titel: string; ergebnisse: PlanSchrittStand[]; gehe: (pfad: string) => void; zurueck?: () => void }) {
+  const links = ergebnisse.flatMap((e) => e.oeffnen ?? []);
+  const endgueltig = [...new Set(ergebnisse.filter((e) => e.status === 'ausgefuehrt').map((e) => e.endgueltig).filter(Boolean))];
   return (
     <Karte kompakt oberzeile="Ausgeführt" titel={titel}>
-      <Liste>
-        {ergebnisse.map((e) => {
-          const pfad = e.bezug ? pfadZu(e.bezug) : undefined;
-          return (
-            <ListenZeile
-              key={e.id}
-              titel={e.label}
-              untertitel={e.text}
-              rechts={
-                e.status === 'ausgefuehrt' ? <Status ton="erfolg">Erledigt</Status> : e.status === 'fehler' ? <Status ton="achtung">Nicht ausgeführt</Status> : <Status ton="neutral">Übersprungen</Status>
-              }
-              onClick={pfad ? () => gehe(pfad) : undefined}
-            />
-          );
-        })}
-      </Liste>
+      <div className="mm-stapel" style={{ gap: 12 }}>
+        <Liste>
+          {ergebnisse.map((e) => {
+            const pfad = e.bezug ? pfadZu(e.bezug) : undefined;
+            return (
+              <ListenZeile
+                key={e.id}
+                titel={e.label}
+                untertitel={e.text}
+                rechts={
+                  e.status === 'ausgefuehrt' ? <Status ton="erfolg">Erledigt</Status> : e.status === 'fehler' ? <Status ton="achtung">Nicht ausgeführt</Status> : <Status ton="neutral">Übersprungen</Status>
+                }
+                onClick={pfad ? () => gehe(pfad) : undefined}
+              />
+            );
+          })}
+        </Liste>
+        {(links.length > 0 || zurueck) && (
+          <Zeile>
+            {links.map((o) => (
+              <Button key={o.url} variante="sekundaer" klein icon={o.url.startsWith('mailto:') ? 'mail' : 'chat'} onClick={() => gehe(o.url)}>
+                {o.label}
+              </Button>
+            ))}
+            {zurueck && (
+              <Button variante="tertiaer" klein icon="wiederholen" onClick={zurueck}>
+                Rückgängig machen
+              </Button>
+            )}
+          </Zeile>
+        )}
+        {endgueltig.map((t) => (
+          <Meta key={t}>{t}</Meta>
+        ))}
+      </div>
     </Karte>
   );
 }

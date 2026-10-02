@@ -45,6 +45,7 @@ export const RECHNUNG_SENDEN: AktionDef<RechnungSendenDaten>[] = [
     id: 'invoice.send',
     titel: 'Rechnung versendet',
     risiko: 'kritisch',
+    endgueltig: 'Eine versendete Rechnung ist festgeschrieben – korrigieren geht nur per Storno.',
     rechte: ['geld', 'veroeffentlichen'],
     pruefe: (d) => {
       const r = rechnungX(d.rechnungId);

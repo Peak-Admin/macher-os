@@ -7,6 +7,7 @@ import { Abschnitt, BeispielMarke, Button, Filter, Karte, Leer, Liste, ListenZei
 import { AKTIVE_PHASEN, ART_LABEL, STILLSTAND_TAGE, istOffen, kommendeEinsaetze, phaseLabel, phaseTon, tageOhneBewegung } from './logik';
 import { auftragPfad, letzteBewegungen } from './daten';
 import { useAbBreite } from './hooks';
+import { schrittLabel } from '@modules/ablauf/daten';
 import './auftraege.css';
 
 type Sicht = 'alle' | 'meine' | 'dringend';
@@ -18,6 +19,8 @@ interface PZeile {
   ort?: string;
   naechsterTermin?: string;
   stillTage: number;
+  /** feinerer Schritt innerhalb der Phase (nur wenn er anders heißt als die Phase) */
+  schritt?: string;
 }
 
 /** Laufende Aufträge als Pipeline nach Phasen. Desktop: Spalten, mobil: gruppierte Liste. */
@@ -43,6 +46,7 @@ export function Pipeline({ imHub }: { imHub?: boolean }) {
       ort: o ? o.adresse.ort || o.bezeichnung : undefined,
       naechsterTermin: kommendeEinsaetze(termine)[0]?.start ?? termine.filter((x) => x.art === 'besichtigung' && x.status !== 'abgesagt' && x.status !== 'erledigt')[0]?.start,
       stillTage: tageOhneBewegung(bewegung.get(a.id) ?? a.geaendertAm, t),
+      schritt: ((x) => (x !== phaseLabel(a.phase) ? x : undefined))(schrittLabel(a)),
     };
   });
 
@@ -147,7 +151,7 @@ export function Pipeline({ imHub }: { imHub?: boolean }) {
                         {z.a.titel} <BeispielMarke zeigen={z.a.beispiel} />
                       </>
                     }
-                    untertitel={[z.a.nummer, z.kunde, z.ort].filter(Boolean).join(' · ')}
+                    untertitel={[z.a.nummer, z.kunde, z.ort, z.schritt].filter(Boolean).join(' · ')}
                     rechts={<Merkmale z={z} />}
                   />
                 ))}
@@ -179,7 +183,7 @@ function AuftragKarte({ z }: { z: PZeile }) {
           {z.a.titel} <BeispielMarke zeigen={z.a.beispiel} />
         </span>
         <span className="mm-meta">{[z.kunde, z.ort].filter(Boolean).join(' · ')}</span>
-        <span className="mm-meta">{z.a.nummer}</span>
+        <span className="mm-meta">{z.schritt ? `${z.a.nummer} · ${z.schritt}` : z.a.nummer}</span>
         <Zeile abstand={4}>
           <Merkmale z={z} />
         </Zeile>

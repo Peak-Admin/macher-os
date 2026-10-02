@@ -70,7 +70,10 @@ export function AbwesenheitenSeite() {
   const kommend = sichtbar.filter((a) => a.bis >= t && a.status !== 'abgelehnt' && !offen.includes(a)).sort((a, b) => a.von.localeCompare(b.von));
   const vergangen = sichtbar.filter((a) => a.bis < t || a.status === 'abgelehnt').sort((a, b) => b.von.localeCompare(a.von));
   const konto = ich ? urlaubskonto(ich, alle, jahr) : undefined;
-  const vorgabeArt = params.get('art') === 'krank' ? 'krank' : 'urlaub';
+  // Vorgaben per Link, z. B. aus „Braucht dich“: ?art=frei&ma=<id> (Überstunden abbauen)
+  const artParam = params.get('art');
+  const vorgabeArt = artParam === 'krank' || artParam === 'frei' || artParam === 'schule' || artParam === 'sonstiges' ? artParam : 'urlaub';
+  const vorgabeMa = params.get('ma') ?? undefined;
 
   const entscheide = (a: Abwesenheit, ja: boolean) => {
     entscheiden(a.id, ja);
@@ -151,7 +154,7 @@ export function AbwesenheitenSeite() {
         }
         seite={
           <Karte titel="Abwesenheit eintragen">
-            <AbwesenheitForm vorgabeArt={vorgabeArt} />
+            <AbwesenheitForm key={`${vorgabeArt}:${vorgabeMa ?? ''}`} vorgabeArt={vorgabeArt} vorgabeMa={vorgabeMa} />
           </Karte>
         }
       />

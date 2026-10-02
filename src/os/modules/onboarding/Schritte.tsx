@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { cloud, cloudAktiv } from '@core/cloud';
 import { neueId } from '@core/db';
 import { euro } from '@core/format';
-import { gewerkVorlage } from '@core/gewerke';
+import { fachrichtungenFuer, vorlageFuer, type FachrichtungId } from '@core/gewerke';
 import { BUNDESLAENDER } from '@core/kalender';
 import type { Gewerk, Rolle } from '@core/objects';
 import { preisAnpassen } from '@core/seed';
@@ -22,8 +22,10 @@ import {
   kundenAusDatei,
   kundenlisteErkennen,
   logoAusschneiden,
+  gewaehlterSchwerpunkt,
   preislisteErkennen,
   PREIS_REGLER,
+  setzeSchwerpunkt,
   rolleVorschlag,
   telefonGueltig,
   type BriefkopfEntwurf,
@@ -199,7 +201,15 @@ export function SchrittKundenPreise({ stand, set, gewerk }: { stand: AblaufStand
   const [laedt, setLaedt] = useState<'datei' | 'kontakte' | 'foto' | 'preise'>();
   const [fehler, setFehler] = useState<{ kunden?: string; preise?: string }>({});
   const [preisHinweis, setPreisHinweis] = useState<string>();
-  const vorlage = gewerkVorlage(gewerk);
+  // Schwerpunkt (z. B. Solar bei Elektro): bestimmt Preise, Abläufe und Begriffe der Vorlage
+  const fach = fachrichtungenFuer(gewerk);
+  const [schwerpunkt, setSchwerpunktLokal] = useState<FachrichtungId | undefined>(() => (fach.some((f) => f.id === gewaehlterSchwerpunkt()) ? gewaehlterSchwerpunkt() : undefined));
+  const vorlage = vorlageFuer(gewerk, schwerpunkt);
+  const schwerpunktWaehlen = (w: string) => {
+    const id = fach.find((f) => f.id === w)?.id;
+    setzeSchwerpunkt(id);
+    setSchwerpunktLokal(id);
+  };
   const info = stand.kundenInfo;
 
   const hinzufuegen = (neue: AblaufStand['kunden'], extra: Omit<NonNullable<AblaufStand['kundenInfo']>, 'zusammengefuehrt'> & { zusammengefuehrt: number }) => {
@@ -317,6 +327,14 @@ export function SchrittKundenPreise({ stand, set, gewerk }: { stand: AblaufStand
 
       <section className="ob-block" aria-label="Preise">
         <h2 className="ob-block-titel">Deine Preise</h2>
+        {fach.length > 0 && stand.preise.art === 'vorlage' && (
+          <Segmente
+            label="Euer Schwerpunkt"
+            wert={schwerpunkt ?? 'allgemein'}
+            optionen={[{ wert: 'allgemein', label: vorlageFuer(gewerk).label }, ...fach.map((f) => ({ wert: f.id, label: f.schwerpunkt }))]}
+            onChange={schwerpunktWaehlen}
+          />
+        )}
         {stand.preise.art === 'eigen' ? (
           <>
             <Zeile zwischen>

@@ -21,6 +21,7 @@ import {
   FaqJsonLd,
   Icon,
   Karte3D,
+  Objekt,
   Section,
   SectionHeading,
   type FaqItem,
@@ -28,6 +29,7 @@ import {
 } from "@/components/ui";
 import { gewerkBild } from "@/content/bilder";
 import { kunden, topGewerke } from "@/content/registry";
+import type { ObjektSchluessel } from "@/lib/objekte";
 import { cta, herausgeber, site } from "@/lib/site";
 
 export const metadata = {
@@ -49,11 +51,12 @@ const machtMacher: { text: string; icon: IconName }[] = [
 ];
 
 /** Die vier Bereiche der Software – mit den Ansichten, die dort wirklich stehen. */
-const bereiche: { titel: string; text: string; icon: IconName; href: string; inhalt: string[] }[] = [
+const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSchluessel; href: string; inhalt: string[] }[] = [
   {
     titel: "Heute",
     text: "Was jetzt wichtig ist.",
     icon: "spark",
+    objekt: "werkzeugwand",
     href: "/funktionen",
     inhalt: ["Dein nächster Schritt", "Braucht deine Entscheidung", "Heute im Betrieb"],
   },
@@ -61,6 +64,7 @@ const bereiche: { titel: string; text: string; icon: IconName; href: string; inh
     titel: "Aufträge",
     text: "Alles rund um Kunden und Arbeit.",
     icon: "clipboard",
+    objekt: "klemmbrett",
     href: "/funktionen/auftraege",
     inhalt: ["Aufträge und Angebote", "Eingang mit neuen Anfragen", "Kunden und Service"],
   },
@@ -68,6 +72,7 @@ const bereiche: { titel: string; text: string; icon: IconName; href: string; inh
     titel: "Planen",
     text: "Was als Nächstes passiert.",
     icon: "calendar",
+    objekt: "zollstock",
     href: "/funktionen/einsatzplanung",
     inhalt: ["Kalender und Plantafel", "Einplanen mit Vorschlag", "Kapazität im Team"],
   },
@@ -75,6 +80,7 @@ const bereiche: { titel: string; text: string; icon: IconName; href: string; inh
     titel: "Betrieb",
     text: "Mitarbeiter, Material, Geld und Unternehmen.",
     icon: "home",
+    objekt: "werkzeugkiste",
     href: "/funktionen/mitarbeiter",
     inhalt: ["Geld: Rechnungen und Belege", "Team: Menschen und Zeiten", "Ausstattung und Unternehmen"],
   },
@@ -223,6 +229,7 @@ export default function HomePage() {
             {bereiche.map((b, n) => (
               <li key={b.titel}>
                 <Karte3D href={b.href} innen="flex flex-col rounded-2xl border border-line bg-white p-6">
+                  <Objekt objekt={b.objekt} className="-mx-2 -mt-2 mb-5" sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw" />
                   <div className="flex items-center justify-between">
                     <span className="karte-3d-tief inline-flex size-12 items-center justify-center rounded-xl bg-primary text-white shadow-[0_12px_24px_-12px_rgb(13_107_69/0.8)]">
                       <Icon name={b.icon} className="size-6" />

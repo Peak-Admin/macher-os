@@ -6,7 +6,7 @@ import { heute, passt, personName } from '@core/format';
 import type { Abwesenheit, ID } from '@core/objects';
 import { darfTeamDaten } from '@modules/mitarbeiter/team';
 import { ART_LABEL, abwesenheitAm, zeitraumText } from './daten';
-import { abwesenheitenHinweise, bescheidSenden, entscheiden, krankInfo } from './logik';
+import { abwesendBeobachten, abwesenheitenHinweise, bescheidSenden, entscheiden, krankInfo } from './logik';
 import { AbwesenheitDetail, AbwesenheitenSeite, JahrSeite, MitarbeiterAbwesenheitenTab } from './Ansichten';
 import { AbwesenheitForm } from './AbwesenheitForm';
 import { URLAUB_EINTRAGEN, URLAUB_ENTSCHEIDEN } from './gateway';
@@ -58,6 +58,10 @@ export default defineModul({
         relevanz: 30,
       })),
   hinweise: () => abwesenheitenHinweise(),
+  // Event `mitarbeiter.abwesend` für jede wirksame Abwesenheit (unabhängig davon, wo sie angelegt wurde)
+  init: () => {
+    abwesendBeobachten();
+  },
   gateway: { aktionen: [...URLAUB_EINTRAGEN, ...URLAUB_ENTSCHEIDEN] },
   aktionen: {
     'abwesenheit.genehmigen': (p) => {

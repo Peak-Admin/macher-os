@@ -1,6 +1,6 @@
 /** Gemeinsamer Rahmen jedes Widgets: Titel, Inhalt, optional „Alle ansehen“. Fehler bleiben im Widget. */
 import { Component, useId, type ReactNode } from 'react';
-import { Button } from '@ui/index';
+import { Button, MacherAsset } from '@ui/index';
 import { homeMessen } from './messen';
 import type { WidgetDefinition } from './typen';
 
@@ -31,9 +31,12 @@ export function WidgetRahmen({ def, children, kopfRechts }: { def: WidgetDefinit
     <section className={`mm-home-widget mm-home-widget--${def.id}`} aria-labelledby={def.ohneTitel ? undefined : id} aria-label={def.ohneTitel ? def.name : undefined}>
       {!def.ohneTitel && (
         <header className="mm-home-widget-kopf">
-          <h2 id={id} className="mm-home-widget-titel">
-            {def.name}
-          </h2>
+          <span className="mm-home-widget-titelzeile">
+            {def.objekt && <MacherAsset asset={def.objekt} groesse="klein" />}
+            <h2 id={id} className="mm-home-widget-titel">
+              {def.name}
+            </h2>
+          </span>
           {kopfRechts}
         </header>
       )}

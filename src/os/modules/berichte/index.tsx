@@ -23,7 +23,7 @@ export default defineModul({
   id: 'berichte',
   titel: 'Berichte & Protokolle',
   bereich: 'auftraege',
-  beschreibung: 'Erstellt Tagesberichte, Rapporte, Prüfprotokolle und andere Nachweise.',
+  beschreibung: 'Erstellt Baustellenberichte, Arbeitsberichte, Rapporte, Prüfprotokolle und andere Nachweise.',
   icon: 'notiz',
   gewicht: 55,
   navigation: 'hub',

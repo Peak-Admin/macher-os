@@ -114,7 +114,7 @@ describe('Lesemodus', () => {
     expect(schreibGrund('kunden', { ...lesen, durchgesetzt: true }, 'anlegen')).toBeTruthy();
   });
   test('Systemsammlungen, laufende Vorgänge und Kundenbereich bleiben frei', () => {
-    for (const s of ['ereignisse', 'einstellungen', 'benachrichtigungen', 'erledigungen', 'hinweise', 'chat', 'portalzugaenge', 'zahlungen', 'mahnungen', 'nachrichten']) {
+    for (const s of ['ereignisse', 'einstellungen', 'benachrichtigungen', 'erledigungen', 'hinweise', 'chat', 'portalzugaenge', 'ereignisprotokoll', 'webhook_auslieferungen', 'zahlungen', 'mahnungen', 'nachrichten']) {
       expect(schreibGrund(s, lesen, 'anlegen'), s).toBeUndefined();
     }
     for (const s of ['rechnungen', 'angebote', 'auftraege', 'termine']) expect(schreibGrund(s, lesen, 'aendern'), s).toBeUndefined();

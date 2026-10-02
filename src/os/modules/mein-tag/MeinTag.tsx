@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useDatenstand } from '@core/db';
-import { datum, heute, plusTage, relativ } from '@core/format';
+import { datum, datumVon, heute, plusTage, relativ } from '@core/format';
 import { istBuero, useIch } from '@core/session';
 import { Abschnitt, Button, Kennzahl, Leer, Liste, Meldung, Raster, Seite, Segmente, Stapel } from '@ui/index';
 import { ABWESENHEIT_LABEL, abwesenheitAm, aufgabenFuer, betriebHeute, termineAm } from './logik';
 import { AufgabeZeile, LageZeile, TerminZeile } from './teile';
+import { EinsatzKurz } from '@modules/naechster-einsatz/Einsatz';
+import { laeuft, naechsterEinsatz } from '@modules/naechster-einsatz/logik';
 
 const WIDGET_MAX = 5;
 
@@ -90,6 +92,8 @@ export function MeinTagSeite() {
   const laufend = alleTermine.filter((t) => t.status === 'vor_ort' || t.status === 'unterwegs').length;
   const unbesetzt = alleTermine.filter((t) => t.art !== 'intern' && t.mitarbeiterIds.length === 0).length;
   const schulungen = termine.filter((t) => t.art === 'schulung');
+  const naechster = !buero && wann === 'heute' ? naechsterEinsatz(ich.id) : undefined;
+  const einsatz = naechster && (laeuft(naechster) || datumVon(naechster.start) === tag) ? naechster : undefined;
 
   return (
     <Seite titel="Mein Tag" untertitel={`${wann === 'heute' ? 'Heute' : 'Morgen'}, ${datum(tag)}`} breit>
@@ -103,6 +107,8 @@ export function MeinTagSeite() {
         ]}
       />
       {ab && <Meldung titel={`${ABWESENHEIT_LABEL[ab.art]} bis ${relativ(ab.bis)}`}>{ab.notiz ?? 'Du bist an diesem Tag abwesend eingetragen.'}</Meldung>}
+      {/* Monteur: der Einsatz, um den es jetzt geht, steht oben – mit Navigation und Start */}
+      {einsatz && <EinsatzKurz t={einsatz} />}
       {schulungen.length > 0 && (
         <Meldung ton="aktiv" titel={schulungen.length === 1 ? 'Schulung' : `${schulungen.length} Schulungen`}>
           {schulungen.map((s) => s.titel).join(', ')}

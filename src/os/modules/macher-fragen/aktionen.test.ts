@@ -94,7 +94,7 @@ describe('Kunden schreiben, Rechnung senden', () => {
   it('„Schreib Hoffmann, dass wir gegen neun kommen“ → editierbarer Entwurf', () => {
     const plan = planAus(beantworte('Schreib Familie Hoffmann, dass wir morgen gegen neun kommen', kontext()));
     expect(plan.schritte[0]).toMatchObject({ aktion: 'message.send', textFeld: { feld: 'text' } });
-    expect((plan.schritte[0].daten as { text: string }).text).toContain('Wir morgen gegen neun kommen');
+    expect((plan.schritte[0].daten as { text: string }).text).toContain('Wir kommen morgen (Sa., 03.10.) gegen neun.');
   });
 
   it('Monteure dürfen Kunden nicht direkt schreiben', () => {

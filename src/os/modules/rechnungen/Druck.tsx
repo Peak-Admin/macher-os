@@ -1,9 +1,9 @@
 /** Druck-/PDF-Ansicht der Rechnung im gemeinsamen Briefbogen (`@ui`). Über „Drucken → Als PDF speichern“ entsteht das PDF. */
 import { useParams } from 'react-router-dom';
 import { db } from '@core/db';
-import { datum, euro, positionSumme } from '@core/format';
-import { Briefbogen, DruckNichtGefunden } from '@ui/index';
-import { ART_LABEL, pflichtTexte, rechnungsSummen } from './logik';
+import { datum, euro } from '@core/format';
+import { Briefbogen, DruckNichtGefunden, DruckPositionen, DruckSummen } from '@ui/index';
+import { ART_LABEL, pflichtTexte, rechnungsSummen, summenZeilen } from './logik';
 import { rechnungX } from './typen';
 
 export function RechnungDruck() {
@@ -20,6 +20,7 @@ export function RechnungDruck() {
     <Briefbogen
       kundeId={r.kundeId}
       titel={titel}
+      beispiel={r.beispiel}
       daten={[
         ['Rechnungsnummer', entwurf ? 'wird beim Festschreiben vergeben' : r.nummer],
         ['Rechnungsdatum', datum(r.datum)],
@@ -33,72 +34,8 @@ export function RechnungDruck() {
       <p>
         <strong>{r.titel}</strong>
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Pos.</th>
-            <th>Beschreibung</th>
-            <th className="num mm-nebensaechlich">Menge</th>
-            <th className="num mm-nebensaechlich">Einzelpreis</th>
-            <th className="num">Gesamt</th>
-          </tr>
-        </thead>
-        <tbody>
-          {r.positionen.map((p, i) => (
-            <tr key={p.id}>
-              <td>{i + 1}</td>
-              <td style={{ whiteSpace: 'pre-wrap' }}>{p.text}</td>
-              <td className="num mm-nebensaechlich">{p.art === 'text' ? '' : `${String(p.menge).replace('.', ',')} ${p.einheit}`}</td>
-              <td className="num mm-nebensaechlich">{p.art === 'text' ? '' : euro(p.einzelpreis)}</td>
-              <td className="num">{p.art === 'text' ? '' : euro(positionSumme(p))}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <table className="mm-druck-summen">
-        <tbody>
-          <tr>
-            <td>Summe netto</td>
-            <td className="num">{euro(s.netto)}</td>
-          </tr>
-          {!b?.kleinunternehmer && (
-            <tr>
-              <td>zzgl. USt {s.ustSatz} %</td>
-              <td className="num">{euro(s.ust)}</td>
-            </tr>
-          )}
-          <tr>
-            <td>
-              <strong>Gesamtbetrag</strong>
-            </td>
-            <td className="num">
-              <strong>{euro(s.brutto)}</strong>
-            </td>
-          </tr>
-          {s.abzuege.map((a) => (
-            <tr key={a.id}>
-              <td>
-                abzüglich {a.nummer} vom {datum(a.datum)}
-                <br />
-                <span style={{ fontSize: 12 }}>
-                  netto {euro(a.netto)}, USt {euro(a.ust)}
-                </span>
-              </td>
-              <td className="num">{euro(-a.brutto)}</td>
-            </tr>
-          ))}
-          {s.abzuege.length > 0 && (
-            <tr>
-              <td>
-                <strong>Zahlbetrag</strong>
-              </td>
-              <td className="num">
-                <strong>{euro(s.zahlbetrag)}</strong>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <DruckPositionen positionen={r.positionen} />
+      <DruckSummen zeilen={summenZeilen(s, b?.kleinunternehmer).map((z) => ({ label: z.label, wert: euro(z.wert), gesamt: z.gesamt, klein: z.klein }))} />
       <div style={{ marginTop: 24 }}>
         {r.art !== 'gutschrift' && (
           <p>

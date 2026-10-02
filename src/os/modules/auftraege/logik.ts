@@ -105,7 +105,7 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
     ersatz: { phase: 'angebot', aufgabe: 'Angebot schreiben und an den Kunden schicken', meldung: 'Aufgabe angelegt: Angebot schreiben.' },
   };
   const einplanen: Schritt = {
-    label: 'Einsatz einplanen',
+    label: 'Einsatz planen',
     text: 'Der Auftrag steht. Leg fest, wer wann rausfährt.',
     icon: 'plan',
     aktion: 'plan.einplanen',
@@ -124,6 +124,15 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
 
   switch (a.phase) {
     case 'anfrage':
+      // Eine Anfrage wird zuerst bearbeitet: Rückruf, Besichtigung, Angebot, Termin oder Absage
+      if (k.aktionDa('anfrage.qualifizieren'))
+        return {
+          label: 'Anfrage bearbeiten',
+          text: 'Entscheide, wie es weitergeht: Rückruf, Besichtigung, Angebot oder direkt einplanen.',
+          icon: 'chat',
+          aktion: 'anfrage.qualifizieren',
+          payload,
+        };
       if (a.art !== 'projekt')
         return {
           ...einplanen,
@@ -138,7 +147,7 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
       const entwurf = k.angebote.find((x) => x.status === 'entwurf');
       if (entwurf) {
         const p = k.pfadZu('angebote', entwurf.id);
-        if (p) return { label: 'Angebot fertigstellen', text: 'Ein Entwurf liegt bereit. Prüfen und an den Kunden schicken.', icon: 'dokument', pfad: p };
+        if (p) return { label: 'Angebot senden', text: 'Ein Entwurf liegt bereit. Prüfen und an den Kunden schicken.', icon: 'dokument', pfad: p };
       }
       if (k.angebote.some((x) => x.status === 'versendet'))
         return { label: 'Zusage eintragen', text: 'Das Angebot ist beim Kunden. Hat er zugesagt, trag es hier ein.', icon: 'check', phase: 'beauftragt' };
@@ -171,11 +180,19 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
       const entwurf = aktiv.find((r) => r.status === 'entwurf');
       if (entwurf) {
         const p = k.pfadZu('rechnungen', entwurf.id);
-        if (p) return { label: 'Rechnung fertigstellen', text: 'Ein Rechnungsentwurf liegt bereit. Prüfen und verschicken.', icon: 'euro', pfad: p };
+        if (p) return { label: 'Rechnung senden', text: 'Ein Rechnungsentwurf liegt bereit. Prüfen und verschicken.', icon: 'euro', pfad: p };
       }
       const offen = aktiv.find((r) => (r.art === 'schluss' || r.art === 'rechnung') && (r.status === 'versendet' || r.status === 'teilbezahlt'));
       if (offen) {
         const p = k.pfadZu('rechnungen', offen.id);
+        const tage = offen.faelligAm < k.heute ? tageZwischen(offen.faelligAm, k.heute) : 0;
+        if (tage > 0 && p)
+          return {
+            label: 'Zahlung erinnern',
+            text: `Die Rechnung ist seit ${tage === 1 ? 'einem Tag' : `${tage} Tagen`} fällig. Erinnere den Kunden freundlich.`,
+            icon: 'mail',
+            pfad: p,
+          };
         return {
           label: 'Rechnung ansehen',
           text: 'Die Rechnung ist raus. Sobald sie bezahlt ist, schließt Macher den Auftrag automatisch.',
@@ -186,7 +203,7 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
       }
       const hatAbschlag = aktiv.some((r) => r.art === 'abschlag' || r.art === 'teil');
       return {
-        label: hatAbschlag ? 'Schlussrechnung schreiben' : 'Rechnung schreiben',
+        label: hatAbschlag ? 'Schlussrechnung erstellen' : 'Rechnung erstellen',
         text: 'Die Arbeit ist abgenommen. Jetzt das Geld holen.',
         icon: 'euro',
         aktion: 'rechnung.erstellen',

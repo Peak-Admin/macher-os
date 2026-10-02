@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { passt } from '@core/format';
-import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meldung, Seite, Stapel, Status, Suchfeld } from '@ui/index';
+import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meldung, Seite, Stapel, Status, Suchfeld, Zeile } from '@ui/index';
 import { aktuelleDubletten } from './daten';
 
 type Ansicht = 'alle' | 'offen' | 'firmen';
@@ -72,7 +72,12 @@ export function KundenListe() {
                 }
               />
             ) : (
-              <Leer titel="Noch keine Kunden" text="Lege deinen ersten Kunden an. Er wird auch automatisch angelegt, wenn eine Anfrage reinkommt." aktion={<Button to="/auftraege/kunden/neu">Kunde anlegen</Button>} icon="person" />
+              <Leer titel="Noch keine Kunden" text="Lege deinen ersten Kunden an. Er wird auch automatisch angelegt, wenn eine Anfrage reinkommt." aktion={
+                  <Zeile>
+                    <Button to="/auftraege/kunden/neu">Kunde anlegen</Button>
+                    <Button variante="sekundaer" icon="upload" to="/betrieb/import?art=kunden">Kunden aus Excel übernehmen</Button>
+                  </Zeile>
+                } icon="person" />
             )
           }
         >

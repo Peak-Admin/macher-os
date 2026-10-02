@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from './db';
+import { on } from './events';
 import {
   brauchtBestaetigung,
   frage,
@@ -7,6 +8,7 @@ import {
   hoechsteLane,
   kiProtokoll,
   kostenStufe,
+  nimmZurueck,
   registriereGateway,
   registriereModell,
   risikoVon,
@@ -145,5 +147,21 @@ describe('Gateway: Aktionen und Bestätigung', () => {
     expect(await fuehreAus({ aktion: 'invoice.send', daten: {} }, kontext(), { bestaetigt: true })).toMatchObject({ ok: false, grund: 'rechte' });
     expect(await fuehreAus({ aktion: 'gibt.es.nicht', daten: {} }, kontext(), { bestaetigt: true })).toMatchObject({ ok: false, grund: 'unbekannt' });
     expect(kiProtokoll.all().every((p) => p.ergebnis === 'verweigert')).toBe(true);
+  });
+
+  it('führt als Macher aus, schneidet die Änderungen mit und nimmt sie über das Audit zurück', async () => {
+    const gesendet: string[] = [];
+    const weg = on('*', (e) => void (e.typ.startsWith('ki.') || e.typ === 'macher.aktion_ausgefuehrt' ? gesendet.push(e.typ) : undefined));
+    const r = await fuehreAus({ aktion: 'task.create', daten: { titel: 'Leiter prüfen' } }, kontext(), { bestaetigt: true });
+    weg();
+    if (!r.ok) throw new Error(r.text);
+    const angelegt = db.ereignisse.where((e) => e.bezug.id === r.bezug!.id && e.aenderung === 'created')[0];
+    expect(angelegt).toMatchObject({ quelle: 'ai', akteurId: 'macher' });
+    expect(r.eintraege).toContain(angelegt.id);
+    // genau ein fachliches Ereignis – Fragen und Vorschläge bleiben im KI-Protokoll
+    expect(gesendet).toEqual(['macher.aktion_ausgefuehrt']);
+    expect(nimmZurueck(r.eintraege, kontext()).ok).toBeGreaterThan(0);
+    expect(db.aufgaben.all()).toHaveLength(0);
+    expect(kiProtokoll.all().at(-1)).toMatchObject({ ergebnis: 'zurueckgenommen' });
   });
 });
