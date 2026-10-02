@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FinalCta } from "@/components/sections";
-import { Breadcrumbs, ButtonLink, CheckList, Container, Icon, Section, SectionHeading } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, CheckList, Container, Section, SectionHeading } from "@/components/ui";
 import { DruckenButton, DruckStyles } from "@/components/wissen/Drucken";
 import { FunktionLinks, Rechtshinweis } from "@/components/wissen/Teile";
 import { VorlageVorschau } from "@/components/wissen/VorlageVorschau";
@@ -132,7 +132,7 @@ export default async function VorlagePage({ params }: Props) {
                 intro="In Macher OS füllst du das auf dem Handy aus, hängst Fotos an und lässt direkt unterschreiben. Alles landet automatisch am richtigen Auftrag."
               />
               <ButtonLink href={cta.primary.href} size="lg" className="mt-8">
-                Direkt in Macher OS verwenden <Icon name="arrow-right" className="size-4" />
+                Direkt in Macher OS verwenden
               </ButtonLink>
             </div>
             <FunktionLinks slugs={v.funktionen} />

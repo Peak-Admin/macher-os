@@ -112,8 +112,12 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - Primäraktion: `btn-primaer` (bzw. `ButtonLink` Variante `primary`), mind. 48 px hoch. Auf dunklen Flächen Akzente mit `text-accent`.
 - Website-Navigation: Daten in `mainNav` (`src/lib/site.ts`), Kopf in `src/components/layout/Header.tsx`.
   Desktop ab 1200 px (`nav:`-Breakpoint), Mega-Menüs per Klick, höchstens vier Links je Gruppe, nur echte Ziele.
-  Darunter ein modaler `<dialog>` (`showModal`). Kein `backdrop-filter`/`transform` am Kopf (macht ihn zum Bezugsrahmen
-  für fest positionierte Kinder).
+  Darunter ein modaler `<dialog>` (`showModal`). Der Kopf ist ein fester Glas-Kopf nach Peak One, der auf dem Hero liegt
+  und der Box darunter folgt (`data-header-theme="dunkel" | "hell"`). `backdrop-filter` nur auf den eigenen Glasebenen
+  (`.kopf-glas`), nie auf `<header>` selbst (macht ihn zum Bezugsrahmen für fest positionierte Kinder).
+- Website-Abschnitte als Boxen (`Zone` aus `src/components/ui/Zone.tsx`, nach Peak One `mk-zone`): Rand zum Fenster,
+  Radius 12/16/24 px, Töne im Wechsel dunkelgrün · beige (`beige` = `#f4efe6`, Gegenfarbe) · weiß; Footer und
+  Abschluss-CTA sind ebenfalls Boxen.
 
 ## Verbindlicher Architektur- & Produktstandard
 

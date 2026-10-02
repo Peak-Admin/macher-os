@@ -43,6 +43,8 @@ Ohne dieses Fundament bleiben Activation/Habit/Paid unter 30. Es wird einmal geb
 
 ## 1. Setup — Ziel 100
 
+> **Abgelöst am 02.10.2026 durch das Magic Setup** ([`docs/os/ONBOARDING.md`](../os/ONBOARDING.md)): eine einzige Frage („Welcher Betrieb bist du?“), Website → Betrieb eingerichtet, sonst ein Tipp aufs Gewerk. Briefkopf, Kunden & Preise und Team sind kein Teil des Setups mehr, sondern Just-in-Time-Setup. Wo dieser Abschnitt etwas anderes sagt, gilt `ONBOARDING.md`.
+
 **Definition 100:** Ein Betrieb ist in **unter 5 Minuten** mit **eigenen** Daten startklar: Briefkopf vollständig (Name, Anschrift, Logo, Steuernummer, Bank), Leistungen mit Preisen, Kunden übernommen, mindestens ein Mitarbeiter eingeladen. Danach landet er direkt in seiner ersten Aufgabe, nicht auf einem Dashboard.
 
 ### Pains (Pain Score = Frequenz × Intensität)

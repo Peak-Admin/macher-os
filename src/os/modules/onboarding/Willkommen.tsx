@@ -3,32 +3,33 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { appPfad } from '@core/basis';
 import { aktiverBetrieb, leerenBetriebVerwerfen, useBetriebe } from '@core/betriebe';
 import { cloud, cloudAktiv } from '@core/cloud';
-import { db, type Neu } from '@core/db';
-import { GEWERKE } from '@core/gewerke';
-import type { Gewerk, Kunde } from '@core/objects';
+import { db } from '@core/db';
+import { GEWERKE, vorlageFuer, type FachrichtungId } from '@core/gewerke';
+import type { Gewerk } from '@core/objects';
 import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
 import { DATEN_VERTRAUEN } from '@core/vertrauen';
-import { Button, Fortschritt, Icon, Meldung, Meta, Oberzeile, Stapel, useBestaetigen, type IconName } from '@ui/index';
+import { Button, Eingabe, Icon, Meldung, Meta, Oberzeile, useBestaetigen, type IconName } from '@ui/index';
 import {
+  briefkopfErkennen,
   briefkopfLuecken,
-  briefkopfPruefen,
+  entwurfAusErkannt,
+  fachrichtungAusText,
   LEERER_BRIEFKOPF,
-  SCHRITTE,
+  PLATZHALTER_NAME,
   setupEinrichten,
   setupFertig,
   setupGestartet,
   setupSchritt,
-  teamEinladen,
+  vorlageErkennen,
+  websiteAnzeige,
   zielNachSetup,
   type BriefkopfEntwurf,
-  type KundenImport,
-  type Preise,
-  type TeamEintrag,
+  type SchrittId,
 } from './daten';
-import { SchrittBetrieb, SchrittKonto, SchrittKundenPreise, SchrittTeam, type KontoStand } from './Schritte';
+import { SchrittKonto, type KontoStand } from './Schritte';
 import './onboarding.css';
 
-/** Vollbild `/willkommen`: Setup in höchstens 5 Schritten – eine Frage je Bildschirm. */
+/** Vollbild `/willkommen`: Magic Setup – eine Frage, dann sofort in die Anwendung. */
 export function Willkommen() {
   const betrieb = db.betrieb.useOne('betrieb');
   const [params] = useSearchParams();
@@ -123,187 +124,303 @@ function ZurueckZumBetrieb() {
   );
 }
 
-export interface AblaufStand {
-  gewerk?: Gewerk;
+/** Was die Website ergeben hat – Entwurf, bis der Mensch „Sieht gut aus“ sagt */
+interface Fund {
+  website: string;
   briefkopf: BriefkopfEntwurf;
-  /** woher der Briefkopf stammt – für die Messung */
-  briefkopfQuelle: 'hand' | 'foto' | 'website';
-  /** KI-Entwurf liegt vor und ist noch nicht bestätigt */
-  entwurf: boolean;
-  kunden: Neu<Kunde>[];
-  kundenInfo?: Omit<KundenImport, 'kunden'> & { quelle: string };
-  preise: Preise;
-  team: TeamEintrag[];
+  leistungen: string[];
+  gewerk?: Gewerk;
+  fachrichtung?: FachrichtungId;
+  /** Gewerk von der KI, aus Stichworten (Regel) oder vom Menschen gewählt */
+  gewerkQuelle: 'website' | 'regel' | 'tipp';
 }
 
+/**
+ * Magic Setup: eine einzige Frage („Welcher Betrieb bist du?“). Website → „Wir haben deinen Betrieb gefunden“ →
+ * los. Ohne Website ein Tipp aufs Gewerk. Danach sofort in die Anwendung („Was möchtest du als Erstes erledigen?“).
+ */
 function Ablauf() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const [schritt, setSchritt] = useState(0);
-  const [fehler, setFehler] = useState<string>();
-  const [laedt, setLaedt] = useState(false);
+  const vonWebsite = GEWERKE.find((x) => x.id === params.get('gewerk'))?.id;
+  const nameVonWebsite = params.get('betrieb')?.trim() ?? '';
+  const [schritt, setSchritt] = useState<SchrittId>(() => (cloudAktiv() && !cloud().konto() ? 'konto' : 'website'));
   const [konto, setKonto] = useState<KontoStand>({ art: cloudAktiv() ? 'offen' : 'lokal' });
+  const [website, setWebsite] = useState('');
+  const [fund, setFund] = useState<Fund>();
+  const [anderesGewerk, setAnderesGewerk] = useState(false);
+  const [hinweis, setHinweis] = useState<string>();
+  const [fehler, setFehler] = useState<string>();
+  const [liest, setLiest] = useState(false);
+  const [richtetEin, setRichtetEin] = useState(false);
   const start = useRef(0);
-  const [s, setS] = useState<AblaufStand>(() => {
-    // Von der Website („Kostenlos testen“) kommen Gewerk und Betriebsname mit: ?gewerk=elektro&betrieb=…
-    const g = GEWERKE.find((x) => x.id === params.get('gewerk'));
-    return {
-      gewerk: g?.id,
-      briefkopf: { ...LEERER_BRIEFKOPF, name: params.get('betrieb') ?? '' },
-      briefkopfQuelle: 'hand',
-      entwurf: false,
-      kunden: [],
-      preise: { art: 'vorlage', prozent: 0 },
-      team: [],
-    };
-  });
-  const set = (patch: Partial<AblaufStand>) => (setS((alt) => ({ ...alt, ...patch })), setFehler(undefined));
 
   useEffect(() => {
     start.current = setupGestartet(params.get('gewerk') ? 'website' : 'direkt');
   }, [params]);
 
-  const pruefen = (): string | undefined => {
-    switch (SCHRITTE[schritt].id) {
-      case 'gewerk':
-        return s.gewerk ? undefined : 'Wähle dein Gewerk.';
-      case 'betrieb':
-        return briefkopfPruefen(s.briefkopf);
-      case 'kunden':
-        if (s.preise.art === 'eigen' && !s.preise.liste.some((l) => l.an)) return 'Wähle mindestens eine Leistung aus deiner Preisliste – oder nimm die Vorlage.';
-        return undefined;
-      default:
-        return undefined;
-    }
-  };
-
-  const geheZu = (n: number) => {
-    setSchritt(n);
+  const geheZu = (id: SchrittId) => {
+    setupSchritt(start.current, schritt);
+    setSchritt(id);
     setFehler(undefined);
     window.scrollTo?.({ top: 0 });
   };
 
-  const weiter = (gewerk?: Gewerk) => {
-    const f = gewerk ? undefined : pruefen();
-    if (f) return setFehler(f);
-    if (SCHRITTE[schritt].id === 'betrieb') set({ entwurf: false });
-    setupSchritt(start.current, schritt);
-    if (schritt < SCHRITTE.length - 1) return geheZu(schritt + 1);
-    void abschliessen();
+  const betriebFinden = async () => {
+    if (!website.trim()) return setFehler('Gib deine Website ein, z. B. maler-mueller.de.');
+    setLiest(true);
+    setFehler(undefined);
+    setHinweis(undefined);
+    const r = await briefkopfErkennen({ website: website.trim() });
+    setLiest(false);
+    if (!r.ok) {
+      if (r.art === 'nicht-verbunden') {
+        setHinweis('Deine Website kann Macher hier noch nicht lesen. Wähl dein Gewerk – den Rest ergänzt du, wenn du ihn brauchst.');
+        return geheZu('gewerk');
+      }
+      return setFehler(`${r.fehler} Du kannst auch ohne Website starten.`);
+    }
+    const v = vorlageErkennen(r.wert);
+    const ki = !!r.wert.gewerk && v.gewerk === r.wert.gewerk;
+    setFund({
+      website: website.trim(),
+      briefkopf: { ...entwurfAusErkannt(r.wert, { ...LEERER_BRIEFKOPF, name: nameVonWebsite }), ...(r.wert.logoBild ? { logo: r.wert.logoBild } : {}) },
+      leistungen: r.wert.leistungen ?? [],
+      gewerk: v.gewerk ?? vonWebsite,
+      fachrichtung: v.fachrichtung,
+      gewerkQuelle: ki ? 'website' : v.gewerk ? 'regel' : 'tipp',
+    });
+    setAnderesGewerk(false);
+    geheZu('gefunden');
   };
 
-  const abschliessen = async () => {
-    setLaedt(true);
+  const einrichtenMit = async (a: { gewerk: Gewerk; fachrichtung?: FachrichtungId; briefkopf: BriefkopfEntwurf; quelle: 'hand' | 'website'; gewerkQuelle: Fund['gewerkQuelle'] }) => {
+    setRichtetEin(true);
+    setFehler(undefined);
     // kurz rendern lassen, damit „Wird eingerichtet …“ sichtbar ist
     await new Promise((r) => setTimeout(r, 30));
     try {
-      const e = setupEinrichten({ gewerk: s.gewerk!, briefkopf: s.briefkopf, kunden: s.kunden, preise: s.preise, team: s.team });
-      await teamEinladen(s.team).catch(() => undefined);
+      const briefkopf = { ...a.briefkopf, name: a.briefkopf.name.trim() || PLATZHALTER_NAME };
+      const e = setupEinrichten({ gewerk: a.gewerk, fachrichtung: a.fachrichtung, briefkopf, kunden: [], preise: { art: 'vorlage', prozent: 0 }, team: [] });
+      setupSchritt(start.current, schritt);
       setupFertig(start.current, {
         ...e,
         konto: konto.art === 'gesichert' ? 'gesichert' : konto.art === 'lokal' ? 'lokal' : 'offen',
-        briefkopfQuelle: s.briefkopfQuelle,
-        preise: s.preise.art === 'eigen' ? 'eigen' : s.preise.prozent ? 'vorlage-angepasst' : 'vorlage',
+        briefkopfQuelle: a.quelle,
+        preise: 'vorlage',
+        gewerkQuelle: a.gewerkQuelle,
       });
       navigate(zielNachSetup(), { replace: true, state: { setup: 'fertig' } });
     } catch (err) {
       console.error(err);
       setFehler('Dein Betrieb wurde noch nicht eingerichtet. Versuche es erneut.');
-      setLaedt(false);
+      setRichtetEin(false);
     }
   };
 
   const umsehen = async () => {
     try {
-      await spielwieseStarten(s.gewerk ?? 'elektro');
+      await spielwieseStarten(fund?.gewerk ?? vonWebsite ?? 'elektro');
       navigate('/heute');
     } catch (e) {
       setFehler(e instanceof Error ? e.message : 'Die Spielwiese konnte nicht geöffnet werden.');
     }
   };
 
-  const id = SCHRITTE[schritt].id;
-  const letzter = schritt === SCHRITTE.length - 1;
-  const hauptLabel =
-    id === 'betrieb' && s.entwurf
-      ? 'Briefkopf übernehmen'
-      : id === 'kunden' && !s.kunden.length && s.preise.art === 'vorlage' && !s.preise.prozent
-        ? 'Weiter mit Vorlage'
-        : id === 'team' && !s.team.length
-          ? 'Erst mal ohne Team'
-          : letzter
-            ? 'Fertig – los geht’s'
-            : 'Weiter';
+  const spielwiese = (
+    <div className="ob-schnell">
+      <Meta>Erst mal nur umsehen? Die Spielwiese zeigt einen Beispielbetrieb – getrennt von deinen echten Daten.</Meta>
+      <Button variante="tertiaer" onClick={umsehen}>
+        Spielwiese öffnen
+      </Button>
+    </div>
+  );
+
+  if (schritt === 'konto')
+    return (
+      <div className="ob-ablauf">
+        <Frage titel="Konto erstellen" text="Mit deiner E-Mail oder Handynummer kommst du jederzeit wieder rein – ohne Passwort.">
+          <SchrittKonto konto={konto} setKonto={setKonto} />
+        </Frage>
+        <div className="ob-navigation">
+          <Button variante="tertiaer" onClick={() => geheZu('website')} disabled={konto.art === 'laedt'}>
+            Später sichern
+          </Button>
+          {(konto.art === 'gesichert' || konto.art === 'link') && (
+            <WeiterButton icon="pfeil" onClick={() => geheZu('website')} laedtText="Einen Moment …">
+              Weiter
+            </WeiterButton>
+          )}
+        </div>
+      </div>
+    );
+
+  if (schritt === 'gewerk')
+    return (
+      <div className="ob-ablauf">
+        <Frage titel="Was macht ihr?" text="Ein Tipp genügt. Macher richtet Leistungen, Richtpreise und Auftragsabläufe für dein Gewerk ein. Alles lässt sich später ändern.">
+          {hinweis && <Meldung>{hinweis}</Meldung>}
+          {richtetEin ? (
+            <Meldung ton="erfolg" titel="Dein Betrieb wird eingerichtet …">
+              Leistungen, Preise und Abläufe werden vorbereitet.
+            </Meldung>
+          ) : (
+            <GewerkKarten
+              wert={vonWebsite}
+              onChange={(g) => void einrichtenMit({ gewerk: g, briefkopf: { ...LEERER_BRIEFKOPF, name: nameVonWebsite }, quelle: 'hand', gewerkQuelle: 'tipp' })}
+            />
+          )}
+        </Frage>
+        {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
+        <div className="ob-schnell">
+          <Button variante="tertiaer" icon="zurueck" onClick={() => geheZu('website')} disabled={richtetEin}>
+            Doch mit Website
+          </Button>
+        </div>
+        {spielwiese}
+      </div>
+    );
+
+  if (schritt === 'gefunden' && fund) return <Gefunden fund={fund} setFund={setFund} anderesGewerk={anderesGewerk} setAnderesGewerk={setAnderesGewerk} fehler={fehler} richtetEin={richtetEin} onZurueck={() => geheZu('website')} onLos={() => {
+    if (!fund.gewerk) return setFehler('Wähl noch dein Gewerk – ein Tipp genügt.');
+    void einrichtenMit({ gewerk: fund.gewerk, fachrichtung: fund.fachrichtung, briefkopf: fund.briefkopf, quelle: 'website', gewerkQuelle: fund.gewerkQuelle });
+  }} />;
 
   return (
     <div className="ob-ablauf">
-      <Stapel abstand={8}>
-        <Oberzeile>
-          Schritt {schritt + 1} von {SCHRITTE.length} · {SCHRITTE[schritt].titel}
-        </Oberzeile>
-        <Fortschritt wert={schritt + 1} max={SCHRITTE.length} label="Fortschritt der Einrichtung" />
-      </Stapel>
+      <Frage titel="Welcher Betrieb bist du?" text="Gib deine Website an. Macher liest Name, Logo, Gewerk, Leistungen und Kontaktdaten aus und richtet alles für dich ein.">
+        <form
+          className="ob-website ob-website--gross"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void betriebFinden();
+          }}
+        >
+          <Eingabe label="Website" value={website} onChange={(e) => (setWebsite(e.target.value), setFehler(undefined))} placeholder="www.maler-mueller.de" inputMode="url" autoComplete="url" autoFocus />
+          <WeiterButton icon="pfeil" onClick={() => void betriebFinden()} laedt={liest} laedtText="Macher liest deine Website …">
+            Betrieb übernehmen
+          </WeiterButton>
+        </form>
+        {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
+        <div>
+          <Button variante="tertiaer" icon="pfeilRechts" onClick={() => geheZu('gewerk')} disabled={liest}>
+            Keine Website? Gewerk auswählen
+          </Button>
+        </div>
+      </Frage>
+      {spielwiese}
+    </div>
+  );
+}
 
-      {id === 'gewerk' && (
-        <Frage titel="Was macht ihr?" text="Dein Gewerk bestimmt Leistungen, Preise, Material und Begriffe. Alles lässt sich später ändern.">
+/** „Wir haben deinen Betrieb gefunden.“ – nur Erkanntes, ehrlich benannt. Eine Hauptaktion. */
+function Gefunden({
+  fund,
+  setFund,
+  anderesGewerk,
+  setAnderesGewerk,
+  fehler,
+  richtetEin,
+  onZurueck,
+  onLos,
+}: {
+  fund: Fund;
+  setFund: (f: Fund) => void;
+  anderesGewerk: boolean;
+  setAnderesGewerk: (an: boolean) => void;
+  fehler?: string;
+  richtetEin: boolean;
+  onZurueck: () => void;
+  onLos: () => void;
+}) {
+  const b = fund.briefkopf;
+  const v = fund.gewerk ? vorlageFuer(fund.gewerk, fund.fachrichtung) : undefined;
+  const kontakt = [b.strasse && 'Anschrift', b.telefon && 'Telefon', b.email && 'E-Mail', (b.steuernummer || b.ustId) && 'Steuernummer', b.iban && 'Bankverbindung'].filter(Boolean) as string[];
+  const zeile = [v?.label, b.ort].filter(Boolean).join(' · ');
+  const gewerkWaehlen = !fund.gewerk || anderesGewerk;
+  return (
+    <div className="ob-ablauf">
+      <div className="ob-frage-kopf">
+        <h1>{b.name ? 'Wir haben deinen Betrieb gefunden.' : 'Wir haben deine Website gelesen.'}</h1>
+        <p>Aus {websiteAnzeige(fund.website)}. Prüf kurz, ob es passt – ändern kannst du alles später.</p>
+      </div>
+
+      <section className="ob-fund" aria-label="Dein Betrieb">
+        <div className="ob-fund-kopf">
+          {b.logo ? (
+            <img src={b.logo} alt={`Logo von ${b.name || 'deinem Betrieb'}`} className="ob-fund-logo" />
+          ) : (
+            <span className="ob-fund-logo ob-fund-logo--ersatz" aria-hidden="true">
+              <Icon name="betrieb" />
+            </span>
+          )}
+          <div className="ob-fund-name">
+            <strong>{b.name || 'Name nicht gefunden'}</strong>
+            {zeile && <span>{zeile}</span>}
+          </div>
+        </div>
+        <ul className="ob-fund-liste">
+          {kontakt.length > 0 && <FundZeile>Firmendaten übernommen: {kontakt.join(', ')}</FundZeile>}
+          {fund.leistungen.length > 0 && (
+            <FundZeile>
+              {fund.leistungen.length === 1 ? '1 Leistung' : `${fund.leistungen.length} Leistungen`} auf deiner Website erkannt
+              <span className="ob-fund-chips">
+                {fund.leistungen.slice(0, 8).map((l) => (
+                  <span key={l} className="ob-fund-chip">
+                    {l}
+                  </span>
+                ))}
+              </span>
+            </FundZeile>
+          )}
+          {v && <FundZeile>{v.leistungen.length} Leistungen mit Richtpreisen und passende Auftragsabläufe für {v.label} vorbereitet</FundZeile>}
+          {b.logo && <FundZeile>Logo für Angebote und Rechnungen übernommen</FundZeile>}
+        </ul>
+        {!gewerkWaehlen && (
+          <div>
+            <Button variante="tertiaer" klein onClick={() => setAnderesGewerk(true)}>
+              Anderes Gewerk wählen
+            </Button>
+          </div>
+        )}
+      </section>
+
+      {gewerkWaehlen && (
+        <section className="ob-block" aria-label="Gewerk">
+          <h2 className="ob-block-titel">{fund.gewerk ? 'Welches Gewerk passt?' : 'Welches Gewerk seid ihr? Ein Tipp genügt.'}</h2>
           <GewerkKarten
-            wert={s.gewerk}
+            wert={fund.gewerk}
             onChange={(g) => {
-              set({ gewerk: g });
-              // ein Tipp genügt
-              setupSchritt(start.current, 0);
-              geheZu(1);
+              setFund({ ...fund, gewerk: g, fachrichtung: fachrichtungAusText(g, b.name, ...fund.leistungen), gewerkQuelle: 'tipp' });
+              setAnderesGewerk(false);
             }}
           />
-        </Frage>
+        </section>
       )}
 
-      {id === 'betrieb' && (
-        <Frage titel="Dein Briefkopf" text="Mach ein Foto von einer alten Rechnung oder gib deine Website an – Macher liest alles aus. Du prüfst nur.">
-          <SchrittBetrieb stand={s} set={set} />
-        </Frage>
-      )}
-
-      {id === 'kunden' && s.gewerk && (
-        <Frage titel="Kunden und Preise übernehmen" text="Bring mit, was du schon hast. Doppelte Kunden führt Macher zusammen. Du kannst das auch später machen.">
-          <SchrittKundenPreise stand={s} set={set} gewerk={s.gewerk} />
-        </Frage>
-      )}
-
-      {id === 'team' && (
-        <Frage titel="Wer arbeitet mit dir?" text="Name und Handynummer reichen. Deine Leute brauchen kein Passwort und keine eigene Einrichtung.">
-          <SchrittTeam stand={s} set={set} />
-        </Frage>
-      )}
-
-      {id === 'konto' && (
-        <Frage titel="Konto sichern" text={cloudAktiv() ? 'Mit deiner E-Mail oder Handynummer kommst du jederzeit wieder rein – ohne Passwort.' : 'Damit nichts verloren geht und dein Team mitarbeiten kann.'}>
-          <SchrittKonto konto={konto} setKonto={setKonto} />
-        </Frage>
-      )}
-
+      <Meta>Deinen Briefkopf prüfst du kurz, bevor dein erstes Angebot rausgeht. Kunden, Preise und Team übernimmst du, wenn du so weit bist.</Meta>
       {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
 
-      {id !== 'gewerk' && (
-        <div className="ob-navigation">
-          <Button variante="tertiaer" icon="zurueck" onClick={() => geheZu(schritt - 1)} disabled={laedt}>
-            Zurück
-          </Button>
-          <WeiterButton icon={letzter ? 'check' : 'pfeil'} onClick={() => weiter()} laedt={laedt || (id === 'konto' && konto.art === 'laedt')} laedtText={laedt ? 'Dein Betrieb wird eingerichtet …' : 'Einen Moment …'}>
-            {hauptLabel}
-          </WeiterButton>
-        </div>
-      )}
-
-      {id === 'gewerk' && (
-        <div className="ob-schnell">
-          <Meta>Erst mal nur umsehen? Die Spielwiese zeigt einen Beispielbetrieb – getrennt von deinen echten Daten.</Meta>
-          <Button variante="tertiaer" onClick={umsehen}>
-            Spielwiese öffnen
-          </Button>
-        </div>
-      )}
+      <div className="ob-navigation">
+        <Button variante="tertiaer" icon="zurueck" onClick={onZurueck} disabled={richtetEin}>
+          Andere Website
+        </Button>
+        <WeiterButton icon="pfeil" onClick={onLos} laedt={richtetEin} laedtText="Dein Betrieb wird eingerichtet …">
+          Sieht gut aus – los geht’s
+        </WeiterButton>
+      </div>
     </div>
+  );
+}
+
+function FundZeile({ children }: { children: ReactNode }) {
+  return (
+    <li>
+      <span className="ob-fund-haken" aria-hidden="true">
+        <Icon name="check" size={14} strokeWidth={2.5} />
+      </span>
+      <span className="ob-fund-text">{children}</span>
+    </li>
   );
 }
 

@@ -13,14 +13,14 @@ export const kernaengste: Kernangst[] = [
   {
     angst: "Das kostet mich Zeit.",
     antwort: "In wenigen Minuten startklar.",
-    text: "Gewerk wählen, Briefkopf prüfen, los. Leistungen und Preise für dein Gewerk sind schon drin.",
+    text: "Eine Frage: Welcher Betrieb bist du? Website angeben oder Gewerk antippen – den Rest richtet Macher ein.",
     icon: "clock",
     staerke: 100,
   },
   {
     angst: "Das ist kompliziert.",
     antwort: "Du musst keine Software lernen.",
-    text: "Eine Frage pro Schritt, in deiner Sprache. Ohne Menüs voller Einstellungen.",
+    text: "Eine Frage zum Start, in deiner Sprache. Ohne Menüs voller Einstellungen.",
     icon: "spark",
     staerke: 99,
   },
@@ -34,14 +34,14 @@ export const kernaengste: Kernangst[] = [
   {
     angst: "Meine Leute nutzen das nicht.",
     antwort: "So einfach wie eine Nachricht aufs Handy.",
-    text: "Deine Leute bekommen einen Link per SMS. Kein Passwort, keine Schulung. Sie sehen nur ihren Einsatz.",
+    text: "Deine Leute melden sich mit ihrer Handynummer an. Kein Passwort, keine Schulung. Sie sehen nur ihren Einsatz.",
     icon: "smartphone",
     staerke: 95,
   },
   {
     angst: "Ich weiß nicht, ob mir das was bringt.",
     antwort: "Erst der Nutzen, dann der Rest.",
-    text: "Schreib gleich nach dem Start dein erstes echtes Angebot – mit deinen Preisen und deinem Briefkopf.",
+    text: "Direkt nach dem Start schreibst du dein erstes echtes Angebot. Der Rest kommt, wenn du ihn brauchst.",
     icon: "euro",
     staerke: 94,
   },
@@ -51,10 +51,10 @@ export type Einwand = { rang: number; einwand: string; antwort: string; staerke:
 
 /** Alle Einwände nach Stärke. Die fünf Kernängste oben fassen die stärksten zusammen. */
 export const einwaende: Einwand[] = [
-  { rang: 1, staerke: 100, einwand: "Ich hab keine Zeit, mich da jetzt reinzufuchsen.", antwort: "Musst du nicht. Die Einrichtung dauert wenige Minuten: Gewerk wählen, Briefkopf prüfen, fertig. Leistungen und Preise für dein Gewerk sind schon drin." },
-  { rang: 2, staerke: 98, einwand: "Das ist mir bestimmt wieder zu kompliziert.", antwort: "Macher OS fragt dich Schritt für Schritt, eine Frage pro Bildschirm – in Handwerkersprache, ohne IT-Begriffe. Was du nicht brauchst, siehst du nicht." },
-  { rang: 3, staerke: 97, einwand: "Bis ich das eingerichtet habe, mach ich's lieber wie bisher.", antwort: "Die Einrichtung hat fünf kurze Schritte. Danach schreibst du direkt dein erstes Angebot – nicht erst in ein paar Wochen." },
-  { rang: 4, staerke: 96, einwand: "Meine Leute benutzen das am Ende sowieso nicht.", antwort: "Deine Leute bekommen einen Link per SMS und sind drin – ohne Passwort. Auf dem Handy sehen sie nur ihren Einsatz: Adresse, Aufgaben, Fotos, Zeiten." },
+  { rang: 1, staerke: 100, einwand: "Ich hab keine Zeit, mich da jetzt reinzufuchsen.", antwort: "Musst du nicht. Zum Start beantwortest du eine Frage: Welcher Betrieb bist du? Leistungen und Preise für dein Gewerk sind schon drin." },
+  { rang: 2, staerke: 98, einwand: "Das ist mir bestimmt wieder zu kompliziert.", antwort: "Zum Start gibt es genau eine Frage – in Handwerkersprache, ohne IT-Begriffe. Was du nicht brauchst, siehst du nicht." },
+  { rang: 3, staerke: 97, einwand: "Bis ich das eingerichtet habe, mach ich's lieber wie bisher.", antwort: "Die Einrichtung ist eine Frage. Danach schreibst du direkt dein erstes Angebot – nicht erst in ein paar Wochen." },
+  { rang: 4, staerke: 96, einwand: "Meine Leute benutzen das am Ende sowieso nicht.", antwort: "Deine Leute melden sich mit ihrer Handynummer an – ohne Passwort. Auf dem Handy sehen sie nur ihren Einsatz: Adresse, Aufgaben, Fotos, Zeiten." },
   { rang: 5, staerke: 95, einwand: "Bei uns funktioniert es doch auch so.", antwort: "Bis eine Rechnung liegen bleibt oder ein Termin durchrutscht. Macher OS erinnert dich, bevor Geld oder Zeit verloren gehen." },
   { rang: 6, staerke: 95, einwand: "Ich will nicht noch ein Programm.", antwort: "Dann nimm eins statt fünf: Anfragen, Angebote, Planung, Zeiten und Rechnungen an einem Ort." },
   { rang: 7, staerke: 94, einwand: "Dann muss ich alles doppelt pflegen.", antwort: "Im Gegenteil. Aus dem Angebot wird der Auftrag, aus dem Auftrag die Rechnung. Was einmal drin ist, steht überall." },
@@ -73,7 +73,7 @@ export const einwaende: Einwand[] = [
   { rang: 20, staerke: 79, einwand: "Ich bin einfach kein Computer-Mensch.", antwort: "Musst du auch nicht sein. Macher OS ist fürs Handy gebaut, mit großen Knöpfen und klaren Worten. Und wenn's hakt, hilft dir jemand auf Deutsch." },
   { rang: 21, staerke: 77, einwand: "Auf der Baustelle funktioniert sowas doch nicht richtig.", antwort: "Zeiten, Fotos, Material und Unterschrift gehen auch ohne Netz. Sobald wieder Empfang da ist, wird alles übertragen." },
   { rang: 22, staerke: 76, einwand: "Ich hab schon mal so eine Software probiert.", antwort: "Dann weißt du, worauf es ankommt. Teste mit deinem echten Betrieb – ohne Vertrag und ohne Kreditkarte." },
-  { rang: 23, staerke: 75, einwand: "Nachher muss ich dafür erst eine Schulung machen.", antwort: "Nein. Macher OS fragt dich beim Start Schritt für Schritt ab. Für Büro und Chef gibt es kurze Anleitungen im Hilfe-Center." },
+  { rang: 23, staerke: 75, einwand: "Nachher muss ich dafür erst eine Schulung machen.", antwort: "Nein. Zum Start beantwortest du eine Frage, den Rest zeigt dir Macher OS, wenn du ihn brauchst. Für Büro und Chef gibt es kurze Anleitungen im Hilfe-Center." },
   { rang: 24, staerke: 73, einwand: "Dafür brauch ich wieder irgendeinen ITler.", antwort: "Nein. Macher OS läuft im Browser und auf dem Handy. Nichts installieren, kein Server im Keller." },
   { rang: 25, staerke: 70, einwand: "Das sieht wieder nach Bürosoftware aus.", antwort: "Gebaut für Baustelle und Büro: große Knöpfe, klare Sprache, Handy zuerst." },
 ];

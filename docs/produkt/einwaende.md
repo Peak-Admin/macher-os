@@ -24,7 +24,7 @@ Prüfen und ersetzen, sobald wir echte Daten haben: Gespräche mit Betrieben, K�
 | „Das kostet mich Zeit.“ | 100 | In wenigen Minuten startklar. | Startseite, Anmeldung |
 | „Das ist kompliziert.“ | 99 | Du musst keine Software lernen. | Startseite, Anmeldung |
 | „Das macht zusätzliche Arbeit.“ | 97 | Weniger doppelt eingeben. Weniger Büro. | Startseite |
-| „Meine Leute nutzen das nicht.“ | 95 | So einfach wie eine Nachricht aufs Handy. | Startseite, Schritt „Team“ |
+| „Meine Leute nutzen das nicht.“ | 95 | So einfach wie eine Nachricht aufs Handy. | Startseite |
 | „Ich weiß nicht, ob es mir etwas bringt.“ | 94 | Erst der Nutzen, dann der Rest: erstes echtes Angebot direkt nach dem Start. | Startseite |
 
 „So einfach wie WhatsApp“ nennen wir bewusst nicht beim Namen: fremde Marke, wir wollen nicht mit ihrem Ruf werben.
@@ -33,10 +33,10 @@ Prüfen und ersetzen, sobald wir echte Daten haben: Gespräche mit Betrieben, K�
 
 | Rang | Einwand | Stärke | Unsere Antwort (Kurzform) | Beleg im Produkt |
 |---:|---|---:|---|---|
-| 1 | „Ich hab keine Zeit, mich da jetzt reinzufuchsen.“ | 100 | Einrichtung in wenigen Minuten, Vorlagen je Gewerk | 5 Schritte, `gewerke.ts`. Bitkom: 72 % „zu viel zu tun“ |
-| 2 | „Das ist mir bestimmt wieder zu kompliziert.“ | 98 | Eine Frage pro Schritt, Handwerkersprache | Einrichtung `/willkommen` |
-| 3 | „Bis ich das eingerichtet habe, mache ich's lieber wie bisher.“ | 97 | Fünf kurze Schritte, danach direkt das erste Angebot | `zielNachSetup()` |
-| 4 | „Meine Leute benutzen das am Ende sowieso nicht.“ | 96 | Link per SMS, kein Passwort, nur der eigene Einsatz | Schritt „Team“, Mitarbeiter-App |
+| 1 | „Ich hab keine Zeit, mich da jetzt reinzufuchsen.“ | 100 | Eine Frage zum Start, Vorlagen je Gewerk | Magic Setup (`docs/os/ONBOARDING.md`), `gewerke.ts`. Bitkom: 72 % „zu viel zu tun“ |
+| 2 | „Das ist mir bestimmt wieder zu kompliziert.“ | 98 | Eine Frage zum Start, Handwerkersprache | Einrichtung `/willkommen` |
+| 3 | „Bis ich das eingerichtet habe, mache ich's lieber wie bisher.“ | 97 | Eine Frage, danach direkt das erste Angebot | `zielNachSetup()`, `/start` |
+| 4 | „Meine Leute benutzen das am Ende sowieso nicht.“ | 96 | Anmeldung mit Handynummer, kein Passwort, nur der eigene Einsatz | `konto/Anmelden.tsx`, Mitarbeiter-App |
 | 5 | „Bei uns funktioniert es doch auch so.“ | 95 | Bis eine Rechnung liegen bleibt – Macher erinnert | Hinweise, Mahnungen |
 | 6 | „Ich will nicht noch ein Programm.“ | 95 | Eins statt fünf | Alle Module in einem OS |
 | 7 | „Dann muss ich alles doppelt pflegen.“ | 94 | Angebot → Auftrag → Rechnung, nichts zweimal | `angebote`, `rechnungen` |
@@ -55,7 +55,7 @@ Prüfen und ersetzen, sobald wir echte Daten haben: Gespräche mit Betrieben, K�
 | 20 | „Ich bin einfach kein Computer-Mensch.“ | 79 | Handy zuerst, große Knöpfe, Hilfe auf Deutsch | UX-Spezifikation. Bitkom: 42 % |
 | 21 | „Auf der Baustelle funktioniert sowas doch sowieso nicht richtig.“ | 77 | Zeiten, Fotos, Material, Unterschrift ohne Netz | Offline-Sync |
 | 22 | „Ich habe schon mal so eine Software probiert.“ | 76 | Mit dem echten Betrieb testen, ohne Vertrag | Testphase |
-| 23 | „Nachher muss ich dafür erst eine Schulung machen.“ | 75 | Nein – Schritt für Schritt, Anleitungen im Hilfe-Center | Hilfe-Center |
+| 23 | „Nachher muss ich dafür erst eine Schulung machen.“ | 75 | Nein – eine Frage zum Start, Anleitungen im Hilfe-Center | Hilfe-Center |
 | 24 | „Dafür brauche ich wieder irgendeinen ITler.“ | 73 | Browser und Handy, nichts installieren | Web-App |
 | 25 | „Das sieht wieder nach Bürosoftware aus.“ | 70 | Gebaut für Baustelle und Büro | UX-Spezifikation |
 

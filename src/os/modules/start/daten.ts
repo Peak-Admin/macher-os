@@ -1,17 +1,21 @@
 /**
- * First Value: „Was willst du als Erstes erledigen?“, die „Dein Start“-Haken und der gemeinsame Versandweg
+ * First Value: „Was möchtest du als Erstes erledigen?“, „Macher fertig machen“, Briefkopf just in time und der gemeinsame Versandweg
  * für Angebot und Rechnung (Cloud, sonst ehrlicher lokaler Rückfall).
  * Reine Regeln sind ohne Datenbank testbar.
  */
 import { cloud, LOKALE_CLOUD, type Cloud, type Versand, type VersandErgebnis } from '@core/cloud';
 import { emit } from '@core/events';
 import { messen } from '@core/messung';
-import type { Angebot, Arbeitsweise, Bezug, Mitarbeiter, Termin } from '@core/objects';
+import type { Betrieb, Bezug, Kunde, Mitarbeiter } from '@core/objects';
 import type { IconName } from '@ui/index';
 
-// ------------------------------------------------------------------ Was willst du als Erstes erledigen?
+// ------------------------------------------------------------------ Was möchtest du als Erstes erledigen?
 
-export type Wahl = 'angebot' | 'rechnung' | 'planen';
+/**
+ * Drei First-Value-Pfade statt eines Aktivierungsereignisses:
+ * Angebot (erstes echtes Angebot vorbereitet) · Wechsel (erste Kunden/Leistungen übernommen) · Auftrag (erster Auftrag angelegt).
+ */
+export type Wahl = 'angebot' | 'kunden' | 'auftrag';
 
 export interface StartKarte {
   id: Wahl;
@@ -22,27 +26,29 @@ export interface StartKarte {
 }
 
 export const KARTEN: Record<Wahl, StartKarte> = {
-  angebot: { id: 'angebot', titel: 'Angebot schreiben', text: 'Kunde, Positionen, senden – in drei Minuten raus.', icon: 'dokument', pfad: '/start/angebot' },
-  rechnung: { id: 'rechnung', titel: 'Rechnung schreiben', text: 'Arbeit erledigt? In einer Minute abgerechnet, E-Rechnung inklusive.', icon: 'euro', pfad: '/start/rechnung' },
-  planen: { id: 'planen', titel: 'Woche planen', text: 'Wer ist wann wo – die Woche auf einen Blick.', icon: 'plan', pfad: '/plan' },
+  angebot: { id: 'angebot', titel: 'Angebot erstellen', text: 'Kunde, Positionen, senden – in drei Minuten raus.', icon: 'dokument', pfad: '/start/angebot' },
+  kunden: { id: 'kunden', titel: 'Kunden übernehmen', text: 'Aus Excel oder deinem alten Programm. Doppelte führt Macher zusammen.', icon: 'upload', pfad: '/betrieb/import?art=kunden' },
+  auftrag: { id: 'auftrag', titel: 'Auftrag anlegen', text: 'Kunde, was zu tun ist, wo – Macher legt den passenden Ablauf an.', icon: 'auftraege', pfad: '/auftraege/auftraege/neu' },
 };
 
-/**
- * Reihenfolge nach Arbeitsweise. Ein Dokument beim Kunden ist der erste Wert – deshalb stehen Angebot und
- * Rechnung vorn: Kundendienst rechnet sofort ab (Rechnung zuerst), Baustelle und Werkstatt beginnen mit dem
- * Angebot. Nur wer ausschließlich Wartung macht, startet mit dem Plan.
- */
-export function kartenReihenfolge(arbeitsweisen: Arbeitsweise[] = []): Wahl[] {
-  const hat = (w: Arbeitsweise) => arbeitsweisen.includes(w);
-  if (arbeitsweisen.length && arbeitsweisen.every((w) => w === 'wartung')) return ['planen', 'angebot', 'rechnung'];
-  if (hat('kundendienst') && !hat('baustelle') && !hat('werkstatt')) return ['rechnung', 'angebot', 'planen'];
-  return ['angebot', 'rechnung', 'planen'];
+/** Angebot ist die Hauptaktion. Ohne Geld-Recht gibt es kein Angebot – dann bleiben Kunden und Auftrag. */
+export function startKarten(darfGeld: boolean): Wahl[] {
+  return darfGeld ? ['angebot', 'kunden', 'auftrag'] : ['kunden', 'auftrag'];
 }
 
-// ------------------------------------------------------------------ Dein Start
+/** Welcher First-Value-Pfad steckt in einem Ereignis? (nur echte Daten, nie Beispiele) */
+export function erstwertPfad(e: { typ: string; objekt?: { beispiel?: boolean; phase?: string } }): 'angebot' | 'auftrag' | 'wechsel' | undefined {
+  if (e.objekt?.beispiel) return undefined;
+  if (e.typ === 'angebot.erstellt') return 'angebot';
+  if (e.typ === 'auftrag.angelegt' && e.objekt?.phase !== 'anfrage') return 'auftrag';
+  if (e.typ === 'import.abgeschlossen') return 'wechsel';
+  return undefined;
+}
+
+// ------------------------------------------------------------------ Macher fertig machen
 
 export interface Haken {
-  id: 'angebot' | 'team' | 'termin';
+  id: 'betrieb' | 'gewerk' | 'kunden' | 'team';
   titel: string;
   erledigt: boolean;
   /** konkreter nächster Schritt */
@@ -50,40 +56,64 @@ export interface Haken {
 }
 
 export interface StartStand {
-  angebote: Pick<Angebot, 'status' | 'versendetAm' | 'beispiel'>[];
+  betrieb?: Pick<Betrieb, 'onboardingFertig' | 'gewerk'>;
+  kunden: Pick<Kunde, 'beispiel'>[];
   mitarbeiter: Pick<Mitarbeiter, 'aktiv' | 'beispiel'>[];
-  termine: Pick<Termin, 'status' | 'beispiel'>[];
+  /** Event `import.abgeschlossen` kam schon einmal */
+  datenUebernommen?: boolean;
   /** Event `team.eingeladen` kam schon einmal */
   teamEingeladen?: boolean;
 }
 
-/** Drei Haken – nur echte Daten zählen, Beispieldaten nie. */
+/** Vier Haken „Macher fertig machen“ – komplett optional, nur echte Daten zählen, Beispieldaten nie. */
 export function startHaken(s: StartStand): Haken[] {
   const echt = <T extends { beispiel?: boolean }>(x: T) => !x.beispiel;
   return [
+    { id: 'betrieb', titel: 'Betrieb eingerichtet', erledigt: !!s.betrieb?.onboardingFertig, aktion: { label: 'Betrieb einrichten', pfad: '/willkommen' } },
+    { id: 'gewerk', titel: 'Gewerk eingerichtet', erledigt: !!s.betrieb?.onboardingFertig && !!s.betrieb.gewerk, aktion: { label: 'Gewerk wählen', pfad: '/betrieb/einstellungen' } },
     {
-      id: 'angebot',
-      titel: 'Erstes Angebot raus',
-      erledigt: s.angebote.filter(echt).some((a) => !!a.versendetAm || (a.status !== 'entwurf' && a.status !== 'abgelaufen')),
-      aktion: { label: 'Angebot schreiben', pfad: '/start/angebot' },
+      id: 'kunden',
+      titel: 'Kunden & Preise übernehmen',
+      erledigt: !!s.datenUebernommen || s.kunden.some(echt),
+      aktion: { label: 'Kunden & Preise übernehmen', pfad: '/betrieb/import?art=kunden' },
     },
     {
       id: 'team',
-      titel: 'Team eingeladen',
+      titel: 'Team hinzufügen',
       erledigt: !!s.teamEingeladen || s.mitarbeiter.filter(echt).filter((m) => m.aktiv).length > 1,
-      aktion: { label: 'Team einladen', pfad: '/betrieb/team' },
-    },
-    {
-      id: 'termin',
-      titel: 'Erster Termin geplant',
-      erledigt: s.termine.filter(echt).some((t) => t.status !== 'abgesagt'),
-      aktion: { label: 'Termin planen', pfad: '/plan' },
+      aktion: { label: 'Team hinzufügen', pfad: '/betrieb/mitarbeiter/neu' },
     },
   ];
 }
 
 export const TEAM_EINGELADEN = 'start.teamEingeladen';
+export const DATEN_UEBERNOMMEN = 'start.datenUebernommen';
+/** „Macher fertig machen“ weggeklickt */
 export const START_AUS = 'start.karteAus';
+/** Erster sichtbarer Nutzen: { pfad, am } – wird genau einmal gesetzt und gemessen */
+export const ERSTWERT_KEY = 'start.erstwert';
+
+// ------------------------------------------------------------------ Briefkopf just in time
+
+/** Name, solange der Betrieb ohne Website eingerichtet wurde – gilt beim ersten Dokument als „fehlt noch“ */
+export const PLATZHALTER_NAME = 'Mein Betrieb';
+
+export interface BriefkopfLuecke {
+  feld: 'name' | 'adresse' | 'steuer';
+  label: string;
+}
+
+/**
+ * Was fehlt im Briefkopf, bevor ein Dokument rausgeht? Erst hier fragt Macher danach – nicht im Onboarding.
+ * `platzhalter` ist der Name, unter dem ein Betrieb ohne Website eingerichtet wurde.
+ */
+export function briefkopfVorSenden(b: Pick<Betrieb, 'name' | 'adresse' | 'steuernummer' | 'ustId'> | undefined, platzhalter: string): BriefkopfLuecke[] {
+  const l: BriefkopfLuecke[] = [];
+  if (!b?.name?.trim() || b.name.trim() === platzhalter) l.push({ feld: 'name', label: 'Name des Betriebs' });
+  if (!b?.adresse?.strasse?.trim() || !b.adresse.plz?.trim() || !b.adresse.ort?.trim()) l.push({ feld: 'adresse', label: 'Anschrift' });
+  if (!b?.steuernummer?.trim() && !b?.ustId?.trim()) l.push({ feld: 'steuer', label: 'Steuernummer oder USt-IdNr.' });
+  return l;
+}
 
 // ------------------------------------------------------------------ Versand
 
