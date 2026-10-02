@@ -1,6 +1,7 @@
+import { plusMonate } from '@core/format';
 import { describe, expect, it } from 'vitest';
 import type { Anlage, Auftrag } from '@core/objects';
-import { gewaehrleistungStatus, historie, naechsteWartungBerechnen, offenerWartungsauftrag, plusMonate, wartungFortschreiben, wartungsStatus } from './daten';
+import { gewaehrleistungStatus, historie, naechsteWartungBerechnen, offenerWartungsauftrag, wartungFortschreiben, wartungsStatus } from './daten';
 
 const anlage = (x: Partial<Anlage>): Anlage => ({ id: 'an', erstelltAm: '', geaendertAm: '', ortId: 'o', kundeId: 'k', typ: 'Gasheizung', ...x });
 const auftrag = (x: Partial<Auftrag>): Auftrag => ({ id: 'a', erstelltAm: '2026-01-01', geaendertAm: '', nummer: 'A', titel: '', art: 'wartung', phase: 'beauftragt', kundeId: 'k', ...x });

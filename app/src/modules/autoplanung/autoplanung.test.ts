@@ -2,13 +2,15 @@ import { describe, expect, it } from 'vitest';
 import {
   allesVorplanen,
   einzuplanen,
-  eingeplanteStunden,
   offeneStunden,
   vorschlaege,
   vorschlagAlsTermine,
   wunschAuslegen,
 } from './daten';
-import { arbeitstage, freieFenster, hhmm, istVerfuegbar, minutenVon } from './basis';
+import { minutenVon, uhrAus } from '@core/format';
+import { naechsteArbeitstage } from '@core/kalender';
+import { planKontext } from './basis';
+import { auftragStunden, freieFenster, verfuegbar } from '../verfuegbarkeit/daten';
 import { auftrag, ctx, ma, MO, nachweis, ort, termin } from './testhilfe';
 
 const DI = '2026-10-06';
@@ -20,18 +22,25 @@ const team = () =>
     orte: [ort('nah', '34117'), ort('fern', '80331')],
   });
 
-describe('Verfügbarkeit (minimal)', () => {
+describe('Verfügbarkeit (aus verfuegbarkeit, über planKontext)', () => {
   it('rechnet freie Fenster aus Arbeitszeit, Terminen und Abwesenheiten', () => {
     const c = team();
     c.termine.push(termin('t', MO, '09:00', '11:00', { mitarbeiterIds: ['jonas'] }));
-    expect(freieFenster(c, 'jonas', MO).map((f) => `${hhmm(f.von)}-${hhmm(f.bis)}`)).toEqual(['07:00-09:00', '11:00-16:00']);
+    const fenster = () => freieFenster('jonas', MO, planKontext(c)).map((f) => `${uhrAus(f.von)}-${uhrAus(f.bis)}`);
+    expect(fenster()).toEqual(['07:00-09:00', '11:00-16:00']);
+    // beantragter Urlaub blockiert nicht, wird aber als Warnung gemeldet (siehe Test „warnt bei beantragtem Urlaub“)
     c.abwesenheiten.push({ id: 'u', mitarbeiterId: 'jonas', art: 'urlaub', von: MO, bis: MO, status: 'beantragt', erstelltAm: '', geaendertAm: '' });
-    expect(freieFenster(c, 'jonas', MO)).toEqual([]);
-    expect(istVerfuegbar(c, 'mehmet', termin('x', MO, '09:00', '10:00').start, termin('x', MO, '09:00', '10:00').ende)).toBe(true);
+    expect(fenster()).toEqual(['07:00-09:00', '11:00-16:00']);
+    // genehmigt blockiert den Tag
+    c.abwesenheiten[0] = { ...c.abwesenheiten[0], status: 'genehmigt' };
+    expect(fenster()).toEqual([]);
+    expect(verfuegbar('mehmet', termin('x', MO, '09:00', '10:00').start, termin('x', MO, '09:00', '10:00').ende, { kontext: planKontext(c) })).toBe(true);
   });
 
-  it('kennt nur Arbeitstage', () => {
-    expect(arbeitstage('2026-10-09', 3)).toEqual(['2026-10-09', '2026-10-12', '2026-10-13']);
+  it('kennt nur Arbeitstage (ohne Feiertage)', () => {
+    expect(naechsteArbeitstage('2026-10-09', 3, [1, 2, 3, 4, 5], null)).toEqual(['2026-10-09', '2026-10-12', '2026-10-13']);
+    // 02.10. (Fr) → 03.10. Feiertag/Samstag, 05.10. Montag
+    expect(naechsteArbeitstage('2026-10-02', 2, [1, 2, 3, 4, 5, 6], null)).toEqual(['2026-10-02', '2026-10-05']);
   });
 });
 
@@ -43,7 +52,7 @@ describe('Was ist einzuplanen?', () => {
     c.termine.push(termin('t', MO, '07:00', '12:00', { auftragId: 'a', mitarbeiterIds: ['jonas', 'mehmet'] }));
     c.termine.push(termin('weg', MO, '13:00', '15:00', { auftragId: 'a', mitarbeiterIds: ['jonas'], status: 'abgesagt' }));
     c.termine.push(termin('besicht', MO, '15:00', '16:00', { auftragId: 'a', art: 'besichtigung', mitarbeiterIds: ['jonas'] }));
-    expect(eingeplanteStunden(c, 'a')).toBe(10);
+    expect(auftragStunden('a', c.termine)).toBe(10);
     expect(offeneStunden(c, a)).toBe(10);
   });
 
@@ -102,6 +111,27 @@ describe('Automatische Planung', () => {
     expect(mo).toBeUndefined();
     expect(r.vorschlaege.some((v) => v.bloecke[0].datum === DI)).toBe(false);
     expect(r.vorschlaege[0].bloecke[0].datum).toBe(MI);
+  });
+
+  it('warnt bei beantragtem Urlaub und bevorzugt andere – beantragt ist nicht „frei“', () => {
+    const c = team();
+    c.auftraege.push(auftrag('a', { geplanteStunden: 2, ortId: 'nah' }));
+    c.abwesenheiten.push({ id: 'u', mitarbeiterId: 'jonas', art: 'urlaub', von: MO, bis: '2026-10-16', status: 'beantragt', erstelltAm: '', geaendertAm: '' });
+    const r = vorschlaege(c, 'a', { ab: MO, anzahl: 3 });
+    expect(r.vorschlaege[0].mitarbeiterIds[0]).toBe('mehmet');
+    const mitJonas = r.vorschlaege.find((v) => v.mitarbeiterIds.includes('jonas'));
+    expect(mitJonas).toBeDefined();
+    expect(mitJonas!.warnungen.join(' ')).toContain('Urlaub beantragt');
+    expect(mitJonas!.score).toBeLessThan(r.vorschlaege[0].score);
+  });
+
+  it('plant nicht an Feiertagen', () => {
+    const c = team();
+    c.heute = '2026-12-23';
+    c.mitarbeiter = [ma('jonas')];
+    c.auftraege.push(auftrag('a', { geplanteStunden: 2, ortId: 'nah' }));
+    const r = vorschlaege(c, 'a', { ab: '2026-12-24', anzahl: 5 });
+    expect(r.vorschlaege.every((v) => !['2026-12-25', '2026-12-26'].includes(v.bloecke[0].datum))).toBe(true);
   });
 
   it('plant am selben Tag nach dem Vortermin mit Fahrzeit + Puffer', () => {

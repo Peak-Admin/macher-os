@@ -1,17 +1,8 @@
 /** Anlagen: Wartungs- und Gewährleistungsregeln (reine Logik). */
-import { heute, isoDatum, tageZwischen } from '@core/format';
+import { heute, tageZwischen, plusMonate } from '@core/format';
 import type { Anlage, Auftrag, Datum, ID } from '@core/objects';
 
 export const BALD_TAGE = 30;
-
-export function plusMonate(d: Datum, monate: number): Datum {
-  const [j, m, t] = d.split('-').map(Number);
-  const ziel = new Date(j, m - 1 + monate, 1, 12);
-  // Monatsende beachten: 31.01. + 1 Monat → 28./29.02.
-  const letzterTag = new Date(ziel.getFullYear(), ziel.getMonth() + 1, 0).getDate();
-  ziel.setDate(Math.min(t, letzterTag));
-  return isoDatum(ziel);
-}
 
 /** Nächste Wartung = letzte Wartung (oder Einbau) + Intervall */
 export function naechsteWartungBerechnen(a: Pick<Anlage, 'letzteWartung' | 'eingebautAm' | 'wartungMonate'>): Datum | undefined {

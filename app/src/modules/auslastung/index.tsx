@@ -1,8 +1,7 @@
 import { defineModul, type HinweisVorschlag } from '@core/modul';
 import { db } from '@core/db';
-import { heute, personName } from '@core/format';
+import { heute, kalenderwoche, personName } from '@core/format';
 import { kontextAusDb } from '../verfuegbarkeit/daten';
-import { kalenderwoche } from '../kalender/daten';
 import { auslastung, teamWoche } from './daten';
 import { AuslastungSeite, AuslastungWidget } from './Auslastung';
 

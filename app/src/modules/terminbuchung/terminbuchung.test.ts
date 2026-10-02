@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
 import type { Kunde } from '@core/objects';
-import { lokal, type PlanKontext } from '../verfuegbarkeit/daten';
+import { lokal } from '@core/format';
+import type { PlanKontext } from '../verfuegbarkeit/daten';
 import { buchen, buchungsfenster, buchungsToken, kundeErkennen, linkAufloesen, pruefeAngaben, slotsFuer, standardFenster, telefonNormal, zuBestaetigen, zustaendige } from './daten';
 
 const kunde = (id: string, x: Partial<Kunde>): Kunde => ({ id, erstelltAm: '', geaendertAm: '', art: 'privat', name: id, ansprechpartner: [], ...x });

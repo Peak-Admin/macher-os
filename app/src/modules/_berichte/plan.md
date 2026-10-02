@@ -60,7 +60,7 @@ Verschieben/Absagen/Einplanen wird per `vermerken` im Zeitstrahl des Auftrags fe
 ## Kernwünsche
 
 1. **Arbeitstage und individuelle Arbeitszeiten**: `Betrieb.arbeitstage` und optional `Mitarbeiter.arbeitszeiten` (Teilzeit-Wochentage). Aktuell Einstellung `plan.arbeitstage` im Modul.
-2. **Feiertage** je Bundesland im Kern (`Betrieb.bundesland` + Feiertagsfunktion), damit Verfügbarkeit/Auslastung/Buchung sie abziehen.
+2. ~~Feiertage je Bundesland~~ – erledigt: `@core/kalender` (`feiertage`, `istArbeitstag`), Bundesland als Einstellung `plan.bundesland` (Dialog „Arbeitstage & Feiertage“ in Verfügbarkeit).
 3. **`Seite` mit `aktion` für mehrere Knöpfe** bzw. ein `Knopfleiste`-Baustein; außerdem ein `Status`-fähiges `Filter`/`Segmente` für Uhrzeit-Slots (Slots sind aktuell Buttons in einer Flex-Zeile mit `plan.css`).
 4. **Kalender-Grundbausteine im UI-Kern** (Wochenraster, Monatsraster, Termin-Kachel), damit andere Pakete (z. B. heute, service) sie wiederverwenden, statt `plan.css` zu importieren.
 5. **Öffentliche Token/Links im Kern** (gemeinsam mit Kundenbereich `/k/:token`): eine Sammlung für Freigabe-Links statt Einstellungs-Map.

@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { batch, db } from '@core/db';
-import { datumKurz, heute, personName } from '@core/format';
+import { datumKurz, heute, personName, plusMonate } from '@core/format';
 import type { ID, TerminArt } from '@core/objects';
 import { Auswahl, Button, Checkbox, Eingabe, FormRaster, Karte, Leer, Meta, Seite, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
 import { KundeAuswahl, OrtAuswahl } from '@ui/objekt';
-import { REGEL_ARTEN, plusMonate, regelText, vorkommen, werktag, type RegelArt } from './regel';
+import { REGEL_ARTEN, regelText, vorkommen, werktag, type RegelArt } from './regel';
 import { serien, serienTermine, termineErzeugen, terminDatum, type Serie } from './daten';
 import { servicevertraege } from '../servicevertraege/daten';
 
@@ -146,7 +146,7 @@ export function SerieForm() {
               <Auswahl label="Art" value={f.terminArt} onChange={(e) => set('terminArt', e.target.value as TerminArt)} optionen={TERMINARTEN} />
               <Eingabe label="Serie endet am" type="date" optional value={f.ende} onChange={(e) => set('ende', e.target.value)} fehler={fehler.ende} hilfe="Leer lassen, wenn die Serie weiterläuft." />
             </FormRaster>
-            {f.art !== 'woechentlich' && <Checkbox label="Fällt ein Termin aufs Wochenende, auf Montag schieben" checked={f.werktags} onChange={(v) => set('werktags', v)} />}
+            {f.art !== 'woechentlich' && <Checkbox label="Fällt ein Termin auf ein Wochenende oder einen Feiertag, auf den nächsten Arbeitstag schieben" checked={f.werktags} onChange={(v) => set('werktags', v)} />}
             {f.start && (
               <Meta>
                 {regelText(f.start, regel)}, {f.uhrzeit} Uhr. Nächste Termine: {vorschau.length ? vorschau.map((d) => datumKurz(f.werktags && f.art !== 'woechentlich' ? werktag(d) : d)).join(' · ') : 'keine'}

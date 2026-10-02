@@ -5,7 +5,7 @@
 import { db, exportieren, neueId, vermerken } from '@core/db';
 import { emit } from '@core/events';
 import { einstellung } from '@core/einstellungen';
-import { datum, euro, heute, plusTage, summen, tageZwischen, type Summen } from '@core/format';
+import { datum, euro, heute, plusTage, summen, tageZwischen, type Summen, minutenAus } from '@core/format';
 import { naechsteNummer } from '@core/nummern';
 import type { Betrieb, Cent, Datum, ID, Kunde, Position, RechnungsArt } from '@core/objects';
 import { alleRechnungen, rechnungAendern, rechnungX, type RechnungX, type ZahlungX } from './typen';
@@ -165,9 +165,7 @@ export function angenommenesAngebot(auftragId: ID) {
 }
 
 function stunden(start: string, ende: string, pause: number) {
-  const [h1, m1] = start.split(':').map(Number);
-  const [h2, m2] = ende.split(':').map(Number);
-  const min = h2 * 60 + m2 - (h1 * 60 + m1) - (pause || 0);
+  const min = minutenAus(ende) - minutenAus(start) - (pause || 0);
   return Math.max(0, min) / 60;
 }
 

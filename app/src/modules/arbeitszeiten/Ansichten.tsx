@@ -1,10 +1,10 @@
 import { db, useDatenstand } from '@core/db';
-import { datum, heute, personName, plusTage } from '@core/format';
+import { datum, heute, personName, plusTage, wochenStart } from '@core/format';
 import type { ID } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
 import { Button, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle } from '@ui/index';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
-import { dauer, saldoText, stundenkonto, stunden, wochenStart } from './daten';
+import { dauer, saldoText, stundenkonto, stunden } from './daten';
 import { Stempeluhr, zeitTitel } from './Stempeluhr';
 import { ZeitenNav } from './ZeitenNav';
 import { wochenWerte } from './ZeitenWoche';
@@ -105,7 +105,7 @@ export function StundenkontoSeite() {
       <Meldung>
         Das Konto beginnt mit der ersten erfassten Zeit in Macher OS (frühestens am Jahresanfang). Übernommene Stunden aus dem alten System trägst du als Zeit mit Notiz nach.
       </Meldung>
-      <Meta>Feiertage: bundesweite gesetzliche Feiertage sind berücksichtigt.</Meta>
+      <Meta>Feiertage: gesetzliche Feiertage (bundesweit und deines Bundeslands laut Plan-Einstellung) sind berücksichtigt.</Meta>
     </Seite>
   );
 }

@@ -5,7 +5,7 @@ import { aufloesen, db } from '@core/db';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
 import { aktionAusfuehren } from '@core/modul';
 import { aktionVorhanden } from '@modules/naechster-einsatz/logik';
-import { isoDatum, plusTage } from '@core/format';
+import { isoDatum, plusTage, wochenStart } from '@core/format';
 import type { Aufgabe, Erledigung, ID, Mitarbeiter, Termin, Zeiteintrag } from '@core/objects';
 
 export type Zeitraum = 'heute' | 'woche' | 'monat';
@@ -16,10 +16,7 @@ export const ZEITRAUM_LABEL: Record<Zeitraum, string> = { heute: 'Heute', woche:
 export function zeitraumStart(z: Zeitraum, jetzt = new Date()): string {
   const tag = isoDatum(jetzt);
   if (z === 'heute') return tag;
-  if (z === 'woche') {
-    const wt = (jetzt.getDay() + 6) % 7; // Montag = 0
-    return plusTage(tag, -wt);
-  }
+  if (z === 'woche') return wochenStart(tag);
   return plusTage(tag, -29);
 }
 

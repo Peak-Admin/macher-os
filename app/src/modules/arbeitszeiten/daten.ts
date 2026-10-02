@@ -5,9 +5,10 @@
  */
 import { db } from '@core/db';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
-import { heute as heuteDatum, plusTage, datum as datumFmt } from '@core/format';
+import { heute as heuteDatum, plusTage, datum as datumFmt, minutenAus, minutenVon, uhrAus } from '@core/format';
+import { betriebsArbeitstage, istArbeitstag } from '@core/kalender';
 import type { Abwesenheit, Datum, ID, Mitarbeiter, Zeiteintrag } from '@core/objects';
-import { abwesenheitAm, istArbeitstag } from '@modules/abwesenheiten/daten';
+import { abwesenheitAm } from '@modules/abwesenheiten/daten';
 
 export const ART_LABEL: Record<Zeiteintrag['art'], string> = {
   arbeit: 'Arbeit',
@@ -18,18 +19,8 @@ export const ART_LABEL: Record<Zeiteintrag['art'], string> = {
 
 // ------------------------------------------------------------------ Uhrzeiten
 
-export function minuten(uhr: string): number {
-  const [h, m] = uhr.split(':').map(Number);
-  return (h || 0) * 60 + (m || 0);
-}
-
-export function uhr(min: number): string {
-  const m = ((Math.round(min) % 1440) + 1440) % 1440;
-  return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
-}
-
 export function jetztUhr(d = new Date()): string {
-  return uhr(d.getHours() * 60 + d.getMinutes());
+  return uhrAus(minutenVon(d));
 }
 
 /** 8,25 h */
@@ -47,7 +38,7 @@ export function saldoText(min: number): string {
 
 /** Brutto-Spanne von Start bis Ende (über Mitternacht möglich) */
 export function spanne(start: string, ende: string): number {
-  const d = minuten(ende) - minuten(start);
+  const d = minutenAus(ende) - minutenAus(start);
   return d < 0 ? d + 1440 : d;
 }
 
@@ -88,7 +79,7 @@ export function pauseBeenden(z: Zeiteintrag, jetzt = jetztUhr()): Zeiteintrag | 
 export function stoppen(z: Zeiteintrag, ende = jetztUhr(), text?: string): Zeiteintrag | undefined {
   const aktuell = pauseSeit(z) ? pauseBeenden(z, ende) ?? z : z;
   // Ein Eintrag hört nie vor seinem Start auf (gleicher Tag) – dann gilt der Start als Ende.
-  const e = aktuell.datum === heuteDatum() && minuten(ende) < minuten(aktuell.start) ? aktuell.start : ende;
+  const e = aktuell.datum === heuteDatum() && minutenAus(ende) < minutenAus(aktuell.start) ? aktuell.start : ende;
   return db.zeiten.update(z.id, { ende: e }, { text: text ?? `Gestoppt um ${e}` });
 }
 
@@ -136,7 +127,7 @@ export function pruefeTag(eintraege: Pick<Zeiteintrag, 'start' | 'ende' | 'pause
   const arbeitMin = fertig.reduce((s, z) => s + dauer(z), 0);
   let pauseMin = fertig.reduce((s, z) => s + (z.pauseMinuten || 0), 0);
   for (let i = 1; i < fertig.length; i++) {
-    const luecke = minuten(fertig[i].start) - minuten(fertig[i - 1].ende!);
+    const luecke = minutenAus(fertig[i].start) - minutenAus(fertig[i - 1].ende!);
     if (luecke >= 15) pauseMin += luecke;
   }
   const probleme: string[] = [];
@@ -149,7 +140,7 @@ export function pruefeTag(eintraege: Pick<Zeiteintrag, 'start' | 'ende' | 'pause
 /** §5 ArbZG: mindestens 11 Stunden Ruhezeit zwischen zwei Arbeitstagen */
 export function ruhezeitVerletzt(endeVortag: string | undefined, startHeute: string | undefined): boolean {
   if (!endeVortag || !startHeute) return false;
-  const ruhe = 1440 - minuten(endeVortag) + minuten(startHeute);
+  const ruhe = 1440 - minutenAus(endeVortag) + minutenAus(startHeute);
   return ruhe < 11 * 60;
 }
 
@@ -165,12 +156,15 @@ export function pruefeMitarbeiterTag(maId: ID, d: Datum, zeiten: Zeiteintrag[]):
 
 // ------------------------------------------------------------------ Soll / Ist
 
-/** Soll-Minuten eines Tages: Wochenstunden / 5 an Arbeitstagen; Abwesenheiten werden gutgeschrieben (Soll 0). */
-export function sollTag(m: Pick<Mitarbeiter, 'id' | 'wochenstunden' | 'eintritt' | 'austritt'>, d: Datum, abw: Abwesenheit[]): number {
-  if (!istArbeitstag(d)) return 0;
+/**
+ * Soll-Minuten eines Tages: Wochenstunden verteilt auf die Arbeitstage des Betriebs (Standard Mo–Fr = / 5);
+ * an Feiertagen und freien Tagen 0, Abwesenheiten werden gutgeschrieben (Soll 0, halbtags die Hälfte).
+ */
+export function sollTag(m: Pick<Mitarbeiter, 'id' | 'wochenstunden' | 'eintritt' | 'austritt'>, d: Datum, abw: Abwesenheit[], arbeitstage = betriebsArbeitstage()): number {
+  if (!istArbeitstag(d, arbeitstage)) return 0;
   if (m.eintritt && d < m.eintritt) return 0;
   if (m.austritt && d > m.austritt) return 0;
-  const voll = Math.round((m.wochenstunden * 60) / 5);
+  const voll = Math.round((m.wochenstunden * 60) / arbeitstage.length);
   const a = abwesenheitAm(m.id, d, abw);
   if (!a) return voll;
   return a.halbtags ? Math.round(voll / 2) : 0;
@@ -196,22 +190,10 @@ export function stundenkonto(m: Mitarbeiter, zeiten: Zeiteintrag[], abw: Abwesen
   const von = kandidaten.sort().pop()!;
   if (von > bis) return { von, bis, soll: 0, ist: 0, saldo: 0 };
   let soll = 0;
-  for (let d = von; d <= bis; d = plusTage(d, 1)) soll += sollTag(m, d, abw);
+  const arbeitstage = betriebsArbeitstage();
+  for (let d = von; d <= bis; d = plusTage(d, 1)) soll += sollTag(m, d, abw, arbeitstage);
   const ist = eigene.filter((z) => z.datum >= von && z.datum <= bis).reduce((s, z) => s + dauer(z), 0);
   return { von, bis, soll, ist, saldo: ist - soll };
-}
-
-/** Montag der Woche */
-export function wochenStart(d: Datum): Datum {
-  const w = new Date(d + 'T12:00:00').getDay();
-  return plusTage(d, w === 0 ? -6 : 1 - w);
-}
-
-export function kalenderwoche(d: Datum): number {
-  const x = new Date(d + 'T12:00:00');
-  x.setDate(x.getDate() + 3 - ((x.getDay() + 6) % 7));
-  const w1 = new Date(x.getFullYear(), 0, 4, 12);
-  return 1 + Math.round(((x.getTime() - w1.getTime()) / 86_400_000 - 3 + ((w1.getDay() + 6) % 7)) / 7);
 }
 
 // ------------------------------------------------------------------ CSV für die Lohnabrechnung

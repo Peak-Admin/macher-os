@@ -1,5 +1,5 @@
 /** Zeitangaben aus Alltagssprache lesen: „morgen“, „bis Freitag“, „nächste Woche“, „am 12.10.“ */
-import { plusTage } from '@core/format';
+import { plusTage, wochenStart, wochentag as isoWochentag } from '@core/format';
 import type { Datum } from '@core/objects';
 
 export interface Zeitraum {
@@ -14,16 +14,8 @@ export interface Zeitraum {
 const WOCHENTAGE = ['sonntag', 'montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag'];
 const KURZ = ['so', 'mo', 'di', 'mi', 'do', 'fr', 'sa'];
 
-/** 0 = Sonntag … 6 = Samstag */
-export function wochentag(d: Datum): number {
-  return new Date(d + 'T12:00:00').getDay();
-}
-
-/** Montag der Woche, in der `d` liegt */
-export function montagVon(d: Datum): Datum {
-  const wt = wochentag(d);
-  return plusTage(d, wt === 0 ? -6 : 1 - wt);
-}
+/** 0 = Sonntag … 6 = Samstag (Index in WOCHENTAGE/KURZ) */
+const wochentag = (d: Datum) => isoWochentag(d) % 7;
 
 const norm = (t: string) => t.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
 
@@ -44,11 +36,11 @@ export function zeitraumAus(text: string, heute: Datum): Zeitraum | undefined {
   if (/\bgestern\b/.test(t)) return tag(plusTage(heute, -1), 'gestern');
 
   if (/\b(naechste|kommende)n? woche\b/.test(t)) {
-    const mo = plusTage(montagVon(heute), 7);
+    const mo = plusTage(wochenStart(heute), 7);
     return { von: mo, bis: plusTage(mo, 6), label: 'nächste Woche', tag: false };
   }
   if (/\b(diese|dieser|aktuelle)n? woche\b/.test(t)) {
-    return { von: heute, bis: plusTage(montagVon(heute), 6), label: 'diese Woche', tag: false };
+    return { von: heute, bis: plusTage(wochenStart(heute), 6), label: 'diese Woche', tag: false };
   }
   const inTagen = t.match(/\bin (\d{1,2}) tagen?\b/);
   if (inTagen) {
@@ -74,14 +66,5 @@ export function zeitraumAus(text: string, heute: Datum): Zeitraum | undefined {
   }
   return undefined;
 }
-
-/** Alle Tage eines Zeitraums */
-export function tageIn(z: { von: Datum; bis: Datum }): Datum[] {
-  const tage: Datum[] = [];
-  for (let d = z.von; d <= z.bis && tage.length < 62; d = plusTage(d, 1)) tage.push(d);
-  return tage;
-}
-
-export const istWerktag = (d: Datum) => wochentag(d) >= 1 && wochentag(d) <= 5;
 
 export const wochentagKurz = (d: Datum) => KURZ[wochentag(d)];

@@ -1,16 +1,14 @@
 /**
  * Gemeinsame Grundlage der Planprüfungen (Paket planpruefung):
- * Prüfergebnis-Typ, Datenschnappschuss (`Kontext`), Zeit-Helfer und eine
- * MINIMALE Verfügbarkeit (Arbeitszeit, Abwesenheiten, belegte Termine).
+ * Prüfergebnis-Typ und Datenschnappschuss (`Kontext`, auch für reine Tests ohne Datenbank).
  *
- * Kernwunsch: Paket plan baut parallel das Modul `verfuegbarkeit`. Sobald es da ist,
- * sollen `istAbwesend`, `belegteZeiten` und `freieFenster` dorthin umziehen bzw. dessen
- * Funktionen nutzen. Bis dahin bewusst klein und ohne Import aus `verfuegbarkeit`.
- *
- * Alle Prüfungen sind reine Funktionen auf einem `Kontext` – testbar ohne Datenbank.
+ * Verfügbarkeit (Abwesenheiten, Termine, freie Fenster, Arbeitstage, Feiertage …) wird hier NICHT
+ * gerechnet, sondern kommt ausschließlich aus `verfuegbarkeit/daten.ts`. `planKontext(ctx)` macht
+ * aus dem Schnappschuss den dort erwarteten `PlanKontext`.
  */
 import { db } from '@core/db';
-import { heute as heuteDatum, isoDatum, plusTage } from '@core/format';
+import { heute as heuteDatum } from '@core/format';
+import { betriebsArbeitstage, betriebsBundesland, STANDARD_ARBEITSTAGE, type Bundesland } from '@core/kalender';
 import type {
   Abwesenheit,
   Artikel,
@@ -28,6 +26,7 @@ import type {
   Qualifikation,
   Termin,
 } from '@core/objects';
+import type { PlanKontext } from '../verfuegbarkeit/daten';
 
 // ------------------------------------------------------------------ Prüfergebnis
 
@@ -62,6 +61,10 @@ export function stufeLabel(s: Stufe): string {
 export interface Kontext {
   heute: Datum;
   betrieb?: Betrieb;
+  /** Arbeitstage 1 = Mo … 7 = So (Standard Mo–Fr) */
+  arbeitstage?: number[];
+  /** für Landesfeiertage (leer = nur bundesweite) */
+  bundesland?: Bundesland | null;
   mitarbeiter: Mitarbeiter[];
   qualifikationen: Qualifikation[];
   nachweise: Nachweis[];
@@ -80,6 +83,8 @@ export function kontextAusDb(): Kontext {
   return {
     heute: heuteDatum(),
     betrieb: db.betrieb.get('betrieb') ?? db.betrieb.all()[0],
+    arbeitstage: betriebsArbeitstage(),
+    bundesland: betriebsBundesland() ?? null,
     mitarbeiter: db.mitarbeiter.all(),
     qualifikationen: db.qualifikationen.all(),
     nachweise: db.nachweise.all(),
@@ -117,127 +122,15 @@ export function leererKontext(x: Partial<Kontext> = {}): Kontext {
 
 export const finde = <T extends { id: ID }>(liste: T[], id: ID | undefined) => (id ? liste.find((x) => x.id === id) : undefined);
 
-// ------------------------------------------------------------------ Zeit
-
-/** Minuten seit Mitternacht (lokale Zeit) eines ISO-Zeitpunkts */
-export function minutenVon(iso: string): number {
-  const d = new Date(iso);
-  return d.getHours() * 60 + d.getMinutes();
-}
-
-/** "07:30" → 450 */
-export function minutenAus(hhmm: string): number {
-  const [h, m] = hhmm.split(':').map(Number);
-  return (h || 0) * 60 + (m || 0);
-}
-
-/** 450 → "07:30" */
-export function hhmm(min: number): string {
-  const h = Math.floor(min / 60);
-  const m = Math.round(min % 60);
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-}
-
-/** Datum eines Termins (lokal) */
-export function terminDatum(t: Pick<Termin, 'start'>): Datum {
-  return isoDatum(new Date(t.start));
-}
-
-/** Termin zählt für die Planung (nicht abgesagt, nicht gelöscht) */
-export const aktiverTermin = (t: Termin) => t.status !== 'abgesagt' && !t.geloeschtAm;
-
-/** überlappen sich zwei Termine zeitlich? */
-export function ueberlappen(a: Pick<Termin, 'start' | 'ende'>, b: Pick<Termin, 'start' | 'ende'>): boolean {
-  return new Date(a.start).getTime() < new Date(b.ende).getTime() && new Date(b.start).getTime() < new Date(a.ende).getTime();
-}
-
-/** Mo–Fr */
-export function istArbeitstag(d: Datum): boolean {
-  const w = new Date(d + 'T12:00:00').getDay();
-  return w >= 1 && w <= 5;
-}
-
-/** die nächsten n Arbeitstage ab (inkl.) `ab` */
-export function arbeitstage(ab: Datum, n: number): Datum[] {
-  const r: Datum[] = [];
-  let d = ab;
-  for (let i = 0; r.length < n && i < n * 3 + 7; i++) {
-    if (istArbeitstag(d)) r.push(d);
-    d = plusTage(d, 1);
-  }
-  return r;
-}
-
-export function arbeitszeit(ctx: Kontext): { beginn: number; ende: number } {
+/** Der Schnappschuss als Planungskontext für `verfuegbarkeit` */
+export function planKontext(ctx: Kontext): PlanKontext {
   return {
-    beginn: minutenAus(ctx.betrieb?.arbeitsbeginn || '07:00'),
-    ende: minutenAus(ctx.betrieb?.arbeitsende || '16:00'),
+    arbeitsbeginn: ctx.betrieb?.arbeitsbeginn || '07:00',
+    arbeitsende: ctx.betrieb?.arbeitsende || '16:00',
+    arbeitstage: ctx.arbeitstage ?? STANDARD_ARBEITSTAGE,
+    bundesland: ctx.bundesland ?? null,
+    mitarbeiter: ctx.mitarbeiter,
+    abwesenheiten: ctx.abwesenheiten,
+    termine: ctx.termine,
   };
-}
-
-// ------------------------------------------------------------------ Verfügbarkeit (minimal)
-
-/** Abwesend an diesem Tag? Beantragter Urlaub zählt für die Planung schon mit – sicher ist sicher. */
-export function abwesenheitAm(ctx: Kontext, mitarbeiterId: ID, d: Datum): Abwesenheit | undefined {
-  return ctx.abwesenheiten.find(
-    (a) => a.mitarbeiterId === mitarbeiterId && a.status !== 'abgelehnt' && a.von <= d && a.bis >= d && !a.geloeschtAm,
-  );
-}
-
-/** Termine eines Mitarbeiters an einem Tag, nach Beginn sortiert */
-export function termineAm(ctx: Kontext, mitarbeiterId: ID, d: Datum): Termin[] {
-  return ctx.termine
-    .filter((t) => aktiverTermin(t) && t.mitarbeiterIds.includes(mitarbeiterId) && terminDatum(t) === d)
-    .sort((a, b) => a.start.localeCompare(b.start));
-}
-
-export interface Fenster {
-  von: number;
-  bis: number;
-}
-
-/** Freie Zeitfenster (Minuten) eines Mitarbeiters an einem Tag innerhalb der Arbeitszeit */
-export function freieFenster(ctx: Kontext, mitarbeiterId: ID, d: Datum): Fenster[] {
-  const az = arbeitszeit(ctx);
-  const abw = abwesenheitAm(ctx, mitarbeiterId, d);
-  if (abw && !abw.halbtags) return [];
-  let frei: Fenster[] = [{ von: az.beginn, bis: abw?.halbtags ? Math.round((az.beginn + az.ende) / 2) : az.ende }];
-  for (const t of termineAm(ctx, mitarbeiterId, d)) {
-    if (t.ganztags) return [];
-    const s = minutenVon(t.start);
-    const e = minutenVon(t.ende);
-    frei = frei.flatMap((f) => {
-      if (e <= f.von || s >= f.bis) return [f];
-      const r: Fenster[] = [];
-      if (s > f.von) r.push({ von: f.von, bis: s });
-      if (e < f.bis) r.push({ von: e, bis: f.bis });
-      return r;
-    });
-  }
-  return frei.filter((f) => f.bis - f.von > 0);
-}
-
-/** Ist der Mitarbeiter in diesem Zeitraum frei (keine Abwesenheit, kein anderer Termin)? */
-export function istVerfuegbar(ctx: Kontext, mitarbeiterId: ID, start: string, ende: string, ausserTerminId?: ID): boolean {
-  const d = isoDatum(new Date(start));
-  const abw = abwesenheitAm(ctx, mitarbeiterId, d);
-  if (abw && !abw.halbtags) return false;
-  return !ctx.termine.some(
-    (t) => t.id !== ausserTerminId && aktiverTermin(t) && t.mitarbeiterIds.includes(mitarbeiterId) && ueberlappen(t, { start, ende }),
-  );
-}
-
-/** verplante Stunden eines Mitarbeiters in den Tagen `tage` */
-export function verplanteStunden(ctx: Kontext, mitarbeiterId: ID, tage: Datum[]): number {
-  const set = new Set(tage);
-  return ctx.termine
-    .filter((t) => aktiverTermin(t) && t.mitarbeiterIds.includes(mitarbeiterId) && set.has(terminDatum(t)))
-    .reduce((s, t) => s + (new Date(t.ende).getTime() - new Date(t.start).getTime()) / 3_600_000, 0);
-}
-
-/** Wer kann überhaupt ausführend eingeplant werden? (kein Büro, aktiv, nicht ausgetreten) */
-export function planbareMitarbeiter(ctx: Kontext): Mitarbeiter[] {
-  return ctx.mitarbeiter.filter(
-    (m) => m.aktiv && m.rolle !== 'buero' && (!m.austritt || m.austritt >= ctx.heute) && !m.geloeschtAm,
-  );
 }

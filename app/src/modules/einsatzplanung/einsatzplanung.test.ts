@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Mitarbeiter, Termin } from '@core/objects';
-import type { PlanKontext } from '../verfuegbarkeit/daten';
-import { aufZelleVerschieben, restStunden, verplanteStunden, vorbelegung } from './daten';
+import { auftragStunden, restStunden, type PlanKontext } from '../verfuegbarkeit/daten';
+import { aufZelleVerschieben, vorbelegung } from './daten';
 
 const MO = '2030-03-04';
 const iso = (d: string, uhr: string) => new Date(`${d}T${uhr}:00`).toISOString();
@@ -24,7 +24,7 @@ const k = (termine: Termin[] = []): PlanKontext => ({ arbeitsbeginn: '07:00', ar
 describe('Einsatzplanung', () => {
   it('rechnet verplante Personenstunden und Rest', () => {
     const termine = [t('a', ['j', 'm'], '07:00', '11:00'), t('b', ['j'], '12:00', '14:00'), t('c', ['j'], '14:00', '16:00', { status: 'abgesagt' })];
-    expect(verplanteStunden('A', termine)).toBe(10);
+    expect(auftragStunden('A', termine)).toBe(10);
     expect(restStunden({ id: 'A', geplanteStunden: 16 }, termine)).toBe(6);
     expect(restStunden({ id: 'A', geplanteStunden: 4 }, termine)).toBe(0);
     expect(restStunden({ id: 'A' }, termine)).toBeUndefined();

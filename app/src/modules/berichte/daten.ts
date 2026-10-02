@@ -4,7 +4,7 @@
  * und beim Anzeigen/Drucken aufgelöst.
  */
 import { db, defineCollection, vermerken } from '@core/db';
-import { datumVon, heute, plusTage } from '@core/format';
+import { datumVon, heute, plusTage, minutenAus } from '@core/format';
 import type { Aufgabe, Basis, Datum, Dokument, Gewerk, ID, Materialbuchung, Termin, Zeiteintrag } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
 import { unterschriftSpeichern, type UnterschriftDaten, type UnterschriftEingabe } from '@modules/abnahme/unterschrift';
@@ -64,11 +64,7 @@ export function naechsteBerichtNummer(nummern: string[], jahr = new Date().getFu
 /** Arbeitsminuten eines Zeiteintrags (ohne Pause). Laufende Einträge zählen 0. */
 export function minuten(z: Pick<Zeiteintrag, 'start' | 'ende' | 'pauseMinuten'>): number {
   if (!z.ende) return 0;
-  const m = (s: string) => {
-    const [h, mi] = s.split(':').map(Number);
-    return h * 60 + mi;
-  };
-  let d = m(z.ende) - m(z.start);
+  let d = minutenAus(z.ende) - minutenAus(z.start);
   if (d < 0) d += 24 * 60;
   return Math.max(0, d - (z.pauseMinuten || 0));
 }

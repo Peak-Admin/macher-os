@@ -3,9 +3,10 @@ import { db } from '@core/db';
 import { on } from '@core/events';
 import { benachrichtigen, erledigt } from '@core/macher';
 import { pfadZu } from '@core/modul';
-import { datumKurz, plusTage } from '@core/format';
+import { datumKurz, datumVon, plusTage } from '@core/format';
 import type { ID, Termin } from '@core/objects';
-import { aktiverTermin, kontextAusDb, terminDatum } from '../autoplanung/basis';
+import { kontextAusDb } from '../autoplanung/basis';
+import { terminZaehlt } from '../verfuegbarkeit/daten';
 import { ersatzFuer, pruefeWerkzeug, werkzeugProbleme } from './daten';
 import { WerkzeugBereit } from './WerkzeugBereit';
 
@@ -24,7 +25,7 @@ export default defineModul({
     const ctx = kontextAusDb();
     const r: HinweisVorschlag[] = [];
     for (const { termin: t, pruefungen } of werkzeugProbleme(ctx, 7)) {
-      const d = terminDatum(t);
+      const d = datumVon(t.start);
       for (const p of pruefungen.filter((x) => x.ergebnis === 'problem')) {
         const b = db.betriebsmittel.get(p.betriebsmittelId);
         const ersatz = b && (t.betriebsmittelIds ?? []).includes(b.id) ? ersatzFuer(ctx, b, t) : undefined;
@@ -66,7 +67,7 @@ export default defineModul({
       minuten: 3,
       start: () => {
         const pruefe = (t: Termin, vorher?: Termin) => {
-          if (!aktiverTermin(t) || t.status === 'erledigt') return;
+          if (!terminZaehlt(t) || t.status === 'erledigt') return;
           if (
             vorher &&
             vorher.start === t.start &&
@@ -76,7 +77,7 @@ export default defineModul({
           )
             return;
           const ctx = kontextAusDb();
-          if (terminDatum(t) < ctx.heute) return;
+          if (datumVon(t.start) < ctx.heute) return;
           const probleme = pruefeWerkzeug(ctx, t).filter((p) => p.ergebnis === 'problem');
           if (!probleme.length) return;
           benachrichtigen(`Werkzeug/Fahrzeug nicht bereit: ${t.titel}`, { text: probleme.map((p) => `${p.text} ${p.loesung ?? ''}`).join(' '), bezug: { typ: 'termine', id: t.id }, wichtig: true });

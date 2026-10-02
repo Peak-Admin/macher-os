@@ -4,7 +4,8 @@ import { on } from '@core/events';
 import { automationAn, erledigt, hinweis, hinweisErledigen } from '@core/macher';
 import { pfadZu } from '@core/modul';
 import type { Auftrag, ID, Termin } from '@core/objects';
-import { kontextAusDb, terminDatum } from './basis';
+import { datumVon } from '@core/format';
+import { kontextAusDb } from './basis';
 import { einzuplanen, vorschlaege, vorschlagKurz, vorschlagUebernehmen, type Vorschlag } from './daten';
 import { Autoplanung } from './Autoplanung';
 import { AuftragPlanen } from './AuftragPlanen';
@@ -18,7 +19,7 @@ const schluessel = (id: ID) => `autoplanung-dringend:${id}`;
 function dringendOhneTermin(a: Auftrag) {
   if (!a.dringend) return false;
   const ctx = kontextAusDb();
-  return einzuplanen(ctx, a) && !ctx.termine.some((t) => t.auftragId === a.id && t.status !== 'abgesagt' && terminDatum(t) >= ctx.heute);
+  return einzuplanen(ctx, a) && !ctx.termine.some((t) => t.auftragId === a.id && t.status !== 'abgesagt' && datumVon(t.start) >= ctx.heute);
 }
 
 /** Macher legt für dringende Aufträge einen Planvorschlag zur Freigabe in „Braucht dich“ */

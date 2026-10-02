@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { db, vermerken } from '@core/db';
-import { datum as datumFmt, heute, personName } from '@core/format';
+import { datum as datumFmt, heute, minutenAus, personName } from '@core/format';
 import type { Datum, ID, Zeiteintrag } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
 import { Button, Eingabe, FormRaster, Meldung, Segmente, Stapel, Textfeld, Dialog, useBestaetigen, useToast } from '@ui/index';
 import { AuftragAuswahl, MitarbeiterAuswahl } from '@ui/objekt';
-import { ART_LABEL, minuten, pruefeTag, spanne } from './daten';
+import { ART_LABEL, pruefeTag, spanne } from './daten';
 
 /** Zeit nachtragen oder korrigieren */
 export function ZeitDialog({
@@ -48,10 +48,10 @@ export function ZeitDialog({
     if (!f.start || !f.ende) return setFehler('Trag Beginn und Ende ein.');
     if (f.datum > heute()) return setFehler('Zeiten in der Zukunft kannst du nicht eintragen.');
     if (pauseMin >= spanne(f.start, f.ende)) return setFehler('Die Pause ist länger als die Arbeitszeit.');
-    const s = minuten(f.start);
+    const s = minutenAus(f.start);
     const e = s + spanne(f.start, f.ende);
     const ueber = andere.find((z) => {
-      const zs = minuten(z.start);
+      const zs = minutenAus(z.start);
       const ze = z.ende ? zs + spanne(z.start, z.ende) : 24 * 60;
       return s < ze && zs < e;
     });

@@ -1,5 +1,5 @@
 /** Kalender: reine Hilfsfunktionen rund um Termine (Labels, Zeiträume, Verschieben, ICS). */
-import { isoDatum } from '@core/format';
+import { isoDatum, lokal, minutenAus, minutenVon } from '@core/format';
 import type { Datum, ID, Termin, TerminArt } from '@core/objects';
 import type { Ton } from '@core/modul';
 
@@ -45,11 +45,7 @@ export function termineIm(termine: Termin[], von: Datum, bis: Datum, opts: { mit
 export function verschoben(t: Pick<Termin, 'start' | 'ende'>, neuerTag: Datum, neueStartUhr?: string): { start: string; ende: string } {
   const alt = new Date(t.start);
   const dauer = new Date(t.ende).getTime() - alt.getTime();
-  const neu = new Date(`${neuerTag}T00:00:00`);
-  if (neueStartUhr) {
-    const [h, m] = neueStartUhr.split(':').map(Number);
-    neu.setHours(h || 0, m || 0, 0, 0);
-  } else neu.setHours(alt.getHours(), alt.getMinutes(), 0, 0);
+  const neu = lokal(neuerTag, neueStartUhr ? minutenAus(neueStartUhr) : minutenVon(alt));
   return { start: neu.toISOString(), ende: new Date(neu.getTime() + dauer).toISOString() };
 }
 
@@ -121,14 +117,6 @@ export function icsDateiname(t: Pick<Termin, 'start' | 'titel'>): string {
     .replace(/^-|-$/g, '')
     .slice(0, 40);
   return `termin-${isoDatum(new Date(t.start))}${slug ? '-' + slug : ''}.ics`;
-}
-
-/** ISO-Kalenderwoche */
-export function kalenderwoche(datum: Datum): number {
-  const d = new Date(`${datum}T12:00:00`);
-  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
-  const w1 = new Date(d.getFullYear(), 0, 4, 12);
-  return 1 + Math.round(((d.getTime() - w1.getTime()) / 86_400_000 - 3 + ((w1.getDay() + 6) % 7)) / 7);
 }
 
 /** Erster Tag des Monats und Monat verschieben */

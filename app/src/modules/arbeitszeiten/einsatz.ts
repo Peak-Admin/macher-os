@@ -6,12 +6,13 @@ import { db } from '@core/db';
 import { emit } from '@core/events';
 import { erledigt } from '@core/macher';
 import type { HinweisVorschlag } from '@core/modul';
-import { datum, datumVon, heute as heuteDatum, personName, plusTage, uhrzeit } from '@core/format';
+import { datum, datumVon, heute as heuteDatum, minutenAus, personName, plusTage, uhrzeit, wochenStart } from '@core/format';
+import { istArbeitstag } from '@core/kalender';
 import type { Datum, ID, Zeiteintrag } from '@core/objects';
 import { ich } from '@core/session';
-import { abwesenheitAm, istArbeitstag } from '@modules/abwesenheiten/daten';
+import { abwesenheitAm } from '@modules/abwesenheiten/daten';
 import { istAktiv } from '@modules/mitarbeiter/team';
-import { jetztUhr, laufende, minuten, pruefeMitarbeiterTag, starten, stoppen, wochenStart } from './daten';
+import { jetztUhr, laufende, pruefeMitarbeiterTag, starten, stoppen } from './daten';
 
 interface EinsatzPayload {
   terminId: ID;
@@ -54,7 +55,7 @@ export function vergesseneBeenden(t = heuteDatum()): number {
     const termin = db.termine.get(z.terminId);
     if (!termin || datumVon(termin.ende) !== z.datum) continue;
     const ende = uhrzeit(termin.ende);
-    if (minuten(ende) <= minuten(z.start)) continue;
+    if (minutenAus(ende) <= minutenAus(z.start)) continue;
     stoppen(z, ende, `Automatisch zum Terminende ${ende} beendet`);
     db.zeiten.update(z.id, { notiz: [z.notiz, 'Automatisch zum Terminende beendet – bitte prüfen'].filter(Boolean).join(' · ') }, { leise: true });
     erledigt('arbeitszeiten.vergessen', `Vergessene Zeit von ${personName(db.mitarbeiter.get(z.mitarbeiterId))} zum Terminende beendet`, {
@@ -83,7 +84,7 @@ export function zeitenHinweise(t = heuteDatum()): HinweisVorschlag[] {
   // 1. Zeit läuft noch seit gestern (oder länger)
   for (const z of db.zeiten.where((x) => !x.ende && x.datum < t)) {
     const m = db.mitarbeiter.get(z.mitarbeiterId);
-    const ende = minuten(feierabend) > minuten(z.start) ? feierabend : undefined;
+    const ende = minutenAus(feierabend) > minutenAus(z.start) ? feierabend : undefined;
     liste.push({
       schluessel: `zeit-laeuft:${z.id}`,
       art: 'problem',

@@ -10,46 +10,36 @@
  * Größere Aufträge werden auf mehrere Tage aufgeteilt, ab 16 h auf zwei Personen.
  */
 import { db, batch, type Neu } from '@core/db';
-import { datumKurz, isoDatum, personName, plusTage, zeitpunkt } from '@core/format';
+import { datum as datumFmt, datumKurz, isoDatum, minutenAus, minutenVon, personName, plusTage, uhrAus, wochentag, zeitpunkt } from '@core/format';
+import { naechsteArbeitstage } from '@core/kalender';
 import type { Auftrag, Datum, ID, Termin } from '@core/objects';
+import { finde, planKontext, type Kontext } from './basis';
 import {
-  abwesenheitAm,
-  aktiverTermin,
-  arbeitstage,
-  arbeitszeit,
-  finde,
+  ABWESENHEIT_LABEL,
+  auftragStunden,
+  belegungAm,
   freieFenster,
-  hhmm,
-  istVerfuegbar,
-  minutenVon,
+  geplanteStunden,
   planbareMitarbeiter,
+  restStunden,
   termineAm,
-  verplanteStunden,
+  verfuegbar,
+  verfuegbareStunden,
   type Fenster,
-  type Kontext,
-} from './basis';
+  type PlanKontext,
+} from '../verfuegbarkeit/daten';
 import { benoetigteQualifikationen, erfuelltAlle } from '../qualifikation-planung/daten';
 import { startPunkt, strecke, terminPunkt, type Punkt, type Strecke } from '../fahrt/daten';
 
 // ------------------------------------------------------------------ Was ist einzuplanen?
 
-const STUNDEN_TERMINARTEN: Termin['art'][] = ['einsatz', 'wartung', 'abnahme'];
-
-/** bereits eingeplante Personenstunden eines Auftrags (vergangene + künftige Einsätze) */
-export function eingeplanteStunden(ctx: Kontext, auftragId: ID): number {
-  return ctx.termine
-    .filter((t) => aktiverTermin(t) && t.auftragId === auftragId && STUNDEN_TERMINARTEN.includes(t.art))
-    .reduce((s, t) => s + ((new Date(t.ende).getTime() - new Date(t.start).getTime()) / 3_600_000) * Math.max(1, t.mitarbeiterIds.length), 0);
-}
-
 /** Standard, wenn keine Stunden geschätzt sind */
 export const STANDARD_STUNDEN = 2;
 
-/** noch einzuplanende Personenstunden (auf halbe Stunden gerundet) */
+/** noch einzuplanende Personenstunden (auf halbe Stunden gerundet); Grundlage: `restStunden` aus verfuegbarkeit */
 export function offeneStunden(ctx: Kontext, a: Auftrag): number {
-  const geplant = eingeplanteStunden(ctx, a.id);
-  const soll = a.geplanteStunden ?? (geplant > 0 ? 0 : STANDARD_STUNDEN);
-  return Math.max(0, Math.round((soll - geplant) * 2) / 2);
+  const rest = restStunden(a, ctx.termine) ?? (a.geplanteStunden != null || auftragStunden(a.id, ctx.termine) > 0 ? 0 : STANDARD_STUNDEN);
+  return Math.max(0, Math.round(rest * 2) / 2);
 }
 
 /** Muss dieser Auftrag (noch) eingeplant werden? */
@@ -80,7 +70,7 @@ function prioritaet(a: Auftrag, b: Auftrag) {
 export interface Wunsch {
   von?: Datum;
   bis?: Datum;
-  /** 0 = So … 6 = Sa */
+  /** 1 = Mo … 7 = So */
   wochentage?: number[];
   abMinuten?: number;
   bisMinuten?: number;
@@ -102,14 +92,14 @@ export function wunschAuslegen(text: string | undefined, heute: Datum): Wunsch {
   if (!text?.trim()) return { erkannt: false };
   const t = text.toLowerCase();
   const w: Wunsch = { erkannt: false, text };
-  const wochentag = new Date(heute + 'T12:00:00').getDay();
-  const bisFreitag = (d: Datum) => plusTage(d, Math.max(0, 5 - new Date(d + 'T12:00:00').getDay()));
+  const heuteWt = wochentag(heute);
+  const bisFreitag = (d: Datum) => plusTage(d, Math.max(0, 5 - (wochentag(d) % 7)));
   if (/übermorgen|uebermorgen/.test(t)) Object.assign(w, { von: plusTage(heute, 2), bis: plusTage(heute, 2), erkannt: true });
   else if (/\bmorgen\b/.test(t)) Object.assign(w, { von: plusTage(heute, 1), bis: plusTage(heute, 1), erkannt: true });
   else if (/\bheute\b|sofort|asap/.test(t)) Object.assign(w, { von: heute, bis: heute, erkannt: true });
   if (/(diese|dieser) woche/.test(t)) Object.assign(w, { von: heute, bis: bisFreitag(heute), erkannt: true });
   if (/(nächste|naechste|kommende) woche/.test(t)) {
-    const montag = plusTage(heute, ((8 - wochentag) % 7) || 7);
+    const montag = plusTage(heute, 8 - heuteWt);
     Object.assign(w, { von: montag, bis: plusTage(montag, 4), erkannt: true });
   }
   const tage = WOCHENTAGE.filter(([re]) => re.test(t)).map(([, n]) => n);
@@ -133,7 +123,7 @@ export function wunschAuslegen(text: string | undefined, heute: Datum): Wunsch {
 function tagPasst(w: Wunsch, d: Datum): boolean {
   if (w.von && d < w.von) return false;
   if (w.bis && d > w.bis) return false;
-  if (w.wochentage && !w.wochentage.includes(new Date(d + 'T12:00:00').getDay())) return false;
+  if (w.wochentage && !w.wochentage.includes(wochentag(d))) return false;
   return true;
 }
 
@@ -189,9 +179,10 @@ const MIN_BLOCK = 120;
 
 /** Freie Fenster abzüglich Anfahrt vom vorherigen und zum nächsten Termin */
 function nutzbareFenster(ctx: Kontext, maId: ID, d: Datum, ziel: Punkt | undefined, puffer: number, jetzt?: number): { f: Fenster; anfahrt: Strecke; vonWo: string }[] {
-  const termine = termineAm(ctx, maId, d);
+  const pk = planKontext(ctx);
+  const termine = termineAm(maId, d, pk).filter((t) => !t.ganztags);
   const start = startPunkt(ctx, maId);
-  return freieFenster(ctx, maId, d)
+  return freieFenster(maId, d, pk)
     .map((f) => {
       const vorher = [...termine].reverse().find((t) => minutenVon(t.ende) <= f.von);
       const nachher = termine.find((t) => minutenVon(t.start) >= f.bis);
@@ -219,8 +210,8 @@ interface Kandidat {
 
 /** Plant `minuten` für einen Mitarbeiter ab Tag `tage[i]` */
 function planeAb(ctx: Kontext, maId: ID, tage: Datum[], i: number, minuten: number, ziel: Punkt | undefined, w: Wunsch, o: Required<Pick<PlanOptionen, 'puffer'>> & PlanOptionen): Kandidat | undefined {
-  const az = arbeitszeit(ctx);
-  const kapazitaet = az.ende - az.beginn;
+  const pk = planKontext(ctx);
+  const kapazitaet = minutenAus(pk.arbeitsende) - minutenAus(pk.arbeitsbeginn);
   const eintaegig = minuten <= kapazitaet;
   let rest = minuten;
   const bloecke: Block[] = [];
@@ -266,7 +257,7 @@ function planeAb(ctx: Kontext, maId: ID, tage: Datum[], i: number, minuten: numb
 const blockMinuten = (b: Block[]) => b.reduce((s, x) => s + x.bis - x.von, 0);
 
 function zeitraumText(b: Block[]): string {
-  if (b.length === 1) return `${datumKurz(b[0].datum)}, ${hhmm(b[0].von)}–${hhmm(b[0].bis)} Uhr`;
+  if (b.length === 1) return `${datumKurz(b[0].datum)}, ${uhrAus(b[0].von)}–${uhrAus(b[0].bis)} Uhr`;
   return `${b.length} Tage: ${datumKurz(b[0].datum)} bis ${datumKurz(b[b.length - 1].datum)}`;
 }
 
@@ -281,14 +272,15 @@ export function vorschlaege(ctx: Kontext, auftragId: ID, opt: PlanOptionen = {})
 
   const o = { puffer: 10, horizont: 10, anzahl: 3, ...opt };
   const ab = o.ab ?? (auftrag.dringend ? ctx.heute : plusTage(ctx.heute, 1));
-  const tage = arbeitstage(ab, o.horizont);
+  const pk = planKontext(ctx);
+  const tage = naechsteArbeitstage(ab, o.horizont, pk.arbeitstage, pk.bundesland ?? null);
   const ziel = terminPunkt(ctx, { auftragId: auftrag.id, ortId: auftrag.ortId, kundeId: auftrag.kundeId });
   if (!ziel) hinweise.push('Einsatzort ohne Adresse – Fahrwege bleiben unberücksichtigt.');
   const quali = benoetigteQualifikationen(ctx, auftrag);
   const w = wunschAuslegen(auftrag.wunschtermin, ctx.heute);
   if (auftrag.wunschtermin && !w.erkannt) hinweise.push(`Den Wunschtermin „${auftrag.wunschtermin}“ konnte ich nicht auslegen.`);
 
-  const alle = planbareMitarbeiter(ctx);
+  const alle = planbareMitarbeiter(ctx, ctx.heute);
   const leitung = alle.filter((m) => m.rolle !== 'azubi' && erfuelltAlle(ctx, m.id, quali, tage[0] ?? ab));
   if (!leitung.length) {
     hinweise.push(
@@ -299,7 +291,7 @@ export function vorschlaege(ctx: Kontext, auftragId: ID, opt: PlanOptionen = {})
     return { auftrag, vorschlaege: [], hinweise, offeneStunden: stunden };
   }
 
-  const jetzt = o.jetzt ?? (tage[0] === ctx.heute ? new Date().getHours() * 60 + new Date().getMinutes() : undefined);
+  const jetzt = o.jetzt ?? (tage[0] === ctx.heute ? minutenVon(new Date()) : undefined);
   const planOpt = { ...o, jetzt };
 
   const versuche = (personen: number) => {
@@ -352,22 +344,31 @@ export function vorschlaege(ctx: Kontext, auftragId: ID, opt: PlanOptionen = {})
   return { auftrag, vorschlaege: gewaehlt, hinweise, offeneStunden: stunden };
 }
 
-/** Zweite Person, die an allen Blöcken frei ist – wenig verplant bevorzugt */
+/** Beantragte (noch nicht genehmigte) Abwesenheiten an den Blocktagen – Warnung, kein Ausschluss */
+function beantragtAn(pk: PlanKontext, id: ID, bloecke: Block[]): { datum: Datum; text: string }[] {
+  return bloecke.flatMap((b) => {
+    const a = belegungAm(id, b.datum, pk).beantragt;
+    return a ? [{ datum: b.datum, text: `${ABWESENHEIT_LABEL[a.art]} beantragt` }] : [];
+  });
+}
+
+/** Zweite Person, die an allen Blöcken frei ist – ohne beantragten Urlaub und wenig verplant bevorzugt */
 function waehlePartner(ctx: Kontext, leitungId: ID, bloecke: Block[], kandidaten: ID[]): ID | undefined {
+  const pk = planKontext(ctx);
   const frei = kandidaten.filter(
-    (id) =>
-      id !== leitungId &&
-      bloecke.every((b) => !abwesenheitAm(ctx, id, b.datum) && istVerfuegbar(ctx, id, zeitpunkt(b.datum, hhmm(b.von)), zeitpunkt(b.datum, hhmm(b.bis)))),
+    (id) => id !== leitungId && bloecke.every((b) => verfuegbar(id, zeitpunkt(b.datum, uhrAus(b.von)), zeitpunkt(b.datum, uhrAus(b.bis)), { kontext: pk })),
   );
-  const tage = bloecke.map((b) => b.datum);
-  return frei.sort((a, b) => verplanteStunden(ctx, a, tage) - verplanteStunden(ctx, b, tage))[0];
+  const von = bloecke[0].datum;
+  const bis = bloecke[bloecke.length - 1].datum;
+  const rang = (id: ID) => (beantragtAn(pk, id, bloecke).length ? 1000 : 0) + geplanteStunden(id, von, bis, pk);
+  return frei.sort((a, b) => rang(a) - rang(b))[0];
 }
 
 function bewerte(ctx: Kontext, auftrag: Auftrag, k: Kandidat, partner: ID | undefined, tage: Datum[], w: Wunsch, quali: ID[], personen: number): Vorschlag {
   const gruende: string[] = [];
   const warnungen: string[] = [];
   const ma = finde(ctx.mitarbeiter, k.maId);
-  const az = arbeitszeit(ctx);
+  const pk = planKontext(ctx);
   const dringend = !!auftrag.dringend;
 
   // 1. Verfügbarkeit: früher ist besser
@@ -399,10 +400,10 @@ function bewerte(ctx: Kontext, auftrag: Auftrag, k: Kandidat, partner: ID | unde
     if (k.anfahrt.km > 40) warnungen.push(`Lange Anfahrt (${ca}${km} km)`);
   }
 
-  // 4. Auslastung der Woche ab Start
+  // 4. Auslastung der Woche ab Start (verfügbare Stunden abzüglich Feiertagen und Abwesenheiten)
   const woche = tage.slice(k.startIndex, k.startIndex + 5);
-  const kap = (woche.length * (az.ende - az.beginn)) / 60;
-  const verplant = verplanteStunden(ctx, k.maId, woche);
+  const kap = verfuegbareStunden(k.maId, woche[0], woche[woche.length - 1], pk);
+  const verplant = geplanteStunden(k.maId, woche[0], woche[woche.length - 1], pk);
   const quote = kap ? Math.min(1, verplant / kap) : 0;
   const auslastung = 15 * (1 - quote);
   gruende.push(`Woche zu ${Math.round(quote * 100)} % verplant`);
@@ -413,7 +414,13 @@ function bewerte(ctx: Kontext, auftrag: Auftrag, k: Kandidat, partner: ID | unde
   const qualiPunkte = ma?.rolle === 'chef' ? 4 : 10;
   if (quali.length) gruende.push(`Hat ${quali.map((q) => finde(ctx.qualifikationen, q)?.name).join(', ')}`);
 
-  const score = Math.max(0, Math.min(100, Math.round(frueh + wunsch + weg + auslastung + qualiPunkte - k.luecken * 3)));
+  // 6. Beantragter Urlaub o. Ä.: nicht frei im Sinne der Planung – Warnung und Abzug
+  const beantragt = [k.maId, ...(partner ? [partner] : [])].flatMap((id) =>
+    beantragtAn(pk, id, k.bloecke).map((x) => `${personName(finde(ctx.mitarbeiter, id))}: ${x.text} (${datumFmt(x.datum)}) – vorher klären`),
+  );
+  warnungen.push(...beantragt);
+
+  const score = Math.max(0, Math.min(100, Math.round(frueh + wunsch + weg + auslastung + qualiPunkte - k.luecken * 3 - (beantragt.length ? 20 : 0))));
   return {
     auftragId: auftrag.id,
     mitarbeiterIds: partner ? [k.maId, partner] : [k.maId],
@@ -451,8 +458,8 @@ export function vorschlagAlsTermine(a: Auftrag, v: Vorschlag): Neu<Termin>[] {
   return v.bloecke.map((b, i) => ({
     art: a.art === 'wartung' ? 'wartung' : 'einsatz',
     titel: v.bloecke.length > 1 ? `${a.titel} (Tag ${i + 1}/${v.bloecke.length})` : a.titel,
-    start: zeitpunkt(b.datum, hhmm(b.von)),
-    ende: zeitpunkt(b.datum, hhmm(b.bis)),
+    start: zeitpunkt(b.datum, uhrAus(b.von)),
+    ende: zeitpunkt(b.datum, uhrAus(b.bis)),
     auftragId: a.id,
     kundeId: a.kundeId,
     ortId: a.ortId,
@@ -467,9 +474,7 @@ export function vorschlagUebernehmen(v: Vorschlag): { ok: true; termine: Termin[
   const a = db.auftraege.get(v.auftragId);
   if (!a || a.geloeschtAm) return { ok: false, grund: 'Den Auftrag gibt es nicht mehr.' };
   const neu = vorschlagAlsTermine(a, v);
-  const belegt = neu.some((t) =>
-    t.mitarbeiterIds.some((m) => db.termine.all().some((x) => aktiverTermin(x) && x.mitarbeiterIds.includes(m) && x.start < t.ende && t.start < x.ende)),
-  );
+  const belegt = neu.some((t) => t.mitarbeiterIds.some((m) => !verfuegbar(m, t.start, t.ende)));
   if (belegt) return { ok: false, grund: 'Inzwischen ist dort schon etwas anderes geplant. Lass den Vorschlag neu berechnen.' };
   const termine: Termin[] = [];
   batch(() => {

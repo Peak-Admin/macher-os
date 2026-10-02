@@ -2,17 +2,17 @@
 import { useMemo, useState, type DragEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
-import { datumKurz, heute, personName, plusTage, zahl } from '@core/format';
+import { datumKurz, heute, kalenderwoche, personName, plusTage, tage, wochenStart, zahl } from '@core/format';
 import type { Datum, ID, Mitarbeiter, Termin } from '@core/objects';
 import { useDarf } from '@core/session';
 import { Auswahl, Button, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Zeile, useToast } from '@ui/index';
 import { TerminKachel } from '../kalender/Kalender';
 import { TerminFormular, type TerminVorgabe } from '../kalender/TerminFormular';
-import { kalenderwoche, terminAmTag, termineIm } from '../kalender/daten';
+import { terminAmTag, termineIm } from '../kalender/daten';
 import { useSchmal } from '../kalender/hooks';
-import { anwesenheit, geplanteStunden, kontextAusDb, tage, terminKonflikte, verfuegbareStunden, wochenStart, type Grund } from '../verfuegbarkeit/daten';
+import { anwesenheit, geplanteStunden, kontextAusDb, restStunden, terminKonflikte, verfuegbareStunden, type Grund } from '../verfuegbarkeit/daten';
 import { offenEinzuplanen } from '../offen/daten';
-import { aufZelleVerschieben, restStunden, vorbelegung } from './daten';
+import { aufZelleVerschieben, vorbelegung } from './daten';
 import '../kalender/plan.css';
 
 const WOCHENTAGE = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];

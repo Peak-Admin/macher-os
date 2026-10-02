@@ -1,23 +1,8 @@
 /** Einsatzplanung: reine Logik für die Plantafel (Vorbelegung, Verschieben per Drag & Drop, Reststunden). */
-import { isoDatum } from '@core/format';
+import { isoDatum, minutenAus, minutenVon, uhrAus } from '@core/format';
 import type { Auftrag, Datum, ID, Termin } from '@core/objects';
-import { freieSlots, minutenAus, uhrAus, type PlanKontext } from '../verfuegbarkeit/daten';
+import { freieSlots, restStunden, type PlanKontext } from '../verfuegbarkeit/daten';
 import { verschoben } from '../kalender/daten';
-
-const dauerH = (t: Pick<Termin, 'start' | 'ende'>) => (new Date(t.ende).getTime() - new Date(t.start).getTime()) / 3_600_000;
-
-/** Bereits verplante Personenstunden eines Auftrags (Termine ohne abgesagte) */
-export function verplanteStunden(auftragId: ID, termine: Termin[]): number {
-  return termine
-    .filter((t) => t.auftragId === auftragId && t.status !== 'abgesagt' && !t.geloeschtAm && !t.ganztags)
-    .reduce((s, t) => s + dauerH(t) * Math.max(1, t.mitarbeiterIds.length), 0);
-}
-
-/** Noch einzuplanende Stunden (undefined, wenn nichts geschätzt ist) */
-export function restStunden(a: Pick<Auftrag, 'id' | 'geplanteStunden'>, termine: Termin[]): number | undefined {
-  if (!a.geplanteStunden) return undefined;
-  return Math.max(0, Math.round((a.geplanteStunden - verplanteStunden(a.id, termine)) * 100) / 100);
-}
 
 /**
  * Vorbelegung, wenn man einen Auftrag in eine Zelle (Mitarbeiter × Tag) setzt:
@@ -37,9 +22,9 @@ export function vorbelegung(
   for (let dauer = Math.min(wunsch, schluss - beginn); dauer >= 30; dauer -= 30) {
     const slot = freieSlots({ von: tag, bis: tag, dauerMinuten: dauer, mitarbeiterIds: [mitarbeiterId], kontext: k, ab: new Date(0), max: 1 })[0];
     if (slot) {
-      const d = new Date(slot.start);
-      const e = new Date(slot.ende);
-      return { von: uhrAus(d.getHours() * 60 + d.getMinutes()), bis: uhrAus(e.getHours() * 60 + e.getMinutes()), frei: true };
+      const d = slot.start;
+      const e = slot.ende;
+      return { von: uhrAus(minutenVon(d)), bis: uhrAus(minutenVon(e)), frei: true };
     }
   }
   return { von: k.arbeitsbeginn, bis: uhrAus(Math.min(beginn + Math.max(60, Math.min(wunsch, schluss - beginn)), schluss)), frei: false };

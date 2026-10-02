@@ -3,9 +3,10 @@ import { db } from '@core/db';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
 import { benachrichtigen, erledigt } from '@core/macher';
 import { pfadZu } from '@core/modul';
-import { datumKurz, plusTage, personName, uhrzeit, zeitpunkt } from '@core/format';
+import { datumKurz, datumVon, minutenVon, plusTage, personName, uhrAus, uhrzeit, zeitpunkt } from '@core/format';
 import type { ID } from '@core/objects';
-import { hhmm, kontextAusDb, minutenVon, planbareMitarbeiter, terminDatum } from '../autoplanung/basis';
+import { kontextAusDb } from '../autoplanung/basis';
+import { planbareMitarbeiter } from '../verfuegbarkeit/daten';
 import { pufferMinuten, tagesroute, uebergaengeAm } from './daten';
 import { RouteHeute } from './RouteHeute';
 
@@ -26,7 +27,7 @@ export default defineModul({
     const r: HinweisVorschlag[] = [];
     for (let i = 0; i <= 7; i++) {
       const d = plusTage(ctx.heute, i);
-      for (const m of planbareMitarbeiter(ctx)) {
+      for (const m of planbareMitarbeiter(ctx, ctx.heute)) {
         for (const u of uebergaengeAm(ctx, m.id, d, puffer)) {
           if (u.pruefung.ergebnis !== 'problem' || u.nach.status === 'erledigt') continue;
           const schluessel = `fahrt-knapp:${u.von.id}:${u.nach.id}`;
@@ -43,7 +44,7 @@ export default defineModul({
             pfad: pfadZu({ typ: 'termine', id: u.nach.id }),
             aktionen:
               neuStart < 24 * 60
-                ? [{ aktion: 'fahrt.schieben', label: `Auf ${hhmm(neuStart)} Uhr schieben`, primaer: true, payload: { terminId: u.nach.id, start: hhmm(neuStart) } }]
+                ? [{ aktion: 'fahrt.schieben', label: `Auf ${uhrAus(neuStart)} Uhr schieben`, primaer: true, payload: { terminId: u.nach.id, start: uhrAus(neuStart) } }]
                 : undefined,
           });
         }
@@ -58,7 +59,7 @@ export default defineModul({
       const t = db.termine.get(terminId);
       if (!t || !start) return;
       const dauer = new Date(t.ende).getTime() - new Date(t.start).getTime();
-      const neu = zeitpunkt(terminDatum(t), start);
+      const neu = zeitpunkt(datumVon(t.start), start);
       db.termine.update(t.id, { start: neu, ende: new Date(new Date(neu).getTime() + dauer).toISOString() }, { text: `Wegen Fahrzeit auf ${start} Uhr verschoben` });
       erledigt('fahrt.geschoben', `Termin verschoben: ${t.titel}`, { text: `Von ${uhrzeit(t.start)} auf ${start} Uhr, damit die Fahrzeit reicht.`, bezug: { typ: 'termine', id: t.id }, minuten: 5 });
       return pfadZu({ typ: 'termine', id: t.id });
@@ -77,7 +78,7 @@ export default defineModul({
         const key = `fahrt.route.gesendet.${ctx.heute}`;
         const gesendet = einstellung<ID[]>(key, []);
         const neu: string[] = [];
-        for (const m of planbareMitarbeiter(ctx)) {
+        for (const m of planbareMitarbeiter(ctx, ctx.heute)) {
           if (gesendet.includes(m.id)) continue;
           const r = tagesroute(ctx, m.id, ctx.heute);
           if (r.stopps.length < 2 || !r.mapsLink) continue;

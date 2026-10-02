@@ -3,9 +3,10 @@ import { db } from '@core/db';
 import { on } from '@core/events';
 import { benachrichtigen, erledigt } from '@core/macher';
 import { pfadZu } from '@core/modul';
-import { datumKurz, personName, plusTage } from '@core/format';
+import { datumKurz, datumVon, personName, plusTage } from '@core/format';
 import type { ID, Termin } from '@core/objects';
-import { aktiverTermin, finde, kontextAusDb, terminDatum } from '../autoplanung/basis';
+import { finde, kontextAusDb } from '../autoplanung/basis';
+import { terminZaehlt } from '../verfuegbarkeit/daten';
 import { benoetigteQualifikationen, pruefeQualifikation, qualifizierteErsatzleute } from './daten';
 
 const AUTOMATION = 'qualifikation.beim-einplanen';
@@ -23,8 +24,8 @@ export default defineModul({
     const bis = plusTage(ctx.heute, 14);
     const r: HinweisVorschlag[] = [];
     for (const t of ctx.termine) {
-      const d = terminDatum(t);
-      if (!aktiverTermin(t) || t.status === 'erledigt' || d < ctx.heute || d > bis || !t.mitarbeiterIds.length) continue;
+      const d = datumVon(t.start);
+      if (!terminZaehlt(t) || t.status === 'erledigt' || d < ctx.heute || d > bis || !t.mitarbeiterIds.length) continue;
       const probleme = pruefeQualifikation(ctx, t).filter((p) => p.ergebnis === 'problem');
       if (!probleme.length) continue;
       const auftrag = finde(ctx.auftraege, t.auftragId);
@@ -68,10 +69,10 @@ export default defineModul({
       minuten: 3,
       start: () => {
         const pruefe = (t: Termin, vorher?: Termin) => {
-          if (!t.auftragId || !aktiverTermin(t)) return;
+          if (!t.auftragId || !terminZaehlt(t)) return;
           if (vorher && vorher.start === t.start && vorher.auftragId === t.auftragId && vorher.mitarbeiterIds.join() === t.mitarbeiterIds.join()) return;
           const ctx = kontextAusDb();
-          if (terminDatum(t) < ctx.heute) return;
+          if (datumVon(t.start) < ctx.heute) return;
           const probleme = pruefeQualifikation(ctx, t).filter((p) => p.ergebnis === 'problem');
           if (!probleme.length) return;
           benachrichtigen(`Qualifikation fehlt: ${t.titel}`, { text: probleme.map((p) => `${p.text} ${p.loesung ?? ''}`).join(' '), bezug: { typ: 'termine', id: t.id }, wichtig: true });

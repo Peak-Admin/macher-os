@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { db } from '@core/db';
 import { useEinstellung } from '@core/einstellungen';
-import { datum, heute } from '@core/format';
+import { datum, heute, plusMonate } from '@core/format';
 import type { ID } from '@core/objects';
 import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
-import { ERGEBNIS_LABEL, intervall, plusMonate, PRUEFARTEN, pruefungDokumentieren, standardIntervall, type Ergebnis } from './daten';
+import { ERGEBNIS_LABEL, intervall, PRUEFARTEN, pruefungDokumentieren, standardIntervall, type Ergebnis } from './daten';
 
 const MAX_BYTES = 2_000_000;
 

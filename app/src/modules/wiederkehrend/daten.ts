@@ -4,9 +4,9 @@
  * welche Vorkommen schon erzeugt wurden und welche ausgelassen werden.
  */
 import { batch, db, defineCollection, vermerken } from '@core/db';
-import { heute, plusTage, zeitpunkt, personName } from '@core/format';
+import { heute, plusTage, zeitpunkt, personName, plusMonate } from '@core/format';
 import type { Basis, Datum, ID, TerminArt } from '@core/objects';
-import { plusMonate, vorkommen, werktag, type Regel } from './regel';
+import { vorkommen, werktag, type Regel } from './regel';
 
 export interface Serie extends Basis {
   titel: string;

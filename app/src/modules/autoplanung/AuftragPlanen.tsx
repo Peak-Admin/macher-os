@@ -4,9 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { erledigt } from '@core/macher';
 import { pfadZu } from '@core/modul';
-import { adresseText, datumKurz, heute, personName, zahl } from '@core/format';
+import { adresseText, datumKurz, heute, personName, uhrAus, zahl } from '@core/format';
 import { BeispielMarke, Button, Eingabe, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, useToast, Zeile } from '@ui/index';
-import { finde, hhmm, kontextAusDb } from './basis';
+import { finde, kontextAusDb } from './basis';
 import { offeneStunden, vorschlaege, vorschlagKurz, vorschlagUebernehmen, type Vorschlag } from './daten';
 import { benoetigteQualifikationen } from '../qualifikation-planung/daten';
 import { terminPunkt } from '../fahrt/daten';
@@ -99,7 +99,7 @@ export function AuftragPlanen() {
                 <Stapel abstand={4}>
                   {vs.bloecke.map((b) => (
                     <Meta key={b.datum + b.von}>
-                      {datumKurz(b.datum)}, {hhmm(b.von)}–{hhmm(b.bis)} Uhr
+                      {datumKurz(b.datum)}, {uhrAus(b.von)}–{uhrAus(b.bis)} Uhr
                     </Meta>
                   ))}
                 </Stapel>

@@ -4,10 +4,9 @@
  */
 import { batch, db, defineCollection, vermerken } from '@core/db';
 import { einstellung } from '@core/einstellungen';
-import { datum, heute, plusTage, tageZwischen } from '@core/format';
+import { datum, heute, plusTage, tageZwischen, plusMonate } from '@core/format';
 import { naechsteNummer } from '@core/nummern';
 import type { Auftrag, Basis, Datum, ID, Kanal } from '@core/objects';
-import { plusMonate } from '../wiederkehrend/regel';
 
 /** Rechtsgrundlage der Mängelhaftung */
 export type Grundlage = 'bgb_bau' | 'bgb' | 'vob_bau' | 'vob';

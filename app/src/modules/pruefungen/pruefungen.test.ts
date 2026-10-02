@@ -1,6 +1,7 @@
+import { plusMonate } from '@core/format';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
-import { faelligkeit, plusMonate, pruefhistorie, pruefungDokumentieren, standardIntervall } from './daten';
+import { faelligkeit, pruefhistorie, pruefungDokumentieren, standardIntervall } from './daten';
 
 describe('Prüfungen', () => {
   beforeEach(() => zuruecksetzen());

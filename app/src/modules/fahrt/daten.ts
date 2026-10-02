@@ -5,10 +5,11 @@
  * Postleitzahl GENÄHERT (Mittelpunkt der PLZ-Leitregion) – das ist eine grobe Schätzung
  * und wird überall so gekennzeichnet. Straßenweg ≈ Luftlinie × 1,3.
  */
-import { adresseText, isoDatum } from '@core/format';
+import { adresseText, isoDatum, minutenVon, uhrAus } from '@core/format';
 import type { Adresse, Datum, ID, Termin } from '@core/objects';
 import { einstellung } from '@core/einstellungen';
-import { finde, hhmm, minutenVon, termineAm, type Kontext, type Pruefung } from '../autoplanung/basis';
+import { finde, planKontext, type Kontext, type Pruefung } from '../autoplanung/basis';
+import { termineAm } from '../verfuegbarkeit/daten';
 
 // ------------------------------------------------------------------ Geo
 
@@ -154,7 +155,7 @@ export function pruefeUebergang(ctx: Kontext, von: Termin, nach: Termin, puffer 
     pruefung = {
       ergebnis: 'problem',
       text: `„${von.titel}“ und „${nach.titel}“ überschneiden sich um ${-luecke} min.`,
-      loesung: `„${nach.titel}“ auf ${hhmm(frueheste)} Uhr schieben oder jemand anderen schicken.`,
+      loesung: `„${nach.titel}“ auf ${uhrAus(frueheste)} Uhr schieben oder jemand anderen schicken.`,
     };
   } else if (s.genauigkeit === 'unbekannt') {
     pruefung = { ergebnis: 'ok', text: `Fahrzeit nach „${nach.titel}“ unbekannt – Adresse fehlt.` };
@@ -162,13 +163,13 @@ export function pruefeUebergang(ctx: Kontext, von: Termin, nach: Termin, puffer 
     pruefung = {
       ergebnis: 'problem',
       text: `Nur ${luecke} min bis „${nach.titel}“, Fahrt dauert ${streckeText(s)}.`,
-      loesung: `„${nach.titel}“ auf ${hhmm(frueheste)} Uhr schieben.`,
+      loesung: `„${nach.titel}“ auf ${uhrAus(frueheste)} Uhr schieben.`,
     };
   } else if (luecke < s.minuten + puffer) {
     pruefung = {
       ergebnis: 'warnung',
       text: `Knapp: ${luecke} min bis „${nach.titel}“, Fahrt ${streckeText(s)}.`,
-      loesung: `Mit ${puffer} min Puffer wäre ${hhmm(frueheste)} Uhr sicher.`,
+      loesung: `Mit ${puffer} min Puffer wäre ${uhrAus(frueheste)} Uhr sicher.`,
     };
   } else {
     pruefung = { ergebnis: 'ok', text: `Genug Zeit bis „${nach.titel}“ (${streckeText(s)}).` };
@@ -178,7 +179,7 @@ export function pruefeUebergang(ctx: Kontext, von: Termin, nach: Termin, puffer 
 
 /** Alle Übergänge eines Mitarbeiters an einem Tag (nur Termine mit Ort/Auftrag; interne Termine werden übersprungen) */
 export function uebergaengeAm(ctx: Kontext, mitarbeiterId: ID, d: Datum, puffer = 10): Uebergang[] {
-  const liste = termineAm(ctx, mitarbeiterId, d).filter((t) => !t.ganztags && t.art !== 'intern' && t.art !== 'schulung');
+  const liste = termineAm(mitarbeiterId, d, planKontext(ctx)).filter((t) => !t.ganztags && t.art !== 'intern' && t.art !== 'schulung');
   const r: Uebergang[] = [];
   for (let i = 1; i < liste.length; i++) r.push(pruefeUebergang(ctx, liste[i - 1], liste[i], puffer));
   return r;
@@ -208,7 +209,7 @@ export interface Tagesroute {
 
 export function tagesroute(ctx: Kontext, mitarbeiterId: ID, d: Datum, puffer = 10): Tagesroute {
   const start = startPunkt(ctx, mitarbeiterId);
-  const termine = termineAm(ctx, mitarbeiterId, d).filter((t) => !t.ganztags && t.art !== 'intern' && t.art !== 'schulung');
+  const termine = termineAm(mitarbeiterId, d, planKontext(ctx)).filter((t) => !t.ganztags && t.art !== 'intern' && t.art !== 'schulung');
   let vorher = start;
   const stopps: Stopp[] = termine.map((t) => {
     const punkt = terminPunkt(ctx, t);

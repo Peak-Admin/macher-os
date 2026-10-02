@@ -1,8 +1,8 @@
 /** Auslastung: geplante vs. verfügbare Stunden je Mitarbeiter und Woche. Reine Logik. */
-import { plusTage } from '@core/format';
+import { plusTage, wochenStart } from '@core/format';
 import type { Datum, ID } from '@core/objects';
 import type { Ton } from '@core/modul';
-import { geplanteStunden, verfuegbareStunden, wochenStart, type PlanKontext } from '../verfuegbarkeit/daten';
+import { geplanteStunden, verfuegbareStunden, type PlanKontext } from '../verfuegbarkeit/daten';
 
 export type Bewertung = 'ueberlast' | 'voll' | 'gut' | 'freiraum' | 'nicht_da';
 

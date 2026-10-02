@@ -4,16 +4,17 @@
  *
  * Lagerbestand wird in Terminreihenfolge verteilt: Der früheste Einsatz bekommt den Bestand zuerst.
  */
-import { datum as datumFmt, plusTage, zahl } from '@core/format';
+import { datum as datumFmt, datumVon, plusTage, tageZwischen, zahl } from '@core/format';
 import type { Auftrag, Datum, ID, Materialbuchung, Termin } from '@core/objects';
-import { aktiverTermin, finde, terminDatum, type Kontext, type Pruefung } from '../autoplanung/basis';
+import { finde, type Kontext, type Pruefung } from '../autoplanung/basis';
+import { terminZaehlt } from '../verfuegbarkeit/daten';
 
 export const OFFENE_STATUS: Materialbuchung['status'][] = ['geplant', 'bestellt', 'bereit'];
 
 /** Nächster anstehender Einsatz eines Auftrags ab `ab` */
 export function naechsterEinsatz(ctx: Kontext, auftragId: ID, ab: Datum = ctx.heute): Termin | undefined {
   return ctx.termine
-    .filter((t) => aktiverTermin(t) && t.auftragId === auftragId && t.status !== 'erledigt' && terminDatum(t) >= ab && t.art !== 'besichtigung')
+    .filter((t) => terminZaehlt(t) && t.auftragId === auftragId && t.status !== 'erledigt' && datumVon(t.start) >= ab && t.art !== 'besichtigung')
     .sort((a, b) => a.start.localeCompare(b.start))[0];
 }
 
@@ -40,7 +41,7 @@ export function pruefeMaterial(ctx: Kontext, vorlaufTage = 5): MaterialCheck[] {
   const auftraege = ctx.auftraege
     .filter((a) => !a.geloeschtAm && !['erledigt', 'verloren', 'abrechnung'].includes(a.phase))
     .map((a) => ({ auftrag: a, termin: naechsterEinsatz(ctx, a.id) }))
-    .filter((x): x is { auftrag: Auftrag; termin: Termin } => !!x.termin && terminDatum(x.termin) <= bis)
+    .filter((x): x is { auftrag: Auftrag; termin: Termin } => !!x.termin && datumVon(x.termin.start) <= bis)
     .sort((a, b) => a.termin.start.localeCompare(b.termin.start));
 
   // Lagerbestand, der noch verteilt werden kann
@@ -63,7 +64,7 @@ function schlimmsteZeile(z: MaterialZeile[]): Pruefung['ergebnis'] {
 }
 
 function pruefeBuchung(ctx: Kontext, b: Materialbuchung, termin: Termin, rest: Map<ID, number>): MaterialZeile {
-  const tag = terminDatum(termin);
+  const tag = datumVon(termin.start);
   const knapp = tag <= plusTage(ctx.heute, 1);
   const menge = `${zahl(b.menge)} ${b.einheit} ${b.text}`;
   if (b.status === 'bereit') return { buchung: b, pruefung: { ergebnis: 'ok', text: `${menge}: liegt bereit.` } };
@@ -113,7 +114,7 @@ function pruefeBuchung(ctx: Kontext, b: Materialbuchung, termin: Termin, rest: M
 /** Prüfung für einen einzelnen Termin (Panel) – nutzt dieselbe Verteilung */
 export function pruefeMaterialFuerTermin(ctx: Kontext, t: Termin): Pruefung[] {
   if (!t.auftragId) return [];
-  const tage = Math.max(0, Math.round((new Date(terminDatum(t) + 'T12:00:00').getTime() - new Date(ctx.heute + 'T12:00:00').getTime()) / 86_400_000));
+  const tage = Math.max(0, tageZwischen(ctx.heute, datumVon(t.start)));
   const check = pruefeMaterial(ctx, tage).find((c) => c.auftrag.id === t.auftragId);
   if (!check) {
     const offen = ctx.material.some((m) => !m.geloeschtAm && m.auftragId === t.auftragId && OFFENE_STATUS.includes(m.status));

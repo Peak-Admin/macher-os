@@ -5,7 +5,7 @@
  * das Prüfprotokoll ein `Dokument` mit Bezug auf das Gerät.
  */
 import { batch, db, vermerken, zeitstrahl } from '@core/db';
-import { heute, isoDatum, tageZwischen } from '@core/format';
+import { heute, tageZwischen, plusMonate } from '@core/format';
 import type { Ton } from '@core/modul';
 import type { Betriebsmittel, Datum, ID } from '@core/objects';
 import { bmx, type BetriebsmittelX } from '../werkzeuge/daten';
@@ -25,15 +25,6 @@ export function standardIntervall(art: string | undefined): number {
 
 export function intervall(b: Betriebsmittel): number {
   return bmx(b).pruefIntervallMonate ?? standardIntervall(b.pruefungArt);
-}
-
-/** Datum + n Monate (Monatsende sauber: 31.01. + 1 → 28./29.02.) */
-export function plusMonate(d: Datum, monate: number): Datum {
-  const [j, m, t] = d.split('-').map(Number);
-  const ziel = new Date(j, m - 1 + monate, 1, 12);
-  const letzter = new Date(ziel.getFullYear(), ziel.getMonth() + 1, 0).getDate();
-  ziel.setDate(Math.min(t, letzter));
-  return isoDatum(ziel);
 }
 
 export type Stufe = 'ueberfaellig' | 'tage14' | 'tage30' | 'ok' | 'keine';

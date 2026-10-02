@@ -2,9 +2,9 @@ import { defineModul } from '@core/modul';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
 import { benachrichtigen, erledigt } from '@core/macher';
 import { pfadZu } from '@core/modul';
-import { datumKurz, plusTage } from '@core/format';
+import { datumKurz, datumVon, plusTage } from '@core/format';
 import type { ID } from '@core/objects';
-import { kontextAusDb, terminDatum } from '../autoplanung/basis';
+import { kontextAusDb } from '../autoplanung/basis';
 import { pruefeMaterial } from './daten';
 import { bedarfPfad, MaterialBereit, VORLAUF_KEY } from './MaterialBereit';
 
@@ -26,7 +26,7 @@ export default defineModul({
     return checks()
       .filter((c) => c.ergebnis === 'problem')
       .map((c) => {
-        const d = terminDatum(c.termin);
+        const d = datumVon(c.termin.start);
         const fehlt = c.zeilen.filter((z) => z.pruefung.ergebnis === 'problem');
         const bedarf = bedarfPfad();
         return {

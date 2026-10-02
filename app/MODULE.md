@@ -70,6 +70,11 @@ Siehe `src/modules/kunden/` als Referenz.
 - `einstellung(key, standard)` / `useEinstellung`
 - `useIch()`, `darf('geld')`, `useDarf('geld')`, `istBuero()`
 - `naechsteNummer('rechnung')`, `summen(positionen, ust, rabatt)`, `euro(cent)`, `datum()`, `relativ()`, `passt(q, …)`
+- Datum/Uhrzeit nur aus `@core/format`: `plusTage`, `plusMonate`, `tageZwischen`, `wochentag` (1 = Mo), `wochenStart`,
+  `kalenderwoche`, `tage(von, bis)`, `minutenAus('07:30')`, `uhrAus(450)`, `minutenVon(iso)`, `lokal(datum, minuten)`
+- Feiertage & Arbeitstage nur aus `@core/kalender`: `feiertage(jahr, bundesland?)`, `istFeiertag`, `istArbeitstag(datum, arbeitstage?)`
+  (Einstellungen `plan.arbeitstage`, `plan.bundesland`)
+- Verfügbarkeit (wer ist wann frei, freie Slots/Fenster, Abwesenheit am Tag, Stunden) nur aus `@modules/verfuegbarkeit/daten`
 - `oeffne('suche' | 'macher' | 'schnell' | 'benachrichtigungen')`, `useOverlay(name)`
 - Geld immer in **Cent** (ganzzahlig). Datum `YYYY-MM-DD`, Zeitpunkte ISO.
 

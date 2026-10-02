@@ -4,7 +4,8 @@
  */
 import { db } from '@core/db';
 import { datumVon, isoDatum, personName } from '@core/format';
-import type { Abwesenheit, Aufgabe, AbwesenheitsArt, Datum, ID, Mitarbeiter, Termin } from '@core/objects';
+import type { Abwesenheit, Aufgabe, Datum, ID, Mitarbeiter, Termin } from '@core/objects';
+import { ABWESENHEIT_LABEL, abwesenheitAm as planAbwesenheitAm } from '@modules/verfuegbarkeit/daten';
 
 export const TERMIN_ART_LABEL: Record<Termin['art'], string> = {
   einsatz: 'Einsatz',
@@ -24,14 +25,7 @@ export const TERMIN_STATUS_LABEL: Record<Termin['status'], string> = {
   abgesagt: 'Abgesagt',
 };
 
-export const ABWESENHEIT_LABEL: Record<AbwesenheitsArt, string> = {
-  urlaub: 'Urlaub',
-  krank: 'Krank',
-  schule: 'Berufsschule',
-  schulung: 'Schulung',
-  frei: 'Frei',
-  sonstiges: 'Abwesend',
-};
+export { ABWESENHEIT_LABEL };
 
 /** Termine, die an einem Tag stattfinden (auch mehrtägige), ohne abgesagte, nach Start sortiert */
 export function termineAm(tag: Datum, mitarbeiterId?: ID): Termin[] {
@@ -47,11 +41,9 @@ export function termineAm(tag: Datum, mitarbeiterId?: ID): Termin[] {
     .sort((a, b) => a.start.localeCompare(b.start));
 }
 
-/** Genehmigte Abwesenheit eines Mitarbeiters an einem Tag */
+/** Genehmigte Abwesenheit eines Mitarbeiters an einem Tag (Logik aus `verfuegbarkeit`) */
 export function abwesenheitAm(mitarbeiterId: ID, tag: Datum): Abwesenheit | undefined {
-  return db.abwesenheiten
-    .where((a) => a.mitarbeiterId === mitarbeiterId && a.status === 'genehmigt' && a.von <= tag && a.bis >= tag)
-    .at(0);
+  return planAbwesenheitAm(mitarbeiterId, tag, { abwesenheiten: db.abwesenheiten.all() }, { nurGenehmigt: true });
 }
 
 /**
