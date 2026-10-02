@@ -22,6 +22,15 @@ Handwerker sollen sich auf ihr Handwerk konzentrieren können, nicht auf Zettelw
 
 Gestaltung und Tonalität folgen dem [Brand & Software Design Playbook](docs/design/brand-playbook.md).
 
+## Entwicklung
+
+Die Marketing-Website ist eine Next.js-App. Siehe `CLAUDE.md` für Struktur und Regeln und `docs/marketing-website-struktur.md` für die Informationsarchitektur.
+
+```bash
+npm install
+npm run dev
+```
+
 ## Status
 
 🚧 Das Projekt steht ganz am Anfang.
