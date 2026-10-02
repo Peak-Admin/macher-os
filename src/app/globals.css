@@ -19,6 +19,9 @@
   /* Arbeitsfläche, ruhige Fläche, Linien, Sekundärtext */
   --color-paper: #f5f6f3;
   --color-sand: #eef1ed;
+  /* Helles Beige als Gegenfarbe zu den grünen Boxen der Website (Wunsch Philipp, 02.10.2026) */
+  --color-beige: #f4efe6;
+  --color-beige-line: #e4dccd;
   --color-line: #dce2dc;
   --color-line-dark: #7a8780;
   --color-hover: #eef1ed;
@@ -269,20 +272,6 @@ details > summary::-webkit-details-marker {
       radial-gradient(60% 50% at 0% 100%, rgb(27 61 47 / 0.9), transparent 70%);
     color: #fff;
   }
-  .buehne {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    border-radius: 16px;
-  }
-  @media (min-width: 64rem) {
-    .buehne {
-      border-radius: 24px;
-      height: calc(100svh - 64px - 24px);
-      min-height: 36rem;
-      max-height: 58rem;
-    }
-  }
 
   /* 3D-Karte (src/components/ui/Karte3D.tsx) */
   .karte-3d {
@@ -367,6 +356,73 @@ details > summary::-webkit-details-marker {
     .ablauf-detail,
     .vorschau-ein {
       animation: none;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------- Website: Boxen (nach Peak One „mk-zone“) */
+@layer components {
+  /*
+   * Jeder Abschnitt ist eine schwebende Box mit Rand zum Fenster; die Töne wechseln sich ab:
+   * dunkelgrün · beige · weiß. `data-header-theme` sagt dem Glas-Kopf, ob er hell oder dunkel liest.
+   */
+  .zone {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin: 0.375rem 0.5rem;
+    border-radius: 12px;
+  }
+  @media (min-width: 640px) {
+    .zone {
+      margin: 0.75rem;
+      border-radius: 16px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .zone {
+      border-radius: 24px;
+    }
+  }
+  .zone-dunkel {
+    box-shadow: 0 30px 60px -24px rgb(16 44 33 / 0.45);
+  }
+  .zone-beige {
+    background-color: var(--color-beige);
+    color: var(--color-ink);
+  }
+  .zone-weiss {
+    background-color: #fff;
+    color: var(--color-ink);
+    box-shadow: 0 24px 50px -28px rgb(16 44 33 / 0.18), inset 0 0 0 1px rgb(16 44 33 / 0.07);
+  }
+
+  /* Hero-Box: volle Fensterhöhe, der Glas-Kopf liegt darauf */
+  .zone-hero {
+    min-height: calc(100svh - 0.75rem);
+  }
+  @media (min-width: 640px) {
+    .zone-hero {
+      min-height: calc(100svh - 1.5rem);
+    }
+  }
+  @media (min-width: 64rem) {
+    .zone-hero {
+      height: calc(100svh - 1.5rem);
+      min-height: 40rem;
+      max-height: 62rem;
+    }
+  }
+
+  /* Glas-Kopf: zwei Glasebenen, die je nach Fläche darunter überblenden */
+  .kopf-glas {
+    transition: opacity 400ms ease;
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .kopf-glas {
+      transition: none;
     }
   }
 }

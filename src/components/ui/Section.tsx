@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Container } from "./Container";
 
-export type Tone = "paper" | "sand" | "white" | "ink" | "gruen";
+export type Tone = "paper" | "sand" | "white" | "ink" | "gruen" | "beige" | "transparent";
 
 const tones: Record<Tone, string> = {
   paper: "bg-paper text-ink",
@@ -10,6 +10,10 @@ const tones: Record<Tone, string> = {
   ink: "bg-ink text-white",
   /** helle Grünfläche #e8f2ec mit dunklem Text */
   gruen: "bg-signal-soft text-ink",
+  /** helles Beige – Gegenfarbe zu den grünen Boxen */
+  beige: "bg-beige text-ink",
+  /** in einer Zone: Fläche kommt von der Box */
+  transparent: "",
 };
 
 /** Standard-Abschnitt mit einheitlichem vertikalen Rhythmus. */

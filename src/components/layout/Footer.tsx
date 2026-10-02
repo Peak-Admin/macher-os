@@ -5,8 +5,9 @@ import { Logo } from "./Logo";
 
 export function Footer() {
   return (
-    <footer className="markenflaeche relative text-white">
-      <div aria-hidden className="h-1 bg-brand" />
+    // Der Footer ist eine eigene dunkelgrüne Box mit Rand zum Fenster (wie die Abschnitte darüber, nach Peak One).
+    <div className="px-2 pb-2 sm:px-3 sm:pb-3">
+    <footer data-header-theme="dunkel" className="markenflaeche relative overflow-hidden rounded-xl text-white sm:rounded-2xl lg:rounded-3xl">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_3fr]">
           <div className="max-w-xs">
@@ -60,5 +61,6 @@ export function Footer() {
         </div>
       </div>
     </footer>
+    </div>
   );
 }

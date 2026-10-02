@@ -20,14 +20,18 @@ const DESKTOP = "(min-width: 75rem)";
  * Desktop (ab 1200 px): fünf Punkte, Funktionen/Gewerke/Wissen öffnen per Klick ein Mega-Menü – immer nur eines.
  * Darunter: Logo, (ab 480 px) „Kostenlos testen“ und ein beschrifteter Menü-Knopf, der einen modalen Dialog öffnet.
  *
- * Der Kopf ist bewusst deckend und ohne `backdrop-filter`: Ein Filter macht den Kopf zum Bezugsrahmen für fest
- * positionierte Kinder – das frühere mobile Menü war dadurch nur 1 px hoch und unsichtbar.
+ * Glas-Kopf nach Peak One: fest oben, schwebend mit Rand, liegt auf dem Hero. Das Glas folgt der Box darunter
+ * (`data-header-theme="dunkel" | "hell"`). Der Filter sitzt nur auf eigenen Glasebenen (`.kopf-glas`), nie auf dem
+ * `<header>` selbst – sonst würde der Kopf zum Bezugsrahmen für fest positionierte Kinder. Das mobile Menü ist ein
+ * `<dialog>` in der obersten Ebene und davon unabhängig.
+ * Auf allen Seiten außer der Startseite hält ein Platzhalter den Inhalt unter dem Kopf frei.
  */
 export function Header() {
   const pathname = usePathname();
   const [offen, setOffen] = useState<string | null>(null);
   const [mobil, setMobil] = useState(false);
-  const [kopfUnten, setKopfUnten] = useState(64);
+  const [kopfUnten, setKopfUnten] = useState(76);
+  const [thema, setThema] = useState<"dunkel" | "hell">("hell");
   const kopf = useRef<HTMLElement>(null);
   const ausloeser = useRef<Record<string, HTMLButtonElement | null>>({});
   const menueKnopf = useRef<HTMLButtonElement>(null);
@@ -76,6 +80,32 @@ export function Header() {
     };
   }, [offen]);
 
+  // Das Glas folgt der Box, die gerade unter dem Kopf liegt.
+  useEffect(() => {
+    const pruefen = () => {
+      const y = 44;
+      let neu: "dunkel" | "hell" = "hell";
+      for (const el of document.querySelectorAll<HTMLElement>("[data-header-theme]")) {
+        const r = el.getBoundingClientRect();
+        if (r.top <= y && r.bottom >= y) {
+          neu = el.dataset.headerTheme === "dunkel" ? "dunkel" : "hell";
+          break;
+        }
+      }
+      setThema(neu);
+    };
+    pruefen();
+    window.addEventListener("scroll", pruefen, { passive: true });
+    window.addEventListener("resize", pruefen);
+    return () => {
+      window.removeEventListener("scroll", pruefen);
+      window.removeEventListener("resize", pruefen);
+    };
+  }, [pathname]);
+
+  const dunkel = thema === "dunkel" && !offen;
+  const startseite = pathname === "/";
+
   const umschalten = (label: string) => setOffen((o) => (o === label ? null : label));
 
   /** Fokus verlässt den Menüpunkt samt Panel per Tastatur → Panel zu. Mausklicks regelt `pointerdown`. */
@@ -85,9 +115,19 @@ export function Header() {
   };
 
   return (
-    <header ref={kopf} className="sticky top-0 z-50 border-b border-line bg-white">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 nav:gap-6 lg:px-8">
-        <Logo />
+    <>
+      <header ref={kopf} data-thema={dunkel ? "dunkel" : "hell"} className="fixed inset-x-0 top-0 z-50 px-2 pt-2 sm:px-3 sm:pt-3">
+        <div className="relative mx-auto max-w-[1440px] rounded-xl">
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl">
+            <div
+              className={`kopf-glas absolute inset-0 rounded-xl border border-white/25 bg-white/12 shadow-[0_20px_50px_-20px_rgb(0_0_0/0.55)] ${dunkel ? "opacity-100" : "opacity-0"}`}
+            />
+            <div
+              className={`kopf-glas absolute inset-0 rounded-xl border border-white/60 bg-white/85 shadow-[0_16px_40px_-20px_rgb(16_44_33/0.3)] ${dunkel ? "opacity-0" : "opacity-100"}`}
+            />
+          </div>
+      <div className="relative flex h-16 items-center gap-3 px-3 sm:px-5 nav:gap-6">
+        <Logo dark={dunkel} />
 
         <nav aria-label="Hauptnavigation" className="hidden min-w-0 flex-1 nav:block">
           <ul className="flex items-center gap-1">
@@ -102,8 +142,14 @@ export function Header() {
                     aria-expanded={offen === item.label}
                     aria-controls={panelId(item.label)}
                     onClick={() => umschalten(item.label)}
-                    className={`flex min-h-11 items-center gap-1 rounded-md px-3 text-base font-semibold transition-colors duration-150 ease-out hover:bg-hover ${
-                      offen === item.label ? "bg-signal-soft text-signal-dark" : pathname.startsWith(item.href) ? "text-ink" : "text-muted"
+                    className={`flex min-h-11 items-center gap-1 rounded-md px-3 text-base font-semibold transition-colors duration-150 ease-out ${
+                      offen === item.label
+                        ? "bg-signal-soft text-signal-dark"
+                        : dunkel
+                          ? "text-white/90 hover:bg-white/10 hover:text-white"
+                          : pathname.startsWith(item.href)
+                            ? "text-ink hover:bg-hover"
+                            : "text-muted hover:bg-hover"
                     }`}
                   >
                     {item.label}
@@ -119,7 +165,9 @@ export function Header() {
                   <Link
                     href={item.href}
                     aria-current={pathname === item.href ? "page" : undefined}
-                    className="flex min-h-11 items-center rounded-md px-3 text-base font-semibold text-muted transition-colors duration-150 ease-out hover:bg-hover hover:text-ink aria-[current=page]:text-ink"
+                    className={`flex min-h-11 items-center rounded-md px-3 text-base font-semibold transition-colors duration-150 ease-out ${
+                      dunkel ? "text-white/90 hover:bg-white/10 hover:text-white" : "text-muted hover:bg-hover hover:text-ink aria-[current=page]:text-ink"
+                    }`}
                   >
                     {item.label}
                   </Link>
@@ -130,12 +178,17 @@ export function Header() {
         </nav>
 
         <div className="ml-auto hidden shrink-0 items-center gap-2 nav:flex">
-          <Link href={cta.login.href} className="flex min-h-11 items-center px-3 text-base font-semibold text-muted hover:text-ink">
+          <Link
+            href={cta.login.href}
+            className={`flex min-h-11 items-center px-3 text-base font-semibold ${dunkel ? "text-white/90 hover:text-white" : "text-muted hover:text-ink"}`}
+          >
             {cta.login.label}
           </Link>
           <Link
             href={cta.secondary.href}
-            className="flex min-h-11 items-center rounded-md px-4 text-base font-semibold text-signal-dark ring-1 ring-inset ring-signal-dark/60 hover:bg-hover"
+            className={`flex min-h-11 items-center rounded-md px-4 text-base font-semibold ring-1 ring-inset ${
+              dunkel ? "text-white ring-white/40 hover:bg-white/10" : "text-signal-dark ring-signal-dark/60 hover:bg-hover"
+            }`}
           >
             {cta.secondary.label}
           </Link>
@@ -159,7 +212,9 @@ export function Header() {
             aria-expanded={mobil}
             aria-controls="mobiles-menue"
             onClick={() => setMobil(true)}
-            className="flex min-h-12 items-center gap-2 rounded-md px-3 text-base font-semibold text-ink ring-1 ring-inset ring-line hover:bg-hover"
+            className={`flex min-h-12 items-center gap-2 rounded-md px-3 text-base font-semibold ring-1 ring-inset ${
+              dunkel ? "text-white ring-white/40 hover:bg-white/10" : "text-ink ring-line hover:bg-hover"
+            }`}
           >
             <Icon name="menu" className="size-6" />
             Menü
@@ -167,8 +222,12 @@ export function Header() {
         </div>
       </div>
 
-      <MobilesMenue offen={mobil} schliessen={() => setMobil(false)} menueKnopf={menueKnopf} />
-    </header>
+        </div>
+        <MobilesMenue offen={mobil} schliessen={() => setMobil(false)} menueKnopf={menueKnopf} />
+      </header>
+      {/* Platzhalter: Die Startseite legt den Kopf auf den Hero, alle anderen Seiten beginnen darunter. */}
+      {!startseite && <div aria-hidden className="h-[4.5rem] sm:h-[4.75rem]" />}
+    </>
   );
 }
 
@@ -179,12 +238,12 @@ function MegaPanel({ item, maxHoehe }: { item: MegaItem; maxHoehe: string }) {
   const titelId = `${panelId(item.label)}-titel`;
   return (
     // Der Rahmen reicht bis 24 px an den Rand; Klicks daneben gehen an die Seite (pointer-events).
-    <div className="pointer-events-none absolute inset-x-6 top-full z-10">
+    <div className="pointer-events-none absolute inset-x-2 top-full z-10 sm:inset-x-3">
       <div
         id={panelId(item.label)}
         aria-labelledby={titelId}
         style={{ maxHeight: maxHoehe }}
-        className={`mega-auf pointer-events-auto mx-auto w-full overflow-y-auto overscroll-contain rounded-b-3xl border border-t-0 border-line bg-white px-8 pb-5 pt-8 shadow-popover ${
+        className={`mega-auf pointer-events-auto mx-auto mt-2 w-full overflow-y-auto overscroll-contain rounded-2xl border border-line bg-white px-8 pb-5 pt-8 shadow-popover ${
           mega.art === "gewerke" ? "max-w-[920px]" : "max-w-[1200px]"
         }`}
       >

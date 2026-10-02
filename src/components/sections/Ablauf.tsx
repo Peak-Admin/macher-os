@@ -148,8 +148,8 @@ export function Ablauf() {
   const s = schritte[aktiv];
 
   return (
-    <section ref={bereich} aria-labelledby="ablauf-titel" className="px-2 py-2 sm:px-3">
-      <div className="overflow-hidden rounded-2xl bg-ink text-white sm:rounded-3xl">
+    <section ref={bereich} aria-labelledby="ablauf-titel" data-header-theme="dunkel" className="zone zone-dunkel markenflaeche">
+      <div>
         <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 sm:py-24">
           <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-white/70">Ein Ablauf</p>
           <h2 id="ablauf-titel" className="mt-4 font-display text-3xl font-bold leading-[1.1] tracking-tight text-balance sm:text-5xl">

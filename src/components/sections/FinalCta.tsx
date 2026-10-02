@@ -5,7 +5,7 @@ import { cta } from "@/lib/site";
 import { TrustRow } from "./TrustRow";
 
 /**
- * Abschluss-CTA jeder Marketingseite – helle Fläche zwischen den grünen Abschnitten davor und dem grünen Footer,
+ * Abschluss-CTA jeder Marketingseite – weiße Box zwischen den Abschnitten davor und der grünen Footer-Box,
  * eine klare Aktion.
  * Das Foto erscheint nur, wenn es vorhanden ist (keine Ersatzfläche als Dekoration).
  */
@@ -28,7 +28,7 @@ export function FinalCta({
 }) {
   const mitFoto = fotoVorhanden(bild);
   return (
-    <section className="relative isolate overflow-hidden border-t border-line bg-white text-ink">
+    <section data-header-theme="hell" className="zone zone-weiss">
       {mitFoto && (
         <div className="relative h-56 sm:h-72 lg:absolute lg:inset-y-0 lg:left-0 lg:h-auto lg:w-[42%]">
           <Foto bild={bild} sizes="(min-width: 1024px) 42vw, 100vw" />

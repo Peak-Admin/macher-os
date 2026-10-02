@@ -90,7 +90,7 @@ const momente: Moment[] = [
 /** „Dein Alltag“: vier Momente als 3D-Karten, jede zeigt oben, wie der Moment in Macher OS aussieht (Beispieldaten). */
 export function Alltag() {
   return (
-    <section className="bg-paper py-16 sm:py-24">
+    <section data-header-theme="hell" className="zone zone-beige py-16 sm:py-24">
       <Container>
         <SectionHeading
           eyebrow="Dein Alltag"
