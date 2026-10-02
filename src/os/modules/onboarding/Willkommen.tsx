@@ -302,7 +302,7 @@ function Ablauf() {
           </WeiterButton>
         </form>
         {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
-        <div>
+        <div className="ob-ohne-website">
           <Button variante="tertiaer" icon="pfeilRechts" onClick={() => geheZu('gewerk')} disabled={liest}>
             Keine Website? Gewerk auswählen
           </Button>
