@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/os-module.mjs",
+    "predev": "node scripts/os-module.mjs && node scripts/os-sw.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/os-module.mjs",
+    "prebuild": "node scripts/os-module.mjs && node scripts/os-sw.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

@@ -2,21 +2,27 @@
  * Lokale Navigation im Inhaltsbereich: höchstens vier Ziele des aktuellen Bereichs,
  * darunter – nur wenn nötig – höchstens vier Ansichten des gewählten Ziels.
  * Auf Detail-, Anlege- und Bearbeitungsseiten tritt sie zurück (die Seite hat dort ihren Zurück-Link).
+ * Monteur/Azubi sehen unter „Aufträge“ nur ihre Arbeit (Übersicht) – Eingang, Kunden und Service sind Büro-Sache.
  */
 import { Link } from 'react-router-dom';
 import { modul, modulPfad } from '@core/modul';
 import { useDatenstand } from '@core/db';
 import { useIch } from '@core/session';
 import { Icon } from '@ui/index';
+import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { ansichtPfad, sichtbareAnsichten, sichtbareZiele, zielPfad, zieleVon, type Ort } from './struktur';
+
+const MONTEUR_ZIELE = ['uebersicht'];
 
 export function LokaleNavigation({ ort }: { ort: Ort }) {
   useDatenstand();
   const ich = useIch();
+  const eingang = useEingangsZahl();
+  const monteur = ich?.rolle === 'monteur' || ich?.rolle === 'azubi';
   if (ort.detail || ort.haupt.id === 'heute') return null;
   // Betrieb-Startseite (Kacheln) hat keine lokale Navigation
   if (ort.haupt.id === 'betrieb' && !ort.kategorie) return null;
-  const ziele = sichtbareZiele(ort.kategorie ? ort.kategorie.ziele : zieleVon(ort.haupt), ich);
+  const ziele = sichtbareZiele(ort.kategorie ? ort.kategorie.ziele : zieleVon(ort.haupt), ich).filter((z) => !monteur || ort.haupt.id !== 'auftraege' || MONTEUR_ZIELE.includes(z.id));
   if (!ort.ziel && !ort.kategorie) return null;
   const ansichten = ort.ziel ? sichtbareAnsichten(ort.ziel, ich) : [];
   const weitere = ort.ansicht && ort.ansicht.module.length > 1 ? ort.ansicht.module.filter((id) => id !== ort.modulId).map((id) => modul(id)).filter((m) => !!m) : [];
@@ -42,6 +48,11 @@ export function LokaleNavigation({ ort }: { ort: Ort }) {
               <Link key={z.id} to={zielPfad(z, ich)} className={`mm-lokalnav-link ${an ? 'mm-lokalnav-link--an' : ''}`} aria-current={an ? 'page' : undefined}>
                 <span className="mm-nur-desktop">{z.titel}</span>
                 <span className="mm-nur-mobil">{z.kurz ?? z.titel}</span>
+                {z.id === 'eingang' && eingang > 0 && (
+                  <span className="mm-nav-zahl mm-lokalnav-zahl" aria-label={`${eingang} neu`}>
+                    {eingang > 9 ? '9+' : eingang}
+                  </span>
+                )}
               </Link>
             );
           })}

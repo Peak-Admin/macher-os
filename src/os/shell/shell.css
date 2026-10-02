@@ -103,6 +103,31 @@
   .mm-bottomnav-link--aktiv svg { color: var(--mm-brand); }
 }
 
+/* Monteur-App: genau drei Tabs */
+@media (max-width: 1023px) {
+  .mm-bottomnav--monteur { grid-template-columns: repeat(3, 1fr); }
+  .mm-bottomnav--monteur .mm-bottomnav-link { font-size: 14px; }
+}
+
+/* Zahl neuer Einträge im Eingang (Text + Zahl, nicht nur Farbe) */
+.mm-nav-zahl { margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--mm-brand-deep); color: #fff; font: 700 12px/22px var(--mm-font); text-align: center; }
+.mm-lokalnav-zahl { margin-left: 6px; display: inline-block; vertical-align: middle; }
+.mm-bottomnav-icon { position: relative; display: inline-flex; }
+.mm-nav-zahl--klein { position: absolute; top: -6px; right: -12px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
+
+/* Offline und Installieren */
+.mm-offline, .mm-installieren { max-width: var(--mm-content-max); margin: 0 auto 16px; }
+.mm-installieren {
+  display: flex; flex-direction: column; gap: 8px; padding: 12px 12px 16px 16px;
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-left: 4px solid var(--mm-brand); border-radius: var(--mm-radius-card);
+}
+.mm-installieren-kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--mm-black); font-size: 17px; }
+.mm-installieren p { margin: 0; color: var(--mm-text); font-size: 15px; line-height: 22px; }
+@media (prefers-reduced-motion: no-preference) {
+  .mm-offline, .mm-installieren { animation: mm-einblenden 160ms ease-out; }
+}
+@keyframes mm-einblenden { from { opacity: 0; } to { opacity: 1; } }
+
 /* Lokale Navigation im Inhalt: höchstens vier Ziele, umbrechend statt waagerecht scrollend */
 .mm-lokal { width: 100%; max-width: var(--mm-content-max); margin: 0 auto 24px; display: flex; flex-direction: column; gap: 12px; }
 .mm-lokal-pfad { margin-bottom: 0; }

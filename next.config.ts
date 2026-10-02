@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     // Die Software ist eine Single-Page-App mit eigenem Router: jede Adresse unter /os/… lädt dieselbe Seite.
     return [{ source: "/os/:pfad+", destination: "/os" }];
   },
+  async headers() {
+    // Service Worker der App immer frisch prüfen, damit Updates sofort ankommen
+    return [{ source: "/os/sw.js", headers: [{ key: "Cache-Control", value: "no-cache" }] }];
+  },
   async redirects() {
     return [
       // frühere Registrierung und Anmeldung – alte Links führen direkt in die App
