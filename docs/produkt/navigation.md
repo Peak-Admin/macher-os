@@ -4,8 +4,8 @@ Stand: 02.10.2026 · Umsetzung der Spezifikation „Zielstruktur einer einfachen
 
 **Leitsatz: Viele Fähigkeiten im Produkt. Wenige Entscheidungen auf jedem Screen.**
 
-Die Struktur ist im Code an genau einer Stelle festgelegt: [`os/src/shell/struktur.ts`](../../os/src/shell/struktur.ts).
-Der Test [`struktur.test.ts`](../../os/src/shell/struktur.test.ts) prüft, dass es genau vier Hauptbereiche gibt, jede
+Die Struktur ist im Code an genau einer Stelle festgelegt: [`src/os/shell/struktur.ts`](../../src/os/shell/struktur.ts).
+Der Test [`struktur.test.ts`](../../src/os/shell/struktur.test.ts) prüft, dass es genau vier Hauptbereiche gibt, jede
 Ebene höchstens vier Ziele hat und **jedes der 81 Module genau einen Ort** besitzt.
 
 ## 1. Zielstruktur
@@ -39,11 +39,11 @@ Der Baum wird nie als Menü gezeigt. Sichtbar ist immer nur die aktuelle Ebene:
 - **Betrieb als Modulverzeichnis:** Unter den vier Kacheln stehen alle Module, die der Nutzer sehen darf – gruppiert
   nach Geld · Team · Ausstattung · Unternehmen, dann „Aus Aufträge“ und „Aus Planen“ – mit Suche „Modul finden“.
   Mit dem Stern holt man bis zu drei Module als Favorit in die Navigation. Gespeichert je Mitarbeiter
-  (`navigation.favoriten.<id>`), Startauswahl je Rolle in `os/src/shell/favoriten.ts`.
+  (`navigation.favoriten.<id>`), Startauswahl je Rolle in `src/os/shell/favoriten.ts`.
 - **Lokal:** im Inhaltsbereich höchstens vier Ziele (gleich breit, mobil mit Kurzlabels, nie waagerecht scrollend),
   darunter – nur wenn nötig – höchstens vier Ansichten als Wechsler. Auf Detail-, Anlege- und Bearbeitungsseiten tritt
   die lokale Navigation zurück; der Hauptbereich bleibt markiert und die Seite hat einen Zurück-Link.
-- **Detailseiten:** höchstens vier Bereiche (`OBJEKT_BEREICHE` in `os/src/ui/objekt.tsx`). Auftrag: Überblick · Arbeit ·
+- **Detailseiten:** höchstens vier Bereiche (`OBJEKT_BEREICHE` in `src/os/ui/objekt.tsx`). Auftrag: Überblick · Arbeit ·
   Unterlagen · Verlauf. Kunde: Aufträge · Kontakt & Orte · Angebote & Rechnungen · Verlauf. Mitarbeiter: Zeiten &
   Abwesenheit · Lernen & Nachweise. Innerhalb eines Bereichs höchstens vier Teile, Dokumentarten per Auswahl statt Tabs.
   Neue Tabs anderer Module landen im Teil „Weiteres“, nie in einem fünften Bereich. Alte Links mit `?tab=Fotos` usw.
