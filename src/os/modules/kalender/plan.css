@@ -10,7 +10,7 @@
 /* Woche / Monat: 7 Spalten */
 .pl-woche { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
 .pl-tag { display: flex; flex-direction: column; gap: 8px; min-height: 160px; padding: 8px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); background: var(--mm-surface); min-width: 0; }
-.pl-tag--heute { border-color: var(--mm-brand); box-shadow: inset 0 3px 0 var(--mm-brand); }
+.pl-tag--heute { border-color: var(--mm-brand); box-shadow: inset 0 0 0 1px var(--mm-brand); }
 .pl-tag--frei { background: var(--mm-canvas); }
 .pl-tagkopf { display: flex; justify-content: space-between; align-items: baseline; gap: 4px; font-size: 14px; }
 .pl-tagkopf strong { color: var(--mm-black); }
@@ -18,11 +18,13 @@
 
 .pl-termin {
   display: flex; flex-direction: column; gap: 2px; width: 100%; padding: 6px 8px; text-align: left;
-  border: 1px solid var(--mm-border); border-left: 4px solid var(--pl-farbe, var(--mm-brand)); border-radius: var(--mm-radius-control);
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control);
   background: var(--mm-surface); color: var(--mm-text); font: 14px/18px var(--mm-font); text-decoration: none; cursor: pointer; min-width: 0;
   transition: background-color var(--mm-motion-fast) ease-out;
 }
 .pl-termin:hover { background: var(--mm-hover); }
+/* Farbe der Person als Punkt vor der Uhrzeit – kein Streifen am Rand */
+.pl-termin > .mm-meta:first-child::before { content: ''; display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 50%; background: var(--pl-farbe, var(--mm-brand)); vertical-align: 1px; }
 .pl-termin:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
 .pl-termin strong { color: var(--mm-black); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pl-termin .mm-meta { font-size: 13px; line-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -335,7 +335,7 @@ a.pt2-balken:hover, span.pt2-balken:hover { box-shadow: inset 0 0 0 1px color-mi
   gap: 2px;
 }
 .ep-auftrag-name--aktiv {
-  box-shadow: inset 4px 0 0 var(--mm-brand);
+  background: var(--mm-soft-green);
 }
 .ep-auftrag-link {
   color: var(--mm-link);
