@@ -10,8 +10,9 @@ import { db } from '@core/db';
 import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uhrzeit, datumVon, plusTage, wochenStart, tageZwischen } from '@core/format';
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
-import type { Datum, ID, Kunde, Mitarbeiter, Rechnung, Termin } from '@core/objects';
+import type { Datum, ID, Mitarbeiter, Rechnung, Termin } from '@core/objects';
 import type { Recht } from '@core/session';
+import { befehlVorbereiten, erkenneBefehl, findeKunde, findeMitarbeiter, type Befehl, type Freigabe, type Klasse, type VorschauZeile } from '@core/aktionen';
 import { zeitraumAus, type Zeitraum } from './zeit';
 import { abwesenheitAm, anwesenheit, arbeitstagIm, geplanteStunden, kontextAusDb as planKontextAusDb, verfuegbareStunden } from '../verfuegbarkeit/daten';
 
@@ -39,9 +40,31 @@ export interface AufgabeEntwurf {
   auftragId?: ID;
 }
 
+/** Vorbereitete Aktion der Action Engine (`@core/aktionen`) – wird erst nach Bestätigung/Freigabe ausgeführt */
+export interface BefehlVorschlag {
+  id: string;
+  art: 'befehl';
+  /** Beschriftung des Bestätigungsknopfs */
+  label: string;
+  befehlId: string;
+  /** die ursprüngliche Eingabe (Kontext beim Ausführen) */
+  eingabe: string;
+  titel: string;
+  zeilen?: VorschauZeile[];
+  parameter: unknown;
+  klassen: Klasse[];
+  freigabe: Freigabe;
+  hinweis?: string;
+  endgueltig?: string;
+  felder?: { schluessel: string; label: string; mehrzeilig?: boolean }[];
+  status: 'entwurf' | 'ausgefuehrt' | 'verworfen' | 'zurueckgenommen';
+  ergebnis?: { text: string; pfad?: string; eintraege: ID[]; oeffnen?: { label: string; url: string }[]; am: string };
+}
+
 export type Vorschlag =
   | { id: string; art: 'aufgabe'; label: string; entwurf: AufgabeEntwurf; status: 'entwurf' | 'ausgefuehrt' | 'verworfen'; ergebnisId?: ID }
-  | { id: string; art: 'oeffnen'; label: string; pfad: string };
+  | { id: string; art: 'oeffnen'; label: string; pfad: string }
+  | BefehlVorschlag;
 
 export interface Antwort {
   /** kurze Antwort in 1–2 Sätzen */
@@ -69,6 +92,7 @@ export const BEISPIELFRAGEN = [
   'Wer hat nächste Woche Zeit?',
   'Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag',
   'Was braucht mich gerade?',
+  'Bestell das fehlende Material',
 ];
 
 // ------------------------------------------------------------------ Hilfen
@@ -78,8 +102,6 @@ const anzahl = (n: number, eins: string, viele: string) => `${n} ${n === 1 ? ein
 const vid = () => Math.random().toString(36).slice(2, 10);
 const gross = (t: string) => (t ? t[0].toUpperCase() + t.slice(1) : t);
 
-const STOPP = new Set(['familie', 'frau', 'herr', 'firma', 'gmbh', 'kg', 'ohg', 'gbr', 'und', 'der', 'die', 'das', 'von', 'e.k.']);
-
 function woerter(t: string) {
   return klein(t)
     .replace(/[^\p{L}\p{N}\s-]/gu, ' ')
@@ -87,28 +109,8 @@ function woerter(t: string) {
     .filter(Boolean);
 }
 
-/** Mitarbeiter, dessen Vor- oder Nachname als Wort im Text vorkommt */
-export function findeMitarbeiter(text: string): Mitarbeiter | undefined {
-  const w = new Set(woerter(text));
-  const alle = db.mitarbeiter.where((m) => m.aktiv);
-  return (
-    alle.find((m) => w.has(klein(m.vorname)) && w.has(klein(m.nachname))) ??
-    alle.find((m) => w.has(klein(m.vorname))) ??
-    alle.find((m) => m.nachname.length > 2 && w.has(klein(m.nachname)))
-  );
-}
-
-/** Kunde, dessen Namensbestandteile im Text vorkommen (beste Übereinstimmung) */
-export function findeKunde(text: string): Kunde | undefined {
-  const w = new Set(woerter(text));
-  let best: { k: Kunde; score: number } | undefined;
-  for (const k of db.kunden.all()) {
-    const teile = woerter(`${k.name} ${k.firma ?? ''}`).filter((x) => x.length >= 3 && !STOPP.has(x));
-    const score = teile.filter((x) => w.has(x)).length;
-    if (score > 0 && (!best || score > best.score)) best = { k, score };
-  }
-  return best?.k;
-}
+/** Mitarbeiter und Kunden per Name finden – eine Umsetzung im Kern (Action Engine) */
+export { findeKunde, findeMitarbeiter };
 
 function rechnungOffen(r: Rechnung, ust: number) {
   const brutto = r.art === 'gutschrift' ? 0 : summen(r.positionen, ust).brutto;
@@ -491,12 +493,53 @@ function suchen(k: Kontext, frage: string): Antwort {
   };
 }
 
+// ------------------------------------------------------------------ Befehle (Action Engine)
+
+/** Befehl vorbereiten und als Antwort mit Vorschau (oder direkter Auskunft) zurückgeben */
+export function befehlAntwort(b: Befehl, frage: string, k: Kontext): Antwort {
+  const v = befehlVorbereiten(b, { ...k, eingabe: frage });
+  const e = v.ergebnis;
+  if (e.art === 'antwort')
+    return {
+      absicht: `befehl:${b.id}`,
+      text: e.text,
+      eintraege: e.zeilen,
+      grundlage: e.grundlage ? `${e.grundlage} · ${stand(k)}` : undefined,
+      folgefragen: e.folgefragen,
+    };
+  return {
+    absicht: `befehl:${b.id}`,
+    text: e.text,
+    vorschlaege: [
+      {
+        id: vid(),
+        art: 'befehl',
+        label: e.bestaetigen ?? 'Ausführen',
+        befehlId: b.id,
+        eingabe: frage,
+        titel: e.titel,
+        zeilen: e.zeilen,
+        parameter: e.parameter,
+        klassen: v.klassen ?? b.klassen,
+        freigabe: v.freigabe ?? 'bestaetigen',
+        hinweis: e.hinweis,
+        endgueltig: e.endgueltig,
+        felder: e.felder,
+        status: 'entwurf',
+      },
+    ],
+  };
+}
+
 // ------------------------------------------------------------------ Regelmodell
 
 /** Erkennt die Absicht und beantwortet sie direkt aus den Daten. */
 export function beantworte(frage: string, k: Kontext): Antwort {
   const f = klein(frage.trim());
   if (!f) return { absicht: 'leer', text: 'Stell mir eine Frage zu deinem Betrieb.', folgefragen: BEISPIELFRAGEN };
+  // Befehle der Action Engine zuerst („Mach Müller die Rechnung fertig“)
+  const erkannt = erkenneBefehl(frage);
+  if (erkannt) return befehlAntwort(erkannt.befehl, frage, k);
   const z = zeitraumAus(f, k.heute);
 
   if (/\baufgabe\b/.test(f) && /\b(leg|lege|erstell|erstelle|anlegen|neue|mach|notier|notiere)\b/.test(f)) return aufgabeAnlegen(k, frage);

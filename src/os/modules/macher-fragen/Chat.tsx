@@ -4,9 +4,11 @@ import { db } from '@core/db';
 import { heute } from '@core/format';
 import { pfadZu } from '@core/modul';
 import { darf, useIch } from '@core/session';
-import { Button, Eingabe, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useToast } from '@ui/index';
+import { Button, Eingabe, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Textfeld, Zeile, useBestaetigen, useToast } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
-import { aufgabeAusEntwurf, BEISPIELFRAGEN, sprachmodell, type Antwort, type Vorschlag } from './assistent';
+import { befehl as befehlZu, befehlAusfuehren, befehlRueckgaengig, KLASSE_LABEL } from '@core/aktionen';
+import { rueckgaengigGrund } from '@core/audit';
+import { aufgabeAusEntwurf, BEISPIELFRAGEN, sprachmodell, type Antwort, type BefehlVorschlag, type Vorschlag } from './assistent';
 import { chat, type ChatEintrag } from './daten';
 import './macher.css';
 
@@ -137,7 +139,9 @@ function AntwortAnsicht({ eintrag, a, fragen, onNavigiert }: { eintrag: ChatEint
           ))}
         </Liste>
       )}
-      {a.vorschlaege?.map((v) => (v.art === 'aufgabe' ? <AufgabeVorschlag key={v.id} eintrag={eintrag} v={v} /> : null))}
+      {a.vorschlaege?.map((v) =>
+        v.art === 'aufgabe' ? <AufgabeVorschlag key={v.id} eintrag={eintrag} v={v} /> : v.art === 'befehl' ? <BefehlKarte key={v.id} eintrag={eintrag} v={v} gehe={gehe} /> : null,
+      )}
       {(a.vorschlaege?.some((v) => v.art === 'oeffnen') || !!a.folgefragen?.length) && (
         <Zeile>
           {a.vorschlaege?.map((v) =>
@@ -228,6 +232,144 @@ function AufgabeVorschlag({ eintrag, v }: { eintrag: ChatEintrag; v: Extract<Vor
           </Button>
         </Zeile>
       </div>
+    </Karte>
+  );
+}
+
+/** Status eines Vorschlags im gespeicherten Verlauf ändern */
+function vorschlagAendern(eintrag: ChatEintrag, id: string, patch: Partial<Vorschlag>) {
+  const antwort = chat.get(eintrag.id)?.antwort ?? eintrag.antwort!;
+  chat.update(eintrag.id, { antwort: { ...antwort, vorschlaege: antwort.vorschlaege?.map((x) => (x.id === id ? ({ ...x, ...patch } as Vorschlag) : x)) } }, { leise: true });
+}
+
+/**
+ * Vorbereitete Aktion der Action Engine: Vorschau → Bestätigen (WRITE) bzw. ausdrücklich Freigeben
+ * (Geld, an Kunden, Löschen) → Ausführen → Rückgängig.
+ */
+function BefehlKarte({ eintrag, v, gehe }: { eintrag: ChatEintrag; v: BefehlVorschlag; gehe: (pfad: string) => void }) {
+  const toast = useToast();
+  const ich = useIch();
+  const [fragen, dialog] = useBestaetigen();
+  const [parameter, setParameter] = useState(v.parameter as Record<string, unknown> | undefined);
+  const [fehler, setFehler] = useState<string>();
+  const [laeuft, setLaeuft] = useState(false);
+  const kontext = () => ({ eingabe: v.eingabe, heute: heute(), jetzt: new Date(), ich, darf: (r: Parameters<typeof darf>[0]) => darf(r, ich) });
+
+  if (v.status === 'verworfen')
+    return (
+      <Karte kompakt oberzeile="Entwurf verworfen">
+        <Meta>Es wurde nichts ausgeführt.</Meta>
+      </Karte>
+    );
+
+  if (v.status === 'zurueckgenommen')
+    return (
+      <Karte kompakt oberzeile="Rückgängig gemacht">
+        <Meta>{v.titel}: Macher hat die Änderungen zurückgenommen.</Meta>
+      </Karte>
+    );
+
+  if (v.status === 'ausgefuehrt' && v.ergebnis) {
+    const e = v.ergebnis;
+    const kannZurueck = e.eintraege.some((id) => !rueckgaengigGrund(db.ereignisse.get(id)));
+    const zurueck = () => {
+      const r = befehlRueckgaengig(e.eintraege);
+      if (!r.ok) return toast(r.fehler[0] ?? 'Das lässt sich nicht mehr zurücknehmen.');
+      vorschlagAendern(eintrag, v.id, { status: 'zurueckgenommen' });
+      toast(r.fehler.length ? `Teilweise zurückgenommen: ${r.fehler[0]}` : 'Rückgängig gemacht.');
+    };
+    return (
+      <Karte kompakt oberzeile="Ausgeführt">
+        <div className="mm-stapel" style={{ gap: 12 }}>
+          <span>
+            <Status ton="erfolg">Erledigt</Status> {e.text}
+          </span>
+          <Zeile>
+            {e.oeffnen?.map((o) => (
+              <Button key={o.url} variante="sekundaer" klein icon={o.url.startsWith('mailto:') ? 'mail' : 'chat'} onClick={() => gehe(o.url)}>
+                {o.label}
+              </Button>
+            ))}
+            {e.pfad && (
+              <Button variante="tertiaer" klein icon="pfeilRechts" onClick={() => gehe(e.pfad!)}>
+                Öffnen
+              </Button>
+            )}
+            {kannZurueck && (
+              <Button variante="tertiaer" klein icon="wiederholen" onClick={zurueck}>
+                Rückgängig machen
+              </Button>
+            )}
+          </Zeile>
+          {v.endgueltig && <Meta>{v.endgueltig}</Meta>}
+        </div>
+      </Karte>
+    );
+  }
+
+  const freigabe = v.freigabe === 'freigeben';
+  const ausfuehren = async () => {
+    setFehler(undefined);
+    const b = befehlZu(v.befehlId);
+    if (!b) return setFehler('Diese Aktion ist gerade nicht verfügbar.');
+    for (const f of v.felder ?? []) if (!String(parameter?.[f.schluessel] ?? '').trim()) return setFehler(`Trag ${f.label} ein.`);
+    if (freigabe) {
+      const ok = await fragen(v.titel, [v.endgueltig, 'Erst mit deiner Freigabe führt Macher das aus.'].filter(Boolean).join(' '), v.label);
+      if (!ok) return;
+    }
+    setLaeuft(true);
+    try {
+      const r = befehlAusfuehren(b, parameter as never, kontext(), { klassen: v.klassen, bestaetigt: true, freigegeben: freigabe });
+      vorschlagAendern(eintrag, v.id, { status: 'ausgefuehrt', parameter, ergebnis: { text: r.text, pfad: r.pfad, eintraege: r.eintraege, oeffnen: r.oeffnen, am: r.am } });
+      toast(r.text);
+      // Nachricht an den Kunden: App direkt öffnen (abschicken tut der Mensch dort)
+      if (r.oeffnen?.length === 1) gehe(r.oeffnen[0].url);
+    } catch (err) {
+      setFehler(err instanceof Error ? err.message : 'Das hat nicht geklappt. Versuche es erneut.');
+    } finally {
+      setLaeuft(false);
+    }
+  };
+
+  return (
+    <Karte kompakt oberzeile={freigabe ? 'Freigabe nötig – noch nicht ausgeführt' : 'Entwurf – noch nicht ausgeführt'}>
+      <div className="mm-stapel" style={{ gap: 16 }}>
+        <strong>{v.titel}</strong>
+        {!!v.zeilen?.length && (
+          <Liste>
+            {v.zeilen.map((z, i) => (
+              <ListenZeile key={i} titel={z.titel} untertitel={z.untertitel} rechts={z.status ? <Status ton={z.status.ton}>{z.status.text}</Status> : undefined} onClick={z.pfad ? () => gehe(z.pfad!) : undefined} />
+            ))}
+          </Liste>
+        )}
+        {v.felder?.map((f) =>
+          f.mehrzeilig ? (
+            <Textfeld key={f.schluessel} label={f.label} rows={6} value={String(parameter?.[f.schluessel] ?? '')} onChange={(e) => setParameter({ ...parameter, [f.schluessel]: e.target.value })} />
+          ) : (
+            <Eingabe key={f.schluessel} label={f.label} value={String(parameter?.[f.schluessel] ?? '')} onChange={(e) => setParameter({ ...parameter, [f.schluessel]: e.target.value })} />
+          ),
+        )}
+        <Zeile>
+          {v.klassen
+            .filter((k) => k !== 'READ')
+            .map((k) => (
+              <Status key={k} ton={k === 'WRITE' ? 'neutral' : 'achtung'}>
+                {KLASSE_LABEL[k]}
+              </Status>
+            ))}
+        </Zeile>
+        {v.hinweis && <Meta>{v.hinweis}</Meta>}
+        {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
+        <Zeile>
+          <Button icon="check" onClick={ausfuehren} laedt={laeuft}>
+            {v.label}
+          </Button>
+          <Button variante="tertiaer" onClick={() => vorschlagAendern(eintrag, v.id, { status: 'verworfen' })}>
+            Verwerfen
+          </Button>
+        </Zeile>
+      </div>
+      {dialog}
     </Karte>
   );
 }

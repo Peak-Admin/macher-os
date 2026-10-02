@@ -17,6 +17,7 @@
  */
 import type { ComponentType } from 'react';
 import type { Bezug, ID, Rolle, SammlungsName } from './objects';
+import type { Befehl } from './aktionen';
 
 export type Bereich = 'heute' | 'auftraege' | 'plan' | 'betrieb' | 'macher';
 export type BetriebGruppe = 'team' | 'material' | 'werkzeuge' | 'geld' | 'unternehmen';
@@ -137,6 +138,12 @@ export interface ModulDef {
   hinweise?: () => HinweisVorschlag[];
   /** Aktionen für Hinweis-Buttons. Rückgabe: optionaler Pfad zum Navigieren */
   aktionen?: Record<string, (payload: unknown) => string | void>;
+  /**
+   * Befehle für „Macher fragen“ (Action Engine, `@core/aktionen`): ein Satz → Vorschau → Freigabe → Ausführen.
+   * Bauen auf `aktionen` auf (`braucht: ['rechnung.erstellen']`) und rufen sie über `aktionAusfuehren` auf.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  befehle?: Befehl<any>[];
   automationen?: Automation[];
   suche?: (q: string) => Treffer[];
   schnell?: SchnellAktion[];

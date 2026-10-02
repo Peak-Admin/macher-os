@@ -554,6 +554,19 @@ export interface Benachrichtigung extends Basis {
   wichtig?: boolean;
 }
 
+/** Wer eine Änderung ausgelöst hat: Mensch, Automation, Macher (KI), Import, Abgleich */
+export type AuditQuelle = 'user' | 'automation' | 'ai' | 'import' | 'sync';
+
+/** Ein geändertes Feld im Verlauf (nur geänderte Felder werden gespeichert) */
+export interface FeldAenderung {
+  vorher?: unknown;
+  nachher?: unknown;
+  /** Wert zu groß zum Speichern (z. B. Foto) – dann ist „Rückgängig“ nicht möglich */
+  gekuerzt?: boolean;
+  /** geschützter Wert (Geld, Lohn) – steht nicht im für alle lesbaren Verlauf */
+  geschuetzt?: boolean;
+}
+
 /** Zeitstrahl/Audit: jede Änderung an einem Objekt */
 export interface Ereignis extends Basis {
   typ: string; // "auftrag.created", "rechnung.overdue" …
@@ -561,6 +574,18 @@ export interface Ereignis extends Basis {
   text: string;
   vonMitarbeiterId?: ID;
   daten?: unknown;
+  /** Audit: woher die Änderung kam (fehlt bei alten Einträgen = Mensch) */
+  quelle?: AuditQuelle;
+  /** Audit: Automation-ID, „macher“, Import-Name … */
+  akteurId?: string;
+  /** Audit: automatisch protokollierte Datenänderung */
+  aenderung?: 'created' | 'updated' | 'removed' | 'restored';
+  /** Audit: geänderte Felder mit vorher/nachher */
+  felder?: Record<string, FeldAenderung>;
+  /** mehrere stille Bearbeitungen (Tippen im Editor) in einem Eintrag zusammengefasst */
+  zusammengefasst?: boolean;
+  /** über „Rückgängig“ zurückgenommen */
+  rueckgaengigAm?: Zeitpunkt;
 }
 
 // ---------------------------------------------------------------- Typ-Registry

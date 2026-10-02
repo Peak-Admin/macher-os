@@ -53,6 +53,7 @@ schreibt vor `dev`, `build` und `test` die Liste `src/os/shell/module-liste.ts` 
 | `tabs` / `panels` | in Detailansichten anderer Objekte einhängen (z. B. Tab „Fotos“ am Auftrag). Tabs werden in höchstens vier Bereiche gebündelt (`OBJEKT_BEREICHE` in `@ui/objekt`) – ein neuer Tab erzeugt nie einen fünften Bereich. |
 | `hinweise` | live berechnete Punkte für „Braucht dich“ |
 | `aktionen` | Funktionen für Hinweis-Buttons (`{ 'rechnung.mahnen': (payload) => ... }`) |
+| `befehle` | Sätze für „Macher fragen“ (Action Engine, Abschnitt 8): erkennen → Vorschau → Freigabe → ausführen über `aktionen` |
 | `automationen` | Regeln, die automatisch laufen (`start()` registriert Event-Handler über `on()`) |
 | `suche` | Treffer für die globale Suche |
 | `schnell` | Erfassungsformular (Foto, Zeit, Material …), das ein **beschrifteter Knopf im Kontext** direkt öffnet: `<ErfassenKnopf aktion="foto" auftragId={id} />` oder `erfassenAktion(...)` für „Weitere Aktionen“. Es gibt keine Auswahl „Was möchtest du erfassen?“. |
@@ -83,6 +84,9 @@ schreibt vor `dev`, `build` und `test` die Liste `src/os/shell/module-liste.ts` 
 - Verfügbarkeit (wer ist wann frei, freie Slots/Fenster, Abwesenheit am Tag, Stunden) nur aus `@modules/verfuegbarkeit/daten`
 - `oeffne('suche' | 'macher' | 'benachrichtigungen')`, `useOverlay(name)`; Erfassen nur mit konkreter Aktion: `erfassen('foto', auftragId)`
 - Geld immer in **Cent** (ganzzahlig). Datum `YYYY-MM-DD`, Zeitpunkte ISO.
+
+- `alsAkteur({ quelle: 'import', id: 'csv' }, () => …)` – Änderungen einem Akteur zuordnen (Abschnitt 8)
+- Ereignisse, Webhooks, Audit und Rückgängig: `@core/ereignisse`, `@core/audit`, Befehle: `@core/aktionen` (Abschnitt 8)
 
 ## 5. UI
 
@@ -118,3 +122,82 @@ Leitsatz: **Viele Fähigkeiten im Produkt. Wenige Entscheidungen auf jedem Scree
   weitere über `AktionsMenue` (höchstens vier Einträge). Listenvorschauen höchstens drei Einträge plus „Alle …“.
 - Erstellen passiert im Kontext mit konkretem Verb („Foto hinzufügen“, „Auftrag anlegen“), nie mit „Neu“ oder „+“ allein.
 - Suchbegriffe für Funktionen (`stichworte` in `struktur.ts`) pflegen, damit Seltenes über die Suche auffindbar bleibt.
+
+## 8. Ereignisse, Audit und Aktionen (Kern)
+
+### 8.1 Ereignisse (`@core/events`, `@core/ereignisse`)
+
+- **Datenereignisse** sendet die Datenschicht selbst: `<sammlung>.created|updated|removed|restored`.
+- **Fachliche Ereignisse** heißen `<objekt>.<partizip>` (deutsch) und stehen mit Beschreibung, Objekttyp und
+  englischem API-Namen im Katalog `EREIGNISSE` (`ereignisKatalog()`, `ereignisArt('invoice.paid')`, `apiName('rechnung.bezahlt')`).
+  Beispiele: `kunde.angelegt` (customer.created), `anfrage.eingegangen` (request.created), `angebot.versendet` (quote.sent),
+  `angebot.angenommen` (quote.accepted), `auftrag.angelegt` (job.created), `auftrag.eingeplant` (job.scheduled),
+  `auftrag.gestartet` (job.started), `auftrag.abgeschlossen` (job.completed), `auftrag.schritt_gewechselt` (job.stage_changed),
+  `rechnung.erstellt` (invoice.created), `rechnung.versendet` (invoice.sent), `rechnung.bezahlt` (invoice.paid),
+  `rechnung.ueberfaellig` (invoice.overdue), `zahlung.eingegangen` (payment.received), `mitarbeiter.abwesend` (employee.absent),
+  `material.knapp` (material.low_stock), `import.abgeschlossen` (import.completed) …
+- **Ableitung:** Viele fachliche Ereignisse leitet der Kern zentral aus Datenereignissen ab (`herkunft: 'abgeleitet'`),
+  z. B. Rechnung auf „bezahlt“ → `rechnung.bezahlt`, Auftrag auf „Erledigt“ → `auftrag.abgeschlossen`. Module müssen dafür
+  nichts tun. Abgeleitete Ereignisse kommen als Microtask direkt nach der Änderung an (`abgeleitet: true`). Sendet ein Modul
+  dasselbe Ereignis selbst – **synchron**, direkt neben der Änderung, mit demselben `objekt` –, wird die Ableitung verworfen.
+  Neue Ereignisse: im selben Schema benennen und im Katalog ergänzen (Kern).
+- **Senden:** `emit({ typ: 'import.abgeschlossen', sammlung: 'betrieb', objekt, daten: { anzahl } })` – `daten` klein halten (≤ 2 KB).
+- **Ereignisprotokoll** (`ereignisprotokoll`): jedes fachliche Ereignis mit `zeit`, `quelle` (user/automation/ai/import/sync),
+  `akteurId`, `mitarbeiterId`, `bezug`, `daten`. Lesen: `ereignisseSeit(seit?, { typ?, bezug? })`. Rotation: 90 Tage / 5000 Einträge
+  auf dem Gerät (`protokollAufraeumen`), der Server behält alles. Fristen (`rechnung.ueberfaellig`) prüft `pruefeFristen()` beim
+  Start und alle 30 Minuten.
+- **Webhooks** (Vertrag für die Oberfläche in `schnittstellen`):
+  - Sammlungen `webhooks` (`Webhook`: `name`, `url`, `ereignisse` = API-Namen oder `*`, `aktiv`, `zuletztZugestelltAm`, `letzterFehler`)
+    und `webhook_auslieferungen` (`WebhookAuslieferung`: `webhookId`, `ereignisId`, `api`, `status` wartend/zugestellt/fehler/aufgegeben,
+    `versuche`, `naechsterVersuch`, `antwortCode`, `fehler`).
+  - `webhookAnlegen({ name, url, ereignisse })` (prüft `webhookUrlPruefen(url)`: nur https, lokal auch http://localhost),
+    ändern/löschen über `webhooks.update/remove`.
+  - Passende Ereignisse landen automatisch in der Warteschlange (Beispieldaten nie). `webhookNutzlast(ereignis)` baut das JSON
+    (`id`, `type` = API-Name, `event`, `created_at`, `source`, `actor`, `object: { type, id, data }`, `data`).
+  - Versand: `setzeWebhookVersender(fn)` bindet einen Versender an (Server/Edge-Funktion); `webhooksZustellen()` stellt fällige zu,
+    `auslieferungErgebnis(id, { ok, code, fehler })` trägt Ergebnisse ein (Wiederholung nach 1, 5, 30, 120, 720 Minuten, danach
+    „aufgegeben“). Im Browser ist kein Versender gesetzt – die Warteschlange wird mit dem Konto abgeglichen und kann serverseitig
+    abgearbeitet werden. Das Signatur-Geheimnis gehört nur auf den Server (`geheimnisGesetzt` zeigt nur, ob es eins gibt).
+
+### 8.2 Audit und Rückgängig (`@core/audit`, `@core/akteur`)
+
+- Jede Änderung über `db.*` landet automatisch im Verlauf des Objekts (`ereignisse`, Zeitstrahl): `quelle`, `akteurId`,
+  `vonMitarbeiterId`, `aenderung` (created/updated/removed/restored) und bei Änderungen **nur die geänderten Felder** (`felder`
+  mit `vorher`/`nachher`; sehr große Werte nur als `gekuerzt`). Der Text ist Klartext: „Geändert: Status (Entwurf → Versendet)
+  – durch Macher“. Stille Änderungen (`{ leise: true }`) werden ebenfalls protokolliert, aber je Objekt und Akteur in einem
+  Eintrag „Bearbeitet: …“ zusammengefasst (30 Minuten).
+- **Akteur:** Standard ist der angemeldete Mensch. Automationen werden automatisch zugeordnet (Handler aus `start()` und
+  `pruefen()` laufen als `{ quelle: 'automation', id }`). Für Importe, Abgleich oder eigene Hintergrundarbeit:
+  `alsAkteur({ quelle: 'import', id: 'csv-kunden' }, () => …)` (gilt synchron; nach `await` erneut setzen).
+- Systemsammlungen ohne Feldprotokoll: `auditAusnehmen('meine_sammlung')` (z. B. Caches, Chatverlauf).
+- **Rückgängig:** `rueckgaengigGrund(ereignis)` (undefined = möglich), `rueckgaengig(ereignisId)` (Anlegen → Papierkorb, Löschen →
+  wiederherstellen, Ändern → vorher-Stand, nur wenn das Feld seitdem nicht weiter geändert wurde), `allesRueckgaengig(ids)`.
+  Sperren je Sammlung: `rueckgaengigSperre('rechnungen', (aktuell, e) => grund)` – festgeschriebene Rechnungen und Zahlungen
+  sind gesperrt. `mitschneiden(fn)` liefert die Verlaufseinträge, die `fn` erzeugt hat.
+- Sichtbar ist Audit nur als Verlauf am Objekt (`Zeitstrahl`) und unter Einstellungen › Papierkorb › „Letzte Änderungen“.
+  Kein eigenes Audit-Modul. Rotation: automatische Einträge 365 Tage / 20 000 auf dem Gerät (`verlaufAufraeumen`).
+
+### 8.3 Macher Action Engine (`@core/aktionen`)
+
+Ablauf: Eingabe → `erkenneBefehl` (Regeln; optional KI über `setzeAbsichtsErkenner`) → Objekte finden (`findeKunde`,
+`findeMitarbeiter`, `findeAuftrag`) → `befehlVorbereiten` (prüft Rechte) → Vorschau → Freigabe → `befehlAusfuehren` (läuft als
+`{ quelle: 'ai', id: 'macher', mitarbeiterId }`, sendet `macher.aktion_ausgefuehrt`) → `befehlRueckgaengig(eintraege)`.
+
+```ts
+befehle: [{
+  id: 'rechnung.fertig', titel: 'Rechnung fertig machen', beschreibung: '…', beispiele: ['Mach Müller die Rechnung fertig'],
+  klassen: ['WRITE', 'MONEY'],          // READ | WRITE | MONEY | PUBLICATION | DESTRUCTIVE
+  rechte: [],                          // weitere Rechte, z. B. 'planen'
+  braucht: ['rechnung.erstellen'],     // Modul-Aktionen; fehlt eine, ist der Befehl aus
+  erkennen: (text) => 0.9,             // 0–1, ab 0,5 zählt
+  vorbereiten: (k) => ({ art: 'entwurf', titel, text, zeilen, parameter, bestaetigen: 'Rechnungsentwurf anlegen' }),
+  ausfuehren: (p, k) => ({ text, pfad: aktionAusfuehren('rechnung.erstellen', p) as string }),
+}]
+```
+
+- Freigabestufen (`freigabeStufe`): nur READ → sofort antworten; WRITE → ein Klick bestätigt; MONEY, PUBLICATION, DESTRUCTIVE →
+  ausdrückliche Freigabe (Bestätigungsdialog). Rechte je Klasse: READ `lesen`, WRITE `schreiben`, MONEY `geld`,
+  PUBLICATION `veroeffentlichen`, DESTRUCTIVE `loeschen` – ohne Recht gibt es nicht einmal eine Vorschau.
+- `parameter` muss JSON-fähig sein (der Entwurf steht im Chatverlauf). `felder` macht Texte in der Vorschau bearbeitbar.
+- Macher OS versendet nichts selbst: Nachrichten an Kunden öffnen sich über `oeffnen` (mailto:, WhatsApp) in der App des Menschen.
+- Ausführen immer über bestehende `aktionen` (`aktionAusfuehren`) oder `db.*` – keine kopierte Fachlogik.

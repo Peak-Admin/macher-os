@@ -105,10 +105,13 @@ function fehlerText(e: unknown): string {
   return `Das hat nicht geklappt: ${m}`;
 }
 
+/** Protokolle und Einstellungen zählen nicht als „echte Daten“ eines Betriebs */
+const PROTOKOLL_SAMMLUNGEN = new Set(['einstellungen', 'ereignisse', 'ereignisprotokoll', 'webhook_auslieferungen']);
+
 function hatEchteDaten(): boolean {
   const alles = exportieren();
   return Object.entries(alles).some(
-    ([s, t]) => s !== 'einstellungen' && s !== 'ereignisse' && Object.values(t).some((o) => !o.beispiel),
+    ([s, t]) => !PROTOKOLL_SAMMLUNGEN.has(s) && Object.values(t).some((o) => !o.beispiel),
   );
 }
 
