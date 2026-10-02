@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # macher-os – Hinweise für Claude
 
 macher-os ist ein Handwerks-OS (siehe `README.md`). Projektsprache ist Deutsch.
@@ -28,3 +30,41 @@ Die wichtigsten Festlegungen in Kürze:
 - **Vermeiden:** große Pillen-Radien überall, beliebiges Smaragdgrün, lila/blaue KI-Verläufe, Versalien im Arbeitsalltag,
   Stockfotos als Ansprechpartner, mehrere bunte Hauptaktionen.
 - Jeder Screen braucht gestaltete Leer-, Lade-, Fehler- und Erfolgszustände und funktioniert bei 390 px Breite.
+
+## Marketing-Website (Next.js)
+
+Next.js (App Router, Turbopack) + TypeScript + Tailwind CSS v4. Alles wird statisch erzeugt.
+
+### Befehle
+
+- `npm run dev` – Entwicklungsserver
+- `npm run build` – Produktions-Build (prüft auch TypeScript)
+- `npm run lint` – ESLint
+
+### Struktur
+
+- `src/app/(marketing)/` – alle Marketingseiten mit Header + Footer
+- `src/app/(auth)/` – `/signup` und `/login` ohne Marketing-Navigation
+- `src/components/ui/` – Grundbausteine (Section, SectionHeading, ButtonLink, ArrowLink, Card, CheckList, Badge, Faq, Icon, Breadcrumbs)
+- `src/components/sections/` – wiederkehrende Abschnitte (PageHero, FinalCta, Steps, Flow, TrustRow, KundenCard, PlanCards)
+- `src/components/mocks/` – stilisierte Produktansichten (ProductMock, PhoneMock, PlanBoardMock)
+- `src/content/registry.ts` – kanonische Slugs aller Funktionen, Gewerke, Werkzeuge, Kunden. Querverlinkungen nur über diese Slugs.
+- `src/content/*.ts` – Seiteninhalte als typisierte Daten
+- `src/lib/site.ts` – Navigation, Footer, CTAs
+- `src/lib/metadata.ts` – `pageMeta()` für Titel, Beschreibung, Canonical
+
+### Regeln
+
+- Sprache: einfaches Deutsch, Handwerkersprache, kurze Sätze, „du“. Keine SaaS-/ERP-Begriffe
+  („Mitarbeiter planen“ statt „Workforce Management“, „Werkzeuge“ statt „Tools“).
+- CTA-System: primär „Kostenlos testen“ (`/signup`), sekundär „Demo ansehen“ (`/demo`).
+- Jede wichtige Seite: Nutzen-Headline, Produktbeweis/Visual, Alltagssituation, Funktionsweise,
+  Vertrauen, FAQ, eindeutiger CTA (`FinalCta`).
+- Keine erfundenen Fakten als echt ausgeben: Kundenstories sind als „Beispiel“ markiert,
+  keine erfundenen Kennzahlen, Zertifikate oder Firmendaten. Preise in `src/content/preise.ts` sind Platzhalter.
+- Dynamische Routen: `generateStaticParams` + `export const dynamicParams = false`; `params` ist ein Promise.
+- Farben/Fonts nur über die Tokens in `src/app/globals.css` – sie bilden das Playbook ab
+  (`signal` = Aktionsgrün `#06480C`, `signal-dark` = Textgrün `#1F6135`, `brand` = Markengrün `#2F9250`,
+  `accent` = Akzentgrün `#69AF44` für dunkle Flächen, `ink` = Markendunkel, `paper` = Arbeitsfläche,
+  `line`, `muted`; `font-display` = Barlow, `font-tagline` = Poppins für Oberzeilen). Keine festen HEX-Werte in Komponenten.
+- Primäraktion: `bg-signal text-white hover:bg-signal-dark`. Auf dunklen Flächen Akzente mit `text-accent`.
