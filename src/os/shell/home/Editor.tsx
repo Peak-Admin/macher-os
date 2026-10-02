@@ -51,6 +51,29 @@ function fokusAufGriff(id: string) {
   requestAnimationFrame(() => [...document.querySelectorAll<HTMLElement>('[data-griff]')].find((el) => el.dataset.griff === id)?.focus());
 }
 
+/** Texte des Editors – „Heute“ und Smart Views teilen sich denselben Editor */
+export interface EditorTexte {
+  titel: string;
+  /** „deinem Home“, „dieser Ansicht“ */
+  ort: string;
+  leer: string;
+  tipp: string;
+  zuruecksetzen: { knopf: string; frage: string; text: string; ansage: string };
+}
+
+const HOME_TEXTE: EditorTexte = {
+  titel: 'Home anpassen',
+  ort: 'deinem Home',
+  leer: 'Dein Home ist leer. Zieh ein Widget hierher oder tippe bei einem Widget auf „Hinzufügen“.',
+  tipp: 'Tipp: Weniger ist mehr – vier Widgets reichen den meisten.',
+  zuruecksetzen: {
+    knopf: 'Standard wiederherstellen',
+    frage: 'Standard wiederherstellen?',
+    text: 'Dein Home bekommt wieder die vier Standard-Widgets. Deine Anpassungen gehen verloren.',
+    ansage: 'Standard wiederhergestellt.',
+  },
+};
+
 export function HomeEditor({
   layout,
   defs,
@@ -58,6 +81,8 @@ export function HomeEditor({
   speichern,
   zuruecksetzen,
   fertig,
+  texte = HOME_TEXTE,
+  kopf,
 }: {
   layout: HomeLayout;
   defs: WidgetDefinition[];
@@ -65,6 +90,9 @@ export function HomeEditor({
   speichern: (l: HomeLayout) => void;
   zuruecksetzen: () => void;
   fertig: () => void;
+  texte?: EditorTexte;
+  /** zusätzlich oben im Editor, z. B. der Name einer Smart View */
+  kopf?: ReactNode;
 }) {
   const [zug, setZug] = useState<Zug | null>(null);
   const [ansage, setAnsage] = useState('');
@@ -217,6 +245,7 @@ export function HomeEditor({
   const gezogen = zug?.aktiv ? defs.find((d) => d.id === zug.id) : undefined;
   const bibliothek = (ziehbar: boolean) => (
     <Bibliothek
+      ort={texte.ort}
       layout={layout}
       defs={defs}
       onHinzufuegen={(id) => {
@@ -233,7 +262,7 @@ export function HomeEditor({
     <div className={`mm-home-editor${zug?.aktiv ? ' mm-home-editor--zieht' : ''}`}>
       <div className="mm-home-editor-leiste">
         <div>
-          <h2 className="mm-home-editor-titel">Home anpassen</h2>
+          <h2 className="mm-home-editor-titel">{texte.titel}</h2>
           <p className="mm-meta" id="mm-home-griff-hilfe">
             Zieh ein Widget am Griff <Icon name="menue" size={14} aria-hidden /> an seinen Platz. Mit der Tastatur: Pfeiltasten. Klein = eine Spalte, Groß = volle Breite.
           </p>
@@ -247,20 +276,21 @@ export function HomeEditor({
             klein
             icon="wiederholen"
             onClick={async () => {
-              if (await fragen('Standard wiederherstellen?', 'Dein Home bekommt wieder die vier Standard-Widgets. Deine Anpassungen gehen verloren.', 'Wiederherstellen')) {
+              if (await fragen(texte.zuruecksetzen.frage, texte.zuruecksetzen.text, texte.zuruecksetzen.knopf)) {
                 zuruecksetzen();
-                setAnsage('Standard wiederhergestellt.');
+                setAnsage(texte.zuruecksetzen.ansage);
                 homeMessen('home_layout_reset');
               }
             }}
           >
-            Standard wiederherstellen
+            {texte.zuruecksetzen.knopf}
           </Button>
           <Button onClick={fertig} icon="check">
             Fertig
           </Button>
         </div>
       </div>
+      {kopf}
 
       <div className="mm-home-editor-flaeche">
         <div className="mm-home-editor-raster">
@@ -272,12 +302,12 @@ export function HomeEditor({
             umhuellen={umhuellen}
             leer={
               <div className="mm-home-spalte mm-home-spalte--leer mm-home-leeres-home" data-home-zone="" data-spalte="links">
-                <p className="mm-home-ablage">Dein Home ist leer. Zieh ein Widget hierher oder tippe bei einem Widget auf „Hinzufügen“.</p>
+                <p className="mm-home-ablage">{texte.leer}</p>
               </div>
             }
           />
           <p className="mm-meta">
-            {sichtbar === 1 ? '1 Widget' : `${sichtbar} Widgets`} auf deinem Home. Tipp: Weniger ist mehr – vier Widgets reichen den meisten.
+            {sichtbar === 1 ? '1 Widget' : `${sichtbar} Widgets`} auf {texte.ort}. {texte.tipp}
           </p>
         </div>
         <aside className="mm-home-bibliothek mm-home-nur-breit" aria-label="Widget-Bibliothek">
@@ -304,6 +334,7 @@ export function HomeEditor({
 }
 
 function Bibliothek({
+  ort,
   layout,
   defs,
   onHinzufuegen,
@@ -311,6 +342,7 @@ function Bibliothek({
   greifen,
   zieht,
 }: {
+  ort: string;
   layout: HomeLayout;
   defs: WidgetDefinition[];
   onHinzufuegen: (id: string) => void;
@@ -328,7 +360,7 @@ function Bibliothek({
       <div>
         <h3 className="mm-home-bibliothek-titel">Widget-Bibliothek</h3>
         <p className="mm-meta">
-          {defs.length} Widgets für dich · {sichtbar.size} auf deinem Home
+          {defs.length} Widgets für dich · {sichtbar.size} auf {ort}
         </p>
       </div>
       <Suchfeld wert={q} onChange={setQ} platzhalter="Widget finden, z. B. Rechnungen" />
@@ -351,10 +383,10 @@ function Bibliothek({
                   <span className="mm-home-bibliothek-text">
                     <span className="mm-home-bibliothek-name">{d.name}</span>
                     <span className="mm-meta">{d.description}</span>
-                    {an && <Status ton="erfolg">Auf deinem Home</Status>}
+                    {an && <Status ton="erfolg">Auf {ort}</Status>}
                   </span>
                   {an ? (
-                    <Button variante="tertiaer" klein onClick={() => onAusblenden(d.id)} aria-label={`${d.name} vom Home nehmen`}>
+                    <Button variante="tertiaer" klein onClick={() => onAusblenden(d.id)} aria-label={`${d.name} von ${ort} nehmen`}>
                       Ausblenden
                     </Button>
                   ) : (

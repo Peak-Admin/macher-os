@@ -5,10 +5,12 @@
 .mm-skip:focus { left: 8px; }
 
 /* Sidebar */
+/* Schwebende Leiste nach Peak One: Abstand zum Fensterrand, runde Ecken, viel Luft – aber deckend, ohne Glas */
 .mm-sidebar {
-  position: sticky; top: 0; align-self: flex-start; height: 100vh; height: 100dvh; width: var(--mm-sidebar-width); flex-shrink: 0;
-  display: flex; flex-direction: column; gap: 20px; padding: 20px 12px 12px;
-  background: var(--mm-surface); border-right: 1px solid var(--mm-border); overflow-y: auto;
+  position: sticky; top: 8px; align-self: flex-start; height: calc(100vh - 16px); height: calc(100dvh - 16px); width: var(--mm-sidebar-width); flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 16px; margin: 8px 0 8px 8px; padding: 16px 12px 12px;
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel);
+  box-shadow: var(--mm-shadow-card); overflow-y: auto; scrollbar-width: thin;
 }
 .mm-logo { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 8px; color: var(--mm-black); text-decoration: none; font: 500 20px/1 var(--mm-font); }
 .mm-logo strong { font-weight: 900; }
@@ -17,7 +19,7 @@
 /* Hauptbereiche: beschriftet, 48 px hoch; aktiv mit hellgrüner Fläche, dunkelgrüner Schrift und fetterem Gewicht */
 .mm-nav-haupt {
   display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 12px;
-  border-radius: var(--mm-radius-control); color: var(--mm-text-secondary); text-decoration: none; font-size: 16px; font-weight: 500;
+  border-radius: var(--mm-radius-card); color: var(--mm-text-secondary); text-decoration: none; font-size: 16px; font-weight: 500;
   transition: background-color var(--mm-motion-fast) ease-out, color var(--mm-motion-fast) ease-out;
 }
 .mm-nav-haupt:hover { background: var(--mm-surface-subtle); color: var(--mm-text); }
@@ -26,20 +28,21 @@
 .mm-nav-haupt--aktiv, .mm-nav-haupt--aktiv:hover { color: var(--mm-brand-ink); background: var(--mm-brand-soft); font-weight: 650; }
 .mm-menue-titel { padding: 12px 12px 4px; border-top: 1px solid var(--mm-border); margin-top: 4px; }
 .mm-profil { position: relative; }
-.mm-profil--leiste { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--mm-border); }
-.mm-profil-knopf { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 48px; padding: 6px 8px; border: 0; border-radius: var(--mm-radius-control); background: none; color: var(--mm-black); font-weight: 600; cursor: pointer; text-align: left; }
+.mm-profil--leiste { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--mm-border); }
+.mm-profil-knopf { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 48px; padding: 6px 8px; border: 0; border-radius: var(--mm-radius-card); background: none; color: var(--mm-black); font-weight: 600; cursor: pointer; text-align: left; }
 .mm-profil-knopf:hover { background: var(--mm-hover); }
 .mm-profil-knopf .mm-glocke-zahl { top: 2px; right: 0; }
 .mm-profil-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-profil-wechsel { display: flex; flex-direction: column; gap: 4px; padding: 8px 12px; }
 .mm-profil-wechsel select { min-height: 44px; padding: 0 8px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); font: inherit; }
-.mm-nav-favoriten { flex: 1; display: flex; flex-direction: column; gap: 4px; margin: 16px 0; padding-top: 16px; border-top: 1px solid var(--mm-border); }
 .mm-nav-titel { padding: 0 12px; font: 600 14px/20px var(--mm-font); color: var(--mm-text-secondary); }
 .mm-nav-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .mm-nav-favorit {
-  display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 14px; border-radius: var(--mm-radius-control);
-  color: var(--mm-text); text-decoration: none; font-size: 16px; transition: background-color var(--mm-motion-fast) ease-out;
+  display: flex; flex: 1; align-items: center; gap: 12px; min-width: 0; min-height: 44px; padding: 6px 12px; border: 0; border-radius: var(--mm-radius-card);
+  background: none; color: var(--mm-text); text-decoration: none; font: inherit; font-size: 16px; text-align: left; cursor: pointer;
+  transition: background-color var(--mm-motion-fast) ease-out;
 }
+.mm-nav-favorit svg { flex-shrink: 0; }
 .mm-nav-favorit span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-nav-favorit:hover { background: var(--mm-hover); }
 .mm-nav-favorit--an { color: var(--mm-brand-ink); background: var(--mm-brand-soft); font-weight: 650; }
@@ -67,11 +70,62 @@
 .mm-app--eingeklappt .mm-leiste-zeile,
 .mm-app--eingeklappt .mm-profil-knopf { justify-content: center; padding-left: 0; padding-right: 0; }
 .mm-app--eingeklappt .mm-nav-favorit { justify-content: center; padding: 6px 0; }
-.mm-app--eingeklappt .mm-nav-favoriten { margin: 0; padding-top: 16px; }
 /* Profilmenü neben die schmale Leiste legen, sonst schneidet die Leiste es ab */
 .mm-app--eingeklappt .mm-nav-haupt { position: relative; }
 .mm-app--eingeklappt .mm-nav-zahl { position: absolute; top: 2px; right: 6px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
-.mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 80px; bottom: 16px; }
+.mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 88px; bottom: 16px; }
+
+/* Deine Seitenleiste: Module, Smart Views, Seiten und Ordner (Seitenleiste.tsx) */
+.mm-leiste-eigene { flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 0; padding-top: 16px; border-top: 1px solid var(--mm-border); }
+.mm-leiste-eigene-kopf { display: flex; align-items: center; gap: 4px; min-height: 32px; }
+.mm-leiste-eigene-kopf .mm-nav-titel { flex: 1; min-width: 0; }
+.mm-leiste-knopf {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 8px; border: 0;
+  border-radius: var(--mm-radius-control); background: none; color: var(--mm-link); font: 600 14px/1 var(--mm-font); cursor: pointer;
+  transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-leiste-knopf--icon { padding: 0; color: var(--mm-text); }
+.mm-leiste-knopf:hover:not(:disabled) { background: var(--mm-hover); }
+.mm-leiste-knopf:disabled { opacity: 0.4; cursor: not-allowed; }
+.mm-leiste-knopf[aria-pressed='true'] { background: var(--mm-brand-soft); color: var(--mm-brand-ink); }
+.mm-leiste-knopf:focus-visible, .mm-leiste-mehr:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px; }
+.mm-leiste-baum { border-radius: var(--mm-radius-card); min-height: 8px; }
+.mm-leiste-baum--ablage { outline: 2px dashed var(--mm-brand); outline-offset: 2px; }
+.mm-leiste-baum .mm-nav-liste { gap: 2px; }
+.mm-leiste-zeile-eigen { display: flex; align-items: center; gap: 2px; border-radius: var(--mm-radius-card); }
+.mm-leiste-zeile-eigen--ablage { background: var(--mm-brand-soft); box-shadow: inset 0 0 0 2px var(--mm-brand); }
+.mm-leiste-eigene--anpassen .mm-leiste-zeile-eigen[draggable='true'] { cursor: grab; }
+.mm-leiste-pfeil { display: grid; place-items: center; width: 16px; margin-right: -6px; color: var(--mm-text-secondary); }
+/* „…“ je Eintrag: beim Überfahren und mit Tastatur sichtbar, mit „Anpassen“ und auf Touch-Geräten immer */
+.mm-leiste-mehr {
+  display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border: 0; border-radius: var(--mm-radius-control);
+  background: none; color: var(--mm-text-secondary); cursor: pointer; opacity: 0; transition: opacity var(--mm-motion-fast) ease-out, background-color var(--mm-motion-fast) ease-out;
+}
+.mm-leiste-mehr:hover { background: var(--mm-hover); color: var(--mm-text); }
+.mm-leiste-zeile-eigen:is(:hover, :focus-within) .mm-leiste-mehr, .mm-leiste-eigene--anpassen .mm-leiste-mehr { opacity: 1; }
+@media (hover: none) { .mm-leiste-mehr { opacity: 1; width: 44px; height: 44px; } }
+.mm-leiste-eingabe {
+  flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border: 1px solid var(--mm-control-border); border-radius: var(--mm-radius-control);
+  background: var(--mm-surface); color: var(--mm-text); font: inherit; font-size: 16px;
+}
+.mm-leiste-eingabe:focus { outline: 3px solid var(--mm-focus); outline-offset: 1px; }
+.mm-leiste-ordner-leer { margin: 0; padding: 4px 8px 8px; font-size: 14px; line-height: 20px; color: var(--mm-text-secondary); }
+.mm-menue.mm-leiste-menue { position: fixed; right: auto; z-index: 30; display: flex; flex-direction: column; gap: 2px; max-height: min(480px, calc(100vh - 16px)); overflow-y: auto; border-radius: var(--mm-radius-panel); }
+.mm-leiste-menue > button:disabled { opacity: 0.4; cursor: not-allowed; }
+.mm-leiste-menue > button:disabled:hover { background: none; }
+.mm-leiste-menue > button svg { flex-shrink: 0; }
+.mm-leiste-menue .mm-menue-titel { margin: 4px 0 0; }
+.mm-leiste-menue-text { display: flex; flex-direction: column; min-width: 0; line-height: 20px; }
+.mm-leiste-menue-linie { margin: 4px 0; border: 0; border-top: 1px solid var(--mm-border); }
+@media (prefers-reduced-motion: no-preference) { .mm-leiste-menue { animation: mm-einblenden var(--mm-motion-fast) ease-out; } }
+.mm-app--eingeklappt .mm-leiste-eigene { padding-top: 16px; }
+.mm-app--eingeklappt .mm-leiste-eigene .mm-nav-favorit { justify-content: center; padding: 6px 0; }
+/* Modul hinzufügen */
+.mm-leiste-dialog { display: flex; flex-direction: column; gap: 16px; }
+.mm-leiste-dialog-gruppe { display: flex; flex-direction: column; gap: 8px; }
+.mm-leiste-dialog-eintrag { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+.mm-leiste-dialog-eintrag .mm-listenzeile-text { flex: 1; min-width: 0; }
+.mm-smartview-name { max-width: 480px; }
 
 /* Hauptbereich */
 .mm-hauptbereich { flex: 1; min-width: 0; display: flex; flex-direction: column; }
@@ -86,7 +140,7 @@
 .mm-leiste-suche-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-leiste-zeile {
   display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 12px; border: 0;
-  border-radius: var(--mm-radius-control); background: none; color: var(--mm-text-secondary); font: inherit; font-weight: 500; cursor: pointer; text-align: left;
+  border-radius: var(--mm-radius-card); background: none; color: var(--mm-text-secondary); font: inherit; font-weight: 500; cursor: pointer; text-align: left;
   transition: background-color var(--mm-motion-fast) ease-out;
 }
 .mm-leiste-zeile:hover { background: var(--mm-hover); }

@@ -3,7 +3,7 @@
  * Jede Kachel: Titel, kurze Erklärung, höchstens ein Hinweis. Keine Unterlisten, keine Kennzahlen davor.
  *
  * Darunter das Verzeichnis aller Module (mit Suche): Hier wählt man jedes Modul aus, auch die aus Aufträge und
- * Planen, und markiert bis zu drei mit dem Stern als Favorit für die Navigation.
+ * Planen, und legt es mit dem Stern in die eigene Seitenleiste.
  */
 import { useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
@@ -12,7 +12,7 @@ import { useDatenstand } from '@core/db';
 import { istBuero, useIch } from '@core/session';
 import { Abschnitt, Icon, Leer, Seite, Status, Suchfeld, MacherAsset, ThemenIcon, type ObjektSchluessel } from '@ui/index';
 import { STRUKTUR, modulVerzeichnis, sichtbareAnsichten, sichtbareZiele, zielPfad, type Kategorie } from './struktur';
-import { FAVORITEN_MAX, useFavoriten } from './favoriten';
+import { useFavoriten } from './favoriten';
 import type { Mitarbeiter } from '@core/objects';
 import { NichtGefunden } from './NichtGefunden';
 
@@ -98,7 +98,7 @@ function AlleModule({ suche }: { suche: string }) {
   return (
     <Abschnitt
       titel="Alle Module"
-      hinweis={`Mit dem Stern holst du bis zu ${FAVORITEN_MAX} Module als Favorit in die Navigation (${favoriten.module.length} von ${FAVORITEN_MAX}).`}
+      hinweis="Mit dem Stern legst du ein Modul in deine Seitenleiste. Dort kannst du es umbenennen, sortieren und in Ordner stecken."
     >
       {gruppen.length ? (
         <div className="mm-verzeichnis">
@@ -127,8 +127,8 @@ function AlleModule({ suche }: { suche: string }) {
                         className={`mm-iconbtn mm-favorit ${an ? 'mm-favorit--an' : ''}`}
                         aria-pressed={an}
                         aria-disabled={gesperrt}
-                        aria-label={an ? `${m.titel} aus Favoriten entfernen` : `${m.titel} als Favorit markieren`}
-                        title={an ? 'Aus Favoriten entfernen' : gesperrt ? `Höchstens ${FAVORITEN_MAX} Favoriten. Entferne zuerst einen.` : 'Als Favorit in die Navigation'}
+                        aria-label={an ? `${m.titel} aus deiner Seitenleiste nehmen` : `${m.titel} in deine Seitenleiste legen`}
+                        title={an ? 'Aus der Seitenleiste nehmen' : gesperrt ? 'Deine Seitenleiste ist voll. Entferne zuerst einen Eintrag.' : 'In die Seitenleiste legen'}
                         onClick={() => !gesperrt && favoriten.umschalten(m.id)}
                       >
                         <Icon name="stern" />
