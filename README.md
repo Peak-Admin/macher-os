@@ -18,6 +18,15 @@ Handwerker sollen sich auf ihr Handwerk konzentrieren können, nicht auf Zettelw
 - **Material & Lager** – Bestände und Bestellungen im Griff
 - **Dokumentation** – Fotos, Notizen und Abnahmen pro Auftrag
 
+## Entwicklung
+
+Die Marketing-Website ist eine Next.js-App. Siehe `CLAUDE.md` für Struktur und Regeln und `docs/marketing-website-struktur.md` für die Informationsarchitektur.
+
+```bash
+npm install
+npm run dev
+```
+
 ## Status
 
 🚧 Das Projekt steht ganz am Anfang.

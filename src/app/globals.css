@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Anthrazit – Text, dunkle Flächen */
+  --color-ink: #15181d;
+  --color-ink-soft: #2a2f37;
+  /* Warmes Papier – Seitenhintergrund */
+  --color-paper: #faf8f4;
+  --color-sand: #f1ede5;
+  --color-line: #e3ded4;
+  --color-muted: #5d636d;
+  /* Signal-Orange – primäre Aktion */
+  --color-signal: #ff6a2b;
+  --color-signal-dark: #e5531a;
+  --color-signal-soft: #fff0e8;
+  /* Ergänzungsfarben für Status/Illustrationen */
+  --color-moss: #2f7d5b;
+  --color-moss-soft: #e6f3ec;
+  --color-sky: #2563a6;
+  --color-sky-soft: #e7f0fa;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-signal);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
