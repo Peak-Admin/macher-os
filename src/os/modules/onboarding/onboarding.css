@@ -20,7 +20,9 @@
 .ob-navigation { display: flex; justify-content: space-between; align-items: center; gap: 12px; position: sticky; bottom: 0; padding: 16px 0; background: var(--mm-canvas); border-top: 1px solid var(--mm-border); }
 .ob-schnell { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
 /* Gewerk-Wahl: Bildkarten mit leichtem grünem Overlay; fehlt ein Foto, erscheint eine Markenfläche */
-.ob-gewerke { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ob-gewerke { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(208px, 100%), 1fr)); }
+/* Gewerkwahl: breiterer Inhalt, damit drei bis vier Karten in eine Zeile passen */
+.ob-inhalt:has(.ob-gewerke) { max-width: 1080px; }
 .ob-gewerk {
   position: relative; display: flex; flex-direction: column; padding: 0; overflow: hidden; text-align: left;
   border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); background: var(--mm-surface); cursor: pointer;
@@ -32,10 +34,10 @@
 .ob-gewerk-bild { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--mm-brand-deep); }
 .ob-gewerk-bild img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform var(--mm-motion-panel) ease-out; }
 .ob-gewerk:hover .ob-gewerk-bild img { transform: scale(1.03); }
-/* Leichter grüner Schleier über dem Foto, unten etwas dichter */
+/* Grüner Schleier über dem Foto: oben unsichtbar, nach unten allmählich dichter */
 .ob-gewerk-bild::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--mm-brand-deep) 14%, transparent) 0%, color-mix(in srgb, var(--mm-brand-deep) 34%, transparent) 100%);
+  background: linear-gradient(180deg, transparent 0%, transparent 30%, color-mix(in srgb, var(--mm-brand-deep) 14%, transparent) 65%, color-mix(in srgb, var(--mm-brand-deep) 40%, transparent) 100%);
   transition: opacity var(--mm-motion-fast) ease-out;
 }
 .ob-gewerk:hover .ob-gewerk-bild::after { opacity: .7; }
@@ -91,7 +93,7 @@
 .ob-weiter:hover:not(:disabled) .ob-weiter-kreis--hover { transform: scale(1); }
 .ob-weiter .mm-spinner { width: 14px; height: 14px; }
 @media (max-width: 600px) {
-  .ob-gewerke { gap: 12px; }
+  .ob-gewerke { gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ob-gewerk-text { padding: 12px; }
   .ob-gewerk-text strong { font-size: 16px; line-height: 22px; }
   .ob-gewerk-text .mm-meta { display: none; }
