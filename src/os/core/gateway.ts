@@ -1,0 +1,353 @@
+/**
+ * Macher AI Gateway – der einzige Weg von einer Eingabe (Text oder Sprache) zu einer Antwort oder Aktion.
+ *
+ * Kein Modul spricht direkt mit einem Modell. Module melden über `defineModul({ gateway })` nur an,
+ * welche Absichten sie verstehen und welche Aktionen sie ausführen können. Der Gateway entscheidet zentral:
+ *
+ *   Verstehen → Routen → Kontext → Rechte → günstigste ausreichende Lane → strukturierte Aktion
+ *   → Prüfen → Bestätigung (wenn nötig) → Ausführen → Protokoll
+ *
+ * Lanes: 0 = Regeln/Datenbank (kein Modell), 1 = Jev (Klassifikation), 2 = Luna (Standard-KI),
+ * 3 = stärkeres Modell. Immer von unten nach oben. Ohne angeschlossenes Modell läuft alles in Lane 0.
+ *
+ * Strategie: `docs/os/KI-GATEWAY.md`.
+ */
+import { defineCollection, vermerken } from './db';
+import { einstellung } from './einstellungen';
+import { emit } from './events';
+import { alleModule } from './modul';
+import type { Basis, Bezug, Datum, ID, Mitarbeiter } from './objects';
+import type { Recht } from './session';
+
+// ------------------------------------------------------------------ Lanes und Kosten
+
+export type Lane = 0 | 1 | 2 | 3;
+
+export const LANES: Record<Lane, { name: string; zweck: string }> = {
+  0: { name: 'Regeln', zweck: 'Datenbankabfragen, Filter, Berechnungen, Regeln' },
+  1: { name: 'Jev', zweck: 'Absicht erkennen, klassifizieren, Namen und Daten herauslösen' },
+  2: { name: 'Luna', zweck: 'Texte schreiben, zusammenfassen, Sprache verstehen' },
+  3: { name: 'Stark', zweck: 'Komplexe Planung, große Dokumente – nur wenn nötig' },
+};
+
+/** Kostenrahmen: KI- und variable Infrastrukturkosten als Anteil vom Umsatz */
+export const KOSTEN_GRENZEN = { ziel: 0.1, warnung: 0.15, grenze: 0.2 } as const;
+
+export type KostenStufe = 'ok' | 'warnung' | 'grenze';
+
+export function kostenStufe(anteil: number): KostenStufe {
+  if (anteil >= KOSTEN_GRENZEN.grenze) return 'grenze';
+  if (anteil >= KOSTEN_GRENZEN.warnung) return 'warnung';
+  return 'ok';
+}
+
+/** Höchste erlaubte Lane je Kostenstufe: an der Grenze nur noch Regeln und Jev, bei Warnung kein starkes Modell. */
+export function hoechsteLane(stufe: KostenStufe): Lane {
+  return stufe === 'grenze' ? 1 : stufe === 'warnung' ? 2 : 3;
+}
+
+// ------------------------------------------------------------------ Risiko und Bestätigung
+
+/**
+ * lesen     – zeigen, zählen, suchen: ohne Bestätigung
+ * schreiben – Notiz, Aufgabe, Zeit, Entwurf: je nach Einstellung kurz bestätigen (Standard: bestätigen)
+ * kritisch  – senden, verschieben mit Kunde, bestellen, zahlen, Personaldaten, löschen: immer bestätigen
+ */
+export type Risiko = 'lesen' | 'schreiben' | 'kritisch';
+
+const KRITISCHE_RECHTE: Recht[] = ['veroeffentlichen', 'loeschen', 'admin', 'personal'];
+
+/** Das Risiko ist nie kleiner, als die nötigen Rechte es verlangen. */
+export function risikoVon(angegeben: Risiko, rechte: Recht[] = []): Risiko {
+  if (angegeben === 'kritisch' || rechte.some((r) => KRITISCHE_RECHTE.includes(r))) return 'kritisch';
+  if (angegeben === 'schreiben' || rechte.some((r) => r !== 'lesen' && r !== 'geld')) return 'schreiben';
+  return 'lesen';
+}
+
+/** Einstellung `ki.schreiben.direkt`: einfache Schreibaktionen ohne Rückfrage ausführen (Standard: aus). */
+export function brauchtBestaetigung(risiko: Risiko, schreibenDirekt = einstellung('ki.schreiben.direkt', false)): boolean {
+  if (risiko === 'lesen') return false;
+  if (risiko === 'kritisch') return true;
+  return !schreibenDirekt;
+}
+
+// ------------------------------------------------------------------ Kontext
+
+export type Kanal = 'text' | 'sprache';
+
+export interface GatewayKontext {
+  heute: Datum;
+  jetzt: Date;
+  ich?: Mitarbeiter;
+  /** dieselbe Rechteprüfung wie für den Menschen – KI-Recht = Macher-OS-Recht */
+  darf: (r: Recht) => boolean;
+  kanal?: Kanal;
+  /** aktueller Anteil der KI-Kosten am Umsatz (0–1); fehlt er, gilt „ok“ */
+  kostenAnteil?: number;
+}
+
+// ------------------------------------------------------------------ Absichten (Intent-Library)
+
+export interface Erkennung {
+  absicht: string;
+  /** herausgelöste Namen, Daten, Beträge … */
+  werte?: Record<string, unknown>;
+  /** 0–1. Regeln liefern 1, Modelle ihre eigene Einschätzung. */
+  sicherheit: number;
+  /** wer erkannt hat */
+  lane: Lane;
+}
+
+export interface AbsichtDef<A = unknown> {
+  /** kanonische ID, z. B. `invoice.list`, `task.create` */
+  id: string;
+  titel: string;
+  risiko: Risiko;
+  /** nötige Rechte; fehlt eines, antwortet der Gateway mit „keine Berechtigung“ */
+  rechte?: Recht[];
+  /** kleinste Lane, die diese Absicht beantworten kann (Standard 0) */
+  lane?: Lane;
+  /** Reihenfolge der Regelprüfung – kleiner zuerst (Standard 50) */
+  rang?: number;
+  /** Lane 0: Regel, die die Absicht ohne Modell erkennt */
+  erkenne?: (text: string, k: GatewayKontext) => Omit<Erkennung, 'absicht' | 'lane' | 'sicherheit'> | boolean | undefined;
+  /** Auffang-Absicht, wenn nichts anderes passt (z. B. Suche) */
+  auffang?: boolean;
+  /**
+   * Minimum Necessary Context: nur diese Daten bekommt ein Modell zu sehen.
+   * Ohne Angabe bekommt ein Modell keinen Unternehmenskontext.
+   */
+  kontext?: (e: Erkennung, k: GatewayKontext) => unknown;
+  /** Antwort erzeugen (Lane 0: aus den Daten; ab Lane 2 mit `modellText`) */
+  beantworte: (text: string, e: Erkennung, k: GatewayKontext, hilfe: { modellText?: string }) => A;
+}
+
+// ------------------------------------------------------------------ Aktionen
+
+export interface AktionDef<D = unknown> {
+  /** z. B. `task.create`, `invoice.send` */
+  id: string;
+  titel: string;
+  risiko: Risiko;
+  rechte?: Recht[];
+  /** Fehlertext oder `undefined`, wenn die Daten passen */
+  pruefe?: (daten: D, k: GatewayKontext) => string | undefined;
+  /** führt die Geschäftslogik aus – nie das Modell selbst */
+  fuehreAus: (daten: D, k: GatewayKontext) => { bezug?: Bezug; text?: string } | void;
+}
+
+/** Strukturierte Aktion, wie sie eine Regel oder ein Modell vorschlägt */
+export interface Aktion<D = unknown> {
+  aktion: string;
+  daten: D;
+  /** aus welcher Absicht sie entstand */
+  absicht?: string;
+  lane?: Lane;
+  modell?: string;
+}
+
+export interface GatewayBeitrag {
+  absichten?: AbsichtDef<unknown>[];
+  aktionen?: AktionDef<never>[];
+}
+
+// ------------------------------------------------------------------ Modelle (Lane 1–3)
+
+/** Adapter für ein Modell. Ohne Adapter bleibt der Gateway in Lane 0. */
+export interface ModellAdapter {
+  lane: 1 | 2 | 3;
+  name: string;
+  verfuegbar(): boolean;
+  /** Lane 1: Absicht aus einer festen Liste wählen */
+  erkenne?(text: string, absichten: { id: string; titel: string }[]): Promise<Omit<Erkennung, 'lane'> | undefined>;
+  /** Lane 2/3: Text erzeugen – bekommt nur den minimalen Kontext der Absicht */
+  schreibe?(text: string, kontext: unknown): Promise<string>;
+}
+
+const modelle = new Map<Lane, ModellAdapter>();
+
+export function registriereModell(m: ModellAdapter) {
+  modelle.set(m.lane, m);
+  return () => {
+    if (modelle.get(m.lane) === m) modelle.delete(m.lane);
+  };
+}
+
+function modellFuer(lane: Lane, k: GatewayKontext): ModellAdapter | undefined {
+  if (lane === 0 || lane > hoechsteLane(kostenStufe(k.kostenAnteil ?? 0))) return undefined;
+  const m = modelle.get(lane);
+  return m?.verfuegbar() ? m : undefined;
+}
+
+/** Günstigste verfügbare Lane ab `mindestens` (oder `undefined`, wenn keine reicht). */
+export function waehleLane(mindestens: Lane, k: GatewayKontext): Lane | undefined {
+  if (mindestens === 0) return 0;
+  for (let l = mindestens; l <= 3; l++) if (modellFuer(l as Lane, k)) return l as Lane;
+  return undefined;
+}
+
+// ------------------------------------------------------------------ Registry
+
+let eigene: GatewayBeitrag[] = [];
+
+/** Für Tests und Kernfunktionen; Module melden sich über `defineModul({ gateway })` an. */
+export function registriereGateway(b: GatewayBeitrag) {
+  eigene.push(b);
+  return () => {
+    eigene = eigene.filter((x) => x !== b);
+  };
+}
+
+function beitraege(): GatewayBeitrag[] {
+  return [...alleModule().flatMap((m) => (m.gateway ? [m.gateway] : [])), ...eigene];
+}
+
+export function alleAbsichten(): AbsichtDef[] {
+  return beitraege()
+    .flatMap((b) => b.absichten ?? [])
+    .sort((a, b) => (a.rang ?? 50) - (b.rang ?? 50));
+}
+
+export function alleAktionen(): AktionDef[] {
+  return beitraege().flatMap((b) => (b.aktionen ?? []) as AktionDef[]);
+}
+
+export function aktionDef(id: string): AktionDef | undefined {
+  return alleAktionen().find((a) => a.id === id);
+}
+
+// ------------------------------------------------------------------ Protokoll (Audit)
+
+export type ProtokollErgebnis = 'beantwortet' | 'vorgeschlagen' | 'ausgefuehrt' | 'verweigert' | 'fehler';
+
+export interface KiProtokoll extends Basis {
+  mitarbeiterId?: ID;
+  kanal: Kanal;
+  /** was der Nutzer wollte (Originaltext) */
+  eingabe?: string;
+  /** was der Gateway verstanden hat */
+  absicht?: string;
+  sicherheit?: number;
+  /** welche Aktion ausgeführt oder vorgeschlagen wurde */
+  aktion?: string;
+  bezug?: Bezug;
+  lane: Lane;
+  modell: string;
+  bestaetigt?: boolean;
+  ergebnis: ProtokollErgebnis;
+  grund?: string;
+}
+
+export const kiProtokoll = defineCollection<KiProtokoll>('ki-protokoll');
+
+function protokolliere(p: Omit<KiProtokoll, keyof Basis>) {
+  const eintrag = kiProtokoll.create(p, { leise: true });
+  emit({ typ: p.ergebnis === 'ausgefuehrt' ? 'ki.aktion.ausgefuehrt' : `ki.${p.ergebnis}`, sammlung: 'ki-protokoll', objekt: eintrag });
+  return eintrag;
+}
+
+// ------------------------------------------------------------------ Pipeline: Fragen
+
+export type Verweigert = 'rechte' | 'unbekannt' | 'modell-fehlt';
+
+export interface GatewayAntwort<A = unknown> {
+  absicht?: AbsichtDef<A>;
+  erkennung?: Erkennung;
+  lane: Lane;
+  modell: string;
+  /** die Antwort der Absicht – fehlt bei `verweigert` */
+  ergebnis?: A;
+  verweigert?: Verweigert;
+  /** fehlende Rechte bei `verweigert: 'rechte'` */
+  fehlendeRechte?: Recht[];
+  protokollId: ID;
+}
+
+/** Ab dieser Sicherheit gilt eine Modell-Erkennung; darunter fällt der Gateway auf die Auffang-Absicht zurück. */
+export const MIN_SICHERHEIT = 0.7;
+
+async function verstehe(text: string, absichten: AbsichtDef[], k: GatewayKontext): Promise<Erkennung | undefined> {
+  // Lane 0: Regeln vor Modell
+  for (const a of absichten) {
+    const r = a.erkenne?.(text, k);
+    if (r) return { absicht: a.id, sicherheit: 1, lane: 0, werte: typeof r === 'object' ? r.werte : undefined };
+  }
+  // Lane 1: günstige Klassifikation, nur wenn angeschlossen
+  const jev = modellFuer(1, k);
+  if (jev?.erkenne) {
+    const e = await jev.erkenne(text, absichten.filter((a) => !a.auffang).map((a) => ({ id: a.id, titel: a.titel })));
+    if (e && e.sicherheit >= MIN_SICHERHEIT && absichten.some((a) => a.id === e.absicht)) return { ...e, lane: 1 };
+  }
+  const auffang = absichten.find((a) => a.auffang);
+  return auffang ? { absicht: auffang.id, sicherheit: 0, lane: 0 } : undefined;
+}
+
+/** Eine Eingabe beantworten. Führt nie selbst etwas aus – Aktionen kommen als Vorschlag zurück. */
+export async function frage<A = unknown>(text: string, k: GatewayKontext): Promise<GatewayAntwort<A>> {
+  const kanal = k.kanal ?? 'text';
+  const basis = { mitarbeiterId: k.ich?.id, kanal, eingabe: text };
+  const absichten = alleAbsichten();
+  const e = await verstehe(text, absichten, k);
+  const def = e && (absichten.find((a) => a.id === e.absicht) as AbsichtDef<A> | undefined);
+
+  if (!e || !def) {
+    const p = protokolliere({ ...basis, lane: 0, modell: LANES[0].name, ergebnis: 'verweigert', grund: 'unbekannt' });
+    return { lane: 0, modell: LANES[0].name, verweigert: 'unbekannt', protokollId: p.id };
+  }
+
+  const fehlend = (def.rechte ?? []).filter((r) => !k.darf(r));
+  if (fehlend.length) {
+    const p = protokolliere({ ...basis, absicht: def.id, sicherheit: e.sicherheit, lane: e.lane, modell: LANES[e.lane].name, ergebnis: 'verweigert', grund: `rechte:${fehlend.join(',')}` });
+    return { absicht: def, erkennung: e, lane: e.lane, modell: LANES[e.lane].name, verweigert: 'rechte', fehlendeRechte: fehlend, protokollId: p.id };
+  }
+
+  const lane = waehleLane(def.lane ?? 0, k);
+  if (lane === undefined) {
+    const p = protokolliere({ ...basis, absicht: def.id, sicherheit: e.sicherheit, lane: e.lane, modell: LANES[e.lane].name, ergebnis: 'verweigert', grund: 'modell-fehlt' });
+    return { absicht: def, erkennung: e, lane: e.lane, modell: LANES[e.lane].name, verweigert: 'modell-fehlt', protokollId: p.id };
+  }
+
+  let modellText: string | undefined;
+  const m = modellFuer(lane, k);
+  if (lane >= 2 && m?.schreibe) modellText = await m.schreibe(text, def.kontext?.(e, k));
+  const modell = m?.name ?? LANES[e.lane].name;
+
+  const ergebnis = def.beantworte(text, e, k, { modellText });
+  const p = protokolliere({ ...basis, absicht: def.id, sicherheit: e.sicherheit, lane: Math.max(lane, e.lane) as Lane, modell, ergebnis: def.risiko === 'lesen' ? 'beantwortet' : 'vorgeschlagen' });
+  return { absicht: def, erkennung: e, lane: Math.max(lane, e.lane) as Lane, modell, ergebnis, protokollId: p.id };
+}
+
+// ------------------------------------------------------------------ Pipeline: Ausführen
+
+export type AusfuehrErgebnis =
+  | { ok: true; bezug?: Bezug; text?: string; protokollId: ID }
+  | { ok: false; grund: 'unbekannt' | 'rechte' | 'ungueltig' | 'bestaetigung' | 'fehler'; text: string; protokollId: ID };
+
+/**
+ * Eine strukturierte Aktion ausführen: Rechte → Prüfen → Bestätigung → Geschäftslogik → Protokoll.
+ * `bestaetigt` setzt nur die Oberfläche, nachdem der Mensch „Senden“, „Anlegen“ … gedrückt hat.
+ */
+export function fuehreAus<D>(a: Aktion<D>, k: GatewayKontext, opt: { bestaetigt?: boolean } = {}): AusfuehrErgebnis {
+  const basis = { mitarbeiterId: k.ich?.id, kanal: k.kanal ?? 'text', absicht: a.absicht, aktion: a.aktion, lane: a.lane ?? 0, modell: a.modell ?? LANES[a.lane ?? 0].name, bestaetigt: !!opt.bestaetigt } as const;
+  const nein = (grund: Extract<AusfuehrErgebnis, { ok: false }>['grund'], text: string): AusfuehrErgebnis => {
+    const p = protokolliere({ ...basis, ergebnis: grund === 'fehler' ? 'fehler' : 'verweigert', grund });
+    return { ok: false, grund, text, protokollId: p.id };
+  };
+
+  const def = aktionDef(a.aktion) as AktionDef<D> | undefined;
+  if (!def) return nein('unbekannt', `Die Aktion „${a.aktion}“ gibt es nicht.`);
+  if ((def.rechte ?? []).some((r) => !k.darf(r))) return nein('rechte', 'Dafür fehlt dir die Berechtigung.');
+  const fehler = def.pruefe?.(a.daten, k);
+  if (fehler) return nein('ungueltig', fehler);
+  if (brauchtBestaetigung(risikoVon(def.risiko, def.rechte)) && !opt.bestaetigt) return nein('bestaetigung', 'Bitte bestätige die Aktion zuerst.');
+
+  try {
+    const r = def.fuehreAus(a.daten, k) || {};
+    const p = protokolliere({ ...basis, bezug: r.bezug, ergebnis: 'ausgefuehrt' });
+    if (r.bezug) vermerken(r.bezug, 'ki.aktion', `${def.titel} – über Macher${opt.bestaetigt ? ', bestätigt' : ''}`, { protokollId: p.id });
+    return { ok: true, bezug: r.bezug, text: r.text, protokollId: p.id };
+  } catch (err) {
+    console.error(`Aktion ${a.aktion} fehlgeschlagen`, err);
+    return nein('fehler', 'Das hat nicht geklappt. Versuche es erneut.');
+  }
+}

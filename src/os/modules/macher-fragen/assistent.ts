@@ -1,9 +1,10 @@
 /**
- * Macher fragen – lokaler, regelbasierter Assistent über die echten Daten.
+ * Macher fragen – Fragen und Aufträge in Alltagssprache, beantwortet aus den echten Daten.
  *
- * Kein API-Key, kein externes Modell. Die Schnittstelle `Sprachmodell` ist so geschnitten,
- * dass später eine echte KI dahinter hängen kann (gleicher Kontext, gleiche Antwortform,
- * gleiche Rechteprüfung). Ausführende Aktionen sind immer erst ein Entwurf, den der
+ * Läuft vollständig über den Macher AI Gateway (`@core/gateway`): Dieses Modul meldet nur seine
+ * Absichten (`ABSICHTEN`) und Aktionen (`AKTIONEN`) an. Heute erkennt Lane 0 (Regeln) alles ohne
+ * Modell; Jev/Luna hängen sich später per `registriereModell()` an – gleicher Kontext, gleiche
+ * Antwortform, gleiche Rechteprüfung. Ausführende Aktionen sind immer erst ein Entwurf, den der
  * Mensch bestätigt.
  */
 import { db } from '@core/db';
@@ -11,18 +12,13 @@ import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uh
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
 import type { Datum, ID, Kunde, Mitarbeiter, Rechnung, Termin } from '@core/objects';
-import type { Recht } from '@core/session';
+import { frage as gatewayFrage, type AbsichtDef, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal } from '@core/gateway';
 import { zeitraumAus, type Zeitraum } from './zeit';
 import { abwesenheitAm, anwesenheit, arbeitstagIm, geplanteStunden, kontextAusDb as planKontextAusDb, verfuegbareStunden } from '../verfuegbarkeit/daten';
 
 // ------------------------------------------------------------------ Schnittstelle
 
-export interface Kontext {
-  heute: Datum;
-  jetzt: Date;
-  ich?: Mitarbeiter;
-  darf: (r: Recht) => boolean;
-}
+export type Kontext = GatewayKontext;
 
 export interface AntwortEintrag {
   titel: string;
@@ -54,12 +50,6 @@ export interface Antwort {
   folgefragen?: string[];
   /** erkannte Absicht (für Tests und spätere Auswertung) */
   absicht: string;
-}
-
-/** Adapter für ein Sprachmodell. Heute: Regeln. Später: echte KI mit denselben Werkzeugen. */
-export interface Sprachmodell {
-  readonly name: string;
-  antworte(frage: string, kontext: Kontext): Promise<Antwort>;
 }
 
 export const BEISPIELFRAGEN = [
@@ -491,56 +481,156 @@ function suchen(k: Kontext, frage: string): Antwort {
   };
 }
 
-// ------------------------------------------------------------------ Regelmodell
+// ------------------------------------------------------------------ Absichten für den Gateway (Lane 0: Regeln)
 
-/** Erkennt die Absicht und beantwortet sie direkt aus den Daten. */
-export function beantworte(frage: string, k: Kontext): Antwort {
-  const f = klein(frage.trim());
-  if (!f) return { absicht: 'leer', text: 'Stell mir eine Frage zu deinem Betrieb.', folgefragen: BEISPIELFRAGEN };
-  const z = zeitraumAus(f, k.heute);
+type Def = AbsichtDef<Antwort>;
+const nurMeineRolle = (k: Kontext) => !!k.ich && (k.ich.rolle === 'monteur' || k.ich.rolle === 'azubi');
+const naechsteWoche = (k: Kontext): Zeitraum => ({ von: plusTage(wochenStart(k.heute), 7), bis: plusTage(wochenStart(k.heute), 11), label: 'nächste Woche', tag: false });
 
-  if (/\baufgabe\b/.test(f) && /\b(leg|lege|erstell|erstelle|anlegen|neue|mach|notier|notiere)\b/.test(f)) return aufgabeAnlegen(k, frage);
-  if (/^erinnere?n?\s/.test(f)) return aufgabeAnlegen(k, frage, true);
-  if (/rechnung/.test(f) && /(offen|überfällig|ueberfaellig|unbezahlt|ausstehend|bezahlt|zahlt|schuld|geld)/.test(f)) return offeneRechnungen(k);
-  if (/\bwer\b.*\b(zeit|frei|verfügbar|kapazität|luft)\b/.test(f) || /\b(freie kapazität|wer ist frei)\b/.test(f))
-    return werHatZeit(k, z ?? { von: plusTage(wochenStart(k.heute), 7), bis: plusTage(wochenStart(k.heute), 11), label: 'nächste Woche', tag: false });
-  if (/^wo\b|\bwo (ist|sind|wohnt|steckt|arbeitet)\b|\badresse\b/.test(f)) return woIst(k, frage);
-  if (/angebot/.test(f) && /(offen|warten|ausstehend|antwort|versendet|stand)/.test(f)) return offeneAngebote(k);
-  if (/anfrage/.test(f)) return offeneAnfragen(k);
-  if (/(braucht mich|brauchst du|was ist wichtig|was muss ich|hinweis|freigabe|entscheid)/.test(f)) return brauchtMich(k);
-  if (/(meine aufgaben|was ist zu tun|was hab ich zu tun|was habe ich zu tun|offene aufgaben)/.test(f)) return meineAufgaben(k);
-  if (z && /(steht|an\b|termin|plan|geplant|los|einsatz|einsätze|was ist|was hab|was habe|was gibt)/.test(f)) {
-    const nurMeine = /\b(ich|mich|mir|meine?n?)\b/.test(f) || (!!k.ich && (k.ich.rolle === 'monteur' || k.ich.rolle === 'azubi'));
-    return agenda(k, z, nurMeine);
-  }
-  if (/\b(termine?|einsätze|plan)\b/.test(f)) {
-    const nurMeine = !!k.ich && (k.ich.rolle === 'monteur' || k.ich.rolle === 'azubi');
-    return agenda(k, { von: k.heute, bis: k.heute, label: 'heute', tag: true }, nurMeine);
-  }
-  if (/(hilfe|was kannst du|wie funktioniert)/.test(f))
-    return { absicht: 'hilfe', text: 'Ich beantworte Fragen aus deinen Daten und bereite Aufgaben vor. Ausgeführt wird erst, wenn du bestätigst.', folgefragen: BEISPIELFRAGEN };
-  return suchen(k, frage);
-}
-
-export const regelModell: Sprachmodell = {
-  name: 'Macher Regeln (lokal)',
-  async antworte(frage, kontext) {
-    return beantworte(frage, kontext);
+/**
+ * Was Macher versteht – in der Reihenfolge der Prüfung. Alle Absichten laufen über `@core/gateway`:
+ * Regeln vor Modell, Rechte vor Antwort, Aktionen nur als Entwurf.
+ */
+export const ABSICHTEN: Def[] = [
+  {
+    id: 'task.create',
+    titel: 'Aufgabe anlegen',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    erkenne: (t) => /\baufgabe\b/.test(klein(t)) && /\b(leg|lege|erstell|erstelle|anlegen|neue|mach|notier|notiere)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => aufgabeAnlegen(k, t),
   },
-};
+  {
+    id: 'reminder.create',
+    titel: 'Erinnerung anlegen',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    erkenne: (t) => /^erinnere?n?\s/.test(klein(t.trim())),
+    beantworte: (t, _e, k) => aufgabeAnlegen(k, t, true),
+  },
+  {
+    id: 'invoice.list',
+    titel: 'Offene Rechnungen zeigen',
+    risiko: 'lesen',
+    rechte: ['geld'],
+    erkenne: (t) => /rechnung/.test(klein(t)) && /(offen|überfällig|ueberfaellig|unbezahlt|ausstehend|bezahlt|zahlt|schuld|geld)/.test(klein(t)),
+    beantworte: (_t, _e, k) => offeneRechnungen(k),
+  },
+  {
+    id: 'employee.availability',
+    titel: 'Freie Kapazität im Team zeigen',
+    risiko: 'lesen',
+    erkenne: (t) => /\bwer\b.*\b(zeit|frei|verfügbar|kapazität|luft)\b/.test(klein(t)) || /\b(freie kapazität|wer ist frei)\b/.test(klein(t)),
+    beantworte: (t, _e, k) => werHatZeit(k, zeitraumAus(klein(t), k.heute) ?? naechsteWoche(k)),
+  },
+  {
+    id: 'location.find',
+    titel: 'Kunde oder Kollege finden',
+    risiko: 'lesen',
+    erkenne: (t) => /^wo\b|\bwo (ist|sind|wohnt|steckt|arbeitet)\b|\badresse\b/.test(klein(t)),
+    beantworte: (t, _e, k) => woIst(k, t),
+  },
+  {
+    id: 'offer.list',
+    titel: 'Offene Angebote zeigen',
+    risiko: 'lesen',
+    erkenne: (t) => /angebot/.test(klein(t)) && /(offen|warten|ausstehend|antwort|versendet|stand)/.test(klein(t)),
+    beantworte: (_t, _e, k) => offeneAngebote(k),
+  },
+  {
+    id: 'request.list',
+    titel: 'Offene Anfragen zeigen',
+    risiko: 'lesen',
+    erkenne: (t) => /anfrage/.test(klein(t)),
+    beantworte: (_t, _e, k) => offeneAnfragen(k),
+  },
+  {
+    id: 'attention.list',
+    titel: 'Zeigen, was dich braucht',
+    risiko: 'lesen',
+    erkenne: (t) => /(braucht mich|brauchst du|was ist wichtig|was muss ich|hinweis|freigabe|entscheid)/.test(klein(t)),
+    beantworte: (_t, _e, k) => brauchtMich(k),
+  },
+  {
+    id: 'task.list',
+    titel: 'Meine Aufgaben zeigen',
+    risiko: 'lesen',
+    erkenne: (t) => /(meine aufgaben|was ist zu tun|was hab ich zu tun|was habe ich zu tun|offene aufgaben)/.test(klein(t)),
+    beantworte: (_t, _e, k) => meineAufgaben(k),
+  },
+  {
+    id: 'appointment.list',
+    titel: 'Termine und Einsätze zeigen',
+    risiko: 'lesen',
+    erkenne: (t, k) => {
+      const f = klein(t);
+      return (!!zeitraumAus(f, k.heute) && /(steht|an\b|termin|plan|geplant|los|einsatz|einsätze|was ist|was hab|was habe|was gibt)/.test(f)) || /\b(termine?|einsätze|plan)\b/.test(f);
+    },
+    beantworte: (t, _e, k) => {
+      const f = klein(t);
+      const z = zeitraumAus(f, k.heute);
+      if (z && /(steht|an\b|termin|plan|geplant|los|einsatz|einsätze|was ist|was hab|was habe|was gibt)/.test(f))
+        return agenda(k, z, /\b(ich|mich|mir|meine?n?)\b/.test(f) || nurMeineRolle(k));
+      return agenda(k, { von: k.heute, bis: k.heute, label: 'heute', tag: true }, nurMeineRolle(k));
+    },
+  },
+  {
+    id: 'help',
+    titel: 'Hilfe',
+    risiko: 'lesen',
+    erkenne: (t) => /(hilfe|was kannst du|wie funktioniert)/.test(klein(t)),
+    beantworte: () => ({ absicht: 'hilfe', text: 'Ich beantworte Fragen aus deinen Daten und bereite Aufgaben vor. Ausgeführt wird erst, wenn du bestätigst.', folgefragen: BEISPIELFRAGEN }),
+  },
+  {
+    id: 'search',
+    titel: 'In allen Bereichen suchen',
+    risiko: 'lesen',
+    rang: 100,
+    auffang: true,
+    beantworte: (t, _e, k) => suchen(k, t),
+  },
+];
 
-let aktiv: Sprachmodell = regelModell;
-
-/** Später: `setzeSprachmodell(new EchteKi(...))` – die Oberfläche bleibt gleich. */
-export function setzeSprachmodell(m: Sprachmodell) {
-  aktiv = m;
+/** Antwort, wenn der Gateway ablehnt – gleiche Form wie jede andere Antwort */
+export function abgelehnt(g: Pick<GatewayAntwort, 'verweigert' | 'fehlendeRechte'>): Antwort {
+  if (g.verweigert === 'rechte') {
+    if (g.fehlendeRechte?.includes('geld')) return { ...KEIN_GELD };
+    if (g.fehlendeRechte?.includes('schreiben'))
+      return { absicht: 'keine-berechtigung', text: 'Du kannst Aufgaben ansehen. Zum Anlegen brauchst du die entsprechende Freigabe.' };
+    return { absicht: 'keine-berechtigung', text: 'Dafür fehlt dir die Berechtigung. Frag deinen Chef nach der Freigabe.' };
+  }
+  return { absicht: 'unbekannt', text: 'Das kann ich noch nicht beantworten. Probier zum Beispiel:', folgefragen: BEISPIELFRAGEN.slice(0, 4) };
 }
 
-export function sprachmodell(): Sprachmodell {
-  return aktiv;
+const LEER: Antwort = { absicht: 'leer', text: 'Stell mir eine Frage zu deinem Betrieb.', folgefragen: BEISPIELFRAGEN };
+
+/** Lane 0 ohne Protokoll: erkennt die Absicht per Regel und beantwortet sie direkt aus den Daten (Tests, Vorschau). */
+export function beantworte(frage: string, k: Kontext): Antwort {
+  if (!frage.trim()) return LEER;
+  const def = ABSICHTEN.find((a) => a.erkenne?.(frage, k)) ?? ABSICHTEN.find((a) => a.auffang)!;
+  if ((def.rechte ?? []).some((r) => !k.darf(r))) return abgelehnt({ verweigert: 'rechte', fehlendeRechte: (def.rechte ?? []).filter((r) => !k.darf(r)) });
+  return def.beantworte(frage, { absicht: def.id, sicherheit: 1, lane: 0 }, k, {});
+}
+
+/** Der Weg für die Oberfläche: Text oder Sprache → Gateway → Antwort (protokolliert). */
+export async function fragen(text: string, k: Kontext, kanal: Kanal = 'text'): Promise<{ antwort: Antwort; modell: string }> {
+  if (!text.trim()) return { antwort: LEER, modell: 'Regeln' };
+  const g = await gatewayFrage<Antwort>(text, { ...k, kanal });
+  return { antwort: g.ergebnis ?? abgelehnt(g), modell: g.modell };
 }
 
 // ------------------------------------------------------------------ Ausführen (erst nach Bestätigung)
+
+export const AKTIONEN: AktionDef<AufgabeEntwurf>[] = [
+  {
+    id: 'task.create',
+    titel: 'Aufgabe angelegt',
+    risiko: 'schreiben',
+    rechte: ['schreiben'],
+    pruefe: (e) => (e.titel.trim() ? undefined : 'Trage ein, was erledigt werden soll.'),
+    fuehreAus: (e, k) => ({ bezug: { typ: 'aufgaben', id: aufgabeAusEntwurf(e, k).id } }),
+  },
+];
 
 export function aufgabeAusEntwurf(e: AufgabeEntwurf, k: Pick<Kontext, 'darf'>) {
   if (!k.darf('schreiben')) throw new Error('Keine Berechtigung');

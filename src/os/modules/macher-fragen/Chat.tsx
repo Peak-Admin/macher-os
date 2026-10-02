@@ -6,7 +6,8 @@ import { pfadZu } from '@core/modul';
 import { darf, useIch } from '@core/session';
 import { Button, Eingabe, FormRaster, Karte, Laden, Liste, ListenZeile, Meldung, Meta, Status, Zeile, useToast } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
-import { aufgabeAusEntwurf, BEISPIELFRAGEN, sprachmodell, type Antwort, type Vorschlag } from './assistent';
+import { fuehreAus } from '@core/gateway';
+import { BEISPIELFRAGEN, fragen as gatewayFragen, type Antwort, type AufgabeEntwurf, type Vorschlag } from './assistent';
 import { chat, type ChatEintrag } from './daten';
 import './macher.css';
 
@@ -29,10 +30,9 @@ export function MacherChat({ onNavigiert, startFrage }: { onNavigiert?: () => vo
     setFrage('');
     chat.create({ mitarbeiterId: ich?.id, rolle: 'frage', text: t });
     setLaedt(true);
-    const modell = sprachmodell();
     try {
-      const antwort = await modell.antworte(t, { heute: heute(), jetzt: new Date(), ich, darf: (r) => darf(r, ich) });
-      chat.create({ mitarbeiterId: ich?.id, rolle: 'antwort', text: antwort.text, antwort, modell: modell.name });
+      const { antwort, modell } = await gatewayFragen(t, { heute: heute(), jetzt: new Date(), ich, darf: (r) => darf(r, ich) });
+      chat.create({ mitarbeiterId: ich?.id, rolle: 'antwort', text: antwort.text, antwort, modell });
     } catch (e) {
       console.error(e);
       chat.create({ mitarbeiterId: ich?.id, rolle: 'fehler', text: 'Das hat nicht geklappt. Versuche es erneut.' });
@@ -198,12 +198,18 @@ function AufgabeVorschlag({ eintrag, v }: { eintrag: ChatEintrag; v: Extract<Vor
     );
 
   const anlegen = () => {
-    if (!e.titel.trim()) return setFehler('Trage ein, was erledigt werden soll.');
-    try {
-      const a = aufgabeAusEntwurf(e, { darf: (r) => darf(r, ich) });
-      setzeStatus({ status: 'ausgefuehrt', ergebnisId: a.id, entwurf: e });
+    // Der Mensch hat „Aufgabe anlegen“ gedrückt – erst jetzt führt der Gateway aus und protokolliert.
+    const r = fuehreAus<AufgabeEntwurf>(
+      { aktion: 'task.create', absicht: 'task.create', daten: e },
+      { heute: heute(), jetzt: new Date(), ich, darf: (x) => darf(x, ich) },
+      { bestaetigt: true },
+    );
+    if (r.ok) {
+      setzeStatus({ status: 'ausgefuehrt', ergebnisId: r.bezug?.id, entwurf: e });
       toast('Die Aufgabe ist angelegt.');
-    } catch {
+    } else if (r.grund === 'ungueltig') {
+      setFehler(r.text);
+    } else {
       setFehler('Die Aufgabe wurde noch nicht angelegt. Prüfe deine Berechtigung und versuche es erneut.');
     }
   };

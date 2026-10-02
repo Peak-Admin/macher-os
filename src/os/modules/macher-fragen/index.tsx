@@ -1,6 +1,7 @@
 import { defineModul } from '@core/modul';
 import { useOverlay } from '@core/overlay';
 import { Dialog, Seite } from '@ui/index';
+import { ABSICHTEN, AKTIONEN } from './assistent';
 import { MacherChat } from './Chat';
 
 /** Overlay „Macher fragen“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`). */
@@ -31,4 +32,5 @@ export default defineModul({
   navigation: 'versteckt',
   routen: [{ pfad: '', element: MacherSeite }],
   global: MacherOverlay,
+  gateway: { absichten: ABSICHTEN, aktionen: AKTIONEN },
 });
