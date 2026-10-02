@@ -3,6 +3,7 @@ import { ArrowLink, Card, Faq, FaqJsonLd, IconTile, Section, SectionHeading } fr
 import { clusterInhalte, topGewerkInhalte } from "@/content/gewerke";
 import { gewerkCluster, topGewerke, type GewerkClusterSlug } from "@/content/registry";
 import { arbeitsweiseIcon, ChipLink, FunktionLink } from "./Bausteine";
+import { GewerkFoto } from "./GewerkFoto";
 import { GewerkTagMock } from "./Mocks";
 
 export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
@@ -21,6 +22,8 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
         intro={c.intro}
         visual={<GewerkTagMock betrieb="Dein Betrieb" label={reg.titel} tag={c.tag} chips={c.berufe.slice(0, 4)} />}
       />
+
+      <GewerkFoto slug={slug} />
 
       {/* Welche Berufe dazugehören */}
       <Section tone="white">

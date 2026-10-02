@@ -55,7 +55,7 @@ export function HerausgeberMarke({ dark = false, className = "" }: { dark?: bool
   if (bildVorhanden(src)) {
     // Originalasset im echten Seitenverhältnis, daher kein next/image mit fester Größe.
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={herausgeber.name} className={`h-8 w-auto ${className}`} />;
+    return <img src={src} alt={herausgeber.name} className={`h-10 w-auto ${className}`} />;
   }
   return (
     <span className={`font-display text-lg font-bold ${dark ? "text-white" : "text-ink"} ${className}`}>
@@ -126,7 +126,7 @@ export function MissionMittelstandFoto({ className = "" }: { className?: string 
     <figure className={`relative aspect-[3/2] w-full overflow-hidden rounded-lg bg-ink ${className}`}>
       <Foto
         src={herausgeber.teamFoto}
-        alt={`Das Team von ${herausgeber.name}`}
+        alt={`Besprechung im Team von ${herausgeber.name}`}
         sizes="(min-width: 1024px) 640px, 100vw"
         className="object-cover"
         ersatz={

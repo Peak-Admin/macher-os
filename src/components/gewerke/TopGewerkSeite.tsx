@@ -16,6 +16,7 @@ import {
 import { topGewerkInhalte } from "@/content/gewerke";
 import { kunden, topGewerke, werkzeuge, type TopGewerkSlug } from "@/content/registry";
 import { ChipLink, EinrichtungsListe, FunktionLink, funktionTitel } from "./Bausteine";
+import { GewerkFoto } from "./GewerkFoto";
 import { GewerkPhoneMock, GewerkTagMock } from "./Mocks";
 
 const auftragIcons: IconName[] = ["wrench", "clipboard", "calendar", "bolt", "warehouse", "layers"];
@@ -41,6 +42,8 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         intro={g.hero.intro}
         visual={<GewerkTagMock betrieb={g.hero.betrieb} label={g.name} tag={g.hero.tag} hinweis={g.hero.hinweis} />}
       />
+
+      <GewerkFoto slug={slug} />
 
       {/* 2. Typischer Arbeitsablauf */}
       <Section tone="white">

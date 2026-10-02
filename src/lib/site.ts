@@ -19,16 +19,17 @@ export const herausgeber = {
   kurz: "Ein Joint Venture von Mission Mittelstand",
   beschreibung: "Beratung für Handwerk und Mittelstand",
   logo: {
-    hell: "/bilder/mission-mittelstand/logo-hell.svg",
-    dunkel: "/bilder/mission-mittelstand/logo-dunkel.svg",
+    hell: "/bilder/mission-mittelstand/logo-hell.webp",
+    /** Weißes Original-Logo von mission-mittelstand.de für dunkle Flächen */
+    dunkel: "/bilder/mission-mittelstand/logo-dunkel.webp",
   },
   /** Echtes Foto von Team, Bühne oder Veranstaltung (Querformat, ca. 3:2). */
-  teamFoto: "/bilder/mission-mittelstand/team.jpg",
+  teamFoto: "/bilder/mission-mittelstand/team.webp",
   person: {
     name: "Matthias Aumann",
     rolle: "Gründer von Mission Mittelstand",
     /** Freigestelltes Porträt (Hochformat, ca. 4:5, transparenter oder heller Hintergrund). */
-    foto: "/bilder/mission-mittelstand/matthias-aumann.png",
+    foto: "/bilder/mission-mittelstand/matthias-aumann.webp",
   },
 };
 
@@ -313,5 +314,6 @@ export const legalNav: NavLink[] = [
   { label: "Datenschutz", href: "/datenschutz" },
   { label: "AGB", href: "/agb" },
   { label: "Auftragsverarbeitung", href: "/auftragsverarbeitung" },
+  { label: "Bildnachweise", href: "/bildnachweise" },
   { label: "Cookie-Einstellungen", href: "/datenschutz#cookies" },
 ];
