@@ -42,31 +42,30 @@ function EuLogo({ className = "" }: { className?: string }) {
 const EU_REGEL = new Set<string>(["DSGVO-konform", "KI nach EU AI Act"]);
 
 /**
- * Kleine Kacheln mit den belegten Vertrauensaussagen (dieselbe Quelle wie in der Software).
- * EU-Regeln (DSGVO, EU AI Act) als blaue Kachel mit EU-Logo, der Serverstandort mit deutscher Flagge.
+ * Vertrauensaussagen als Pillen in der Größe von „Made in Germany“ (dieselbe Quelle wie in der Software).
+ * EU-Regeln (DSGVO, EU AI Act) blau mit EU-Logo, der Serverstandort mit deutscher Flagge.
  */
 export function VertrauensKacheln({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
-      <ul className="grid gap-3 sm:grid-cols-3">
+      <ul className="flex flex-wrap gap-3">
         {datenVertrauen.map((v) => {
           const eu = EU_REGEL.has(v.titel);
           return (
             <li
               key={v.titel}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2 ring-1 ring-inset ${
-                eu ? "bg-eu ring-white/15" : "bg-white/5 ring-white/10"
+              title={v.text}
+              className={`inline-flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 text-sm font-semibold text-white ring-1 ring-inset ${
+                eu ? "bg-eu ring-white/20" : "bg-white/10 ring-white/15"
               }`}
             >
               {eu ? (
-                <EuLogo className="size-8 shrink-0" />
+                <EuLogo className="size-6 shrink-0" />
               ) : (
-                <span aria-hidden className="flagge-de h-5 w-8 shrink-0 rounded-sm ring-1 ring-white/30" />
+                <span aria-hidden className="flagge-de size-6 shrink-0 rounded-full ring-1 ring-white/30" />
               )}
-              <span className="min-w-0 leading-snug">
-                <span className="block text-sm font-semibold text-white">{v.titel}</span>
-                <span className={`block text-sm ${eu ? "text-white/80" : "text-white/65"}`}>{v.text}</span>
-              </span>
+              {v.titel}
+              <span className="sr-only">: {v.text}</span>
             </li>
           );
         })}
