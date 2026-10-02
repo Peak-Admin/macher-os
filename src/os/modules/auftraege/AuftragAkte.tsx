@@ -37,6 +37,7 @@ import {
   useToast,
 } from "@ui/index";
 import { ErfassenKnopf, ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from "@ui/objekt";
+import { Person, Personen, Personenbild } from "@ui/person";
 import {
   ART_LABEL,
   kommendeEinsaetze,
@@ -321,7 +322,7 @@ function Kopf({ a }: { a: Auftrag }) {
       )}
       <Karte kompakt oberzeile="Eckdaten">
         <div className="akte-info">
-          <span>Verantwortlich: {v ? personName(v) : "niemand"}</span>
+          <span>Verantwortlich: {v ? <Person m={v} /> : "niemand"}</span>
           {!!a.mitarbeiterIds?.length && (
             <span>Team: {a.mitarbeiterIds.map((id) => personName(db.mitarbeiter.get(id))).join(", ")}</span>
           )}
@@ -398,14 +399,15 @@ function Ueberblick({
               key={t.id}
               to={pfadZu({ typ: "termine", id: t.id })}
               titel={`${datumKurz(t.start)}, ${uhrzeit(t.start)}–${uhrzeit(t.ende)} Uhr`}
-              untertitel={[
-                t.titel,
-                t.mitarbeiterIds
-                  .map((m) => personName(db.mitarbeiter.get(m)))
-                  .join(", "),
-              ]
-                .filter(Boolean)
-                .join(" · ")}
+              untertitel={
+                t.titel || t.mitarbeiterIds.length > 0 ? (
+                  <>
+                    {t.titel}
+                    {t.titel && t.mitarbeiterIds.length > 0 && " · "}
+                    <Personen ids={t.mitarbeiterIds} namen />
+                  </>
+                ) : undefined
+              }
               rechts={
                 <Status
                   ton={
@@ -517,6 +519,7 @@ function ZeitenAmAuftrag({ auftragId }: { auftragId: string }) {
         {zeiten.slice(0, 30).map((z) => (
           <ListenZeile
             key={z.id}
+            links={<Personenbild m={z.mitarbeiterId} groesse={40} />}
             titel={`${datumKurz(z.datum)}, ${z.start}–${z.ende ?? "läuft"}`}
             untertitel={[personName(db.mitarbeiter.get(z.mitarbeiterId)), z.art === "fahrt" ? "Fahrt" : "Arbeit", z.notiz].filter(Boolean).join(" · ")}
             rechts={!z.ende ? <Status ton="aktiv">Läuft</Status> : undefined}

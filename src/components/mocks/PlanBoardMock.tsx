@@ -1,9 +1,12 @@
+import Image from "next/image";
+
 /** Stilisierte Plantafel: Mitarbeiter × Wochentage. Rein dekorativ. */
 const days = ["Mo", "Di", "Mi", "Do", "Fr"];
 
-const rows: { name: string; rolle: string; blocks: { start: number; len: number; label: string; color: string }[] }[] = [
+const rows: { name: string; bild: string; rolle: string; blocks: { start: number; len: number; label: string; color: string }[] }[] = [
   {
-    name: "Lukas",
+    name: "Jonas",
+    bild: "jonas-becker",
     rolle: "Geselle",
     blocks: [
       { start: 0, len: 2, label: "Neubau Schmidt", color: "bg-sky text-white" },
@@ -12,7 +15,8 @@ const rows: { name: string; rolle: string; blocks: { start: number; len: number;
     ],
   },
   {
-    name: "Ali",
+    name: "Max",
+    bild: "max-macher",
     rolle: "Meister",
     blocks: [
       { start: 0, len: 1, label: "Besichtigung", color: "bg-moss-soft text-moss" },
@@ -20,16 +24,18 @@ const rows: { name: string; rolle: string; blocks: { start: number; len: number;
     ],
   },
   {
-    name: "Mia",
+    name: "Lukas",
+    bild: "lukas-wagner",
     rolle: "Azubi",
     blocks: [
-      { start: 0, len: 2, label: "mit Lukas", color: "bg-sky-soft text-sky" },
+      { start: 0, len: 2, label: "mit Jonas", color: "bg-sky-soft text-sky" },
       { start: 2, len: 1, label: "Berufsschule", color: "bg-sand text-muted" },
-      { start: 3, len: 2, label: "mit Lukas", color: "bg-sky-soft text-sky" },
+      { start: 3, len: 2, label: "mit Jonas", color: "bg-sky-soft text-sky" },
     ],
   },
   {
-    name: "Tom",
+    name: "Mehmet",
+    bild: "mehmet-yilmaz",
     rolle: "Geselle",
     blocks: [
       { start: 0, len: 3, label: "Urlaub", color: "bg-sand text-muted" },
@@ -62,6 +68,7 @@ export function PlanBoardMock() {
         {rows.map((r) => (
           <div key={r.name} className="contents">
             <div className="border-t border-line px-3 py-3">
+              <Image src={`/bilder/os/team/${r.bild}.webp`} alt="" width={24} height={24} className="mb-1 size-6 rounded-full object-cover" />
               <div className="font-semibold">{r.name}</div>
               <div className="text-[0.65rem] text-muted">{r.rolle}</div>
             </div>
@@ -80,7 +87,7 @@ export function PlanBoardMock() {
         ))}
       </div>
       <div className="border-t border-line bg-signal-soft px-4 py-2.5 text-xs">
-        <b>Macher-Vorschlag:</b> Kundendienst Fr. Weber → Tom, Freitag 8:00 (frei, 12 Min. entfernt)
+        <b>Macher-Vorschlag:</b> Kundendienst Fr. Weber → Mehmet, Freitag 8:00 (frei, 12 Min. entfernt)
       </div>
     </div>
   );

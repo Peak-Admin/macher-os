@@ -1,7 +1,7 @@
 /** Büro-Ansicht: selbst gebuchte Termine bestätigen, Buchungslink teilen, Terminarten pflegen. */
 import { useEffect, useState } from 'react';
 import { db, useDatenstand } from '@core/db';
-import { datumKurz, personName, uhrzeit } from '@core/format';
+import { datumKurz, uhrzeit } from '@core/format';
 import type { TerminArt } from '@core/objects';
 import { useDarf } from '@core/session';
 import {
@@ -27,6 +27,7 @@ import {
   useBestaetigen,
   useToast,
 } from '@ui/index';
+import { Person, Personen } from '@ui/person';
 import { TERMINART_LABEL } from '../kalender/daten';
 import { buchungsfenster, buchungsToken, buchungsUrl, slotsFuer, zuBestaetigen, type Buchungsfenster } from './daten';
 
@@ -78,7 +79,11 @@ export function Terminbuchung() {
               key={t.id}
               to={terminPfad(t.id)}
               titel={t.titel}
-              untertitel={`${datumKurz(t.start)}, ${uhrzeit(t.start)}–${uhrzeit(t.ende)} Uhr · ${t.mitarbeiterIds.map((m) => personName(db.mitarbeiter.get(m))).join(', ') || 'Noch niemand'}`}
+              untertitel={
+                <>
+                  {datumKurz(t.start)}, {uhrzeit(t.start)}–{uhrzeit(t.ende)} Uhr · {t.mitarbeiterIds.length ? <Personen ids={t.mitarbeiterIds} namen /> : 'Noch niemand'}
+                </>
+              }
               rechts={<Status ton="aktiv">Vom Kunden gebucht</Status>}
             />
           ))}
@@ -233,7 +238,7 @@ function FensterFormular({ fenster, onFertig }: { fenster?: Buchungsfenster; onF
         <span className="mm-label">Wer übernimmt diese Termine?</span>
         <Meta>Nichts gewählt = alle Monteure und der Chef. Macher nimmt, wer in der Woche am wenigsten verplant ist.</Meta>
         {mitarbeiter.map((m) => (
-          <Checkbox key={m.id} label={personName(m)} checked={f.mitarbeiterIds.includes(m.id)} onChange={(an) => set('mitarbeiterIds', an ? [...f.mitarbeiterIds, m.id] : f.mitarbeiterIds.filter((x) => x !== m.id))} />
+          <Checkbox key={m.id} label={<Person m={m} />} checked={f.mitarbeiterIds.includes(m.id)} onChange={(an) => set('mitarbeiterIds', an ? [...f.mitarbeiterIds, m.id] : f.mitarbeiterIds.filter((x) => x !== m.id))} />
         ))}
       </div>
       <Schalter label="Online buchbar" beschreibung="Aus = Terminart pausiert, der Link zeigt sie nicht an." checked={f.aktiv} onChange={(v) => set('aktiv', v)} />

@@ -2,14 +2,15 @@
  * Titelbilder: Profilbild eines Mitarbeiters, Foto eines Fahrzeugs.
  * Ein Titelbild ist ein ganz normales Dokument (`art: 'foto'`) mit Bezug auf das Objekt und einem Tag –
  * keine Kopie, kein eigenes Feld. Das neueste gewinnt, ältere bleiben im Verlauf.
- * Kernwunsch: `bildId` an Mitarbeiter/Betriebsmittel und ein `Avatar` mit Bild im UI-Kern.
+ * Das runde Profilbild selbst (`Personenbild`, `Person`, `Personen`) liegt im UI-Kern (`@ui/person`).
  */
 import { db } from '@core/db';
-import { initialen, personName } from '@core/format';
-import type { Bezug, Dokument, ID, Mitarbeiter } from '@core/objects';
-import { Avatar, bildVerkleinern, DateiKnopf, useToast } from '@ui/index';
+import { personName } from '@core/format';
+import type { Bezug, Dokument, Mitarbeiter } from '@core/objects';
+import { bildVerkleinern, DateiKnopf, useToast } from '@ui/index';
+import { PROFILBILD, profilbild } from '@ui/person';
 
-export const PROFILBILD = 'profilbild';
+export { PROFILBILD, Person, Personen, Personenbild, profilbild } from '@ui/person';
 
 export function titelbild(bezug: Bezug, tag: string): Dokument | undefined {
   return db.dokumente
@@ -20,16 +21,6 @@ export function titelbild(bezug: Bezug, tag: string): Dokument | undefined {
 export async function titelbildSetzen(bezug: Bezug, tag: string, datei: File, titel: string, max = 800): Promise<Dokument> {
   const b = await bildVerkleinern(datei, { max });
   return db.dokumente.create({ art: 'foto', titel, url: b.url, mime: b.mime, groesse: b.bytes, bezug, tags: [tag] });
-}
-
-export const profilbild = (mitarbeiterId: ID | undefined) => (mitarbeiterId ? titelbild({ typ: 'mitarbeiter', id: mitarbeiterId }, PROFILBILD)?.url : undefined);
-
-/** Rundes Profilbild – ohne Foto die Initialen in der Kennfarbe */
-export function Personenbild({ m, groesse = 32 }: { m: Mitarbeiter; groesse?: number }) {
-  db.dokumente.use();
-  const url = profilbild(m.id);
-  if (!url) return <Avatar text={initialen(m)} farbe={m.farbe} groesse={groesse} titel={personName(m)} />;
-  return <img className="mm-avatar" src={url} alt={personName(m)} width={groesse} height={groesse} style={{ width: groesse, height: groesse, objectFit: 'cover' }} />;
 }
 
 export function ProfilbildKnopf({ m }: { m: Mitarbeiter }) {

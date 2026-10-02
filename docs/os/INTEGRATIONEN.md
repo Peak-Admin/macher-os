@@ -51,8 +51,9 @@ Website: eigene Connectoren aus `connectoren.ts`, der Rest kommt über `ausKatal
 (eine Liste, keine Doppelpflege; was schon an anderer Stelle eingebaut ist, steht in `ABGEDECKT`).
 
 - Nicht gebaut → Status „Auf Anfrage“, Knopf **„Verbinden“** öffnet **„Anfrage senden“** (optional: wofür).
-- Die Anfrage wird im Betrieb gespeichert (Sammlung `integrationsanfragen`, eine je Integration, Ereignis in der
-  Timeline) und geht per E-Mail an `partner@macher-os.de` (Betriebsname und Kontakt, keine weiteren Daten).
+- Die Anfrage geht **direkt aus der App** an `partner@macher-os.de` (Route `/api/integrationen/anfrage`, Resend, fester
+  Empfänger, Antwort an den Betrieb). Ohne `RESEND_API_KEY` öffnet sich als Rückfall das Mail-Programm mit fertiger E-Mail.
+  Gespeichert wird sie im Betrieb (Sammlung `integrationsanfragen`, eine je Integration, Ereignis in der Timeline).
 - Danach Status „Angefragt am …“. Sobald wir gebaut haben: `verfuegbar: true` – der Knopf führt direkt zur Verbindung.
 - Nie „Kommt“, nie „bis dahin“ – weder in der App noch auf der Website.
 

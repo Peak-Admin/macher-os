@@ -4,6 +4,7 @@ import { datum, heute, personName, plusTage } from '@core/format';
 import type { ID } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
 import { Button, Karte, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Zeile } from '@ui/index';
+import { Person, Personenbild } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { dauer, saldoText, stundenkonto, stunden } from './daten';
 import { Stempeluhr, zeitTitel } from './Stempeluhr';
@@ -46,6 +47,7 @@ export function StempeluhrSeite() {
             {laufen.map(({ m, z }) => (
               <ListenZeile
                 key={m.id}
+                links={<Personenbild m={m} groesse={40} />}
                 titel={personName(m)}
                 untertitel={z ? `seit ${z.start}${z.datum < t ? ` am ${datum(z.datum)}` : ''} · ${zeitTitel(z)}` : 'Keine Zeit läuft'}
                 rechts={z ? <Status ton={z.datum < t ? 'achtung' : 'aktiv'}>{z.datum < t ? 'Läuft seit gestern' : 'Läuft'}</Status> : <Status>Nicht gestempelt</Status>}
@@ -94,7 +96,7 @@ export function StundenkontoSeite() {
             zeilenLink={(z) => `/betrieb/arbeitszeiten/woche?ma=${z.m.id}`}
             leer={<Leer titel="Noch niemand im Team" icon="team" aktion={<Button to="/betrieb/mitarbeiter/neu">Mitarbeiter anlegen</Button>} />}
             spalten={[
-              { titel: 'Mitarbeiter', wert: (z) => personName(z.m), sortierWert: (z) => z.m.vorname },
+              { titel: 'Mitarbeiter', wert: (z) => <Person m={z.m} />, sortierWert: (z) => z.m.vorname },
               { titel: 'Erfasst seit', wert: (z) => (z.k ? datum(z.k.von) : '–'), nebensaechlich: true },
               { titel: 'Soll', wert: (z) => (z.k ? stunden(z.k.soll) : '–'), zahl: true, nebensaechlich: true },
               { titel: 'Ist', wert: (z) => (z.k ? stunden(z.k.ist) : '–'), zahl: true, nebensaechlich: true },

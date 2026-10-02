@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { aktionAusfuehren } from '@core/modul';
@@ -7,6 +7,7 @@ import type { ID, Nachweis, Qualifikation } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
 import { Auswahl, Button, Dialog, Eingabe, Filter, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
 import { Zeitstrahl } from '@ui/objekt';
+import { Person, Personenbild } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { KATEGORIE_LABEL, aktuellerNachweis, nachweisStatus, statusAnzeige } from './daten';
 import { NachweisDialog } from './NachweisDialog';
@@ -58,7 +59,7 @@ export function QualifikationenSeite() {
               schluessel={(m) => m.id}
               zeilenLink={(m) => `/betrieb/mitarbeiter/${m.id}`}
               spalten={[
-                { titel: 'Mitarbeiter', wert: (m) => personName(m), sortierWert: (m) => m.vorname },
+                { titel: 'Mitarbeiter', wert: (m) => <Person m={m} />, sortierWert: (m) => m.vorname },
                 ...qualis.map((q) => ({
                   titel: kurz(q.name),
                   wert: (m: (typeof team)[number]) => {
@@ -128,6 +129,7 @@ function AblaufZeile({ n }: { n: Nachweis }) {
   const s = statusAnzeige(n, heute());
   return (
     <ListenZeile
+      links={<Personenbild m={m} groesse={40} />}
       titel={`${personName(m)} · ${q?.name ?? 'Qualifikation'}`}
       untertitel={<Status ton={s.ton}>{s.text}</Status>}
       rechts={
@@ -234,7 +236,7 @@ export function QualifikationDetail() {
               zeilenLink={(z) => `/betrieb/mitarbeiter/${z.m.id}`}
               leer={<Leer titel="Noch niemand im Team" icon="team" />}
               spalten={[
-                { titel: 'Mitarbeiter', wert: (z) => personName(z.m), sortierWert: (z) => z.m.vorname },
+                { titel: 'Mitarbeiter', wert: (z) => <Person m={z.m} />, sortierWert: (z) => z.m.vorname },
                 {
                   titel: 'Status',
                   wert: (z) => {
@@ -276,7 +278,12 @@ export function QualifikationDetail() {
                   </Button>
                 }
               >
-                {ohne.map((z) => z.m.vorname).join(', ')}
+                {ohne.map((z, i) => (
+                  <Fragment key={z.m.id}>
+                    {i > 0 && ', '}
+                    <Person m={z.m}>{z.m.vorname}</Person>
+                  </Fragment>
+                ))}
               </Meldung>
             )}
             <Stapel abstand={8}>

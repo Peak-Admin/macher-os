@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '@core/db';
 import { aktionAusfuehren } from '@core/modul';
-import { datumKurz, personName, uhrzeit } from '@core/format';
+import { datumKurz, uhrzeit } from '@core/format';
 import { useDarf } from '@core/session';
 import { Abschnitt, Button, Leer, Liste, ListenZeile, Stapel, Status, Zeile } from '@ui/index';
+import { Personen } from '@ui/person';
 import { kontextAusDb, terminKonflikte } from '../verfuegbarkeit/daten';
 import { TERMINART_LABEL, TERMINSTATUS } from './daten';
 import { TerminFormular } from './TerminFormular';
@@ -29,7 +30,11 @@ export function AuftragTermine({ id }: { id: string }) {
         key={t.id}
         to={terminPfad(t.id)}
         titel={`${datumKurz(t.start)}, ${t.ganztags ? 'ganztägig' : `${uhrzeit(t.start)}–${uhrzeit(t.ende)}`}`}
-        untertitel={[TERMINART_LABEL[t.art], t.mitarbeiterIds.map((m) => personName(db.mitarbeiter.get(m))).join(', ') || 'Noch niemand eingeplant'].join(' · ')}
+        untertitel={
+          <>
+            {TERMINART_LABEL[t.art]} · {t.mitarbeiterIds.length ? <Personen ids={t.mitarbeiterIds} groesse={20} namen /> : 'Noch niemand eingeplant'}
+          </>
+        }
         rechts={
           <span style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
             {konflikt && <Status ton="achtung">Konflikt</Status>}

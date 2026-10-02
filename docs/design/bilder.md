@@ -84,3 +84,18 @@ Sobald die Datei unter `public/` liegt, erscheint beim nächsten Build automatis
 | `public/bilder/gewerke/gesundheitshandwerk.jpg` | Brillenfassungen in einem Optikergeschäft |
 | `public/bilder/gewerke/textil-gestaltung-werbetechnik.jpg` | Siebdruckrahmen in einer Werkstatt |
 | `public/bilder/gewerke/weitere-gewerke.jpg` | Werkbank mit verschiedenem Werkzeug |
+
+## Profilbilder des Beispielteams (Software, Spielwiese)
+
+Porträts für das Beispielteam der Spielwiese. Sie erscheinen nur bei Beispieldaten bzw. in der Spielwiese
+(`beispielProfilbild` in `src/os/ui/person.tsx`); ein hochgeladenes Profilbild hat immer Vorrang.
+Quelle: Unsplash, [Unsplash-Lizenz](https://unsplash.com/license) (frei nutzbar, keine Namensnennung nötig).
+Die Personen sind Fotomodelle, keine echten Mitarbeiter.
+
+| Datei | Person im Beispiel | Unsplash-Foto |
+|---|---|---|
+| `public/bilder/os/team/max-macher.webp` | Max Macher (Chef) | `photo-1472099645785-5658abf4ff4e` |
+| `public/bilder/os/team/jonas-becker.webp` | Jonas Becker (Monteur) | `photo-1570295999919-56ceb5ecca61` |
+| `public/bilder/os/team/mehmet-yilmaz.webp` | Mehmet Yılmaz (Monteur) | `photo-1500648767791-00dcc994a43e` |
+| `public/bilder/os/team/sandra-krueger.webp` | Sandra Krüger (Büro) | `photo-1580489944761-15a19d654956` |
+| `public/bilder/os/team/lukas-wagner.webp` | Lukas Wagner (Azubi) | `photo-1599566150163-29194dcaad36` |

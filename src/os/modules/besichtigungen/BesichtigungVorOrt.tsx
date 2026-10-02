@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { pfadZu } from '@core/modul';
-import { adresseText, datumKurz, mapsLink, personName, relativ, telLink, uhrzeit } from '@core/format';
+import { adresseText, datumKurz, mapsLink, relativ, telLink, uhrzeit } from '@core/format';
 import { Auswahl, AuswahlKarten, BeispielMarke, Button, Icon, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Textfeld, ZweiSpalten, useToast, DateiKnopf, bildVerkleinern } from '@ui/index';
 import { ObjektLink } from '@ui/objekt';
+import { Person, Personen } from '@ui/person';
 import { ERGEBNISSE, ergebnisFestlegen, type Ergebnis } from './daten';
 
 const GRUENDE = ['Zu teuer für den Kunden', 'Passt nicht zu unseren Leistungen', 'Kunde will doch nicht', 'Sonstiges'];
@@ -118,7 +119,12 @@ export function BesichtigungVorOrt() {
                     <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{n.text}</p>
                     <Meta>
                       {relativ(n.erstelltAm)}, {uhrzeit(n.erstelltAm)}
-                      {n.erstelltVon ? ` · ${personName(db.mitarbeiter.get(n.erstelltVon))}` : ''}
+                      {n.erstelltVon && (
+                        <>
+                          {' · '}
+                          <Person m={n.erstelltVon} />
+                        </>
+                      )}
                     </Meta>
                   </div>
                 ))}
@@ -171,7 +177,7 @@ export function BesichtigungVorOrt() {
                 <Meta>
                   {datumKurz(t.start)}, {uhrzeit(t.start)}–{uhrzeit(t.ende)} Uhr
                 </Meta>
-                <Meta>{t.mitarbeiterIds.map((m) => personName(db.mitarbeiter.get(m))).join(', ') || 'Niemand eingeteilt'}</Meta>
+                <Meta>{t.mitarbeiterIds.length ? <Personen ids={t.mitarbeiterIds} namen /> : 'Niemand eingeteilt'}</Meta>
                 {a && pfadZu({ typ: 'auftraege', id: a.id }) && <ObjektLink bezug={{ typ: 'auftraege', id: a.id }}>{`Auftrag ${a.nummer} öffnen`}</ObjektLink>}
                 {pfadZu(bezug) && <ObjektLink bezug={bezug}>Im Kalender ansehen</ObjektLink>}
               </Stapel>

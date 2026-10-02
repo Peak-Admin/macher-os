@@ -2,10 +2,11 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { db, vermerken } from '@core/db';
-import { datumKurz, heute, isoDatum, minutenAus, personName, plusTage, uhrAus, uhrzeit, zeitpunkt } from '@core/format';
+import { datumKurz, heute, isoDatum, minutenAus, plusTage, uhrAus, uhrzeit, zeitpunkt } from '@core/format';
 import type { Datum, ID, Termin, TerminArt } from '@core/objects';
 import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Meta, Stapel, Status, Textfeld, useToast } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
+import { Person } from '@ui/person';
 import { freieSlots, kontextAusDb, pruefeVerfuegbarkeit } from '../verfuegbarkeit/daten';
 import { TERMINART_LABEL } from './daten';
 
@@ -211,7 +212,7 @@ function Formular({ termin, vorgabe = {}, onFertig }: { termin?: Termin; vorgabe
               onChange={(an) => set('mitarbeiterIds', an ? [...f.mitarbeiterIds, m.id] : f.mitarbeiterIds.filter((x) => x !== m.id))}
               label={
                 <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
-                  {personName(m)}
+                  <Person m={m} groesse={32} />
                   {!zeitOk ? null : g ? <Status ton={g.blockiert ? 'achtung' : 'aktiv'}>{g.text}</Status> : <Status ton="erfolg">Frei</Status>}
                 </span>
               }
@@ -231,7 +232,7 @@ function Formular({ termin, vorgabe = {}, onFertig }: { termin?: Termin; vorgabe
         <Meldung ton="achtung" titel="Achtung, Konflikt">
           {konflikte.map((x) => (
             <div key={x.id}>
-              {personName(db.mitarbeiter.get(x.id))}: {x.p!.gruende.filter((g) => g.blockiert).map((g) => (g.terminId ? `${g.text} (${db.termine.get(g.terminId)?.titel ?? 'anderer Termin'})` : g.text)).join(', ')}
+              <Person m={x.id} groesse={20} />: {x.p!.gruende.filter((g) => g.blockiert).map((g) => (g.terminId ? `${g.text} (${db.termine.get(g.terminId)?.titel ?? 'anderer Termin'})` : g.text)).join(', ')}
             </div>
           ))}
           <div>Du kannst trotzdem speichern.</div>

@@ -1,10 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
-import { adresseText, datumKurz, datumVon, heute, mapsLink, personName, telLink } from '@core/format';
+import { adresseText, datumKurz, datumVon, heute, mapsLink, telLink } from '@core/format';
 import { pfadZu } from '@core/modul';
 import { istBuero, useIch } from '@core/session';
 import type { Termin } from '@core/objects';
 import { ObjektPanels, erfassen } from '@ui/objekt';
+import { Personen } from '@ui/person';
 import { BeispielMarke, Button, Icon, Karte, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, useToast, Zeile, oberzeileKlasse, type IconName } from '@ui/index';
 import { AufgabeZeile } from '@modules/mein-tag/teile';
 import { TERMIN_ART_LABEL, TERMIN_STATUS_LABEL, zeitText } from '@modules/mein-tag/logik';
@@ -222,7 +223,11 @@ export function EinsatzKarte({ t }: { t: Termin }) {
           </Stapel>
         )}
 
-        {team.length > 1 && <Meta>Mit dabei: {team.map((m) => personName(m)).join(', ')}</Meta>}
+        {team.length > 1 && (
+          <Meta>
+            Mit dabei: <Personen ids={t.mitarbeiterIds} groesse={20} namen />
+          </Meta>
+        )}
 
         {auftrag && (
           <div>

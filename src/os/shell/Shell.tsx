@@ -3,8 +3,8 @@
  * Desktop: nur die Seitenleiste, keine Topbar. Oben darin der Betriebs-Wechsler, dann ein gemeinsames Feld „Suchen oder fragen“
  * (Suche und Macher in einem), darunter die Benachrichtigungen. Mobil: schmaler Kopf + untere Navigation. Keine Unterbäume, kein globales „Neu“,
  * kein Plus, kein Hamburger-Menü. Lokale Navigation (höchstens vier Ziele) steht im Inhaltsbereich.
- * Unter den vier Bereichen höchstens drei persönliche Favoriten (ausgewählt im Modulverzeichnis unter „Betrieb“),
- * mobil im Profilmenü.
+ * Unter den vier Bereichen deine eigene Seitenleiste (`Seitenleiste.tsx`, nach Peak One): Module, Smart Views,
+ * gemerkte Seiten und Ordner – frei eingerichtet über „+“ und „Anpassen“. Mobil im Profilmenü.
  * Die Seitenleiste lässt sich komplett einklappen (schmale Leiste nur mit Icons) und wieder ausklappen (Strg B);
  * die Wahl wird je Mitarbeiter gespeichert.
  *
@@ -21,17 +21,18 @@ import { oeffne } from '@core/overlay';
 import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { useEinstellung } from '@core/einstellungen';
-import { initialen, personName } from '@core/format';
-import { alleModule, modul, modulPfad } from '@core/modul';
+import { personName } from '@core/format';
+import { alleModule, modul } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Auswahl, Avatar, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
+import { Auswahl, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
+import { Personenbild } from '@ui/person';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
 import { BASIS } from '@core/basis';
 import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
 import { BetriebWechsler } from './BetriebWechsler';
-import { useFavoriten } from './favoriten';
+import { DeineLeiste, useLeistenZiele } from './Seitenleiste';
 import './shell.css';
 
 /** Monteur und Azubi bekommen am Handy die schlanke Monteur-App */
@@ -139,7 +140,7 @@ export function Shell({ children }: { children: ReactNode }) {
                 </Link>
               ))}
         </nav>
-        {!monteur && <Favoriten eingeklappt={eingeklappt} />}
+        {!monteur && <DeineLeiste eingeklappt={eingeklappt} />}
         <Profil oben />
       </aside>
 
@@ -232,7 +233,7 @@ function Profil({ oben }: { oben?: boolean }) {
   const ich = useIch();
   const alle = db.mitarbeiter.use((m) => m.aktiv);
   const ungelesen = useUngelesen();
-  const favoriten = useFavoriten().module;
+  const favoriten = useLeistenZiele();
   const [offen, setOffen] = useState(false);
   const pfad = useLocation().pathname;
   useEffect(() => setOffen(false), [pfad]);
@@ -247,7 +248,7 @@ function Profil({ oben }: { oben?: boolean }) {
         aria-label={`Profil von ${personName(ich)}${ungelesen && !oben ? `, ${ungelesen} ungelesene Benachrichtigungen` : ''}`}
         onClick={() => setOffen(!offen)}
       >
-        <Avatar text={initialen(ich)} farbe={ich.farbe} />
+        <Personenbild m={ich} dekorativ />
         {oben && <span className="mm-profil-name mm-leiste-text">{personName(ich)}</span>}
         {!oben && ungelesen > 0 && <span className="mm-glocke-zahl">{ungelesen > 9 ? '9+' : ungelesen}</span>}
       </button>
@@ -264,13 +265,13 @@ function Profil({ oben }: { oben?: boolean }) {
                 {!istMonteurRolle(ich) && (
                   <>
                     <p className="mm-nav-titel mm-menue-titel">Favoriten</p>
-                    {favoriten.map((m) => (
-                      <Link key={m.id} to={modulPfad(m)} onClick={() => setOffen(false)}>
-                        <Icon name={m.icon ?? 'stern'} /> {m.titel}
+                    {favoriten.map((z) => (
+                      <Link key={z.id} to={z.pfad} onClick={() => setOffen(false)}>
+                        <Icon name={z.icon} /> {z.titel}
                       </Link>
                     ))}
                     <Link to="/betrieb" onClick={() => setOffen(false)}>
-                      <Icon name="stern" /> {favoriten.length ? 'Favoriten ändern' : 'Favoriten auswählen'}
+                      <Icon name="stern" /> {favoriten.length ? 'Module hinzufügen' : 'Module auswählen'}
                     </Link>
                   </>
                 )}
@@ -293,42 +294,6 @@ function Profil({ oben }: { oben?: boolean }) {
         </>
       )}
     </div>
-  );
-}
-
-/** Höchstens drei persönliche Abkürzungen – flach, ein Klick. Auswahl im Modulverzeichnis unter „Betrieb“. */
-function Favoriten({ eingeklappt }: { eingeklappt: boolean }) {
-  const { module } = useFavoriten();
-  const pfad = useLocation().pathname;
-  return (
-    <nav className="mm-nav-favoriten" aria-label="Favoriten">
-      <h2 className="mm-nav-titel mm-leiste-text">Favoriten</h2>
-      {module.length ? (
-        <ul className="mm-nav-liste">
-          {module.map((m) => {
-            const ziel = modulPfad(m);
-            const an = pfad === ziel || pfad.startsWith(`${ziel}/`);
-            return (
-              <li key={m.id}>
-                <Link
-                  to={ziel}
-                  className={`mm-nav-favorit ${an ? 'mm-nav-favorit--an' : ''}`}
-                  aria-current={an ? 'page' : undefined}
-                  title={eingeklappt ? m.titel : undefined}
-                >
-                  <ThemenIcon name={m.icon ?? 'stern'} size={24} strichGroesse={18} />
-                  <span className="mm-leiste-text">{m.titel}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <p className="mm-nav-leer mm-leiste-text">
-          Markiere bis zu drei Module unter <Link to="/betrieb">Betrieb</Link> mit dem Stern.
-        </p>
-      )}
-    </nav>
   );
 }
 

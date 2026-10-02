@@ -124,9 +124,15 @@ function Liste({ children }: { children: ReactNode }) {
   return <div className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">{children}</div>;
 }
 
-function Zeile({ titel, unter, rechts, onClick }: { titel: string; unter: string; rechts?: ReactNode; onClick?: () => void }) {
+/** Profilbild aus dem Beispielteam der Spielwiese (public/bilder/os/team) */
+function Gesicht({ datei, name }: { datei: string; name: string }) {
+  return <Image src={`/bilder/os/team/${datei}.webp`} alt={name} width={32} height={32} className="size-8 shrink-0 rounded-full object-cover" />;
+}
+
+function Zeile({ titel, unter, links, rechts, onClick }: { titel: string; unter: string; links?: ReactNode; rechts?: ReactNode; onClick?: () => void }) {
   const inhalt = (
     <>
+      {links}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[13px] font-semibold text-ink">{titel}</span>
         <span className="block truncate text-[11px] text-muted">{unter}</span>
@@ -617,12 +623,12 @@ function Planen({ heute }: { heute: Termin[] }) {
           <Kopf titel="Kapazität · KW 40" />
           <Liste>
             {[
-              ["Jonas Becker", "Geselle", "3 Einsätze"],
-              ["Lukas Weber", "Geselle", "1 Einsatz"],
-              ["Max Macher", "Meister", "1 Besichtigung"],
-              ["Tom Schuster", "Geselle", "Urlaub bis Do."],
-            ].map(([n, r, w]) => (
-              <Zeile key={n} titel={n} unter={r} rechts={<span className="text-[12px] font-semibold text-muted">{w}</span>} />
+              ["Jonas Becker", "Geselle", "3 Einsätze", "jonas-becker"],
+              ["Lukas Wagner", "Azubi", "1 Einsatz", "lukas-wagner"],
+              ["Max Macher", "Meister", "1 Besichtigung", "max-macher"],
+              ["Mehmet Yılmaz", "Geselle", "Urlaub bis Do.", "mehmet-yilmaz"],
+            ].map(([n, r, w, d]) => (
+              <Zeile key={n} titel={n} unter={r} links={<Gesicht datei={d} name={n} />} rechts={<span className="text-[12px] font-semibold text-muted">{w}</span>} />
             ))}
           </Liste>
         </>

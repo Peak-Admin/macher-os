@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useDatenstand } from '@core/db';
 import { darf, useIch } from '@core/session';
-import { Abschnitt, Button, Dialog, FensterSkizze, Karte, Leer, Meta, Raster, Seite, Stapel, Status, Textfeld, Zeile, useToast, type GlasIconName } from '@ui/index';
+import { Abschnitt, Button, Dialog, FensterSkizze, Karte, Leer, Meldung, Meta, Raster, Seite, Stapel, Status, Textfeld, Zeile, useToast, type GlasIconName } from '@ui/index';
 import { connectoren, KATEGORIEN, VERBINDUNGSART, ZUSTAND_LABEL, ZUSTAND_TON, type Connector, type Kategorie } from './connectoren';
-import { anfrage, anfrageMailto, anfrageSpeichern } from './anfragen';
+import { anfrage, anfrageSenden, anfrageSpeichern } from './anfragen';
 
 /** Glas-Icon je Verbindung für die Fenster-Skizze; sonst das Icon des Bereichs. */
 const CONNECTOR_ICON: Partial<Record<string, GlasIconName>> = {
@@ -183,9 +183,23 @@ function AnfrageDialog({ c, onSchliessen }: { c: Connector; onSchliessen: () => 
   const [notiz, setNotiz] = useState(vorher?.notiz ?? '');
   const s = c.status();
 
-  const senden = () => {
+  const [laedt, setLaedt] = useState(false);
+  const [fehler, setFehler] = useState<string>();
+
+  const senden = async () => {
+    setLaedt(true);
+    setFehler(undefined);
+    const e = await anfrageSenden(c.titel, notiz);
+    setLaedt(false);
+    if (e.ok) {
+      anfrageSpeichern(c.id, c.titel, notiz);
+      toast(`Anfrage für ${c.titel} gesendet – wir melden uns bei dir.`);
+      return onSchliessen();
+    }
+    if (e.fehler) return setFehler(`${e.fehler} Deine Notiz bleibt erhalten – versuch es gleich noch einmal.`);
+    // Versand nicht eingerichtet: Mail-Programm mit fertiger E-Mail
     anfrageSpeichern(c.id, c.titel, notiz);
-    window.location.href = anfrageMailto(c.titel, notiz);
+    window.location.href = e.mailto;
     toast(`Anfrage für ${c.titel} gespeichert – sende die E-Mail in deinem Mail-Programm ab.`);
     onSchliessen();
   };
@@ -200,7 +214,7 @@ function AnfrageDialog({ c, onSchliessen }: { c: Connector; onSchliessen: () => 
           <Button variante="sekundaer" onClick={onSchliessen}>
             Abbrechen
           </Button>
-          <Button icon="mail" onClick={senden}>
+          <Button icon="mail" onClick={senden} laedt={laedt} laedtText="Wird gesendet …">
             {vorher ? 'Anfrage erneut senden' : 'Anfrage senden'}
           </Button>
         </>
@@ -223,7 +237,12 @@ function AnfrageDialog({ c, onSchliessen }: { c: Connector; onSchliessen: () => 
           value={notiz}
           onChange={(e) => setNotiz(e.target.value)}
         />
-        <Meta>Die Anfrage geht per E-Mail an unser Integrationsteam – mit Betriebsname und Kontakt, ohne weitere Daten.</Meta>
+        {fehler && (
+          <Meldung ton="achtung" titel="Anfrage nicht gesendet">
+            {fehler}
+          </Meldung>
+        )}
+        <Meta>Die Anfrage geht direkt an unser Integrationsteam – mit Betriebsname und Kontakt, ohne weitere Daten.</Meta>
       </Stapel>
     </Dialog>
   );

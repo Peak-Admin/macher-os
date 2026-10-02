@@ -2,6 +2,7 @@
 import { db, useDatenstand } from '@core/db';
 import { personName, zahl } from '@core/format';
 import { Meta } from '@ui/index';
+import { Person } from '@ui/person';
 import { minuten, stundenText, type Bericht } from './daten';
 
 export function useBerichtInhalt(b: Bericht | undefined) {
@@ -14,7 +15,8 @@ export function useBerichtInhalt(b: Bericht | undefined) {
   return { zeiten, material, fotos, aufgaben, summeMin };
 }
 
-export function ZeitenTabelle({ b }: { b: Bericht }) {
+/** `bilder`: Profilbilder neben den Namen – nur am Bildschirm, nicht im Druck */
+export function ZeitenTabelle({ b, bilder }: { b: Bericht; bilder?: boolean }) {
   const { zeiten, summeMin } = useBerichtInhalt(b);
   if (!zeiten.length) return <Meta>Keine Zeiten für diesen Tag gebucht.</Meta>;
   return (
@@ -31,7 +33,7 @@ export function ZeitenTabelle({ b }: { b: Bericht }) {
         <tbody>
           {zeiten.map((z) => (
             <tr key={z.id}>
-              <td>{personName(db.mitarbeiter.get(z.mitarbeiterId))}</td>
+              <td>{bilder ? <Person m={z.mitarbeiterId} /> : personName(db.mitarbeiter.get(z.mitarbeiterId))}</td>
               <td>
                 {z.start} – {z.ende ?? 'läuft'}
               </td>

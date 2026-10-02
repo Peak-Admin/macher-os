@@ -1,10 +1,12 @@
 /** Wiederverwendbare Zeilen für Heute: Termin, Aufgabe, Mitarbeiter-Lage. */
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { db } from '@core/db';
-import { heute, initialen, personName, relativ } from '@core/format';
+import { heute, personName, relativ } from '@core/format';
 import { pfadZu } from '@core/modul';
 import type { Aufgabe, Mitarbeiter, Termin } from '@core/objects';
-import { Avatar, BeispielMarke, Checkbox, ListenZeile, Status, useToast } from '@ui/index';
+import { BeispielMarke, Checkbox, ListenZeile, Status, useToast } from '@ui/index';
+import { Person, Personenbild } from '@ui/person';
 import type { Ton } from '@core/modul';
 import { TERMIN_ART_LABEL, TERMIN_STATUS_LABEL, ortKurz, zeitText, type Lage } from './logik';
 
@@ -25,7 +27,7 @@ export function terminPfad(t: Termin): string | undefined {
 
 export function TerminZeile({ t, mitNamen }: { t: Termin; mitNamen?: boolean }) {
   const wo = ortKurz(t);
-  const namen = mitNamen ? t.mitarbeiterIds.map((id) => db.mitarbeiter.get(id)?.vorname).filter(Boolean).join(', ') : '';
+  const leute = mitNamen ? t.mitarbeiterIds.map((id) => db.mitarbeiter.get(id)).filter((m): m is Mitarbeiter => !!m) : [];
   return (
     <ListenZeile
       to={terminPfad(t)}
@@ -35,7 +37,19 @@ export function TerminZeile({ t, mitNamen }: { t: Termin; mitNamen?: boolean }) 
           {t.titel || TERMIN_ART_LABEL[t.art]} <BeispielMarke zeigen={t.beispiel} />
         </>
       }
-      untertitel={[TERMIN_ART_LABEL[t.art], wo, namen || null].filter(Boolean).join(' · ')}
+      untertitel={
+        <>
+          {[TERMIN_ART_LABEL[t.art], wo].filter(Boolean).join(' · ')}
+          {leute.map((m, i) => (
+            <Fragment key={m.id}>
+              {i > 0 ? ', ' : ' · '}
+              <Person m={m} groesse={20}>
+                {m.vorname}
+              </Person>
+            </Fragment>
+          ))}
+        </>
+      }
       rechts={t.status !== 'geplant' ? <Status ton={STATUS_TON[t.status]}>{TERMIN_STATUS_LABEL[t.status]}</Status> : null}
     />
   );
@@ -96,7 +110,7 @@ export function LageZeile({ m, lage }: { m: Mitarbeiter; lage: Lage }) {
   return (
     <ListenZeile
       to={termin ? terminPfad(termin) : pfadZu({ typ: 'mitarbeiter', id: m.id })}
-      links={<Avatar text={initialen(m)} farbe={m.farbe} titel={personName(m)} />}
+      links={<Personenbild m={m} groesse={32} />}
       titel={personName(m)}
       untertitel={untertitel}
       rechts={

@@ -1,45 +1,74 @@
 /**
- * Favoriten: Jeder Nutzer markiert unter „Betrieb“ bis zu drei Module mit dem Stern. Sie stehen dann unter den
- * vier Hauptbereichen in der Navigation – flach, ein Klick. Gespeichert je Mitarbeiter, so stellt sich jede Rolle
- * ihre Abkürzungen selbst zusammen. Die vier Hauptbereiche bleiben immer gleich.
+ * Deine Seitenleiste als Hook: laden, bereinigen, speichern – je Mitarbeiter.
+ * Unter den vier Hauptbereichen richtet sich jeder selbst ein, was er sehen will (Module, Smart Views, Seiten, Ordner).
+ * Der Stern im Modulverzeichnis unter „Betrieb“ legt ein Modul in die Leiste oder nimmt es heraus.
+ * Die Regeln stehen in `seitenleiste.ts`.
  */
-import { useEinstellung } from '@core/einstellungen';
+import { useMemo } from 'react';
+import { einstellung, setzeEinstellung, useEinstellung } from '@core/einstellungen';
 import { useIch } from '@core/session';
-import type { ModulDef } from '@core/modul';
-import type { Mitarbeiter, Rolle } from '@core/objects';
+import { modul, type ModulDef } from '@core/modul';
+import type { Mitarbeiter } from '@core/objects';
 import { modulVerzeichnis } from './struktur';
+import { bereinigen, flach, modulDrin, modulEintrag, modulUmschalten, standardLeiste, voll, type Leiste } from './seitenleiste';
 
-/** Mehr als drei Abkürzungen machen die Navigation wieder unruhig */
-export const FAVORITEN_MAX = 3;
+const schluessel = (mitarbeiterId: string | undefined) => `navigation.seitenleiste.${mitarbeiterId ?? 'alle'}`;
+/** frühere Favoriten (höchstens drei Module) – werden beim ersten Laden übernommen */
+const alterSchluessel = (mitarbeiterId: string | undefined) => `navigation.favoriten.${mitarbeiterId ?? 'alle'}`;
+/** Layout einer Smart View (Bausteine wie auf „Heute“) */
+export const ansichtSchluessel = (id: string) => `ansicht.layout.${id}`;
 
-/** Startauswahl je Rolle, solange der Nutzer seine Favoriten noch nicht selbst angepasst hat */
-export const STANDARD_FAVORITEN: Record<Rolle, string[]> = {
-  chef: ['angebote', 'rechnungen', 'auswertung'],
-  buero: ['anfragen', 'angebote', 'rechnungen'],
-  monteur: ['arbeitszeiten', 'abwesenheiten', 'werkzeuge'],
-  azubi: ['arbeitszeiten', 'abwesenheiten', 'schulungen'],
-};
-
-const schluessel = (mitarbeiterId: string | undefined) => `navigation.favoriten.${mitarbeiterId ?? 'alle'}`;
-
-/** Gespeicherte IDs → Module, die dieser Nutzer im Verzeichnis sehen darf (höchstens drei) */
-export function favoritenModule(ids: string[], ich: Mitarbeiter | undefined): ModulDef[] {
-  const sichtbar = new Map(modulVerzeichnis(ich).flatMap((g) => g.module.map((m) => [m.id, m] as const)));
-  return ids.map((id) => sichtbar.get(id)).filter((m): m is ModulDef => !!m).slice(0, FAVORITEN_MAX);
+/** Module, die dieser Nutzer im Verzeichnis sehen darf */
+export function sichtbareModulIds(ich: Mitarbeiter | undefined): Set<string> {
+  return new Set(modulVerzeichnis(ich).flatMap((g) => g.module.map((m) => m.id)));
 }
 
-export function useFavoriten() {
+/** Startzustand: frühere Favoriten, sonst die Auswahl der Rolle */
+function anfang(ich: Mitarbeiter | undefined): Leiste {
+  const alt = einstellung<string[] | null>(alterSchluessel(ich?.id), null);
+  if (Array.isArray(alt)) return { version: 1, eintraege: alt.map((id) => ({ ...modulEintrag(id), id: `std-${id}` })) };
+  return standardLeiste(ich?.rolle);
+}
+
+export function useLeiste() {
   const ich = useIch();
-  const [ids, setzen] = useEinstellung<string[]>(schluessel(ich?.id), (ich && STANDARD_FAVORITEN[ich.rolle]) ?? []);
-  const module = favoritenModule(ids, ich);
-  const aktiv = module.map((m) => m.id);
+  const [gespeichert, setzen] = useEinstellung<Leiste | null>(schluessel(ich?.id), null);
+  const sichtbar = [...sichtbareModulIds(ich)].join(',');
+  const leiste = useMemo(
+    () => {
+      const ids = new Set(sichtbar.split(','));
+      return bereinigen(gespeichert ?? anfang(ich), (id) => ids.has(id));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [gespeichert, ich?.id, ich?.rolle, sichtbar],
+  );
+  return {
+    leiste,
+    voll: voll(leiste),
+    /** Änderung anwenden und sofort speichern */
+    aendern: (f: (l: Leiste) => Leiste) => {
+      const neu = f(leiste);
+      if (neu !== leiste) setzen(neu);
+    },
+  };
+}
+
+/** Smart View löschen: auch ihre Bausteine vergessen */
+export function ansichtVergessen(id: string) {
+  setzeEinstellung(ansichtSchluessel(id), null);
+}
+
+/** Module in der Leiste (für den Stern im Verzeichnis, das Profilmenü am Handy und das Widget „Deine Favoriten“) */
+export function useFavoriten() {
+  const { leiste, voll: istVoll, aendern } = useLeiste();
+  const module = flach(leiste.eintraege)
+    .filter((e) => e.art === 'modul')
+    .map((e) => modul(e.modulId!))
+    .filter((m): m is ModulDef => !!m);
   return {
     module,
-    voll: aktiv.length >= FAVORITEN_MAX,
-    istFavorit: (id: string) => aktiv.includes(id),
-    umschalten: (id: string) => {
-      if (aktiv.includes(id)) setzen(aktiv.filter((x) => x !== id));
-      else if (aktiv.length < FAVORITEN_MAX) setzen([...aktiv, id]);
-    },
+    voll: istVoll,
+    istFavorit: (id: string) => modulDrin(leiste, id),
+    umschalten: (id: string) => aendern((l) => modulUmschalten(l, id)),
   };
 }

@@ -1,8 +1,10 @@
+import { Fragment } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { pfadZu } from '@core/modul';
-import { heute, personName, relativ, telLink, uhrzeit } from '@core/format';
+import { heute, relativ, telLink, uhrzeit } from '@core/format';
 import type { Aufgabe } from '@core/objects';
 import { Abschnitt, BeispielMarke, Button, Karte, Leer, Liste, ListenZeile, Seite, Stapel, Status, ZweiSpalten, useToast } from '@ui/index';
+import { Person } from '@ui/person';
 import { AnrufFormular } from './AnrufFormular';
 import { istKiAnruf } from './assistent';
 import { KiAnrufZeile } from './KiAnruf';
@@ -22,7 +24,14 @@ function RueckrufZeile({ a }: { a: Aufgabe }) {
   return (
     <ListenZeile
       titel={a.titel}
-      untertitel={[a.notiz?.split('\n')[0], nummer, wer ? personName(wer) : null, a.faellig ? `bis ${relativ(a.faellig)}` : null].filter(Boolean).join(' · ')}
+      untertitel={[a.notiz?.split('\n')[0], nummer, wer ? <Person m={wer} /> : null, a.faellig ? `bis ${relativ(a.faellig)}` : null]
+        .filter(Boolean)
+        .map((teil, i) => (
+          <Fragment key={i}>
+            {i > 0 && ' · '}
+            {teil}
+          </Fragment>
+        ))}
       rechts={
         <>
           {ueber ? <Status ton="achtung">Überfällig</Status> : a.prioritaet === 'hoch' ? <Status ton="achtung">Dringend</Status> : null}
