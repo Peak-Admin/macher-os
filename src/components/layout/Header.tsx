@@ -231,7 +231,14 @@ function MegaPanel({ item, maxHoehe }: { item: MegaItem; maxHoehe: string }) {
 function Gruppe({ gruppe }: { gruppe: MegaGruppe }) {
   return (
     <div className="min-w-0">
-      <h3 className="mb-3 text-lg font-semibold leading-snug text-ink">{gruppe.titel}</h3>
+      <h3 className="mb-3 flex items-center gap-3 text-lg font-semibold leading-snug text-signal-dark">
+        {gruppe.icon && (
+          <span aria-hidden className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-signal-soft text-primary ring-1 ring-primary/15">
+            <Icon name={gruppe.icon} className="size-5" />
+          </span>
+        )}
+        {gruppe.titel}
+      </h3>
       <ul>
         {gruppe.links.map((l) => (
           <li key={l.href + l.label}>
@@ -471,7 +478,14 @@ function MobileUnteransicht({ mega }: { mega: Mega }) {
       <div className="grid gap-6">
         {mega.gruppen.map((gr) => (
           <div key={gr.titel}>
-            <h4 className="mb-1 text-base font-bold text-ink">{gr.titel}</h4>
+            <h4 className="mb-1 flex items-center gap-2.5 text-base font-bold text-signal-dark">
+              {gr.icon && (
+                <span aria-hidden className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-signal-soft text-primary">
+                  <Icon name={gr.icon} className="size-4" />
+                </span>
+              )}
+              {gr.titel}
+            </h4>
             <ul>
               {gr.links.map((l) => (
                 <li key={l.href + l.label}>

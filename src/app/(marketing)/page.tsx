@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { PhoneMock, PlanBoardMock, ProductMock } from "@/components/mocks";
+import { AppVorschau, PhoneMock, PlanBoardMock } from "@/components/mocks";
 import {
+  Ablauf,
+  Alltag,
   BereichsKarte,
-  BildKarten,
   BildText,
   DunkleHeadline,
   DunklerAbschnitt,
   FinalCta,
   FotoBuehne,
-  Flow,
   KundenCard,
   PlanCards,
   MissionMittelstand,
@@ -17,18 +17,16 @@ import {
 import {
   ArrowLink,
   ButtonLink,
-  Card,
   CheckList,
-  Container,
   Faq,
   FaqJsonLd,
   Icon,
+  Karte3D,
   Section,
   SectionHeading,
   type FaqItem,
   type IconName,
 } from "@/components/ui";
-import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import { gewerkBild } from "@/content/bilder";
 import { kunden, topGewerke } from "@/content/registry";
 import { cta, herausgeber, site } from "@/lib/site";
@@ -51,11 +49,36 @@ const machtMacher: { text: string; icon: IconName }[] = [
   { text: "verfolgt offene Zahlungen", icon: "chart" },
 ];
 
-const bereiche: { titel: string; text: string; icon: IconName; href: string }[] = [
-  { titel: "Heute", text: "Was jetzt wichtig ist.", icon: "home", href: "/funktionen" },
-  { titel: "Aufträge", text: "Alles rund um Kunden und Arbeit.", icon: "clipboard", href: "/funktionen/auftraege" },
-  { titel: "Planen", text: "Was als Nächstes passiert.", icon: "calendar", href: "/funktionen/einsatzplanung" },
-  { titel: "Betrieb", text: "Mitarbeiter, Material, Geld und Unternehmen.", icon: "layers", href: "/funktionen/mitarbeiter" },
+/** Die vier Bereiche der Software – mit den Ansichten, die dort wirklich stehen. */
+const bereiche: { titel: string; text: string; icon: IconName; href: string; inhalt: string[] }[] = [
+  {
+    titel: "Heute",
+    text: "Was jetzt wichtig ist.",
+    icon: "spark",
+    href: "/funktionen",
+    inhalt: ["Dein nächster Schritt", "Braucht deine Entscheidung", "Heute im Betrieb"],
+  },
+  {
+    titel: "Aufträge",
+    text: "Alles rund um Kunden und Arbeit.",
+    icon: "clipboard",
+    href: "/funktionen/auftraege",
+    inhalt: ["Aufträge und Angebote", "Eingang mit neuen Anfragen", "Kunden und Service"],
+  },
+  {
+    titel: "Planen",
+    text: "Was als Nächstes passiert.",
+    icon: "calendar",
+    href: "/funktionen/einsatzplanung",
+    inhalt: ["Kalender und Plantafel", "Einplanen mit Vorschlag", "Kapazität im Team"],
+  },
+  {
+    titel: "Betrieb",
+    text: "Mitarbeiter, Material, Geld und Unternehmen.",
+    icon: "home",
+    href: "/funktionen/mitarbeiter",
+    inhalt: ["Geld: Rechnungen und Belege", "Team: Menschen und Zeiten", "Ausstattung und Unternehmen"],
+  },
 ];
 
 const gewerkIcons: Record<string, IconName> = {
@@ -94,7 +117,7 @@ const wissen: { titel: string; text: string; href: string; icon: IconName }[] = 
 const faq: FaqItem[] = [
   {
     frage: "Wer steckt hinter Macher OS?",
-    antwort: `Macher OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. ${herausgeber.name} berät Handwerksbetriebe und Mittelständler – diese Erfahrung steckt in Macher OS.`,
+    antwort: `Macher OS ist ein Projekt von ${herausgeber.name} – von Handwerkern für Handwerker. Gebaut aus dem Alltag echter Betriebe, nicht am Schreibtisch.`,
   },
   {
     frage: "Für welche Gewerke ist Macher OS geeignet?",
@@ -140,107 +163,85 @@ const faq: FaqItem[] = [
 export default function HomePage() {
   return (
     <>
-      {/* 1. Hero – kräftige Markenfläche, Aussage → Nutzen → Aktion; das Foto nur, wenn es vorhanden ist (rechts, ab lg) */}
-      <section className="relative isolate overflow-hidden bg-ink text-white">
-        {fotoVorhanden("start/hero") && (
-          <div className="absolute inset-y-0 right-0 -z-10 hidden w-[60%] lg:block">
-            <Foto bild="start/hero" preload sizes="60vw" />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink via-ink/50 to-ink/0" />
-          </div>
-        )}
-        <Container className="relative pb-36 pt-12 sm:pt-16 lg:pb-52 lg:pt-28">
-          <div className="max-w-2xl">
-            <p className="mb-5 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
-              Von {herausgeber.name} · Das Betriebssystem für Handwerker
-            </p>
-            <h1 className="font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-balance sm:text-6xl lg:text-7xl">
-              Dein Betrieb.
-              <br />
-              <span className="text-accent">Eine Software.</span>
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-on-dark sm:text-xl">
-              Aufträge, Termine und Rechnungen an einem Ort. Für dich und dein Team.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href={cta.primary.href} size="lg">
-                {cta.primary.label}
-              </ButtonLink>
-              <ButtonLink href={cta.secondary.href} variant="light" size="lg">
-                <Icon name="play" className="size-4" /> {cta.secondary.label}
-              </ButtonLink>
+      {/* 1. Hero als gerahmte Bühne mit Weißraum (nach Peak One): passt ab 1024 px in den ersten Bildschirm,
+          rechts die klickbare Vorschau der Software */}
+      <div className="px-2 pt-2 sm:px-3 sm:pt-3">
+        <section aria-labelledby="hero-titel" className="buehne markenflaeche">
+          <div className="mx-auto grid h-full max-w-[90rem] items-center gap-10 px-5 py-10 sm:px-10 sm:py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-12 lg:py-8 xl:px-14">
+            <div className="max-w-xl">
+              <p className="mb-5 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
+                Von {herausgeber.name} · Das Betriebssystem für Handwerker
+              </p>
+              <h1
+                id="hero-titel"
+                className="font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-balance sm:text-6xl xl:text-7xl"
+              >
+                Dein Betrieb.
+                <br />
+                <span className="text-accent">Eine Software.</span>
+              </h1>
+              <p className="mt-6 max-w-lg text-lg leading-relaxed text-on-dark sm:text-xl">
+                Aufträge, Termine und Rechnungen an einem Ort. Für dich und dein Team.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <ButtonLink href={cta.primary.href} size="lg">
+                  {cta.primary.label}
+                </ButtonLink>
+                <ButtonLink href={cta.secondary.href} variant="light" size="lg">
+                  <Icon name="play" className="size-4" /> {cta.secondary.label}
+                </ButtonLink>
+              </div>
+              <TrustRow dark className="mt-6" />
             </div>
-            <TrustRow dark className="mt-6" />
-          </div>
-        </Container>
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-brand" />
-      </section>
-
-      {/* 2. Produktbeweis ragt aus dem Hero + kompletter Ablauf */}
-      <section className="bg-white pb-16 sm:pb-24">
-        <Container>
-          <div className="relative z-10 -mt-28 lg:-mt-40">
-            <div className="mx-auto max-w-5xl">
-              <ProductMock />
+            <div className="min-w-0">
+              <AppVorschau className="lg:h-[min(34rem,calc(100svh-64px-24px-4rem))]" />
+              <p className="mt-3 text-center text-sm text-white/65">Klick dich durch – alles Beispieldaten.</p>
             </div>
           </div>
-          <div className="mt-16 grid gap-8">
-            <SectionHeading
-              title="Vom ersten Anruf bis zur bezahlten Rechnung."
-              intro="Macher OS hält alle Informationen zusammen und übernimmt möglichst viel Organisation dazwischen."
-            />
-            <Flow items={["Anfrage", "Angebot", "Termin", "Arbeit", "Rechnung", "Bezahlt"]} />
-          </div>
-        </Container>
-      </section>
+        </section>
+      </div>
 
-      {/* 2b. So läuft's – Bildkarten-Reihe */}
-      <BildKarten
-        eyebrow="Dein Alltag"
-        gruen="So läuft's"
-        rest="mit Macher OS"
-        intro="Vier Momente aus jedem Handwerksbetrieb – und was Macher OS dabei für dich übernimmt."
-        karten={[
-          {
-            bild: "alltag/anfrage",
-            titel: "Anfrage",
-            text: "Der Kunde ruft an. Macher legt die Anfrage an und schlägt einen Termin vor.",
-            href: "/funktionen/anfragen",
-          },
-          {
-            bild: "alltag/planung",
-            titel: "Planung",
-            text: "Jeder weiß morgens, wo er hinfährt und was er mitnehmen muss.",
-            href: "/funktionen/einsatzplanung",
-          },
-          {
-            bild: "alltag/baustelle",
-            titel: "Baustelle",
-            text: "Fotos, Zeiten und Material landen direkt im Auftrag – vom Handy.",
-            href: "/funktionen/dokumentation",
-          },
-          {
-            bild: "alltag/abnahme",
-            titel: "Abnahme",
-            text: "Unterschrift vor Ort. Die Rechnung ist vorbereitet, bevor du wieder im Auto sitzt.",
-            href: "/funktionen/rechnungen",
-          },
-        ]}
-      />
+      {/* 2. Ablauf – dunkelgrünes Banner, vier klickbare Schritte */}
+      <div className="bg-white pt-2 sm:pt-3">
+        <Ablauf />
+      </div>
 
-      {/* 4. Vier Bereiche */}
-      <Section>
+      {/* 3. Dein Alltag – 3D-Karten mit Blick in die App */}
+      <Alltag />
+
+      {/* 4. Vier Bereiche – 3D-Karten mit dem, was im Bereich steckt */}
+      <Section tone="white">
         <SectionHeading
           eyebrow="Vier Bereiche"
           title="Alles da. Trotzdem einfach."
           intro="Macher OS ist in vier Bereiche aufgeteilt. Mehr musst du dir nicht merken."
         />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {bereiche.map((b) => (
-            <Card key={b.titel} title={b.titel} icon={b.icon} href={b.href}>
-              {b.text}
-            </Card>
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {bereiche.map((b, n) => (
+            <li key={b.titel}>
+              <Karte3D href={b.href} innen="flex flex-col rounded-2xl border border-line bg-white p-6">
+                <div className="flex items-center justify-between">
+                  <span className="karte-3d-tief inline-flex size-12 items-center justify-center rounded-xl bg-primary text-white shadow-[0_12px_24px_-12px_rgb(13_107_69/0.8)]">
+                    <Icon name={b.icon} className="size-6" />
+                  </span>
+                  <span className="font-display text-sm font-bold tabular-nums text-muted">0{n + 1}</span>
+                </div>
+                <h3 className="mt-6 font-display text-2xl font-bold text-ink">{b.titel}</h3>
+                <p className="mt-1 text-muted">{b.text}</p>
+                <ul className="mt-5 flex-1 space-y-2 border-t border-line pt-4 text-[0.95rem]">
+                  {b.inhalt.map((x) => (
+                    <li key={x} className="flex items-center gap-2">
+                      <Icon name="check" className="size-4 shrink-0 text-primary" /> {x}
+                    </li>
+                  ))}
+                </ul>
+                <span className="mt-5 inline-flex items-center gap-1.5 font-semibold text-signal-dark">
+                  Ansehen <Icon name="arrow-right" className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+                </span>
+              </Karte3D>
+            </li>
           ))}
-        </div>
+        </ul>
         <ArrowLink href="/funktionen" className="mt-8">
           Alle Funktionen ansehen
         </ArrowLink>
@@ -334,11 +335,13 @@ export default function HomePage() {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {machtMacher.map((m) => (
-              <li key={m.text} className="flex items-center gap-3 karte-dunkel p-4">
-                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg icon-kachel">
-                  <Icon name={m.icon} className="size-5" />
-                </span>
-                <span className="font-semibold leading-snug">{m.text}</span>
+              <li key={m.text}>
+                <Karte3D innen="flex items-center gap-3 karte-dunkel p-4" stark={8}>
+                  <span className="karte-3d-tief inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-ink">
+                    <Icon name={m.icon} className="size-5" />
+                  </span>
+                  <span className="font-semibold leading-snug">{m.text}</span>
+                </Karte3D>
               </li>
             ))}
           </ul>
@@ -415,23 +418,56 @@ export default function HomePage() {
             <p className="mt-6 border-t border-white/15 pt-5 text-white/75">
               Bestehende Kunden, Mitarbeiter und Artikel einfach übernehmen.
             </p>
-            <ButtonLink href={cta.primary.href} className="mt-6">
-              Kostenlos starten <Icon name="arrow-right" className="size-4" />
+            <ButtonLink href={cta.primary.href} size="lg" className="mt-7 w-full sm:w-auto sm:min-w-72">
+              Kostenlos starten
             </ButtonLink>
           </div>
         </div>
       </Section>
 
-      {/* 10. Wissen & Werkzeuge */}
+      {/* 10. Wissen & Werkzeuge – Bento */}
       <Section tone="sand">
-        <SectionHeading eyebrow="Wissen" title="Wissen, das deinen Betrieb besser macht." />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {wissen.map((w) => (
-            <Card key={w.titel} title={w.titel} icon={w.icon} iconTone="sky" href={w.href}>
-              {w.text}
-            </Card>
-          ))}
-        </div>
+        <SectionHeading eyebrow="Wissen" title="Wissen für deinen Betrieb." />
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-2">
+          {wissen.map((w, n) => {
+            const gross = n === 0;
+            const ton = gross
+              ? "bg-ink text-white lg:col-span-6 lg:row-span-2"
+              : n === 1
+                ? "bg-signal-soft text-ink lg:col-span-3"
+                : n === 2
+                  ? "bg-white text-ink lg:col-span-3"
+                  : n === 3
+                    ? "bg-white text-ink lg:col-span-2"
+                    : n === 4
+                      ? "bg-signal-soft text-ink lg:col-span-2"
+                      : "bg-white text-ink lg:col-span-2";
+            const dunkel = gross;
+            return (
+              <li key={w.titel} className={`${ton} ${gross ? "sm:col-span-2" : ""} rounded-2xl ${dunkel ? "" : "ring-1 ring-line"}`}>
+                <Link
+                  href={w.href}
+                  className={`group flex h-full flex-col rounded-2xl p-6 transition-transform duration-150 ease-out hover:-translate-y-0.5 ${gross ? "min-h-64 lg:p-8" : "min-h-44"}`}
+                >
+                  <span
+                    className={`inline-flex size-11 items-center justify-center rounded-xl ${
+                      dunkel ? "bg-white/10 text-accent" : "bg-white text-signal-dark ring-1 ring-line"
+                    }`}
+                  >
+                    <Icon name={w.icon} className="size-5" />
+                  </span>
+                  <span className={`mt-auto pt-6 font-display font-bold leading-tight ${gross ? "text-4xl" : "text-xl"}`}>{w.titel}</span>
+                  <span className={`mt-1 ${dunkel ? "text-white/75" : "text-muted"} ${gross ? "text-lg" : ""}`}>{w.text}</span>
+                  {gross && (
+                    <span className="mt-6 inline-flex items-center gap-1.5 font-semibold text-accent">
+                      Zum Blog <Icon name="arrow-right" className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
         <ArrowLink href="/wissen" className="mt-8">
           Wissen entdecken
         </ArrowLink>
@@ -452,11 +488,11 @@ export default function HomePage() {
         </ArrowLink>
       </Section>
 
-      {/* 12. FAQ – dunkel */}
-      <Section tone="ink" containerSize="narrow">
-        <DunkleHeadline gruen="Häufige" rest="Fragen" />
+      {/* 12. FAQ – auf der hellen Grünfläche */}
+      <Section tone="gruen" containerSize="narrow">
+        <SectionHeading eyebrow="Fragen" title="Häufige Fragen" />
         <div className="mt-10">
-          <Faq items={faq} dark />
+          <Faq items={faq} />
         </div>
         <FaqJsonLd items={faq} />
       </Section>

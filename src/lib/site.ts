@@ -1,3 +1,4 @@
+import type { IconName } from "@/components/ui/Icon";
 export const site = {
   name: "Macher OS",
   claim: "Dein Betrieb. Eine Software.",
@@ -69,7 +70,8 @@ export const appGewerk: Record<string, string> = {
 
 export type NavLink = { label: string; href: string };
 /** Gruppe im Mega-Menü: höchstens vier Hauptlinks, Titel in normaler Schreibweise. */
-export type MegaGruppe = { titel: string; links: NavLink[] };
+/** Gruppe im Mega-Menü; `icon` erscheint als hellgrüne Kachel vor der Überschrift. */
+export type MegaGruppe = { titel: string; icon?: IconName; links: NavLink[] };
 /** Eine einzige, vollständig klickbare Vorschau rechts im Menü – nur mit echtem Bild einer vorhandenen Seite. */
 export type MegaVorschau = {
   href: string;
@@ -102,6 +104,7 @@ export const mainNav: NavItem[] = [
       gruppen: [
         {
           titel: "Aufträge",
+          icon: "clipboard",
           links: [
             { label: "Anfragen", href: f("anfragen") },
             { label: "Angebote schreiben", href: f("angebote") },
@@ -111,6 +114,7 @@ export const mainNav: NavItem[] = [
         },
         {
           titel: "Planen",
+          icon: "calendar",
           links: [
             { label: "Kalender & Termine", href: f("kalender") },
             { label: "Einsätze & Mitarbeiter", href: f("einsatzplanung") },
@@ -120,6 +124,7 @@ export const mainNav: NavItem[] = [
         },
         {
           titel: "Betrieb",
+          icon: "home",
           links: [
             { label: "Mitarbeiter", href: f("mitarbeiter") },
             { label: "Arbeitszeiten", href: f("zeiterfassung") },
@@ -175,6 +180,7 @@ export const mainNav: NavItem[] = [
       gruppen: [
         {
           titel: "Praxistipps",
+          icon: "book",
           links: [
             { label: "Blog", href: "/wissen/blog" },
             { label: "Webinare", href: "/wissen/webinare" },
@@ -183,6 +189,7 @@ export const mainNav: NavItem[] = [
         },
         {
           titel: "Vorlagen & Rechner",
+          icon: "calculator",
           links: [
             { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen" },
             { label: "Stundensatz berechnen", href: "/werkzeuge/stundensatz-rechner" },
@@ -192,6 +199,7 @@ export const mainNav: NavItem[] = [
         },
         {
           titel: "Hilfe beim Start",
+          icon: "chat",
           links: [
             { label: "Schnellstart", href: "/hilfe/schnellstart" },
             { label: "Daten übernehmen", href: "/hilfe/daten-uebernehmen" },

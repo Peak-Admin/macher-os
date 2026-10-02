@@ -5,7 +5,8 @@ import { Logo } from "./Logo";
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-ink text-white">
+    <footer className="markenflaeche relative text-white">
+      <div aria-hidden className="h-1 bg-brand" />
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_3fr]">
           <div className="max-w-xs">
