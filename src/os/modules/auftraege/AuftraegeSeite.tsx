@@ -8,6 +8,7 @@ import { Pipeline, meineAuftraege } from './Pipeline';
 import { istOffen, kommendeEinsaetze, phaseLabel, phaseTon } from './logik';
 import { auftragPfad, schrittFuer } from './daten';
 import { useAbBreite } from './hooks';
+import { schrittLabel } from '@modules/ablauf/daten';
 import './auftraege.css';
 
 type Sicht = 'aktiv' | 'meine' | 'abgeschlossen';
@@ -154,7 +155,7 @@ function AuftragZeile({ a }: { a: Auftrag }) {
           )}
         </span>
         <span className="ak-zeile-status">
-          {a.dringend && offen ? <Status ton="achtung">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{phaseLabel(a.phase)}</Status>}
+          {a.dringend && offen ? <Status ton="achtung">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{offen ? schrittLabel(a) : phaseLabel(a.phase)}</Status>}
         </span>
       </Link>
     </li>

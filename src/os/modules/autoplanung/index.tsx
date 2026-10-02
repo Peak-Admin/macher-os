@@ -11,6 +11,7 @@ import { Autoplanung } from './Autoplanung';
 import { AuftragPlanen } from './AuftragPlanen';
 import { AuftragCheck, TerminCheck } from './EinsatzCheck';
 import { EinplanenPanel } from './EinplanenPanel';
+import { EINPLANEN_AKTIONEN } from './gateway';
 
 const AUTOMATION = 'autoplanung.dringend-vorschlagen';
 const schluessel = (id: ID) => `autoplanung-dringend:${id}`;
@@ -63,6 +64,7 @@ export default defineModul({
     { objekt: 'auftraege', component: EinplanenPanel, gewicht: 75 },
     { objekt: 'auftraege', component: AuftragCheck, gewicht: 70 },
   ],
+  gateway: { aktionen: [...EINPLANEN_AKTIONEN] },
   aktionen: {
     'plan.vorschlag': (payload) => {
       const { auftragId } = (payload ?? {}) as { auftragId?: ID };

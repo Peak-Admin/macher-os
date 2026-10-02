@@ -1,6 +1,6 @@
 /**
- * Zahlungen: buchen (Teilzahlung, Skonto), Rechnungsstatus abgleichen,
- * Kontoauszug (CSV) lesen und Zahlungen automatisch zuordnen.
+ * Zahlungen: buchen (Teilzahlung, Skonto), Rechnungsstatus abgleichen, Kontoauszug (CSV) lesen.
+ * Die Zuordnung von Kontoumsätzen zu Rechnungen steht in `abgleich.ts`, CAMT.053 in `camt.ts`.
  */
 import { db, vermerken } from '@core/db';
 import { emit } from '@core/events';
@@ -15,7 +15,9 @@ export function statusAbgleichen(rechnungId: ID): RechnungX['status'] | undefine
   if (!r) return undefined;
   const neu = statusAusZahlungen(r);
   if (neu === r.status) return undefined;
-  rechnungAendern(r.id, { status: neu }, { text: neu === 'bezahlt' ? 'Vollständig bezahlt' : neu === 'teilbezahlt' ? 'Teilweise bezahlt' : 'Wieder offen' });
+  const geaendert = rechnungAendern(r.id, { status: neu }, { text: neu === 'bezahlt' ? 'Vollständig bezahlt' : neu === 'teilbezahlt' ? 'Teilweise bezahlt' : 'Wieder offen' });
+  // fachliches Ereignis: Mahnwesen, Auftrag und Benachrichtigungen hängen sich daran
+  if (neu === 'bezahlt' && geaendert) emit({ typ: 'rechnung.bezahlt', sammlung: 'rechnungen', objekt: geaendert, vorher: r });
   return neu;
 }
 
@@ -29,6 +31,8 @@ export interface Buchung {
   verwendungszweck?: string;
   quelle?: ZahlungX['quelle'];
   zahler?: string;
+  /** Kontoumsatz, aus dem die Zahlung stammt (Zahlungsabgleich) */
+  umsatzId?: ID;
 }
 
 /** Zahlung erfassen, Status setzen, Event `zahlung.eingegangen` */
@@ -44,8 +48,9 @@ export function zahlungBuchen(b: Buchung): ZahlungX | undefined {
     skonto: b.skonto && b.skonto > 0 ? b.skonto : undefined,
     quelle: b.quelle ?? 'manuell',
     zahler: b.zahler,
+    ...(b.umsatzId ? { umsatzId: b.umsatzId } : {}),
     beispiel: r.beispiel,
-  } as Parameters<typeof db.zahlungen.create>[0]) as ZahlungX;
+  });
   statusAbgleichen(r.id);
   vermerken({ typ: 'rechnungen', id: r.id }, 'zahlung.eingegangen', `Zahlung über ${euro(b.betrag)} erfasst${z.skonto ? ` (Skonto ${euro(z.skonto)})` : ''}`);
   emit({ typ: 'zahlung.eingegangen', sammlung: 'zahlungen', objekt: z, daten: { rechnungId: r.id } });
@@ -77,6 +82,10 @@ export interface Umsatz {
   betrag: Cent;
   zweck: string;
   name: string;
+  /** IBAN des Zahlers, falls die Bank sie liefert */
+  iban?: string;
+  /** eindeutige Bankreferenz (CAMT, Bankverbindung); fehlt bei CSV */
+  referenz?: string;
 }
 
 /** CSV-Zeile mit Anführungszeichen und Trennzeichen zerlegen */
@@ -122,6 +131,7 @@ const SPALTEN = {
   haben: ['haben', 'habeneur', 'eingang'],
   soll: ['soll', 'solleur', 'ausgang'],
   zweck: ['verwendungszweck', 'buchungstext', 'vorgangverwendungszweck', 'beschreibung', 'zweck'],
+  iban: ['iban', 'ibanzahlungsbeteiligter', 'kontonummeriban', 'ibanauftraggeber', 'gegenkontoiban', 'kontonummer'],
   name: ['beguenstigterzahlungspflichtiger', 'begünstigterzahlungspflichtiger', 'namezahlungsbeteiligter', 'auftraggeberempfänger', 'auftraggeber', 'zahlungspflichtiger', 'empfänger', 'name', 'gegenkonto', 'auftraggeberbegünstigter'],
 };
 
@@ -160,6 +170,7 @@ export function kontoauszugLesen(text: string): { umsaetze: Umsatz[]; fehler?: s
   const iSoll = finde(kopf, SPALTEN.soll);
   const iZweck = finde(kopf, SPALTEN.zweck);
   const iName = finde(kopf, SPALTEN.name);
+  const iIban = finde(kopf, SPALTEN.iban);
   const umsaetze: Umsatz[] = [];
   for (let i = kopfIdx + 1; i < zeilen.length; i++) {
     if (!zeilen[i].trim()) continue;
@@ -175,112 +186,17 @@ export function kontoauszugLesen(text: string): { umsaetze: Umsatz[]; fehler?: s
     } else if (iHaben >= 0 && f[iHaben]) betrag = Math.abs(centAus(f[iHaben]));
     else if (iSoll >= 0 && f[iSoll]) betrag = -Math.abs(centAus(f[iSoll]));
     if (betrag <= 0) continue;
-    umsaetze.push({ zeile: i + 1, datum: d, betrag, zweck: iZweck >= 0 ? f[iZweck] ?? '' : '', name: iName >= 0 ? f[iName] ?? '' : '' });
+    const iban = iIban >= 0 ? (f[iIban] ?? '').replace(/\s+/g, '').toUpperCase() : '';
+    umsaetze.push({
+      zeile: i + 1,
+      datum: d,
+      betrag,
+      zweck: iZweck >= 0 ? f[iZweck] ?? '' : '',
+      name: iName >= 0 ? f[iName] ?? '' : '',
+      ...(/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(iban) ? { iban } : {}),
+    });
   }
   return { umsaetze };
-}
-
-export type Sicherheit = 'sicher' | 'unsicher' | 'keine' | 'doppelt';
-
-export interface Zuordnung {
-  umsatz: Umsatz;
-  rechnungId?: ID;
-  sicherheit: Sicherheit;
-  grund: string;
-}
-
-const nummerKern = (n: string) => n.replace(/[^0-9a-z]/gi, '').toLowerCase();
-
-function nameTreffer(name: string, zweck: string, kundeId: ID) {
-  const k = db.kunden.get(kundeId);
-  if (!k) return false;
-  const heu = `${name} ${zweck}`.toLowerCase();
-  const woerter = [k.name, k.firma ?? '']
-    .join(' ')
-    .toLowerCase()
-    .split(/[^a-zäöüß0-9]+/)
-    .filter((w) => w.length >= 4 && !['familie', 'gmbh', 'herr', 'frau'].includes(w));
-  return woerter.some((w) => heu.includes(w));
-}
-
-/** Umsätze den offenen Rechnungen zuordnen: Rechnungsnummer im Zweck, sonst Betrag + Kunde */
-export function zuordnen(umsaetze: Umsatz[], posten: RechnungX[] = offenePosten()): Zuordnung[] {
-  const vergeben = new Map<ID, Cent>();
-  const restOffen = (r: RechnungX) => offenerBetrag(r) - (vergeben.get(r.id) ?? 0);
-  return umsaetze.map((u) => {
-    // schon gebucht? (gleicher Betrag, gleiches Datum, gleiche Rechnung)
-    const doppelt = (db.zahlungen.all() as ZahlungX[]).find((z) => z.betrag === u.betrag && z.datum === u.datum && z.quelle === 'kontoauszug');
-    if (doppelt) return { umsatz: u, rechnungId: doppelt.rechnungId, sicherheit: 'doppelt' as const, grund: 'Schon gebucht' };
-
-    const zweck = nummerKern(u.zweck);
-    const perNummer = posten.find((r) => r.nummer && zweck.includes(nummerKern(r.nummer)));
-    const merken = (r: RechnungX) => vergeben.set(r.id, (vergeben.get(r.id) ?? 0) + u.betrag);
-    if (perNummer) {
-      merken(perNummer);
-      const rest = restOffen(perNummer) + u.betrag;
-      const grund = u.betrag === rest ? `Rechnungsnummer ${perNummer.nummer} im Verwendungszweck` : u.betrag < rest ? `${perNummer.nummer} im Verwendungszweck – Teilzahlung oder Skonto` : `${perNummer.nummer} im Verwendungszweck – mehr als offen`;
-      return { umsatz: u, rechnungId: perNummer.id, sicherheit: u.betrag > rest ? ('unsicher' as const) : ('sicher' as const), grund };
-    }
-    const gleicherBetrag = posten.filter((r) => restOffen(r) === u.betrag);
-    const mitName = gleicherBetrag.filter((r) => nameTreffer(u.name, u.zweck, r.kundeId));
-    if (mitName.length === 1) {
-      merken(mitName[0]);
-      return { umsatz: u, rechnungId: mitName[0].id, sicherheit: 'sicher' as const, grund: 'Betrag und Kunde passen' };
-    }
-    if (gleicherBetrag.length >= 1) {
-      merken(gleicherBetrag[0]);
-      return { umsatz: u, rechnungId: gleicherBetrag[0].id, sicherheit: 'unsicher' as const, grund: gleicherBetrag.length === 1 ? 'Nur der Betrag passt' : 'Betrag passt zu mehreren Rechnungen' };
-    }
-    const nurName = posten.filter((r) => nameTreffer(u.name, u.zweck, r.kundeId) && restOffen(r) > 0);
-    if (nurName.length === 1) {
-      merken(nurName[0]);
-      return { umsatz: u, rechnungId: nurName[0].id, sicherheit: 'unsicher' as const, grund: 'Kunde passt, Betrag nicht' };
-    }
-    return { umsatz: u, sicherheit: 'keine' as const, grund: 'Keine passende Rechnung' };
-  });
-}
-
-/** Freigabe-Hinweis für eine unsichere Zuordnung (dedupliziert) */
-export function freigabeHinweis(z: Zuordnung) {
-  const r = rechnungX(z.rechnungId);
-  if (!r) return undefined;
-  const schluessel = `zahlung-freigabe:${r.id}:${z.umsatz.datum}:${z.umsatz.betrag}`;
-  const da = db.hinweise.all().find((h) => h.schluessel === schluessel && h.status === 'offen');
-  if (da) return da;
-  return db.hinweise.create({
-    art: 'freigabe',
-    titel: `Zahlung ${euro(z.umsatz.betrag)} zu ${r.nummer}?`,
-    text: `${z.grund}. Kontoauszug vom ${z.umsatz.datum.split('-').reverse().join('.')}: ${z.umsatz.name || 'ohne Namen'} – „${z.umsatz.zweck || 'ohne Verwendungszweck'}“.`,
-    bezug: { typ: 'rechnungen', id: r.id },
-    gewicht: 64,
-    status: 'offen',
-    schluessel,
-    fuerRollen: ['chef', 'buero'],
-    aktionen: [
-      { id: 'zahlung.bestaetigen', label: 'Zahlung buchen', primaer: true, payload: { rechnungId: r.id, betrag: z.umsatz.betrag, datum: z.umsatz.datum, zweck: z.umsatz.zweck, name: z.umsatz.name, schluessel } },
-      { id: 'zahlung.verwerfen', label: 'Passt nicht', payload: { schluessel } },
-    ],
-    beispiel: r.beispiel,
-  });
-}
-
-/** Import ausführen: sichere buchen, unsichere als Freigabe-Hinweis */
-export function importAusfuehren(zuordnungen: Zuordnung[]) {
-  let gebucht = 0;
-  let summe = 0;
-  let freigaben = 0;
-  for (const z of zuordnungen) {
-    if (z.sicherheit === 'sicher' && z.rechnungId) {
-      const ok = zahlungBuchen({ rechnungId: z.rechnungId, betrag: z.umsatz.betrag, datum: z.umsatz.datum, verwendungszweck: z.umsatz.zweck, quelle: 'kontoauszug', zahler: z.umsatz.name });
-      if (ok) {
-        gebucht++;
-        summe += z.umsatz.betrag;
-      }
-    } else if (z.sicherheit === 'unsicher' && z.rechnungId) {
-      if (freigabeHinweis(z)) freigaben++;
-    }
-  }
-  return { gebucht, summe, freigaben };
 }
 
 /** Beispiel-Kontoauszug aus den offenen Beispielrechnungen (zum Ausprobieren) */
@@ -289,9 +205,14 @@ export function beispielKontoauszug(): string {
   const posten = offenePosten().filter((r) => r.beispiel);
   const fmt = (c: Cent) => (c / 100).toFixed(2).replace('.', ',');
   const d = heute().split('-').reverse().join('.');
+  // erste Zeile: verstümmelte Rechnungsnummer („RE 2026 42“), dann nur Name und Betrag
+  const verstuemmelt = (n: string) => {
+    const m = n.match(/(\d{4})\D+0*(\d+)$/);
+    return m ? `RE ${m[1]} ${m[2]}` : n;
+  };
   const zeilen = posten.map((r, i) =>
     i === 0
-      ? `${d};${d};${db.kunden.get(r.kundeId)?.name ?? ''};"Rechnung ${r.nummer}";${fmt(offenerBetrag(r))}`
+      ? `${d};${d};${db.kunden.get(r.kundeId)?.name ?? ''};"Rechnung ${verstuemmelt(r.nummer)}";${fmt(offenerBetrag(r))}`
       : `${d};${d};${db.kunden.get(r.kundeId)?.name ?? ''};"Zahlung";${fmt(offenerBetrag(r))}`,
   );
   zeilen.push(`${d};${d};Stadtwerke;"Abschlag Strom";-89,00`);

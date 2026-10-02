@@ -8,7 +8,8 @@
  * Die Seitenleiste lässt sich komplett einklappen (schmale Leiste nur mit Icons) und wieder ausklappen (Strg B);
  * die Wahl wird je Mitarbeiter gespeichert.
  *
- * Monteur-App (Rolle Monteur/Azubi, Handy): unten genau drei Tabs – Heute · Erfassen · Aufträge.
+ * Monteur-App (Rolle Monteur/Azubi): am Handy unten, am Desktop in der Seitenleiste genau drei Ziele –
+ * Heute · Erfassen · Aufträge.
  * Kein Geld, keine Planung anderer, keine Betrieb-Einstellungen. Chef und Büro sehen am Bereich „Aufträge“
  * die Zahl der neuen Einträge im Eingang.
  *
@@ -106,24 +107,40 @@ export function Shell({ children }: { children: ReactNode }) {
           <SuchenOderFragen />
           <Glocke />
         </div>
-        <nav className="mm-nav" aria-label="Hauptbereiche">
-          {STRUKTUR.map((b) => (
-            <Link
-              key={b.id}
-              to={b.pfad}
-              className={`mm-nav-haupt ${aktiv === b.id ? 'mm-nav-haupt--aktiv' : ''}`}
-              aria-current={aktiv === b.id ? 'page' : undefined}
-              title={eingeklappt ? b.titel : undefined}
-            >
-              <span className="mm-nav-haupt-icon">
-                <Icon name={b.icon} />
-              </span>
-              <span className="mm-leiste-text">{b.titel}</span>
-              {b.id === 'auftraege' && <NeuZahl zahl={eingang} />}
-            </Link>
-          ))}
+        {/* Monteur und Azubi sehen auch am Desktop nur, was sie brauchen: dieselben drei Ziele wie in der Monteur-App */}
+        <nav className="mm-nav" aria-label={monteur ? 'Monteur-App' : 'Hauptbereiche'}>
+          {monteur
+            ? MONTEUR_TABS.map((t) => (
+                <Link
+                  key={t.id}
+                  to={t.pfad}
+                  className={`mm-nav-haupt ${tab === t.id ? 'mm-nav-haupt--aktiv' : ''}`}
+                  aria-current={tab === t.id ? 'page' : undefined}
+                  title={eingeklappt ? t.titel : undefined}
+                >
+                  <span className="mm-nav-haupt-icon">
+                    <Icon name={t.icon} />
+                  </span>
+                  <span className="mm-leiste-text">{t.titel}</span>
+                </Link>
+              ))
+            : STRUKTUR.map((b) => (
+                <Link
+                  key={b.id}
+                  to={b.pfad}
+                  className={`mm-nav-haupt ${aktiv === b.id ? 'mm-nav-haupt--aktiv' : ''}`}
+                  aria-current={aktiv === b.id ? 'page' : undefined}
+                  title={eingeklappt ? b.titel : undefined}
+                >
+                  <span className="mm-nav-haupt-icon">
+                    <Icon name={b.icon} />
+                  </span>
+                  <span className="mm-leiste-text">{b.titel}</span>
+                  {b.id === 'auftraege' && <NeuZahl zahl={eingang} />}
+                </Link>
+              ))}
         </nav>
-        <Favoriten eingeklappt={eingeklappt} />
+        {!monteur && <Favoriten eingeklappt={eingeklappt} />}
         <Profil oben />
       </aside>
 

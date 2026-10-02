@@ -208,6 +208,9 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
           <Button variante="sekundaer" to="/betrieb/schnittstellen" icon="stecker">
             Schnittstellen
           </Button>
+          <Button variante="sekundaer" to="/betrieb/felder" icon="liste">
+            Eigene Felder
+          </Button>
         </Zeile>
       </Abschnitt>
     </form>

@@ -4,6 +4,7 @@ import { passt } from '@core/format';
 import { useDarf } from '@core/session';
 import { Abschnitt, Auswahl, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Suchfeld, useToast, briefkopf } from '@ui/index';
 import { VORLAGEN_ARTEN, vorlagen, type VorlagenArt } from './daten';
+import { kuerzelFuer } from '@modules/dokumente/nummern';
 
 export function VorlagenListe() {
   const navigate = useNavigate();
@@ -37,6 +38,9 @@ export function VorlagenListe() {
           to="/betrieb/vorlagen/briefkopf"
         >
           <Meta>{kopf.logo ? 'Mit Logo' : 'Noch ohne Logo'} · {kopf.fusszeilen.length ? kopf.fusszeilen.slice(0, 2).join(' · ') : 'Betriebsdaten fehlen noch'}</Meta>
+        </Karte>
+        <Karte titel="Nummernkreise" oberzeile="Für alle Dokumente" to="/betrieb/vorlagen/nummern">
+          <Meta>{`Rechnungen ${kuerzelFuer('rechnung')}-…, Angebote ${kuerzelFuer('angebot')}-…, Auftragsbestätigungen ${kuerzelFuer('auftragsbestaetigung')}-…, Lieferscheine ${kuerzelFuer('lieferschein')}-…`}</Meta>
         </Karte>
         <Suchfeld wert={q} onChange={setQ} platzhalter="Vorlage suchen …" />
         {!alle.length ? (

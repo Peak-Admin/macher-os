@@ -8,6 +8,7 @@ import { offenePosten, istUeberfaellig } from '../rechnungen/logik';
 import { rechnungX } from '../rechnungen/typen';
 import { KundeOffenPanel, MahnungDetail, MahnungDruck, MahnungenListe, RechnungMahnungenTab, sendenUndMail } from './Ansichten';
 import { STUFE_LABEL, mahnungen, mahnungenZu, pruefen, warten } from './daten';
+import { MAHNUNG_AKTIONEN } from './gateway';
 
 function taeglichePruefung() {
   if (!db.betrieb.get('betrieb')?.onboardingFertig) return;
@@ -75,6 +76,7 @@ export default defineModul({
         fuerRollen: ['chef' as const],
         pfad: `/betrieb/rechnungen/${r.id}`,
       })),
+  gateway: { aktionen: [...MAHNUNG_AKTIONEN] },
   aktionen: {
     'mahnung.senden': (payload) => {
       const m = sendenUndMail((payload as { mahnungId: ID }).mahnungId);

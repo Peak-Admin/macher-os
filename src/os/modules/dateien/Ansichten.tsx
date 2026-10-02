@@ -4,6 +4,7 @@ import { db } from '@core/db';
 import { datum, passt, personName, relativ, uhrzeit } from '@core/format';
 import type { Dokument, ID } from '@core/objects';
 import {
+  Abschnitt,
   BeispielMarke,
   Button,
   Dialog,
@@ -30,6 +31,7 @@ import { AuftragAuswahl, Zeitstrahl } from '@ui/objekt';
 import { groesseText } from '@modules/fotos/daten';
 import { ART_LABEL, dataUrlZuBlob, istDatei, vorschauArt } from './daten';
 import { Hochladen } from './Hochladen';
+import { DokumenteAmAuftrag } from '@modules/dokumente/AmAuftrag';
 
 const ICON: Partial<Record<Dokument['art'], IconName>> = { pdf: 'dokument', plan: 'ordner', datei: 'dokument', foto: 'kamera', sprache: 'mikro', notiz: 'notiz', unterschrift: 'unterschrift', bericht: 'notiz' };
 
@@ -228,18 +230,23 @@ export function DateienTab({ id }: { id: ID }) {
   const liste = db.dokumente.use((d) => d.auftragId === id && istDatei(d), [id]);
   return (
     <Stapel abstand={16}>
-      <div>
-        <Button icon="upload" onClick={() => setHoch(true)}>
-          Dateien hochladen
-        </Button>
-      </div>
-      <Liste leer={<Leer titel="Noch keine Dateien" text="Lade Pläne, Schaltpläne oder PDFs hoch – dann sind sie auf der Baustelle dabei." icon="ordner" />}>
-        {[...liste]
-          .sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm))
-          .map((d) => (
-            <DateiZeile key={d.id} d={d} mitAuftrag={false} />
-          ))}
-      </Liste>
+      <DokumenteAmAuftrag auftragId={id} />
+      <Abschnitt
+        titel="Pläne & Dateien"
+        aktion={
+          <Button icon="upload" klein onClick={() => setHoch(true)}>
+            Dateien hochladen
+          </Button>
+        }
+      >
+        <Liste leer={<Leer titel="Noch keine Dateien" text="Lade Pläne, Schaltpläne oder PDFs hoch – dann sind sie auf der Baustelle dabei." icon="ordner" />}>
+          {[...liste]
+            .sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm))
+            .map((d) => (
+              <DateiZeile key={d.id} d={d} mitAuftrag={false} />
+            ))}
+        </Liste>
+      </Abschnitt>
       <Dialog offen={hoch} onSchliessen={() => setHoch(false)} titel="Dateien hochladen">
         {hoch && <Hochladen auftragId={id} fertig={() => setHoch(false)} />}
       </Dialog>

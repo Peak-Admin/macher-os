@@ -24,6 +24,7 @@ export const NACHRICHT_AKTIONEN: AktionDef<NachrichtDaten>[] = [
     id: 'message.send',
     titel: 'Nachricht gesendet',
     risiko: 'kritisch',
+    endgueltig: 'Eine gesendete Nachricht lässt sich nicht zurückholen.',
     rechte: ['veroeffentlichen'],
     pruefe: (d) => {
       const k = db.kunden.get(d.kundeId);

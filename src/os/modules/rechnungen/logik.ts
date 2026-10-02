@@ -6,9 +6,9 @@ import { db, neueId, vermerken } from '@core/db';
 import { emit } from '@core/events';
 import { einstellung } from '@core/einstellungen';
 import { datum, euro, heute, plusTage, summen, tageZwischen, type Summen, minutenAus } from '@core/format';
-import { naechsteNummer } from '@core/nummern';
+import { naechsteDokumentNummer, type NummerArt } from '@modules/dokumente/nummern';
 import type { Betrieb, Cent, Datum, ID, Kunde, Position, RechnungsArt } from '@core/objects';
-import { alleRechnungen, rechnungAendern, rechnungX, type RechnungX, type ZahlungX } from './typen';
+import { alleRechnungen, rechnungAendern, rechnungX, type RechnungX } from './typen';
 import { alsPositionen } from '@modules/material-am-auftrag/logik';
 import { materialAufschlagProzent } from '@modules/material-am-auftrag/daten';
 import { abrechenbareZu, alsAbgerechnetMarkieren, alsPosition, vonRechnungLoesen, type Zusatzleistung } from '@modules/zusatzleistungen/daten';
@@ -33,38 +33,120 @@ export function ustSatzFuer(r: Pick<RechnungX, 'reverseCharge'>, b: Betrieb | un
   return b?.ustSatz ?? 19;
 }
 
+export interface RechnungsAbzug {
+  id: ID;
+  nummer: string;
+  datum: Datum;
+  /** in Rechnung gestellt (netto, USt, brutto) */
+  netto: Cent;
+  ust: Cent;
+  brutto: Cent;
+  /** davon bezahlt (inkl. Skonto) – beim Festschreiben eingefroren */
+  gezahlt: Cent;
+}
+
 export interface RechnungsSummen extends Summen {
   ustSatz: number;
-  /** abgezogene Abschlags-/Teilrechnungen */
+  /** in Rechnung gestellte Abschlags-/Teilrechnungen (für Netto und USt) */
   abzugNetto: Cent;
   abzugUst: Cent;
   abzugBrutto: Cent;
+  /** davon bezahlt – nur das wird vom Gesamtbetrag abgezogen */
+  abzugGezahlt: Cent;
+  /** noch nicht bezahlter Teil der Abschläge: steckt im Zahlbetrag, die Abschläge gelten damit als verrechnet */
+  offenAusAbzuegen: Cent;
+  /** Sicherheitseinbehalt in Prozent vom Gesamtbetrag und als Betrag */
+  einbehaltProzent: number;
+  einbehalt: Cent;
   /** was der Kunde mit dieser Rechnung zahlen soll */
   zahlbetrag: Cent;
-  abzuege: { id: ID; nummer: string; datum: Datum; netto: Cent; ust: Cent; brutto: Cent }[];
+  abzuege: RechnungsAbzug[];
 }
 
+/**
+ * Summen einer Rechnung in Cent.
+ * Schlussrechnung: Gesamtbetrag aller Leistungen, abzüglich der **gezahlten** Abschläge (§ 14 Abs. 5 UStG: vereinnahmte
+ * Teilentgelte absetzen). Nicht bezahlte Abschläge stecken im Zahlbetrag und gelten mit dem Festschreiben als verrechnet.
+ * Sicherheitseinbehalt: Prozent vom Gesamtbetrag, mindert den Zahlbetrag (fällig nach der Gewährleistung).
+ * Storno: alle Beträge mit umgekehrtem Vorzeichen.
+ */
 export function rechnungsSummen(r: RechnungX, b: Betrieb | undefined = betrieb()): RechnungsSummen {
   const satz = ustSatzFuer(r, b);
   const s = summen(r.positionen, satz);
   const vorzeichen = r.stornoFuerId ? -1 : 1;
-  const abzuege: RechnungsSummen['abzuege'] = [];
+  const abzuege: RechnungsAbzug[] = [];
   for (const id of r.abzugRechnungIds ?? []) {
     const a = rechnungX(id);
     if (!a || a.status === 'entwurf') continue;
     if (a.status === 'storniert' && !r.stornoFuerId) continue;
     const sa = summen(a.positionen, ustSatzFuer(a, b));
-    abzuege.push({ id: a.id, nummer: a.nummer, datum: a.datum, netto: sa.netto * vorzeichen, ust: sa.ust * vorzeichen, brutto: sa.brutto * vorzeichen });
+    const stand = r.abzugStand?.[a.id];
+    const gezahlt = stand ?? Math.min(sa.brutto, Math.max(0, beglichen(a.id)));
+    abzuege.push({ id: a.id, nummer: a.nummer, datum: a.datum, netto: sa.netto * vorzeichen, ust: sa.ust * vorzeichen, brutto: sa.brutto * vorzeichen, gezahlt: gezahlt * vorzeichen });
   }
-  const abzugNetto = abzuege.reduce((x, a) => x + a.netto, 0);
-  const abzugUst = abzuege.reduce((x, a) => x + a.ust, 0);
-  const abzugBrutto = abzuege.reduce((x, a) => x + a.brutto, 0);
-  return { ...s, ustSatz: satz, abzugNetto, abzugUst, abzugBrutto, zahlbetrag: s.brutto - abzugBrutto, abzuege };
+  const summe = (f: (a: RechnungsAbzug) => Cent) => abzuege.reduce((x, a) => x + f(a), 0);
+  const abzugBrutto = summe((a) => a.brutto);
+  const abzugGezahlt = summe((a) => a.gezahlt);
+  const einbehaltProzent = Math.max(0, r.einbehaltProzent ?? 0);
+  const einbehalt = Math.round((s.brutto * einbehaltProzent) / 100);
+  return {
+    ...s,
+    ustSatz: satz,
+    abzugNetto: summe((a) => a.netto),
+    abzugUst: summe((a) => a.ust),
+    abzugBrutto,
+    abzugGezahlt,
+    offenAusAbzuegen: abzugBrutto - abzugGezahlt,
+    einbehaltProzent,
+    einbehalt,
+    zahlbetrag: s.brutto - abzugGezahlt - einbehalt,
+    abzuege,
+  };
+}
+
+export interface SummenZeileDaten {
+  label: string;
+  wert: Cent;
+  /** Gesamt- bzw. Zahlbetrag hervorheben */
+  gesamt?: boolean;
+  klein?: string;
+}
+
+/** Die Summenzeilen einer Rechnung – gleich für Bildschirm, Druck/PDF und E-Mail */
+export function summenZeilen(s: RechnungsSummen, kleinunternehmer?: boolean): SummenZeileDaten[] {
+  const extra = s.abzuege.length > 0 || s.einbehalt !== 0;
+  const z: SummenZeileDaten[] = [{ label: 'Summe netto', wert: s.netto }];
+  if (!kleinunternehmer) z.push({ label: `zzgl. USt ${s.ustSatz} %`, wert: s.ust });
+  z.push({ label: 'Gesamtbetrag', wert: s.brutto, gesamt: !extra });
+  for (const a of s.abzuege) {
+    const ustAnteil = a.brutto ? Math.round((a.gezahlt * a.ust) / a.brutto) : 0;
+    const rest = a.brutto - a.gezahlt;
+    z.push({
+      label: `abzüglich gezahlt auf ${a.nummer} vom ${datum(a.datum)}`,
+      wert: -a.gezahlt,
+      klein: [
+        `berechnet ${euro(a.brutto)} (netto ${euro(a.netto)}, USt ${euro(a.ust)})`,
+        a.gezahlt ? `gezahlt darin USt ${euro(ustAnteil)}` : '',
+        rest ? `noch offen ${euro(rest)} – hier verrechnet` : '',
+      ]
+        .filter(Boolean)
+        .join(' · '),
+    });
+  }
+  if (s.einbehalt) z.push({ label: `abzüglich Sicherheitseinbehalt ${String(s.einbehaltProzent).replace('.', ',')} %`, wert: -s.einbehalt });
+  if (extra) z.push({ label: 'Zahlbetrag', wert: s.zahlbetrag, gesamt: true });
+  return z;
+}
+
+/** Abschlags-/Teilrechnung, die eine festgeschriebene Schlussrechnung schon verrechnet hat */
+export function verrechnetIn(r: RechnungX, alle: RechnungX[] = alleRechnungen()): RechnungX | undefined {
+  if (r.art !== 'abschlag' && r.art !== 'teil') return undefined;
+  return alle.find((x) => x.id !== r.id && x.status !== 'entwurf' && x.status !== 'storniert' && !x.stornoFuerId && !!x.abzugRechnungIds?.includes(r.id));
 }
 
 // ------------------------------------------------------------------ Zahlungen & offene Beträge
 
-export const zahlungenZu = (rechnungId: ID) => db.zahlungen.where((z) => z.rechnungId === rechnungId) as ZahlungX[];
+export const zahlungenZu = (rechnungId: ID) => db.zahlungen.where((z) => z.rechnungId === rechnungId);
 
 /** beglichen = gezahlt + abgezogenes Skonto */
 export function beglichen(rechnungId: ID): Cent {
@@ -73,6 +155,7 @@ export function beglichen(rechnungId: ID): Cent {
 
 export function offenerBetrag(r: RechnungX): Cent {
   if (r.status === 'entwurf' || r.status === 'storniert' || r.art === 'gutschrift') return 0;
+  if (verrechnetIn(r)) return 0;
   return Math.max(0, rechnungsSummen(r).zahlbetrag - beglichen(r.id));
 }
 
@@ -116,6 +199,8 @@ export function statusText(r: RechnungX): { text: string; ton: 'neutral' | 'akti
   if (r.stornoFuerId) return { text: 'Storno', ton: 'neutral' };
   if (r.art === 'gutschrift') return { text: 'Gutschrift', ton: 'neutral' };
   if (r.status === 'bezahlt') return { text: 'Bezahlt', ton: 'erfolg' };
+  const verrechnet = verrechnetIn(r);
+  if (verrechnet) return { text: `Verrechnet mit ${verrechnet.nummer}`, ton: 'neutral' };
   if (istUeberfaellig(r)) {
     const t = tageUeberfaellig(r);
     return { text: t === 1 ? 'Seit 1 Tag überfällig' : `Seit ${t} Tagen überfällig`, ton: 'achtung' };
@@ -125,6 +210,14 @@ export function statusText(r: RechnungX): { text: string; ton: 'neutral' | 'akti
 }
 
 export const nummerText = (r: RechnungX) => r.nummer || 'Entwurf';
+
+/** Dokumentart für den Nummernkreis (Storno hat einen eigenen Eintrag) */
+export const nummerArt = (r: Pick<RechnungX, 'art' | 'stornoFuerId'>): NummerArt => (r.stornoFuerId ? 'storno' : r.art);
+
+/** Nächste Nummer für diese Rechnung (Nummernkreis je Art aus der Dokumenten-Engine, Standard „R“) */
+export function rechnungsNummer(r: Pick<RechnungX, 'art' | 'stornoFuerId' | 'nummernkreis'>): string {
+  return naechsteDokumentNummer(nummerArt(r), db.rechnungen.allMitGeloeschten().map((x) => x.nummer), r.nummernkreis);
+}
 
 // ------------------------------------------------------------------ Rechnung aus Auftrag
 
@@ -312,7 +405,11 @@ export function rechnungsVorschau(auftragId: ID, art: RechnungsArt = 'rechnung',
   if (art === 'schluss') {
     const abzug = bisher.filter((r) => (r.art === 'abschlag' || r.art === 'teil') && r.status !== 'entwurf');
     v.abzugRechnungIds = abzug.map((r) => r.id);
-    if (abzug.length) v.quellen.push(`abzüglich ${abzug.map((r) => r.nummer).join(', ')}`);
+    if (abzug.length) v.quellen.push(`abzüglich bezahlter Abschläge aus ${abzug.map((r) => r.nummer).join(', ')}`);
+    for (const r of abzug) {
+      const offen = summen(r.positionen, ustSatzFuer(r, b)).brutto - Math.max(0, beglichen(r.id));
+      if (offen > 0) v.hinweise.push(`${r.nummer} ist noch nicht ganz bezahlt (${euro(offen)} offen). Der Rest steht in dieser Schlussrechnung, ${r.nummer} gilt danach als verrechnet.`);
+    }
     if (bisher.some((r) => (r.art === 'abschlag' || r.art === 'teil') && r.status === 'entwurf'))
       v.hinweise.push('Es gibt noch einen nicht versendeten Abschlags-Entwurf. Er wird nicht abgezogen.');
   }
@@ -321,18 +418,57 @@ export function rechnungsVorschau(auftragId: ID, art: RechnungsArt = 'rechnung',
   return v;
 }
 
+/** Welche Rechnung passt jetzt? Gibt es schon festgeschriebene Abschläge oder Teilrechnungen → Schlussrechnung. */
+export function passendeArt(auftragId: ID): RechnungsArt {
+  return gueltigeRechnungen(auftragId).some((r) => (r.art === 'abschlag' || r.art === 'teil') && r.status !== 'entwurf') ? 'schluss' : 'rechnung';
+}
+
+/** Ist der Auftrag fertig abgerechnet (Rechnung oder Schlussrechnung vorhanden)? */
+export function abschlussRechnung(auftragId: ID): RechnungX | undefined {
+  return gueltigeRechnungen(auftragId).find((r) => r.art === 'rechnung' || r.art === 'schluss');
+}
+
+/** Fortgeschrittene Angaben – in der Oberfläche hinter „Weitere Optionen“ */
+export interface RechnungsOptionen {
+  /** Sicherheitseinbehalt in Prozent */
+  einbehaltProzent?: number;
+  /** Zahlungsziel in Tagen (sonst Kunde bzw. Betrieb) */
+  zielTage?: number;
+  /** § 13b UStG */
+  reverseCharge?: boolean;
+  /** eigenes Nummernkürzel nur für diese Rechnung */
+  nummernkreis?: string;
+}
+
+/** Optionen an einen Entwurf hängen (nur Entwürfe – Festgeschriebenes bleibt unverändert) */
+export function optionenSetzen(id: ID, o: RechnungsOptionen): RechnungX | undefined {
+  const r = rechnungX(id);
+  if (!r || r.status !== 'entwurf') return r;
+  const patch: Partial<RechnungX> = {};
+  if (o.einbehaltProzent !== undefined) patch.einbehaltProzent = o.einbehaltProzent > 0 ? Math.min(100, o.einbehaltProzent) : undefined;
+  if (o.zielTage !== undefined) patch.faelligAm = plusTage(r.datum, Math.max(0, Math.round(o.zielTage)));
+  if (o.reverseCharge !== undefined) patch.reverseCharge = o.reverseCharge || undefined;
+  if (o.nummernkreis !== undefined) patch.nummernkreis = o.nummernkreis.trim().toUpperCase() || undefined;
+  return rechnungAendern(id, patch, { leise: true });
+}
+
+/** Fachliches Event, wenn ein Rechnungsentwurf entsteht */
+function erstelltMelden(r: RechnungX) {
+  emit({ typ: 'rechnung.erstellt', sammlung: 'rechnungen', objekt: r, daten: { art: r.art, auftragId: r.auftragId } });
+}
+
 /**
  * Rechnungsentwurf aus einem Auftrag. Gibt es schon einen Entwurf derselben Art, wird er zurückgegeben.
  * Material und Zusatzleistungen werden als abgerechnet markiert, damit nichts doppelt in Rechnung gestellt wird.
  */
-export function rechnungErstellen(auftragId: ID, art: RechnungsArt = 'rechnung', opts: VorschauOptionen & { vonMacher?: boolean } = {}): RechnungX | undefined {
+export function rechnungErstellen(auftragId: ID, art: RechnungsArt = 'rechnung', opts: VorschauOptionen & RechnungsOptionen & { vonMacher?: boolean } = {}): RechnungX | undefined {
   const auftrag = db.auftraege.get(auftragId);
   if (!auftrag) return undefined;
   const vorhanden = alleRechnungen().find((r) => r.auftragId === auftragId && r.status === 'entwurf' && r.art === art);
   if (vorhanden) return vorhanden;
   const v = rechnungsVorschau(auftragId, art, opts);
   const kunde = db.kunden.get(auftrag.kundeId);
-  const ziel = kunde?.zahlungszielTage ?? betrieb()?.zahlungszielTage ?? 14;
+  const ziel = opts.zielTage ?? kunde?.zahlungszielTage ?? betrieb()?.zahlungszielTage ?? 14;
   const neu: Omit<RechnungX, 'id' | 'erstelltAm' | 'geaendertAm'> = {
     nummer: '',
     art,
@@ -354,12 +490,16 @@ export function rechnungErstellen(auftragId: ID, art: RechnungsArt = 'rechnung',
     zusatzleistungIds: v.zusatzleistungIds,
     abschlagProzent: v.abschlagProzent,
     vonMacher: opts.vonMacher,
+    einbehaltProzent: opts.einbehaltProzent && opts.einbehaltProzent > 0 ? opts.einbehaltProzent : undefined,
+    reverseCharge: opts.reverseCharge || undefined,
+    nummernkreis: opts.nummernkreis?.trim().toUpperCase() || undefined,
     beispiel: auftrag.beispiel,
   };
-  const r = db.rechnungen.create(neu as Parameters<typeof db.rechnungen.create>[0]) as RechnungX;
+  const r = db.rechnungen.create(neu);
   for (const id of v.materialIds) db.material.update(id, { abgerechnetIn: r.id }, { leise: true });
   alsAbgerechnetMarkieren(v.zusatzleistungIds, r);
   vermerken({ typ: 'auftraege', id: auftragId }, 'rechnung.entwurf', `${ART_LABEL[art]} als Entwurf angelegt`);
+  erstelltMelden(r);
   return r;
 }
 
@@ -367,7 +507,7 @@ export function rechnungErstellen(auftragId: ID, art: RechnungsArt = 'rechnung',
 export function freieRechnung(kundeId: ID): RechnungX {
   const kunde = db.kunden.get(kundeId);
   const ziel = kunde?.zahlungszielTage ?? betrieb()?.zahlungszielTage ?? 14;
-  return db.rechnungen.create({
+  const r = db.rechnungen.create({
     nummer: '',
     art: 'rechnung',
     kundeId,
@@ -377,7 +517,9 @@ export function freieRechnung(kundeId: ID): RechnungX {
     datum: heute(),
     faelligAm: plusTage(heute(), ziel),
     mahnstufe: 0,
-  }) as RechnungX;
+  });
+  erstelltMelden(r);
+  return r;
 }
 
 /** Entwurf verwerfen – Material und Zusatzleistungen werden wieder freigegeben. Festgeschriebene Rechnungen bleiben (GoBD). */
@@ -441,6 +583,8 @@ export function pflichtTexte(r: RechnungX, b: Betrieb | undefined = betrieb(), k
   if (k?.art === 'privat' && r.art !== 'gutschrift')
     t.push('Sie sind gesetzlich verpflichtet, diese Rechnung zwei Jahre lang aufzubewahren (§ 14b Abs. 1 Satz 5 UStG).');
   if (r.art === 'abschlag') t.push('Abschlagsrechnung – wird mit der Schlussrechnung verrechnet.');
+  if (r.einbehaltProzent) t.push(`Sicherheitseinbehalt ${String(r.einbehaltProzent).replace('.', ',')} % – fällig nach Ablauf der vereinbarten Gewährleistung.`);
+  if (r.art === 'schluss' && r.abzugRechnungIds?.length) t.push('Mit dieser Schlussrechnung sind alle aufgeführten Abschlags- und Teilrechnungen verrechnet. Abgezogen sind die darauf bereits gezahlten Beträge.');
   return t;
 }
 
@@ -463,10 +607,12 @@ export function festschreiben(id: ID, opts: { weg?: 'email' | 'post' | 'selbst' 
   const pruefung = pflichtangabenPruefen(r);
   if (!pruefung.ok) return { ok: false, maengel: pruefung.pflicht };
   const zielTage = Math.max(0, tageZwischen(r.datum, r.faelligAm));
-  const nummer = r.nummer || naechsteNummer('rechnung');
+  const nummer = r.nummer || rechnungsNummer(r);
+  // Abschläge: bezahlten Stand einfrieren – eine festgeschriebene Rechnung ändert ihren Betrag nie mehr
+  const abzugStand = r.abzugRechnungIds?.length ? Object.fromEntries(rechnungsSummen(r).abzuege.map((a) => [a.id, a.gezahlt])) : undefined;
   const neu = rechnungAendern(
     id,
-    { nummer, datum: heute(), faelligAm: plusTage(heute(), zielTage), status: 'versendet', versendetAm: new Date().toISOString(), eRechnung: true },
+    { nummer, datum: heute(), faelligAm: plusTage(heute(), zielTage), status: 'versendet', versendetAm: new Date().toISOString(), eRechnung: true, ...(abzugStand ? { abzugStand } : {}) },
     { text: `Festgeschrieben als ${nummer}` },
   )!;
   vermerken({ typ: 'rechnungen', id }, 'rechnung.versendet', opts.weg === 'email' ? 'Per E-Mail versendet' : 'Als versendet markiert');
@@ -480,13 +626,15 @@ export function stornieren(id: ID, grund?: string): RechnungX | undefined {
   const r = rechnungX(id);
   if (!r || r.status === 'entwurf' || r.status === 'storniert' || r.stornoFuerId) return undefined;
   const storno = db.rechnungen.create({
-    nummer: naechsteNummer('rechnung'),
+    nummer: naechsteDokumentNummer('storno', db.rechnungen.allMitGeloeschten().map((x) => x.nummer)),
     art: 'gutschrift',
     auftragId: r.auftragId,
     kundeId: r.kundeId,
     titel: `Stornorechnung zu ${r.nummer}`,
     positionen: r.positionen.map((p) => ({ ...p, id: neueId('p'), menge: -p.menge })),
     abzugRechnungIds: r.abzugRechnungIds,
+    abzugStand: r.abzugStand,
+    einbehaltProzent: r.einbehaltProzent,
     status: 'versendet',
     datum: heute(),
     faelligAm: heute(),
@@ -497,11 +645,13 @@ export function stornieren(id: ID, grund?: string): RechnungX | undefined {
     reverseCharge: r.reverseCharge,
     bemerkung: grund ? `Grund: ${grund}` : undefined,
     beispiel: r.beispiel,
-  } as Parameters<typeof db.rechnungen.create>[0]) as RechnungX;
-  rechnungAendern(id, { status: 'storniert', stornoDurchId: storno.id }, { text: `Storniert durch ${storno.nummer}` });
+  });
+  const storniert = rechnungAendern(id, { status: 'storniert', stornoDurchId: storno.id }, { text: `Storniert durch ${storno.nummer}` });
   materialFreigeben(id);
   vonRechnungLoesen(id);
   if (r.auftragId) vermerken({ typ: 'auftraege', id: r.auftragId }, 'rechnung.storniert', `${r.nummer} storniert (${storno.nummer})`);
+  // Objekt ist die stornierte Rechnung (wie bei der Ableitung des Kerns) – so kommt das Ereignis nur einmal an
+  emit({ typ: 'rechnung.storniert', sammlung: 'rechnungen', objekt: storniert ?? r, daten: { rechnungId: r.id, stornoId: storno.id, grund } });
   return storno;
 }
 
@@ -525,13 +675,16 @@ export function korrekturEntwurf(id: ID): RechnungX | undefined {
     leistungBis: r.leistungBis,
     mahnstufe: 0,
     reverseCharge: r.reverseCharge,
+    einbehaltProzent: r.einbehaltProzent,
+    nummernkreis: r.nummernkreis,
     angebotId: r.angebotId,
     materialIds: r.materialIds,
     zeitIds: r.zeitIds,
     zusatzleistungIds: r.zusatzleistungIds,
     bemerkung: `Ersetzt ${r.nummer}.`,
     beispiel: r.beispiel,
-  } as Parameters<typeof db.rechnungen.create>[0]) as RechnungX;
+  });
+  erstelltMelden(neu);
   for (const mid of r.materialIds ?? []) {
     const m = db.material.get(mid);
     if (m && !m.abgerechnetIn) db.material.update(mid, { abgerechnetIn: neu.id }, { leise: true });

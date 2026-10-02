@@ -29,7 +29,9 @@ Verstehen → Routen → Kontext → Rechte → günstigste ausreichende Lane
 | Ausführen | `fuehreAus(aktion, kontext, { bestaetigt })` → `AktionDef.fuehreAus` (Geschäftslogik des Moduls, auch asynchron) |
 | Modelle | `registriereModell` – im Browser über `verbindeModelle()` (`src/os/core/ki-modelle.ts`) |
 | Mehrere Schritte | `pruefePlan` → eine Bestätigung → `fuehrePlanAus` (siehe unten) |
-| Protokoll | Sammlung `ki-protokoll` (jede Frage und jede Aktion), Event `ki.aktion.ausgefuehrt` / `ki.<ergebnis>`, Eintrag `ki.aktion` im Zeitstrahl des betroffenen Objekts |
+| Ausführen als Macher | `fuehreAus` läuft als `alsAkteur({ quelle: 'ai', id: 'macher' })`, schneidet die Verlaufseinträge mit (`eintraege`) |
+| Rückgängig | `nimmZurueck(eintraege, kontext)` über das Audit des Kerns; nicht bei `AktionDef.endgueltig` |
+| Protokoll | Sammlung `ki-protokoll` (jede Frage und jede Aktion, auch `zurueckgenommen`), bei Ausführung genau ein Ereignis `macher.aktion_ausgefuehrt` (Katalog, Webhooks), Eintrag `ki.aktion` im Zeitstrahl des betroffenen Objekts |
 
 ### Module anschließen
 
@@ -137,27 +139,38 @@ Auftrag A-2026-0007 abschließen
 | `vacation.create` | abwesenheiten | schreiben | schreiben (für andere: personal) | Urlaub beantragen; mit Personalrecht direkt genehmigt |
 | `vacation.approve` | abwesenheiten | kritisch | personal | Antrag genehmigen, Mitarbeiter bekommt Bescheid |
 | `customer.create` | kunden | schreiben | schreiben | Kunde anlegen, warnt vor Dubletten |
+| `employee.schedule` | autoplanung | schreiben | planen | Mitarbeiter in einem freien Fenster beim Auftrag einplanen (prüft, ob die Zeit noch frei ist) |
+| `order.create_draft` | bedarf | schreiben | schreiben | Bestellentwürfe je Lieferant für fehlendes Material – bestellt wird erst beim Lieferanten |
+| `invoice.remind` | mahnungen | kritisch | geld, veroeffentlichen | nächste Mahnstufe vorbereiten und freigeben, E-Mail als Link (`oeffnen`) |
+
+`endgueltig` (kein „Rückgängig“): `message.send`, `offer.send`, `invoice.send`, `review.request`, `invoice.remind`.
 
 Jede Aktion liegt in `src/os/modules/<modul>/gateway.ts` und ruft nur die bestehende Geschäftslogik des Moduls auf.
 
 ### Intent-Library (Stand)
 
-Angemeldet von `macher-fragen` (Reihenfolge = Prüfreihenfolge; `assistent.ts` und `aktionen.ts`):
+Angemeldet von `macher-fragen` (Reihenfolge = Prüfreihenfolge; `assistent.ts`, `absichten.ts` und `aktionen.ts`).
+Namen im Satz werden ohne Rücksicht auf Umlaute gefunden („Mueller“ = „Müller“, `hilfen.ts`):
 
 | Absicht | Beispiel | Ergebnis |
 |---|---|---|
-| `task.create`, `reminder.create` | „Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag“ | Entwurf Aufgabe |
+| `task.create` | „Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag“ | Entwurf Aufgabe |
+| `job.missing` | „Was fehlt noch für die Baustelle Wagner?“ | Antwort: Material, Lager, Aufgaben, Checklisten, Termin, Zusage |
+| `employee.schedule` | „Plane Jonas morgen bei Schneider ein“ | Plan mit 1 Schritt (freies Fenster, Feiertage, Abwesenheit) |
+| `order.create_draft` | „Bestell das fehlende Material“ | Plan mit 1 Schritt, Vorschau der fehlenden Artikel |
+| `invoice.remind` | „Erinnere alle Kunden, deren Rechnung länger als 14 Tage offen ist“ | je Rechnung ein Schritt |
+| `reminder.create` | „Erinnere mich morgen an …“ | Entwurf Aufgabe |
 | `invoice.send` | „Schick die Rechnung an Familie Hoffmann“ | Plan mit 1 Schritt |
 | `appointment.reschedule` | „Die Baustelle Schneider verschiebt sich um zwei Tage“ | Termin verschieben + Kunden informieren (Luna oder Vorlage) |
 | `material.reserve` | „Reservier 20 Meter Mantelleitung für Hoffmann“ | Plan mit 1 Schritt |
 | `vacation.approve` | „Genehmige den Urlaub von Jonas“ | je Antrag ein Schritt |
 | `vacation.create` | „Ich brauche Urlaub vom 12.10. bis 16.10.“ | Antrag (Chef: direkt genehmigt) |
 | `customer.create` | „Leg einen neuen Kunden an: Bäckerei Schmidt GmbH, 0561 123456“ | Plan mit 1 Schritt |
-| `message.send` | „Schreib Familie Hoffmann, dass wir morgen gegen neun kommen“ | Entwurf zum Ändern (Luna oder Vorlage) |
+| `message.send` | „Schreib Familie Hoffmann, dass wir morgen gegen neun kommen“ | Entwurf zum Ändern (Luna oder Vorlage: „Wir kommen morgen (Sa., 03.10.) gegen neun.“) |
 | `job.finish` | „Der Auftrag von Familie Hoffmann ist fertig“ | Plan mit bis zu 4 Schritten |
 | `time.track` | „Schreib bei Hoffmann zwei Stunden Nacharbeit auf“ | Plan mit 1 Schritt |
 | `offer.send` | „Schick das Angebot an Familie Hoffmann“ | Plan mit 1 Schritt |
-| `invoice.create_draft` | „Mach aus dem Auftrag von Schneider eine Rechnung“ | Plan mit 1 Schritt |
+| `invoice.create_draft` | „Mach Müller die Rechnung fertig“ | Plan mit 1 Schritt, Vorschau Positionen/Summe/Hinweise; liegt schon ein Entwurf, kein zweiter |
 | `invoice.list`, `employee.availability`, `location.find`, `offer.list`, `request.list`, `attention.list`, `task.list`, `appointment.list`, `help` | Fragen | Antwort aus den Daten |
 | `search` | alles andere | Suche (Auffang) |
 
@@ -167,7 +180,7 @@ Neue IDs folgen dem Muster `<objekt>.<verb>` aus der Liste in Abschnitt B.3.
 
 1. `/api/ki/positionen` (Angebotspositionen aus Diktat, `angebote/erstwert.ts`) spricht noch direkt mit dem Modell –
    als Absicht mit `lane: 2` über den Gateway führen.
-2. Weitere Aktionen: `offer.update`, `job.create`, `employee.schedule` (Einsatz planen), `document.create`, `time.correct`.
+2. Weitere Aktionen: `offer.update`, `job.create`, `document.create`, `time.correct`.
 3. Anmeldung und Mandanten (Paket Fundament): Route hinter die Anmeldung, Kosten je Betrieb serverseitig messen statt im Browser.
 4. Sprache: Speech-to-Text vor `frage(…, { kanal: 'sprache' })` – sonst nichts Neues.
 5. Protokoll-Ansicht (`ki-protokoll`) für den Chef und Aufräumregel für alte Einträge.

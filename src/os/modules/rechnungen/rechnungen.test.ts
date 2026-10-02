@@ -90,16 +90,18 @@ describe('Rechnung aus Auftrag', () => {
     expect(v.titel).toMatch(/^1\. Abschlag/);
   });
 
-  it('Schlussrechnung zieht versendete Abschläge ab', () => {
+  it('Schlussrechnung zieht die gezahlten Abschläge ab', () => {
     angebot();
     const ab = rechnungErstellen(t.auftrag.id, 'abschlag', { prozent: 50 })!;
     expect(festschreiben(ab.id).ok).toBe(true);
+    db.zahlungen.create({ rechnungId: ab.id, betrag: 32725, datum: heute(), art: 'ueberweisung' });
     const schluss = rechnungErstellen(t.auftrag.id, 'schluss')!;
     expect(schluss.abzugRechnungIds).toEqual([ab.id]);
     const s = rechnungsSummen(schluss);
     expect(s.netto).toBe(55000);
     expect(s.brutto).toBe(65450);
     expect(s.abzugBrutto).toBe(rechnungsSummen(rechnungX(ab.id)!).brutto);
+    expect(s.abzugGezahlt).toBe(32725);
     expect(s.zahlbetrag).toBe(65450 - 32725);
   });
 

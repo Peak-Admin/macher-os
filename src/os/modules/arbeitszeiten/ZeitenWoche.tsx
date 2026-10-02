@@ -7,7 +7,8 @@ import { istBuero, useDarf, useIch } from '@core/session';
 import { Auswahl, Button, IconButton, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Zeile, useBestaetigen, useToast } from '@ui/index';
 import { abwesenheitAm, ART_LABEL as ABW_LABEL } from '@modules/abwesenheiten/daten';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
-import { csvExport, dauer, herunterladen, jetztUhr, pruefeMitarbeiterTag, saldoText, sollTag, stunden } from './daten';
+import { dauer, jetztUhr, saldoText, sollTag, stunden, tagAuswerten, tagesProbleme } from './daten';
+import { freigabeZuruecknehmen, freigeben as zeitenFreigeben } from './regelwerk';
 import { zeitTitel } from './Stempeluhr';
 import { ZeitDialog } from './ZeitDialog';
 import { ZeitenNav } from './ZeitenNav';
@@ -31,9 +32,14 @@ export function wochenWerte(m: Mitarbeiter, montag: Datum): WochenWerte {
   const abw = db.abwesenheiten.all();
   // Soll zählt erst ab der ersten erfassten Zeit (wie im Stundenkonto)
   const erste = db.zeiten.where((z) => z.mitarbeiterId === m.id).map((z) => z.datum).sort()[0];
-  const probleme = tage.flatMap((d) => pruefeMitarbeiterTag(m.id, d, alleZeiten).probleme.map((text) => ({ tag: d, text })));
+  const probleme = tage.flatMap((d) => tagesProbleme(m.id, d, alleZeiten).probleme.map((text) => ({ tag: d, text })));
+  // Ist nach den Regeln: Netto je Tag, fehlende Pausen nach ArbZG abgezogen (erst wenn der Tag abgeschlossen ist)
+  const ist = tage.reduce((s, d) => {
+    const tag = zeiten.filter((z) => z.datum === d);
+    return tag.length ? s + tagAuswerten(tag, { jetzt }).netto : s;
+  }, 0);
   return {
-    ist: zeiten.reduce((s, z) => s + dauer(z, jetzt), 0),
+    ist,
     soll: tage.filter((d) => d <= t && !!erste && d >= erste).reduce((s, d) => s + sollTag(m, d, abw), 0),
     offen: zeiten.filter((z) => z.ende && !z.freigegeben),
     probleme,
@@ -51,8 +57,6 @@ export function ZeitenWoche() {
   const [params, setParams] = useSearchParams();
   const tag = params.get('datum') ?? heute();
   const montag = wochenStart(tag);
-  // Export-Monat: der gewählte Tag (in der aktuellen Woche: heute), damit Monatswechsel in der Woche passen
-  const exportMonat = (tag < montag || tag > plusTage(montag, 6) ? montag : tag).slice(0, 7);
   const sonntag = plusTage(montag, 6);
   const maParam = params.get('ma') ?? (buero ? TEAM : ich?.id ?? '');
   const maId = buero ? maParam : ich?.id ?? '';
@@ -82,19 +86,10 @@ export function ZeitenWoche() {
     if (!eintraege.length) return;
     if (probleme && !(await fragen('Trotz Hinweisen freigeben?', `In dieser Woche gibt es ${probleme === 1 ? 'einen Hinweis' : `${probleme} Hinweise`} zum Arbeitszeitgesetz. Prüfe die Tage, bevor du freigibst.`, 'Trotzdem freigeben')))
       return;
-    eintraege.forEach((z) => db.zeiten.update(z.id, { freigegeben: true }, { text: 'Freigegeben' }));
-    toast(eintraege.length === 1 ? '1 Zeit freigegeben.' : `${eintraege.length} Zeiten freigegeben.`, {
-      aktion: { label: 'Rückgängig', onClick: () => eintraege.forEach((z) => db.zeiten.update(z.id, { freigegeben: false })) },
+    const n = zeitenFreigeben(eintraege);
+    toast(n === 1 ? '1 Zeit freigegeben.' : `${n} Zeiten freigegeben.`, {
+      aktion: { label: 'Rückgängig', onClick: () => freigabeZuruecknehmen(eintraege.map((z) => z.id)) },
     });
-  };
-  const exportieren = () => {
-    const monat = exportMonat;
-    const zeiten = db.zeiten.where((z) => z.datum.startsWith(monat) && (maId === TEAM || z.mitarbeiterId === maId));
-    if (!zeiten.length) return toast('Für diesen Monat gibt es noch keine Zeiten.', { ton: 'achtung' });
-    const csv = csvExport(zeiten, (id) => db.mitarbeiter.get(id), (id) => db.auftraege.get(id)?.nummer ?? '');
-    herunterladen(`arbeitszeiten-${monat}.csv`, csv);
-    const offen = zeiten.filter((z) => z.ende && !z.freigegeben).length;
-    toast(offen ? `CSV erstellt. Achtung: ${offen} Zeiten sind noch nicht freigegeben.` : 'CSV für die Lohnabrechnung erstellt.', { ton: offen ? 'achtung' : 'erfolg' });
   };
 
   return (
@@ -113,8 +108,8 @@ export function ZeitenWoche() {
           <IconButton icon="weiter" label="Woche danach" onClick={() => setze('datum', plusTage(montag, 7))} />
         </Zeile>
         {(buero || personal) && (
-          <Button klein variante="sekundaer" icon="download" onClick={exportieren}>
-            {`${new Intl.DateTimeFormat('de-DE', { month: 'long' }).format(new Date(exportMonat + '-15T12:00:00'))} als CSV`}
+          <Button klein variante="tertiaer" icon="download" to={`/betrieb/arbeitszeiten/monat?monat=${montag.slice(0, 7)}`}>
+            Monat & Lohn
           </Button>
         )}
       </Zeile>
@@ -226,7 +221,8 @@ function PersonWoche({
       )}
       {tage.map((d) => {
         const tag = zeiten.filter((z) => z.datum === d).sort((a, b) => a.start.localeCompare(b.start));
-        const summe = tag.reduce((s, z) => s + dauer(z, jetzt), 0);
+        const auswertung = tag.length ? tagAuswerten(tag, { jetzt }) : undefined;
+        const summe = auswertung?.netto ?? 0;
         const erste = db.zeiten.where((z) => z.mitarbeiterId === m.id).map((z) => z.datum).sort()[0];
         const soll = erste && d >= erste ? sollTag(m, d, abw) : 0;
         const a = abwesenheitAm(m.id, d, abw);
@@ -240,6 +236,7 @@ function PersonWoche({
               </strong>
               <Zeile abstand={4}>
                 {a && <Status ton="aktiv">{ABW_LABEL[a.art]}</Status>}
+                {!!auswertung?.pauseAuto && <Status>{`${auswertung.pauseAuto} min Pause abgezogen`}</Status>}
                 {probleme.map((p) => (
                   <Status key={p.text} ton="achtung">
                     {p.text}

@@ -270,7 +270,7 @@ export function BerichteListe() {
   const alle = berichte.use();
   const liste = alle.filter((b) => filter === 'alle' || b.status === 'entwurf').sort((a, b) => b.datum.localeCompare(a.datum) || b.erstelltAm.localeCompare(a.erstelltAm));
   return (
-    <Seite titel="Berichte & Protokolle" untertitel="Tagesberichte, Regieberichte, Rapporte und Prüfprotokolle – vorbefüllt aus Zeiten, Material und Fotos." aktion={<Button icon="plus" to="/auftraege/berichte/neu">Bericht erstellen</Button>}>
+    <Seite titel="Berichte & Protokolle" untertitel="Baustellenberichte, Arbeitsberichte, Rapporte und Prüfprotokolle – vorbefüllt aus Zeiten, Material und Fotos." aktion={<Button icon="plus" to="/auftraege/berichte/neu">Bericht erstellen</Button>}>
       <Stapel abstand={16}>
         <Segmente
           label="Anzeigen"
