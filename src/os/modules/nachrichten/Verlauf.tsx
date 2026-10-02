@@ -2,10 +2,11 @@
 import { useEffect, useState } from 'react';
 import { batch, db } from '@core/db';
 import { pfadZu } from '@core/modul';
-import { personName, relativ, uhrzeit } from '@core/format';
+import { relativ, uhrzeit } from '@core/format';
 import type { ID, Nachricht } from '@core/objects';
 import { useDarf, useIch } from '@core/session';
 import { Auswahl, BeispielMarke, Button, Leer, Meldung, Meta, Segmente, Stapel, Status, Textfeld, Zeile, useToast } from '@ui/index';
+import { Person } from '@ui/person';
 import { KANAL_LABEL, SCHNELLANTWORTEN_INTERN, SCHNELLANTWORTEN_KUNDE, istUngelesen, verfuegbareKanaele, versandLink, type KundenKanal } from './daten';
 
 export interface VerlaufFilter {
@@ -26,9 +27,7 @@ function Blase({ n, ichId, zeigeAuftrag }: { n: Nachricht; ichId?: ID; zeigeAuft
   const eigen = n.richtung === 'aus' || (n.richtung === 'intern' && n.vonMitarbeiterId === ichId);
   const intern = n.kanal === 'intern';
   const von =
-    n.richtung === 'ein'
-      ? db.kunden.get(n.kundeId ?? db.auftraege.get(n.auftragId)?.kundeId)?.name ?? 'Kunde'
-      : personName(db.mitarbeiter.get(n.vonMitarbeiterId ?? n.erstelltVon));
+    n.richtung === 'ein' ? db.kunden.get(n.kundeId ?? db.auftraege.get(n.auftragId)?.kundeId)?.name ?? 'Kunde' : <Person m={n.vonMitarbeiterId ?? n.erstelltVon} groesse={20} />;
   const auftrag = db.auftraege.get(n.auftragId);
   return (
     <li style={{ display: 'flex', justifyContent: eigen ? 'flex-end' : 'flex-start' }}>

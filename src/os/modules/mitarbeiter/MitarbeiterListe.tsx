@@ -60,7 +60,7 @@ export function MitarbeiterListe() {
             <ListenZeile
               key={m.id}
               to={`/betrieb/mitarbeiter/${m.id}`}
-              links={<Personenbild m={m} />}
+              links={<Personenbild m={m} groesse={40} />}
               titel={
                 <>
                   {personName(m)} <BeispielMarke zeigen={m.beispiel} />

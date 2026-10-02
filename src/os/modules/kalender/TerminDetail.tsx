@@ -24,6 +24,7 @@ import {
   ZweiSpalten,
   useToast,
 } from '@ui/index';
+import { Person, Personenbild } from '@ui/person';
 import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import { kontextAusDb, terminKonflikte } from '../verfuegbarkeit/daten';
 import { icsDateiname, terminAlsIcs, TERMINART_LABEL, TERMINSTATUS, verschoben } from './daten';
@@ -106,7 +107,7 @@ export function TerminDetail() {
         <Meldung ton="achtung" titel="Konflikt in der Planung" aktion={darfPlanen ? <Button variante="sekundaer" klein onClick={() => setBearbeiten(true)}>Umplanen</Button> : undefined}>
           {konflikte.map((k) => (
             <div key={k.mitarbeiterId}>
-              {personName(db.mitarbeiter.get(k.mitarbeiterId))}: {k.gruende.map((g) => (g.terminId ? `${g.text} mit „${db.termine.get(g.terminId)?.titel ?? 'anderem Termin'}“` : g.text)).join(', ')}
+              <Person m={k.mitarbeiterId} groesse={20} />: {k.gruende.map((g) => (g.terminId ? `${g.text} mit „${db.termine.get(g.terminId)?.titel ?? 'anderem Termin'}“` : g.text)).join(', ')}
             </div>
           ))}
         </Meldung>
@@ -128,7 +129,7 @@ export function TerminDetail() {
                     <Karte titel="Wer" kompakt>
                       <Liste leer={<Meta>Noch niemand eingeplant.</Meta>}>
                         {ma.map((m) => (
-                          <ListenZeile key={m.id} to={pfadZu({ typ: 'mitarbeiter', id: m.id })} titel={personName(m)} untertitel={m.telefon} />
+                          <ListenZeile key={m.id} to={pfadZu({ typ: 'mitarbeiter', id: m.id })} links={<Personenbild m={m} groesse={40} />} titel={personName(m)} untertitel={m.telefon} />
                         ))}
                       </Liste>
                     </Karte>
@@ -254,7 +255,11 @@ function VerschiebenInhalt({ t, onFertig }: { t: NonNullable<ReturnType<typeof d
       {!t.ganztags && <Eingabe label="Neuer Beginn" type="time" step={900} value={uhr} onChange={(e) => setUhr(e.target.value)} hilfe="Die Dauer bleibt gleich." />}
       {konflikte.length > 0 ? (
         <Meldung ton="achtung" titel="Konflikt am neuen Termin">
-          {konflikte.map((k) => `${personName(db.mitarbeiter.get(k.mitarbeiterId))}: ${k.gruende.map((g) => g.text).join(', ')}`).join(' · ')}
+          {konflikte.map((k) => (
+            <div key={k.mitarbeiterId}>
+              <Person m={k.mitarbeiterId} groesse={20} />: {k.gruende.map((g) => g.text).join(', ')}
+            </div>
+          ))}
         </Meldung>
       ) : neu ? (
         <Meldung ton="erfolg">Alle Eingeplanten sind zu dieser Zeit frei.</Meldung>
