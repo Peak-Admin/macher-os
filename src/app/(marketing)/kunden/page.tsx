@@ -1,8 +1,8 @@
 import { KundenFilter } from "@/components/kunden/KundenFilter";
-import { FinalCta, PageHero } from "@/components/sections";
+import { FinalCta, KundenCard, PageHero } from "@/components/sections";
 import { ArrowLink, Faq, FaqJsonLd, Icon, IconTile, Section, SectionHeading, type FaqItem, type IconName } from "@/components/ui";
 import { funktionTitel, groessen, kundenUebersicht, type Groesse } from "@/content/kunden";
-import { gewerkCluster, topGewerke, type FunktionSlug } from "@/content/registry";
+import { gewerkCluster, kunden, topGewerke, type FunktionSlug, type KundeSlug } from "@/content/registry";
 import { pageMeta } from "@/lib/metadata";
 
 export const metadata = pageMeta({
@@ -62,6 +62,7 @@ export default function KundenPage() {
   return (
     <>
       <PageHero
+        bild="seite/kunden"
         breadcrumbs={[{ label: "Kunden" }]}
         eyebrow="Kunden"
         title="So arbeiten andere Handwerksbetriebe mit Macher OS."
@@ -103,6 +104,12 @@ export default function KundenPage() {
             gewerke={gewerkOptionen}
             groessen={groessenOptionen}
             funktionen={funktionOptionen}
+            karten={
+              Object.fromEntries(kunden.map((k) => [k.slug, <KundenCard key={k.slug} slug={k.slug} />])) as Record<
+                KundeSlug,
+                React.ReactNode
+              >
+            }
           />
         </div>
       </Section>

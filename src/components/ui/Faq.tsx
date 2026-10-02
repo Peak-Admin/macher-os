@@ -2,8 +2,30 @@ import { Icon } from "./Icon";
 
 export type FaqItem = { frage: string; antwort: string };
 
-/** FAQ-Liste mit nativen <details> – funktioniert ohne JavaScript. */
-export function Faq({ items }: { items: FaqItem[] }) {
+/**
+ * FAQ-Liste mit nativen <details> – funktioniert ohne JavaScript.
+ * `dark`: einzelne dunkelgrüne Panels für dunkle Abschnitte (Referenz „FAQ-Akkordeon dunkel“).
+ */
+export function Faq({ items, dark = false }: { items: FaqItem[]; dark?: boolean }) {
+  if (dark) {
+    return (
+      <div className="grid gap-2">
+        {items.map((item) => (
+          <details key={item.frage} className="group rounded-lg bg-ink-soft px-5 py-4 ring-1 ring-white/10 open:ring-brand/60">
+            <summary className="flex cursor-pointer items-center gap-4 font-semibold text-white">
+              <Icon name="frage" className="size-6 shrink-0 text-accent" />
+              <span className="flex-1 text-[1.05rem]">{item.frage}</span>
+              <Icon
+                name="chevron-down"
+                className="size-5 shrink-0 text-white/70 transition-transform duration-150 ease-out group-open:rotate-180"
+              />
+            </summary>
+            <p className="mt-3 max-w-3xl pl-10 leading-relaxed text-white/80">{item.antwort}</p>
+          </details>
+        ))}
+      </div>
+    );
+  }
   return (
     <div className="divide-y divide-line rounded-2xl border border-line bg-white">
       {items.map((item) => (

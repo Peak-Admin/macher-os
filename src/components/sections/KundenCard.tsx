@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Badge, Icon } from "@/components/ui";
+import { Foto } from "@/components/ui/Foto";
+import { kundenBild } from "@/content/bilder";
 import { kunden, topGewerke, type KundeSlug } from "@/content/registry";
 
 /** Karte für eine Kundenstory. Solange Stories Beispiele sind, wird das sichtbar markiert. */
@@ -14,17 +16,20 @@ export function KundenCard({ slug }: { slug: KundeSlug }) {
   return (
     <Link
       href={`/kunden/${k.slug}`}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ink/5"
+      className="group flex flex-col overflow-hidden rounded-lg border border-line bg-white transition duration-150 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ink/5"
     >
-      <div className="relative flex h-36 items-end bg-[linear-gradient(135deg,var(--color-ink),var(--color-ink-soft))] p-5">
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(47,146,80,0.5),transparent_55%)]"
+      <div className="relative aspect-[16/10] overflow-hidden bg-ink">
+        <Foto
+          bild={kundenBild(k.slug)}
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+          className="transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+          ersatz={<span className="font-display text-5xl font-extrabold text-white/80">{initialen}</span>}
         />
-        <span className="relative font-display text-4xl font-extrabold text-white/90">{initialen}</span>
-        <span className="absolute right-4 top-4">
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
+        <span className="absolute right-3 top-3">
           <Badge>Beispiel</Badge>
         </span>
+        <span className="absolute bottom-3 left-4 text-xs font-semibold text-white/80">Symbolbild</span>
       </div>
       <div className="flex flex-1 flex-col p-5">
         <p className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">

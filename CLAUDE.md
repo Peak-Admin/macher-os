@@ -56,6 +56,9 @@ Next.js (App Router, Turbopack) + TypeScript + Tailwind CSS v4. Alles wird stati
 - `src/components/mocks/` – stilisierte Produktansichten (ProductMock, PhoneMock, PlanBoardMock)
 - `src/content/registry.ts` – kanonische Slugs aller Funktionen, Gewerke, Werkzeuge, Kunden. Querverlinkungen nur über diese Slugs.
 - `src/content/*.ts` – Seiteninhalte als typisierte Daten
+- `src/content/bilder.ts` – Bildregister; Fotos liegen unter `public/bilder/`, eingebunden nur über `<Foto bild="…" />`
+  (`src/components/ui/Foto.tsx`, serverseitig). Fehlt eine Datei, erscheint eine Markenfläche. Liste: `docs/design/bilder.md`
+- `src/components/sections/Bild.tsx` – Bildbausteine im Mission-Mittelstand-Stil (BildKarten, BereichsKarte, BildText, FotoBuehne, DunklerAbschnitt)
 - `src/lib/site.ts` – Navigation, Footer, CTAs
 - `src/lib/metadata.ts` – `pageMeta()` für Titel, Beschreibung, Canonical
 

@@ -22,6 +22,7 @@ export default function KarrierePage() {
   return (
     <>
       <PageHero
+        bild="seite/karriere"
         eyebrow="Karriere"
         title="Bau mit uns Software fürs Handwerk."
         intro="Wir wollen Handwerksbetrieben die Büroarbeit abnehmen. Dafür suchen wir Leute, die Lust auf echte Probleme und einfache Lösungen haben."

@@ -23,6 +23,7 @@ export default function UeberUnsPage() {
   return (
     <>
       <PageHero
+        bild="seite/ueber-uns"
         eyebrow="Über Macher OS"
         title="Wir bauen die Software, die das Handwerk verdient."
         intro="Handwerker sollen machen, nicht verwalten. Macher OS nimmt ihnen so viel Büroarbeit ab wie möglich – damit mehr Zeit für Kunden, Baustelle und Feierabend bleibt."

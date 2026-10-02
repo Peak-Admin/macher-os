@@ -124,6 +124,7 @@ export default function FunktionenPage() {
     <>
       {/* 1. Hero */}
       <PageHero
+        bild="seite/funktionen"
         breadcrumbs={[{ label: "Funktionen" }]}
         eyebrow="Funktionen"
         title="Alles, was dein Betrieb braucht."
