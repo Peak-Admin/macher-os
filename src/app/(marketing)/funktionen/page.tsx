@@ -2,7 +2,7 @@ import { Objekt } from "@/components/ui/Objekt";
 import type { ObjektSchluessel } from "@/lib/objekte";
 import Link from "next/link";
 import { FunktionKarte, VerbindungsDiagramm } from "@/components/funktionen";
-import { ProductMock } from "@/components/mocks";
+import { AppVorschau, VorschauRahmen } from "@/components/mocks";
 import { FinalCta, PageHero, MissionMittelstandStreifen } from "@/components/sections";
 import {
   ArrowLink,
@@ -141,7 +141,11 @@ export default function FunktionenPage() {
             </ButtonLink>
           </>
         }
-        visual={<ProductMock active="Aufträge" />}
+        visual={
+          <VorschauRahmen hinweis="Klick dich durch – alles Beispieldaten.">
+            <AppVorschau start="auftraege" />
+          </VorschauRahmen>
+        }
       />
 
       {/* 2. Nach Arbeitsablauf */}

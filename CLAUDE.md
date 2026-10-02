@@ -86,7 +86,7 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - `/signup` und `/login` leiten in die Software (`/os/willkommen`, `/os/heute`)
 - `src/components/ui/` – Grundbausteine (Section, SectionHeading, ButtonLink, ArrowLink, Card, CheckList, Badge, Faq, Icon, Breadcrumbs)
 - `src/components/sections/` – wiederkehrende Abschnitte (PageHero, FinalCta, Steps, Flow, TrustRow, KundenCard, PlanCards)
-- `src/components/mocks/` – stilisierte Produktansichten (ProductMock, PhoneMock, PlanBoardMock)
+- `src/components/mocks/` – stilisierte Produktansichten (AppVorschau = klickbare Vorschau, PhoneMock, PlanBoardMock); auf der Website liegen sie im grünen `VorschauRahmen`
 - `src/content/registry.ts` – kanonische Slugs aller Funktionen, Gewerke, Werkzeuge, Kunden. Querverlinkungen nur über diese Slugs.
 - `src/content/*.ts` – Seiteninhalte als typisierte Daten
 - `src/content/bilder.ts` – Bildregister; Fotos liegen unter `public/bilder/`, eingebunden nur über `<Foto bild="…" />`

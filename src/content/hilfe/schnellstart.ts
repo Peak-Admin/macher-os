@@ -3,7 +3,6 @@ import type { IconName } from "@/components/ui";
 export type SchnellstartAnsicht =
   | "konto"
   | "gewerk"
-  | "leistungen"
   | "mitarbeiter"
   | "auftrag"
   | "app"
@@ -11,6 +10,8 @@ export type SchnellstartAnsicht =
 
 export type SchnellstartSchritt = {
   id: SchnellstartAnsicht;
+  /** „Zum Start“ ist die Einrichtung (eine Frage), der Rest kommt, wenn du ihn brauchst. */
+  wann: "Zum Start" | "Wenn du so weit bist";
   titel: string;
   dauer: string;
   text: string;
@@ -20,10 +21,11 @@ export type SchnellstartSchritt = {
   artikel?: string;
 };
 
-/** Sieben Schritte nach Abschnitt 20. Dauer ist eine grobe Orientierung. */
+/** Erste Schritte nach `docs/os/ONBOARDING.md`: eine Frage zum Start, dann sofort etwas Echtes erledigen. Dauer ist eine grobe Orientierung. */
 export const schnellstartSchritte: SchnellstartSchritt[] = [
   {
     id: "konto",
+    wann: "Zum Start",
     titel: "Kostenlos starten",
     dauer: "ein Klick",
     text: "Klick auf „Kostenlos testen“. Macher OS öffnet sich direkt – ohne Konto, ohne Passwort, ohne Kreditkarte.",
@@ -33,42 +35,37 @@ export const schnellstartSchritte: SchnellstartSchritt[] = [
   },
   {
     id: "gewerk",
-    titel: "Gewerk wählen",
-    dauer: "ca. 1 Minute",
-    text: "Sag Macher OS, was für ein Betrieb du bist. Danach passen Begriffe, Vorlagen und Abläufe zu deinem Handwerk.",
-    punkte: ["ein oder mehrere Gewerke", "später jederzeit änderbar"],
+    wann: "Zum Start",
+    titel: "Welcher Betrieb bist du?",
+    dauer: "unter 1 Minute",
+    text: "Gib deine Website an. Macher liest Name, Logo, Gewerk und Leistungen aus und richtet alles ein. Keine Website? Dann tippst du einfach dein Gewerk an.",
+    punkte: ["eine Frage, mehr nicht", "Leistungen, Preise und Abläufe aus der Vorlage deines Gewerks", "alles später änderbar"],
     icon: "wrench",
-    artikel: "gewerk-und-leistungen-anpassen",
+    artikel: "konto-erstellen",
   },
   {
-    id: "leistungen",
-    titel: "Leistungen wählen",
+    id: "auftrag",
+    wann: "Wenn du so weit bist",
+    titel: "Erstes Angebot oder ersten Auftrag",
     dauer: "ca. 2 Minuten",
-    text: "Kreuze an, was ihr anbietet. Macher OS legt dazu passende Leistungen, Checklisten und Textbausteine an.",
-    punkte: ["fertige Vorschläge je Gewerk", "eigene Leistungen ergänzen"],
+    text: "Direkt nach dem Start fragt Macher: Was möchtest du als Erstes erledigen? Schreib ein Angebot oder leg einen Auftrag an – am besten einen echten von dieser Woche.",
+    punkte: ["Kunden direkt mit anlegen", "Briefkopf prüft Macher kurz vor dem ersten Versand"],
     icon: "clipboard",
-    artikel: "gewerk-und-leistungen-anpassen",
+    artikel: "ersten-auftrag-anlegen",
   },
   {
     id: "mitarbeiter",
-    titel: "Mitarbeiter hinzufügen",
+    wann: "Wenn du so weit bist",
+    titel: "Team hinzufügen",
     dauer: "ca. 3 Minuten",
-    text: "Trag dein Team ein und gib jedem eine Rolle. Die Einladung zur App geht per SMS oder E-Mail raus.",
+    text: "Trag dein Team ein, sobald du planen willst, und gib jedem eine Rolle. Die Einladung zur App geht per SMS oder E-Mail raus.",
     punkte: ["Rollen wie Büro, Meister, Monteur", "jeder sieht nur, was er braucht"],
     icon: "users",
     artikel: "mitarbeiter-einladen",
   },
   {
-    id: "auftrag",
-    titel: "Ersten Auftrag anlegen",
-    dauer: "ca. 2 Minuten",
-    text: "Kunde, Ort, was zu tun ist. Fertig. Am besten nimmst du gleich einen echten Auftrag von dieser Woche.",
-    punkte: ["Kunden direkt mit anlegen", "Material und Fotos hängen später am Auftrag"],
-    icon: "clipboard",
-    artikel: "ersten-auftrag-anlegen",
-  },
-  {
     id: "app",
+    wann: "Wenn du so weit bist",
     titel: "App installieren",
     dauer: "ca. 2 Minuten",
     text: "Lade die App auf dein Handy und melde dich an. So siehst du selbst, was dein Team auf der Baustelle sieht.",
@@ -78,6 +75,7 @@ export const schnellstartSchritte: SchnellstartSchritt[] = [
   },
   {
     id: "planung",
+    wann: "Wenn du so weit bist",
     titel: "Erste Planung erstellen",
     dauer: "ca. 2 Minuten",
     text: "Zieh den Auftrag auf einen Mitarbeiter und einen Tag – oder lass dir von Macher einen Vorschlag machen.",

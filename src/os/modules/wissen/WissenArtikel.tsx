@@ -6,6 +6,7 @@ import { Button, Karte, Leer, Liste, ListenZeile, Meta, Raster, Seite, Stapel, S
 import { gewerkVorlage } from '@core/gewerke';
 import { ArtikelText } from './ArtikelText';
 import { istSichererLink, wissen } from './daten';
+import { ausgehend } from '@/lib/link/ausgehend';
 
 export function WissenArtikel() {
   const { id = '' } = useParams();
@@ -85,7 +86,7 @@ export function WissenArtikel() {
               <Karte titel="Herstellerlinks" kompakt>
                 <Stapel abstand={8}>
                   {a.links.filter((l) => istSichererLink(l.url)).map((l) => (
-                    <a key={l.url} href={l.url} target="_blank" rel="noreferrer noopener">
+                    <a key={l.url} href={ausgehend(l.url)} target="_blank" rel="noreferrer noopener">
                       {l.titel || l.url}
                     </a>
                   ))}

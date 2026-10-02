@@ -3,6 +3,7 @@ import { DatenVertrauen } from "@/components/sections/DatenVertrauen";
 import { HerausgeberMarke } from "@/components/sections/MissionMittelstand";
 import { footerNav, herausgeber, legalNav, site } from "@/lib/site";
 import { Logo } from "./Logo";
+import { ausgehend } from "@/lib/link/ausgehend";
 
 export function Footer() {
   return (
@@ -20,7 +21,7 @@ export function Footer() {
             <div className="mt-6 border-t border-white/10 pt-5">
               <p className="text-sm text-white/65">{herausgeber.kurz}</p>
               <a
-                href={herausgeber.url}
+                href={ausgehend(herausgeber.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 inline-block rounded-sm hover:opacity-80"
