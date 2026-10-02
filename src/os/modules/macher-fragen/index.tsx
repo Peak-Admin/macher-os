@@ -2,6 +2,8 @@ import { defineModul } from '@core/modul';
 import { useOverlay } from '@core/overlay';
 import { Dialog, Seite } from '@ui/index';
 import { MacherChat } from './Chat';
+import { MACHER_BEFEHLE } from './befehle';
+
 
 /** Overlay „Macher fragen“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`). */
 function MacherOverlay() {
@@ -26,6 +28,8 @@ export default defineModul({
   titel: 'Macher fragen',
   bereich: 'macher',
   beschreibung: 'Findet Informationen, beantwortet Fragen und bereitet Aktionen vor.',
+  // Action Engine: Sätze wie „Mach Müller die Rechnung fertig“ → Vorschau → Freigabe → Ausführen
+  befehle: MACHER_BEFEHLE,
   icon: 'macher',
   gewicht: 70,
   navigation: 'versteckt',

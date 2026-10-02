@@ -6,6 +6,9 @@
  * steht im Erledigt-Protokoll und ist – wo möglich – rückgängig zu machen.
  */
 import { db } from './db';
+import { alsAkteur, registriereAls, type Akteur } from './akteur';
+import { verlaufAufraeumen } from './audit';
+import { starteEreignisse } from './ereignisse';
 import { einstellung, setzeEinstellung } from './einstellungen';
 import { alleAutomationen, alleHinweisVorschlaege, type HinweisVorschlag } from './modul';
 import type { Bezug, Hinweis, ID, Rolle } from './objects';
@@ -25,10 +28,22 @@ export function setzeAutomation(id: string, an: boolean) {
   if (an) starteAutomation(id);
 }
 
+/** Als wer eine Automation handelt (Audit: „durch Macher“) */
+export function automationAkteur(a: { id: string; titel?: string }): Akteur {
+  return { quelle: 'automation', id: a.id, name: a.titel };
+}
+
 function starteAutomation(id: string) {
   const a = alleAutomationen().find((x) => x.id === id);
   if (!a || laufend.has(id)) return;
-  laufend.set(id, a.start());
+  // Handler, die `start()` per `on()` registriert, laufen später automatisch im Namen der Automation
+  laufend.set(id, registriereAls(automationAkteur(a), () => a.start()));
+}
+
+/** `pruefen()` einer Automation in ihrem Namen ausführen */
+export function automationPruefen(a: { id: string; titel?: string; pruefen?: () => void }) {
+  if (!a.pruefen) return;
+  alsAkteur(automationAkteur(a), () => a.pruefen!());
 }
 
 function stoppeAutomation(id: string) {
@@ -38,11 +53,18 @@ function stoppeAutomation(id: string) {
 
 /** Beim App-Start: alle eingeschalteten Automationen starten und einmal prüfen */
 export function starteAutomationen() {
+  // Ereignis-Architektur (Ableitung, Protokoll, Webhooks) und Verlauf-Rotation laufen immer
+  starteEreignisse();
+  try {
+    verlaufAufraeumen();
+  } catch (e) {
+    console.warn('Verlauf konnte nicht aufgeräumt werden', e);
+  }
   for (const a of alleAutomationen()) {
     if (automationAn(a.id)) {
       starteAutomation(a.id);
       try {
-        a.pruefen?.();
+        automationPruefen(a);
       } catch (e) {
         console.error(`Prüfung ${a.id} fehlgeschlagen`, e);
       }

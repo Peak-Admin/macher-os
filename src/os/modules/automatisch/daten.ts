@@ -2,7 +2,8 @@
 import { db } from '@core/db';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
 import { heute } from '@core/format';
-import { automationAn, erledigt } from '@core/macher';
+import { automationAn, automationPruefen, erledigt } from '@core/macher';
+import { pruefeFristen, webhooksZustellen } from '@core/ereignisse';
 import { alleAutomationen, type Automation } from '@core/modul';
 import type { Erledigung } from '@core/objects';
 
@@ -41,11 +42,18 @@ export function pruefeAlle(): number {
   for (const a of alleAutomationen()) {
     if (a.id === PRUEFUNG_ID || !a.pruefen || !automationAn(a.id)) continue;
     try {
-      a.pruefen();
+      automationPruefen(a);
       n++;
     } catch (e) {
       console.error(`Prüfung ${a.id} fehlgeschlagen`, e);
     }
+  }
+  // Fristen als Ereignisse melden (z. B. `rechnung.ueberfaellig`) und fällige Webhooks zustellen
+  try {
+    pruefeFristen();
+    void webhooksZustellen();
+  } catch (e) {
+    console.error('Fristprüfung fehlgeschlagen', e);
   }
   setzeEinstellung('macher.pruefung.zuletzt', new Date().toISOString());
   tagesprotokoll(n);

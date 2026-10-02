@@ -13,8 +13,10 @@
  * `fremdeAenderungen` ein. Die API für Module bleibt dieselbe.
  */
 import { useSyncExternalStore, useMemo } from 'react';
-import type { Basis, Bezug, ID, ObjektMap, ObjektTyp, Ereignis } from './objects';
+import type { Basis, Bezug, ID, ObjektMap, ObjektTyp, Ereignis, FeldAenderung } from './objects';
 import { emit } from './events';
+import { aktuellerAkteur, eintragGemerkt, type Akteur } from './akteur';
+import { verlaufText } from './audit-text';
 
 const SPEICHER_KEY = 'macher-os:v1';
 const IDB_NAME = 'macher-os';
@@ -323,6 +325,11 @@ export function setAktuellerNutzer(id: ID | undefined) {
   aktuellerNutzer = id;
 }
 
+/** Der angemeldete Mensch (für Audit und Ereignisprotokoll) */
+export function aktuellerNutzerId(): ID | undefined {
+  return aktuellerNutzer;
+}
+
 export function neueId(prefix = ''): ID {
   const zufall =
     globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -385,9 +392,73 @@ function tabelle(name: string): Tabelle {
   return (daten[name] ??= {});
 }
 
-function protokoll(name: string, aktion: string, obj: Basis, text?: string) {
+// ------------------------------------------------------------------ Audit (Verlauf am Objekt)
+
+/** Sammlungen ohne Feld-Protokoll und ohne Protokoll stiller Änderungen (Systemdaten, Chat …) */
+const OHNE_FELDER = new Set(['ereignisse', 'einstellungen', 'benachrichtigungen', 'hinweise', 'erledigungen']);
+/** Größter gespeicherter Feldwert (Zeichen JSON). Größeres (Fotos als Data-URL) wird nur als „geändert“ vermerkt. */
+const MAX_FELDWERT = 4000;
+/** stille Änderungen (Tippen im Editor) desselben Akteurs innerhalb dieser Zeit landen in einem Eintrag */
+const ZUSAMMENFASSEN_MS = 30 * 60 * 1000;
+const NIE_VERGLEICHEN = new Set(['id', 'erstelltAm', 'geaendertAm']);
+const zuletztStill = new Map<string, { id: ID; zeit: number; akteur: string }>();
+
+/**
+ * Sammlung vom Feld-Protokoll ausnehmen (z. B. Chatverlauf, Caches). Angelegt/Gelöscht wird weiter vermerkt,
+ * geänderte Felder und stille Änderungen nicht.
+ */
+export function auditAusnehmen(name: string) {
+  OHNE_FELDER.add(name);
+}
+
+const json = (x: unknown) => (x === undefined ? undefined : JSON.stringify(x));
+
+/**
+ * Werte, die nicht in den (für alle Mitglieder lesbaren) Verlauf gehören. Spiegelt die Server-Rechte
+ * (Migration „Rechte“: Sammlungen nur für Chef/Büro, geschützte Felder). Hier steht nur „geändert“, ohne Werte –
+ * außer dem Status. Weitere per `auditWerteSchuetzen`.
+ */
+const GESCHUETZTE_SAMMLUNGEN = new Set(['rechnungen', 'zahlungen', 'belege', 'mahnungen']);
+const GESCHUETZTE_FELDER = new Set(['mitarbeiter.kostensatz']);
+const OFFENE_FELDER = new Set(['status']);
+
+/** Sammlung (ohne Feld) oder einzelnes Feld vom Wert-Protokoll ausnehmen: `auditWerteSchuetzen('mitarbeiter', 'lohn')` */
+export function auditWerteSchuetzen(sammlungName: string, feld?: string) {
+  if (feld) GESCHUETZTE_FELDER.add(`${sammlungName}.${feld}`);
+  else GESCHUETZTE_SAMMLUNGEN.add(sammlungName);
+}
+
+const wertGeschuetzt = (name: string | undefined, k: string) =>
+  !!name && ((GESCHUETZTE_SAMMLUNGEN.has(name) && !OFFENE_FELDER.has(k)) || GESCHUETZTE_FELDER.has(`${name}.${k}`));
+
+/** Nur geänderte Felder mit vorher/nachher (tief kopiert, große Werte gekürzt, geschützte Werte ohne Inhalt) */
+export function feldAenderungen(alt: Basis, neu: Basis, name?: string): Record<string, FeldAenderung> {
+  const a = alt as unknown as Record<string, unknown>;
+  const n = neu as unknown as Record<string, unknown>;
+  const r: Record<string, FeldAenderung> = {};
+  for (const k of new Set([...Object.keys(a), ...Object.keys(n)])) {
+    if (NIE_VERGLEICHEN.has(k) || a[k] === n[k]) continue;
+    const ja = json(a[k]);
+    const jn = json(n[k]);
+    if (ja === jn) continue;
+    if (wertGeschuetzt(name, k)) r[k] = { geschuetzt: true };
+    else if ((ja?.length ?? 0) > MAX_FELDWERT || (jn?.length ?? 0) > MAX_FELDWERT) r[k] = { gekuerzt: true };
+    else r[k] = { vorher: ja === undefined ? undefined : JSON.parse(ja), nachher: jn === undefined ? undefined : JSON.parse(jn) };
+  }
+  return r;
+}
+
+function akteurFelder(a: Akteur | undefined) {
+  const quelle = a?.quelle ?? 'user';
+  return { quelle, akteurId: a?.id, vonMitarbeiterId: quelle === 'user' ? (a?.mitarbeiterId ?? aktuellerNutzer) : a?.mitarbeiterId };
+}
+
+function protokoll(name: string, aktion: 'created' | 'updated' | 'removed' | 'restored', obj: Basis, text?: string, alt?: Basis) {
   if (name === 'ereignisse') return;
   const typ = `${name}.${aktion}`;
+  const akteur = aktuellerAkteur();
+  const f = aktion === 'updated' && alt && !OHNE_FELDER.has(name) ? feldAenderungen(alt, obj, name) : undefined;
+  const felder = f && Object.keys(f).length ? f : undefined;
   const e: Ereignis = {
     id: neueId('e'),
     erstelltAm: jetzt(),
@@ -395,26 +466,87 @@ function protokoll(name: string, aktion: string, obj: Basis, text?: string) {
     erstelltVon: aktuellerNutzer,
     typ,
     bezug: { typ: name as ObjektTyp, id: obj.id },
-    text: text ?? standardText(aktion),
-    vonMitarbeiterId: aktuellerNutzer,
+    text: verlaufText(aktion, { text, felder, akteur }),
+    ...akteurFelder(akteur),
+    aenderung: aktion,
   };
+  if (felder) e.felder = felder;
+  if (e.akteurId === undefined) delete e.akteurId;
+  if (e.vonMitarbeiterId === undefined) delete e.vonMitarbeiterId;
   tabelle('ereignisse')[e.id] = e;
   lokalGeaendert('ereignisse', e.id);
+  zuletztStill.delete(`${name}:${obj.id}`);
+  eintragGemerkt(e.id);
 }
 
-function standardText(aktion: string) {
-  switch (aktion) {
-    case 'created':
-      return 'Angelegt';
-    case 'updated':
-      return 'Geändert';
-    case 'removed':
-      return 'In den Papierkorb gelegt';
-    case 'restored':
-      return 'Wiederhergestellt';
-    default:
-      return aktion;
+/**
+ * Stille Änderung (`{ leise: true }`, z. B. Tippen im Angebots-Editor) trotzdem protokollieren – aber
+ * zusammengefasst: Folgeänderungen desselben Akteurs am selben Objekt ergänzen den letzten Eintrag.
+ */
+function stillProtokollieren(name: string, alt: Basis, neu: Basis) {
+  if (name === 'ereignisse' || OHNE_FELDER.has(name)) return;
+  const f = feldAenderungen(alt, neu, name);
+  if (!Object.keys(f).length) return;
+  const akteur = aktuellerAkteur();
+  const af = akteurFelder(akteur);
+  const wer = `${af.quelle}:${af.akteurId ?? ''}:${af.vonMitarbeiterId ?? ''}`;
+  const schluessel = `${name}:${neu.id}`;
+  const letzt = zuletztStill.get(schluessel);
+  const vorhanden = letzt && letzt.akteur === wer && Date.now() - letzt.zeit < ZUSAMMENFASSEN_MS ? (tabelle('ereignisse')[letzt.id] as Ereignis | undefined) : undefined;
+  if (vorhanden && !vorhanden.rueckgaengigAm && !vorhanden.geloeschtAm) {
+    const felder: Record<string, FeldAenderung> = { ...vorhanden.felder };
+    for (const [k, w] of Object.entries(f)) {
+      const bisher = felder[k];
+      const neuW: FeldAenderung = !bisher ? w : w.geschuetzt ? w : bisher.gekuerzt || w.gekuerzt ? { gekuerzt: true } : { vorher: bisher.vorher, nachher: w.nachher };
+      if (!neuW.gekuerzt && !neuW.geschuetzt && json(neuW.vorher) === json(neuW.nachher)) delete felder[k];
+      else felder[k] = neuW;
+    }
+    if (!Object.keys(felder).length) {
+      delete tabelle('ereignisse')[vorhanden.id];
+      lokalGeaendert('ereignisse', vorhanden.id);
+      zuletztStill.delete(schluessel);
+      return;
+    }
+    tabelle('ereignisse')[vorhanden.id] = { ...vorhanden, felder, geaendertAm: jetzt(), text: verlaufText('updated', { felder, akteur, still: true }) } as Ereignis;
+    lokalGeaendert('ereignisse', vorhanden.id);
+    zuletztStill.set(schluessel, { ...letzt!, zeit: Date.now() });
+    eintragGemerkt(vorhanden.id);
+    return;
   }
+  const e: Ereignis = {
+    id: neueId('e'),
+    erstelltAm: jetzt(),
+    geaendertAm: jetzt(),
+    erstelltVon: aktuellerNutzer,
+    typ: `${name}.updated`,
+    bezug: { typ: name as ObjektTyp, id: neu.id },
+    text: verlaufText('updated', { felder: f, akteur, still: true }),
+    ...af,
+    aenderung: 'updated',
+    felder: f,
+    zusammengefasst: true,
+  };
+  if (e.akteurId === undefined) delete e.akteurId;
+  if (e.vonMitarbeiterId === undefined) delete e.vonMitarbeiterId;
+  tabelle('ereignisse')[e.id] = e;
+  lokalGeaendert('ereignisse', e.id);
+  zuletztStill.set(schluessel, { id: e.id, zeit: Date.now(), akteur: wer });
+  eintragGemerkt(e.id);
+}
+
+/**
+ * Einträge nur auf diesem Gerät entfernen (Rotation von Verlauf und Ereignisprotokoll). Der Abgleich
+ * erfährt davon nichts – auf dem Server bleibt die Historie vollständig.
+ */
+export function vergessen(sammlungName: string, ids: ID[]) {
+  if (!ids.length) return;
+  const t = daten[sammlungName];
+  if (!t) return;
+  for (const id of ids) {
+    delete t[id];
+    markieren(sammlungName, id);
+  }
+  geaendert();
 }
 
 /**
@@ -473,7 +605,8 @@ function collection<T extends Basis>(name: string): Collection<T> {
       const neu = { ...alt, ...patch, id, geaendertAm: jetzt() } as T;
       tabelle(name)[id] = neu;
       lokalGeaendert(name, id);
-      if (!opts?.leise) protokoll(name, 'updated', neu, opts?.text);
+      if (!opts?.leise) protokoll(name, 'updated', neu, opts?.text, alt);
+      else stillProtokollieren(name, alt, neu);
       geaendert();
       if (!opts?.leise) emit({ typ: `${name}.updated`, sammlung: name, objekt: neu, vorher: alt });
       return neu;
@@ -581,22 +714,37 @@ export function aufloesen(b: Bezug | undefined): Basis | undefined {
 
 /** Zeitstrahl eines Objekts (neueste zuerst) */
 export function zeitstrahl(b: Bezug): Ereignis[] {
+  // bei gleicher Zeit (in einem Rutsch geändert) zählt die Reihenfolge des Eintragens: Neuestes zuerst
   return db.ereignisse
     .where((e) => e.bezug.typ === b.typ && e.bezug.id === b.id)
-    .sort((a, z) => z.erstelltAm.localeCompare(a.erstelltAm));
+    .map((e, i) => [e, i] as const)
+    .sort(([a, ia], [z, iz]) => z.erstelltAm.localeCompare(a.erstelltAm) || iz - ia)
+    .map(([e]) => e);
 }
 
 /** Eigenen Eintrag in den Zeitstrahl schreiben (z. B. "Angebot versendet") */
 export function vermerken(bezug: Bezug, typ: string, text: string, datenZusatz?: unknown) {
-  db.ereignisse.create(
-    { typ, bezug, text, vonMitarbeiterId: aktuellerNutzer, daten: datenZusatz } as never,
+  const akteur = aktuellerAkteur();
+  const af = akteurFelder(akteur);
+  const e = db.ereignisse.create(
+    {
+      typ,
+      bezug,
+      text,
+      vonMitarbeiterId: af.vonMitarbeiterId,
+      daten: datenZusatz,
+      ...(akteur ? { quelle: af.quelle, akteurId: af.akteurId } : {}),
+    } as never,
     { leise: true },
   );
+  eintragGemerkt(e.id);
+  return e;
 }
 
 /** Alles zurücksetzen (Onboarding neu starten, Tests) */
 export function zuruecksetzen() {
   daten = {};
+  zuletztStill.clear();
   offen = new Map();
   allesOffen = true;
   syncBeobachter?.ersetzt?.();
@@ -610,6 +758,7 @@ export function exportieren(): Daten {
 
 export function importieren(d: Daten) {
   daten = d;
+  zuletztStill.clear();
   offen = new Map();
   allesOffen = true;
   syncBeobachter?.ersetzt?.();
