@@ -183,7 +183,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
       <Section tone="ink">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal">Macher erledigt</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Macher erledigt</p>
             <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl">
               Büroarbeit, die sich von selbst erledigt.
             </h2>
@@ -192,7 +192,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
             </p>
             <Link
               href="/funktionen/automatisch-erledigen"
-              className="mt-8 inline-flex items-center gap-1.5 font-bold text-signal underline decoration-2 underline-offset-4 hover:text-white"
+              className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
               So arbeitet Macher <Icon name="arrow-right" className="size-4" />
             </Link>
@@ -200,7 +200,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
           <ul className="grid gap-3 sm:grid-cols-2">
             {g.automatisch.map((a) => (
               <li key={a} className="flex items-center gap-3 rounded-lg bg-white/5 p-4 ring-1 ring-white/10">
-                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-signal/15 text-signal">
+                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent">
                   <Icon name="spark" className="size-5" />
                 </span>
                 <span className="font-semibold leading-snug">Macher {a}</span>

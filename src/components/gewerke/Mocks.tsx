@@ -94,7 +94,7 @@ export function GewerkPhoneMock({
           <span>100%</span>
         </div>
         <div className="space-y-3 p-4">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-muted">Nächster Einsatz · {einsatz.zeit}</p>
+          <p className="text-[0.7rem] font-semibold font-tagline uppercase tracking-wider text-muted">Nächster Einsatz · {einsatz.zeit}</p>
           <div className="rounded-lg bg-white p-4 shadow-sm ring-1 ring-line">
             <p className="font-display text-base font-bold leading-tight">{einsatz.titel}</p>
             <p className="mt-1 text-xs text-muted">{einsatz.kunde}</p>
