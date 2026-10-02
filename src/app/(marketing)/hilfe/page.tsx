@@ -1,3 +1,4 @@
+import { cta } from "@/lib/site";
 import Link from "next/link";
 import { HilfeSuche } from "@/components/hilfe/HilfeSuche";
 import { FinalCta, PageHero } from "@/components/sections";
@@ -70,7 +71,7 @@ export default function HilfePage() {
             />
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="/hilfe/schnellstart">Schnellstart ansehen</ButtonLink>
-              <ButtonLink href="/signup" variant="secondary">
+              <ButtonLink href={cta.primary.href} variant="secondary">
                 Direkt kostenlos starten
               </ButtonLink>
             </div>

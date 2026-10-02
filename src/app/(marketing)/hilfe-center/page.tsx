@@ -23,7 +23,7 @@ export default function HilfeCenterPage() {
         actions="none"
       >
         <div className="mt-8 max-w-2xl">
-          <HilfeSuche eintraege={hilfeSuchindex()} vorschlaege={["Angebot", "Passwort", "Datanorm", "Unterschrift"]} />
+          <HilfeSuche eintraege={hilfeSuchindex()} vorschlaege={["Angebot", "Daten sichern", "Datanorm", "Unterschrift"]} />
         </div>
       </PageHero>
 

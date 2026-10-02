@@ -1,3 +1,4 @@
+import { cta } from "@/lib/site";
 import { DemoExplorer } from "@/components/demo/DemoExplorer";
 import { PageHero, TrustRow } from "@/components/sections";
 import { ButtonLink, Container, Faq, FaqJsonLd, Icon, Section, SectionHeading, type FaqItem } from "@/components/ui";
@@ -61,7 +62,7 @@ export default function DemoPage() {
               Teste Macher OS kostenlos – eingerichtet für dein Gewerk, mit deinen Leistungen.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/signup" size="lg">
+              <ButtonLink href={cta.primary.href} size="lg">
                 Selbst kostenlos testen
               </ButtonLink>
               <ButtonLink href="/kontakt" variant="light" size="lg">
