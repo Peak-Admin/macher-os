@@ -1,3 +1,4 @@
+import { Objekt } from "@/components/ui/Objekt";
 import { Suspense } from "react";
 import { FinalCta, PageHero } from "@/components/sections";
 import { ArrowLink, ButtonLink, CheckList, Icon, Section, SectionHeading } from "@/components/ui";
@@ -30,6 +31,7 @@ export default function VorlagenHubPage() {
         title="Vorlagen, die auf der Baustelle funktionieren."
         intro="Kostenlos ansehen, ausdrucken oder als PDF speichern. Ohne Anmeldung. Und wenn du keine Zettel mehr willst: direkt in Macher OS verwenden."
         actions="none"
+        visual={<Objekt objekt="klemmbrett" sizes="(min-width: 1024px) 480px, 90vw" className="shadow-popover" />}
       />
 
       {/* 2.–6. Filter + Vorlagen, Checklisten, Formulare */}

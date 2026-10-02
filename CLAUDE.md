@@ -13,6 +13,11 @@ Für **jede** Oberfläche, jedes Mockup und jeden UI-Text gilt die UX- und Desig
 ([`docs/design/festlegungen.md`](docs/design/festlegungen.md)) gelten nur noch, wo die Spezifikation nichts sagt
 (z. B. Logo, Bildsprache, Markenauftakt). Leitsatz: „Das sieht ordentlich aus. Das verstehe ich. Damit kann ich arbeiten.“
 
+Bildsprache: **[`docs/design/visual-assets.md`](docs/design/visual-assets.md)** – „das digitale Werkzeug“. Echte Fotos von
+Handwerksobjekten (Register `src/lib/objekte.ts`; Website `<Objekt>`, Card-Prop `objekt`; Software `<MacherAsset>`, `Leer` zeigt
+automatisch ein passendes Objekt) als ruhige Ebene – ein starkes Objekt pro Karte, nie in Listen, Tabellen, Formularen.
+Fotos von Mission Mittelstand / Matthias Aumann nur mit Freigabe des Betreibers (siehe `missionMittelstandBilder`).
+
 Reihenfolge bei Zielkonflikten: 1. Aufgabe verstehen und erledigen · 2. Orientierung, Lesbarkeit, Fehlertoleranz ·
 3. konsistente, ruhige Gestaltung · 4. Markenwirkung und Dekoration.
 
