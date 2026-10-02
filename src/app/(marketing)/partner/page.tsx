@@ -31,6 +31,7 @@ export default function PartnerPage() {
   return (
     <>
       <PageHero
+        bild="seite/partner"
         eyebrow="Partner"
         title="Gemeinsam fürs Handwerk."
         intro="Ihr begleitet Handwerksbetriebe – als Steuerberater, Großhändler, Verband, Berater, Hersteller oder mit eurer eigenen Software? Dann lasst uns reden."
