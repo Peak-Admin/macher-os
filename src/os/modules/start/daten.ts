@@ -112,7 +112,7 @@ export async function sendenMitRueckfall(v: Versand, c: Cloud = cloud(), lokal: 
 export function versandText(r: SendeErgebnis, kanal: Versand['kanal'], was: string): string {
   const programm = kanal === 'sms' ? 'SMS-App' : kanal === 'whatsapp' ? 'WhatsApp' : 'Mailprogramm';
   if (r.status === 'gesendet') return `${was} ist raus.`;
-  if (r.status === 'geoeffnet') return `${r.rueckfall ? 'Der Versand über Macher hat nicht geklappt. ' : ''}${kanal === 'email' ? 'Dein' : 'Deine'} ${programm} ist offen – drück dort auf Senden.`;
+  if (r.status === 'geoeffnet') return `${r.rueckfall ? `Der Versand über Macher hat nicht geklappt${r.fehler ? ` (${r.fehler})` : ''}. ` : ''}${kanal === 'email' ? 'Dein' : 'Deine'} ${programm} ist offen – drück dort auf Senden.`;
   return `${was} konnte nicht gesendet werden${r.fehler ? `: ${r.fehler}` : '.'}`;
 }
 

@@ -9,7 +9,8 @@ import { datum, euro } from '@core/format';
 import type { ID, Position } from '@core/objects';
 import { kundenLink } from '@modules/angebote/erstwert';
 import { dokumentVersendet, sendenMitRueckfall, type SendeErgebnis } from '@modules/start/daten';
-import { ART_LABEL, betrieb, festschreiben, freieRechnung, rechnungErstellen, rechnungsSummen, type Mangel } from './logik';
+import { absenderVon, dokumentHtml, zeilenAus } from '@modules/start/emailHtml';
+import { ART_LABEL, betrieb, festschreiben, freieRechnung, pflichtTexte, rechnungErstellen, rechnungsSummen, type Mangel } from './logik';
 import { rechnungAendern, type RechnungX } from './typen';
 import { xrechnungFuer } from './xrechnung';
 
@@ -45,6 +46,38 @@ export function rechnungNachricht(r: RechnungX, kanal: Versand['kanal']): { betr
   };
 }
 
+/** Die Rechnung direkt in der E-Mail – mit Pflichttexten, Fälligkeit und Bankverbindung */
+export function rechnungHtml(r: RechnungX, link?: string): string {
+  const b = betrieb();
+  const k = db.kunden.get(r.kundeId);
+  const s = rechnungsSummen(r);
+  return dokumentHtml({
+    betrieb: b,
+    titel: `${ART_LABEL[r.art]} ${r.nummer}`,
+    daten: [
+      ['Rechnungsdatum', datum(r.datum)],
+      ['Leistung', r.leistungszeitraum ?? ''],
+      ['Fällig am', datum(r.faelligAm)],
+    ],
+    absaetze: [`Guten Tag${k?.art === 'privat' ? ' ' + k.name : ''},`, 'vielen Dank für Ihren Auftrag. Wir berechnen folgende Leistungen:'],
+    zeilen: zeilenAus(r.positionen),
+    summen: [
+      ['Netto', euro(s.netto)],
+      ...(b?.kleinunternehmer ? [] : ([[`USt ${s.ustSatz} %`, euro(s.ust)]] as [string, string][])),
+      ...s.abzuege.map((x) => [`abzüglich ${x.nummer}`, euro(-x.brutto)] as [string, string]),
+      ['Zahlbetrag', euro(s.zahlbetrag), true],
+    ],
+    link: link ? { label: 'Rechnung online ansehen', url: link } : undefined,
+    schluss: [
+      `Bitte überweisen Sie ${euro(s.zahlbetrag)} bis zum ${datum(r.faelligAm)}${b?.iban ? ` auf das Konto ${b.iban}` : ''}, Verwendungszweck ${r.nummer}.`,
+      ...pflichtTexte(r, b, k),
+      'Die E-Rechnung (XRechnung) hängt an dieser E-Mail.',
+      'Mit freundlichen Grüßen',
+      b?.name ?? '',
+    ],
+  });
+}
+
 /** Festschreiben und senden. Fehlen Pflichtangaben, wird nichts festgeschrieben und nichts gesendet. */
 export async function rechnungSenden(id: ID, an: string, kanal: Versand['kanal'], opts: { sekunden?: number } = {}): Promise<{ r: SendeErgebnis; maengel?: Mangel[]; rechnung?: RechnungX }> {
   const f = festschreiben(id, { weg: kanal === 'email' ? 'email' : 'selbst' });
@@ -53,12 +86,15 @@ export async function rechnungSenden(id: ID, an: string, kanal: Versand['kanal']
   const { betreff, text } = rechnungNachricht(rechnung, kanal);
   const xml = xrechnungFuer(rechnung);
   const bezug = { typ: 'rechnungen', id } as const;
+  const link = kundenLink(rechnung.kundeId);
   const r = await sendenMitRueckfall({
     an: an.trim(),
     kanal,
     betreff,
     text,
-    link: kundenLink(rechnung.kundeId),
+    link,
+    html: kanal === 'email' ? rechnungHtml(rechnung, link) : undefined,
+    absender: absenderVon(betrieb()),
     anhaenge: [{ name: `${rechnung.nummer}_XRechnung.xml`, url: `data:application/xml;charset=utf-8,${encodeURIComponent(xml)}`, mime: 'application/xml' }],
     bezug,
   });
