@@ -36,11 +36,20 @@ export default function MacherOs() {
   const [fehler, setFehler] = useState(false);
 
   useEffect(() => {
+    // Der Markenauftakt (src/components/auftakt) wartet auf dieses Signal – auch im Fehlerfall, damit die Meldung sichtbar wird.
+    const melden = () => {
+      document.documentElement.dataset.osBereit = 'ja';
+      window.dispatchEvent(new Event('macher-os:bereit')); // = OS_BEREIT_EREIGNIS
+    };
     starte().then(
-      () => setBereit(true),
+      () => {
+        setBereit(true);
+        melden();
+      },
       (e) => {
         console.error('Macher OS konnte nicht starten', e);
         setFehler(true);
+        melden();
       },
     );
   }, []);

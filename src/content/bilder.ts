@@ -386,3 +386,32 @@ export const gewerkBildnachweise: Partial<Record<TopGewerkSlug | GewerkClusterSl
     lizenzUrl: "https://www.pexels.com/license/",
   },
 };
+
+/** Bilder des Markenauftakts (Preloader beim ersten Besuch, `src/components/auftakt/`). */
+export const auftaktBilder: Bildnachweis[] = [
+  {
+    src: "/auftakt/wald.webp",
+    alt: "Nebliger Nadelwald (Hintergrund des Markenauftakts)",
+    fotograf: "Daniel Rauber",
+    quelle: "Unsplash",
+    quelleUrl: "https://unsplash.com/photos/forest-with-thick-fog-wOWEyyoFEyU",
+    lizenz: "Unsplash License",
+    lizenzUrl: "https://unsplash.com/license",
+  },
+  {
+    src: "/auftakt/unterschrift.webp",
+    alt: "Unterschrift von Matthias Aumann",
+    fotograf: "Matthias Aumann",
+    quelle: "matthias-aumann.de",
+    quelleUrl: "https://www.matthias-aumann.de",
+    lizenz: "© Matthias Aumann",
+  },
+  {
+    src: "/auftakt/logo-mm-ma.webp",
+    alt: "Logo Mission Mittelstand und Matthias Aumann",
+    fotograf: "Mission Mittelstand",
+    quelle: "mission-mittelstand.de",
+    quelleUrl: "https://www.mission-mittelstand.de",
+    lizenz: "© Mission Mittelstand GmbH",
+  },
+];
