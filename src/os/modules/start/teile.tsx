@@ -10,6 +10,7 @@ import { Auswahl, Button, Eingabe, IconButton, ListenZeile, Liste, Meldung, Meta
 import { positionAusLeistung } from '@modules/angebote/daten';
 import { kiModus, positionenAusText } from '@modules/angebote/erstwert';
 import { EINHEITEN } from '@modules/angebote/Positionen';
+import { PositionenVorschlag, type VorschlagQuelle } from '@modules/angebote/PositionenVorschlag';
 import { kontaktArt } from './daten';
 import './start.css';
 
@@ -206,8 +207,13 @@ export function useSprache(onFertig: (text: string) => void) {
  * Positionen per Suche oder Sprache. Ein Feld für alles: tippen zeigt Treffer aus dem Katalog,
  * „Übernehmen“ (oder Enter, oder Diktat) baut aus dem ganzen Satz Positionen mit Katalogpreisen.
  */
-export function PositionenSchnell({ positionen, onChange }: { positionen: Position[]; onChange: (p: Position[]) => void }) {
+/**
+ * `vorschlag`: Der Satz („Bad 8 m² fliesen, alte Fliesen raus, 2 Tage …“) wird erst ein Vorschlag, den du übernimmst
+ * oder verwirfst – statt sofort in der Liste zu landen (Angebot).
+ */
+export function PositionenSchnell({ positionen, onChange, vorschlag: alsVorschlag }: { positionen: Position[]; onChange: (p: Position[]) => void; vorschlag?: boolean }) {
   const [text, setText] = useState('');
+  const [vorschlag, setVorschlag] = useState<{ positionen: Position[]; quelle: VorschlagQuelle }>();
   const [laedt, setLaedt] = useState(false);
   const [meldung, setMeldung] = useState<{ ton: 'erfolg' | 'achtung' | 'neutral'; text: string }>();
   const [ki, setKi] = useState<'ki' | 'demo' | 'aus'>('aus');
@@ -228,6 +234,11 @@ export function PositionenSchnell({ positionen, onChange }: { positionen: Positi
       const { positionen: neu, quelle } = await positionenAusText(satz);
       if (!neu.length) {
         setMeldung({ ton: 'achtung', text: 'Daraus konnte Macher keine Position bauen. Versuch es mit „Menge, Leistung“, z. B. „zwei Steckdosen setzen“.' });
+        return;
+      }
+      if (alsVorschlag) {
+        setVorschlag({ positionen: neu, quelle });
+        setMeldung(undefined);
         return;
       }
       onChange([...positionen, ...neu]);
@@ -262,7 +273,7 @@ export function PositionenSchnell({ positionen, onChange }: { positionen: Positi
     <Stapel abstand={12}>
       <div className="mm-schnell-eingabe">
         <Eingabe
-          label={sprache.verfuegbar ? 'Was soll rein? Sag es oder tipp es' : 'Was soll rein?'}
+          label={alsVorschlag ? (sprache.verfuegbar ? 'Beschreib kurz, was gemacht wird – sag es oder tipp es' : 'Beschreib kurz, was gemacht wird') : sprache.verfuegbar ? 'Was soll rein? Sag es oder tipp es' : 'Was soll rein?'}
           value={sprache.an ? sprache.zwischen : text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
@@ -271,7 +282,7 @@ export function PositionenSchnell({ positionen, onChange }: { positionen: Positi
               void uebernehmen();
             }
           }}
-          placeholder="z. B. zwei Steckdosen setzen, zehn Meter Leitung, Anfahrt"
+          placeholder={alsVorschlag ? 'z. B. Bad 8 m² fliesen, alte Fliesen raus, 2 Tage, Material ca. 900 €' : 'z. B. zwei Steckdosen setzen, zehn Meter Leitung, Anfahrt'}
           autoComplete="off"
           enterKeyHint="done"
         />
@@ -281,7 +292,7 @@ export function PositionenSchnell({ positionen, onChange }: { positionen: Positi
           </Button>
         )}
         <Button variante="sekundaer" icon={ki === 'aus' ? 'plus' : 'macher'} onClick={() => void uebernehmen()} laedt={laedt} laedtText="Macher erkennt …" disabled={!text.trim()}>
-          {ki === 'aus' ? 'Übernehmen' : 'Erkennen'}
+          {alsVorschlag ? 'Vorschlagen' : ki === 'aus' ? 'Übernehmen' : 'Erkennen'}
         </Button>
       </div>
       {ki === 'demo' && (
@@ -300,6 +311,17 @@ export function PositionenSchnell({ positionen, onChange }: { positionen: Positi
             </Button>
           ))}
         </div>
+      )}
+      {vorschlag && (
+        <PositionenVorschlag
+          {...vorschlag}
+          onUebernehmen={() => {
+            onChange([...positionen, ...vorschlag.positionen]);
+            setVorschlag(undefined);
+            setText('');
+          }}
+          onVerwerfen={() => setVorschlag(undefined)}
+        />
       )}
       {meldung && <Meldung ton={meldung.ton}>{meldung.text}</Meldung>}
       {!leistungen.length && <Meta>Dein Leistungskatalog ist noch leer. Positionen ohne Katalog bekommen keinen Preis – den trägst du dann selbst ein.</Meta>}

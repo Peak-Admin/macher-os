@@ -125,6 +125,11 @@ export interface AbsichtDef<A = unknown> {
   /** Auffang-Absicht, wenn nichts anderes passt (z. B. Suche) */
   auffang?: boolean;
   /**
+   * Nur gezielt erreichbar: `frage(text, k, { absicht: id })` aus einem Formular (z. B. „Positionen vorschlagen“).
+   * Freie Sätze (Regeln, Jev) landen nie hier.
+   */
+  direkt?: boolean;
+  /**
    * Minimum Necessary Context: nur diese Daten bekommt ein Modell zu sehen.
    * Ohne Angabe bekommt ein Modell keinen Unternehmenskontext.
    */
@@ -352,12 +357,29 @@ async function verstehe(text: string, absichten: AbsichtDef[], k: GatewayKontext
   return auffang ? { absicht: auffang.id, sicherheit: 0, lane: 0 } : undefined;
 }
 
-/** Eine Eingabe beantworten. Führt nie selbst etwas aus – Aktionen kommen als Vorschlag zurück. */
-export async function frage<A = unknown>(text: string, k: GatewayKontext): Promise<GatewayAntwort<A>> {
+/** Gezielte Absicht (`direkt`): kein Raten, die Regel liefert höchstens Werte. */
+function gezielt(id: string, text: string, absichten: AbsichtDef[], k: GatewayKontext): Erkennung | undefined {
+  const a = absichten.find((x) => x.id === id);
+  if (!a) return undefined;
+  const r = a.erkenne?.(text, k);
+  return { absicht: a.id, sicherheit: 1, lane: 0, werte: r && typeof r === 'object' ? r.werte : undefined };
+}
+
+/**
+ * Eine Eingabe beantworten. Führt nie selbst etwas aus – Aktionen kommen als Vorschlag zurück.
+ * `opt.absicht`: gezielt diese Absicht beantworten (für `direkt`-Absichten aus Formularen).
+ */
+export async function frage<A = unknown>(text: string, k: GatewayKontext, opt: { absicht?: string } = {}): Promise<GatewayAntwort<A>> {
   const kanal = k.kanal ?? 'text';
   const basis = { mitarbeiterId: k.ich?.id, kanal, eingabe: text };
   const absichten = alleAbsichten();
-  const e = await verstehe(text, absichten, k);
+  const e = opt.absicht
+    ? gezielt(opt.absicht, text, absichten, k)
+    : await verstehe(
+        text,
+        absichten.filter((a) => !a.direkt),
+        k,
+      );
   const def = e && (absichten.find((a) => a.id === e.absicht) as AbsichtDef<A> | undefined);
 
   if (!e || !def) {
