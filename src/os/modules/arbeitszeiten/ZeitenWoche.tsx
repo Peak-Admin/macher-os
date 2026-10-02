@@ -5,6 +5,7 @@ import { datum, datumKurz, heute, kalenderwoche, personName, plusTage, wochenSta
 import type { Datum, ID, Mitarbeiter, Zeiteintrag } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
 import { Auswahl, Button, Filter, IconButton, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { Person } from '@ui/person';
 import { abwesenheitAm, ART_LABEL as ABW_LABEL } from '@modules/abwesenheiten/daten';
 import { offeneAntraege } from '@modules/abwesenheiten/logik';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
@@ -193,7 +194,7 @@ function TeamWoche({ montag, team, onFreigeben, onPerson }: { montag: Datum; tea
         schluessel={(z) => z.m.id}
         onZeile={(z) => onPerson(z.m.id)}
         spalten={[
-          { titel: 'Mitarbeiter', wert: (z) => personName(z.m), sortierWert: (z) => z.m.vorname },
+          { titel: 'Mitarbeiter', wert: (z) => <Person m={z.m} />, sortierWert: (z) => z.m.vorname },
           { titel: 'Ist', wert: (z) => stunden(z.w.ist), zahl: true, sortierWert: (z) => z.w.ist },
           { titel: 'Soll bis heute', wert: (z) => stunden(z.w.soll), zahl: true, nebensaechlich: true },
           { titel: 'Differenz', wert: (z) => saldoText(z.w.ist - z.w.soll), zahl: true, sortierWert: (z) => z.w.ist - z.w.soll },

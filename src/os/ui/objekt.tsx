@@ -10,6 +10,7 @@ import { oeffne } from '@core/overlay';
 import { datum, personName, relativ, uhrzeit } from '@core/format';
 import type { Bezug, ID, SammlungsName } from '@core/objects';
 import { Auswahl, Button, Filter, Leer, Liste, ListenZeile, Meta, Tabs, type ButtonProps, type MenueAktion } from './index';
+import { Person } from './person';
 
 /**
  * Lokale Bereiche je Objekttyp: höchstens vier Bereiche, darin höchstens vier Teile,
@@ -198,7 +199,17 @@ export function Zeitstrahl({ bezug, max = 20 }: { bezug: Bezug; max?: number }) 
         <ListenZeile
           key={e.id}
           titel={e.text}
-          untertitel={`${relativ(e.erstelltAm)}, ${uhrzeit(e.erstelltAm)}${e.vonMitarbeiterId ? ' · ' + personName(db.mitarbeiter.get(e.vonMitarbeiterId)) : ''}`}
+          untertitel={
+            <>
+              {relativ(e.erstelltAm)}, {uhrzeit(e.erstelltAm)}
+              {e.vonMitarbeiterId && (
+                <>
+                  {' · '}
+                  <Person m={e.vonMitarbeiterId} />
+                </>
+              )}
+            </>
+          }
         />
       ))}
     </Liste>

@@ -6,6 +6,7 @@ import { pfadZu } from '@core/modul';
 import { datum, euro, personName, zahl } from '@core/format';
 import type { ID } from '@core/objects';
 import { Abschnitt, Kennzahl, Leer, Liste, ListenZeile, Meldung, Raster, Stapel, Tabelle } from '@ui/index';
+import { Person } from '@ui/person';
 import { stundenText } from './basis';
 import { auftragKosten } from './daten';
 import { NurMitGeld, useBasis } from './gemeinsam';
@@ -102,6 +103,6 @@ export function KostenAuftrag({ id, mitNachkalkulation }: { id: ID; mitNachkalku
 function MitarbeiterLink({ id }: { id: ID }) {
   const m = db.mitarbeiter.get(id);
   const p = pfadZu({ typ: 'mitarbeiter', id });
-  const name = m ? personName(m) : 'Unbekannt';
-  return p ? <Link to={p}>{name}</Link> : <>{name}</>;
+  const name = <Person m={m}>{m ? personName(m) : 'Unbekannt'}</Person>;
+  return p ? <Link to={p}>{name}</Link> : name;
 }

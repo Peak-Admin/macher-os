@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
-import { datum, personName, zahl } from '@core/format';
+import { datum, zahl } from '@core/format';
 import { Filter, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status } from '@ui/index';
+import { Person } from '@ui/person';
 import { ART_LABEL, lagerbewegungen, lagerortName, summenWirkung, type Lagerbewegung } from './daten';
 
 type F = 'alle' | Lagerbewegung['art'];
@@ -26,7 +27,18 @@ export function Bewegungen() {
                 key={b.id}
                 to={a ? `/betrieb/katalog/material/${a.id}` : undefined}
                 titel={`${ART_LABEL[b.art]}: ${a?.name ?? 'Unbekannter Artikel'}`}
-                untertitel={[datum(b.datum), weg, b.mitarbeiterId ? personName(db.mitarbeiter.get(b.mitarbeiterId)) : null, auftrag?.nummer, b.notiz].filter(Boolean).join(' · ')}
+                untertitel={
+                  <>
+                    {[datum(b.datum), weg].join(' · ')}
+                    {b.mitarbeiterId && (
+                      <>
+                        {' · '}
+                        <Person m={b.mitarbeiterId} groesse={20} />
+                      </>
+                    )}
+                    {[auftrag?.nummer, b.notiz].filter(Boolean).map((x) => ` · ${x}`)}
+                  </>
+                }
                 rechts={
                   b.art === 'umbuchung' ? (
                     <Status>

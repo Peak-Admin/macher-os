@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { benachrichtigen } from '@core/macher';
-import { datum, heute, personName } from '@core/format';
+import { datum, heute } from '@core/format';
 import type { ID, Rolle } from '@core/objects';
 import { ROLLEN, istBuero, useIch } from '@core/session';
 import { Auswahl, Button, Checkbox, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, Zeile, ZweiSpalten, useToast } from '@ui/index';
 import { Zeitstrahl } from '@ui/objekt';
+import { Person } from '@ui/person';
 import { sortiert } from '@modules/mitarbeiter/team';
 import { bestaetigen, brauchtBestaetigung, offeneFuer, stand, standAnzeige, unterweisungen, zielgruppe, type Unterweisung } from './daten';
 
@@ -238,7 +239,7 @@ export function UnterweisungDetail() {
                   schluessel={(m) => m.id}
                   leer={<Leer titel="Niemand in dieser Zielgruppe" text="Prüf, für welche Rollen die Unterweisung gilt." icon="team" />}
                   spalten={[
-                    { titel: 'Mitarbeiter', wert: (m) => personName(m), sortierWert: (m) => m.vorname },
+                    { titel: 'Mitarbeiter', wert: (m) => <Person m={m} />, sortierWert: (m) => m.vorname },
                     {
                       titel: 'Stand',
                       wert: (m) => {

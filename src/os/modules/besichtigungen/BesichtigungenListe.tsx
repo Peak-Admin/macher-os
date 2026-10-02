@@ -1,7 +1,8 @@
 import { db, useDatenstand } from '@core/db';
-import { datumKurz, personName, uhrzeit } from '@core/format';
+import { datumKurz, uhrzeit } from '@core/format';
 import type { Auftrag, Termin } from '@core/objects';
 import { Abschnitt, BeispielMarke, Button, Leer, Liste, ListenZeile, Seite, Stapel, Status } from '@ui/index';
+import { Personen } from '@ui/person';
 import { besichtigungenVon, istBesichtigung } from './daten';
 
 function TerminZeile({ t }: { t: Termin }) {
@@ -17,7 +18,18 @@ function TerminZeile({ t }: { t: Termin }) {
           {t.titel.replace(/^Besichtigung: /, '')} <BeispielMarke zeigen={t.beispiel} />
         </>
       }
-      untertitel={[`${datumKurz(t.start)}, ${uhrzeit(t.start)} Uhr`, k?.name, o?.adresse.ort, t.mitarbeiterIds.map((m) => personName(db.mitarbeiter.get(m))).join(', '), fotos ? `${fotos} Doku` : null].filter(Boolean).join(' · ')}
+      untertitel={
+        <>
+          {[`${datumKurz(t.start)}, ${uhrzeit(t.start)} Uhr`, k?.name, o?.adresse.ort].filter(Boolean).join(' · ')}
+          {t.mitarbeiterIds.length > 0 && (
+            <>
+              {' · '}
+              <Personen ids={t.mitarbeiterIds} namen />
+            </>
+          )}
+          {fotos ? ` · ${fotos} Doku` : null}
+        </>
+      }
       rechts={t.status === 'erledigt' ? <Status ton="erfolg">Erledigt</Status> : t.ende < jetzt ? <Status ton="achtung">Ergebnis fehlt</Status> : t.start.slice(0, 10) === jetzt.slice(0, 10) ? <Status ton="aktiv">Heute</Status> : <Status>Geplant</Status>}
     />
   );

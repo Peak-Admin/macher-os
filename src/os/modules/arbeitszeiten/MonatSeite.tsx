@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
-import { datum, heute, personName, plusMonate } from '@core/format';
+import { datum, heute, plusMonate } from '@core/format';
 import { istBuero, useDarf, useIch } from '@core/session';
 import { AktionsMenue, Button, IconButton, Kennzahl, Leer, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { Person } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { csvExport, herunterladen, saldoText, stunden } from './daten';
 import { freigabeZuruecknehmen, freigeben, lohnCsv, monatsAuswertung, monatsGrenzen } from './regelwerk';
@@ -137,7 +138,7 @@ export function MonatSeite() {
             zeilenLink={(z) => `/betrieb/arbeitszeiten/woche?ma=${z.m.id}&datum=${grenzen.von}`}
             leer={<Leer titel="Noch niemand im Team" text="Lege zuerst Mitarbeiter an." icon="team" aktion={<Button to="/betrieb/mitarbeiter/neu">Mitarbeiter anlegen</Button>} />}
             spalten={[
-              { titel: 'Mitarbeiter', wert: (z) => personName(z.m), sortierWert: (z) => z.m.vorname },
+              { titel: 'Mitarbeiter', wert: (z) => <Person m={z.m} />, sortierWert: (z) => z.m.vorname },
               { titel: 'Soll', wert: (z) => stunden(z.w.soll), zahl: true, nebensaechlich: true },
               { titel: 'Gearbeitet', wert: (z) => stunden(z.w.gearbeitet), zahl: true, nebensaechlich: true, sortierWert: (z) => z.w.gearbeitet },
               { titel: 'Fahrt', wert: (z) => stunden(z.w.jeArt.fahrt), zahl: true, nebensaechlich: true },

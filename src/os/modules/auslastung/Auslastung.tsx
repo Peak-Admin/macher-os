@@ -2,6 +2,7 @@
 import { db, useDatenstand } from '@core/db';
 import { datumKurz, heute, kalenderwoche, personName, zahl } from '@core/format';
 import { Karte, Kennzahl, Leer, Liste, ListenZeile, Meta, Raster, Seite, Stapel, Status, Tabelle, Button } from '@ui/index';
+import { Person, Personen } from '@ui/person';
 import { useSchmal } from '../kalender/hooks';
 import { kontextAusDb } from '../verfuegbarkeit/daten';
 import { auslastung, teamWoche, type MitarbeiterAuslastung, type WochenWert } from './daten';
@@ -53,13 +54,13 @@ export function AuslastungSeite() {
           </Raster>
           {ueberlast.length > 0 && (
             <Meta>
-              Überlastet in den nächsten 2 Wochen: {ueberlast.map((m) => name(m.mitarbeiterId)).join(', ')}. Verteile Einsätze in der Plantafel um.
+              Überlastet in den nächsten 2 Wochen: <Personen ids={ueberlast.map((m) => m.mitarbeiterId)} namen />. Verteile Einsätze in der Plantafel um.
             </Meta>
           )}
           {schmal ? (
             <Stapel>
               {daten.map((m) => (
-                <Karte key={m.mitarbeiterId} titel={name(m.mitarbeiterId)} kompakt>
+                <Karte key={m.mitarbeiterId} titel={<Person m={m.mitarbeiterId} groesse={32} />} kompakt>
                   <Liste>
                     {m.wochen.map((w, i) => (
                       <ListenZeile key={w.wochenStart} titel={wochenTitel(w.wochenStart, i)} untertitel={`ab ${datumKurz(w.wochenStart)}`} rechts={<Zelle w={w} />} />
@@ -74,7 +75,7 @@ export function AuslastungSeite() {
               schluessel={(m) => m.mitarbeiterId}
               zeilenLink={() => '/plan/einsatzplanung'}
               spalten={[
-                { titel: 'Mitarbeiter', wert: (m) => name(m.mitarbeiterId), sortierWert: (m) => name(m.mitarbeiterId) },
+                { titel: 'Mitarbeiter', wert: (m) => <Person m={m.mitarbeiterId} />, sortierWert: (m) => name(m.mitarbeiterId) },
                 ...wochen.map((w, i) => ({
                   titel: `${wochenTitel(w, i)} (ab ${datumKurz(w).split(', ')[1]})`,
                   wert: (m: MitarbeiterAuslastung) => <Zelle w={m.wochen[i]} />,

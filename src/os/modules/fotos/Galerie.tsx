@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { db } from '@core/db';
 import { pfadZu } from '@core/modul';
-import { datum, personName, relativ, uhrzeit } from '@core/format';
+import { datum, relativ, uhrzeit } from '@core/format';
 import type { Dokument, ID } from '@core/objects';
 import {
   BeispielMarke,
@@ -20,6 +20,7 @@ import {
   Zeile,
   useToast,
 } from '@ui/index';
+import { Person } from '@ui/person';
 import { FOTO_TAGS, fotosGefiltert, istFoto, istNotizOderSprache } from './daten';
 import { FotoErfassen, NotizErfassen, SpracheErfassen } from './Erfassen';
 
@@ -114,7 +115,12 @@ function Vollbild({ d, position, zurueck, weiter, schliessen, mitAuftrag }: { d:
         {d.text && <p>{d.text}</p>}
         <Meta>
           {datum(d.erstelltAm)}, {uhrzeit(d.erstelltAm)}
-          {d.erstelltVon ? ` · ${personName(db.mitarbeiter.get(d.erstelltVon))}` : ''}
+          {d.erstelltVon && (
+            <>
+              {' · '}
+              <Person m={d.erstelltVon} groesse={20} />
+            </>
+          )}
           {mitAuftrag && auftrag ? ` · ${auftrag.nummer} ${auftrag.titel}` : ''}
           <BeispielMarke zeigen={d.beispiel} />
         </Meta>
@@ -138,7 +144,18 @@ export function NotizListe({ eintraege, mitAuftrag }: { eintraege: Dokument[]; m
                 {d.titel} <BeispielMarke zeigen={d.beispiel} />
               </>
             }
-            untertitel={[relativ(d.erstelltAm) + ', ' + uhrzeit(d.erstelltAm), d.erstelltVon ? personName(db.mitarbeiter.get(d.erstelltVon)) : null, a ? a.nummer : null].filter(Boolean).join(' · ')}
+            untertitel={
+              <>
+                {relativ(d.erstelltAm)}, {uhrzeit(d.erstelltAm)}
+                {d.erstelltVon && (
+                  <>
+                    {' · '}
+                    <Person m={d.erstelltVon} groesse={20} />
+                  </>
+                )}
+                {a ? ` · ${a.nummer}` : ''}
+              </>
+            }
             rechts={
               d.art === 'sprache' ? (
                 <Status icon={false}>{d.text ? 'Sprachnotiz' : 'Sprachnotiz, nur Audio'}</Status>

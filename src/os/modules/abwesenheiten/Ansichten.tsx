@@ -7,6 +7,7 @@ import type { Abwesenheit, AbwesenheitsArt, ID } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
 import { BeispielMarke, Button, Filter, Karte, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Tabs, Zeile, ZweiSpalten, useToast } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
+import { Person, Personenbild } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { ART_LABEL, STATUS_LABEL, arbeitstage, kollisionen, tageImJahr, tageText, urlaubskonto, zeitraumText } from './daten';
 import { AbwesenheitForm } from './AbwesenheitForm';
@@ -40,6 +41,7 @@ export function AbwesenheitZeile({ a, mitName = true }: { a: Abwesenheit; mitNam
   return (
     <ListenZeile
       to={artSichtbar ? `/betrieb/abwesenheiten/${a.id}` : undefined}
+      links={mitName ? <Personenbild m={m} groesse={40} /> : undefined}
       titel={
         <>
           {mitName ? `${personName(m)} · ` : ''}
@@ -68,7 +70,7 @@ export function AntragKarte({ a }: { a: Abwesenheit }) {
     toast(ja ? `${ART_LABEL[a.art]} genehmigt. ${m?.vorname} bekommt Bescheid.` : 'Abgelehnt. Der Mitarbeiter bekommt Bescheid.');
   };
   return (
-    <Karte kompakt titel={`${personName(m)} · ${ART_LABEL[a.art]}`} oberzeile={zeitraumText(a)}>
+    <Karte kompakt titel={<Person m={m} groesse={32}>{`${personName(m)} · ${ART_LABEL[a.art]}`}</Person>} oberzeile={zeitraumText(a)}>
       <Stapel abstand={8}>
         <Meta>
           {tageText(tage)}
@@ -215,7 +217,7 @@ export function JahrSeite() {
         zeilenLink={(z) => `/betrieb/mitarbeiter/${z.m.id}`}
         leer={<Leer titel="Noch niemand im Team" icon="team" />}
         spalten={[
-          { titel: 'Mitarbeiter', wert: (z) => personName(z.m), sortierWert: (z) => z.m.vorname },
+          { titel: 'Mitarbeiter', wert: (z) => <Person m={z.m} />, sortierWert: (z) => z.m.vorname },
           { titel: 'Anspruch', wert: (z) => z.k.anspruch, zahl: true, nebensaechlich: true },
           { titel: 'Genehmigt', wert: (z) => String(z.k.genehmigt).replace('.', ','), zahl: true, nebensaechlich: true },
           { titel: 'Beantragt', wert: (z) => String(z.k.beantragt).replace('.', ','), zahl: true, nebensaechlich: true },
@@ -349,7 +351,9 @@ export function AbwesenheitDetail() {
                 {a.art === 'urlaub' && konto && <Meta>Resturlaub {jahr}: {String(konto.rest).replace('.', ',')} Tage</Meta>}
                 {a.notiz && <Meta>Notiz: {a.notiz}</Meta>}
                 <Meta>
-                  <ObjektLink bezug={{ typ: 'mitarbeiter', id: a.mitarbeiterId }}>Zu {m?.vorname ?? 'Mitarbeiter'}</ObjektLink>
+                  <ObjektLink bezug={{ typ: 'mitarbeiter', id: a.mitarbeiterId }}>
+                    <Person m={m}>Zu {m?.vorname ?? 'Mitarbeiter'}</Person>
+                  </ObjektLink>
                 </Meta>
               </Stapel>
             </Karte>

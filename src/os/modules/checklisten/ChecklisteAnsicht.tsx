@@ -1,7 +1,8 @@
 import { db } from '@core/db';
 import { useIch } from '@core/session';
-import { personName, relativ } from '@core/format';
+import { relativ } from '@core/format';
 import { Checkbox, Fortschritt, Liste, ListenZeile, Meta, Stapel, Status, Zeile } from '@ui/index';
+import { Person } from '@ui/person';
 import { punktOffen, punktSetzen, stand, type Checkliste, type PunktStand } from './daten';
 import { FotoKnopf } from '@modules/fotos/FotoKnopf';
 
@@ -34,7 +35,19 @@ function PunktZeile({ c, p }: { c: Checkliste; p: PunktStand }) {
     <ListenZeile
       links={<Checkbox label={<span className="sr-only">{p.text}</span>} checked={p.erledigt} onChange={(v) => punktSetzen(c.id, p.id, { erledigt: v }, ich?.id)} />}
       titel={<span style={{ textDecoration: p.erledigt && !punktOffen(p) ? 'line-through' : undefined }}>{p.text}</span>}
-      untertitel={p.erledigt && p.erledigtAm ? `${relativ(p.erledigtAm)}${wer ? ` · ${personName(wer)}` : ''}` : undefined}
+      untertitel={
+        p.erledigt && p.erledigtAm ? (
+          <>
+            {relativ(p.erledigtAm)}
+            {wer && (
+              <>
+                {' · '}
+                <Person m={wer} />
+              </>
+            )}
+          </>
+        ) : undefined
+      }
       rechts={
         <Zeile abstand={8}>
           {p.pflicht && !p.erledigt && <Status ton="neutral" icon={false}>Pflicht</Status>}

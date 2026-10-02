@@ -1,11 +1,12 @@
 /** Kalender: Tag / Woche / Monat am Rechner, Agenda-Liste am Handy. Filter nach Mitarbeiter. */
-import { useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
-import { datumKurz, heute, initialen, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart } from '@core/format';
+import { datumKurz, heute, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart } from '@core/format';
 import { useIch, istBuero } from '@core/session';
 import type { Datum, Termin } from '@core/objects';
 import { Auswahl, Button, IconButton, Leer, Liste, ListenZeile, Meta, Segmente, Seite, Stapel, Status } from '@ui/index';
+import { Person, Personen } from '@ui/person';
 import { kontextAusDb, terminKonflikte, anwesenheit } from '../verfuegbarkeit/daten';
 import { monatsAnfang, terminAmTag, termineIm, TERMINART_LABEL, TERMINSTATUS } from './daten';
 import { useSchmal } from './hooks';
@@ -128,7 +129,7 @@ export function Kalender() {
 // ------------------------------------------------------------------ Bausteine
 
 export function TerminKachel({ t, konflikt, zeigeTag }: { t: Termin; konflikt?: boolean; zeigeTag?: boolean }) {
-  const ma = t.mitarbeiterIds.map((id) => db.mitarbeiter.get(id)).filter(Boolean);
+  const ma = t.mitarbeiterIds.map((id) => db.mitarbeiter.get(id)).filter((m): m is NonNullable<typeof m> => !!m);
   const kunde = db.kunden.get(t.kundeId);
   const st = TERMINSTATUS[t.status];
   return (
@@ -143,7 +144,7 @@ export function TerminKachel({ t, konflikt, zeigeTag }: { t: Termin; konflikt?: 
       </span>
       <strong>{t.titel}</strong>
       {kunde && <span className="mm-meta">{kunde.name}</span>}
-      <span className="mm-meta">{ma.length ? ma.map((m) => initialen(m)).join(', ') : 'Noch niemand eingeplant'}</span>
+      {ma.length ? <Personen ids={ma} groesse={20} max={3} /> : <span className="mm-meta">Noch niemand eingeplant</span>}
       {(konflikt || t.status !== 'geplant' || t.selbstGebucht) && (
         <span style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
           {konflikt && <Status ton="achtung">Konflikt</Status>}
@@ -158,8 +159,12 @@ export function TerminKachel({ t, konflikt, zeigeTag }: { t: Termin; konflikt?: 
 function terminUntertitel(t: Termin) {
   const kunde = db.kunden.get(t.kundeId);
   const ort = db.orte.get(t.ortId);
-  const ma = t.mitarbeiterIds.map((id) => personName(db.mitarbeiter.get(id)));
-  return [TERMINART_LABEL[t.art], kunde?.name, ort?.adresse.ort, ma.length ? ma.join(', ') : 'Noch niemand eingeplant'].filter(Boolean).join(' · ');
+  const text = [TERMINART_LABEL[t.art], kunde?.name, ort?.adresse.ort].filter(Boolean).join(' · ');
+  return (
+    <>
+      {text} · {t.mitarbeiterIds.length ? <Personen ids={t.mitarbeiterIds} groesse={20} namen /> : 'Noch niemand eingeplant'}
+    </>
+  );
 }
 
 function TerminZeile({ t, konflikt }: { t: Termin; konflikt?: boolean }) {
@@ -228,7 +233,13 @@ function TagListe({ datum, termine, konflikte, mitarbeiterId, onNeu }: { datum: 
     <Stapel>
       {abwesend.length > 0 && (
         <Meta>
-          Nicht da: {abwesend.map((x) => `${personName(x.m)} (${x.a.text})`).join(', ')}
+          Nicht da:{' '}
+          {abwesend.map((x, i) => (
+            <Fragment key={x.m.id}>
+              {i > 0 && ', '}
+              <Person m={x.m} groesse={20}>{`${personName(x.m)} (${x.a.text})`}</Person>
+            </Fragment>
+          ))}
         </Meta>
       )}
       <Liste

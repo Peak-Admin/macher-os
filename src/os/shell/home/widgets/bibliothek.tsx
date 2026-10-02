@@ -12,6 +12,7 @@ import type { ID } from '@core/objects';
 import { darf, istBuero } from '@core/session';
 import { Button, Icon, Liste, ListenZeile, Meta, Status, Textfeld } from '@ui/index';
 import { ErfassenKnopf } from '@ui/objekt';
+import { Personenbild } from '@ui/person';
 import { HinweisZeile } from '@modules/braucht-dich/BrauchtDich';
 import { EinsatzKurz } from '@modules/naechster-einsatz/Einsatz';
 import { naechsterEinsatz } from '@modules/naechster-einsatz/logik';
@@ -167,6 +168,7 @@ export function AbwesendWidget({ groesse }: WidgetProps) {
           <ListenZeile
             key={a.id}
             to={pfadZu({ typ: 'abwesenheiten', id: a.id })}
+            links={<Personenbild m={m} />}
             titel={personName(m)}
             untertitel={a.bis === tag ? 'zurück morgen' : `bis ${datumKurz(a.bis)}`}
             rechts={<Status>{ABWESENHEIT_LABEL[a.art]}</Status>}

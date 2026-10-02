@@ -2,6 +2,7 @@ import { db } from '@core/db';
 import { personName, relativ } from '@core/format';
 import { useIch } from '@core/session';
 import { Button, Meldung, Meta, Stapel, useToast } from '@ui/index';
+import { Person } from '@ui/person';
 import { alsGelesen, type Arbeitsanweisung } from './daten';
 
 /** Lesefassung: groß, klar, Schritt für Schritt – für den Monteur vor Ort */
@@ -64,7 +65,15 @@ export function AnweisungAnsicht({ x, kurz }: { x: Arbeitsanweisung; kurz?: bool
         </div>
       )}
       {!kurz && !!x.gelesen?.length && (
-        <Meta>Gelesen von: {x.gelesen.map((g) => `${personName(db.mitarbeiter.get(g.mitarbeiterId))} (${relativ(g.am)})`).join(', ')}</Meta>
+        <Meta>
+          Gelesen von:{' '}
+          {x.gelesen.map((g, i) => (
+            <span key={`${g.mitarbeiterId}-${i}`}>
+              {i > 0 && ', '}
+              <Person m={g.mitarbeiterId}>{`${personName(db.mitarbeiter.get(g.mitarbeiterId))} (${relativ(g.am)})`}</Person>
+            </span>
+          ))}
+        </Meta>
       )}
     </Stapel>
   );

@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { batch, db } from '@core/db';
-import { datumKurz, heute, personName, plusMonate } from '@core/format';
+import { datumKurz, heute, plusMonate } from '@core/format';
 import type { ID, TerminArt } from '@core/objects';
 import { Auswahl, Button, Checkbox, Eingabe, FormRaster, Karte, Leer, Meta, Seite, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
 import { KundeAuswahl, OrtAuswahl } from '@ui/objekt';
+import { Person } from '@ui/person';
 import { REGEL_ARTEN, regelText, vorkommen, werktag, type RegelArt } from './regel';
 import { serien, serienTermine, termineErzeugen, terminDatum, type Serie } from './daten';
 import { servicevertraege } from '../servicevertraege/daten';
@@ -184,7 +185,7 @@ export function SerieForm() {
                   {mitarbeiter.map((m) => (
                     <Checkbox
                       key={m.id}
-                      label={personName(m)}
+                      label={<Person m={m} />}
                       checked={f.mitarbeiterIds.includes(m.id)}
                       onChange={(an) => set('mitarbeiterIds', an ? [...f.mitarbeiterIds, m.id] : f.mitarbeiterIds.filter((x) => x !== m.id))}
                     />
