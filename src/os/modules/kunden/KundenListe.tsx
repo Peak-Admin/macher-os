@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { passt } from '@core/format';
+import { Kundenbild } from '@ui/kundenbild';
 import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meldung, Seite, Stapel, Status, Suchfeld, Zeile } from '@ui/index';
 import { aktuelleDubletten } from './daten';
 
@@ -87,6 +88,7 @@ export function KundenListe() {
               <ListenZeile
                 key={k.id}
                 to={`/auftraege/kunden/${k.id}`}
+                links={<Kundenbild k={k} />}
                 titel={
                   <>
                     {k.name} <BeispielMarke zeigen={k.beispiel} />

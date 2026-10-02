@@ -4,9 +4,10 @@
  */
 .mm-orb {
   --orb: 20px;
-  --orb-farbe: var(--mm-brand);
-  --orb-tief: var(--mm-brand-ink);
-  --orb-hell: var(--mm-brand-soft);
+  /* KI-Farben (Kugel des Betreibers, Oktober 2026): Pink → Orange */
+  --orb-farbe: var(--mm-ki-pink);
+  --orb-tief: #d81f6c;
+  --orb-hell: var(--mm-ki-orange);
   --orb-licht: var(--mm-surface);
   --orb-punkt: max(3px, calc(var(--orb) * 0.18));
   position: relative;
@@ -17,16 +18,16 @@
   vertical-align: middle;
 }
 .mm-orb--dunkel {
-  --orb-farbe: var(--mm-brand-accent);
-  --orb-tief: var(--mm-brand);
-  --orb-hell: var(--mm-on-dark-muted);
+  --orb-farbe: var(--mm-ki-rosa);
+  --orb-tief: var(--mm-ki-pink);
+  --orb-hell: var(--mm-ki-orange);
 }
 .mm-orb > span { position: absolute; border-radius: 50%; pointer-events: none; }
 
 /* Kern: eine Kugel aus Licht, Hellgrün und Markengrün */
 .mm-orb-kern {
   inset: 14%;
-  background: radial-gradient(circle at 34% 30%, var(--orb-licht) 0 10%, var(--orb-hell) 26%, var(--orb-farbe) 62%, var(--orb-tief) 100%);
+  background: radial-gradient(circle at 70% 78%, var(--orb-hell) 0 18%, transparent 62%), radial-gradient(circle at 30% 26%, #ffd0e2 0 6%, var(--orb-farbe) 52%, var(--orb-tief) 100%);
   box-shadow: 0 0 calc(var(--orb) * 0.3) color-mix(in srgb, var(--orb-farbe) 30%, transparent);
 }
 .mm-orb-a, .mm-orb-b, .mm-orb-c { inset: 0; opacity: 0; }
@@ -157,10 +158,10 @@
 .mm-ki-glow { animation: mm-ki-glow 2.4s ease-in-out infinite; }
 @keyframes mm-ki-glow {
   0%, 100% {
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--mm-brand) 26%, transparent), 0 0 12px 2px color-mix(in srgb, var(--mm-brand) 12%, transparent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--mm-ki-pink) 26%, transparent), 0 0 12px 2px color-mix(in srgb, var(--mm-ki-pink) 12%, transparent);
   }
   50% {
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mm-brand) 42%, transparent), 0 0 24px 6px color-mix(in srgb, var(--mm-brand) 20%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mm-ki-pink) 42%, transparent), 0 0 24px 6px color-mix(in srgb, var(--mm-ki-pink) 20%, transparent);
   }
 }
 
@@ -169,6 +170,24 @@
   .mm-orb[data-zustand='hoert'] .mm-orb-a { opacity: 0.5; transform: scale(0.85); }
   .mm-ki-glow {
     animation: none;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mm-brand) 36%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mm-ki-pink) 36%, transparent);
   }
 }
+
+/* Die KI-Kugel als ruhiges Zeichen (ohne Animation): Suchen-und-Fragen, KI-Leiste, „Macher fragen“ */
+.mm-ki-kugel {
+  --kugel: 24px;
+  display: inline-block; flex: none; width: var(--kugel); height: var(--kugel); border-radius: 50%; vertical-align: middle;
+  background:
+    radial-gradient(circle at 72% 80%, rgb(255 205 140 / 95%) 0 14%, transparent 58%),
+    radial-gradient(circle at 30% 24%, rgb(255 214 230 / 90%) 0 8%, transparent 40%),
+    radial-gradient(circle at 50% 50%, var(--mm-ki-rosa) 0%, var(--mm-ki-pink) 58%, #f0457f 100%);
+  box-shadow: inset 0 calc(var(--kugel) * -0.06) calc(var(--kugel) * 0.18) rgb(200 30 90 / 35%), 0 calc(var(--kugel) * 0.12) calc(var(--kugel) * 0.35) rgb(255 61 139 / 28%);
+}
+
+/* KI-Leiste: das Eingabefeld von „Suchen oder fragen“ mit Verlaufsrand und Kugel */
+.mm-suchfeld--ki { border-radius: 14px; padding: 2px; background: var(--mm-ki-verlauf); box-shadow: 0 10px 30px -14px rgb(255 61 139 / 45%); }
+.mm-suchfeld--ki > .mm-ki-kugel { position: absolute; left: 16px; pointer-events: none; }
+.mm-suchfeld--ki .mm-input { min-height: 56px; padding-left: 52px; border: 0; border-radius: 12px; font-size: 18px; }
+.mm-suchfeld--ki .mm-input:focus-visible { outline: 0; }
+.mm-suchfeld--ki:focus-within { box-shadow: 0 0 0 4px rgb(255 61 139 / 18%), 0 10px 30px -14px rgb(255 61 139 / 45%); }

@@ -6,7 +6,7 @@ import { useEinstellung } from '@core/einstellungen';
 import { schnellAktion, sucheUeberall, type Treffer } from '@core/modul';
 import { oeffne } from '@core/overlay';
 import { darf, useIch } from '@core/session';
-import { Button, Filter, Icon, Leer, Liste, ListenZeile, Meta, Oberzeile, Stapel, Suchfeld, Zeile } from '@ui/index';
+import { Button, Filter, Icon, KiKugel, Leer, Liste, ListenZeile, Meta, Oberzeile, Stapel, Suchfeld, Zeile } from '@ui/index';
 import { erfassen } from '@ui/objekt';
 import { ALLE, artFilter, artLabel, bezugAus, gruppieren, merkeGeoeffnet, merkeSuche, ohneDoppelte, schnellaktion, sortieren, trefferZeit, type Geoeffnet, type Sortierung } from './daten';
 import { funktionsTreffer } from '../../shell/struktur';
@@ -115,14 +115,14 @@ export function SuchKern({ onFertig }: { onFertig?: () => void }) {
 
   const frageZeile = frage && (
     <Liste>
-      <ListenZeile titel={`Macher fragen: „${frage}“`} untertitel="Antwort aus deinen Daten" links={<Icon name="macher" />} aktiv={aktiv === frageIndex} onClick={fragen} />
+      <ListenZeile titel={`Macher fragen: „${frage}“`} untertitel="Antwort aus deinen Daten" links={<KiKugel groesse={24} />} aktiv={aktiv === frageIndex} onClick={fragen} />
     </Liste>
   );
 
   let i = versatz - 1;
   return (
     <div className="mm-stapel" style={{ gap: 16 }} onKeyDown={taste}>
-      <Suchfeld wert={q} onChange={setQ} platzhalter="Suchen oder Macher fragen …" autoFocus />
+      <Suchfeld ki wert={q} onChange={setQ} platzhalter="Frag Macher oder such etwas …" autoFocus />
       {!frage ? (
         <OhneSuchbegriff
           rechte={rechte}

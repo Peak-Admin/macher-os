@@ -13,7 +13,7 @@ type Sicht = 'offen' | 'erledigt';
 function AnfrageStatus({ a }: { a: Auftrag }) {
   const naechster = hatNaechstenSchritt(a.id);
   if (istUnbearbeitet(a, naechster)) return <Status ton="achtung">Unbearbeitet</Status>;
-  if (a.dringend) return <Status ton="achtung">Dringend</Status>;
+  if (a.dringend) return <Status ton="gefahr">Dringend</Status>;
   if (naechster) return <Status ton="aktiv">Rückruf geplant</Status>;
   return <Status>Neu</Status>;
 }

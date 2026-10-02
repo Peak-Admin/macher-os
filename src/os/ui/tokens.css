@@ -69,7 +69,7 @@
   --mm-radius-panel: 16px;
   /* Felder und Buttons: 48 px – sicheres Touch-Ziel. Kleine Buttons: 36 px (Maus), 44 px (Touch) */
   --mm-control-height: 48px;
-  --mm-sidebar-width: 232px;
+  --mm-sidebar-width: 264px;
   --mm-topbar-height: 64px;
   --mm-content-max: 1280px;
   --mm-form-max: 800px;
@@ -82,6 +82,11 @@
   --mm-space-12: 48px;
   --mm-space-16: 64px;
   --mm-shadow-card: 0 1px 2px rgb(16 44 33 / 4%);
+  /* Aufgelegte Karte (Oktober 2026): Lichtkante oben, kurzer Kontaktschatten, weicher Fallschatten –
+     wie ein Blatt, das auf dem Tisch liegt. Für Seitenleiste, Karten, Listen und Widgets. */
+  --mm-shadow-lift: inset 0 1px 0 rgb(255 255 255 / 90%), 0 1px 2px rgb(16 44 33 / 6%), 0 10px 28px -14px rgb(16 44 33 / 22%);
+  --mm-shadow-lift-hover: inset 0 1px 0 rgb(255 255 255 / 90%), 0 2px 4px rgb(16 44 33 / 7%), 0 18px 36px -16px rgb(16 44 33 / 28%);
+  --mm-radius-leiste: 20px;
   --mm-shadow-overlay: 0 16px 40px rgb(16 44 33 / 12%), 0 2px 8px rgb(16 44 33 / 5%);
   /* Schatten für Flächen, die über einem Foto liegen (nur Einrichtung; Arbeitsflächen bleiben flach) */
   --mm-shadow-photo: 0 8px 32px rgb(16 44 33 / 18%);
@@ -104,6 +109,13 @@
   --mm-on-dark: #ffffff;
   --mm-on-dark-muted: #e0e9e3;
   --mm-focus-on-dark: #c3e8cf;
+
+  /* KI: die Kugel (Pink → Orange) kennzeichnet nur, was Macher, die KI, tut – Suchen-und-Fragen, Orb, Antworten.
+     Nie für Aktionen, Status oder Daten. */
+  --mm-ki-pink: #ff3d8b;
+  --mm-ki-rosa: #ff7aa8;
+  --mm-ki-orange: #ffb36b;
+  --mm-ki-verlauf: linear-gradient(135deg, var(--mm-ki-pink), var(--mm-ki-orange));
 
   /* EU-Blau: nur für den Vertrauenskasten (DSGVO, Server in Frankfurt, EU AI Act) – sonst nirgends */
   --mm-eu: #003399;

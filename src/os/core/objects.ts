@@ -164,6 +164,8 @@ export interface Kunde extends Basis {
   ansprechpartner: Ansprechpartner[];
   telefon?: string;
   email?: string;
+  /** Website des Kunden – daraus kommt sein Logo im Kundenbild */
+  website?: string;
   adresse?: Adresse;
   notiz?: string;
   quelle?: Kanal;

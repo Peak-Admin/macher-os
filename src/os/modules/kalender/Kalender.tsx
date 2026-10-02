@@ -74,35 +74,38 @@ export function Kalender() {
 
   return (
     <Seite titel="Kalender" breit aktion={<Button icon="plus" onClick={() => setze({ neu: '1' })}>Termin planen</Button>}>
+      {/* Links das Datum (wo bin ich?), rechts Ansicht und Filter (wie zeige ich es?) */}
       <div className="pl-kopfleiste">
-        {!schmal && (
-          <Segmente<Ansicht>
-            label="Ansicht"
-            wert={ansicht}
-            onChange={(v) => setze({ ansicht: v })}
-            optionen={[
-              { wert: 'tag', label: 'Tag' },
-              { wert: 'woche', label: 'Woche' },
-              { wert: 'monat', label: 'Monat' },
-            ]}
-          />
-        )}
-        <Auswahl
-          label="Mitarbeiter"
-          value={ma}
-          onChange={(e) => setze({ ma: e.target.value })}
-          leer="Alle Mitarbeiter"
-          optionen={mitarbeiter.map((m) => ({ wert: m.id, label: personName(m) }))}
-        />
         <div className="pl-navi">
           <IconButton icon="pfeilLinks" label="Zurück" onClick={() => setze({ datum: schritt(ansicht, datum, -1, schmal) })} />
-          <Button variante="tertiaer" onClick={() => setze({ datum: undefined })}>
+          <Button variante="sekundaer" klein onClick={() => setze({ datum: undefined })}>
             Heute
           </Button>
           <IconButton icon="pfeilRechts" label="Weiter" onClick={() => setze({ datum: schritt(ansicht, datum, 1, schmal) })} />
           <span className="pl-zeitraum" aria-live="polite">
             {titelZeitraum}
           </span>
+        </div>
+        <div className="pl-kopfleiste-rechts">
+          {!schmal && (
+            <Segmente<Ansicht>
+              label="Ansicht"
+              wert={ansicht}
+              onChange={(v) => setze({ ansicht: v })}
+              optionen={[
+                { wert: 'tag', label: 'Tag' },
+                { wert: 'woche', label: 'Woche' },
+                { wert: 'monat', label: 'Monat' },
+              ]}
+            />
+          )}
+          <Auswahl
+            label="Mitarbeiter"
+            value={ma}
+            onChange={(e) => setze({ ma: e.target.value })}
+            leer="Alle Mitarbeiter"
+            optionen={mitarbeiter.map((m) => ({ wert: m.id, label: personName(m) }))}
+          />
         </div>
       </div>
 
@@ -265,9 +268,12 @@ function Woche({ von, termine, konflikte, onTag }: { von: Datum; termine: Termin
             <div key={d} className={`pl-tag ${d === heute() ? 'pl-tag--heute' : ''} ${!arbeitstag ? 'pl-tag--frei' : ''}`}>
               <div className="pl-tagkopf">
                 <button type="button" onClick={() => onTag(d)} aria-label={`Tagesansicht ${datumKurz(d)}`}>
-                  <strong>{WOCHENTAGE[i]}</strong> {datumKurz(d).split(', ')[1] ?? datumKurz(d)}
+                  <span className="pl-tagkopf-wochentag">{WOCHENTAGE[i]}</span>
+                  <span className="pl-tagkopf-zahl" aria-current={d === heute() ? 'date' : undefined}>
+                    {Number(d.slice(8, 10))}
+                  </span>
                 </button>
-                {liste.length > 0 && <span className="mm-meta">{liste.length}</span>}
+                {liste.length > 0 && <span className="pl-tagkopf-anzahl">{liste.length === 1 ? '1 Termin' : `${liste.length} Termine`}</span>}
               </div>
               {liste.map((t) => (
                 <TerminKachel key={t.id} t={t} konflikt={konflikte.has(t.id)} />
