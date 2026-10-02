@@ -3,8 +3,8 @@ import { db } from '@core/db';
 import { heute, personName } from '@core/format';
 import { useIch } from '@core/session';
 import type { ID } from '@core/objects';
-import { Abschnitt, Avatar, Button, Dialog, Eingabe, Liste, ListenZeile, Meta, Stapel, Textfeld, useToast } from '@ui/index';
-import { initialen } from '@core/format';
+import { Abschnitt, Button, Dialog, Eingabe, Liste, ListenZeile, Meta, Stapel, Textfeld, useToast } from '@ui/index';
+import { Personenbild } from '@ui/person';
 import { faelligkeit } from '../pruefungen/daten';
 import { ausgeben, defektMelden, fahrzeuge, fahrzeugText, STANDARD_LAGER, zielText, type Ziel } from './daten';
 
@@ -38,7 +38,7 @@ export function AusgabeDialog({ id, offen, onSchliessen }: { id: ID; offen: bool
             {sortiert.map((m) => (
               <ListenZeile
                 key={m.id}
-                links={<Avatar text={initialen(m)} farbe={m.farbe} />}
+                links={<Personenbild m={m} />}
                 titel={m.id === ich?.id ? `${personName(m)} (ich)` : personName(m)}
                 aktiv={b.mitarbeiterId === m.id}
                 untertitel={b.mitarbeiterId === m.id ? 'Hat es gerade' : undefined}

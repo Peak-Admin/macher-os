@@ -21,10 +21,11 @@ import { oeffne } from '@core/overlay';
 import { db, useDatenstand, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { useEinstellung } from '@core/einstellungen';
-import { initialen, personName } from '@core/format';
+import { personName } from '@core/format';
 import { alleModule, modul, modulPfad } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Avatar, Button, Icon, IconButton, Meldung } from '@ui/index';
+import { Button, Icon, IconButton, Meldung } from '@ui/index';
+import { Personenbild } from '@ui/person';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { BASIS } from '@core/basis';
 import { STRUKTUR, ortVonPfad } from './struktur';
@@ -246,7 +247,7 @@ function Profil({ oben }: { oben?: boolean }) {
         aria-label={`Profil von ${personName(ich)}${ungelesen && !oben ? `, ${ungelesen} ungelesene Benachrichtigungen` : ''}`}
         onClick={() => setOffen(!offen)}
       >
-        <Avatar text={initialen(ich)} farbe={ich.farbe} />
+        <Personenbild m={ich} dekorativ />
         {oben && <span className="mm-profil-name mm-leiste-text">{personName(ich)}</span>}
         {!oben && ungelesen > 0 && <span className="mm-glocke-zahl">{ungelesen > 9 ? '9+' : ungelesen}</span>}
       </button>

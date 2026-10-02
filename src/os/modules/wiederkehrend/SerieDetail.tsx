@@ -3,11 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { pfadZu } from '@core/modul';
 import { datum, datumKurz, heute, personName, uhrzeit } from '@core/format';
-import type { Termin } from '@core/objects';
+import type { ID, Termin } from '@core/objects';
 import { BeispielMarke, Button, Dialog, Eingabe, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
 import { ObjektLink } from '@ui/objekt';
+import { Personen } from '@ui/person';
 import { regelText } from './regel';
-import { abwesenheitsKonflikte, mitarbeiterNamen, serieAktiv, serieBeenden, serien, serienTermine, terminAuslassen, termineErzeugen, terminDatum, terminVerschieben, HORIZONT_MONATE } from './daten';
+import { abwesenheitsKonflikte, serieAktiv, serieBeenden, serien, serienTermine, terminAuslassen, termineErzeugen, terminDatum, terminVerschieben, HORIZONT_MONATE } from './daten';
 import { servicevertraege } from '../servicevertraege/daten';
 
 const STATUS: Record<Termin['status'], { text: string; ton: 'neutral' | 'aktiv' | 'erfolg' | 'achtung' }> = {
@@ -18,6 +19,8 @@ const STATUS: Record<Termin['status'], { text: string; ton: 'neutral' | 'aktiv' 
   erledigt: { text: 'Erledigt', ton: 'erfolg' },
   abgesagt: { text: 'Abgesagt', ton: 'neutral' },
 };
+
+const Team = ({ ids }: { ids: ID[] }) => (ids.length ? <Personen ids={ids} namen /> : <>niemand eingeteilt</>);
 
 export function SerieDetail() {
   useDatenstand();
@@ -76,7 +79,11 @@ export function SerieDetail() {
           <BeispielMarke zeigen={s.beispiel} />
         </>
       }
-      untertitel={`${regelText(s.start, s.regel)}, ${s.uhrzeit} Uhr · ${mitarbeiterNamen(s.mitarbeiterIds)}`}
+      untertitel={
+        <>
+          {regelText(s.start, s.regel)}, {s.uhrzeit} Uhr · <Team ids={s.mitarbeiterIds} />
+        </>
+      }
       zurueck={{ to: '/plan/wiederkehrend', label: 'Wiederkehrende Termine' }}
       aktion={aktiv ? <Button icon="stift" variante="sekundaer" to={`/plan/wiederkehrend/${s.id}/bearbeiten`}>Bearbeiten</Button> : undefined}
     >
@@ -110,7 +117,12 @@ export function SerieDetail() {
                           <Status ton={STATUS[t.status].ton} icon={false}>{STATUS[t.status].text}</Status>
                         </>
                       }
-                      untertitel={[mitarbeiterNamen(t.mitarbeiterIds), auftrag ? `Auftrag ${auftrag.nummer}` : undefined].filter(Boolean).join(' · ')}
+                      untertitel={
+                        <>
+                          <Team ids={t.mitarbeiterIds} />
+                          {auftrag ? ` · Auftrag ${auftrag.nummer}` : null}
+                        </>
+                      }
                       rechts={
                         ['geplant', 'bestaetigt'].includes(t.status) ? (
                           <Zeile abstand={4} umbruch>
@@ -134,7 +146,7 @@ export function SerieDetail() {
                     <ListenZeile
                       key={t.id}
                       titel={`${datumKurz(t.start)}, ${uhrzeit(t.start)} Uhr`}
-                      untertitel={mitarbeiterNamen(t.mitarbeiterIds)}
+                      untertitel={<Team ids={t.mitarbeiterIds} />}
                       rechts={<Status ton={STATUS[t.status].ton}>{STATUS[t.status].text}</Status>}
                     />
                   ))}

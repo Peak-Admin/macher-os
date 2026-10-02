@@ -6,6 +6,7 @@ import type { ID } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
 import { Auswahl, BeispielMarke, Button, Checkbox, Eingabe, Filter, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
 import { Zeitstrahl } from '@ui/objekt';
+import { Person, Personen, Personenbild } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { unterweisungen } from '@modules/unterweisungen/daten';
 import { STATUS_LABEL, schulungen, vorschlaege, type Schulung } from './daten';
@@ -69,10 +70,15 @@ export function SchulungenSeite() {
               <ListenZeile
                 key={v.qualifikation.id}
                 titel={v.qualifikation.name}
-                untertitel={v.personen
-                  .slice(0, 4)
-                  .map((p) => `${p.mitarbeiter.vorname} (${p.grund})`)
-                  .join(', ')}
+                untertitel={
+                  <>
+                    <Personen ids={v.personen.slice(0, 4).map((p) => p.mitarbeiter)} />{' '}
+                    {v.personen
+                      .slice(0, 4)
+                      .map((p) => `${p.mitarbeiter.vorname} (${p.grund})`)
+                      .join(', ')}
+                  </>
+                }
                 rechts={
                   <Button klein variante="sekundaer" onClick={() => navigate(`/betrieb/schulungen/neu?quali=${v.qualifikation.id}&ma=${v.personen.map((p) => p.mitarbeiter.id).join(',')}`)}>
                     Planen
@@ -186,7 +192,7 @@ export function SchulungNeu() {
           <Stapel abstand={8}>
             <span className="mm-label">Teilnehmer</span>
             {team.map((m) => (
-              <Checkbox key={m.id} label={personName(m)} checked={teilnehmer.includes(m.id)} onChange={(an) => setTeilnehmer(an ? [...teilnehmer, m.id] : teilnehmer.filter((x) => x !== m.id))} />
+              <Checkbox key={m.id} label={<Person m={m} />} checked={teilnehmer.includes(m.id)} onChange={(an) => setTeilnehmer(an ? [...teilnehmer, m.id] : teilnehmer.filter((x) => x !== m.id))} />
             ))}
           </Stapel>
           <Textfeld label="Inhalte" optional rows={4} value={f.inhalte} onChange={(e) => setF({ ...f, inhalte: e.target.value })} placeholder="Was wird geschult? Ein Punkt pro Zeile." />
@@ -264,7 +270,7 @@ export function SchulungDetail() {
               {s.status === 'geplant' && buero ? (
                 <Stapel abstand={8}>
                   {teilnehmer.map((m) => (
-                    <Checkbox key={m.id} label={personName(m)} checked={auswahl.includes(m.id)} onChange={(an) => setDabei(an ? [...auswahl, m.id] : auswahl.filter((x) => x !== m.id))} />
+                    <Checkbox key={m.id} label={<Person m={m} />} checked={auswahl.includes(m.id)} onChange={(an) => setDabei(an ? [...auswahl, m.id] : auswahl.filter((x) => x !== m.id))} />
                   ))}
                   <Meta>Beim Abschließen zählen nur die angehakten Personen.</Meta>
                 </Stapel>
@@ -274,6 +280,7 @@ export function SchulungDetail() {
                     <ListenZeile
                       key={m.id}
                       to={`/betrieb/mitarbeiter/${m.id}`}
+                      links={<Personenbild m={m} groesse={40} />}
                       titel={personName(m)}
                       rechts={s.status === 'abgeschlossen' ? s.teilgenommenIds?.includes(m.id) ? <Status ton="erfolg">Teilgenommen</Status> : <Status>Nicht dabei</Status> : undefined}
                     />

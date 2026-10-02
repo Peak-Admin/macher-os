@@ -7,6 +7,7 @@ import { datumKurz, heute, isoDatum, kalenderwoche, personName, plusTage, tage, 
 import { BUNDESLAENDER, STANDARD_ARBEITSTAGE } from '@core/kalender';
 import { useDarf } from '@core/session';
 import { Auswahl, Button, Checkbox, Dialog, IconButton, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, Zeile, useToast } from '@ui/index';
+import { Person, Personen, Personenbild } from '@ui/person';
 import { useSchmal } from '../kalender/hooks';
 import { TerminFormular, type TerminVorgabe } from '../kalender/TerminFormular';
 import '../kalender/plan.css';
@@ -52,7 +53,7 @@ export function WerIstDa() {
             {mitarbeiter.map((m) => {
               const a = anwesenheit(m.id, tag, k);
               const h = geplanteStunden(m.id, tag, tag, k);
-              return <ListenZeile key={m.id} titel={personName(m)} untertitel={h ? `${zahl(h)} h verplant` : a.status === 'da' ? 'Noch nichts verplant' : undefined} rechts={<Status ton={ton(a)}>{a.text}</Status>} />;
+              return <ListenZeile key={m.id} links={<Personenbild m={m} groesse={40} />} titel={personName(m)} untertitel={h ? `${zahl(h)} h verplant` : a.status === 'da' ? 'Noch nichts verplant' : undefined} rechts={<Status ton={ton(a)}>{a.text}</Status>} />;
             })}
           </Liste>
         </Stapel>
@@ -78,7 +79,9 @@ export function WerIstDa() {
               ))}
               {mitarbeiter.map((m) => [
                 <div key={m.id} className="pl-tafel-name">
-                  <strong>{personName(m)}</strong>
+                  <Person m={m} groesse={32}>
+                    <strong>{personName(m)}</strong>
+                  </Person>
                   <span className="mm-meta">{m.wochenstunden} h/Woche</span>
                 </div>,
                 ...sichtbar.map((d) => {
@@ -150,7 +153,11 @@ function FreieZeitFinden() {
                 <ListenZeile
                   key={s.start}
                   titel={`${datumKurz(s.start)}, ${uhrzeit(s.start)}–${uhrzeit(s.ende)} Uhr`}
-                  untertitel={`Frei: ${s.mitarbeiterIds.map((id) => personName(db.mitarbeiter.get(id))).join(', ')}`}
+                  untertitel={
+                    <>
+                      Frei: <Personen ids={s.mitarbeiterIds} namen />
+                    </>
+                  }
                   rechts={
                     darfPlanen ? (
                       <Button

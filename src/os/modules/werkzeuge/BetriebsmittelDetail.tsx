@@ -5,6 +5,7 @@ import { datum, euro, personName, zahl } from '@core/format';
 import { useDarf, useIch } from '@core/session';
 import { BeispielMarke, Button, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, ZweiSpalten, useToast } from '@ui/index';
 import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
+import { Person } from '@ui/person';
 import { ERGEBNIS_LABEL, faelligkeit, intervall, pruefhistorie } from '../pruefungen/daten';
 import { PruefungDialog } from '../pruefungen/PruefungDialog';
 import { artikelAmOrt, bestandAm, fahrzeugOrt } from '../lager/daten';
@@ -77,7 +78,17 @@ export function BetriebsmittelDetail() {
             )}
             <Karte titel={istFahrzeug ? 'Fahrer' : 'Wo ist es?'}>
               <Stapel abstand={12}>
-                <p style={{ fontSize: 'var(--mm-text-xl, 1.5rem)', fontWeight: 700, margin: 0 }}>{istFahrzeug ? (b.mitarbeiterId ? personName(db.mitarbeiter.get(b.mitarbeiterId)) : 'Kein fester Fahrer') : wo.text}</p>
+                <p style={{ fontSize: 'var(--mm-text-xl, 1.5rem)', fontWeight: 700, margin: 0 }}>
+                  {b.mitarbeiterId ? (
+                    <Person m={b.mitarbeiterId} groesse={40}>
+                      {istFahrzeug ? personName(db.mitarbeiter.get(b.mitarbeiterId)) : wo.text}
+                    </Person>
+                  ) : istFahrzeug ? (
+                    'Kein fester Fahrer'
+                  ) : (
+                    wo.text
+                  )}
+                </p>
                 {bmx(b).ausgegebenAm && (b.mitarbeiterId || wo.fahrzeugId) && <Meta>seit {datum(bmx(b).ausgegebenAm)}</Meta>}
                 <Zeile>
                   {!istFahrzeug && ich && !hatIch && (
