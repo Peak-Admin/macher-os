@@ -135,7 +135,7 @@ await page.goto(`${basis}/os/auftraege/auftraege`, { waitUntil: 'networkidle' })
 await page.getByRole('button', { name: 'Auftrag anlegen' }).first().click();
 pruefe(await page.getByRole('dialog').isVisible(), '„Auftrag anlegen“ in der Liste öffnet den Dialog');
 await page.getByRole('dialog').getByRole('button', { name: 'Abbrechen' }).click();
-await page.getByLabel('Sortierung').selectOption('nummer');
+await waehle(page.getByLabel('Sortierung'), 'Nummer');
 await page.waitForURL(/sort=nummer/, { timeout: 5000 }).catch(() => {});
 await page.getByLabel('Phase').selectOption('anfrage');
 await page.waitForURL(/phase=anfrage/, { timeout: 5000 }).catch(() => {});
