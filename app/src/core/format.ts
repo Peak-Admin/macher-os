@@ -38,6 +38,77 @@ export function datumVon(zeitpunktIso: string): Datum {
   return isoDatum(new Date(zeitpunktIso));
 }
 
+/**
+ * Datum plus N Monate. Fällt der Tag weg (31. → Februar), wird auf das Monatsende gekürzt.
+ * Immer vom Ausgangsdatum aus rechnen, nicht kettenweise – sonst „wandert“ der 31. auf den 28.
+ */
+export function plusMonate(datum: Datum, monate: number): Datum {
+  const [j, m, t] = datum.split('-').map(Number);
+  const ziel = new Date(j, m - 1 + monate, 1, 12);
+  const letzterTag = new Date(ziel.getFullYear(), ziel.getMonth() + 1, 0, 12).getDate();
+  ziel.setDate(Math.min(t, letzterTag));
+  return isoDatum(ziel);
+}
+
+/** Wochentag nach ISO: 1 = Montag … 7 = Sonntag */
+export function wochentag(datum: Datum): number {
+  const t = new Date(`${datum}T12:00:00`).getDay();
+  return t === 0 ? 7 : t;
+}
+
+/** Montag der Woche, in der `datum` liegt */
+export function wochenStart(datum: Datum): Datum {
+  return plusTage(datum, 1 - wochentag(datum));
+}
+
+/** ISO-Kalenderwoche */
+export function kalenderwoche(datum: Datum): number {
+  const d = new Date(`${datum}T12:00:00`);
+  d.setDate(d.getDate() + 4 - wochentag(datum)); // Donnerstag derselben Woche
+  const w1 = new Date(d.getFullYear(), 0, 4, 12);
+  return 1 + Math.round(((d.getTime() - w1.getTime()) / 86_400_000 - 3 + ((w1.getDay() + 6) % 7)) / 7);
+}
+
+/** Alle Tage von `von` bis `bis` (beide inklusive, höchstens 400) */
+export function tage(von: Datum, bis: Datum): Datum[] {
+  const liste: Datum[] = [];
+  for (let d = von; d <= bis && liste.length < 400; d = plusTage(d, 1)) liste.push(d);
+  return liste;
+}
+
+// ------------------------------------------------------------------ Uhrzeit
+
+/** "07:30" → 450 (leere/kaputte Teile zählen als 0) */
+export function minutenAus(uhr: string): number {
+  const [h, m] = uhr.split(':').map(Number);
+  return (h || 0) * 60 + (m || 0);
+}
+
+/** Wie `minutenAus`, aber nur für gültige Angaben „H:MM“/„HH:MM“ – sonst `undefined` */
+export function minutenAusStreng(uhr: string | undefined): number | undefined {
+  return /^\d{1,2}:\d{2}$/.test(uhr?.trim() ?? '') ? minutenAus(uhr!.trim()) : undefined;
+}
+
+/** 450 → "07:30" (gerundet; 1440 → "24:00") */
+export function uhrAus(minuten: number): string {
+  const gesamt = Math.round(minuten);
+  const z = (n: number) => String(n).padStart(2, '0');
+  return `${z(Math.floor(gesamt / 60))}:${z(gesamt % 60)}`;
+}
+
+/** Minuten seit Mitternacht (lokale Zeit) eines Zeitpunkts */
+export function minutenVon(zeitpunktIso: string | Date): number {
+  const d = zeitpunktIso instanceof Date ? zeitpunktIso : new Date(zeitpunktIso);
+  return d.getHours() * 60 + d.getMinutes();
+}
+
+/** Lokales Datum + Minuten seit Mitternacht → Date */
+export function lokal(datum: Datum, minuten: number): Date {
+  const d = new Date(`${datum}T00:00:00`);
+  d.setMinutes(minuten);
+  return d;
+}
+
 const datumFmt = new Intl.DateTimeFormat('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
 const kurzFmt = new Intl.DateTimeFormat('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
 const uhrFmt = new Intl.DateTimeFormat('de-DE', { hour: '2-digit', minute: '2-digit' });

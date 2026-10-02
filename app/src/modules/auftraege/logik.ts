@@ -2,6 +2,7 @@
  * Reine Regeln der Auftragsakte: Phasen, nächster Schritt, Stillstand.
  * Keine UI, kein Speicher – damit testbar und überall gleich.
  */
+import { tageZwischen } from '@core/format';
 import { PHASEN } from '@core/objects';
 import type { Angebot, Auftrag, Auftragsart, Datum, ID, Phase, Rechnung, Termin } from '@core/objects';
 import type { Ton } from '@core/modul';
@@ -202,9 +203,7 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
 
 /** Tage seit der letzten Bewegung (beliebige Änderung am Auftrag oder an etwas, das daran hängt) */
 export function tageOhneBewegung(letzteBewegung: string, heute: Datum): number {
-  const a = new Date(letzteBewegung.slice(0, 10) + 'T12:00:00').getTime();
-  const b = new Date(heute + 'T12:00:00').getTime();
-  return Math.round((b - a) / 86_400_000);
+  return tageZwischen(letzteBewegung.slice(0, 10), heute);
 }
 
 export const STILLSTAND_TAGE = 14;

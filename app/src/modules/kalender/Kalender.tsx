@@ -2,12 +2,12 @@
 import { useMemo } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
-import { datumKurz, heute, initialen, personName, plusTage, uhrzeit } from '@core/format';
+import { datumKurz, heute, initialen, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart } from '@core/format';
 import { useIch, istBuero } from '@core/session';
 import type { Datum, Termin } from '@core/objects';
 import { Auswahl, Button, IconButton, Leer, Liste, ListenZeile, Meta, Segmente, Seite, Stapel, Status } from '@ui/index';
-import { kontextAusDb, tage, terminKonflikte, wochenStart, anwesenheit } from '../verfuegbarkeit/daten';
-import { kalenderwoche, monatsAnfang, terminAmTag, termineIm, TERMINART_LABEL, TERMINSTATUS } from './daten';
+import { kontextAusDb, terminKonflikte, anwesenheit } from '../verfuegbarkeit/daten';
+import { monatsAnfang, terminAmTag, termineIm, TERMINART_LABEL, TERMINSTATUS } from './daten';
 import { useSchmal } from './hooks';
 import { TerminFormular } from './TerminFormular';
 import './plan.css';

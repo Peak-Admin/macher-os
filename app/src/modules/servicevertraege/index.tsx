@@ -1,10 +1,9 @@
 import { defineModul, pfadZu, type HinweisVorschlag } from '@core/modul';
 import { db } from '@core/db';
 import { automationAn, erledigt, hinweisAusblenden } from '@core/macher';
-import { datum, euro, heute, passt, plusTage, tageZwischen } from '@core/format';
+import { datum, euro, heute, passt, plusTage, tageZwischen, plusMonate } from '@core/format';
 import { gewerkVorlage } from '@core/gewerke';
 import type { ID } from '@core/objects';
-import { plusMonate } from '../wiederkehrend/regel';
 import { VertragListe } from './VertragListe';
 import { VertragForm } from './VertragForm';
 import { VertragDetail } from './VertragDetail';

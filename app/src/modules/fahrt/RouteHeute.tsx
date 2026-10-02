@@ -5,7 +5,8 @@ import { pfadZu } from '@core/modul';
 import { useIch } from '@core/session';
 import { datumKurz, heute, personName, plusTage, uhrzeit } from '@core/format';
 import { Auswahl, Button, Eingabe, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile } from '@ui/index';
-import { kontextAusDb, planbareMitarbeiter, termineAm } from '../autoplanung/basis';
+import { kontextAusDb, planKontext } from '../autoplanung/basis';
+import { planbareMitarbeiter, termineAm } from '../verfuegbarkeit/daten';
 import { StufeStatus } from '../autoplanung/PruefAnzeige';
 import { naechsterNachbar, pufferMinuten, streckeText, tagesroute } from './daten';
 
@@ -13,9 +14,9 @@ export function RouteHeute() {
   const v = useDatenstand();
   const ich = useIch();
   const ctx = useMemo(() => kontextAusDb(), [v]);
-  const leute = planbareMitarbeiter(ctx);
+  const leute = planbareMitarbeiter(ctx, ctx.heute);
   const [tag, setTag] = useState(heute());
-  const standard = leute.find((m) => m.id === ich?.id && termineAm(ctx, m.id, tag).length) ?? leute.find((m) => termineAm(ctx, m.id, tag).length) ?? leute[0];
+  const standard = leute.find((m) => m.id === ich?.id && termineAm(m.id, tag, planKontext(ctx)).length) ?? leute.find((m) => termineAm(m.id, tag, planKontext(ctx)).length) ?? leute[0];
   const [wahl, setWahl] = useState<string>('');
   const maId = wahl || standard?.id || '';
   const route = useMemo(() => (maId ? tagesroute(ctx, maId, tag, pufferMinuten()) : undefined), [ctx, maId, tag]);

@@ -7,10 +7,10 @@ import { batch, db, vermerken } from '@core/db';
 import { einstellung } from '@core/einstellungen';
 import { erledigt } from '@core/macher';
 import { aktionAusfuehren, alleModule, pfadZu } from '@core/modul';
-import { adresseText, datum, heute, plusTage, uhrzeit } from '@core/format';
+import { adresseText, datum, heute, plusTage, uhrzeit, plusMonate, wochenStart } from '@core/format';
 import { naechsteNummer } from '@core/nummern';
 import type { Anlage, Auftrag, Datum, ID, Termin } from '@core/objects';
-import { plusMonate, intervallText } from '../wiederkehrend/regel';
+import { intervallText } from '../wiederkehrend/regel';
 import { serien, terminDatum } from '../wiederkehrend/daten';
 import { vertragFuerAnlage, vertragFuerAuftrag } from '../servicevertraege/daten';
 import { pruefpunkte } from './pruefpunkte';
@@ -266,8 +266,7 @@ export type Zeitraum = 'ueberfaellig' | 'woche' | 'monat' | 'spaeter';
 
 export function einordnen(faellig: Datum, stichtag: Datum = heute()): Zeitraum {
   if (faellig < stichtag) return 'ueberfaellig';
-  const wochentag = new Date(stichtag + 'T12:00:00').getDay(); // 0 = Sonntag
-  const sonntag = plusTage(stichtag, (7 - wochentag) % 7);
+  const sonntag = plusTage(wochenStart(stichtag), 6);
   if (faellig <= sonntag) return 'woche';
   const [j, m] = stichtag.split('-').map(Number);
   const monatsende = plusTage(`${j}-${String(m).padStart(2, '0')}-01`, 0);

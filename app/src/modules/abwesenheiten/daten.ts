@@ -1,9 +1,12 @@
 /**
- * Urlaub & Krankheit – reine Logik (Arbeitstage, Feiertage, Urlaubskonto, Kollisionen).
+ * Urlaub & Krankheit – reine Logik (Urlaubstage, Urlaubskonto, Kollisionen).
+ * Feiertage/Arbeitstage: `@core/kalender`; Abwesenheit an einem Tag: `verfuegbarkeit`.
  * Wird auch von Arbeitszeiten (Soll-Stunden) und anderen Team-Modulen genutzt.
  */
-import { isoDatum, plusTage, datumVon } from '@core/format';
+import { datumVon } from '@core/format';
+import { arbeitstageZwischen } from '@core/kalender';
 import type { Abwesenheit, AbwesenheitsArt, Datum, ID, Mitarbeiter, Termin } from '@core/objects';
+import { abwesenheitAm as planAbwesenheitAm } from '@modules/verfuegbarkeit/daten';
 
 export const ART_LABEL: Record<AbwesenheitsArt, string> = {
   urlaub: 'Urlaub',
@@ -20,66 +23,14 @@ export const STATUS_LABEL: Record<Abwesenheit['status'], string> = {
   abgelehnt: 'Abgelehnt',
 };
 
-// ------------------------------------------------------------------ Feiertage
+// ------------------------------------------------------------------ Arbeitstage
 
-/** Ostersonntag (gregorianisch, Algorithmus nach Meeus/Jones/Butcher) */
-export function ostersonntag(jahr: number): Datum {
-  const a = jahr % 19;
-  const b = Math.floor(jahr / 100);
-  const c = jahr % 100;
-  const d = Math.floor(b / 4);
-  const e = b % 4;
-  const f = Math.floor((b + 8) / 25);
-  const g = Math.floor((b - f + 1) / 3);
-  const h = (19 * a + b - d - g + 15) % 30;
-  const i = Math.floor(c / 4);
-  const k = c % 4;
-  const l = (32 + 2 * e + 2 * i - h - k) % 7;
-  const m = Math.floor((a + 11 * h + 22 * l) / 451);
-  const monat = Math.floor((h + l - 7 * m + 114) / 31);
-  const tag = ((h + l - 7 * m + 114) % 31) + 1;
-  return isoDatum(new Date(jahr, monat - 1, tag, 12));
-}
-
-const feiertagCache = new Map<number, Set<Datum>>();
-
-/** Bundesweite gesetzliche Feiertage (Landesfeiertage fehlen bewusst – siehe Bericht). */
-export function feiertage(jahr: number): Set<Datum> {
-  const vorhanden = feiertagCache.get(jahr);
-  if (vorhanden) return vorhanden;
-  const ostern = ostersonntag(jahr);
-  const s = new Set<Datum>([
-    `${jahr}-01-01`,
-    plusTage(ostern, -2),
-    plusTage(ostern, 1),
-    `${jahr}-05-01`,
-    plusTage(ostern, 39),
-    plusTage(ostern, 50),
-    `${jahr}-10-03`,
-    `${jahr}-12-25`,
-    `${jahr}-12-26`,
-  ]);
-  feiertagCache.set(jahr, s);
-  return s;
-}
-
-export function wochentag(d: Datum): number {
-  // 0 = Sonntag … 6 = Samstag
-  return new Date(d + 'T12:00:00').getDay();
-}
-
-/** Montag bis Freitag und kein bundesweiter Feiertag */
-export function istArbeitstag(d: Datum): boolean {
-  const w = wochentag(d);
-  if (w === 0 || w === 6) return false;
-  return !feiertage(Number(d.slice(0, 4))).has(d);
-}
+// Feiertage und Arbeitstage kommen aus `@core/kalender` (Einstellungen `plan.arbeitstage`, `plan.bundesland`).
 
 /** Arbeitstage im Zeitraum (inklusive), halbtags = 0,5 je Tag */
 export function arbeitstage(von: Datum, bis: Datum, halbtags = false): number {
   if (bis < von) return 0;
-  let n = 0;
-  for (let d = von; d <= bis; d = plusTage(d, 1)) if (istArbeitstag(d)) n++;
+  const n = arbeitstageZwischen(von, bis);
   return halbtags ? n / 2 : n;
 }
 
@@ -117,13 +68,9 @@ export function urlaubskonto(m: Pick<Mitarbeiter, 'id' | 'urlaubstageJahr'>, all
 
 // ------------------------------------------------------------------ Abwesend? Kollisionen
 
-/** Zählt (bzw. zählt bald): genehmigt oder Krankmeldung */
-export function wirksam(a: Abwesenheit) {
-  return a.status === 'genehmigt';
-}
-
+/** Wirksame (genehmigte) Abwesenheit an einem Tag – Logik aus `verfuegbarkeit` */
 export function abwesenheitAm(maId: ID, d: Datum, alle: Abwesenheit[]): Abwesenheit | undefined {
-  return alle.find((a) => a.mitarbeiterId === maId && !a.geloeschtAm && wirksam(a) && a.von <= d && a.bis >= d);
+  return planAbwesenheitAm(maId, d, { abwesenheiten: alle }, { nurGenehmigt: true });
 }
 
 /** Termine des Mitarbeiters im Zeitraum, die noch nicht erledigt/abgesagt sind */

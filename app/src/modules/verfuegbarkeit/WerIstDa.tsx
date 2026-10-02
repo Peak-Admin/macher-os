@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { useEinstellung } from '@core/einstellungen';
-import { datumKurz, heute, isoDatum, personName, plusTage, uhrzeit, zahl } from '@core/format';
+import { datumKurz, heute, isoDatum, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart, zahl } from '@core/format';
+import { BUNDESLAENDER, STANDARD_ARBEITSTAGE } from '@core/kalender';
 import { useDarf } from '@core/session';
 import { Auswahl, Button, Checkbox, Dialog, IconButton, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, Zeile, useToast } from '@ui/index';
-import { kalenderwoche } from '../kalender/daten';
 import { useSchmal } from '../kalender/hooks';
 import { TerminFormular, type TerminVorgabe } from '../kalender/TerminFormular';
 import '../kalender/plan.css';
-import { anwesenheit, freieSlots, geplanteStunden, kontextAusDb, STANDARD_ARBEITSTAGE, tage, wochenStart, type Anwesenheit, type Slot } from './daten';
+import { anwesenheit, freieSlots, geplanteStunden, kontextAusDb, type Anwesenheit, type Slot } from './daten';
 
 const WOCHENTAGE = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 const ton = (a: Anwesenheit) => (a.status === 'da' ? 'erfolg' : a.status === 'abwesend' ? 'achtung' : a.status === 'beantragt' ? 'aktiv' : 'neutral');
@@ -33,7 +33,7 @@ export function WerIstDa() {
     <Seite
       titel="Wer ist wann da?"
       untertitel={`Arbeitszeit ${k.arbeitsbeginn}–${k.arbeitsende} Uhr, ${k.arbeitstage.map((d) => WOCHENTAGE[d - 1]).join(', ')}. Urlaub, Krankheit und Berufsschule sind berücksichtigt.`}
-      aktion={darfPlanen ? <Button variante="sekundaer" icon="einstellungen" onClick={() => setEinstellen(true)}>Arbeitstage</Button> : undefined}
+      aktion={darfPlanen ? <Button variante="sekundaer" icon="einstellungen" onClick={() => setEinstellen(true)}>Arbeitstage & Feiertage</Button> : undefined}
       breit
     >
       {!mitarbeiter.length ? (
@@ -176,10 +176,22 @@ function FreieZeitFinden() {
 
 function ArbeitstageDialog({ offen, onSchliessen }: { offen: boolean; onSchliessen: () => void }) {
   const [arbeitstage, setArbeitstage] = useEinstellung<number[]>('plan.arbeitstage', STANDARD_ARBEITSTAGE);
+  const [bundesland, setBundesland] = useEinstellung<string>('plan.bundesland', '');
   const toast = useToast();
   return (
-    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Arbeitstage im Betrieb" aktionen={<Button onClick={onSchliessen}>Fertig</Button>}>
-      <Meta>An diesen Tagen plant Macher Einsätze und bietet Kunden Termine an. Die Uhrzeiten stellst du in den Betriebs-Einstellungen ein.</Meta>
+    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Arbeitstage & Feiertage" aktionen={<Button onClick={onSchliessen}>Fertig</Button>}>
+      <Meta>An diesen Tagen plant Macher Einsätze und bietet Kunden Termine an. Gesetzliche Feiertage sind automatisch frei. Die Uhrzeiten stellst du in den Betriebs-Einstellungen ein.</Meta>
+      <Auswahl
+        label="Bundesland"
+        hilfe="Für die Feiertage deines Landes, z. B. Fronleichnam oder Reformationstag."
+        value={bundesland}
+        leer="Nur bundesweite Feiertage"
+        optionen={BUNDESLAENDER}
+        onChange={(e) => {
+          setBundesland(e.target.value);
+          toast('Feiertage aktualisiert.');
+        }}
+      />
       <Zeile>
         {WOCHENTAGE.map((w, i) => (
           <Checkbox

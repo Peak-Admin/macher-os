@@ -62,7 +62,7 @@ Beispieldaten (`seed`, `beispiel: true`): eine geplante und eine abgeschlossene 
 ## Kernwünsche
 
 1. `Zeiteintrag.pauseSeit?: string` – laufende Pause wird derzeit als Einstellung `zeiten.pause.<id>` gemerkt.
-2. `Betrieb.bundesland` – für Landesfeiertage (aktuell nur bundesweite Feiertage, Ostern berechnet).
+2. ~~Landesfeiertage~~ – erledigt: Feiertage/Arbeitstage zentral in `@core/kalender`, Bundesland über Einstellung `plan.bundesland`.
 3. `ObjektTabs`: Option, eigene Tabs ans Ende zu stellen (Verlauf liegt deshalb als Karte in der Seitenspalte).
 4. `Bezug.typ` für eigene Sammlungen (`unterweisungen`, `bewerber`) – Zeitstrahl funktioniert, braucht aber einen Cast.
 5. `Mitarbeiter`: Startsaldo Stundenkonto und Resturlaub-Übertrag aus dem Vorjahr.

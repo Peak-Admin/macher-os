@@ -4,6 +4,7 @@
  * Gibt es keine Grundlage, ist der Wert `undefined` („Noch keine Daten“).
  */
 import { isoDatum, plusTage, summen, tageZwischen } from '@core/format';
+import { arbeitstageZwischen, betriebsArbeitstage } from '@core/kalender';
 import type { Cent, Datum } from '@core/objects';
 import type { Basisdaten } from '../kosten/basis';
 import { rechnungBrutto, rechnungNetto, rechnungZaehlt, ustSatzVon } from '../ertrag/daten';
@@ -141,23 +142,16 @@ export function auftragsbestand(b: Basisdaten) {
 
 const AUSLASTUNG_ARTEN = ['einsatz', 'wartung', 'besichtigung', 'abnahme'];
 
-function werktage(s: Spanne): number {
-  let n = 0;
-  for (let d = s.von; d <= s.bis; d = plusTage(d, 1)) {
-    const tag = new Date(d + 'T12:00:00').getDay();
-    if (tag !== 0 && tag !== 6) n++;
-  }
-  return n;
-}
-
 /**
- * Auslastung grob: verplante Einsatzstunden ÷ Arbeitszeit des Teams (ohne Büro) an Werktagen.
+ * Auslastung grob: verplante Einsatzstunden ÷ Arbeitszeit des Teams (ohne Büro) an Arbeitstagen
+ * (Einstellung `plan.arbeitstage`, ohne gesetzliche Feiertage – siehe `@core/kalender`).
  * Urlaub und Krankheit sind nicht abgezogen.
  */
 export function auslastung(b: Basisdaten, s: Spanne): { anteil: number; geplantMinuten: number; kapazitaetMinuten: number } | undefined {
   const team = b.mitarbeiter.filter((m) => m.aktiv && m.rolle !== 'buero' && m.wochenstunden > 0);
-  const tage = werktage(s);
-  const kapazitaet = team.reduce((sum, m) => sum + (m.wochenstunden / 5) * 60 * tage, 0);
+  const arbeitstage = betriebsArbeitstage();
+  const tage = arbeitstageZwischen(s.von, s.bis, arbeitstage);
+  const kapazitaet = team.reduce((sum, m) => sum + (m.wochenstunden / arbeitstage.length) * 60 * tage, 0);
   if (!kapazitaet) return undefined;
   const ids = new Map(team.map((m) => [m.id, m]));
   let geplant = 0;

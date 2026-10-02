@@ -5,15 +5,9 @@
  *        + Material (verbrauchte Buchungen × EK)
  *        + Belege mit Auftragsbezug (netto).
  */
-import { isoDatum } from '@core/format';
+import { isoDatum, minutenAusStreng, minutenVon } from '@core/format';
 import type { Cent, ID, Zeiteintrag } from '@core/objects';
 import type { Basisdaten } from './basis';
-
-function minutenAus(uhr: string): number | undefined {
-  const m = /^(\d{1,2}):(\d{2})$/.exec(uhr?.trim() ?? '');
-  if (!m) return undefined;
-  return Number(m[1]) * 60 + Number(m[2]);
-}
 
 /**
  * Netto-Arbeitsminuten eines Zeiteintrags.
@@ -21,16 +15,16 @@ function minutenAus(uhr: string): number | undefined {
  * Unvollständige Einträge aus der Vergangenheit liefern `undefined`.
  */
 export function zeitMinuten(z: Pick<Zeiteintrag, 'datum' | 'start' | 'ende' | 'pauseMinuten'>, jetzt?: Date): number | undefined {
-  const start = minutenAus(z.start);
+  const start = minutenAusStreng(z.start);
   if (start == null) return undefined;
   let ende: number | undefined;
   if (z.ende) {
-    ende = minutenAus(z.ende);
+    ende = minutenAusStreng(z.ende);
     if (ende == null) return undefined;
     if (ende < start) ende += 24 * 60; // über Mitternacht
   } else {
     if (!jetzt || isoDatum(jetzt) !== z.datum) return undefined;
-    ende = jetzt.getHours() * 60 + jetzt.getMinutes();
+    ende = minutenVon(jetzt);
     if (ende < start) return 0;
   }
   return Math.max(0, ende - start - (z.pauseMinuten || 0));

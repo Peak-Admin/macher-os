@@ -1,8 +1,7 @@
 /** Auslastung: wer ist die nächsten 4 Wochen voll, wer hat Luft? */
 import { db, useDatenstand } from '@core/db';
-import { datumKurz, heute, personName, zahl } from '@core/format';
+import { datumKurz, heute, kalenderwoche, personName, zahl } from '@core/format';
 import { Karte, Kennzahl, Leer, Liste, ListenZeile, Meta, Raster, Seite, Stapel, Status, Tabelle, Button } from '@ui/index';
-import { kalenderwoche } from '../kalender/daten';
 import { useSchmal } from '../kalender/hooks';
 import { kontextAusDb } from '../verfuegbarkeit/daten';
 import { auslastung, teamWoche, type MitarbeiterAuslastung, type WochenWert } from './daten';

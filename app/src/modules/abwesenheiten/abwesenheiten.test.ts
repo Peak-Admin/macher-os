@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Abwesenheit, Termin } from '@core/objects';
-import { arbeitstage, feiertage, istArbeitstag, kollisionen, ostersonntag, tageImJahr, ueberschneidung, urlaubskonto } from './daten';
+import { feiertage, istArbeitstag, ostersonntag } from '@core/kalender';
+import { arbeitstage, kollisionen, tageImJahr, ueberschneidung, urlaubskonto } from './daten';
 
 const abw = (x: Partial<Abwesenheit>): Abwesenheit =>
   ({ id: Math.random().toString(), erstelltAm: '', geaendertAm: '', mitarbeiterId: 'm1', art: 'urlaub', von: '2026-01-01', bis: '2026-01-01', status: 'genehmigt', ...x }) as Abwesenheit;

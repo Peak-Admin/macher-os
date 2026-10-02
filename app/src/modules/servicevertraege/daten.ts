@@ -5,10 +5,10 @@
  */
 import { batch, db, defineCollection, vermerken } from '@core/db';
 import { aktionAusfuehren, alleModule } from '@core/modul';
-import { datum, heute, plusTage } from '@core/format';
+import { datum, heute, plusTage, plusMonate } from '@core/format';
 import { naechsteNummer } from '@core/nummern';
 import type { Auftrag, Basis, Cent, Datum, ID, Position } from '@core/objects';
-import { plusMonate, vorkommen } from '../wiederkehrend/regel';
+import { vorkommen } from '../wiederkehrend/regel';
 
 export type Rhythmus = 'monatlich' | 'quartal' | 'halbjahr' | 'jahr';
 

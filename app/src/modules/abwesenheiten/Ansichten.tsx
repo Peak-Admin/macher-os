@@ -187,7 +187,7 @@ export function JahrSeite() {
       }, 0);
   const zeilen = team.map((m) => ({ m, k: urlaubskonto(m, alle, jahr) }));
   return (
-    <Seite titel="Urlaub & Krankheit" untertitel={`Jahresübersicht ${jahr} – Arbeitstage, bundesweite Feiertage berücksichtigt.`}>
+    <Seite titel="Urlaub & Krankheit" untertitel={`Jahresübersicht ${jahr} – Arbeitstage, gesetzliche Feiertage berücksichtigt.`}>
       <AbwNav aktiv="jahr" />
       <Zeile>
         <Button klein variante="tertiaer" icon="zurueck" onClick={() => setJahr(jahr - 1)}>

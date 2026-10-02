@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
 import { on } from '@core/events';
-import { heute } from '@core/format';
+import { heute, kalenderwoche, wochenStart } from '@core/format';
 import type { Abwesenheit, Mitarbeiter, Zeiteintrag } from '@core/objects';
-import { csvExport, dauer, kalenderwoche, pauseBeenden, pauseStarten, pruefeMitarbeiterTag, pruefeTag, ruhezeitVerletzt, saldoText, sollTag, starten, stoppen, stundenkonto, wochenStart } from './daten';
+import { csvExport, dauer, pauseBeenden, pauseStarten, pruefeMitarbeiterTag, pruefeTag, ruhezeitVerletzt, saldoText, sollTag, starten, stoppen, stundenkonto } from './daten';
 import { einsatzBeenden, einsatzStarten, zeitenFreigeben, zeitenHinweise } from './einsatz';
 
 const z = (x: Partial<Zeiteintrag>): Zeiteintrag =>

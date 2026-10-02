@@ -1,5 +1,5 @@
 /** Qualifikationen & Nachweise – reine Logik (Gültigkeit, Ablauf-Stufen, Matrix). */
-import { isoDatum, tageZwischen, datum as datumFmt } from '@core/format';
+import { tageZwischen, datum as datumFmt, plusMonate } from '@core/format';
 import type { Datum, ID, Nachweis, Qualifikation } from '@core/objects';
 import type { Ton } from '@core/modul';
 
@@ -18,13 +18,7 @@ export const DRINGEND_TAGE = 30;
 
 export function gueltigBisAus(erworbenAm: Datum | undefined, gueltigMonate: number | undefined): Datum | undefined {
   if (!erworbenAm || !gueltigMonate) return undefined;
-  const d = new Date(erworbenAm + 'T12:00:00');
-  const tag = d.getDate();
-  d.setDate(1);
-  d.setMonth(d.getMonth() + gueltigMonate);
-  const letzter = new Date(d.getFullYear(), d.getMonth() + 1, 0, 12).getDate();
-  d.setDate(Math.min(tag, letzter));
-  return isoDatum(d);
+  return plusMonate(erworbenAm, gueltigMonate);
 }
 
 export function nachweisStatus(n: Pick<Nachweis, 'gueltigBis'>, heute: Datum): NachweisStatus {

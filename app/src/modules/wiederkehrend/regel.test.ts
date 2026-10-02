@@ -1,6 +1,7 @@
+import { plusMonate } from '@core/format';
 import { describe, expect, it } from 'vitest';
 import { db } from '@core/db';
-import { intervallText, plusMonate, regelText, vorkommen } from './regel';
+import { intervallText, regelText, vorkommen } from './regel';
 import { abwesenheitsKonflikte, serieBeenden, serien, serienTermine, terminAuslassen, termineErzeugen, terminVerschieben, terminDatum } from './daten';
 
 describe('Wiederholungsregeln', () => {

@@ -1,11 +1,11 @@
 /** Termin anlegen / bearbeiten / verschieben – ein Formular für Kalender, Plantafel und Auftragsakte. */
 import { useMemo, useState } from 'react';
 import { db, vermerken } from '@core/db';
-import { datumKurz, heute, isoDatum, personName, plusTage, uhrzeit, zeitpunkt } from '@core/format';
+import { datumKurz, heute, isoDatum, minutenAus, personName, plusTage, uhrAus, uhrzeit, zeitpunkt } from '@core/format';
 import type { Datum, ID, Termin, TerminArt } from '@core/objects';
 import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Meta, Stapel, Status, Textfeld, useToast } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
-import { freieSlots, kontextAusDb, minutenAus, pruefeVerfuegbarkeit, uhrAus } from '../verfuegbarkeit/daten';
+import { freieSlots, kontextAusDb, pruefeVerfuegbarkeit } from '../verfuegbarkeit/daten';
 import { TERMINART_LABEL } from './daten';
 
 export interface TerminVorgabe {

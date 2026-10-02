@@ -8,9 +8,9 @@ import { einstellung, setzeEinstellung } from '@core/einstellungen';
 import { emit } from '@core/events';
 import { benachrichtigen, erledigt } from '@core/macher';
 import { naechsteNummer } from '@core/nummern';
-import { datumKurz, isoDatum, plusTage, uhrzeit } from '@core/format';
+import { datumKurz, isoDatum, plusTage, uhrzeit, wochenStart } from '@core/format';
 import type { Auftrag, Basis, ID, Kunde, Termin, TerminArt } from '@core/objects';
-import { freieSlots, geplanteStunden, kontextAusDb, verfuegbar, wochenStart, type PlanKontext, type Slot } from '../verfuegbarkeit/daten';
+import { freieSlots, geplanteStunden, kontextAusDb, verfuegbar, type PlanKontext, type Slot } from '../verfuegbarkeit/daten';
 
 export interface Buchungsfenster extends Basis {
   /** Name für Kunden, z. B. „Besichtigung vor Ort“ */

@@ -35,11 +35,11 @@ Score = Frequenz × Intensität. C = Chef, B = Büro, M = Monteur.
 - Grundlage: Betriebsarbeitszeit (`betrieb.arbeitsbeginn/-ende`), Arbeitstage (Einstellung `plan.arbeitstage`), Abwesenheiten (genehmigt blockiert, beantragt warnt, abgelehnt zählt nicht, halbtags = Vormittag), bestehende Termine (ohne abgesagte), aktiv/Ein-/Austritt (1, 4–8, 15, 17, 25)
 - `freieSlots` mit Raster, Zeitfenster, Wochentagen, Puffer, „mindestens n Leute frei“ (9, 12)
 - Ansicht „Wer ist wann da?“ (Woche; mobil Tag) mit Text-Status + „Freie Zeit finden“ fürs Telefon (1, 2, 11, 16)
-- Arbeitstage im Betrieb einstellbar (5, 10)
+- Arbeitstage im Betrieb einstellbar, gesetzliche Feiertage je Bundesland automatisch frei (`@core/kalender`) (5, 10, 14)
 
 ## Macher erledigt automatisch
 - Jede Planungsansicht prüft live dieselben Regeln – kein manuelles Abgleichen (3)
 
 ## Bewusst weggelassen
 - Individuelle Arbeitszeiten je Mitarbeiter, Gleitzeit, Teilzeit-Wochentage (13, 18) – Kernwunsch (Feld am Mitarbeiter)
-- Feiertage (14), Rufbereitschaft (19), Subunternehmer (21), Mittagspause (23)
+- Rufbereitschaft (19), Subunternehmer (21), Mittagspause (23)

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Termin } from '@core/objects';
-import { icsDateiname, kalenderwoche, kuenftigeTermine, monatsAnfang, terminAlsIcs, terminAmTag, termineIm, verschoben } from './daten';
+import { kalenderwoche } from '@core/format';
+import { icsDateiname, kuenftigeTermine, monatsAnfang, terminAlsIcs, terminAmTag, termineIm, verschoben } from './daten';
 
 const iso = (d: string, uhr: string) => new Date(`${d}T${uhr}:00`).toISOString();
 const t = (id: string, tag: string, von: string, bis: string, x: Partial<Termin> = {}): Termin => ({

@@ -40,10 +40,9 @@ Score = Frequenz (1–10) × Intensität (1–10). Sicht: Chef, Büro, Monteur a
 - Krankmeldung sofort an Chef/Büro mit betroffenen Terminen
 - Bescheid an Mitarbeiter bei Genehmigung/Ablehnung
 - Hinweise: Antrag genehmigen (mit gleichzeitig Abwesenden), Kollision → Umplanen (`plan.einplanen`)
-- Bundesweite Feiertage automatisch
+- Gesetzliche Feiertage automatisch (bundesweit + Bundesland laut `plan.bundesland`, aus `@core/kalender`)
 
 ## Bewusst weggelassen (Pareto)
-- Landesfeiertage (Bundesland fehlt im Kern)
 - Übertrag Resturlaub/Anteilsberechnung
 - Vertretungsregel für Genehmigung
 - Urlaubssperren

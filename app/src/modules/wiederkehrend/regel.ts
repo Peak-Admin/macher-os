@@ -2,7 +2,8 @@
  * Wiederholungsregeln – reine Logik ohne Datenzugriff (testbar).
  * Wird auch von Wartung und Serviceverträgen genutzt (Monatsrechnung mit Monatsende).
  */
-import { isoDatum, plusTage, tageZwischen } from '@core/format';
+import { plusMonate, plusTage, tageZwischen } from '@core/format';
+import { naechsteArbeitstage } from '@core/kalender';
 import type { Datum } from '@core/objects';
 
 export type RegelArt = 'woechentlich' | 'monatlich' | 'jaehrlich' | 'monate';
@@ -19,18 +20,6 @@ export const REGEL_ARTEN: { wert: RegelArt; label: string }[] = [
   { wert: 'monate', label: 'Alle N Monate' },
   { wert: 'jaehrlich', label: 'Jährlich' },
 ];
-
-/**
- * Datum plus N Monate. Fällt der Tag weg (31. → Februar), wird auf das Monatsende gekürzt.
- * Immer vom Ausgangsdatum aus rechnen, nicht kettenweise – sonst „wandert“ der 31. auf den 28.
- */
-export function plusMonate(datum: Datum, monate: number): Datum {
-  const [j, m, t] = datum.split('-').map(Number);
-  const ziel = new Date(j, m - 1 + monate, 1, 12);
-  const letzterTag = new Date(ziel.getFullYear(), ziel.getMonth() + 1, 0, 12).getDate();
-  ziel.setDate(Math.min(t, letzterTag));
-  return isoDatum(ziel);
-}
 
 /** Abstand der Regel in Monaten (0 = wochenbasiert) */
 export function regelMonate(r: Regel): number {
@@ -73,10 +62,9 @@ export function vorkommen(start: Datum, r: Regel, von: Datum, bis: Datum, ende?:
   return out;
 }
 
-/** Fällt der Tag aufs Wochenende, auf den folgenden Montag schieben */
+/** Fällt der Tag auf einen freien Tag (Wochenende, Feiertag), auf den nächsten Arbeitstag schieben (`@core/kalender`) */
 export function werktag(d: Datum): Datum {
-  const wt = new Date(d + 'T12:00:00').getDay();
-  return wt === 6 ? plusTage(d, 2) : wt === 0 ? plusTage(d, 1) : d;
+  return naechsteArbeitstage(d, 1)[0] ?? d;
 }
 
 const WOCHENTAGE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];

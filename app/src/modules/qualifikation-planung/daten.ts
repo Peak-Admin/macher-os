@@ -2,16 +2,10 @@
  * Qualifikation bei der Planung: Hat das eingeplante Team am Termindatum die nötigen,
  * GÜLTIGEN Nachweise? Wenn nicht: wer wäre stattdessen qualifiziert und frei?
  */
-import { datum as datumFmt, personName } from '@core/format';
+import { datum as datumFmt, datumVon, personName } from '@core/format';
 import type { Auftrag, Datum, ID, Termin } from '@core/objects';
-import {
-  finde,
-  istVerfuegbar,
-  planbareMitarbeiter,
-  terminDatum,
-  type Kontext,
-  type Pruefung,
-} from '../autoplanung/basis';
+import { finde, planKontext, type Kontext, type Pruefung } from '../autoplanung/basis';
+import { planbareMitarbeiter, pruefeVerfuegbarkeit } from '../verfuegbarkeit/daten';
 
 /** Benötigte Qualifikationen: am Auftrag + aus den erwarteten Leistungen (ohne Doppelte) */
 export function benoetigteQualifikationen(ctx: Kontext, auftrag: Auftrag | undefined): ID[] {
@@ -52,15 +46,21 @@ export function erfuelltAlle(ctx: Kontext, mitarbeiterId: ID, qualiIds: ID[], d:
 const qName = (ctx: Kontext, id: ID) => finde(ctx.qualifikationen, id)?.name ?? 'Qualifikation';
 const maName = (ctx: Kontext, id: ID) => personName(finde(ctx.mitarbeiter, id));
 
-/** Wer wäre im Zeitraum frei und hat die Qualifikationen? (eingeplante ausgenommen) */
+/**
+ * Wer wäre im Zeitraum frei und hat die Qualifikationen? (eingeplante ausgenommen)
+ * Frei laut `verfuegbarkeit`; wer nur mit Warnung frei ist (z. B. Urlaub beantragt), kommt ans Ende.
+ */
 export function qualifizierteErsatzleute(ctx: Kontext, t: Pick<Termin, 'id' | 'start' | 'ende' | 'mitarbeiterIds'>, qualiIds: ID[]): ID[] {
-  const d = terminDatum(t);
-  return planbareMitarbeiter(ctx)
+  const d = datumVon(t.start);
+  const kontext = planKontext(ctx);
+  return planbareMitarbeiter(ctx, ctx.heute)
     .filter((m) => !t.mitarbeiterIds.includes(m.id))
     .filter((m) => m.rolle !== 'azubi')
     .filter((m) => erfuelltAlle(ctx, m.id, qualiIds, d))
-    .filter((m) => istVerfuegbar(ctx, m.id, t.start, t.ende, t.id))
-    .map((m) => m.id);
+    .map((m) => ({ id: m.id, p: pruefeVerfuegbarkeit(m.id, t.start, t.ende, { kontext, ohneTerminId: t.id }) }))
+    .filter((x) => x.p.verfuegbar)
+    .sort((a, b) => a.p.gruende.length - b.p.gruende.length)
+    .map((x) => x.id);
 }
 
 /**
@@ -71,7 +71,7 @@ export function pruefeQualifikation(ctx: Kontext, t: Termin): Pruefung[] {
   const auftrag = finde(ctx.auftraege, t.auftragId);
   const benoetigt = benoetigteQualifikationen(ctx, auftrag);
   if (!benoetigt.length) return [{ ergebnis: 'ok', text: 'Für diesen Einsatz ist keine besondere Qualifikation hinterlegt.' }];
-  const d = terminDatum(t);
+  const d = datumVon(t.start);
   if (!t.mitarbeiterIds.length) {
     return [{ ergebnis: 'warnung', text: 'Noch niemand eingeplant.', loesung: vorschlagText(ctx, t, benoetigt) }];
   }

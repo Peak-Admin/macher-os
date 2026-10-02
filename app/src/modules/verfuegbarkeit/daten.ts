@@ -1,15 +1,24 @@
 /**
- * Verfügbarkeit – zentrale, reine Planungslogik für das ganze Paket „Plan“
- * (und für andere Pakete wie Automatische Planung oder Terminbuchung).
+ * Verfügbarkeit – EINZIGE Quelle der Planungslogik „Wer ist wann frei?“ für das ganze
+ * Paket „Plan“ und für alle anderen Pakete (Automatische Planung und Planprüfungen,
+ * Terminbuchung, Auslastung, Kalender, Urlaub & Arbeitszeiten).
  *
- * Alle Funktionen arbeiten auf einem `PlanKontext` (Betriebsarbeitszeit, Mitarbeiter,
- * Abwesenheiten, Termine). Ohne Kontext lesen sie den aktuellen Datenstand aus `db`.
- * Zeiten sind lokale Uhrzeiten; Termine speichern ISO-Zeitpunkte.
+ * Alle Funktionen arbeiten auf einem `PlanKontext` (Betriebsarbeitszeit, Arbeitstage, Bundesland,
+ * Mitarbeiter, Abwesenheiten, Termine). Ohne Kontext lesen sie den aktuellen Datenstand aus `db`.
+ * Zeiten sind lokale Uhrzeiten; Termine speichern ISO-Zeitpunkte. Datums-/Uhrzeit-Helfer
+ * kommen aus `@core/format`, Feiertage und Arbeitstage aus `@core/kalender`.
+ *
+ * Fachliche Regeln (verbindlich für alle Nutzer):
+ * - Genehmigte Abwesenheit blockiert, beantragte warnt (nicht blockierend, aber nie „einfach frei“),
+ *   abgelehnte zählt nicht. Halbtags = Vormittag (erste Hälfte der Arbeitszeit) abwesend.
+ * - Kein Arbeitstag (Wochentag laut `plan.arbeitstage` oder gesetzlicher Feiertag) blockiert.
+ * - Abgesagte und gelöschte Termine zählen nicht; ganztägige Termine belegen die Arbeitszeit.
+ * - Inaktive Mitarbeiter sowie Tage vor Eintritt/nach Austritt blockieren.
  */
 import { db } from '@core/db';
-import { einstellung } from '@core/einstellungen';
-import { isoDatum, plusTage } from '@core/format';
-import type { Abwesenheit, AbwesenheitsArt, Datum, ID, Mitarbeiter, Termin } from '@core/objects';
+import { betriebsArbeitstage, betriebsBundesland, feiertagName, istArbeitstag, type Bundesland } from '@core/kalender';
+import { isoDatum, lokal, minutenAus, plusTage, tage, wochentag } from '@core/format';
+import type { Abwesenheit, AbwesenheitsArt, Auftrag, Datum, ID, Mitarbeiter, Termin } from '@core/objects';
 
 export interface PlanKontext {
   /** Betriebsarbeitszeit, z. B. "07:00" */
@@ -17,78 +26,58 @@ export interface PlanKontext {
   arbeitsende: string;
   /** Arbeitstage 1 = Montag … 7 = Sonntag */
   arbeitstage: number[];
+  /** für Landesfeiertage; leer = nur bundesweite Feiertage */
+  bundesland?: Bundesland | null;
   mitarbeiter: Mitarbeiter[];
   abwesenheiten: Abwesenheit[];
   termine: Termin[];
 }
 
-export const STANDARD_ARBEITSTAGE = [1, 2, 3, 4, 5];
-
 /** Aktueller Datenstand als Planungskontext */
 export function kontextAusDb(): PlanKontext {
   const b = db.betrieb.get('betrieb');
   return {
-    arbeitsbeginn: b?.arbeitsbeginn ?? '07:00',
-    arbeitsende: b?.arbeitsende ?? '16:00',
-    arbeitstage: einstellung('plan.arbeitstage', STANDARD_ARBEITSTAGE),
+    arbeitsbeginn: b?.arbeitsbeginn || '07:00',
+    arbeitsende: b?.arbeitsende || '16:00',
+    arbeitstage: betriebsArbeitstage(),
+    bundesland: betriebsBundesland() ?? null,
     mitarbeiter: db.mitarbeiter.all(),
     abwesenheiten: db.abwesenheiten.all(),
     termine: db.termine.all(),
   };
 }
 
-// ------------------------------------------------------------------ Datum & Zeit
+// ------------------------------------------------------------------ Tage & Intervalle
 
 const MIN = 60_000;
 
-/** "07:30" → 450 */
-export function minutenAus(uhr: string): number {
-  const [h, m] = uhr.split(':').map(Number);
-  return (h || 0) * 60 + (m || 0);
+/** Arbeitet der Betrieb an diesem Tag? (Arbeitstage + Feiertage des Kontexts) */
+export function arbeitstagIm(k: Pick<PlanKontext, 'arbeitstage' | 'bundesland'>, datum: Datum): boolean {
+  return istArbeitstag(datum, k.arbeitstage, k.bundesland ?? null);
 }
 
-/** 450 → "07:30" */
-export function uhrAus(minuten: number): string {
-  const z = (n: number) => String(n).padStart(2, '0');
-  return `${z(Math.floor(minuten / 60))}:${z(minuten % 60)}`;
-}
-
-/** Lokales Datum + Minuten seit Mitternacht → Date */
-export function lokal(datum: Datum, minuten: number): Date {
-  const d = new Date(`${datum}T00:00:00`);
-  d.setMinutes(minuten);
-  return d;
-}
-
-/** 1 = Montag … 7 = Sonntag */
-export function wochentag(datum: Datum): number {
-  const t = new Date(`${datum}T12:00:00`).getDay();
-  return t === 0 ? 7 : t;
-}
-
-/** Montag der Woche, in der `datum` liegt */
-export function wochenStart(datum: Datum): Datum {
-  return plusTage(datum, 1 - wochentag(datum));
-}
-
-/** Alle Tage von `von` bis `bis` (beide inklusive) */
-export function tage(von: Datum, bis: Datum): Datum[] {
-  const liste: Datum[] = [];
-  for (let d = von; d <= bis && liste.length < 400; d = plusTage(d, 1)) liste.push(d);
-  return liste;
+/** Warum wird an diesem Tag nicht gearbeitet? (Feiertagsname oder „Kein Arbeitstag“) */
+function freierTagText(k: Pick<PlanKontext, 'bundesland'>, datum: Datum): string {
+  const f = feiertagName(datum, k.bundesland ?? null);
+  return f ? `Feiertag: ${f}` : 'Kein Arbeitstag';
 }
 
 const zeit = (x: string | Date) => (x instanceof Date ? x : new Date(x)).getTime();
 
-interface Intervall {
+export interface Intervall {
   von: number;
   bis: number;
 }
 
 const ueberlappt = (a: Intervall, b: Intervall) => a.von < b.bis && b.von < a.bis;
 
+/** Überschneiden sich zwei Zeiträume (z. B. Termine)? Direkt anschließend ist keine Überschneidung. */
+export function zeitraeumeUeberlappen(a: { start: string | Date; ende: string | Date }, b: { start: string | Date; ende: string | Date }): boolean {
+  return ueberlappt({ von: zeit(a.start), bis: zeit(a.ende) }, { von: zeit(b.start), bis: zeit(b.ende) });
+}
+
 /** Zeitraum eines Termins; ganztägige Termine belegen die Arbeitszeit der betroffenen Tage */
-export function terminIntervalle(t: Termin, k: Pick<PlanKontext, 'arbeitsbeginn' | 'arbeitsende'>): Intervall[] {
+export function terminIntervalle(t: Pick<Termin, 'start' | 'ende' | 'ganztags'>, k: Pick<PlanKontext, 'arbeitsbeginn' | 'arbeitsende'>): Intervall[] {
   if (!t.ganztags) return [{ von: zeit(t.start), bis: zeit(t.ende) }];
   const von = isoDatum(new Date(t.start));
   const bis = isoDatum(new Date(t.ende));
@@ -98,8 +87,26 @@ export function terminIntervalle(t: Termin, k: Pick<PlanKontext, 'arbeitsbeginn'
   }));
 }
 
-/** Termin zählt für die Planung (abgesagte nicht) */
+/** Termin zählt für die Planung (abgesagte und gelöschte nicht) */
 export const terminZaehlt = (t: Termin) => t.status !== 'abgesagt' && !t.geloeschtAm;
+
+/** Termine eines Mitarbeiters, die einen Tag berühren (auch mehrtägige/ganztägige), nach Beginn sortiert */
+export function termineAm(mitarbeiterId: ID, datum: Datum, k: Pick<PlanKontext, 'termine' | 'arbeitsbeginn' | 'arbeitsende'>): Termin[] {
+  const tag = { von: lokal(datum, 0).getTime(), bis: lokal(plusTage(datum, 1), 0).getTime() };
+  return k.termine
+    .filter((t) => terminZaehlt(t) && t.mitarbeiterIds.includes(mitarbeiterId) && terminIntervalle(t, k).some((iv) => ueberlappt(iv, tag)))
+    .sort((a, b) => a.start.localeCompare(b.start));
+}
+
+/** Gehört der Mitarbeiter an diesem Tag zum Team (aktiv, eingetreten, nicht ausgetreten, nicht gelöscht)? */
+export function imTeam(m: Mitarbeiter | undefined, datum: Datum): m is Mitarbeiter {
+  return !!m && m.aktiv && !m.geloeschtAm && !(m.austritt && m.austritt < datum) && !(m.eintritt && m.eintritt > datum);
+}
+
+/** Wer kann ausführend eingeplant werden? (im Team, kein Büro) */
+export function planbareMitarbeiter(k: Pick<PlanKontext, 'mitarbeiter'>, stichtag: Datum): Mitarbeiter[] {
+  return k.mitarbeiter.filter((m) => m.rolle !== 'buero' && m.aktiv && !m.geloeschtAm && !(m.austritt && m.austritt < stichtag));
+}
 
 // ------------------------------------------------------------------ Abwesenheiten
 
@@ -112,16 +119,31 @@ export const ABWESENHEIT_LABEL: Record<AbwesenheitsArt, string> = {
   sonstiges: 'Abwesend',
 };
 
-/** Abwesenheit eines Mitarbeiters an einem Tag (genehmigte vor beantragten) */
-export function abwesenheitAm(mitarbeiterId: ID, datum: Datum, k: Pick<PlanKontext, 'abwesenheiten'>): Abwesenheit | undefined {
+/**
+ * Abwesenheit eines Mitarbeiters an einem Tag: genehmigte vor beantragten, abgelehnte nie.
+ * `nurGenehmigt` für Soll-Stunden/Urlaubskonto, wo nur wirksame Abwesenheiten zählen.
+ */
+export function abwesenheitAm(mitarbeiterId: ID, datum: Datum, k: Pick<PlanKontext, 'abwesenheiten'>, opts: { nurGenehmigt?: boolean } = {}): Abwesenheit | undefined {
   const treffer = k.abwesenheiten.filter(
-    (a) => !a.geloeschtAm && a.mitarbeiterId === mitarbeiterId && a.status !== 'abgelehnt' && a.von <= datum && a.bis >= datum,
+    (a) =>
+      !a.geloeschtAm &&
+      a.mitarbeiterId === mitarbeiterId &&
+      (opts.nurGenehmigt ? a.status === 'genehmigt' : a.status !== 'abgelehnt') &&
+      a.von <= datum &&
+      a.bis >= datum,
   );
   return treffer.find((a) => a.status === 'genehmigt') ?? treffer[0];
 }
 
+/** Halbtags abwesend = Vormittag: von Arbeitsbeginn bis zur Mitte der Arbeitszeit (Minuten) */
+export function halbtagsVormittag(k: Pick<PlanKontext, 'arbeitsbeginn' | 'arbeitsende'>): Intervall {
+  const beginn = minutenAus(k.arbeitsbeginn);
+  return { von: beginn, bis: Math.round((beginn + minutenAus(k.arbeitsende)) / 2) };
+}
+
 // ------------------------------------------------------------------ Prüfen
 
+/** `kein_arbeitstag` umfasst Wochentage ohne Arbeit und gesetzliche Feiertage */
 export type GrundArt = 'unbekannt' | 'inaktiv' | 'abwesend' | 'abwesend_beantragt' | 'kein_arbeitstag' | 'ausserhalb' | 'termin';
 
 export interface Grund {
@@ -156,7 +178,7 @@ export function pruefeVerfuegbarkeit(mitarbeiterId: ID, start: string | Date, en
   const letzterTag = isoDatum(new Date(e - 1));
 
   if (!m) gruende.push({ art: 'unbekannt', text: 'Mitarbeiter unbekannt', blockiert: true });
-  else if (!m.aktiv || (m.austritt && m.austritt < ersterTag) || (m.eintritt && m.eintritt > letzterTag))
+  else if (!m.aktiv || m.geloeschtAm || (m.austritt && m.austritt < ersterTag) || (m.eintritt && m.eintritt > letzterTag))
     gruende.push({ art: 'inaktiv', text: 'Nicht mehr im Team', blockiert: true });
 
   const beginn = minutenAus(k.arbeitsbeginn);
@@ -167,9 +189,8 @@ export function pruefeVerfuegbarkeit(mitarbeiterId: ID, start: string | Date, en
       const label = ABWESENHEIT_LABEL[ab.art];
       let betroffen = true;
       if (ab.halbtags) {
-        // halbtags: erste Hälfte des Arbeitstages
-        const mitte = lokal(tag, Math.round((beginn + schluss) / 2)).getTime();
-        betroffen = ueberlappt({ von: s, bis: e }, { von: lokal(tag, beginn).getTime(), bis: mitte });
+        const vm = halbtagsVormittag(k);
+        betroffen = ueberlappt({ von: s, bis: e }, { von: lokal(tag, vm.von).getTime(), bis: lokal(tag, vm.bis).getTime() });
       }
       if (betroffen)
         gruende.push(
@@ -178,8 +199,8 @@ export function pruefeVerfuegbarkeit(mitarbeiterId: ID, start: string | Date, en
             : { art: 'abwesend_beantragt', text: `${label} beantragt`, blockiert: false, abwesenheitId: ab.id },
         );
     }
-    if (!k.arbeitstage.includes(wochentag(tag))) {
-      gruende.push({ art: 'kein_arbeitstag', text: 'Kein Arbeitstag', blockiert: true });
+    if (!arbeitstagIm(k, tag)) {
+      gruende.push({ art: 'kein_arbeitstag', text: freierTagText(k, tag), blockiert: true });
       continue;
     }
     const tagVon = Math.max(s, lokal(tag, 0).getTime());
@@ -195,7 +216,7 @@ export function pruefeVerfuegbarkeit(mitarbeiterId: ID, start: string | Date, en
   }
 
   // gleiche Gründe nur einmal (z. B. „Außerhalb der Arbeitszeit“ an mehreren Tagen)
-  const eindeutig = gruende.filter((g, i) => gruende.findIndex((x) => x.art === g.art && x.terminId === g.terminId && x.abwesenheitId === g.abwesenheitId) === i);
+  const eindeutig = gruende.filter((g, i) => gruende.findIndex((x) => x.art === g.art && x.text === g.text && x.terminId === g.terminId && x.abwesenheitId === g.abwesenheitId) === i);
   return { verfuegbar: !eindeutig.some((g) => g.blockiert), gruende: eindeutig };
 }
 
@@ -214,6 +235,65 @@ export function terminKonflikte(t: Pick<Termin, 'id' | 'start' | 'ende' | 'mitar
       return { mitarbeiterId, gruende: gruende.filter((g, i) => gruende.findIndex((x) => x.text === g.text && x.terminId === g.terminId) === i) };
     })
     .filter((x) => x.gruende.length > 0);
+}
+
+// ------------------------------------------------------------------ Belegung eines Tages
+
+export interface Tagesbelegung {
+  /** grundsätzlich einplanbar (im Team, Arbeitstag, nicht ganztags genehmigt abwesend) */
+  frei: boolean;
+  /** belegte Zeiten (ms) an diesem Tag: Termine (mit Puffer) und halbtags-Abwesenheit */
+  belegt: Intervall[];
+  /** beantragte (noch nicht genehmigte) Abwesenheit – Warnung, kein Blocker */
+  beantragt?: Abwesenheit;
+}
+
+/** Belegung eines Mitarbeiters an einem Tag – Grundlage für freie Slots und freie Fenster */
+export function belegungAm(mitarbeiterId: ID, tag: Datum, k: PlanKontext, pufferMinuten = 0): Tagesbelegung {
+  const m = k.mitarbeiter.find((x) => x.id === mitarbeiterId);
+  const ab = abwesenheitAm(mitarbeiterId, tag, k);
+  const genehmigt = ab?.status === 'genehmigt' ? ab : undefined;
+  const frei = imTeam(m, tag) && arbeitstagIm(k, tag) && !(genehmigt && !genehmigt.halbtags);
+  const belegt: Intervall[] = [];
+  if (genehmigt?.halbtags) {
+    const vm = halbtagsVormittag(k);
+    belegt.push({ von: lokal(tag, vm.von).getTime(), bis: lokal(tag, vm.bis).getTime() });
+  }
+  const tagIv = { von: lokal(tag, 0).getTime(), bis: lokal(plusTage(tag, 1), 0).getTime() };
+  for (const t of k.termine) {
+    if (!terminZaehlt(t) || !t.mitarbeiterIds.includes(mitarbeiterId)) continue;
+    for (const x of terminIntervalle(t, k)) if (ueberlappt(x, tagIv)) belegt.push({ von: x.von - pufferMinuten * MIN, bis: x.bis + pufferMinuten * MIN });
+  }
+  return { frei, belegt, beantragt: ab && ab.status !== 'genehmigt' ? ab : undefined };
+}
+
+/** Freies Zeitfenster in Minuten seit Mitternacht */
+export interface Fenster {
+  von: number;
+  bis: number;
+}
+
+/**
+ * Freie Zeitfenster (Minuten) eines Mitarbeiters an einem Tag innerhalb der Betriebsarbeitszeit.
+ * Beantragte Abwesenheit lässt die Fenster offen – siehe `belegungAm(...).beantragt` für die Warnung.
+ */
+export function freieFenster(mitarbeiterId: ID, tag: Datum, k: PlanKontext): Fenster[] {
+  const b = belegungAm(mitarbeiterId, tag, k);
+  if (!b.frei) return [];
+  const basis = lokal(tag, 0).getTime();
+  let frei: Fenster[] = [{ von: minutenAus(k.arbeitsbeginn), bis: minutenAus(k.arbeitsende) }];
+  for (const iv of b.belegt) {
+    const s = Math.floor((iv.von - basis) / MIN);
+    const e = Math.ceil((iv.bis - basis) / MIN);
+    frei = frei.flatMap((f) => {
+      if (e <= f.von || s >= f.bis) return [f];
+      const r: Fenster[] = [];
+      if (s > f.von) r.push({ von: f.von, bis: s });
+      if (e < f.bis) r.push({ von: e, bis: f.bis });
+      return r;
+    });
+  }
+  return frei.filter((f) => f.bis > f.von);
 }
 
 // ------------------------------------------------------------------ Freie Slots
@@ -256,7 +336,7 @@ export function freieSlots(o: SlotOptionen): Slot[] {
   const puffer = o.pufferMinuten ?? 0;
   const mindestens = o.mindestens ?? 1;
   const ab = (o.ab ?? new Date()).getTime();
-  const ids = o.mitarbeiterIds ?? k.mitarbeiter.filter((m) => m.aktiv).map((m) => m.id);
+  const ids = o.mitarbeiterIds ?? k.mitarbeiter.filter((m) => m.aktiv && !m.geloeschtAm).map((m) => m.id);
   const fensterVon = Math.max(minutenAus(k.arbeitsbeginn), minutenAus(o.zeitVon ?? '00:00'));
   const fensterBis = Math.min(minutenAus(k.arbeitsende), minutenAus(o.zeitBis ?? '24:00'));
   const slots: Slot[] = [];
@@ -264,34 +344,16 @@ export function freieSlots(o: SlotOptionen): Slot[] {
 
   for (const tag of tage(o.von, o.bis)) {
     if (o.wochentage && !o.wochentage.includes(wochentag(tag))) continue;
-    if (!k.arbeitstage.includes(wochentag(tag))) continue;
-    // belegte Intervalle je Mitarbeiter an diesem Tag vorberechnen
-    const tagVon = lokal(tag, 0).getTime();
-    const tagBis = lokal(tag, 24 * 60).getTime();
-    const belegt = new Map<ID, Intervall[]>();
-    const frei = new Map<ID, boolean>();
-    for (const id of ids) {
-      const m = k.mitarbeiter.find((x) => x.id === id);
-      const ab2 = abwesenheitAm(id, tag, k);
-      const inaktiv = !m || !m.aktiv || (m.austritt && m.austritt < tag) || (m.eintritt && m.eintritt > tag);
-      frei.set(id, !inaktiv && !(ab2 && ab2.status === 'genehmigt' && !ab2.halbtags));
-      const iv: Intervall[] = [];
-      if (ab2 && ab2.status === 'genehmigt' && ab2.halbtags) {
-        iv.push({ von: lokal(tag, minutenAus(k.arbeitsbeginn)).getTime(), bis: lokal(tag, Math.round((minutenAus(k.arbeitsbeginn) + minutenAus(k.arbeitsende)) / 2)).getTime() });
-      }
-      for (const t of k.termine) {
-        if (!terminZaehlt(t) || !t.mitarbeiterIds.includes(id)) continue;
-        for (const x of terminIntervalle(t, k)) {
-          if (ueberlappt(x, { von: tagVon, bis: tagBis })) iv.push({ von: x.von - puffer * MIN, bis: x.bis + puffer * MIN });
-        }
-      }
-      belegt.set(id, iv);
-    }
+    if (!arbeitstagIm(k, tag)) continue;
+    const belegung = new Map(ids.map((id) => [id, belegungAm(id, tag, k, puffer)]));
     for (let min = fensterVon; min + o.dauerMinuten <= fensterBis; min += raster) {
       const s = lokal(tag, min).getTime();
       const e = s + o.dauerMinuten * MIN;
       if (s < ab) continue;
-      const freieIds = ids.filter((id) => frei.get(id) && !belegt.get(id)!.some((iv) => ueberlappt(iv, { von: s, bis: e })));
+      const freieIds = ids.filter((id) => {
+        const b = belegung.get(id)!;
+        return b.frei && !b.belegt.some((iv) => ueberlappt(iv, { von: s, bis: e }));
+      });
       if (freieIds.length >= mindestens) {
         slots.push({ start: new Date(s).toISOString(), ende: new Date(e).toISOString(), mitarbeiterIds: freieIds });
         if (o.max && slots.length >= o.max) return slots;
@@ -308,23 +370,21 @@ export function tagesStunden(m: Pick<Mitarbeiter, 'wochenstunden'>, k: Pick<Plan
   return k.arbeitstage.length ? m.wochenstunden / k.arbeitstage.length : 0;
 }
 
-/** Verfügbare Stunden im Zeitraum: Wochenstunden abzüglich genehmigter Abwesenheiten */
+/** Verfügbare Stunden im Zeitraum: Wochenstunden abzüglich Feiertagen und genehmigter Abwesenheiten */
 export function verfuegbareStunden(mitarbeiterId: ID, von: Datum, bis: Datum, k: PlanKontext = kontextAusDb()): number {
   const m = k.mitarbeiter.find((x) => x.id === mitarbeiterId);
   if (!m || !m.aktiv) return 0;
   const proTag = tagesStunden(m, k);
   let summe = 0;
   for (const tag of tage(von, bis)) {
-    if (!k.arbeitstage.includes(wochentag(tag))) continue;
-    if ((m.eintritt && m.eintritt > tag) || (m.austritt && m.austritt < tag)) continue;
-    const ab = abwesenheitAm(mitarbeiterId, tag, k);
-    if (ab?.status === 'genehmigt') summe += ab.halbtags ? proTag / 2 : 0;
-    else summe += proTag;
+    if (!arbeitstagIm(k, tag) || !imTeam(m, tag)) continue;
+    const ab = abwesenheitAm(mitarbeiterId, tag, k, { nurGenehmigt: true });
+    summe += ab ? (ab.halbtags ? proTag / 2 : 0) : proTag;
   }
   return runde(summe);
 }
 
-/** Verplante Stunden im Zeitraum (Termine ohne abgesagte; ganztägig = Tagessoll) */
+/** Verplante Stunden eines Mitarbeiters im Zeitraum (Termine ohne abgesagte; ganztägig = Tagessoll) */
 export function geplanteStunden(mitarbeiterId: ID, von: Datum, bis: Datum, k: PlanKontext = kontextAusDb()): number {
   const m = k.mitarbeiter.find((x) => x.id === mitarbeiterId);
   const fenster = { von: lokal(von, 0).getTime(), bis: lokal(plusTage(bis, 1), 0).getTime() };
@@ -334,7 +394,7 @@ export function geplanteStunden(mitarbeiterId: ID, von: Datum, bis: Datum, k: Pl
     if (t.ganztags) {
       const tv = isoDatum(new Date(t.start));
       const tb = isoDatum(new Date(t.ende));
-      const n = tage(tv > von ? tv : von, tb < bis ? tb : bis).filter((d) => k.arbeitstage.includes(wochentag(d))).length;
+      const n = tage(tv > von ? tv : von, tb < bis ? tb : bis).filter((d) => arbeitstagIm(k, d)).length;
       summe += n * (m ? tagesStunden(m, k) : 8);
       continue;
     }
@@ -343,6 +403,27 @@ export function geplanteStunden(mitarbeiterId: ID, von: Datum, bis: Datum, k: Pl
     if (e > s) summe += (e - s) / 3_600_000;
   }
   return runde(summe);
+}
+
+/** Arbeitstermine, deren Stunden auf einen Auftrag zählen */
+export const STUNDEN_TERMINARTEN: Termin['art'][] = ['einsatz', 'wartung', 'abnahme'];
+
+/**
+ * Bereits verplante Personenstunden eines Auftrags (Dauer × Anzahl Leute) – vergangene und künftige.
+ * Zählen nur Arbeitstermine (Einsatz, Wartung, Abnahme) mit Uhrzeit; abgesagte, gelöschte und
+ * ganztägige Termine (ohne verlässliche Dauer) nicht.
+ */
+export function auftragStunden(auftragId: ID, termine: Termin[]): number {
+  const summe = termine
+    .filter((t) => t.auftragId === auftragId && terminZaehlt(t) && !t.ganztags && STUNDEN_TERMINARTEN.includes(t.art))
+    .reduce((s, t) => s + ((zeit(t.ende) - zeit(t.start)) / 3_600_000) * Math.max(1, t.mitarbeiterIds.length), 0);
+  return runde(summe);
+}
+
+/** Noch einzuplanende Stunden eines Auftrags (undefined, wenn nichts geschätzt ist) */
+export function restStunden(a: Pick<Auftrag, 'id' | 'geplanteStunden'>, termine: Termin[]): number | undefined {
+  if (!a.geplanteStunden) return undefined;
+  return Math.max(0, runde(a.geplanteStunden - auftragStunden(a.id, termine)));
 }
 
 const runde = (n: number) => Math.round(n * 100) / 100;
@@ -357,8 +438,8 @@ export interface Anwesenheit {
 
 export function anwesenheit(mitarbeiterId: ID, datum: Datum, k: PlanKontext = kontextAusDb()): Anwesenheit {
   const m = k.mitarbeiter.find((x) => x.id === mitarbeiterId);
-  if (!m || !m.aktiv || (m.austritt && m.austritt < datum) || (m.eintritt && m.eintritt > datum)) return { status: 'inaktiv', text: 'Nicht im Team' };
-  if (!k.arbeitstage.includes(wochentag(datum))) return { status: 'frei', text: 'Kein Arbeitstag' };
+  if (!imTeam(m, datum)) return { status: 'inaktiv', text: 'Nicht im Team' };
+  if (!arbeitstagIm(k, datum)) return { status: 'frei', text: freierTagText(k, datum) };
   const ab = abwesenheitAm(mitarbeiterId, datum, k);
   if (ab?.status === 'genehmigt')
     return { status: 'abwesend', text: ab.halbtags ? `${ABWESENHEIT_LABEL[ab.art]} (halber Tag)` : ABWESENHEIT_LABEL[ab.art], abwesenheit: ab };

@@ -7,12 +7,13 @@
  * Mensch bestätigt.
  */
 import { db } from '@core/db';
-import { datum, datumKurz, euro, personName, relativ, summen, uhrzeit, datumVon, plusTage } from '@core/format';
+import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uhrzeit, datumVon, plusTage, wochenStart, tageZwischen } from '@core/format';
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
 import type { Datum, ID, Kunde, Mitarbeiter, Rechnung, Termin } from '@core/objects';
 import type { Recht } from '@core/session';
-import { istWerktag, montagVon, tageIn, zeitraumAus, type Zeitraum } from './zeit';
+import { zeitraumAus, type Zeitraum } from './zeit';
+import { abwesenheitAm, anwesenheit, arbeitstagIm, geplanteStunden, kontextAusDb as planKontextAusDb, verfuegbareStunden } from '../verfuegbarkeit/daten';
 
 // ------------------------------------------------------------------ Schnittstelle
 
@@ -115,12 +116,6 @@ function rechnungOffen(r: Rechnung, ust: number) {
   return Math.max(0, brutto - bezahlt);
 }
 
-function terminDauerStunden(t: Termin) {
-  if (t.ganztags) return 8;
-  const h = (new Date(t.ende).getTime() - new Date(t.start).getTime()) / 3_600_000;
-  return Number.isFinite(h) && h > 0 ? h : 0;
-}
-
 function terminZeile(t: Termin, mitDatum: boolean): AntwortEintrag {
   const kunde = db.kunden.get(t.kundeId);
   const ort = db.orte.get(t.ortId);
@@ -167,7 +162,7 @@ function offeneRechnungen(k: Kontext): Antwort {
     absicht: 'rechnungen-offen',
     text: `${anzahl(offen.length, 'Rechnung ist', 'Rechnungen sind')} offen, zusammen ${euro(summe)}.${ueber.length ? ` ${ueber.length === 1 ? '1 davon ist' : `${ueber.length} davon sind`} überfällig.` : ''}${zusatz}`,
     eintraege: offen.map(({ r, betrag }) => {
-      const tage = Math.round((new Date(k.heute).getTime() - new Date(r.faelligAm).getTime()) / 86_400_000);
+      const tage = tageZwischen(r.faelligAm, k.heute);
       return {
         titel: `${r.nummer} · ${db.kunden.get(r.kundeId)?.name ?? 'Kunde'}`,
         untertitel: `${euro(betrag)} offen · fällig ${relativ(r.faelligAm)}${r.mahnstufe ? ` · Mahnstufe ${r.mahnstufe}` : ''}`,
@@ -256,37 +251,30 @@ function agenda(k: Kontext, z: Zeitraum, nurMeine: boolean): Antwort {
 
 const ABWESEND_LABEL: Record<string, string> = { urlaub: 'Urlaub', krank: 'krank', schule: 'Berufsschule', schulung: 'Schulung', frei: 'frei', sonstiges: 'abwesend' };
 
-/** Freie Stunden je Mitarbeiter im Zeitraum (Wochenstunden / 5 je Werktag minus Termine, Abwesenheiten) */
+/** Freie Stunden je Mitarbeiter im Zeitraum – gerechnet von `verfuegbarkeit` (Arbeitstage, Feiertage, Abwesenheiten, Termine) */
 export function verfuegbarkeit(z: { von: Datum; bis: Datum }) {
-  const tage = tageIn(z).filter(istWerktag);
-  return db.mitarbeiter
-    .where((m) => m.aktiv && m.rolle !== 'buero')
+  const pk = planKontextAusDb();
+  const tage = tageIn(z.von, z.bis).filter((d) => arbeitstagIm(pk, d));
+  return pk.mitarbeiter
+    .filter((m) => m.aktiv && !m.geloeschtAm && m.rolle !== 'buero')
     .map((m) => {
-      const proTag = m.wochenstunden / 5;
-      let kapazitaet = 0;
-      let verplant = 0;
-      const abwesend: { tag: Datum; art: string; beantragt: boolean }[] = [];
+      const abwesend: { tag: Datum; art: string; beantragt: boolean; halbtags: boolean }[] = [];
       for (const d of tage) {
-        const ab = db.abwesenheiten.where((a) => a.mitarbeiterId === m.id && a.status !== 'abgelehnt' && a.von <= d && a.bis >= d)[0];
-        if (ab && ab.status === 'genehmigt') {
-          abwesend.push({ tag: d, art: ab.art, beantragt: false });
-          continue;
-        }
-        if (ab) abwesend.push({ tag: d, art: ab.art, beantragt: true });
-        kapazitaet += ab?.halbtags ? proTag / 2 : proTag;
-        verplant += db.termine
-          .where((t) => t.status !== 'abgesagt' && t.mitarbeiterIds.includes(m.id) && datumVon(t.start) === d)
-          .reduce((s, t) => s + terminDauerStunden(t), 0);
+        const a = anwesenheit(m.id, d, pk);
+        if (a.abwesenheit) abwesend.push({ tag: d, art: a.abwesenheit.art, beantragt: a.status === 'beantragt', halbtags: !!a.abwesenheit.halbtags });
       }
+      const kapazitaet = verfuegbareStunden(m.id, z.von, z.bis, pk);
+      const verplant = geplanteStunden(m.id, z.von, z.bis, pk);
       return { m, frei: Math.max(0, Math.round((kapazitaet - verplant) * 2) / 2), verplant: Math.round(verplant * 2) / 2, tage: tage.length, abwesend };
     })
     .sort((a, b) => b.frei - a.frei);
 }
 
 function werHatZeit(k: Kontext, z: Zeitraum): Antwort {
-  const werktage = tageIn(z).filter(istWerktag);
+  const pk = planKontextAusDb();
+  const werktage = tageIn(z.von, z.bis).filter((d) => arbeitstagIm(pk, d));
   if (!werktage.length)
-    return { absicht: 'verfuegbarkeit', text: `${gross(z.label)} ist kein Werktag. Frag z. B. nach „nächste Woche“.`, folgefragen: ['Wer hat nächste Woche Zeit?'] };
+    return { absicht: 'verfuegbarkeit', text: `${gross(z.label)} ist kein Arbeitstag. Frag z. B. nach „nächste Woche“.`, folgefragen: ['Wer hat nächste Woche Zeit?'] };
   const liste = verfuegbarkeit(z);
   const personal = k.darf('personal');
   const frei = liste.filter((x) => x.frei > 0);
@@ -297,7 +285,7 @@ function werHatZeit(k: Kontext, z: Zeitraum): Antwort {
       ? `${gross(zr)} haben ${anzahl(frei.length, 'Person', 'Personen')} noch Zeit. Am meisten frei: ${frei[0].m.vorname} mit ca. ${frei[0].frei.toLocaleString('de-DE')} Std.`
       : `${gross(zr)} ist niemand mehr frei – alle sind verplant oder abwesend.`,
     eintraege: liste.map((x) => {
-      const ganzWeg = x.abwesend.filter((a) => !a.beantragt).length === x.tage;
+      const ganzWeg = x.tage > 0 && x.abwesend.filter((a) => !a.beantragt && !a.halbtags).length === x.tage;
       const art = x.abwesend[0] ? (personal ? ABWESEND_LABEL[x.abwesend[0].art] ?? 'abwesend' : 'abwesend') : '';
       const beantragt = x.abwesend.some((a) => a.beantragt);
       return {
@@ -324,7 +312,7 @@ function woIst(k: Kontext, frage: string): Antwort {
     const jetzt = k.jetzt.toISOString();
     const laufend = heuteTermine.find((t) => t.start <= jetzt && t.ende >= jetzt);
     const naechster = heuteTermine.find((t) => t.start > jetzt);
-    const ab = db.abwesenheiten.where((a) => a.mitarbeiterId === m.id && a.status === 'genehmigt' && a.von <= k.heute && a.bis >= k.heute)[0];
+    const ab = abwesenheitAm(m.id, k.heute, { abwesenheiten: db.abwesenheiten.all() }, { nurGenehmigt: true });
     const ortText = (t: Termin) => {
       const o = db.orte.get(t.ortId);
       const kd = db.kunden.get(t.kundeId);
@@ -489,7 +477,7 @@ export function beantworte(frage: string, k: Kontext): Antwort {
   if (/\baufgabe\b/.test(f) && /\b(leg|lege|erstell|erstelle|anlegen|neue|mach|notier|notiere)\b/.test(f)) return aufgabeAnlegen(k, frage);
   if (/rechnung/.test(f) && /(offen|überfällig|ueberfaellig|unbezahlt|ausstehend|bezahlt|zahlt|schuld|geld)/.test(f)) return offeneRechnungen(k);
   if (/\bwer\b.*\b(zeit|frei|verfügbar|kapazität|luft)\b/.test(f) || /\b(freie kapazität|wer ist frei)\b/.test(f))
-    return werHatZeit(k, z ?? { von: plusTage(montagVon(k.heute), 7), bis: plusTage(montagVon(k.heute), 11), label: 'nächste Woche', tag: false });
+    return werHatZeit(k, z ?? { von: plusTage(wochenStart(k.heute), 7), bis: plusTage(wochenStart(k.heute), 11), label: 'nächste Woche', tag: false });
   if (/^wo\b|\bwo (ist|sind|wohnt|steckt|arbeitet)\b|\badresse\b/.test(f)) return woIst(k, frage);
   if (/angebot/.test(f) && /(offen|warten|ausstehend|antwort|versendet|stand)/.test(f)) return offeneAngebote(k);
   if (/anfrage/.test(f)) return offeneAnfragen(k);

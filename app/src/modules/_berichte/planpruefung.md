@@ -15,7 +15,7 @@ Branch: `claude/fervent-pascal-joztaz-planpruefung`
 Jede Prüfung ist eine reine Funktion auf einem Datenschnappschuss (`Kontext`) mit Ergebnis
 `{ ergebnis: 'ok' | 'warnung' | 'problem', text, loesung? }`:
 `pruefeQualifikation`, `pruefeUebergang`/`pruefeFahrtFuerTermin`, `pruefeMaterial`/`pruefeMaterialFuerTermin`, `pruefeWerkzeug`.
-Gemeinsame Grundlage: `autoplanung/basis.ts` (Typen, Kontext, Zeit-Helfer, minimale Verfügbarkeit).
+Gemeinsame Grundlage: `autoplanung/basis.ts` (Prüfergebnis-Typ, Kontext); Verfügbarkeit aus `verfuegbarkeit/daten.ts`, Zeit-Helfer aus `@core/format`, Feiertage aus `@core/kalender`.
 
 ## Wichtigste Pain Points (Top 5 je Modul)
 
@@ -49,7 +49,7 @@ Keine. Alles läuft über Kernobjekte (`termine`, `auftraege`, `nachweise`, `mat
 
 ## Kernwünsche
 
-1. **Verfügbarkeit zusammenführen:** `autoplanung/basis.ts` enthält eine minimale Verfügbarkeit (`abwesenheitAm`, `termineAm`, `freieFenster`, `istVerfuegbar`, `verplanteStunden`, `planbareMitarbeiter`). Beantragter Urlaub zählt dort schon als belegt. Sobald Paket plan `verfuegbarkeit` liefert, sollen diese Funktionen dorthin umziehen bzw. an dessen API angeschlossen werden (inkl. individueller Arbeitszeiten je Mitarbeiter, Feiertage).
+1. ~~Verfügbarkeit zusammenführen~~ – erledigt: `autoplanung/basis.ts` enthält nur noch Prüfergebnis-Typ und `Kontext`; alle Verfügbarkeit kommt aus `verfuegbarkeit/daten.ts` (`planKontext(ctx)` als Brücke), Feiertage/Arbeitstage aus `@core/kalender`. Beantragter Urlaub ist für die Planung eine Warnung (mit Abzug im Score), kein Ausschluss. Offen bleiben individuelle Arbeitszeiten je Mitarbeiter.
 2. **Gemeinsames Prüf-Ergebnis im Kern:** Typ `Pruefung` (`ok | warnung | problem`, `text`, `loesung?`) wäre als Kerntyp sinnvoll, damit z. B. der Kalender alle Prüfungen generisch anzeigen kann.
 3. **Geokoordinaten:** `Betrieb.adresse` und `Ort` ohne `lat/lng` → Geocoding beim Speichern einer Adresse (Kern/Schnittstellen) würde die PLZ-Schätzung ablösen.
 4. **Periodische Automationen:** `pruefen()` läuft nur beim App-Start; ein Tages-Takt (z. B. 6 Uhr) im Kern wäre für „Route morgens“ und „Material vorab“ richtig.

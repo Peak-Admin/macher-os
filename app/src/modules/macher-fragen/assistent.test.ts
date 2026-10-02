@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
 import { zeitpunkt } from '@core/format';
 import { aufgabeAusEntwurf, aufgabeAusText, beantworte, findeKunde, verfuegbarkeit, type Kontext } from './assistent';
-import { montagVon, zeitraumAus } from './zeit';
+import { wochenStart } from '@core/format';
+import { zeitraumAus } from './zeit';
 
 const HEUTE = '2026-10-02'; // Freitag
 
@@ -33,7 +34,7 @@ describe('Zeitangaben', () => {
     expect(zeitraumAus('am 12.10.', HEUTE)?.von).toBe('2026-10-12');
     expect(zeitraumAus('am 03.01.', HEUTE)?.von).toBe('2027-01-03');
     expect(zeitraumAus('Was kostet das?', HEUTE)).toBeUndefined();
-    expect(montagVon('2026-10-04')).toBe('2026-09-28');
+    expect(wochenStart('2026-10-04')).toBe('2026-09-28');
   });
 });
 

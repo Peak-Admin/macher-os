@@ -3,9 +3,10 @@
  * ausdrücklich eingeplante (`termin.betriebsmittelIds`) + Fahrzeuge der eingeplanten Mitarbeiter
  * (`betriebsmittel.mitarbeiterId`). Defekt, in Prüfung, Prüffrist abgelaufen, gleichzeitig doppelt verplant.
  */
-import { datum as datumFmt, plusTage } from '@core/format';
+import { datum as datumFmt, datumVon, plusTage } from '@core/format';
 import type { Betriebsmittel, ID, Termin } from '@core/objects';
-import { aktiverTermin, finde, terminDatum, ueberlappen, type Kontext, type Pruefung } from '../autoplanung/basis';
+import { finde, type Kontext, type Pruefung } from '../autoplanung/basis';
+import { terminZaehlt, zeitraeumeUeberlappen } from '../verfuegbarkeit/daten';
 
 export interface MittelPruefung extends Pruefung {
   betriebsmittelId?: ID;
@@ -28,7 +29,7 @@ const name = (b: Betriebsmittel) => `${b.name}${b.kennzeichen ? ` (${b.kennzeich
 
 /** Ersatz gleicher Art, der zur Terminzeit frei, in Ordnung und geprüft ist */
 export function ersatzFuer(ctx: Kontext, b: Betriebsmittel, t: Termin): Betriebsmittel | undefined {
-  const tag = terminDatum(t);
+  const tag = datumVon(t.start);
   return ctx.betriebsmittel.find(
     (x) =>
       x.id !== b.id &&
@@ -44,12 +45,12 @@ export function ersatzFuer(ctx: Kontext, b: Betriebsmittel, t: Termin): Betriebs
 /** Welcher andere, gleichzeitige Termin nutzt dieses Betriebsmittel auch? */
 export function belegtVonAnderem(ctx: Kontext, id: ID, t: Termin): Termin | undefined {
   return ctx.termine.find(
-    (o) => o.id !== t.id && aktiverTermin(o) && o.status !== 'erledigt' && ueberlappen(o, t) && genutzteMittel(ctx, o).some((g) => g.mittel.id === id),
+    (o) => o.id !== t.id && terminZaehlt(o) && o.status !== 'erledigt' && zeitraeumeUeberlappen(o, t) && genutzteMittel(ctx, o).some((g) => g.mittel.id === id),
   );
 }
 
 export function pruefeWerkzeug(ctx: Kontext, t: Termin): MittelPruefung[] {
-  const tag = terminDatum(t);
+  const tag = datumVon(t.start);
   const genutzt = genutzteMittel(ctx, t);
   const r: MittelPruefung[] = [];
   for (const { mittel: b } of genutzt) {
@@ -104,7 +105,7 @@ export function pruefeWerkzeug(ctx: Kontext, t: Termin): MittelPruefung[] {
 export function werkzeugProbleme(ctx: Kontext, tage = 7): { termin: Termin; pruefungen: MittelPruefung[] }[] {
   const bis = plusTage(ctx.heute, tage);
   return ctx.termine
-    .filter((t) => aktiverTermin(t) && t.status !== 'erledigt' && terminDatum(t) >= ctx.heute && terminDatum(t) <= bis)
+    .filter((t) => terminZaehlt(t) && t.status !== 'erledigt' && datumVon(t.start) >= ctx.heute && datumVon(t.start) <= bis)
     .sort((a, b) => a.start.localeCompare(b.start))
     .map((termin) => ({ termin, pruefungen: pruefeWerkzeug(ctx, termin).filter((p) => p.ergebnis !== 'ok') }))
     .filter((x) => x.pruefungen.length > 0);
