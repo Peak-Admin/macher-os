@@ -42,7 +42,7 @@ Voraussetzung: Backend nach `docs/os/BACKEND.md` (Supabase mit allen Migrationen
    `inbound.postmarkapp.com`). Prüfen, ob der Mail-Dienst Wildcard-Subdomains annimmt. Das gilt genauso für das
    Anfrage-Postfach. Der MX der Hauptdomain (`macher-os.de`) bleibt unberührt.
 3. **Webhook:** Im Mail-Dienst als Ziel `https://<domain>/api/eingang/email?schluessel=<EINGANG_WEBHOOK_SECRET>`
-   eintragen. `EINGANG_WEBHOOK_SECRET` vorher erzeugen (`openssl rand -hex 32`) und in Vercel setzen.
+   eintragen. `EINGANG_WEBHOOK_SECRET` vorher erzeugen (`openssl rand -hex 32`) und in Vercel setzen. Für Belege ist der Schlüssel Pflicht – ohne ihn antwortet der Eingang mit 503.
    Ohne Geheimnis nimmt der Webhook jede Lieferung an – im Livebetrieb immer setzen.
 4. **Größe:** Vercel nimmt Anfragen bis etwa 4,5 MB an. Mit Base64 (+33 %) heißt das: Anhänge zusammen bis etwa
    3 MB kommen sicher an. Größere Mails lehnt Vercel ab. Bei Bedarf später auf einen Weg mit Download-Link umstellen

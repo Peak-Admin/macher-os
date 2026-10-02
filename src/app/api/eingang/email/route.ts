@@ -65,6 +65,8 @@ export async function POST(request: Request): Promise<Response> {
 
   // Belege-Postfach (`belege@<betrieb>.macher-os.de`): Anhänge werden Eingangsrechnungen – siehe docs/os/BELEGE-EMAIL.md
   const belegeSlug = mail.an.map(slugAusBelegeAdresse).find(Boolean);
+  // Belege legen Dateien im Speicher ab – ohne gesetzten Schlüssel nehmen wir dort nichts an
+  if (belegeSlug && !process.env.EINGANG_WEBHOOK_SECRET) return json({ fehler: 'Belege-Eingang braucht EINGANG_WEBHOOK_SECRET' }, 503);
   if (belegeSlug) return belegeEingang({ v, body, mail, slug: belegeSlug, appBasis: appUrl(request) });
 
   const slug = mail.an.map(slugAusAdresse).find(Boolean);
