@@ -1,49 +1,78 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Icon, type IconName } from "@/components/ui/Icon";
 import { datenVertrauen } from "@/content/einwaende";
 import { ausgehend } from "@/lib/link/ausgehend";
 
-/** Glas-Pille „Made in Germany“ mit runder Flagge – für dunkle Markenflächen. */
-export function MadeInGermany({ className = "" }: { className?: string }) {
+/** Zwölf goldene Sterne im Kreis – das EU-Logo. */
+const EU_STERNE = Array.from({ length: 12 }, (_, i) => {
+  const w = (i * Math.PI) / 6;
+  const cx = 12 + 8 * Math.sin(w);
+  const cy = 12 - 8 * Math.cos(w);
+  const punkte = Array.from({ length: 10 }, (_, k) => {
+    const r = k % 2 ? 0.75 : 1.8;
+    const a = (k * Math.PI) / 5;
+    return `${(cx + r * Math.sin(a)).toFixed(2)},${(cy - r * Math.cos(a)).toFixed(2)}`;
+  });
+  return punkte.join(" ");
+});
+
+function EuLogo({ className = "" }: { className?: string }) {
   return (
-    <p
-      className={`inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pl-1.5 pr-4 text-sm font-semibold text-white ring-1 ring-inset ring-white/15 ${className}`}
-    >
-      <span aria-hidden className="flagge-de size-6 shrink-0 rounded-full ring-1 ring-white/30" />
-      Made in Germany
-    </p>
+    <svg viewBox="0 0 24 24" aria-hidden className={`text-eu-gold ${className}`}>
+      {EU_STERNE.map((p) => (
+        <polygon key={p} points={p} fill="currentColor" />
+      ))}
+    </svg>
   );
 }
 
-const VERTRAUEN_ICON: Record<string, IconName> = {
-  "DSGVO-konform": "shield",
-  "Server in Frankfurt": "map",
-  "KI nach EU AI Act": "spark",
+/** Welche Aussage ist eine EU-Regel (blau mit EU-Logo), welche ein Standort (deutsche Flagge)? */
+const EU_REGEL = new Set<string>(["DSGVO-konform", "KI nach EU AI Act"]);
+
+/** Reihenfolge: erst die EU-Regeln nebeneinander, dann der Standort Deutschland, zuletzt „Made in Germany“. */
+const AUSSAGEN = [
+  ...datenVertrauen.filter((v) => EU_REGEL.has(v.titel)),
+  ...datenVertrauen.filter((v) => !EU_REGEL.has(v.titel)),
+  { titel: "Made in Germany", text: "Entwickelt in Deutschland" },
+];
+
+/** Kurzform für die kleinen Plaketten im Footer; der volle Titel steht im Tooltip und für Screenreader. */
+const KURZ: Record<string, string> = {
+  "DSGVO-konform": "DSGVO",
+  "KI nach EU AI Act": "EU AI Act",
+  "Server in Frankfurt": "Server Frankfurt",
 };
 
 /**
- * Kleine Glas-Kacheln mit den belegten Vertrauensaussagen (dieselbe Quelle wie in der Software).
- * Ersetzt im Footer den blauen Vertrauenskasten.
+ * Vertrauensaussagen als flache Plaketten in Buttonform (dieselbe Quelle wie in der Software), mit „Made in Germany“.
+ * EU-Regeln (DSGVO, EU AI Act) blau mit EU-Logo, Deutschland mit Flagge.
  */
 export function VertrauensKacheln({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
-      <ul className="grid gap-3 sm:grid-cols-3">
-        {datenVertrauen.map((v) => (
-          <li
-            key={v.titel}
-            className="flex items-center gap-3 rounded-xl bg-white/5 p-3 ring-1 ring-inset ring-white/10"
-          >
-            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white/10 text-white">
-              <Icon name={VERTRAUEN_ICON[v.titel] ?? "check"} className="size-5" />
-            </span>
-            <span className="min-w-0">
-              <span className="block text-sm font-semibold text-white">{v.titel}</span>
-              <span className="block text-sm text-white/65">{v.text}</span>
-            </span>
-          </li>
-        ))}
+      <ul className="flex flex-wrap gap-2 sm:justify-end">
+        {AUSSAGEN.map((v) => {
+          const eu = EU_REGEL.has(v.titel);
+          return (
+            <li
+              key={v.titel}
+              title={`${v.titel}: ${v.text}`}
+              className={`flex min-h-8 items-center gap-2 whitespace-nowrap rounded-lg px-2.5 py-1 text-sm font-semibold text-white ring-1 ring-inset ${
+                eu ? "bg-eu ring-white/20" : "bg-white/10 ring-white/15"
+              }`}
+            >
+              {eu ? (
+                <EuLogo className="size-5 shrink-0" />
+              ) : (
+                <span aria-hidden className="flagge-de h-3.5 w-5 shrink-0 rounded-sm ring-1 ring-white/30" />
+              )}
+              <span aria-hidden>{KURZ[v.titel] ?? v.titel}</span>
+              <span className="sr-only">
+                {v.titel}: {v.text}
+              </span>
+            </li>
+          );
+        })}
       </ul>
       <Link
         href="/datenschutz"
@@ -87,9 +116,9 @@ export function KiFragen({ className = "" }: { className?: string }) {
   const q = encodeURIComponent(FRAGE);
   return (
     <div className={className}>
-      <p className="text-sm font-semibold text-white">KI fragen</p>
+      <p className="text-sm font-bold text-accent">KI fragen</p>
       <p className="mt-1 text-sm text-white/65">Lass dir Macher OS von deiner KI erklären.</p>
-      <ul className="mt-3 flex gap-3">
+      <ul className="mt-3 flex gap-3 sm:justify-end">
         {KIS.map((k) => (
           <li key={k.name}>
             <a
