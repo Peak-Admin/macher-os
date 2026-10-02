@@ -1,0 +1,35 @@
+/* Dein Plan – nur minimales Layout, Farben über --mm-* */
+.abo-gross {
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+.abo-gruende {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.abo-grund {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-control);
+  cursor: pointer;
+}
+.abo-grund:has(input:checked) {
+  border-color: var(--mm-brand-text);
+  background: var(--mm-soft-green);
+}
+.abo-grund input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--mm-brand-text);
+}
+.abo-grund:has(input:focus-visible) {
+  outline: 2px solid var(--mm-focus);
+  outline-offset: 2px;
+}

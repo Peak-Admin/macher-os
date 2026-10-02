@@ -5,9 +5,11 @@ import { erledigt } from '@core/macher';
 import { datumKurz, personName, uhrzeit } from '@core/format';
 import type { Termin } from '@core/objects';
 import { kontextAusDb, terminKonflikte } from '../verfuegbarkeit/daten';
-import { buchungsfenster, standardFenster, zuBestaetigen } from './daten';
+import { alleLinks, buchungsfenster, standardFenster, zuBestaetigen } from './daten';
 import { BuchenSeite } from './BuchenSeite';
 import { KundenBuchungPanel, Terminbuchung } from './Terminbuchung';
+import { eingabeVerarbeiter, eingabenVerarbeiten, oeffentlicheSichten, veroeffentlichenNoetig } from '@modules/kundenbereich/oeffentlich';
+import { buchungEingabe, buchungSichtenVeroeffentlichen } from './oeffentlich';
 
 const terminPfad = (id: string) => `/plan/kalender/termin/${id}`;
 
@@ -40,7 +42,33 @@ export default defineModul({
       pfad: terminPfad(t.id),
       aktionen: [{ aktion: 'termin.bestaetigen', label: 'Bestätigen', primaer: true, payload: { terminId: t.id } }],
     })),
+  init: () => eingabeVerarbeiter('buchung', (e) => buchungEingabe(e)),
   automationen: [
+    {
+      id: 'terminbuchung.oeffentlich',
+      titel: 'Freie Termine für Kunden bereitstellen',
+      beschreibung: 'Hält die freien Termine aktuell, die Kunden über deinen Buchungslink sehen, und trägt ihre Buchungen ein.',
+      standardAn: true,
+      minuten: 2,
+      start: () => {
+        let t: ReturnType<typeof setTimeout> | undefined;
+        const veroeffentlichen = () => {
+          if (veroeffentlichenNoetig()) buchungSichtenVeroeffentlichen();
+        };
+        const aus = on('*', (e) => {
+          if (!/^(termine|abwesenheiten|buchungsfenster|mitarbeiter|einstellungen)\./.test(e.typ) || t) return;
+          t = setTimeout(() => ((t = undefined), veroeffentlichen()), 3000);
+        });
+        // freie Termine verschieben sich mit der Zeit – jede Viertelstunde neu rechnen
+        const takt = setInterval(() => (eingabenVerarbeiten(), veroeffentlichen()), 15 * 60_000);
+        // neu geteilte Links (Einstellung, ohne Event) schnell nachziehen
+        const neue = setInterval(() => {
+          if (veroeffentlichenNoetig() && Object.values(alleLinks()).some((l) => !oeffentlicheSichten.get(l.token))) buchungSichtenVeroeffentlichen();
+        }, 60_000);
+        veroeffentlichen();
+        return () => (aus(), clearInterval(takt), clearInterval(neue), t && clearTimeout(t));
+      },
+    },
     {
       id: 'terminbuchung.auto-bestaetigen',
       titel: 'Online-Buchungen ohne Konflikt sofort bestätigen',
@@ -69,6 +97,6 @@ export default defineModul({
   },
   seed: () => {
     if (buchungsfenster.all().length) return;
-    standardFenster().forEach((f) => buchungsfenster.create({ ...f, beispiel: true }));
+    standardFenster().forEach((f) => buchungsfenster.create({ ...f }));
   },
 });

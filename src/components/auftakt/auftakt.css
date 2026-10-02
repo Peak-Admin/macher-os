@@ -1,0 +1,316 @@
+/* Markenauftakt – Preloader beim ersten Besuch einer Sitzung (Website und Software).
+   Eigene, schlanke Stile ohne Tailwind, damit sie in beiden Root-Layouts gleich wirken.
+   Farben aus dem Playbook (Abschnitt 4/14): Markendunkel, Akzentgrün, Weiß. */
+
+.mm-auftakt {
+  --a-dunkel: #0e130c;
+  --a-tief: #06480c;
+  --a-akzent: #69af44;
+  --a-weiss: #ffffff;
+  --a-text: rgb(255 255 255 / 0.92);
+  --a-leise: rgb(255 255 255 / 0.68);
+  --a-linie: rgb(255 255 255 / 0.22);
+  --a-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: none;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--a-dunkel);
+  color: var(--a-weiss);
+  font-family: var(--font-barlow), "Barlow", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    opacity 700ms ease-out,
+    transform 900ms var(--a-ease);
+}
+
+/* Sichtbar nur, wenn das Kopf-Skript den Auftakt freigegeben hat. */
+html[data-auftakt="an"] {
+  overflow: hidden;
+}
+html[data-auftakt="an"] .mm-auftakt {
+  display: block;
+}
+
+.mm-auftakt-geht {
+  opacity: 0;
+  transform: scale(1.03);
+  pointer-events: none;
+}
+
+.mm-auftakt-wald {
+  position: absolute;
+  inset: -3%;
+  width: 106%;
+  max-width: none;
+  height: 106%;
+  object-fit: cover;
+  object-position: 55% 52%;
+  opacity: 0;
+  filter: saturate(0.55);
+  z-index: -4;
+}
+.mm-auftakt-schleier {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background:
+    linear-gradient(100deg, rgb(14 19 12 / 0.97) 0%, rgb(14 19 12 / 0.86) 28%, rgb(14 19 12 / 0.55) 64%, rgb(14 19 12 / 0.2) 100%),
+    linear-gradient(0deg, var(--a-dunkel) 0%, transparent 44%, rgb(14 19 12 / 0.35) 100%);
+}
+.mm-auftakt-licht {
+  position: absolute;
+  inset: -30%;
+  z-index: -2;
+  background: radial-gradient(ellipse at 75% 20%, rgb(105 175 68 / 0.14), transparent 48%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mm-auftakt-kopf {
+  position: absolute;
+  z-index: 2;
+  top: 24px;
+  left: 4.3%;
+  right: 4.3%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.mm-auftakt-marke {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-poppins), "Poppins", var(--font-barlow), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--a-leise);
+}
+.mm-auftakt-marke b {
+  font-weight: 600;
+  color: var(--a-text);
+}
+.mm-auftakt-trenner {
+  width: 1px;
+  height: 13px;
+  background: var(--a-linie);
+}
+.mm-auftakt-weiter {
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--a-leise);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--a-linie);
+  text-underline-offset: 6px;
+  transition: color 150ms ease-out;
+}
+.mm-auftakt-weiter:hover {
+  color: var(--a-weiss);
+}
+.mm-auftakt-weiter:focus-visible {
+  outline: 2px solid var(--a-akzent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.mm-auftakt-mitte {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 110px 24px 160px;
+  text-align: center;
+  pointer-events: none;
+}
+.mm-auftakt-oberzeile {
+  margin: 0 0 32px;
+  max-width: none;
+  font-family: var(--font-poppins), "Poppins", var(--font-barlow), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--a-leise);
+  opacity: 0;
+}
+.mm-auftakt-titel {
+  margin: 0;
+  color: var(--a-weiss);
+  font-family: inherit;
+  max-width: 100%;
+  line-height: 1.02;
+  text-shadow: 0 2px 40px rgb(14 19 12 / 0.25);
+}
+.mm-auftakt-zeile1 {
+  display: block;
+  margin-bottom: 8px;
+  font-size: clamp(32px, 4.6vw, 68px);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.mm-auftakt-zeile2 {
+  display: block;
+  font-size: clamp(40px, 8.6vw, 132px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+}
+.mm-auftakt-b {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateY(18px) scale(1.07);
+}
+.mm-auftakt-unterschrift {
+  width: 230px;
+  max-width: 45vw;
+  height: auto;
+  margin-top: 24px;
+  overflow: visible;
+  filter: invert(1);
+  opacity: 0.87;
+  transform: rotate(-5deg);
+}
+/* Maskenstriche: breit genug, um die Tinte des Originals zu decken; vor ihrem Einsatz unsichtbar. */
+.mm-auftakt-strich {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 24;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  opacity: 0;
+}
+.mm-auftakt-unterschrift-ganz {
+  opacity: 0;
+}
+.mm-auftakt-logo {
+  position: absolute;
+  bottom: 96px;
+  left: 50%;
+  width: 280px;
+  max-width: 65vw;
+  height: auto;
+  transform: translateX(-50%);
+  opacity: 0;
+}
+
+.mm-auftakt-fuss {
+  position: absolute;
+  bottom: 28px;
+  left: 4.3%;
+  right: 4.3%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--a-leise);
+}
+.mm-auftakt-flagge {
+  width: 17px;
+  height: 11px;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12);
+  background: linear-gradient(#000 0 33.33%, #dd0000 33.33% 66.66%, #ffce00 66.66%);
+}
+.mm-auftakt-fortschritt {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: var(--a-akzent);
+  opacity: 0;
+}
+
+/* Ablauf (gesamt ca. 6 s) */
+.mm-auftakt-laeuft .mm-auftakt-wald { animation: mm-auftakt-wald 6s var(--a-ease) forwards; }
+.mm-auftakt-laeuft .mm-auftakt-licht { animation: mm-auftakt-licht 5s ease 0.5s forwards; }
+.mm-auftakt-laeuft .mm-auftakt-oberzeile { animation: mm-auftakt-ein 1.5s ease 0.45s forwards; }
+.mm-auftakt-laeuft .mm-auftakt-b { animation: mm-auftakt-buchstabe 1.6s var(--a-ease) forwards; }
+/* Unterschrift: Dauer und Verzögerung je Strich setzt `Markenauftakt.tsx` (ab 2,9 s, 2,4 s lang). */
+.mm-auftakt-laeuft .mm-auftakt-strich { animation: mm-auftakt-strich 1s linear forwards; }
+.mm-auftakt-laeuft .mm-auftakt-unterschrift-ganz { animation: mm-auftakt-ein 0.4s ease-out 5.25s forwards; }
+.mm-auftakt-laeuft .mm-auftakt-logo { animation: mm-auftakt-ein 1.5s ease 4.2s forwards; }
+.mm-auftakt-laeuft .mm-auftakt-fortschritt { animation: mm-auftakt-fortschritt 6s ease-in-out forwards; }
+
+@keyframes mm-auftakt-wald {
+  from { opacity: 0; transform: scale(1.07); }
+  to { opacity: 0.85; transform: scale(1); }
+}
+@keyframes mm-auftakt-licht {
+  to { opacity: 1; transform: translateX(-2%); }
+}
+@keyframes mm-auftakt-ein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes mm-auftakt-buchstabe {
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+@keyframes mm-auftakt-strich {
+  from { opacity: 1; stroke-dashoffset: 1; }
+  to { opacity: 1; stroke-dashoffset: 0; }
+}
+@keyframes mm-auftakt-fortschritt {
+  0% { width: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
+/* Reduzierte Bewegung: Schlussbild ohne Animation */
+.mm-auftakt-still .mm-auftakt-wald { opacity: 0.85; }
+.mm-auftakt-still .mm-auftakt-licht,
+.mm-auftakt-still .mm-auftakt-oberzeile,
+.mm-auftakt-still .mm-auftakt-logo { opacity: 1; }
+.mm-auftakt-still .mm-auftakt-b { opacity: 1; filter: none; transform: none; }
+.mm-auftakt-still .mm-auftakt-unterschrift-ganz { opacity: 1; }
+
+@media (max-width: 600px) {
+  .mm-auftakt-kopf { top: 12px; left: 16px; right: 16px; }
+  .mm-auftakt-trenner,
+  .mm-auftakt-ausgabe { display: none; }
+  .mm-auftakt-mitte { padding: 96px 16px 160px; }
+  .mm-auftakt-oberzeile { font-size: 10px; letter-spacing: 0.18em; margin-bottom: 24px; }
+  .mm-auftakt-zeile1 { font-size: 34px; margin-bottom: 12px; }
+  .mm-auftakt-zeile2 { font-size: 10.4vw; }
+  .mm-auftakt-unterschrift { width: 185px; }
+  .mm-auftakt-logo { width: 245px; bottom: 80px; }
+  .mm-auftakt-fuss { left: 16px; right: 16px; bottom: 24px; justify-content: center; }
+  .mm-auftakt-wald { object-position: 68% 50%; }
+}
+@media (max-height: 580px) and (min-width: 601px) {
+  .mm-auftakt-mitte { padding: 72px 24px 96px; }
+  .mm-auftakt-oberzeile { margin-bottom: 16px; }
+  .mm-auftakt-zeile1 { font-size: 32px; }
+  .mm-auftakt-zeile2 { font-size: 7vw; }
+  .mm-auftakt-unterschrift { width: 150px; margin-top: 8px; }
+  .mm-auftakt-logo { width: 210px; bottom: 56px; }
+  .mm-auftakt-fuss { bottom: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mm-auftakt,
+  .mm-auftakt * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media print {
+  .mm-auftakt { display: none !important; }
+}

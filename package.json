@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/os-module.mjs",
+    "predev": "node scripts/os-module.mjs && node scripts/os-sw.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/os-module.mjs",
+    "prebuild": "node scripts/os-module.mjs && node scripts/os-sw.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -17,10 +17,12 @@
     "@anthropic-ai/sdk": "^0.131.0",
     "@fontsource/barlow": "^5.2.0",
     "@fontsource/poppins": "^5.2.0",
+    "@supabase/supabase-js": "^2.117.2",
     "next": "16.3.8",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "react-router-dom": "^7.9.0"
+    "react-router-dom": "^7.9.0",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -28,6 +30,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
     "@vitejs/plugin-react": "^5.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.8",
