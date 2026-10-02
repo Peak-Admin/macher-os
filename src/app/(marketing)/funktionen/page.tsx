@@ -321,6 +321,10 @@ export default function FunktionenPage() {
           <Faq items={faq} />
         </div>
         <FaqJsonLd items={faq} />
+        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+          <ArrowLink href="/schnittstellen">Schnittstellen: DATEV, GAEB, Datanorm</ArrowLink>
+          <ArrowLink href="/vergleich">Software-Vergleich</ArrowLink>
+        </div>
       </Section>
 
       {/* 6. Final CTA */}

@@ -31,7 +31,7 @@ export function Footer() {
               </a>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 xl:grid-cols-7">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 xl:grid-cols-5">
             {footerNav.map((col) => (
               <div key={col.titel}>
                 <p className="text-sm font-bold">{col.titel}</p>

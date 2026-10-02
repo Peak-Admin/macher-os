@@ -123,9 +123,10 @@ export default function DatenUebernehmenPage() {
       <Section tone="white">
         <SectionHeading eyebrow="Ablauf" title="So läuft die Übernahme." />
         <Steps steps={uebernahmeAblauf} className="mt-10" />
-        <ArrowLink href="/hilfe-center/grosshaendler-daten" className="mt-8">
-          Artikel vom Großhändler übernehmen
-        </ArrowLink>
+        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+          <ArrowLink href="/hilfe-center/grosshaendler-daten">Artikel vom Großhändler übernehmen</ArrowLink>
+          <ArrowLink href="/wechseln">Wechseln zu Macher OS</ArrowLink>
+        </div>
       </Section>
 
       {/* 5. Automatische / persönliche Hilfe */}
