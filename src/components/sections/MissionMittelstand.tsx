@@ -55,7 +55,7 @@ export function HerausgeberMarke({ dark = false, className = "" }: { dark?: bool
   if (bildVorhanden(src)) {
     // Originalasset im echten Seitenverhältnis, daher kein next/image mit fester Größe.
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={herausgeber.name} className={`h-10 w-auto ${className}`} />;
+    return <img src={src} alt={herausgeber.name} className={`w-auto ${className || "h-10"}`} />;
   }
   return (
     <span className={`font-display text-lg font-bold ${dark ? "text-white" : "text-ink"} ${className}`}>

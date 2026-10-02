@@ -281,8 +281,16 @@ export const missionMittelstandBilder: Bildnachweis[] = [
     lizenz: "© Mission Mittelstand GmbH",
   },
   {
-    src: "/bilder/mission-mittelstand/logo-dunkel.webp",
+    src: "/bilder/mission-mittelstand/logo-hell.webp",
     alt: "Logo Mission Mittelstand",
+    fotograf: "Mission Mittelstand",
+    quelle: "mission-mittelstand.de",
+    quelleUrl: "https://www.mission-mittelstand.de",
+    lizenz: "© Mission Mittelstand GmbH",
+  },
+  {
+    src: "/bilder/mission-mittelstand/logo-dunkel.webp",
+    alt: "Logo Mission Mittelstand (weiß, für dunkle Flächen)",
     fotograf: "Mission Mittelstand",
     quelle: "mission-mittelstand.de",
     quelleUrl: "https://www.mission-mittelstand.de",
