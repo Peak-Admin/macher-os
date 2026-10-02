@@ -5,7 +5,8 @@
 
 Daten der Website: `src/content/integrationen.ts` (Säulen, alle Integrationen, Score).
 Stand in der Software: `src/os/modules/schnittstellen/connectoren.ts` (Connector-Registry, Status je Betrieb).
-Website: Seite `/integrationen`, Menüpunkt „Integrationen“ mit Highlight-Box, Abschnitt auf der Startseite (`IntegrationenHighlight`).
+Website: Seite `/integrationen`. **Kein eigener Navigationspunkt** – Integrationen stehen als Highlight-Box mit Logos im
+Menü „Funktionen“ (plus Link unten im Menü und im Footer) und als Abschnitt `IntegrationenHighlight` auf Startseite und `/funktionen`.
 
 ## Die vier Säulen
 

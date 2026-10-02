@@ -3,7 +3,7 @@ import type { ObjektSchluessel } from "@/lib/objekte";
 import Link from "next/link";
 import { FunktionKarte, VerbindungsDiagramm } from "@/components/funktionen";
 import { AppVorschau, VorschauRahmen } from "@/components/mocks";
-import { FinalCta, PageHero, MissionMittelstandStreifen } from "@/components/sections";
+import { FinalCta, IntegrationenHighlight, PageHero, MissionMittelstandStreifen } from "@/components/sections";
 import {
   ArrowLink,
   ButtonLink,
@@ -289,6 +289,9 @@ export default function FunktionenPage() {
           <VerbindungsDiagramm />
         </div>
       </Section>
+
+      {/* 4b. Integrationen – kein eigener Navigationspunkt, sie gehören zu den Funktionen */}
+      <IntegrationenHighlight />
 
       {/* 5. Gewerkspezifische Anpassung */}
       <Section tone="sand">
