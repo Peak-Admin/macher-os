@@ -49,7 +49,7 @@ export function Shell({ children }: { children: ReactNode }) {
           {BEREICHE.map((b) => (
             <div key={b.id} className="mm-nav-gruppe">
               <NavLink to={b.pfad} className={({ isActive }) => `mm-nav-haupt ${isActive || aktiverBereich === b.id ? 'mm-nav-haupt--aktiv' : ''}`}>
-                <Icon name={BEREICH_ICON[b.id]} />
+                <span className="mm-nav-haupt-icon"><Icon name={BEREICH_ICON[b.id]} /></span>
                 {b.titel}
               </NavLink>
               {aktiverBereich === b.id && <UnterNavigation bereich={b.id} />}

@@ -6,10 +6,12 @@ weil sie jüngere, ausdrücklich bestätigte Entscheidungen enthält.
 ## Bestätigte Bausteine
 
 ### Primärbutton
-Tiefes CTA-Grün `#06480C`, weiße Schrift Barlow 600, 4 px Radius, leichter Schatten erlaubt beim großen Einstiegs-CTA.
+Markengrün `#2F9250`, weiße Schrift **Barlow 700 in 19 px**, Hover `#1F6135`, 4 px Radius, leichter Schatten erlaubt beim großen Einstiegs-CTA.
+Weiß auf `#2F9250` hat 3,9:1 – das reicht nur für große Schrift (ab 19 px fett). Die Buttonschrift darf deshalb nicht kleiner werden.
+Kleine weiße Texte auf Grün (Badges, Schrittnummern, Mini-Buttons in Mocks) bleiben auf tiefem Grün `#06480C`.
 Vorbild: Startseiten-CTA „Jetzt Erstgespräch buchen“ (optional mit kleinem Personenbild links).
 
-- Website: `bg-signal text-white hover:bg-signal-dark`
+- Website: Utility `btn-primaer` (`src/app/globals.css`, Tokens `--color-primary`, `--color-primary-hover`); `ButtonLink` Variante `primary`
 - Software: `.mm-btn--primaer` (`--mm-action`)
 
 ### Themen-Icon-Kacheln
@@ -19,6 +21,9 @@ Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon 
 - Website: Utility `icon-kachel` (`src/app/globals.css`)
 - Software: Tokens `--mm-icon-tile` / `--mm-on-icon-tile`; Klassen `.mm-modulkachel-icon`, `.mm-modulzeile-icon`,
   `.mm-auswahlkarte-icon`, `.mm-leer-icon`
+
+- Sidebar (Software): Der aktive Hauptbereich zeigt sein Icon als Kachel (32 px, weißes Icon auf `#69AF44`)
+  und das Label fett – kein Zeilen-Hintergrund, kein Randstreifen. Inaktive Icons bleiben ohne Kachel in Textfarbe.
 
 Funktionale Icons (Pfeile, Schließen, Menü, Status) bleiben in Textfarbe ohne Kachel.
 

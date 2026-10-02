@@ -77,8 +77,8 @@ export function DemoTour({ daten }: { daten: DemoGewerk }) {
           <button
             type="button"
             onClick={() => gehe(letzter ? 0 : schritt + 1)}
-            className={`inline-flex h-11 items-center gap-2 rounded-lg px-5 font-semibold text-white ${
-              letzter ? "bg-ink hover:bg-ink-soft" : "bg-signal hover:bg-signal-dark"
+            className={`inline-flex h-11 items-center gap-2 rounded-lg px-5 text-white ${
+              letzter ? "bg-ink font-semibold hover:bg-ink-soft" : "btn-primaer"
             }`}
           >
             {letzter ? "Tour neu starten" : "Weiter"}

@@ -106,7 +106,7 @@ export function LoginForm() {
 
         <button
           type="submit"
-          className="mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-signal font-bold text-white transition-colors hover:bg-signal-dark"
+          className="mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg btn-primaer transition-colors"
         >
           Anmelden <Icon name="arrow-right" className="size-4" />
         </button>

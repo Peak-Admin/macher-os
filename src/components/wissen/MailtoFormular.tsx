@@ -87,7 +87,7 @@ export function MailtoFormular({
       </div>
       <button
         type="submit"
-        className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-signal px-6 font-semibold text-white transition-colors hover:bg-signal-dark"
+        className="inline-flex h-12 items-center justify-center gap-2 rounded-lg btn-primaer px-6 transition-colors"
       >
         <Icon name="bell" className="size-5" />
         {buttonLabel}
