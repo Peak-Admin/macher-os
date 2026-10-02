@@ -27,16 +27,28 @@ await page.waitForTimeout(2500);
 // Kunden mit mehreren, einem und keinem Einsatzort aus den Beispieldaten suchen
 await page.goto(`${basis}/os/auftraege/auftraege/neu`, { waitUntil: 'networkidle' });
 const kundeFeld = page.getByLabel('Für welchen Kunden?');
-const kunden = await kundeFeld.locator('option').evaluateAll((os) => os.map((o) => ({ wert: o.value, text: o.textContent })).filter((o) => o.wert));
+// Auswahlfelder sind eigene Dropdowns (role=combobox + listbox), kein <select>
+const optionenVon = async (feld) => {
+  await feld.click();
+  const texte = await page.getByRole('listbox').getByRole('option').allTextContents();
+  await page.keyboard.press('Escape');
+  return texte;
+};
+const waehle = async (feld, text) => {
+  await feld.click();
+  await page.getByRole('listbox').getByRole('option', { name: text, exact: true }).click();
+};
+const leerText = (await kundeFeld.locator('.mm-auswahl-wert--leer').textContent().catch(() => null)) ?? '';
+const kunden = (await optionenVon(kundeFeld)).filter((t) => t && t !== leerText).map((text) => ({ wert: text, text }));
 const einsatzortArt = async () => {
   if (await page.getByRole('button', { name: 'Adresse ändern' }).isVisible().catch(() => false)) return 'zusammenfassung';
   const ort = page.getByLabel('Einsatzort', { exact: true });
   if (!(await ort.count())) return 'keins';
-  return (await ort.inputValue()) === '' ? 'auswahl-leer' : 'auswahl';
+  return (await ort.locator('.mm-auswahl-wert--leer').count()) ? 'auswahl-leer' : 'auswahl';
 };
 const arten = {};
 for (const k of kunden) {
-  await kundeFeld.selectOption(k.wert);
+  await waehle(kundeFeld, k.wert);
   arten[await einsatzortArt()] ??= k;
 }
 pruefe(!!arten.zusammenfassung, `Ein bekannter Ort erscheint als lesbare Zusammenfassung mit „Adresse ändern“ (${arten.zusammenfassung?.text ?? '–'})`);
@@ -58,24 +70,24 @@ await page.getByLabel('PLZ').fill('34117');
 await page.getByLabel('Ort', { exact: true }).fill('Kassel');
 await anlegen();
 await neu();
-const kundeId = await kundeFeld.locator('option', { hasText: 'Familie Mehrort' }).getAttribute('value');
-await kundeFeld.selectOption(kundeId);
+const kundeId = (await optionenVon(kundeFeld)).find((t) => t.includes('Familie Mehrort'));
+await waehle(kundeFeld, kundeId);
 pruefe(await page.getByText('Am Markt 1, 34117 Kassel').isVisible(), 'Neuer Kunde mit einem Ort: Adresse steht als Zusammenfassung da');
 await page.getByRole('button', { name: 'Adresse ändern' }).click();
-await page.getByLabel('Einsatzort', { exact: true }).selectOption({ label: 'Andere Adresse eingeben' });
+await waehle(page.getByLabel('Einsatzort', { exact: true }), 'Andere Adresse eingeben');
 await page.getByLabel('Straße und Hausnummer').fill('Bahnhofstraße 5');
 await page.getByLabel('Ort', { exact: true }).fill('Kassel');
 await page.getByLabel('Was ist zu tun?').fill('Außenbeleuchtung');
 await anlegen();
 await neu();
-await kundeFeld.selectOption(kundeId);
+await waehle(kundeFeld, kundeId);
 pruefe((await einsatzortArt()) === 'auswahl-leer', 'Mehrere Orte: keine stille Vorauswahl, Auswahl nötig');
 await page.getByLabel('Was ist zu tun?').fill('Steckdosen im Bad erneuern');
 await page.getByRole('button', { name: 'Auftrag anlegen' }).click();
 const fokus = await page.evaluate(() => document.querySelector(`label[for="${document.activeElement?.id}"]`)?.textContent);
 pruefe(fokus === 'Einsatzort' && /\/neu$/.test(page.url()), `Fehlender Einsatzort: kein Anlegen, Fokus springt zum Feld (${fokus})`);
-const offen = page.getByLabel('Einsatzort', { exact: true }).locator('option', { hasText: 'Einsatzort noch offen' });
-pruefe((await offen.count()) === 1, '„Einsatzort noch offen“ ist wählbar');
+const ortOptionen = await optionenVon(page.getByLabel('Einsatzort', { exact: true }));
+pruefe(ortOptionen.filter((t) => t.includes('Einsatzort noch offen')).length === 1, '„Einsatzort noch offen“ ist wählbar');
 
 // Weitere Angaben: Werte bleiben beim Zuklappen erhalten
 await page.goto(`${basis}/os/auftraege/auftraege/neu`, { waitUntil: 'networkidle' });

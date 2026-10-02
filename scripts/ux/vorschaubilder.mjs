@@ -44,8 +44,8 @@ async function speichern(png, datei) {
   await page.waitForTimeout(1500);
   await page.getByRole('button', { name: /^Profil von/ }).first().click();
   const wahl = page.getByLabel('Arbeiten als').first();
-  const monteur = await wahl.locator('option').filter({ hasText: 'Jonas' }).first().getAttribute('value');
-  await wahl.selectOption(monteur);
+  await wahl.click();
+  await page.getByRole('listbox').getByRole('option').filter({ hasText: 'Jonas' }).first().click();
   await page.waitForTimeout(800);
   const png = await page.locator('.mm-einsatz').first().screenshot({ timeout: 10000 });
   await speichern(png, 'einsatz.webp');

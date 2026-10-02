@@ -49,7 +49,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
     arbeitsende: b.arbeitsende,
   });
   const [fehler, setFehler] = useState<Record<string, string>>({});
-  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
   const fehlt = fehlendeRechnungsangaben(b);
 
   const speichern = () => {
