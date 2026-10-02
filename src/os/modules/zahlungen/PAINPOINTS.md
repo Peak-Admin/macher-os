@@ -35,5 +35,14 @@ Offene Posten mit Überfällig-Filter, Zahlung erfassen (Teilzahlung, Skonto in 
 Rechnungsstatus teilbezahlt/bezahlt + Event `zahlung.eingegangen` · Zuordnung über Rechnungsnummer bzw. Betrag + Kunde ·
 unsichere Treffer als Freigabe-Hinweis · Doppelte Buchungen erkennen · vorbereitete Mahnungen bei Zahlung verwerfen.
 
+## Zahlungsabgleich (Delta 9)
+Kontoumsätze (CSV, CAMT.053, Bankverbindung über Webhook) werden als `bankumsaetze` genau einmal gespeichert und in
+`abgleich.ts` bewertet: Rechnungsnummer (auch verstümmelt, „RE 2026 42“), Betrag (gleich / Skonto bis 3 % / Teil /
+Überzahlung), Kunde (IBAN aus früheren Zuordnungen, Kundennummer, Name). Eindeutig → Zahlung gebucht, im
+Erledigt-Protokoll mit „Rückgängig“; sonst Vorschlag unter „Zahlungen zuordnen“. Sammelzahlungen für mehrere
+Rechnungen werden erkannt. Der Chef sieht nur zwei Hinweise: „N Rechnungen sind überfällig“ und
+„N Zahlungen konnten nicht eindeutig zugeordnet werden“ (Aktion „Zuordnen“). Ist eine Rechnung bezahlt, feuert
+`rechnung.bezahlt`; offene Mahn-Freigaben zu ihr werden geschlossen.
+
 ## Bewusst weggelassen
-Direkte Bankanbindung (Kernwunsch Schnittstellen), Rückerstattungs-Workflow, Fremdwährung, Kassenbuch.
+Eigene Bankanbindung (FinTS/PSD2 läuft über einen Integrationspartner, siehe docs/os/BACKEND.md), Rückerstattungs-Workflow, Fremdwährung, Kassenbuch.
