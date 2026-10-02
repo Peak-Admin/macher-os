@@ -46,7 +46,8 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
 - **Tonalität:** direkte Du-Ansprache („du“, „dein“ klein), konkrete Verben („Auftrag anlegen“), kurze Sätze, keine erfundenen Zahlen.
 - **Bewegung:** 140–180 ms ease-out, keine Layoutsprünge, `prefers-reduced-motion` respektieren. Markenintro nur beim Erstkontakt.
 - **Vermeiden:** durchscheinende Fotos hinter Arbeitsinhalt, nur per Hover/Swipe/Drag-and-drop erreichbare Aktionen,
-  reine Icon-Navigation, globales Plus-Menü, Auto-Carousels, mehrere konkurrierende Grüntöne, kleine kontrastarme Schrift.
+  reine Icon-Navigation, globales Plus-Menü, Auto-Carousels,
+  farbige Akzentstreifen an Kanten (links/oben an Karten, Bannern, Listenzeilen – stattdessen Fläche, Rahmen oder Punkt), mehrere konkurrierende Grüntöne, kleine kontrastarme Schrift.
 - Jeder Screen braucht gestaltete Leer-, Lade-, Fehler- und Erfolgszustände und funktioniert ab 320 px Breite ohne waagerechten Überlauf.
 
 ## Website und Software (ein Next.js-Projekt)
