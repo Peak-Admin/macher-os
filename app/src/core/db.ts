@@ -29,6 +29,20 @@ const sammlungen = new Map<string, Collection<Basis>>();
 let speichernGeplant: ReturnType<typeof setTimeout> | undefined;
 let aktuellerNutzer: ID | undefined;
 let idb: IDBDatabase | undefined;
+/**
+ * Seit dem letzten Speichern geänderte Einträge (Sammlung → IDs). Gespeichert wird nur, was dieser Tab
+ * geändert hat – so überschreibt ein zweiter Tab (Druckansicht, Kundenbereich) nie die Änderungen eines anderen.
+ */
+let offen = new Map<string, Set<ID>>();
+/** Ganzer Stand ersetzt (Zurücksetzen, Import) */
+let allesOffen = false;
+const kanal: BroadcastChannel | undefined = typeof BroadcastChannel === 'function' ? new BroadcastChannel('macher-os:daten') : undefined;
+
+function markieren(name: string, id: ID) {
+  let ids = offen.get(name);
+  if (!ids) offen.set(name, (ids = new Set()));
+  ids.add(id);
+}
 
 export interface SpeicherStatus {
   ort: 'indexeddb' | 'localstorage' | 'arbeitsspeicher';
@@ -74,6 +88,7 @@ export async function initDb(): Promise<void> {
     if (gespeichert) {
       daten = gespeichert as Daten;
     } else if (Object.keys(daten).length) {
+      allesOffen = true;
       await schreibeIdb();
     }
     try {
@@ -82,6 +97,7 @@ export async function initDb(): Promise<void> {
       /* egal */
     }
     setzeStatus({ ort: 'indexeddb', fehler: undefined });
+    if (kanal) kanal.onmessage = () => void neuLaden();
     void schaetzePlatz();
     version++;
     listeners.forEach((l) => l());
@@ -91,15 +107,73 @@ export async function initDb(): Promise<void> {
   }
 }
 
-async function schreibeIdb() {
+/** Gespeicherten Stand mit den noch nicht gespeicherten eigenen Änderungen überlagern */
+export function ueberlagern(gespeichert: Daten, aenderungen: Map<string, Set<ID>>, quelle: Daten): Daten {
+  for (const [name, ids] of aenderungen) {
+    const t = (gespeichert[name] ??= {});
+    for (const id of ids) {
+      const x = quelle[name]?.[id];
+      if (x) t[id] = x;
+      else delete t[id];
+    }
+  }
+  return gespeichert;
+}
+
+/**
+ * Schreibt nur die geänderten Einträge in den gespeicherten Stand (in einer Transaktion) und übernimmt
+ * dabei, was andere Tabs inzwischen gespeichert haben.
+ */
+async function schreibeIdb(): Promise<void> {
   if (!idb) return;
+  const ganz = allesOffen;
+  const aenderungen = offen;
+  offen = new Map();
+  allesOffen = false;
   const tx = idb.transaction(IDB_STORE, 'readwrite');
-  tx.objectStore(IDB_STORE).put(daten, 'daten');
-  await new Promise<void>((ok, fehler) => {
-    tx.oncomplete = () => ok();
-    tx.onerror = () => fehler(tx.error);
-    tx.onabort = () => fehler(tx.error);
-  });
+  const store = tx.objectStore(IDB_STORE);
+  let neuerStand: Daten | undefined;
+  if (ganz) store.put(daten, 'daten');
+  else {
+    const g = store.get('daten');
+    g.onsuccess = () => {
+      neuerStand = ueberlagern((g.result as Daten | undefined) ?? {}, aenderungen, daten);
+      store.put(neuerStand, 'daten');
+    };
+  }
+  try {
+    await new Promise<void>((ok, fehler) => {
+      tx.oncomplete = () => ok();
+      tx.onerror = () => fehler(tx.error);
+      tx.onabort = () => fehler(tx.error);
+    });
+  } catch (e) {
+    // nicht verlieren: beim nächsten Speichern erneut versuchen
+    for (const [name, ids] of aenderungen) ids.forEach((id) => markieren(name, id));
+    allesOffen ||= ganz;
+    throw e;
+  }
+  kanal?.postMessage('gespeichert');
+  if (neuerStand) uebernehmen(neuerStand);
+}
+
+/** Fremden Stand übernehmen, ohne eigene ungespeicherte Änderungen zu verlieren */
+function uebernehmen(stand: Daten) {
+  if (allesOffen) return;
+  daten = ueberlagern(stand, offen, daten);
+  version++;
+  if (batchTiefe === 0) listeners.forEach((l) => l());
+}
+
+/** Ein anderer Tab hat gespeichert → Stand neu laden */
+async function neuLaden() {
+  if (!idb) return;
+  try {
+    const g = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get('daten'));
+    if (g) uebernehmen(g as Daten);
+  } catch {
+    /* beim nächsten Mal */
+  }
 }
 
 async function schaetzePlatz() {
@@ -127,6 +201,8 @@ function speichern() {
       }
       return;
     }
+    offen = new Map();
+    allesOffen = false;
     try {
       globalThis.localStorage?.setItem(SPEICHER_KEY, JSON.stringify(daten));
       if (status.fehler) setzeStatus({ fehler: undefined });
@@ -230,6 +306,7 @@ function protokoll(name: string, aktion: string, obj: Basis, text?: string) {
     vonMitarbeiterId: aktuellerNutzer,
   };
   tabelle('ereignisse')[e.id] = e;
+  markieren('ereignisse', e.id);
 }
 
 function standardText(aktion: string) {
@@ -289,6 +366,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
         erstelltVon: aktuellerNutzer,
       } as unknown as T;
       tabelle(name)[obj.id] = obj;
+      markieren(name, obj.id);
       if (!opts?.leise) protokoll(name, 'created', obj);
       geaendert();
       if (!opts?.leise) emit({ typ: `${name}.created`, sammlung: name, objekt: obj });
@@ -299,6 +377,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
       if (!alt) return undefined;
       const neu = { ...alt, ...patch, id, geaendertAm: jetzt() } as T;
       tabelle(name)[id] = neu;
+      markieren(name, id);
       if (!opts?.leise) protokoll(name, 'updated', neu, opts?.text);
       geaendert();
       if (!opts?.leise) emit({ typ: `${name}.updated`, sammlung: name, objekt: neu, vorher: alt });
@@ -309,6 +388,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
       if (!alt) return;
       const neu = { ...alt, geloeschtAm: jetzt() };
       tabelle(name)[id] = neu;
+      markieren(name, id);
       protokoll(name, 'removed', neu);
       geaendert();
       emit({ typ: `${name}.removed`, sammlung: name, objekt: neu });
@@ -319,12 +399,14 @@ function collection<T extends Basis>(name: string): Collection<T> {
       const neu = { ...alt };
       delete neu.geloeschtAm;
       tabelle(name)[id] = neu;
+      markieren(name, id);
       protokoll(name, 'restored', neu);
       geaendert();
       emit({ typ: `${name}.restored`, sammlung: name, objekt: neu });
     },
     purge(id) {
       delete tabelle(name)[id];
+      markieren(name, id);
       geaendert();
     },
     use(pred, deps = []) {
@@ -419,6 +501,8 @@ export function vermerken(bezug: Bezug, typ: string, text: string, datenZusatz?:
 /** Alles zurücksetzen (Onboarding neu starten, Tests) */
 export function zuruecksetzen() {
   daten = {};
+  offen = new Map();
+  allesOffen = true;
   geaendert();
 }
 
@@ -429,5 +513,7 @@ export function exportieren(): Daten {
 
 export function importieren(d: Daten) {
   daten = d;
+  offen = new Map();
+  allesOffen = true;
   geaendert();
 }

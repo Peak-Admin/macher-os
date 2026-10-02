@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { db, defineCollection } from './db';
+import { db, defineCollection, ueberlagern } from './db';
 import { summen } from './format';
 import { naechsteNummer } from './nummern';
 import { on } from './events';
@@ -43,5 +43,18 @@ describe('Kern', () => {
   it('vergibt fortlaufende Nummern', () => {
     const j = new Date().getFullYear();
     expect(naechsteNummer('auftrag')).toBe(`A-${j}-0001`);
+  });
+});
+
+describe('Speichern über mehrere Tabs', () => {
+  it('schreibt nur eigene Änderungen in den gespeicherten Stand und behält fremde', () => {
+    const gespeichert = { rechnungen: { r1: { id: 'r1', status: 'entwurf' }, r2: { id: 'r2', status: 'versendet' } }, kunden: { k1: { id: 'k1' } } } as never;
+    const eigen = { rechnungen: { r1: { id: 'r1', status: 'versendet' }, r2: { id: 'r2', status: 'entwurf' } }, kunden: {} } as never;
+    const neu = ueberlagern(gespeichert, new Map([['rechnungen', new Set(['r1'])], ['kunden', new Set(['k1'])]]), eigen) as Record<string, Record<string, { status?: string }>>;
+    expect(neu.rechnungen.r1.status).toBe('versendet');
+    // r2 hat dieser Tab nicht geändert – der gespeicherte (fremde) Stand bleibt
+    expect(neu.rechnungen.r2.status).toBe('versendet');
+    // k1 hat dieser Tab gelöscht
+    expect(neu.kunden.k1).toBeUndefined();
   });
 });
