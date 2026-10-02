@@ -1,4 +1,4 @@
-import { cta } from "@/lib/site";
+import { app, cta } from "@/lib/site";
 import { DemoExplorer } from "@/components/demo/DemoExplorer";
 import { PageHero, TrustRow } from "@/components/sections";
 import {
@@ -17,19 +17,24 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Demo – Sieh Macher OS in Aktion",
   description:
-    "Klick dich durch Macher OS: Heute, Aufträge, Plan, Betrieb und automatische Büroarbeit – mit Beispielen für Elektro, SHK, Tischler, Maler und allgemeine Betriebe.",
+    "Öffne das echte Macher OS mit einem Beispielbetrieb: Heute, Aufträge, Plan, Betrieb und Rechnungen – für Elektro, SHK, Tischler, Maler und allgemeine Betriebe.",
   path: "/demo",
 });
 
 const faq: FaqItem[] = [
   {
     frage: "Muss ich mich für die Demo anmelden?",
-    antwort: "Nein. Die Demo auf dieser Seite kannst du ohne Anmeldung ausprobieren. Alle Inhalte sind Beispieldaten.",
+    antwort: "Nein. Die Demo öffnet sich ohne Anmeldung direkt im Browser. Alle Inhalte sind Beispieldaten.",
   },
   {
     frage: "Ist das das echte Programm?",
     antwort:
-      "Die Demo ist eine vereinfachte Ansicht, die zeigt, wie Macher OS aufgebaut ist. Wenn du alles selbst ausprobieren willst, teste Macher OS kostenlos mit deinem eigenen Betrieb.",
+      "Ja. Die Demo ist das echte Macher OS mit einem Beispielbetrieb. Du kannst Aufträge anlegen, planen und Rechnungen schreiben. Die Beispieldaten bleiben getrennt von deinen echten Daten und verschwinden, sobald du deinen eigenen Betrieb einrichtest.",
+  },
+  {
+    frage: "Was passiert mit meinen Daten, wenn ich Macher OS schon nutze?",
+    antwort:
+      "Sie werden während der Demo sicher zur Seite gelegt. Über den Hinweis „Spielwiese“ oben kommst du jederzeit zurück – deine Daten sind dann unverändert da.",
   },
   {
     frage: "Kann ich mir Macher OS auch persönlich zeigen lassen?",
@@ -45,10 +50,10 @@ export default function DemoPage() {
         breadcrumbs={[{ label: "Demo" }]}
         eyebrow="Demo"
         title="Sieh Macher OS in Aktion."
-        intro="Ohne Anmeldung, ohne Verkaufsgespräch. Wähle dein Gewerk und klick dich durch einen normalen Arbeitstag."
+        intro="Das echte Programm mit einem Beispielbetrieb. Ohne Anmeldung, ohne Verkaufsgespräch – getrennt von deinen echten Daten."
         actions={
           <>
-            <ButtonLink href="#demo" size="lg">
+            <ButtonLink href={app.demo()} size="lg">
               <Icon name="play" className="size-4" /> Demo starten
             </ButtonLink>
             <ButtonLink href="#tour" variant="secondary" size="lg">

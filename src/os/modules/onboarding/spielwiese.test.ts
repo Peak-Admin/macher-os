@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { alleSammlungen, db, exportieren, zuruecksetzen } from '@core/db';
 import { hatEchtenBetrieb, hatGesicherteDaten, istSpielwiese, setzeSicherungsSpeicher, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
-import { LEERER_BRIEFKOPF, setupEinrichten } from './daten';
+import { demoGewerk, LEERER_BRIEFKOPF, setupEinrichten } from './daten';
 
 let gesichert: ReturnType<typeof exportieren> | undefined;
 const beispiele = () => alleSammlungen().reduce((n, c) => n + c.allMitGeloeschten().filter((x) => x.beispiel).length, 0);
@@ -57,5 +57,22 @@ describe('Spielwiese', () => {
     setzeSicherungsSpeicher({ lesen: async () => undefined, schreiben: async () => {}, loeschen: async () => {} });
     await expect(spielwieseStarten()).rejects.toThrow(/sicher/);
     expect(db.betrieb.get('betrieb')?.name).toBe('Elektro Echt');
+  });
+
+  it('Demo mit anderem Gewerk: Beispielbetrieb wechselt, echte Daten bleiben zur Seite gelegt', async () => {
+    setupEinrichten({ gewerk: 'elektro', briefkopf: { ...LEERER_BRIEFKOPF, name: 'Elektro Echt', inhaber: 'Eva' }, kunden: [], preise: { art: 'vorlage', prozent: 0 }, team: [] });
+    await spielwieseStarten('elektro');
+    await spielwieseStarten('shk');
+    expect(istSpielwiese()).toBe(true);
+    expect(db.betrieb.get('betrieb')?.gewerk).toBe('shk');
+    expect(await spielwieseVerlassen()).toBe('zurueck');
+    expect(db.betrieb.get('betrieb')?.name).toBe('Elektro Echt');
+  });
+
+  it('Demo-Adresse: Gewerk der Website wird zum Gewerk der Software', () => {
+    expect(demoGewerk('shk')).toBe('shk');
+    expect(demoGewerk('allgemein')).toBe('sonstiges');
+    expect(demoGewerk('quatsch')).toBe('elektro');
+    expect(demoGewerk(null)).toBe('elektro');
   });
 });

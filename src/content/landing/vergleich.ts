@@ -401,7 +401,7 @@ export const vergleichUebersicht: Landing = {
   weiter: {
     links: [
       { label: "Preise", href: "/preise", text: "Ein Preis je Betrieb, alles drin." },
-      { label: "Demo ansehen", href: "/demo", text: "Macher OS mit Beispieldaten ausprobieren." },
+      { label: "Demo ansehen", href: cta.secondary.href, text: "Macher OS mit Beispieldaten ausprobieren." },
       { label: "Schnittstellen", href: "/schnittstellen", text: "DATEV, GAEB, Datanorm und mehr." },
     ],
   },
