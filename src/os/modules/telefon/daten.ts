@@ -4,7 +4,7 @@
  */
 import { db } from '@core/db';
 import { heute } from '@core/format';
-import type { Auftrag, ID, Kunde, Nachricht } from '@core/objects';
+import type { Adresse, AnrufDetails, Auftrag, ID, Kunde, Nachricht } from '@core/objects';
 import { anfrageAnlegen, findeKunden, normTelefon } from '@modules/anfragen/daten';
 
 export type Dringlichkeit = 'normal' | 'heute' | 'notfall';
@@ -51,6 +51,14 @@ export interface NeuerAnruf {
   /** Rückruf: wer und bis wann */
   zustaendigId?: ID;
   faellig?: string;
+  /** Adresse für einen neuen Kunden (Anfrage von Unbekannt) */
+  adresse?: Adresse;
+  /** Gesprächsdaten, z. B. vom Telefonassistenten */
+  anruf?: AnrufDetails;
+  /** vorhandene (vom Eingang abgelegte) Nachricht ergänzen statt eine neue anzulegen */
+  nachrichtId?: ID;
+  /** Standard: gelesen (von Hand notiert) */
+  gelesen?: boolean;
 }
 
 export function betreffFuer(n: Pick<NeuerAnruf, 'name' | 'nummer' | 'dringlichkeit'>, kunde?: Kunde): string {
@@ -77,7 +85,7 @@ export function anrufErfassen(n: NeuerAnruf): { nachricht: Nachricht; auftrag?: 
   if (n.schritt === 'anfrage') {
     const r = anfrageAnlegen({
       kundeId: kunde?.id,
-      neuerKunde: kunde ? undefined : { name: n.name?.trim() || `Anrufer ${n.nummer}`.trim(), telefon: n.nummer },
+      neuerKunde: kunde ? undefined : { name: n.name?.trim() || `Anrufer ${n.nummer}`.trim(), telefon: n.nummer, adresse: n.adresse },
       titel: kurztitel(n.anliegen),
       beschreibung: n.anliegen,
       quelle: 'telefon',
@@ -89,15 +97,18 @@ export function anrufErfassen(n: NeuerAnruf): { nachricht: Nachricht; auftrag?: 
   }
 
   const unbekannt = !kunde;
-  const nachricht = db.nachrichten.create({
-    kanal: 'telefon',
-    richtung: 'ein',
+  const felder = {
+    kanal: 'telefon' as const,
+    richtung: 'ein' as const,
     kundeId: kunde?.id,
     auftragId: auftrag?.id,
     betreff: betreffFuer(n, kunde),
     text: unbekannt && n.nummer ? `${n.anliegen.trim()}\nRückrufnummer: ${n.nummer.trim()}` : n.anliegen.trim(),
-    gelesen: true,
-  });
+    gelesen: n.gelesen ?? true,
+    ...(n.anruf ? { anruf: n.anruf } : {}),
+  };
+  const vorhanden = db.nachrichten.get(n.nachrichtId);
+  const nachricht = (vorhanden && db.nachrichten.update(vorhanden.id, felder)) || db.nachrichten.create(felder);
 
   if (n.schritt === 'rueckruf') {
     db.aufgaben.create({

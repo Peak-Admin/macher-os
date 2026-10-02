@@ -1,0 +1,22 @@
+/* Telefon & Empfang – nur Layout, nur --mm-*-Tokens */
+.tel-ki { border-bottom: 1px solid var(--mm-border); }
+.tel-ki:last-child { border-bottom: 0; }
+.tel-ki > .mm-listenzeile { border-bottom: 0; }
+.tel-details { padding: 0 var(--mm-space-4) var(--mm-space-3); min-width: 0; }
+.tel-details > summary { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; font-weight: 600; color: var(--mm-link); }
+.tel-details > summary:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; border-radius: var(--mm-radius-control); }
+.tel-details[open] > summary { margin-bottom: var(--mm-space-2); }
+.tel-felder { display: grid; gap: var(--mm-space-2); margin: 0 0 var(--mm-space-3); }
+.tel-felder > div { display: grid; grid-template-columns: minmax(0, 160px) minmax(0, 1fr); gap: var(--mm-space-3); }
+.tel-felder dt { color: var(--mm-text-secondary); }
+.tel-felder dd { margin: 0; overflow-wrap: anywhere; white-space: pre-line; }
+.tel-transkript { list-style: none; margin: 0 0 var(--mm-space-3); padding: var(--mm-space-3); display: grid; gap: var(--mm-space-2); background: var(--mm-surface-subtle); border-radius: var(--mm-radius-control); overflow-wrap: anywhere; }
+.tel-aktionen { display: flex; flex-wrap: wrap; gap: var(--mm-space-2); }
+.tel-fragen-knoepfe { display: flex; gap: var(--mm-space-1); }
+@media (max-width: 479px) {
+  .tel-felder > div { grid-template-columns: minmax(0, 1fr); gap: var(--mm-space-1); }
+}
+/* Offene Rückrufe in der schmalen Seitenspalte: Knöpfe unter den Text statt Text zusammenzuquetschen */
+.tel-rueckrufe .mm-listenzeile { flex-wrap: wrap; }
+.tel-rueckrufe .mm-listenzeile-text { flex: 1 1 200px; }
+.tel-rueckrufe .mm-listenzeile-rechts { flex-wrap: wrap; }

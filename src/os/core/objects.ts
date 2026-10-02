@@ -519,6 +519,42 @@ export interface Nachricht extends Basis {
   text: string;
   gelesen: boolean;
   betreff?: string;
+  /** nur `kanal: 'telefon'`: Gesprächsdaten (z. B. vom Telefonassistenten) – siehe `modules/telefon` */
+  anruf?: AnrufDetails;
+}
+
+/** Dringlichkeit eines Anrufs, wie der Telefonassistent sie einordnet */
+export type AnrufDringlichkeit = 'normal' | 'dringend' | 'notfall';
+
+/**
+ * Ein Anruf ist eine `Nachricht` mit `kanal: 'telefon'` (eine Business-Realität). Was der Telefonassistent dazu weiß,
+ * steht hier – Anrufer, Kunde und Auftrag stehen wie immer in der Nachricht selbst.
+ */
+export interface AnrufDetails {
+  quelle: 'ki-assistent' | 'manuell';
+  /** Gesprächs-ID beim Telefonanbieter – gegen doppelte Zustellung */
+  anrufId?: string;
+  anbieter?: string;
+  /** Nummer des Anrufers (wie übermittelt) */
+  nummer?: string;
+  beginn: Zeitpunkt;
+  dauerSekunden?: number;
+  zusammenfassung?: string;
+  /** abgefragte Felder: anliegen, name, adresse, dringlichkeit, rueckrufnummer, erreichbarkeit … */
+  felder?: Record<string, string>;
+  dringlichkeit: AnrufDringlichkeit;
+  /** woran der Notfall erkannt wurde (Stichwort oder Einschätzung des Assistenten) */
+  notfallGrund?: string;
+  /** bei `status: 'neu'` der Vorschlag des Assistenten, danach das, was Macher daraus gemacht hat */
+  ergebnis?: 'anfrage' | 'rueckruf' | 'notiz' | 'weitergeleitet';
+  transkript?: { wer: 'anrufer' | 'assistent'; text: string }[];
+  /** an wen der Notfall ging (Bereitschaft) */
+  weitergeleitetAn?: ID;
+  /** der Anbieter hat den Anrufer schon im Gespräch zur Bereitschaft durchgestellt */
+  durchgestellt?: boolean;
+  /** neu = vom Anbieter abgelegt, noch nicht in Anfrage/Rückruf übersetzt */
+  status: 'neu' | 'verarbeitet' | 'fehler';
+  fehler?: string;
 }
 
 export type BetriebsmittelArt = 'werkzeug' | 'maschine' | 'fahrzeug';
