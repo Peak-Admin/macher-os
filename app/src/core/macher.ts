@@ -109,7 +109,7 @@ export interface OffenerHinweis extends HinweisVorschlag {
 /**
  * Mehrere Module melden oft dasselbe Objekt (z. B. „Auftrag ohne Termin“ aus Akte, Plan und Autoplanung).
  * Der Mensch soll es nur einmal sehen: Hinweise mit gleichem Bezug werden zu einem gebündelt –
- * der wichtigste führt, Aktionen werden zusammengeführt (ohne doppelte), der Rest steht in `weitere`.
+ * der wichtigste führt (mit seinen Aktionen), der Rest steht in `weitere`.
  */
 export function buendeln(liste: OffenerHinweis[]): OffenerHinweis[] {
   const sortiert = [...liste].sort((a, b) => b.gewicht - a.gewicht);
@@ -125,9 +125,8 @@ export function buendeln(liste: OffenerHinweis[]): OffenerHinweis[] {
       continue;
     }
     fuehrend.weitere!.push(h);
-    const vorhanden = new Set((fuehrend.aktionen ?? []).map((a) => a.aktion + '|' + a.label));
-    const neu = (h.aktionen ?? []).filter((a) => !vorhanden.has(a.aktion + '|' + a.label) && !(fuehrend.aktionen ?? []).some((x) => x.label === a.label));
-    fuehrend.aktionen = [...(fuehrend.aktionen ?? []), ...neu.map((a) => ({ ...a, primaer: false }))].slice(0, 4);
+    // Aktionen des wichtigsten Hinweises reichen; nur wenn er keine hat, die des nächsten übernehmen
+    if (!fuehrend.aktionen?.length && h.aktionen?.length) fuehrend.aktionen = h.aktionen;
     if (h.art === 'problem' && fuehrend.art !== 'problem') fuehrend.art = 'problem';
   }
   gebuendelt.clear();

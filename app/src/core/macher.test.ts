@@ -11,7 +11,7 @@ const h = (schluessel: string, gewicht: number, id?: string, aktionen: OffenerHi
 });
 
 describe('Hinweise bündeln', () => {
-  it('fasst Hinweise zum selben Objekt zusammen, der wichtigste führt', () => {
+  it('fasst Hinweise zum selben Objekt zusammen, der wichtigste führt mit seinen Aktionen', () => {
     const r = buendeln([
       h('a', 50, 'x', [{ aktion: 'plan.einplanen', label: 'Einplanen', primaer: true }]),
       h('b', 80, 'x', [{ aktion: 'plan.vorschlag', label: 'So einplanen', primaer: true }]),
@@ -20,7 +20,6 @@ describe('Hinweise bündeln', () => {
     ]);
     expect(r.map((x) => x.schluessel)).toEqual(['b', 'c', 'd']);
     expect(r[0].weitere?.map((x) => x.schluessel)).toEqual(['a']);
-    expect(r[0].aktionen?.map((a) => a.label)).toEqual(['So einplanen', 'Einplanen']);
-    expect(r[0].aktionen?.[1].primaer).toBe(false);
+    expect(r[0].aktionen?.map((a) => a.label)).toEqual(['So einplanen']);
   });
 });
