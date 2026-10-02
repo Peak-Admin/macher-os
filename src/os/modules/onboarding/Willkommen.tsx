@@ -6,9 +6,7 @@ import { cloud, cloudAktiv } from '@core/cloud';
 import { db, type Neu } from '@core/db';
 import { GEWERKE } from '@core/gewerke';
 import type { Gewerk, Kunde } from '@core/objects';
-import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
-import { PLAN_QUELLE } from '@modules/abo/plaene';
-import { Button, Fortschritt, Icon, Meldung, Meta, Oberzeile, Stapel, useBestaetigen, type IconName } from '@ui/index';
+import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';import { Button, Fortschritt, Icon, Meldung, Meta, Oberzeile, Stapel, useBestaetigen, type IconName } from '@ui/index';
 import {
   briefkopfLuecken,
   briefkopfPruefen,
@@ -47,15 +45,10 @@ export function Willkommen() {
 
 /**
  * Was beim Start zählt – steht bei der Anmeldung (`/signup`) im Markenkopf.
- * Nur Zusagen, die das Produkt hält: Testzeit aus `abo/plaene`, Import im Schritt „Kunden & Preise“,
- * Team ohne Passwort im Schritt „Team“, Lesemodus und Export nach dem Test (siehe `preise.ts`).
+ * Jeder Punkt beantwortet einen Einwand aus `docs/produkt/einwaende.md` und muss heute stimmen.
+ * Keine Minutenzahl, solange `setup.fertig` sie nicht im Median belegt.
  */
-const VORTEILE = [
-  `${PLAN_QUELLE.testTage} Tage kostenlos – ohne Kreditkarte`,
-  'Kunden und Preise bringst du einfach mit',
-  'Dein Team braucht kein Passwort',
-  'Nichts geht verloren – auch nach dem Test',
-];
+const VORTEILE = ['Kostenlos starten', 'Ohne Kreditkarte', 'In wenigen Minuten eingerichtet', 'Kostenlose Hilfe beim Einrichten'];
 
 function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
   return (
