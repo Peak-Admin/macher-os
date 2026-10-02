@@ -1,0 +1,128 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { useId, useMemo, useState } from "react";
+import type { WissenEintrag } from "@/content/wissen";
+import { WissenKarte } from "./WissenKarte";
+
+type Option = { slug: string; titel: string };
+
+const gruppen = [
+  { typ: "Vorlage", titel: "Vorlagen", text: "Zum Ausfüllen auf der Baustelle und im Büro." },
+  { typ: "Checkliste", titel: "Checklisten", text: "Damit nichts vergessen wird." },
+  { typ: "Formular", titel: "Formulare", text: "Zum Unterschreiben und Ablegen." },
+] as const;
+
+/** Vorlagen-Übersicht mit Filter nach Thema und Gewerk, gruppiert nach Art. */
+export function VorlagenFilter({
+  eintraege,
+  themen,
+  gewerke,
+  startThema = null,
+  startGewerk = null,
+}: {
+  eintraege: WissenEintrag[];
+  themen: Option[];
+  gewerke: Option[];
+  startThema?: string | null;
+  startGewerk?: string | null;
+}) {
+  const [thema, setThema] = useState(themen.find((t) => t.slug === startThema)?.slug ?? "");
+  const [gewerk, setGewerk] = useState(gewerke.find((g) => g.slug === startGewerk)?.slug ?? "");
+  const idThema = useId();
+  const idGewerk = useId();
+
+  const gefiltert = useMemo(
+    () =>
+      eintraege.filter(
+        (e) =>
+          (!thema || (e.themen as readonly string[]).includes(thema)) &&
+          // Allgemeine Vorlagen (ohne Gewerk) passen zu jedem Gewerk.
+          (!gewerk || e.gewerke.length === 0 || (e.gewerke as readonly string[]).includes(gewerk)),
+      ),
+    [eintraege, thema, gewerk],
+  );
+
+  const select =
+    "h-11 w-full rounded-lg border border-line bg-white px-3 font-medium outline-none focus:border-ink/40 focus:ring-2 focus:ring-signal/40";
+
+  return (
+    <div>
+      <div className="grid gap-4 rounded-lg border border-line bg-white p-5 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+        <div>
+          <label htmlFor={idThema} className="mb-1.5 block text-sm font-semibold">
+            Thema
+          </label>
+          <select id={idThema} value={thema} onChange={(e) => setThema(e.target.value)} className={select}>
+            <option value="">Alle Themen</option>
+            {themen.map((t) => (
+              <option key={t.slug} value={t.slug}>
+                {t.titel}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor={idGewerk} className="mb-1.5 block text-sm font-semibold">
+            Gewerk
+          </label>
+          <select id={idGewerk} value={gewerk} onChange={(e) => setGewerk(e.target.value)} className={select}>
+            <option value="">Alle Gewerke</option>
+            {gewerke.map((g) => (
+              <option key={g.slug} value={g.slug}>
+                {g.titel}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setThema("");
+            setGewerk("");
+          }}
+          disabled={!thema && !gewerk}
+          className="h-11 rounded-lg px-4 font-semibold text-ink ring-1 ring-inset ring-line hover:ring-ink/40 disabled:opacity-40"
+        >
+          Zurücksetzen
+        </button>
+      </div>
+
+      <p className="mt-4 text-sm font-medium text-muted" aria-live="polite">
+        {gefiltert.length} {gefiltert.length === 1 ? "Ergebnis" : "Ergebnisse"}
+      </p>
+
+      {gefiltert.length === 0 && (
+        <p className="mt-4 rounded-lg border border-dashed border-line bg-white p-8 text-center text-muted">
+          Für diese Auswahl gibt es noch keine Vorlage. Wähl ein anderes Thema oder setz den Filter zurück.
+        </p>
+      )}
+
+      {gruppen.map((g) => {
+        const liste = gefiltert.filter((e) => e.typ === g.typ);
+        if (liste.length === 0) return null;
+        return (
+          <section key={g.typ} className="mt-10" aria-labelledby={`gruppe-${g.typ}`}>
+            <h2 id={`gruppe-${g.typ}`} className="font-display text-2xl font-extrabold tracking-tight">
+              {g.titel} <span className="text-base font-semibold text-muted">({liste.length})</span>
+            </h2>
+            <p className="mt-1 text-muted">{g.text}</p>
+            <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {liste.map((e) => (
+                <li key={e.href}>
+                  <WissenKarte eintrag={e} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Variante, die `?thema=` und `?gewerk=` übernimmt. Muss in `<Suspense>` stehen. */
+export function VorlagenFilterMitParams(props: { eintraege: WissenEintrag[]; themen: Option[]; gewerke: Option[] }) {
+  const params = useSearchParams();
+  return <VorlagenFilter {...props} startThema={params.get("thema")} startGewerk={params.get("gewerk")} />;
+}
