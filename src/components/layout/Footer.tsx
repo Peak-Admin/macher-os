@@ -51,9 +51,11 @@ export function Footer() {
             ))}
           </div>
         </div>
-        <div className="mt-12 flex flex-wrap items-start justify-between gap-8 border-t border-white/10 pt-8">
-          <VertrauensKacheln />
-          <KiFragen />
+        <div className="mt-12 border-t border-white/10 pt-8">
+          <div className="sm:ml-auto sm:w-fit">
+            <KiFragen />
+            <VertrauensKacheln className="mt-6" />
+          </div>
         </div>
         <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/55 sm:flex-row sm:items-center sm:justify-between">
           <p>

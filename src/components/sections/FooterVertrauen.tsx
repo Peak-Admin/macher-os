@@ -36,6 +36,13 @@ const AUSSAGEN = [
   { titel: "Made in Germany", text: "Entwickelt in Deutschland" },
 ];
 
+/** Kurzform für die kleinen Plaketten im Footer; der volle Titel steht im Tooltip und für Screenreader. */
+const KURZ: Record<string, string> = {
+  "DSGVO-konform": "DSGVO",
+  "KI nach EU AI Act": "EU AI Act",
+  "Server in Frankfurt": "Server Frankfurt",
+};
+
 /**
  * Vertrauensaussagen als flache Plaketten in Buttonform (dieselbe Quelle wie in der Software), mit „Made in Germany“.
  * EU-Regeln (DSGVO, EU AI Act) blau mit EU-Logo, Deutschland mit Flagge.
@@ -43,24 +50,26 @@ const AUSSAGEN = [
 export function VertrauensKacheln({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
-      <ul className="grid w-full max-w-md gap-2 sm:grid-cols-2">
+      <ul className="grid grid-cols-2 gap-2">
         {AUSSAGEN.map((v) => {
           const eu = EU_REGEL.has(v.titel);
           return (
             <li
               key={v.titel}
-              title={v.text}
-              className={`flex min-h-10 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ${
+              title={`${v.titel}: ${v.text}`}
+              className={`flex min-h-8 items-center gap-2 rounded-lg px-2.5 py-1 text-sm font-semibold text-white ring-1 ring-inset ${
                 eu ? "bg-eu ring-white/20" : "bg-white/10 ring-white/15"
               }`}
             >
               {eu ? (
-                <EuLogo className="size-6 shrink-0" />
+                <EuLogo className="size-5 shrink-0" />
               ) : (
-                <span aria-hidden className="flagge-de h-4 w-6 shrink-0 rounded-sm ring-1 ring-white/30" />
+                <span aria-hidden className="flagge-de h-3.5 w-5 shrink-0 rounded-sm ring-1 ring-white/30" />
               )}
-              {v.titel}
-              <span className="sr-only">: {v.text}</span>
+              <span aria-hidden>{KURZ[v.titel] ?? v.titel}</span>
+              <span className="sr-only">
+                {v.titel}: {v.text}
+              </span>
             </li>
           );
         })}
