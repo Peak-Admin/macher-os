@@ -1,11 +1,15 @@
 /**
- * Die vier Kern-Widgets des Home: Dein nächster Schritt · Deine Arbeit · Dein Ansprechpartner · Neu für dich.
- * Bewusst verdichtet: Onboarding + Next Best Action, Aufgaben + Freigaben + Urlaubsaufgaben,
- * persönlicher Kontakt + Support, News + Workshops + Produktneuigkeiten.
+ * Die Kern-Widgets des Home: Dein nächster Schritt · Erste Schritte · Deine Arbeit · Hilfe & Ansprechpartner · Neu für dich.
+ * Bewusst verdichtet: Next Best Action, Einrichtung als Checkliste, Aufgaben + Freigaben + Urlaubsaufgaben,
+ * persönlicher Kontakt + Hilfe, News + Workshops + Produktneuigkeiten.
  */
 import { Link } from 'react-router-dom';
 import { Avatar, BeispielMarke, Button, Icon, Status, ThemenIcon } from '@ui/index';
+import { useDatenstand } from '@core/db';
+import { oeffne } from '@core/overlay';
 import { Skelett, LadeFehler } from '../Rahmen';
+import { ANSPRECHPARTNER, ansprechpartnerAnzeige, SUPPORT } from '../quellen/ansprechpartner';
+import { ERSTE_SCHRITTE_AUS, ersteSchritteJetzt } from '../quellen/ersteSchritte';
 import { homeMessen } from '../messen';
 import { bezugKennung, useArbeit, useNaechsteAktionen } from '../quellen/hooks';
 import { homeInhalte, useLaden } from '../quellen/inhalte';
@@ -26,8 +30,8 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
           <ThemenIcon name="check" size={44} />
         </span>
         <div className="mm-home-naechster-text">
-          <h3 className="mm-home-naechster-titel">Alles eingerichtet.</h3>
-          <p>Du bist startklar. Gerade wartet nichts Dringendes auf dich.</p>
+          <h3 className="mm-home-naechster-titel">Gerade wartet nichts auf dich.</h3>
+          <p>Neue Anfragen, Angebote und Rechnungen erscheinen hier, sobald etwas zu tun ist.</p>
         </div>
         {darf('schreiben', ich) && (
           <div className="mm-home-naechster-aktion">
@@ -152,82 +156,95 @@ export function ArbeitWidget({ groesse, ich }: WidgetProps) {
   );
 }
 
-// ------------------------------------------------------------------ Dein Ansprechpartner
+// ------------------------------------------------------------------ Erste Schritte
 
-const initialenAus = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((t) => t[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-
-function Support({ url, klick }: { url: string; klick: () => void }) {
-  return (
-    <div className="mm-home-kontakt-support">
-      <span>Brauchst du technische Hilfe?</span>
-      <Button variante="tertiaer" klein href={url} icon="pfeilRechts" onClick={klick}>
-        Zum Support
-      </Button>
-    </div>
-  );
-}
-
-export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
-  const z = useLaden('ansprechpartner', () => homeInhalte().ansprechpartner());
-  if (z.status === 'laedt') return <Skelett avatar zeilen={3} />;
-  if (z.status === 'fehler') return <LadeFehler text="Dein Ansprechpartner konnte nicht geladen werden." nochmal={z.nochmal} />;
-  const p = z.daten;
-  const klick = (ziel: string) => homeMessen('home_contact_clicked', { ziel });
-  if (!p) {
+export function ErsteSchritteWidget({ ich }: WidgetProps) {
+  useDatenstand();
+  const schritte = ersteSchritteJetzt(ich);
+  const erledigt = schritte.filter((x) => x.erledigt).length;
+  const naechster = schritte.find((x) => !x.erledigt);
+  if (!naechster) {
     return (
-      <div className="mm-home-kontakt">
-        <p className="mm-home-leer-titel">Wir sind für dich da.</p>
-        <p>Unser Team hilft dir bei Fragen weiter.</p>
-        <div className="mm-home-kontakt-aktionen">
-          <Button variante="sekundaer" klein href="/kontakt" icon="chat" onClick={() => klick('nachricht')}>
-            Nachricht schreiben
-          </Button>
-        </div>
-        <Support url="/hilfe-center" klick={() => klick('support')} />
+      <div className="mm-home-leer">
+        <p className="mm-home-leer-titel">Alle ersten Schritte erledigt.</p>
+        <p>Dieser Baustein blendet sich auf deinem Home jetzt von selbst aus.</p>
       </div>
     );
   }
   return (
-    <div className={`mm-home-kontakt${groesse === 'gross' ? ' mm-home-kontakt--breit' : ''}`}>
-      {/* Echtes Teamfoto von Mission Mittelstand: Hinter dem Ansprechpartner steht ein ganzes Team */}
-      <figure className="mm-home-kontakt-team">
-        <img src="/bilder/mission-mittelstand/team.webp" alt="Das Team von Mission Mittelstand bei einer Besprechung" loading="lazy" decoding="async" />
-        <figcaption>Das Team von Mission Mittelstand</figcaption>
-      </figure>
-      <div className="mm-home-kontakt-person">
-        {p.avatarUrl ? <img src={p.avatarUrl} alt="" width={56} height={56} className="mm-home-kontakt-foto" /> : <Avatar text={initialenAus(p.name)} groesse={56} />}
-        <div>
-          <p className="mm-home-kontakt-name">
-            {p.name} <BeispielMarke zeigen={p.beispiel} />
-          </p>
-          <p className="mm-meta">
-            {p.role} · {p.company}
-          </p>
-        </div>
+    <div className="mm-home-fortschritt">
+      <div className="mm-home-fortschritt-balken" role="progressbar" aria-valuenow={erledigt} aria-valuemin={0} aria-valuemax={schritte.length} aria-label="Erste Schritte">
+        <span style={{ width: `${Math.round((erledigt / schritte.length) * 100)}%` }} />
       </div>
-      {p.zitat && <p className="mm-home-kontakt-zitat">„{p.zitat}“</p>}
+      <span className="mm-meta mm-number">
+        {erledigt} von {schritte.length} erledigt
+      </span>
+      <ul className="mm-home-schritte">
+        {schritte.map((x) => (
+          <li key={x.id} className={x.erledigt ? 'erledigt' : undefined}>
+            <span className={`mm-home-haken${x.erledigt ? ' mm-home-haken--an' : ''}`} aria-hidden>
+              {x.erledigt && <Icon name="check" size={14} />}
+            </span>
+            {x.titel}
+            <span className="sr-only">{x.erledigt ? ' – erledigt' : ' – offen'}</span>
+          </li>
+        ))}
+      </ul>
       <div className="mm-home-kontakt-aktionen">
-        {p.messageUrl && (
-          <Button variante="sekundaer" klein href={p.messageUrl} icon="chat" onClick={() => klick('nachricht')}>
-            Nachricht schreiben
-          </Button>
-        )}
-        {p.bookingUrl && (
-          <Button variante="tertiaer" klein href={p.bookingUrl} icon="kalender" onClick={() => klick('termin')}>
-            Termin buchen
-          </Button>
-        )}
+        <Button variante="sekundaer" klein to={naechster.aktion.pfad} icon="pfeilRechts" onClick={() => homeMessen('home_widget_clicked', { widget: 'erste-schritte', ziel: naechster.id })}>
+          {naechster.aktion.label}
+        </Button>
+        <Button variante="tertiaer" klein onClick={() => (setzeEinstellung(ERSTE_SCHRITTE_AUS, true), homeMessen('home_next_action_hidden', { typ: 'erste-schritte' }))}>
+          Ausblenden
+        </Button>
       </div>
-      {p.supportUrl && (
-        <Support url={p.supportUrl} klick={() => klick('support')} />
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------ Hilfe & Ansprechpartner
+
+export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
+  const p = ansprechpartnerAnzeige(ANSPRECHPARTNER);
+  const klick = (ziel: string) => homeMessen('home_contact_clicked', { ziel });
+  return (
+    <div className={`mm-home-kontakt${groesse === 'gross' ? ' mm-home-kontakt--breit' : ''}`}>
+      {p ? (
+        <div className="mm-home-kontakt-person">
+          {p.foto ? <img src={p.foto} alt="" width={56} height={56} className="mm-home-kontakt-foto" /> : <Avatar text={p.initialen} groesse={56} />}
+          <div>
+            <p className="mm-home-kontakt-name">{p.name}</p>
+            <p className="mm-meta">{p.rolle}</p>
+            {(p.telefon || p.email) && <p className="mm-meta">{[p.telefon?.text, p.email?.text].filter(Boolean).join(' · ')}</p>}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <p className="mm-home-leer-titel">Wir helfen dir weiter.</p>
+          <p>Kommst du nicht weiter, schreib uns. Sobald dein persönlicher Ansprechpartner eingetragen ist, steht er hier.</p>
+        </div>
       )}
+      <div className="mm-home-kontakt-aktionen">
+        {p?.telefon && (
+          <Button variante="sekundaer" klein href={p.telefon.href} icon="telefon" aria-label={`${p.name} anrufen`} onClick={() => klick('anrufen')}>
+            Anrufen
+          </Button>
+        )}
+        <Button variante={p?.telefon ? 'tertiaer' : 'sekundaer'} klein href={p?.email?.href ?? `mailto:${SUPPORT.email}`} icon="mail" onClick={() => klick('email')}>
+          E-Mail schreiben
+        </Button>
+      </div>
+      <div className="mm-home-kontakt-support">
+        <Button variante="tertiaer" klein icon="macher" onClick={() => (klick('macher'), oeffne('macher'))}>
+          Macher fragen
+        </Button>
+        <Button variante="tertiaer" klein href={SUPPORT.hilfe} neuerTab icon="wissen" onClick={() => klick('hilfe')}>
+          Anleitungen
+        </Button>
+        <Button variante="tertiaer" klein href={SUPPORT.kontakt} neuerTab icon="chat" onClick={() => klick('support')}>
+          Kontakt & Support
+        </Button>
+      </div>
     </div>
   );
 }

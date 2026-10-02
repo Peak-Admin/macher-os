@@ -152,6 +152,8 @@ export interface WidgetDefinition {
   alle?: { label: string; pfad: string };
   /** eigener Kopf statt Titelzeile (z. B. Einsatz) */
   ohneTitel?: boolean;
+  /** blendet sich gerade selbst aus (z. B. „Erste Schritte“, wenn alles erledigt ist) – im Editor bleibt es sichtbar */
+  verbergen?: (ich: Mitarbeiter) => boolean;
 }
 
 export interface WidgetEintrag {

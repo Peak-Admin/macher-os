@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, setAktuellerNutzer, zuruecksetzen } from '@core/db';
 import { emit } from '@core/events';
-import { benachrichtigenAutomation, fuerMich } from './daten';
+import type { Benachrichtigung } from '@core/objects';
+import { archivieren, benachrichtigenAutomation, fuerMich, meldungsGruppen, zurueckholen } from './daten';
 import abwesenheitenModul from '@modules/abwesenheiten/index';
 
 describe('Benachrichtigungen', () => {
@@ -74,5 +75,34 @@ describe('Benachrichtigungen', () => {
     db.benachrichtigungen.create({ titel: 'alle', gelesen: false });
     db.benachrichtigungen.create({ titel: 'chef', gelesen: false, fuerMitarbeiterId: chef.id });
     expect(fuerMich(db.benachrichtigungen.all(), jonas.id).map((b) => b.titel).sort()).toEqual(['alle', 'alt']);
+  });
+
+  it('gruppiert Meldungen zum selben Objekt zu einem Eintrag mit Zähler, neueste zuerst', () => {
+    const bezug = { typ: 'auftraege' as const, id: 'a1' };
+    const b = (titel: string, zeit: string, extra: Partial<Benachrichtigung> = {}): Benachrichtigung => ({ id: titel, titel, gelesen: true, erstelltAm: `2026-10-01T${zeit}:00.000Z`, geaendertAm: '', ...extra });
+    const liste = [b('eins', '08:00', { bezug }), b('zwei', '09:00', { bezug, gelesen: false }), b('drei', '07:00', { bezug, wichtig: true }), b('ohne Objekt', '10:00')];
+    const g = meldungsGruppen(liste, 'posteingang');
+    expect(g.map((x) => [x.neueste.titel, x.eintraege.length])).toEqual([['ohne Objekt', 1], ['zwei', 3]]);
+    expect(g[1]).toMatchObject({ ungelesen: true, wichtig: true });
+    expect(g[0].ungelesen).toBe(false);
+  });
+
+  it('zeigt beim Öffnen Neues weiter als neu, obwohl es schon gelesen gespeichert ist', () => {
+    const b = db.benachrichtigungen.create({ titel: 'x', gelesen: true });
+    expect(meldungsGruppen([b], 'posteingang', new Set([b.id]))[0].ungelesen).toBe(true);
+  });
+
+  it('archiviert (gilt als gelesen) und holt zurück', () => {
+    const bezug = { typ: 'kunden' as const, id: 'k1' };
+    db.benachrichtigungen.create({ titel: 'a', gelesen: false, bezug });
+    db.benachrichtigungen.create({ titel: 'b', gelesen: false, bezug });
+    const [g] = meldungsGruppen(db.benachrichtigungen.all(), 'posteingang');
+    archivieren(g.eintraege);
+    expect(meldungsGruppen(db.benachrichtigungen.all(), 'posteingang')).toHaveLength(0);
+    const archiv = meldungsGruppen(db.benachrichtigungen.all(), 'archiv');
+    expect(archiv[0].eintraege).toHaveLength(2);
+    expect(db.benachrichtigungen.all().every((x) => x.gelesen)).toBe(true);
+    zurueckholen(archiv[0].eintraege);
+    expect(meldungsGruppen(db.benachrichtigungen.all(), 'posteingang')[0].eintraege).toHaveLength(2);
   });
 });

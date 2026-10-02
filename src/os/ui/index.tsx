@@ -604,6 +604,7 @@ export function ListenZeile({
   to,
   onClick,
   aktiv,
+  aktion,
 }: {
   titel: ReactNode;
   untertitel?: ReactNode;
@@ -612,6 +613,8 @@ export function ListenZeile({
   to?: string;
   onClick?: () => void;
   aktiv?: boolean;
+  /** sichtbare Nebenaktion neben der Zeile (eigener Knopf, per Tab erreichbar – nicht nur per Hover) */
+  aktion?: ReactNode;
 }) {
   const inhalt = (
     <>
@@ -625,7 +628,7 @@ export function ListenZeile({
   );
   const klasse = cx('mm-listenzeile', (to || onClick) && 'mm-listenzeile--klickbar', aktiv && 'mm-listenzeile--aktiv');
   return (
-    <li>
+    <li className={aktion ? 'mm-listenzeile-mit-aktion' : undefined}>
       {to ? (
         <Link to={to} className={klasse}>
           {inhalt}
@@ -637,6 +640,7 @@ export function ListenZeile({
       ) : (
         <div className={klasse}>{inhalt}</div>
       )}
+      {aktion && <span className="mm-listenzeile-aktion">{aktion}</span>}
     </li>
   );
 }

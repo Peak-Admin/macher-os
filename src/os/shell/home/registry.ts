@@ -7,7 +7,8 @@ import { modul } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
 import { darf } from '@core/session';
 import type { WidgetDefinition } from './typen';
-import { AnsprechpartnerWidget, ArbeitWidget, NaechsterSchrittWidget, NeuWidget } from './widgets/kern';
+import { AnsprechpartnerWidget, ArbeitWidget, ErsteSchritteWidget, NaechsterSchrittWidget, NeuWidget } from './widgets/kern';
+import { ersteSchritteVerbergen } from './quellen/ersteSchritte';
 import {
   AbwesendWidget,
   AnfragenWidget,
@@ -35,7 +36,8 @@ export const WIDGETS: WidgetDefinition[] = [
   // Das Wichtigste – die vier Standard-Widgets
   { id: 'naechster-schritt', name: 'Dein nächster Schritt', description: 'Die eine wichtigste Handlung – Einrichtung, Anfragen, Angebote, Rechnungen.', icon: 'start', objekt: 'werkzeugkiste', kategorie: 'kern', component: NaechsterSchrittWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'links' },
   { id: 'arbeit', name: 'Deine Arbeit', description: 'Aufgaben, Freigaben, Urlaubsaufgaben und vorbereitete Angebote an einer Stelle.', icon: 'liste', objekt: 'hammer', kategorie: 'kern', component: ArbeitWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'links', alle: { label: 'Alle ansehen', pfad: '/auftraege/aufgaben' } },
-  { id: 'ansprechpartner', name: 'Dein Ansprechpartner', description: 'Persönliche Betreuung und technischer Support in einem.', icon: 'person', kategorie: 'kern', component: AnsprechpartnerWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'rechts', roles: ['chef', 'buero'] },
+  { id: 'erste-schritte', name: 'Erste Schritte', description: 'Firmendaten, erster Kunde, erster Auftrag – Häkchen setzen sich von selbst.', icon: 'check', kategorie: 'kern', component: ErsteSchritteWidget, availableSizes: ['klein'], defaultSize: 'klein', defaultSpalte: 'rechts', roles: ['chef', 'buero'], verbergen: ersteSchritteVerbergen },
+  { id: 'ansprechpartner', name: 'Hilfe & Ansprechpartner', description: 'Macher fragen, Anleitungen und dein Kontakt bei Mission Mittelstand.', icon: 'person', kategorie: 'kern', component: AnsprechpartnerWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'rechts', roles: ['chef', 'buero'] },
   { id: 'neu', name: 'Neu für dich', description: 'Workshops, neue Funktionen, Vorlagen und Tipps.', icon: 'stern', objekt: 'bauplan', kategorie: 'kern', component: NeuWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'rechts' },
 
   // Tag & Planung
