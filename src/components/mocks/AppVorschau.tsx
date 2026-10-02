@@ -790,7 +790,7 @@ export function AppVorschau({ className = "", start = "heute" }: { className?: s
         {/* Sidebar wie in der Software */}
         <aside className="flex min-w-0 flex-col gap-2 border-b border-line bg-paper p-2.5 sm:border-r sm:border-b-0">
           <div className="flex items-center gap-2 px-1">
-            <span className="inline-flex size-6 items-center justify-center rounded-md bg-primary font-display text-[13px] font-black text-white">M</span>
+            <Image src="/marke/zeichen.png" alt="" width={24} height={24} className="size-6 shrink-0" />
             <span className="font-display text-[15px] text-ink">
               Macher <b className="font-black">OS</b>
             </span>

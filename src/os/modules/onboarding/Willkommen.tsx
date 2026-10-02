@@ -60,9 +60,7 @@ function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolea
         <div className="ob-marke-innen">
           {vorteile && <HandwerkerFoto />}
           <div className="ob-logo">
-            <span className="mm-logo-zeichen" aria-hidden>
-              M
-            </span>
+            <img className="mm-logo-zeichen" src="/os/icons/icon-192.png" alt="" width={32} height={32} />
             <span>
               Macher <strong>OS</strong>
             </span>
