@@ -10,5 +10,6 @@ export { Zone, zone, type ZonenTon } from "./Zone";
 export { Objekt } from "./Objekt";
 export { Skizze, type SkizzenMotiv } from "./Skizze";
 export { UiEbene, UiZeile, UiStatus } from "./UiEbene";
+export { UiEbeneAktiv, type UiAktivZeile } from "./UiEbeneAktiv";
 export { Fenster } from "./Fenster";
 export { IntegrationLogo } from "./IntegrationLogo";

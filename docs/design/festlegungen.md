@@ -84,6 +84,16 @@ steht im Kartentitel und Text. Nur Tokens (`sand`, `line`, `muted`, `primary`, `
 Beim Hover der Karte fächern die Blätter leicht auf bzw. hebt sich die Ebene (150 ms, nur ohne `prefers-reduced-motion`).
 Objektfotos (`Objekt`) bleiben für Bereiche und Einstiege, Glas-Icons für Themen in Listen.
 
+**Nachtrag Oktober 2026 – UI-Ebenen zum Ausprobieren.** Jeder Ausschnitt aus Macher OS auf der Website ist interaktiv:
+Ein Klick tut, was er in der Software tut (freigeben, senden, Vorschlag übernehmen, Konflikt lösen, abhaken, Zeit
+starten), danach eine kurze Bestätigung und „Von vorn“. Aussehen nach dem aktuellen Stand der Software: beiges Canvas
+(`app-canvas`, `app-ruhig`, `app-linie`), aufgelegte Flächen (`.app-lift`), Dringend rot, Überfällig gelb, Typ-Icons,
+Kundenbild mit Initialen, KI-Leiste mit Kugel (`.ki-kugel`, `.ki-leiste`) nur im Suchen-und-Fragen-Fenster.
+Bausteine: `UiEbeneAktiv` (statt `UiEbene`), `AlltagMinis.tsx` („So läuft's“), `ReihenAnsichten.tsx` (Reihe „Alles da“),
+`PhoneMock`, `PlanBoardMock`, `AppVorschau`. Interaktive Ausschnitte sind Gruppen mit Namen („… zum Ausprobieren
+(Beispiel)“), nicht `aria-hidden`; sie liegen über dem Link der Karte (`z-10`), der Titel führt weiter.
+Nichts wird gespeichert, alle Daten sind als „Beispiel“ markiert, keine erfundenen Kennzahlen.
+
 ### Fenster-Skizze (Oktober 2026 – Website und Software)
 Feines Drahtgitter eines App-Fensters (Titelleiste, Seitenspalte; alternativ ein Handy-Umriss), das nach unten weich
 ausläuft, in der Mitte eine App-Kachel mit Glas-Icon. **Ohne Farbe:** Auch das Glas-Icon ist grau (aus der Textfarbe

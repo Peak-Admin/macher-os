@@ -37,9 +37,9 @@ import {
   Karte3D,
   Section,
   SectionHeading,
-  UiEbene,
+  UiEbeneAktiv,
   UiStatus,
-  UiZeile,
+  type UiAktivZeile,
   Zone,
   type FaqItem,
   type IconName,
@@ -97,7 +97,7 @@ const bereiche: { titel: string; text: string; href: string; inhalt: string[]; t
     href: "/funktionen/auftraege",
     inhalt: ["Aufträge und Angebote", "Eingang mit neuen Anfragen", "Kunden und Service"],
     ton: "foto",
-    ansicht: <Hinweis text="Angebot angenommen" className="inset-x-6 top-[42%]" />,
+    ansicht: <Hinweis text="Angebot angenommen" schritte={["Auftrag angelegt", "Einsatz geplant", "Rechnung vorbereitet"]} className="inset-x-6 top-[42%]" />,
   },
   {
     titel: "Planen",
@@ -158,13 +158,17 @@ const kundenFoto: Record<(typeof topGewerke)[number]["slug"], GewerkSlug> = {
   galabau: "garten-aussenanlagen",
 };
 
-/** Drei Ergebnisse, jeweils mit einer UI-Ebene als Beleg (Beispieldaten). */
-const feierabend: { text: string; ort: string; zeilen: { links: ReactNode; rechts: ReactNode }[] }[] = [
+/** Drei Ergebnisse, jeweils mit einer UI-Ebene zum Ausprobieren (Beispieldaten). */
+const feierabend: { text: string; ort: string; zeilen: UiAktivZeile[] }[] = [
   {
     text: "Stundenzettel kommen vom Handy",
     ort: "Zeiten · Heute",
     zeilen: [
-      { links: <b className="font-semibold">Max Berger</b>, rechts: <UiStatus ton="gut">Vom Handy</UiStatus> },
+      {
+        links: <b className="font-semibold">Max Berger · vom Handy</b>,
+        rechts: <UiStatus>Zur Freigabe</UiStatus>,
+        aktion: { label: "Freigeben", danach: <UiStatus ton="gut">Freigegeben</UiStatus>, meldung: "Stunden ins Zeitkonto übernommen" },
+      },
       { links: "Sanierung Haus 24", rechts: <span className="font-semibold tabular-nums">7:45 Std.</span> },
       { links: "Fahrtzeit", rechts: <span className="font-semibold tabular-nums">0:30 Std.</span> },
     ],
@@ -173,7 +177,11 @@ const feierabend: { text: string; ort: string; zeilen: { links: ReactNode; recht
     text: "Rechnungen sind vorbereitet",
     ort: "Rechnung · Entwurf",
     zeilen: [
-      { links: <b className="font-semibold">Sanierung Haus 24</b>, rechts: <UiStatus ton="gut">Zum Prüfen</UiStatus> },
+      {
+        links: <b className="font-semibold">Sanierung Haus 24</b>,
+        rechts: <UiStatus>Zum Prüfen</UiStatus>,
+        aktion: { label: "Prüfen & senden", danach: <UiStatus ton="gut">Gesendet</UiStatus>, meldung: "Rechnung an den Kunden geschickt" },
+      },
       { links: "Stunden aus der App", rechts: <UiStatus>Übernommen</UiStatus> },
       { links: "Material vom Einsatz", rechts: <UiStatus>Übernommen</UiStatus> },
     ],
@@ -183,8 +191,12 @@ const feierabend: { text: string; ort: string; zeilen: { links: ReactNode; recht
     ort: "Zahlungen",
     zeilen: [
       { links: <b className="font-semibold">Rechnung Schulz</b>, rechts: <UiStatus ton="gut">Bezahlt</UiStatus> },
-      { links: <b className="font-semibold">Rechnung Weber</b>, rechts: <UiStatus>Offen</UiStatus> },
-      { links: "Erinnerung vorbereitet", rechts: <UiStatus ton="warnung">Wartet auf dich</UiStatus> },
+      { links: <b className="font-semibold">Rechnung Weber</b>, rechts: <UiStatus ton="warnung">Überfällig</UiStatus> },
+      {
+        links: "Erinnerung vorbereitet",
+        rechts: <UiStatus>Wartet auf dich</UiStatus>,
+        aktion: { label: "Senden", danach: <UiStatus ton="gut">Gesendet</UiStatus>, meldung: "Erinnerung an Weber verschickt" },
+      },
     ],
   },
 ];
@@ -390,11 +402,7 @@ export default function HomePage() {
             {feierabend.map((p) => (
               <li key={p.text}>
                 <Karte3D innen="group flex h-full flex-col gap-5 rounded-2xl bg-white p-5 ring-1 ring-line">
-                  <UiEbene ort={p.ort}>
-                    {p.zeilen.map((z, i) => (
-                      <UiZeile key={i} links={z.links} rechts={z.rechts} />
-                    ))}
-                  </UiEbene>
+                  <UiEbeneAktiv ort={p.ort} zeilen={p.zeilen} />
                   <span className="font-display text-lg font-bold leading-snug text-ink">{p.text}</span>
                 </Karte3D>
               </li>
