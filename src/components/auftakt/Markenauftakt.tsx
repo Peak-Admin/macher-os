@@ -65,7 +65,7 @@ function softwareBereit() {
 }
 
 /**
- * Markenauftakt „Für ein neues Wirtschaftswunder“: läuft einmal pro Sitzung vor Website oder Software.
+ * Markenauftakt „Für ein neues Wirtschaftswunder“: läuft einmal pro Gerät beim Erstkontakt (Website oder Einrichtung).
  * Das Kopf-Skript (`auftaktSkript`) entscheidet vor dem ersten Bild, ob er erscheint. Überspringen per Knopf oder Escape.
  * `wartenAufSoftware`: Das Schlussbild bleibt stehen, bis Macher OS `OS_BEREIT_EREIGNIS` meldet (höchstens 8 s länger).
  */
@@ -92,9 +92,9 @@ export function Markenauftakt({ wartenAufSoftware = false }: { wartenAufSoftware
     // Nicht freigegeben: Die Bühne bleibt per CSS unsichtbar, Bilder werden nicht geladen.
     if (html.dataset.auftakt !== "an") return;
     try {
-      sessionStorage.setItem(AUFTAKT_SCHLUESSEL, "1");
+      localStorage.setItem(AUFTAKT_SCHLUESSEL, "1");
     } catch {
-      /* privater Modus: dann eben bei jedem Aufruf */
+      /* ohne Speicher erscheint der Auftakt gar nicht (siehe Kopf-Skript) */
     }
     // Bilder (loading="lazy", die Unterschrift über `new Image()`) laden nur, wenn der Auftakt wirklich läuft.
     const unterschrift = new Image();

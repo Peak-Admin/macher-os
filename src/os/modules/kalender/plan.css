@@ -71,3 +71,8 @@
 @media (prefers-reduced-motion: reduce) {
   .pl-termin, .pl-zelle { transition: none; }
 }
+/* Sehr schmale Handys: Zeitraum unter die Pfeile statt über den Rand */
+@media (max-width: 479px) {
+  .pl-navi { flex-wrap: wrap; }
+  .pl-zeitraum { flex-basis: 100%; margin: 4px 0 0; white-space: normal; }
+}

@@ -128,6 +128,8 @@ export function buendeln(liste: OffenerHinweis[]): OffenerHinweis[] {
     // Aktionen des wichtigsten Hinweises reichen; nur wenn er keine hat, die des nächsten übernehmen
     if (!fuehrend.aktionen?.length && h.aktionen?.length) fuehrend.aktionen = h.aktionen;
     if (h.art === 'problem' && fuehrend.art !== 'problem') fuehrend.art = 'problem';
+    // eine gebündelte Sicherheitswarnung bleibt als solche sichtbar
+    if (h.sicherheit) fuehrend.sicherheit = true;
   }
   gebuendelt.clear();
   for (const h of ergebnis) {

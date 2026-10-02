@@ -94,7 +94,7 @@ export function KundenFilter({
           <button
             type="button"
             onClick={zuruecksetzen}
-            className="rounded-lg bg-ink px-4 py-2.5 text-sm font-semibold text-white hover:bg-ink-soft"
+            className="min-h-12 rounded-md bg-white px-4 py-2.5 text-base font-semibold text-signal-dark ring-1 ring-inset ring-line-dark hover:bg-signal-soft"
           >
             Alle Geschichten zeigen
           </button>

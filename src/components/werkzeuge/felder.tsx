@@ -208,12 +208,13 @@ export function Umschalter<T extends string>({
       <p id={`${id}-label`} className="mb-1.5 text-sm font-semibold">
         {label}
       </p>
-      <div className="flex flex-wrap overflow-hidden rounded-md bg-ink-soft">
+      {/* Heller Umschalter (UX-Spezifikation 5.2): ruhige Spur, gewählte Option weiß mit Rand – keine dunklen Balken */}
+      <div className="flex flex-wrap gap-1 rounded-xl bg-sand p-1">
         {optionen.map((o) => (
           <label
             key={o.wert}
-            className={`flex min-h-11 flex-1 cursor-pointer items-center justify-center px-4 py-2 text-center text-white transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:-outline-offset-4 has-[:focus-visible]:outline-accent ${
-              wert === o.wert ? "bg-brand font-semibold" : "font-medium hover:bg-white/8"
+            className={`flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-md border px-4 py-2 text-center transition-colors duration-150 ease-out has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
+              wert === o.wert ? "border-line-dark bg-white font-semibold text-signal-dark" : "border-transparent font-medium text-muted hover:bg-white"
             }`}
           >
             <input

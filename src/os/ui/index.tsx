@@ -154,18 +154,24 @@ export function IconButton({ icon, label, className, ...rest }: { icon: IconName
 
 // ------------------------------------------------------------------ Formulare
 
-export function Feld({ label, hilfe, fehler, children, optional }: { label: string; hilfe?: string; fehler?: string; optional?: boolean; children: (id: string) => ReactNode }) {
+/** Feld mit Label oberhalb. Hilfe- und Fehlertext hängen per `aria-describedby` am Eingabeelement (zweites Argument). */
+export function Feld({ label, hilfe, fehler, children, optional }: { label: string; hilfe?: string; fehler?: string; optional?: boolean; children: (id: string, beschrieben?: string) => ReactNode }) {
   const id = useId();
+  const beschrieben = fehler || hilfe ? `${id}-text` : undefined;
   return (
     <div className={cx('mm-feld', fehler && 'mm-feld--fehler')}>
       <label htmlFor={id} className="mm-label">
         {label}
         {optional && <span className="mm-label-optional"> (optional)</span>}
       </label>
-      {children(id)}
-      {hilfe && !fehler && <p className="mm-hilfe">{hilfe}</p>}
+      {children(id, beschrieben)}
+      {hilfe && !fehler && (
+        <p id={beschrieben} className="mm-hilfe">
+          {hilfe}
+        </p>
+      )}
       {fehler && (
-        <p className="mm-fehlertext" role="alert">
+        <p id={beschrieben} className="mm-fehlertext" role="alert">
           {fehler}
         </p>
       )}
@@ -178,7 +184,7 @@ type EingabeProps = InputHTMLAttributes<HTMLInputElement> & { label: string; hil
 export function Eingabe({ label, hilfe, fehler, optional, className, ...rest }: EingabeProps) {
   return (
     <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>
-      {(id) => <input id={id} className={cx('mm-input', className)} aria-invalid={!!fehler || undefined} {...rest} />}
+      {(id, beschrieben) => <input id={id} className={cx('mm-input', className)} aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest} />}
     </Feld>
   );
 }
@@ -202,8 +208,8 @@ export function Auswahl({
 }) {
   return (
     <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>
-      {(id) => (
-        <select id={id} className="mm-input mm-select" {...rest}>
+      {(id, beschrieben) => (
+        <select id={id} className="mm-input mm-select" aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest}>
           {leer != null && <option value="">{leer}</option>}
           {optionen.map((o) => (
             <option key={o.wert} value={o.wert}>
@@ -219,7 +225,7 @@ export function Auswahl({
 export function Textfeld({ label, hilfe, fehler, optional, ...rest }: TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string; hilfe?: string; fehler?: string; optional?: boolean }) {
   return (
     <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>
-      {(id) => <textarea id={id} className="mm-input mm-textarea" rows={3} {...rest} />}
+      {(id, beschrieben) => <textarea id={id} className="mm-input mm-textarea" rows={3} aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest} />}
     </Feld>
   );
 }
@@ -365,6 +371,7 @@ export function Seite({
   status,
   children,
   breit,
+  formular,
 }: {
   titel: ReactNode;
   oberzeile?: string;
@@ -375,9 +382,11 @@ export function Seite({
   status?: ReactNode;
   children?: ReactNode;
   breit?: boolean;
+  /** Formularseite: höchstens 800 px breit */
+  formular?: boolean;
 }) {
   return (
-    <div className={cx('mm-seite', breit && 'mm-seite--breit')}>
+    <div className={cx('mm-seite', breit && 'mm-seite--breit', formular && 'mm-seite--formular')}>
       {zurueck && (
         <nav className="mm-brotkrumen" aria-label="Brotkrumen">
           <Link to={zurueck.to}>
@@ -489,7 +498,7 @@ export function Zeile({ children, abstand = 8, umbruch = true, zwischen }: { chi
 
 // ------------------------------------------------------------------ Status & Zahlen
 
-const tonIcon: Record<Ton, IconName | undefined> = { neutral: undefined, aktiv: 'uhr', erfolg: 'check', achtung: 'achtung' };
+const tonIcon: Record<Ton, IconName | undefined> = { neutral: undefined, aktiv: 'uhr', erfolg: 'check', achtung: 'achtung', gefahr: 'achtung' };
 
 /** Status immer mit Text, Farbe nur unterstützend */
 export function Status({ ton = 'neutral', children, icon = true }: { ton?: Ton; children: ReactNode; icon?: boolean }) {

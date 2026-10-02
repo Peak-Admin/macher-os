@@ -2,15 +2,15 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Icon } from "./Icon";
 
-type Variant = "primary" | "secondary" | "dark" | "light" | "onDark";
+type Variant = "primary" | "secondary" | "light" | "onDark";
 
 const variants: Record<Variant, string> = {
   primary: "btn-primaer",
-  secondary: "bg-white text-signal-dark ring-1 ring-inset ring-signal-dark/60 hover:bg-hover",
-  dark: "bg-ink text-white hover:bg-ink-soft",
+  /** Nebenaktion: weiß mit erkennbarem Rand, dunkelgrüne Schrift */
+  secondary: "bg-white text-signal-dark ring-1 ring-inset ring-line-dark hover:bg-signal-soft",
   light: "bg-white/10 text-white ring-1 ring-inset ring-white/25 hover:bg-white/20",
-  /** Hauptaktion auf dunklen Markenflächen */
-  onDark: "bg-accent text-ink hover:bg-white",
+  /** Hauptaktion auf dunklen Markenflächen: derselbe Primärbutton wie überall (ein Grün für alle Hauptaktionen) */
+  onDark: "btn-primaer",
 };
 
 /**
@@ -44,19 +44,18 @@ export function ButtonLink({
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
-  // Alle Varianten gleich hoch, damit Primär- und Zweitbutton nebeneinander bündig stehen.
-  const sizes = { sm: "h-10 px-4", md: "h-12 px-6", lg: "h-14 px-8" };
-  // Primärbutton bringt Schriftgröße und -stärke selbst mit (btn-primaer, 19 px fett).
-  const schrift =
-    variant === "primary" ? "" : { sm: "text-sm font-semibold", md: "text-[0.95rem] font-semibold", lg: "text-lg font-semibold" }[size];
-  // Der Primärbutton bringt Radius, Fläche und Übergänge selbst mit.
-  const form = variant === "primary" ? "" : "rounded-2xl transition-colors duration-150 ease-out";
+  // Alle Varianten gleich hoch (mind. 48 px), damit Primär- und Zweitbutton nebeneinander bündig stehen.
+  const sizes = { sm: "min-h-11 px-4", md: "min-h-12 px-5 sm:px-6", lg: "min-h-14 px-5 sm:px-8" };
+  const primaer = variant === "primary" || variant === "onDark";
+  // Primärbutton bringt Schriftgröße, Radius, Fläche und Übergänge selbst mit (btn-primaer).
+  const schrift = primaer ? "" : { sm: "text-base font-semibold", md: "text-base font-semibold", lg: "text-lg font-semibold" }[size];
+  const form = primaer ? "" : "rounded-xl transition-colors duration-150 ease-out";
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap ${form} ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
+      className={`inline-flex max-w-full items-center justify-center gap-2 text-center sm:whitespace-nowrap ${form} ${sizes[size]} ${schrift} ${variants[variant]} ${className}`}
     >
-      {variant === "primary" ? <BtnPfeil>{children}</BtnPfeil> : children}
+      {primaer ? <BtnPfeil>{children}</BtnPfeil> : children}
     </Link>
   );
 }

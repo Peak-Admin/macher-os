@@ -1,6 +1,7 @@
 # Markenauftakt (Preloader)
 
-„Für ein neues Wirtschaftswunder“ – läuft **einmal pro Browser-Sitzung** vor Website (`/`) und Software (`/os`).
+„Für ein neues Wirtschaftswunder“ – läuft **einmal pro Gerät beim Erstkontakt**: vor der Website oder vor der Einrichtung
+(`/os/willkommen`). Vor täglichen Arbeitswegen der Software (`/os/heute` usw.) erscheint er nie (UX-Spezifikation 6.6).
 Code: `src/components/auftakt/` (`Markenauftakt.tsx`, `auftakt.css`, `skript.ts`, `unterschrift-striche.ts`), Dateien: `public/auftakt/`.
 
 ## Ablauf (ca. 6 s)
@@ -18,7 +19,8 @@ Code: `src/components/auftakt/` (`Markenauftakt.tsx`, `auftakt.css`, `skript.ts`
 
 ## Regeln
 
-- Ein Skript im `<head>` beider Root-Layouts entscheidet vor dem ersten Bild (`sessionStorage` `mm-auftakt`).
+- Ein Skript im `<head>` beider Root-Layouts entscheidet vor dem ersten Bild (`localStorage` `mm-auftakt`) – auch neue
+  Sitzungen zeigen ihn nicht noch einmal.
   Ohne JavaScript, bei automatisierten Browsern (`navigator.webdriver`) und bei Folgeaufrufen erscheint nichts,
   Bilder werden dann nicht geladen.
 - `?auftakt` in der Adresse erzwingt den Auftakt (zum Ansehen und Abnehmen).

@@ -213,12 +213,13 @@ export function ObjektLink({ bezug, children }: { bezug: Bezug; children: ReactN
 
 // ------------------------------------------------------------------ Auswahlfelder für Kernobjekte
 
-export function KundeAuswahl({ wert, onChange, label = 'Kunde', optional }: { wert?: ID; onChange: (id: ID) => void; label?: string; optional?: boolean }) {
+export function KundeAuswahl({ wert, onChange, label = 'Kunde', optional, fehler }: { wert?: ID; onChange: (id: ID) => void; label?: string; optional?: boolean; fehler?: string }) {
   const kunden = db.kunden.use();
   return (
     <Auswahl
       label={label}
       optional={optional}
+      fehler={fehler}
       value={wert ?? ''}
       leer="Kunde wählen"
       onChange={(e) => onChange(e.target.value)}

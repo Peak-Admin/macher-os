@@ -5,7 +5,7 @@ import { tonBalken, tonEtikett, tonHinweis } from "./ton";
 const tabs: { label: FunktionsVisual["bereich"]; icon: IconName }[] = [
   { label: "Heute", icon: "home" },
   { label: "Aufträge", icon: "clipboard" },
-  { label: "Plan", icon: "calendar" },
+  { label: "Planen", icon: "calendar" },
   { label: "Betrieb", icon: "layers" },
 ];
 
@@ -32,7 +32,7 @@ export function FunktionsMock({ visual, label }: { visual: FunktionsVisual; labe
             <span
               key={t.label}
               className={`flex items-center gap-2 rounded-lg px-2 py-2 text-xs font-semibold sm:px-3 sm:text-sm ${
-                t.label === visual.bereich ? "bg-ink text-white" : "text-muted"
+                t.label === visual.bereich ? "bg-signal-soft text-signal-dark" : "text-muted"
               }`}
             >
               <Icon name={t.icon} className="size-4" />

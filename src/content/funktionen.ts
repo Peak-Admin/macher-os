@@ -21,7 +21,7 @@ export type Ton = "signal" | "moss" | "sky" | "ink" | "sand";
 
 /** Desktop-Produktansicht im Hero. */
 export type FunktionsVisual = {
-  bereich: "Heute" | "Aufträge" | "Plan" | "Betrieb";
+  bereich: "Heute" | "Aufträge" | "Planen" | "Betrieb";
   titel: string;
   untertitel?: string;
   /** Bis zu drei Kacheln: [Wert, Beschriftung]. */
@@ -1815,7 +1815,7 @@ export const funktionInhalte: Inhalte = {
         "Macher OS zeigt dem Kunden freie Zeiten, die zu deinem Plan und zur Route passen. Der Kunde bucht selbst, Macher bestätigt und erinnert am Vortag.",
     },
     visual: {
-      bereich: "Plan",
+      bereich: "Planen",
       titel: "Donnerstag, 16. Oktober",
       untertitel: "Kalender",
       liste: {
@@ -1977,7 +1977,7 @@ export const funktionInhalte: Inhalte = {
         "Macher schlägt dir für jeden Einsatz die passenden Leute vor – mit Blick auf Qualifikation, Urlaub, Fahrtzeit, Material und Fahrzeug. Du bestätigst oder schiebst um.",
     },
     visual: {
-      bereich: "Plan",
+      bereich: "Planen",
       titel: "Plan · Mittwoch",
       untertitel: "KW 42",
       kennzahlen: [
@@ -2817,7 +2817,7 @@ export const funktionInhalte: Inhalte = {
         "Macher OS weiß, welches Material jeder Auftrag braucht, prüft vor dem Start, ob alles da ist, und meldet rechtzeitig, was fehlt.",
     },
     visual: {
-      bereich: "Plan",
+      bereich: "Planen",
       titel: "Material bereit?",
       untertitel: "nächste 5 Tage",
       kennzahlen: [

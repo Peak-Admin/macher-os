@@ -183,9 +183,11 @@ export function EntscheidungenWidget({ groesse, ich }: WidgetProps) {
   useDatenstand();
   const liste = offeneHinweise({ rolle: ich.rolle, mitarbeiterId: ich.id });
   if (!liste.length) return <Meta>Nichts brennt. Macher meldet sich hier, sobald etwas deine Entscheidung braucht.</Meta>;
+  // Akute Sicherheitswarnungen („nicht verwenden“) zählen nie gegen das Mengenlimit und stehen oben
+  const zeigen = [...liste.filter((h) => h.sicherheit), ...liste.filter((h) => !h.sicherheit).slice(0, anzahl(groesse))];
   return (
     <Liste>
-      {liste.slice(0, anzahl(groesse)).map((h) => (
+      {zeigen.map((h) => (
         <HinweisZeile key={h.schluessel} h={h} kompakt />
       ))}
     </Liste>

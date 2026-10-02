@@ -1,4 +1,5 @@
 /** „Dein Start“ auf Heute: drei Haken, verschwindet, sobald alles erledigt ist. Jeder offene Haken hat einen konkreten Schritt. */
+import { useState } from 'react';
 import { db } from '@core/db';
 import { useEinstellung } from '@core/einstellungen';
 import { Button, Icon } from '@ui/index';
@@ -13,14 +14,30 @@ export function useStartHaken(): Haken[] {
   return startHaken({ angebote, mitarbeiter, termine, teamEingeladen });
 }
 
-/** Gleiche Gestalt wie die anderen Heute-Blöcke (`mm-heute-block`) */
+/**
+ * Kompakte Fortschrittszeile auf Heute: „Dein Start: 1 von 3 erledigt“ mit „Einrichtung fortsetzen“.
+ * Die Schritte erscheinen erst nach dem Öffnen – so steht die Einrichtung nicht vor dem Tagesablauf.
+ */
 export function StartKarte() {
   const haken = useStartHaken();
+  const [offen, setOffen] = useState(false);
   if (haken.every((h) => h.erledigt)) return null;
-  const offen = haken.filter((h) => !h.erledigt).length;
+  const erledigt = haken.filter((h) => h.erledigt).length;
+  const naechster = haken.find((x) => !x.erledigt);
   return (
-    <section className="mm-heute-block" aria-label="Dein Start">
-      <h2 className="mm-heute-blocktitel">Dein Start · noch {offen} von 3</h2>
+    <details className="mm-start-zeile" open={offen} onToggle={(e) => setOffen(e.currentTarget.open)}>
+      <summary>
+        <span className="mm-start-zeile-text">
+          <strong>Dein Start:</strong> {erledigt} von {haken.length} erledigt
+        </span>
+        <span className="mm-fortschritt-balken mm-start-zeile-balken" aria-hidden>
+          <span style={{ width: `${(erledigt / haken.length) * 100}%` }} />
+        </span>
+        <span className="mm-start-zeile-knopf">
+          {offen ? 'Schritte ausblenden' : 'Einrichtung fortsetzen'}
+          <Icon name={offen ? 'hoch' : 'runter'} size={18} />
+        </span>
+      </summary>
       <ul className="mm-start-haken">
         {haken.map((h) => (
           <li key={h.id} className={h.erledigt ? 'erledigt' : undefined}>
@@ -32,13 +49,13 @@ export function StartKarte() {
               <span className="sr-only">{h.erledigt ? ' – erledigt' : ' – offen'}</span>
             </span>
             {!h.erledigt && (
-              <Button variante={h === haken.find((x) => !x.erledigt) ? 'sekundaer' : 'tertiaer'} klein to={h.aktion.pfad} icon="pfeilRechts">
+              <Button variante={h === naechster ? 'sekundaer' : 'tertiaer'} klein to={h.aktion.pfad} icon="pfeilRechts">
                 {h.aktion.label}
               </Button>
             )}
           </li>
         ))}
       </ul>
-    </section>
+    </details>
   );
 }

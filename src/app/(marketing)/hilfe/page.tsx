@@ -165,7 +165,7 @@ export default function HilfePage() {
                 </li>
               ))}
             </ul>
-            <ButtonLink href="/hilfe/kontakt" variant="dark" className="mt-6">
+            <ButtonLink href="/hilfe/kontakt" variant="secondary" className="mt-6">
               Kontakt & Support <Icon name="arrow-right" className="size-4" />
             </ButtonLink>
           </div>

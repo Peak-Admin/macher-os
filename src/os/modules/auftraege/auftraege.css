@@ -47,3 +47,60 @@
   .akte-phase span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 }
 .akte-info { display: flex; flex-direction: column; gap: var(--mm-space-1); min-width: 0; overflow-wrap: anywhere; }
+
+/* Auftrag anlegen: bekannter Einsatzort als lesbare Zusammenfassung, Adresse kompakt, weitere Angaben zugeklappt */
+.ak-ort-zusammenfassung {
+  display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; min-height: var(--mm-control-height); padding: 8px 8px 8px 12px;
+  background: var(--mm-surface-subtle); border-radius: var(--mm-radius-control); color: var(--mm-text);
+}
+.ak-ort-zusammenfassung > span { flex: 1 1 200px; min-width: 0; overflow-wrap: anywhere; }
+.ak-ort-zusammenfassung > svg { flex-shrink: 0; color: var(--mm-brand-ink); }
+.ak-adresse { display: grid; gap: 16px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.ak-adresse > legend { margin-bottom: 8px; padding: 0; }
+.ak-plz-ort { display: grid; grid-template-columns: minmax(0, 140px) minmax(0, 1fr); gap: 16px; }
+.ak-weitere { border-top: 1px solid var(--mm-border); border-bottom: 1px solid var(--mm-border); }
+.ak-weitere > summary {
+  display: flex; align-items: baseline; gap: 4px 12px; flex-wrap: wrap; min-height: 48px; padding: 12px 0;
+  cursor: pointer; list-style: none; font-weight: 600; color: var(--mm-brand-ink);
+}
+.ak-weitere > summary::-webkit-details-marker { display: none; }
+.ak-weitere > summary::before { content: '+'; display: inline-block; width: 16px; font-weight: 700; }
+.ak-weitere[open] > summary::before { content: '–'; }
+.ak-weitere > summary:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
+.ak-weitere > summary .mm-meta { font-weight: 400; }
+.ak-weitere[open] { padding-bottom: 16px; }
+@media (max-width: 479px) { .ak-plz-ort { grid-template-columns: minmax(0, 1fr); } }
+
+/* Auftragsliste: Suche und Statusfilter in einer Zeile (Desktop), Zeilen mit erkennbaren Spalten */
+.ak-suche-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.ak-suche-filter > .mm-suchfeld { flex: 1 1 320px; min-width: 0; }
+.ak-spalten { display: none; }
+.ak-zeile {
+  display: grid; grid-template-columns: minmax(0, 1fr) max-content; grid-template-areas: 'titel status' 'schritt schritt' 'termin termin';
+  align-items: center; gap: 4px 16px; min-height: 72px; padding: 16px; color: var(--mm-text); text-decoration: none;
+  transition: background-color var(--mm-motion-fast) ease-out;
+}
+.ak-zeile > * { min-width: 0; }
+.ak-zeile:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: -3px; }
+.ak-zeile-titel { grid-area: titel; display: flex; flex-direction: column; gap: 2px; }
+.ak-zeile-titel strong { font-weight: 600; color: var(--mm-black); overflow-wrap: anywhere; }
+.ak-zeile-schritt { grid-area: schritt; color: var(--mm-text); }
+.ak-zeile-termin { grid-area: termin; color: var(--mm-text-secondary); font-size: 14px; }
+.ak-zeile-status { grid-area: status; justify-self: end; align-self: start; }
+.ak-zeile-schritt:empty, .ak-zeile-termin:empty { display: none; }
+@media (hover: hover) { .ak-zeile:hover { background: var(--mm-surface-subtle); } }
+/* sehr schmal oder lange Statusbegriffe: eine Spalte – Titel, Schritt, Termin, Status */
+@media (max-width: 479px) {
+  .ak-zeile { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'titel' 'schritt' 'termin' 'status'; }
+  .ak-zeile-status { justify-self: start; margin-top: 4px; }
+}
+@media (min-width: 1200px) {
+  .ak-spalten, .ak-zeile { grid-template-columns: minmax(240px, 2fr) minmax(160px, 1fr) minmax(140px, 0.8fr) minmax(120px, max-content); }
+  .ak-spalten {
+    display: grid; gap: 20px; margin-bottom: -8px; padding: 0 17px; font-size: 14px; font-weight: 600; color: var(--mm-text-secondary);
+  }
+  .ak-spalten > span:last-child { justify-self: end; }
+  .ak-zeile { grid-template-areas: 'titel schritt termin status'; gap: 20px; }
+  .ak-zeile-schritt:empty, .ak-zeile-termin:empty { display: block; }
+  .ak-zeile-status { align-self: center; }
+}

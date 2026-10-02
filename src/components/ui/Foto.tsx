@@ -10,12 +10,18 @@ export function bildVorhanden(src: string) {
   return existsSync(path.join(process.cwd(), "public", src));
 }
 
+/** Gibt es für diesen Schlüssel schon ein echtes Foto? Ohne Foto zeigen Heros keine Bildfläche (keine Deko vor der Aussage). */
+export function fotoVorhanden(bild: BildKey) {
+  return bildVorhanden(bilder[bild].src);
+}
+
 /**
  * Foto aus dem Bildregister (`src/content/bilder.ts`). Füllt den Eltern-Container
  * (`relative` + Größe/Seitenverhältnis kommen vom Aufrufer).
  *
- * Fehlt die Datei noch, erscheint eine gestaltete Markenfläche mit Pfeilmotiv
- * und Icon – nie ein kaputtes Bild.
+ * Fehlt die Datei noch, erscheint eine ruhige Fläche mit einem Linienicon als
+ * zeitweiliger Ersatz – nie ein kaputtes Bild und keine Pfeilgrafik, die wie ein Foto wirkt.
+ * Fehlende Fotos stehen in docs/design/bilder.md.
  */
 export function Foto({
   bild,
@@ -51,11 +57,9 @@ export function Foto({
     <div
       role="img"
       aria-label={b.alt}
-      className={`absolute inset-0 overflow-hidden bg-[linear-gradient(150deg,var(--color-ink-soft)_0%,var(--color-ink)_45%,color-mix(in_oklab,var(--color-signal)_70%,var(--color-ink))_100%)] ${className}`}
+      className={`absolute inset-0 overflow-hidden bg-ink-soft ${className}`}
     >
-      <Chevrons className="absolute -bottom-[10%] -right-[8%] h-[85%] text-brand/35" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,color-mix(in_oklab,var(--color-accent)_22%,transparent),transparent_55%)]" />
-      <div className="absolute inset-0 flex items-center justify-center text-white/25">
+      <div className="absolute inset-0 flex items-center justify-center text-white/30">
         {ersatz === undefined ? <Icon name={b.icon} className="size-[28%] max-h-28 min-h-10" /> : ersatz}
       </div>
       {process.env.NODE_ENV === "development" && (
@@ -88,17 +92,4 @@ export function FotoDatei({
 }) {
   if (!bildVorhanden(src)) return <>{ersatz}</>;
   return <Image src={src} alt={alt} fill sizes={sizes} preload={preload} className={className} />;
-}
-
-/**
- * Pfeilmotiv (große Chevrons „›“) aus dem Mission-Mittelstand-Hero.
- * Rein dekorativ – Farbe über `text-*`.
- */
-export function Chevrons({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 220 200" aria-hidden="true" className={`pointer-events-none ${className}`} fill="currentColor">
-      <path d="M0 0h52l70 100-70 100H0l70-100Z" />
-      <path d="M90 0h52l70 100-70 100H90l70-100Z" opacity=".55" />
-    </svg>
-  );
 }

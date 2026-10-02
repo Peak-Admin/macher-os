@@ -58,12 +58,12 @@ export function PreisRechner() {
         </div>
         <fieldset className="flex flex-col gap-2 sm:items-end">
           <legend className="mb-2 block font-display text-lg font-bold sm:text-right">Zahlweise</legend>
-          <div className="inline-flex rounded-lg bg-paper p-1 ring-1 ring-line">
+          <div className="inline-flex gap-1 rounded-xl bg-sand p-1">
             {(["monatlich", "jaehrlich"] as const).map((z) => (
               <label
                 key={z}
-                className={`cursor-pointer rounded px-5 py-2 text-sm font-bold transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-signal ${
-                  zahlweise === z ? "bg-ink text-white" : "text-muted hover:text-ink"
+                className={`flex min-h-11 cursor-pointer items-center rounded-md border px-5 py-2 text-base transition-colors has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
+                  zahlweise === z ? "border-line-dark bg-white font-semibold text-signal-dark" : "border-transparent font-medium text-muted hover:bg-white"
                 }`}
               >
                 <input type="radio" name="zahlweise" value={z} checked={zahlweise === z} onChange={() => setZahlweise(z)} className="sr-only" />

@@ -117,33 +117,30 @@
 .ob-preis-beispiele { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
 .ob-preis-beispiele li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--mm-border); }
 /* Spielwiese: fester Hinweis unten rechts, mobil oberhalb der unteren Navigation */
-.ob-spielwiese { position: fixed; right: 24px; bottom: 24px; z-index: 30; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; max-width: 420px; padding: 12px 16px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: 8px; box-shadow: 0 2px 8px rgb(0 0 0 / 12%); }
+/* Spielwiese: eine kompakte Zeile oben im Inhalt (im Layoutfluss) – verdeckt keine Daten, Aktionen oder untere Leiste */
+.ob-spielwiese {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap;
+  max-width: var(--mm-content-max); margin: 0 auto 24px; padding: 8px 8px 8px 16px;
+  background: var(--mm-warning-surface); border: 1px solid var(--mm-warning-border); border-radius: var(--mm-radius-card);
+}
 .ob-spielwiese-text { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 600px) {
   .ob-quellen { grid-template-columns: 1fr; }
   .ob-quellen .mm-btn { width: 100%; }
   .ob-website { flex-direction: column; align-items: stretch; }
-  .ob-spielwiese { left: 8px; right: 8px; bottom: calc(72px + env(safe-area-inset-bottom)); max-width: none; padding: 8px 12px; }
+  .ob-spielwiese { margin-bottom: 16px; padding: 8px 8px 8px 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .ob-regler input[type='range'] { transition: none; } }
 
-/* ---------- Glas wie in der App: Werkstattfoto über die ganze Fläche, Marke und Inhalt schweben darüber */
+/* ---------- Einrichtung: Werkstattfoto nur als Rahmen; Marke und Inhalt liegen deckend darüber (kein Glas hinter Formularen) */
 .ob-rahmen { position: relative; isolation: isolate; padding: 12px 12px 48px; background: var(--mm-dark); }
 .ob-rahmen::before {
   content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: url('/bilder/os/werkstatt.webp') center / cover no-repeat;
 }
-.ob-marke { max-width: 1360px; margin: 0 auto 24px; border: 1px solid var(--mm-glass-rand); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-glass-schatten); }
-.ob-inhalt { position: relative; isolation: isolate; padding: 32px 32px 0; border: 1px solid var(--mm-glass-rand); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-glass-schatten); }
-.ob-inhalt::before {
-  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
-  background: var(--mm-glass-inhalt); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur);
-}
-.ob-inhalt .mm-karte, .ob-inhalt .mm-liste, .ob-inhalt .mm-leer, .ob-quellen, .ob-preisliste { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
-.ob-navigation {
-  margin: 0 -32px; padding: 16px 32px; border-radius: 0 0 var(--mm-radius-panel) var(--mm-radius-panel);
-  background: var(--mm-glass-inhalt); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur); border-top-color: var(--mm-glass-rand);
-}
+.ob-marke { max-width: 1360px; margin: 0 auto 24px; border-radius: var(--mm-radius-panel); box-shadow: var(--mm-shadow-photo); }
+.ob-inhalt { position: relative; padding: 32px 32px 0; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-shadow-photo); }
+.ob-navigation { margin: 0 -32px; padding: 16px 32px; border-radius: 0 0 var(--mm-radius-panel) var(--mm-radius-panel); background: var(--mm-surface); }
 /* Anmeldung: Vorteile als Liste, Handwerkerfoto rechts mit schräger Kante (−17°) */
 .ob-vorteile { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; max-width: 55%; }
 .ob-vorteile li { display: flex; align-items: center; gap: 12px; font: 600 18px/24px var(--mm-font); color: var(--mm-on-dark); }
@@ -178,9 +175,6 @@
   .ob-marke { margin-bottom: 8px; }
   .ob-inhalt { padding: 24px 16px 0; }
   .ob-navigation { margin: 0 -16px; padding: 16px; }
-}
-@media (prefers-reduced-transparency: reduce) {
-  .ob-inhalt::before, .ob-navigation { background: var(--mm-surface); }
 }
 
 .ob-zurueck-betrieb {

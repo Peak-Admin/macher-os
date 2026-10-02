@@ -36,7 +36,7 @@ export function KundenCard({ slug }: { slug: KundeSlug }) {
           {gewerk.kurz} · {k.mitarbeiter} Mitarbeiter · {k.ort}
         </p>
         <p className="mt-1 font-display text-lg font-bold">{k.betrieb}</p>
-        <p className="mt-3 flex-1 text-[1.05rem] font-semibold leading-snug text-ink-soft">„{k.ergebnis}“</p>
+        <p className="mt-3 flex-1 text-[1.05rem] font-semibold leading-snug text-ink-soft">{k.ergebnis}</p>
         <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-signal-dark">
           Story lesen <Icon name="arrow-right" className="size-4 transition-transform group-hover:translate-x-0.5" />
         </span>

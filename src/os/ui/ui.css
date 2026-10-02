@@ -3,34 +3,34 @@
 /* ---------- Buttons */
 .mm-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: var(--mm-control-height); padding: 8px 20px;
+  min-height: var(--mm-control-height); padding: 11px 16px;
   border: 1px solid transparent; border-radius: var(--mm-radius-control);
-  font: 600 16px/1.5 var(--mm-font); text-decoration: none; cursor: pointer; white-space: nowrap;
+  font: 600 16px/1.4 var(--mm-font); text-decoration: none; cursor: pointer; white-space: nowrap;
   transition: background-color var(--mm-motion-fast) ease-out, border-color var(--mm-motion-fast) ease-out, color var(--mm-motion-fast) ease-out;
 }
-.mm-btn:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 3px; }
-.mm-btn--primaer { background: var(--mm-action); color: var(--mm-on-action); font-size: 19px; font-weight: 700; }
+.mm-btn:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
+.mm-btn--primaer { background: var(--mm-action); color: var(--mm-on-action); }
 .mm-btn--primaer:hover:not(:disabled) { background: var(--mm-action-hover); }
-.mm-btn--primaer:active:not(:disabled) { background: var(--mm-dark); }
+.mm-btn--primaer:active:not(:disabled) { background: var(--mm-action-active); }
 .mm-btn--sekundaer:active:not(:disabled), .mm-btn--tertiaer:active:not(:disabled) { background: var(--mm-soft-green); }
-.mm-btn--sekundaer { background: var(--mm-surface); color: var(--mm-brand-text); border-color: var(--mm-brand-text); }
+.mm-btn--sekundaer { background: var(--mm-surface); color: var(--mm-brand-ink); border-color: var(--mm-control-border); }
 .mm-btn--sekundaer:hover:not(:disabled) { background: var(--mm-soft-green); }
-.mm-btn--tertiaer { background: transparent; color: var(--mm-brand-text); padding-inline: 12px; }
-.mm-btn--tertiaer:hover:not(:disabled) { background: var(--mm-hover); }
+.mm-btn--tertiaer { background: transparent; color: var(--mm-brand-ink); padding-inline: 12px; }
+.mm-btn--tertiaer:hover:not(:disabled) { background: var(--mm-brand-soft); }
 .mm-btn--gefahr { background: var(--mm-surface); color: var(--mm-danger); border-color: var(--mm-danger); }
 .mm-btn--gefahr:hover:not(:disabled) { background: var(--mm-danger-surface); }
-.mm-btn:disabled { background: var(--mm-border); color: var(--mm-text); border-color: transparent; cursor: not-allowed; }
+.mm-btn:disabled { background: var(--mm-surface-subtle); color: var(--mm-text-muted); border-color: var(--mm-border); cursor: not-allowed; }
 .mm-btn--breit { width: 100%; white-space: normal; text-align: center; }
-.mm-btn--klein { min-height: 36px; padding: 4px 12px; font-size: 15px; }
+.mm-btn--klein { min-height: 36px; padding: 4px 12px; font-size: 16px; }
 @media (pointer: coarse) { .mm-btn--klein { min-height: 44px; } }
 .mm-btn > svg { flex-shrink: 0; }
 .mm-iconbtn {
-  display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0;
+  display: inline-grid; place-items: center; width: 48px; height: 48px; padding: 0;
   border: 0; border-radius: var(--mm-radius-control); background: transparent; color: var(--mm-text); cursor: pointer;
   transition: background-color var(--mm-motion-fast) ease-out;
 }
 .mm-iconbtn:hover { background: var(--mm-hover); }
-.mm-iconbtn:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.mm-iconbtn:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
 .mm-spinner {
   width: 16px; height: 16px; border-radius: 50%;
   border: 2px solid currentColor; border-right-color: transparent;
@@ -40,18 +40,18 @@
 
 /* ---------- Formular */
 .mm-feld { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.mm-label { font: 600 14px/20px var(--mm-font); color: var(--mm-black); }
-.mm-label-optional { font-weight: 400; color: var(--mm-text); }
+.mm-label { font: 600 16px/22px var(--mm-font); color: var(--mm-black); }
+.mm-label-optional { font-weight: 400; color: var(--mm-text-secondary); }
 .mm-input {
-  width: 100%; min-height: var(--mm-control-height); padding: 8px 12px;
+  width: 100%; min-width: 0; min-height: var(--mm-control-height); padding: 11px 12px; color: var(--mm-text);
   border: 1px solid var(--mm-border-dark); border-radius: var(--mm-radius-control);
   background: var(--mm-surface); font-size: 16px;
 }
 .mm-input:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 1px; border-color: var(--mm-focus); }
-.mm-textarea { min-height: 96px; resize: vertical; }
+.mm-textarea { min-height: 112px; resize: vertical; }
 .mm-select { appearance: auto; }
 .mm-feld--fehler .mm-input { border-color: var(--mm-danger); }
-.mm-hilfe { font-size: 14px; line-height: 20px; color: var(--mm-text); }
+.mm-hilfe { font-size: 14px; line-height: 21px; color: var(--mm-text-secondary); }
 .mm-fehlertext { font-size: 14px; line-height: 20px; color: var(--mm-danger); }
 .mm-formraster { display: grid; gap: 20px 24px; grid-template-columns: 1fr; }
 @media (min-width: 768px) {
@@ -80,22 +80,28 @@
 .mm-switch--an .mm-switch-knopf { transform: translateX(20px); }
 .mm-switch-text { font-size: 14px; min-width: 24px; text-align: left; }
 
-.mm-checkbox { display: flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer; }
+.mm-checkbox { display: flex; align-items: center; gap: 12px; min-height: 48px; cursor: pointer; }
 .mm-checkbox input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .mm-checkbox-box {
   display: grid; place-items: center; flex-shrink: 0; width: 24px; height: 24px;
   border: 2px solid var(--mm-border-dark); border-radius: var(--mm-radius-control); background: var(--mm-surface); color: var(--mm-on-action);
 }
 .mm-checkbox--an .mm-checkbox-box { background: var(--mm-action); border-color: var(--mm-action); }
-.mm-checkbox input:focus-visible + .mm-checkbox-box { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.mm-checkbox input:focus-visible + .mm-checkbox-box { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
 .mm-checkbox--an .mm-checkbox-label { color: var(--mm-text); }
 .mm-checkbox--aus { opacity: 0.6; cursor: not-allowed; }
 
-.mm-segmente { display: inline-flex; flex-wrap: wrap; align-self: flex-start; max-width: 100%; border-radius: var(--mm-radius-control); background: var(--mm-switch-bg); overflow: hidden; }
-.mm-segment { flex: 1 1 auto; min-height: 44px; padding: 8px 24px; border: 0; background: transparent; color: var(--mm-on-switch); cursor: pointer; font-weight: 500; transition: background-color var(--mm-motion-fast) ease-out; }
-.mm-segment:hover:not(.mm-segment--an) { background: rgb(255 255 255 / 8%); }
-.mm-segment:focus-visible { outline: 2px solid var(--mm-brand-accent); outline-offset: -4px; }
-.mm-segment--an { background: var(--mm-switch-active); font-weight: 600; }
+/* Heller Umschalter (Festlegung 10/2026): ruhige graue Spur, aktive Wahl als weiße Fläche mit Rand – nie dunkle Balken */
+.mm-segmente { display: inline-flex; flex-wrap: wrap; gap: 4px; align-self: flex-start; max-width: 100%; padding: 4px; border-radius: var(--mm-radius-card); background: var(--mm-switch-bg); }
+.mm-segment {
+  flex: 1 1 auto; min-height: 44px; padding: 8px 16px; border: 1px solid transparent; border-radius: var(--mm-radius-control);
+  background: transparent; color: var(--mm-on-switch); cursor: pointer; font-weight: 500;
+  transition: background-color var(--mm-motion-fast) ease-out, border-color var(--mm-motion-fast) ease-out;
+}
+.mm-segment:hover:not(.mm-segment--an) { background: var(--mm-surface); }
+.mm-segment:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
+.mm-segment--an { background: var(--mm-switch-active); border-color: var(--mm-switch-active-border); color: var(--mm-on-switch-active); font-weight: 600; }
+@media (pointer: coarse) { .mm-segment { min-height: 48px; } }
 
 .mm-auswahlkarten { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); }
 .mm-auswahlkarte {
@@ -111,8 +117,10 @@
 .mm-auswahlkarte-check { color: var(--mm-brand-text); }
 
 /* ---------- Layout */
-.mm-seite { width: 100%; max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
+.mm-seite { width: 100%; max-width: var(--mm-content-max); margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
 .mm-seite--breit { max-width: var(--mm-content-max); }
+/* Formulare: höchstens 800 px breit, damit Zeilen lesbar bleiben */
+.mm-seite--formular { max-width: var(--mm-form-max); }
 .mm-zurueck { display: inline-flex; align-items: center; gap: 4px; margin-bottom: -16px; font-weight: 600; font-size: 14px; text-decoration: none; }
 .mm-brotkrumen { display: flex; align-items: center; gap: 4px; min-width: 0; margin-bottom: -16px; font-size: 14px; line-height: 20px; color: var(--mm-text); }
 .mm-brotkrumen a { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; font-weight: 600; text-decoration: none; color: var(--mm-link); white-space: nowrap; }
@@ -123,11 +131,12 @@
 .mm-seitenkopf { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; }
 .mm-seitenkopf-text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .mm-seitenkopf-titel { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.mm-seitenkopf-titel h1 { overflow-wrap: break-word; hyphens: auto; min-width: 0; }
-.mm-untertitel { color: var(--mm-text); }
+.mm-seitenkopf-titel h1 { overflow-wrap: break-word; min-width: 0; }
+.mm-untertitel { color: var(--mm-text-secondary); }
 .mm-seitenkopf-aktion { display: flex; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 767px) { .mm-seitenkopf-aktion { width: 100%; } .mm-seitenkopf-aktion > .mm-btn { flex: 1; } }
-.mm-oberzeile { font: 600 12px/18px var(--mm-font-eyebrow); letter-spacing: 1px; text-transform: uppercase; color: var(--mm-brand-text); }
+/* Oberzeile in der Software: normale Schreibweise (Versalien nur als kurze Marketing-Überzeile auf der Website) */
+.mm-oberzeile { font: 600 14px/20px var(--mm-font); color: var(--mm-brand-text); }
 /* Längere oder datenhaltige Oberzeilen (Nummern, Orte) in normaler Schreibweise – Versalien nur für kurze Marken-Oberzeilen */
 .mm-oberzeile--daten { font: 600 14px/20px var(--mm-font); letter-spacing: 0; text-transform: none; font-variant-numeric: tabular-nums; }
 .mm-abschnitt { display: flex; flex-direction: column; gap: 16px; }
@@ -135,12 +144,12 @@
 .mm-abschnitt-hinweis { margin-top: -8px; }
 .mm-karte {
   display: block; padding: 24px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card);
-  background: var(--mm-surface); box-shadow: var(--mm-shadow-card); color: inherit; text-decoration: none; text-align: left; width: 100%; font: inherit;
+  background: var(--mm-surface); color: inherit; text-decoration: none; text-align: left; width: 100%; font: inherit;
 }
 .mm-karte--kompakt { padding: 16px; }
 .mm-karte--klickbar { cursor: pointer; transition: border-color var(--mm-motion-fast) ease-out; }
 .mm-karte--klickbar:hover { border-color: var(--mm-brand); }
-.mm-karte--klickbar:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.mm-karte--klickbar:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
 .mm-karte-kopf { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
 .mm-karte-titel { font: 600 20px/26px var(--mm-font); }
 @media (max-width: 767px) { .mm-karte { padding: 16px; } }
@@ -150,19 +159,21 @@
 .mm-zweispalten-haupt, .mm-zweispalten-seite { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .mm-stapel { display: flex; flex-direction: column; }
 .mm-zeile { display: flex; align-items: center; }
-.mm-meta { font-size: 14px; line-height: 20px; color: var(--mm-text); }
+.mm-meta { font-size: 14px; line-height: 21px; color: var(--mm-text-secondary); }
 
 /* ---------- Status & Zahlen */
 .mm-status {
   display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; min-height: 24px; flex-shrink: 0;
-  border-radius: var(--mm-radius-control); font: 600 13px/20px var(--mm-font); border: 1px solid transparent;
+  border-radius: var(--mm-radius-control); font: 600 14px/20px var(--mm-font); border: 1px solid transparent;
   max-width: 100%; overflow-wrap: break-word; font-variant-numeric: tabular-nums;
 }
 .mm-status > svg { flex-shrink: 0; }
-.mm-status--neutral { background: var(--mm-hover); color: var(--mm-text); border-color: var(--mm-border); }
-.mm-status--aktiv { background: var(--mm-soft-green); color: var(--mm-brand-text); border-color: var(--mm-success-border); }
-.mm-status--erfolg { background: var(--mm-success-surface); color: var(--mm-brand-deep); border-color: var(--mm-success-border); }
-.mm-status--achtung { background: var(--mm-warning-surface); color: var(--mm-warning); border-color: var(--mm-warning-border); }
+.mm-status--neutral { background: var(--mm-surface-subtle); color: var(--mm-text-secondary); border-color: transparent; }
+.mm-status--aktiv { background: var(--mm-surface-subtle); color: var(--mm-brand-ink); border-color: transparent; }
+.mm-status--erfolg { background: var(--mm-success-surface); color: var(--mm-success); border-color: transparent; }
+.mm-status--achtung { background: var(--mm-warning-surface); color: var(--mm-warning); border-color: transparent; }
+/* Nur für tatsächliche Sperre oder Gefahr („Nicht verwenden“) – immer mit eindeutigem Text */
+.mm-status--gefahr { background: var(--mm-danger-surface); color: var(--mm-danger); border-color: transparent; }
 .mm-kennzahl { display: flex; flex-direction: column; gap: 4px; min-width: 0; container-type: inline-size; }
 .mm-karte.mm-kennzahl { padding: 20px; }
 .mm-kennzahl-label { font: 600 14px/20px var(--mm-font); color: var(--mm-text); }
@@ -182,7 +193,7 @@
 .mm-liste { list-style: none; margin: 0; padding: 0; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); background: var(--mm-surface); overflow: hidden; }
 .mm-liste > li + li { border-top: 1px solid var(--mm-border); }
 .mm-listenzeile {
-  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 12px 16px;
   background: transparent; border: 0; text-align: left; color: inherit; text-decoration: none; font: inherit;
 }
 .mm-listenzeile--klickbar { cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out; }
@@ -190,13 +201,13 @@
 .mm-listenzeile--aktiv { box-shadow: inset 3px 0 0 var(--mm-brand); background: var(--mm-soft-green); }
 .mm-listenzeile-links { flex-shrink: 0; display: flex; align-items: center; }
 .mm-listenzeile-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
-.mm-listenzeile-titel { font-weight: 600; color: var(--mm-black); overflow-wrap: break-word; hyphens: auto; }
+.mm-listenzeile-titel { font-weight: 600; color: var(--mm-black); overflow-wrap: break-word; }
 .mm-listenzeile-rechts { display: flex; align-items: center; gap: 8px; flex-shrink: 0; text-align: right; font-variant-numeric: tabular-nums; }
 .mm-listenzeile--klickbar:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: -2px; }
 @media (max-width: 479px) { .mm-listenzeile { flex-wrap: wrap; } .mm-listenzeile-rechts { width: 100%; justify-content: flex-start; padding-left: 0; } }
 .mm-tabelle-rahmen { overflow-x: auto; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); background: var(--mm-surface); }
-.mm-tabelle { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
-.mm-tabelle th { text-align: left; padding: 12px 16px; background: var(--mm-canvas); font-weight: 600; font-size: 14px; color: var(--mm-black); border-bottom: 1px solid var(--mm-border); white-space: nowrap; }
+.mm-tabelle { width: 100%; border-collapse: collapse; font-size: 16px; font-variant-numeric: tabular-nums; }
+.mm-tabelle th { text-align: left; padding: 12px 16px; background: var(--mm-surface-subtle); font-weight: 600; font-size: 14px; color: var(--mm-text-secondary); border-bottom: 1px solid var(--mm-border); white-space: nowrap; }
 .mm-tabelle td { padding: 14px 16px; height: 52px; border-bottom: 1px solid var(--mm-border); vertical-align: middle; }
 .mm-tabelle tr:last-child td { border-bottom: 0; }
 .mm-tabelle .num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -220,6 +231,8 @@
 .mm-meldung--achtung { background: var(--mm-warning-surface); border-color: var(--mm-warning-border); color: var(--mm-warning); }
 .mm-meldung--achtung strong { color: var(--mm-warning); }
 .mm-meldung strong { color: var(--mm-black); }
+.mm-meldung--gefahr { background: var(--mm-danger-surface); border-color: var(--mm-danger-border); color: var(--mm-danger); }
+.mm-meldung--gefahr strong { color: var(--mm-danger); }
 .mm-meldung--erfolg { background: var(--mm-soft-green); border-color: var(--mm-success-border); color: var(--mm-brand-deep); }
 .mm-meldung--aktiv { background: var(--mm-soft-green); border-color: var(--mm-success-border); }
 
@@ -228,19 +241,19 @@
 .mm-tab { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 14px; border: 0; background: none; font-weight: 500; color: var(--mm-text); cursor: pointer; white-space: nowrap; }
 .mm-tab:hover { color: var(--mm-black); background: var(--mm-hover); }
 .mm-tab:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: -2px; }
-.mm-tab--aktiv { color: var(--mm-brand-text); font-weight: 700; }
+.mm-tab--aktiv { color: var(--mm-brand-ink); font-weight: 650; }
 .mm-tab--aktiv::after { content: ''; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 3px; background: var(--mm-brand); border-radius: 2px 2px 0 0; }
 .mm-tab-zaehler, .mm-chip-zaehler { min-width: 20px; padding: 0 6px; border-radius: var(--mm-radius-control); background: var(--mm-hover); font-size: 12px; line-height: 20px; font-weight: 600; text-align: center; }
 .mm-filter { display: flex; flex-wrap: wrap; gap: 8px; }
-.mm-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; transition: border-color var(--mm-motion-fast) ease-out, background-color var(--mm-motion-fast) ease-out; padding: 4px 12px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); cursor: pointer; font-weight: 500; }
+.mm-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; transition: border-color var(--mm-motion-fast) ease-out, background-color var(--mm-motion-fast) ease-out; padding: 4px 12px; border: 1px solid var(--mm-control-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); cursor: pointer; font-weight: 500; }
 .mm-chip:hover { border-color: var(--mm-brand); }
-.mm-chip--an { border-color: var(--mm-brand); background: var(--mm-soft-green); color: var(--mm-brand-text); font-weight: 700; box-shadow: inset 0 0 0 1px var(--mm-brand); }
+.mm-chip--an { border-color: var(--mm-brand); background: var(--mm-brand-soft); color: var(--mm-brand-ink); font-weight: 650; box-shadow: inset 0 0 0 1px var(--mm-brand); }
 .mm-chip--an .mm-chip-zaehler { background: var(--mm-surface); }
 
 /* ---------- Dialog */
 .mm-dialog { width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 64px); padding: 0; border: 0; border-radius: var(--mm-radius-panel); box-shadow: var(--mm-shadow-overlay); color: var(--mm-text); }
 .mm-dialog--breit { width: min(880px, calc(100vw - 32px)); }
-.mm-dialog::backdrop { background: rgb(14 19 12 / 40%); }
+.mm-dialog::backdrop { background: rgb(16 44 33 / 32%); }
 .mm-dialog[open] { animation: mm-auf var(--mm-motion-panel) ease-out; display: flex; flex-direction: column; }
 @keyframes mm-auf { from { opacity: 0; transform: translateY(8px); } }
 .mm-dialog-kopf { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 16px 8px 24px; }
@@ -267,7 +280,7 @@
 .mm-hinweis { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
 .mm-hinweis-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .mm-hinweis-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.mm-hinweis-titel { font-weight: 600; color: var(--mm-black); overflow-wrap: break-word; hyphens: auto; }
+.mm-hinweis-titel { font-weight: 600; color: var(--mm-black); overflow-wrap: break-word; }
 .mm-hinweis-aktionen { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .mm-hinweis-weitere { margin: 0; padding: 8px 0 0; list-style: none; border-top: 1px dashed var(--mm-border); display: flex; flex-direction: column; gap: 4px; }
 .mm-hinweis-weitere li { font-size: 14px; line-height: 20px; }

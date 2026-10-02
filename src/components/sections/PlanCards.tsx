@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BtnPfeil, CheckList } from "@/components/ui";
-import { formatPreis, plaene } from "@/content/preise";
+import { formatPreis, plaene, preiseVorlaeufig } from "@/content/preise";
 
 /** Preiskarten aller Pläne. `billing` steuert, welcher Monatspreis gezeigt wird. */
 export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "jaehrlich" }) {
@@ -17,7 +17,7 @@ export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "
           >
             {p.hervorgehoben && (
               <span className="absolute -top-3 left-6 rounded bg-accent px-3 py-0.5 text-xs font-bold text-ink">
-                Am beliebtesten
+                Empfohlen
               </span>
             )}
             <p className="font-display text-xl font-extrabold">{p.name}</p>
@@ -29,18 +29,26 @@ export function PlanCards({ billing = "monatlich" }: { billing?: "monatlich" | "
                 <>
                   <span className="font-display text-4xl font-extrabold">{formatPreis(preis)}</span>
                   <span className={`text-sm ${p.hervorgehoben ? "text-white/70" : "text-muted"}`}>/ Monat</span>
+                  {/* Vorläufige Preise direkt am Preis kennzeichnen */}
+                  {preiseVorlaeufig && (
+                    <span
+                      className={`ml-1 self-center rounded-sm px-1.5 text-xs font-semibold ${p.hervorgehoben ? "bg-white/15 text-white" : "bg-sand text-muted"}`}
+                    >
+                      vorläufig
+                    </span>
+                  )}
                 </>
               )}
             </p>
-            <p className={`mt-1 text-xs ${p.hervorgehoben ? "text-white/60" : "text-muted"}`}>
+            <p className={`mt-1 text-sm ${p.hervorgehoben ? "text-on-dark" : "text-muted"}`}>
               {preis === null ? "Individuelles Angebot" : billing === "jaehrlich" ? "netto, bei jährlicher Zahlung" : "netto, monatlich kündbar"}
             </p>
             <p className="mt-4 text-sm font-semibold">{p.nutzer}</p>
             <CheckList items={p.vorteile} className="mt-4 flex-1 text-sm" />
             <Link
               href={p.cta.href}
-              className={`mt-6 inline-flex h-13 items-center justify-center text-center font-bold ${
-                p.hervorgehoben ? "rounded-2xl bg-white text-ink transition-colors hover:bg-sand" : "btn-primaer"
+              className={`mt-6 inline-flex min-h-13 items-center justify-center text-center font-bold ${
+                p.hervorgehoben ? "rounded-xl bg-white text-ink transition-colors hover:bg-sand" : "btn-primaer"
               }`}
             >
               {p.hervorgehoben ? p.cta.label : <BtnPfeil>{p.cta.label}</BtnPfeil>}

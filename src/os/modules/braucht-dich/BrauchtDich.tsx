@@ -41,13 +41,13 @@ export function HinweisZeile({ h, kompakt }: { h: OffenerHinweis; kompakt?: bool
 
   const weitere = h.weitere ?? [];
   return (
-    <li className={`mm-hinweis mm-hinweis--${ART_TON[h.art]}`}>
+    <li className={`mm-hinweis mm-hinweis--${h.sicherheit ? 'gefahr' : ART_TON[h.art]}`}>
       <div className="mm-hinweis-kopf">
         <div className="mm-hinweis-text">
           <span className="mm-hinweis-titel">{h.titel}</span>
           {(h.text || faellig) && <span className="mm-meta">{[h.text, faellig].filter(Boolean).join(' · ')}</span>}
         </div>
-        <Status ton={ART_TON[h.art]}>{ART_LABEL[h.art]}</Status>
+        {h.sicherheit ? <Status ton="gefahr">Nicht verwenden</Status> : <Status ton={ART_TON[h.art]}>{ART_LABEL[h.art]}</Status>}
       </div>
       {weitere.length > 0 && !kompakt && <Weitere liste={weitere} />}
       <div className="mm-hinweis-aktionen">

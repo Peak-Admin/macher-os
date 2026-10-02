@@ -28,7 +28,7 @@ import {
   type FaqItem,
   type IconName,
 } from "@/components/ui";
-import { Chevrons, Foto } from "@/components/ui/Foto";
+import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import { gewerkBild } from "@/content/bilder";
 import { kunden, topGewerke } from "@/content/registry";
 import { cta, herausgeber, site } from "@/lib/site";
@@ -54,7 +54,7 @@ const machtMacher: { text: string; icon: IconName }[] = [
 const bereiche: { titel: string; text: string; icon: IconName; href: string }[] = [
   { titel: "Heute", text: "Was jetzt wichtig ist.", icon: "home", href: "/funktionen" },
   { titel: "Aufträge", text: "Alles rund um Kunden und Arbeit.", icon: "clipboard", href: "/funktionen/auftraege" },
-  { titel: "Plan", text: "Was als Nächstes passiert.", icon: "calendar", href: "/funktionen/einsatzplanung" },
+  { titel: "Planen", text: "Was als Nächstes passiert.", icon: "calendar", href: "/funktionen/einsatzplanung" },
   { titel: "Betrieb", text: "Mitarbeiter, Material, Geld und Unternehmen.", icon: "layers", href: "/funktionen/mitarbeiter" },
 ];
 
@@ -140,17 +140,15 @@ const faq: FaqItem[] = [
 export default function HomePage() {
   return (
     <>
-      {/* 1. Hero – dunkel, Foto, Pfeilmotiv */}
+      {/* 1. Hero – kräftige Markenfläche, Aussage → Nutzen → Aktion; das Foto nur, wenn es vorhanden ist (rechts, ab lg) */}
       <section className="relative isolate overflow-hidden bg-ink text-white">
-        <div className="relative h-72 sm:h-96 lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto lg:w-[60%]">
-          <Foto bild="start/hero" preload sizes="(min-width: 1024px) 60vw, 100vw" />
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-ink/10 lg:bg-gradient-to-r lg:from-ink lg:via-ink/50 lg:to-ink/0"
-          />
-        </div>
-        <Chevrons className="absolute bottom-24 right-[6%] hidden h-[55%] max-h-[24rem] text-brand/80 mix-blend-screen lg:block" />
-        <Container className="relative -mt-20 pb-36 sm:-mt-24 lg:mt-0 lg:pb-52 lg:pt-28">
+        {fotoVorhanden("start/hero") && (
+          <div className="absolute inset-y-0 right-0 -z-10 hidden w-[60%] lg:block">
+            <Foto bild="start/hero" preload sizes="60vw" />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink via-ink/50 to-ink/0" />
+          </div>
+        )}
+        <Container className="relative pb-36 pt-12 sm:pt-16 lg:pb-52 lg:pt-28">
           <div className="max-w-2xl">
             <p className="mb-5 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
               Von {herausgeber.name} · Das Betriebssystem für Handwerker
@@ -160,8 +158,8 @@ export default function HomePage() {
               <br />
               <span className="text-accent">Eine Software.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80 sm:text-xl">
-              Aufträge, Mitarbeiter, Planung und Büroarbeit in einem einfachen Betriebssystem für Handwerker.
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-on-dark sm:text-xl">
+              Aufträge, Termine und Rechnungen an einem Ort. Für dich und dein Team.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href={cta.primary.href} size="lg">
@@ -249,7 +247,7 @@ export default function HomePage() {
       </Section>
 
       {/* 5. Gewerke – Hochkant-Karten mit Fotos */}
-      <DunklerAbschnitt hintergrund="Gewerke">
+      <DunklerAbschnitt>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <DunkleHeadline
             eyebrow="Gewerke"
@@ -281,7 +279,7 @@ export default function HomePage() {
       {/* 6. Mobiles Arbeiten – Handy vor Baustellenfoto */}
       <Section tone="white">
         <div className="grid items-center gap-14 lg:grid-cols-2">
-          <div className="order-2 lg:order-1">
+          <div className="order-2 min-w-0 lg:order-1">
             <FotoBuehne bild="alltag/handy">
               <PhoneMock />
             </FotoBuehne>
@@ -390,13 +388,13 @@ export default function HomePage() {
       {/* 9. Einrichtung */}
       <Section>
         <div className="grid gap-12 lg:grid-cols-2">
-          <div>
+          <div className="min-w-0">
             <SectionHeading
               eyebrow="Einrichtung"
               title="Dein Betrieb ist schon vorbereitet."
               intro="Beim Start beantwortest du vier kurze Fragen. Den Rest richtet Macher OS für dich ein."
             />
-            <ol className="mt-8 grid grid-cols-2 gap-3">
+            <ol className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
               {["Gewerk", "Leistungen", "Arbeitsweise", "Teamgröße"].map((s, i) => (
                 <li key={s} className="flex items-center gap-3 rounded-xl bg-white p-4 ring-1 ring-line">
                   <span className="font-display text-sm font-extrabold text-signal-dark">{i + 1}</span>
@@ -405,9 +403,9 @@ export default function HomePage() {
               ))}
             </ol>
           </div>
-          <div className="rounded-2xl bg-ink p-8 text-white">
+          <div className="min-w-0 rounded-2xl bg-ink p-6 text-white sm:p-8">
             <p className="font-display text-xl font-bold">Macher OS richtet automatisch ein:</p>
-            <ul className="mt-5 grid grid-cols-2 gap-3">
+            <ul className="mt-5 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
               {["passende Funktionen", "Begriffe", "Vorlagen", "Abläufe", "Checklisten", "Schulungen"].map((x) => (
                 <li key={x} className="flex items-center gap-2">
                   <Icon name="check" className="size-4 text-accent" /> {x}
