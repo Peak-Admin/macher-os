@@ -7,6 +7,7 @@ import {
   DunkleHeadline,
   FinalCta,
   FotoBuehne,
+  IntegrationenHighlight,
   KundenCard,
   PlanCards,
   MissionMittelstand,
@@ -315,6 +316,9 @@ export default function HomePage() {
           </div>
         </Section>
       </Zone>
+
+      {/* 6b. Integrationen – Highlight mit echten Logos und den vier Säulen */}
+      <IntegrationenHighlight />
 
       {/* 7. Feierabend statt Papierkram – alles in Boxen */}
       <Zone ton="weiss">

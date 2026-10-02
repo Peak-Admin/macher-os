@@ -8,3 +8,4 @@ export { BildKarten, BildText, BereichsKarte, DunkleHeadline, DunklerAbschnitt, 
 export { MissionMittelstand, MissionMittelstandFoto, MissionMittelstandStreifen, PersonenKarte, HerausgeberMarke } from "./MissionMittelstand";
 export { Ablauf } from "./Ablauf";
 export { Alltag } from "./Alltag";
+export { IntegrationenHighlight, LogoWand } from "./Integrationen";

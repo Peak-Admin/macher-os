@@ -8,3 +8,4 @@ export { Breadcrumbs } from "./Breadcrumbs";
 export { Karte3D } from "./Karte3D";
 export { Zone, zone, type ZonenTon } from "./Zone";
 export { Objekt } from "./Objekt";
+export { IntegrationLogo } from "./IntegrationLogo";

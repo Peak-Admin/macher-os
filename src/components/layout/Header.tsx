@@ -7,7 +7,17 @@ import { useEffect, useRef, useState, type FocusEvent, type MouseEvent } from "r
 import { BtnPfeil } from "@/components/ui/Button";
 import { GlasIcon } from "@/os/ui/glas";
 import { Icon } from "@/components/ui/Icon";
-import { cta, mainNav, type Mega, type MegaGewerk, type MegaGruppe, type MegaVorschau, type NavItem } from "@/lib/site";
+import {
+  cta,
+  mainNav,
+  type Mega,
+  type MegaGewerk,
+  type MegaGruppe,
+  type MegaHighlight,
+  type MegaSaeule,
+  type MegaVorschau,
+  type NavItem,
+} from "@/lib/site";
 import { Logo } from "./Logo";
 
 type MegaItem = NavItem & { mega: Mega };
@@ -18,7 +28,7 @@ const DESKTOP = "(min-width: 75rem)";
 
 /**
  * Kopf der Website.
- * Desktop (ab 1200 px): fünf Punkte, Funktionen/Gewerke/Wissen öffnen per Klick ein Mega-Menü – immer nur eines.
+ * Desktop (ab 1200 px): sechs Punkte, Funktionen/Gewerke/Wissen/Integrationen öffnen per Klick ein Mega-Menü – immer nur eines.
  * Darunter: Logo, (ab 480 px) „Kostenlos testen“ und ein beschrifteter Menü-Knopf, der einen modalen Dialog öffnet.
  *
  * Glas-Kopf nach Peak One: fest oben, schwebend mit Rand, liegt auf dem Hero. Das Glas folgt der Box darunter
@@ -257,6 +267,17 @@ function MegaPanel({ item, maxHoehe }: { item: MegaItem; maxHoehe: string }) {
               </li>
             ))}
           </ul>
+        ) : mega.art === "integrationen" ? (
+          <div className="grid grid-cols-[minmax(0,2fr)_minmax(280px,1.15fr)] items-start gap-8">
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-2">
+              {mega.saeulen.map((s) => (
+                <li key={s.href}>
+                  <SaeulenZeile saeule={s} />
+                </li>
+              ))}
+            </ul>
+            <Highlight highlight={mega.highlight} />
+          </div>
         ) : (
           <div
             className={`grid items-start gap-8 ${
@@ -330,6 +351,41 @@ function Vorschau({ vorschau }: { vorschau: MegaVorschau }) {
   );
 }
 
+function SaeulenZeile({ saeule }: { saeule: MegaSaeule }) {
+  return (
+    <Link
+      href={saeule.href}
+      className="flex min-h-22 items-center gap-4 rounded-lg p-3 text-ink transition-colors duration-150 ease-out hover:bg-signal-soft focus-visible:bg-signal-soft"
+    >
+      <GlasIcon name={saeule.icon} className="size-11 shrink-0" />
+      <span className="min-w-0">
+        <span className="block text-base font-semibold leading-snug">{saeule.label}</span>
+        <span className="block text-sm leading-snug text-muted">{saeule.text}</span>
+      </span>
+    </Link>
+  );
+}
+
+/** Hervorgehobene Box im Menü „Integrationen“: echte Logos, ein Satz, ein Ziel. */
+function Highlight({ highlight }: { highlight: MegaHighlight }) {
+  return (
+    <Link href={highlight.href} className="group flex min-w-0 flex-col self-stretch rounded-xl bg-signal-soft p-5 text-ink">
+      <ul className="grid grid-cols-4 gap-2" aria-hidden>
+        {highlight.logos.map((l) => (
+          <li key={l.logo + l.name} className="flex aspect-square items-center justify-center rounded-lg border border-line bg-white">
+            <Image src={`/logos/integrationen/${l.logo}`} alt="" width={28} height={28} unoptimized className="size-7 object-contain" />
+          </li>
+        ))}
+      </ul>
+      <span className="mt-4 mb-2 block text-xl font-semibold leading-tight">{highlight.titel}</span>
+      <span className="mb-4 block text-sm leading-normal text-muted">{highlight.text}</span>
+      <span className="mt-auto text-base font-semibold text-signal-dark underline underline-offset-4 group-hover:text-ink">
+        {highlight.aktion}
+      </span>
+    </Link>
+  );
+}
+
 function GewerkZeile({ gewerk, klein = false }: { gewerk: MegaGewerk; klein?: boolean }) {
   return (
     <Link
@@ -355,7 +411,7 @@ function GewerkZeile({ gewerk, klein = false }: { gewerk: MegaGewerk; klein?: bo
 
 /**
  * Natives `<dialog>` mit `showModal()`: liegt in der obersten Ebene über der ganzen Seite, macht den Hintergrund inert
- * und schließt mit Escape. Ebenen: Start → Funktionen | Gewerke | Wissen (keine tiefere Ebene).
+ * und schließt mit Escape. Ebenen: Start → Funktionen | Gewerke | Wissen | Integrationen (keine tiefere Ebene).
  */
 function MobilesMenue({
   offen,
@@ -521,6 +577,23 @@ function MobileUnteransicht({ mega }: { mega: Mega }) {
             </li>
           ))}
         </ul>
+        <MobilerAbschluss links={mega.abschluss} />
+      </>
+    );
+  }
+  if (mega.art === "integrationen") {
+    return (
+      <>
+        <ul className="grid gap-1">
+          {mega.saeulen.map((sa) => (
+            <li key={sa.href}>
+              <SaeulenZeile saeule={sa} />
+            </li>
+          ))}
+        </ul>
+        <div className="mt-6 max-w-sm">
+          <Highlight highlight={mega.highlight} />
+        </div>
         <MobilerAbschluss links={mega.abschluss} />
       </>
     );

@@ -1,3 +1,4 @@
+import { integration, logoReihe, saeulen } from "@/content/integrationen";
 import type { GlasIconName } from "@/os/ui/glas";
 
 export const site = {
@@ -85,8 +86,19 @@ export type MegaVorschau = {
 };
 /** Gewerk als Bildzeile: kleines echtes Foto + ausgeschriebener Name. */
 export type MegaGewerk = NavLink & { bild: string };
+/** Säule im Menü „Integrationen“: Glas-Icon, Name und ein kurzer Satz. */
+export type MegaSaeule = MegaLink & { text: string };
+/** Hervorgehobene Box mit echten Logos (nur Marken, die auf der Zielseite stehen). */
+export type MegaHighlight = {
+  href: string;
+  titel: string;
+  text: string;
+  aktion: string;
+  logos: { name: string; logo: string }[];
+};
 export type Mega =
   | { art: "funktionen" | "wissen"; gruppen: MegaGruppe[]; vorschau?: MegaVorschau; abschluss: NavLink[] }
+  | { art: "integrationen"; saeulen: MegaSaeule[]; highlight: MegaHighlight; abschluss: NavLink[] }
   | { art: "gewerke"; gewerke: MegaGewerk[]; abschluss: NavLink[] };
 export type NavItem = { label: string; href: string; mega?: Mega };
 
@@ -221,6 +233,28 @@ export const mainNav: NavItem[] = [
       abschluss: [{ label: "Alles aus Wissen ansehen", href: "/wissen" }],
     },
   },
+  {
+    label: "Integrationen",
+    href: "/integrationen",
+    mega: {
+      art: "integrationen",
+      saeulen: saeulen.map((x) => ({ label: x.name, href: `/integrationen#${x.id}`, icon: x.icon, text: x.kurz })),
+      highlight: {
+        href: "/integrationen",
+        titel: "Passt zu dem, was du schon nutzt.",
+        text: "Gmail, Outlook, DATEV, Lexware, Stripe und mehr – mit ehrlichem Stand.",
+        aktion: "Alle Integrationen ansehen",
+        logos: logoReihe
+          .map(integration)
+          .flatMap((i) => (i?.logo ? [{ name: i.name, logo: i.logo }] : []))
+          .slice(0, 8),
+      },
+      abschluss: [
+        { label: "Alle Integrationen ansehen", href: "/integrationen" },
+        { label: "Integration fehlt? Sag uns Bescheid", href: "/schnittstellen#anfrage" },
+      ],
+    },
+  },
   { label: "Kunden", href: "/kunden" },
   { label: "Preise", href: "/preise" },
 ];
@@ -231,6 +265,7 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
     links: [
       { label: "Funktionen", href: "/funktionen" },
       { label: "Gewerke", href: "/gewerke" },
+      { label: "Integrationen", href: "/integrationen" },
       { label: "Preise", href: "/preise" },
       { label: "Demo", href: "/demo" },
       { label: "App", href: "/app" },
