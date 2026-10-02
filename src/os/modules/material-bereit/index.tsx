@@ -66,7 +66,9 @@ export default defineModul({
           benachrichtigen(`Material fehlt: ${c.auftrag.titel}`, {
             text: `Einsatz am ${datumKurz(c.termin.start)} – ${c.zeilen.filter((z) => z.pruefung.ergebnis === 'problem').map((z) => z.pruefung.loesung).join(' ')}`,
             bezug: { typ: 'auftraege', id: c.auftrag.id },
-            wichtig: true,
+            art: 'material.fehlt',
+            // nach Einsatzbeginn ist die Meldung nicht mehr relevant
+            ablaufAm: c.termin.start,
           });
           erledigt(AUTOMATION, `Material geprüft: fehlt für „${c.auftrag.titel}“`, { bezug: { typ: 'auftraege', id: c.auftrag.id } });
         }

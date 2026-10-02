@@ -140,7 +140,7 @@ export function angebotEntscheiden(kundeId: ID, angebotId: ID, entscheidung: Ent
     ablehnen(angebotId, `Im Kundenbereich abgelehnt von ${unterschrift}`);
     emit({ typ: 'angebot.abgelehnt', objekt: db.angebote.get(angebotId), daten: { angebotId, auftragId: a.auftragId, name: unterschrift, quelle: 'portal', zeit } });
     // Annahmen meldet die Regel „Benachrichtigungen“; Absagen nur hier
-    benachrichtigen(`Angebot abgelehnt: ${a.titel}`, { text: `${db.kunden.get(kundeId)?.name ?? 'Kunde'} – bestätigt von ${unterschrift}`, bezug: { typ: 'angebote', id: angebotId }, wichtig: true });
+    benachrichtigen(`Angebot abgelehnt: ${a.titel}`, { text: `${db.kunden.get(kundeId)?.name ?? 'Kunde'} – bestätigt von ${unterschrift}`, bezug: { typ: 'angebote', id: angebotId }, gruppe: { typ: 'auftraege', id: a.auftragId }, art: 'angebot.abgelehnt', quelleId: `angebot-abgelehnt:${angebotId}` });
   }
   vermerken({ typ: 'auftraege', id: a.auftragId }, `angebot.${entscheidung}`, text, { name: unterschrift, zeit });
   vermerken({ typ: 'kunden', id: kundeId }, `angebot.${entscheidung}`, text);

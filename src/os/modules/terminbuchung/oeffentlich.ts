@@ -77,7 +77,7 @@ export function buchungEingabe(e: OeffentlicheEingabe, jetzt = new Date()): stri
   benachrichtigen(`Online-Buchung ohne freien Termin: ${angaben.name}`, {
     text: `${wunsch ?? 'Wunschtermin'} war nicht mehr frei (${r.fehler}). Bitte ${angaben.telefon} anrufen und einen Termin finden.`,
     bezug: { typ: 'auftraege', id: auftrag.id },
-    wichtig: true,
+    art: 'anfrage.rueckruf',
   });
   return `Als Anfrage angelegt (${r.fehler})`;
 }

@@ -174,7 +174,7 @@ a.pt2-balken:hover, span.pt2-balken:hover { box-shadow: inset 0 0 0 1px color-mi
 .pt2-chip-text { display: flex; flex-direction: column; min-width: 0; }
 .pt2-chip-titel, .pt2-chip-meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pt2-chip-meta { font-weight: 500; font-size: 12px; opacity: 0.8; }
-.pt2-chip-dringend { flex-shrink: 0; padding: 2px 6px; border-radius: 9px; background: var(--mm-warning-surface); color: var(--mm-warning); box-shadow: inset 0 0 0 1px var(--mm-warning-border); font-size: 11px; }
+.pt2-chip-dringend { flex-shrink: 0; padding: 2px 6px; border-radius: 9px; background: var(--mm-danger-surface); color: var(--mm-danger); box-shadow: inset 0 0 0 1px var(--mm-danger-border); font-size: 11px; }
 .pt2-mehr-knopf { min-height: 40px; padding: 0 12px; border: 0; border-radius: var(--mm-radius-control); background: transparent; color: var(--mm-link); font: 600 14px/18px var(--mm-font); cursor: pointer; }
 .pt2-mehr-knopf:hover { background: var(--mm-hover); }
 

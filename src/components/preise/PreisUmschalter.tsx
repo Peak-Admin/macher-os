@@ -30,7 +30,7 @@ export function PreisUmschalter() {
           {optionen.map((o) => (
             <label
               key={o.value}
-              className={`relative flex min-h-11 cursor-pointer items-center rounded-md border px-5 py-2 text-base transition-colors duration-150 ease-out has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
+              className={`relative flex min-h-12 cursor-pointer items-center rounded-md border px-5 py-2 text-base transition-colors duration-150 ease-out has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
                 billing === o.value ? "border-line-dark bg-white font-semibold text-signal-dark" : "border-transparent font-medium text-muted hover:bg-white"
               }`}
             >

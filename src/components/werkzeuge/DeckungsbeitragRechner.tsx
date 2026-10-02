@@ -118,7 +118,7 @@ export function DeckungsbeitragRechner() {
                     <span
                       key={stufe}
                       data-balken
-                      className={`flex h-7 items-center rounded-md px-2.5 text-xs font-bold font-tagline uppercase tracking-wider ${
+                      className={`flex min-h-8 items-center rounded-md px-2.5 text-sm font-bold font-tagline uppercase tracking-wider ${
                         stufe === r.ampel
                           ? ampelText[stufe].klasse
                           : "bg-white/5 text-white/35 ring-1 ring-inset ring-white/10"

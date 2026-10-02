@@ -1,0 +1,61 @@
+/* Inbox: ruhig, klare Hierarchie. Jetzt fällt auf (Fläche + Text „Jetzt“), ohne Alarm; Zur Kenntnis ist leise. */
+.mm-inbox-bereich { display: flex; flex-direction: column; gap: 12px; }
+.mm-inbox-bereich-titel { display: flex; align-items: baseline; gap: 8px; margin: 0; padding-bottom: 8px; border-bottom: 1px solid var(--mm-border); font: 600 16px/24px var(--mm-font); color: var(--mm-text); hyphens: manual; }
+.mm-inbox-bereich--ruhig .mm-inbox-bereich-titel { font-weight: 500; color: var(--mm-text-secondary); }
+
+.mm-inbox-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.mm-inbox-liste--innen { gap: 8px; }
+.mm-inbox-liste--ruhig { gap: 0; }
+
+.mm-inbox-eintrag, .mm-inbox-buendel {
+  display: flex; flex-direction: column; gap: 4px; min-width: 0;
+  padding: 16px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card);
+}
+.mm-inbox-eintrag--jetzt { background: var(--mm-warning-surface); border-color: var(--mm-warning-border); }
+/* im Bündel: Eintrag als Fläche ohne zweiten Rahmen */
+.mm-inbox-liste--innen > .mm-inbox-eintrag { padding: 12px; background: var(--mm-surface-subtle); border-color: transparent; }
+.mm-inbox-liste--innen > .mm-inbox-eintrag--jetzt { background: var(--mm-surface); border-color: var(--mm-warning-border); }
+
+.mm-inbox-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.mm-inbox-titel { min-width: 0; font-weight: 600; color: var(--mm-text); overflow-wrap: anywhere; }
+.mm-inbox-text { margin: 0; color: var(--mm-text); overflow-wrap: anywhere; }
+.mm-inbox-hervor { margin: 8px 0 0; font-weight: 600; color: var(--mm-text); }
+.mm-inbox-aktionen { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+
+.mm-inbox-mehr {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 4px; border: 0; background: none;
+  font: 500 14px/20px var(--mm-font); color: var(--mm-link); cursor: pointer; border-radius: var(--mm-radius-control);
+}
+.mm-inbox-mehr:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }
+
+/* Zur Kenntnis: eine Zeile, feine Trennlinie, keine Karte */
+.mm-inbox-kenntnis { display: flex; align-items: center; gap: 8px; min-width: 0; border-bottom: 1px solid var(--mm-border); }
+.mm-inbox-kenntnis:last-child { border-bottom: 0; }
+.mm-inbox-kenntnis-text {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 12px 4px; border: 0; background: none;
+  font: inherit; text-align: left; color: var(--mm-text); cursor: pointer; border-radius: var(--mm-radius-control);
+  transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-inbox-kenntnis-text:disabled { cursor: default; }
+.mm-inbox-kenntnis-text:not(:disabled):hover { background: var(--mm-hover); }
+.mm-inbox-kenntnis-text:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: -3px; }
+.mm-inbox-kenntnis-titel { overflow-wrap: anywhere; }
+.mm-inbox-kenntnis--leise .mm-inbox-kenntnis-titel { color: var(--mm-text-secondary); }
+.mm-inbox-weg {
+  flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+  border: 0; background: none; color: var(--mm-text-secondary); border-radius: var(--mm-radius-control); cursor: pointer;
+}
+.mm-inbox-weg:hover { background: var(--mm-hover); color: var(--mm-text); }
+.mm-inbox-weg:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 0; }
+
+.mm-inbox-fuss { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; border-top: 1px solid var(--mm-border); }
+
+.mm-inbox-spaeter { min-width: 260px; }
+.mm-inbox-datum { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding: 8px 12px 4px; border-top: 1px solid var(--mm-border); }
+.mm-inbox-datum label { display: flex; flex-direction: column; gap: 4px; }
+
+@media (max-width: 480px) {
+  .mm-inbox-eintrag, .mm-inbox-buendel { padding: 12px; }
+  /* Handy: unten als Blatt in voller Breite – nie aus dem Bild */
+  .mm-inbox-spaeter { position: fixed; left: 16px; right: 16px; top: auto; bottom: calc(88px + env(safe-area-inset-bottom, 0px)); min-width: 0; max-width: none; max-height: calc(100vh - 120px); overflow-y: auto; z-index: 45; }
+}

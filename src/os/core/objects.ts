@@ -164,6 +164,8 @@ export interface Kunde extends Basis {
   ansprechpartner: Ansprechpartner[];
   telefon?: string;
   email?: string;
+  /** Website des Kunden – daraus kommt sein Logo im Kundenbild */
+  website?: string;
   adresse?: Adresse;
   notiz?: string;
   quelle?: Kanal;
@@ -623,14 +625,62 @@ export interface Erledigung extends Basis {
   rueckgaengig?: { aktion: string; payload?: unknown };
 }
 
+/**
+ * Relevanzstufe einer Meldung (Attention Level):
+ * `jetzt` = sofort (now) · `aktion` = Aktion nötig (action_required) · `info` = zur Kenntnis · `aktivitaet` = Systemaktivität.
+ */
+export type Aufmerksamkeit = 'jetzt' | 'aktion' | 'info' | 'aktivitaet';
+
+/** Direkte Aktion an einer Meldung – `id` ist eine in `aktionen` eines Moduls registrierte Aktion */
+export interface MeldungsAktion {
+  id: string;
+  label: string;
+  primaer?: boolean;
+  payload?: unknown;
+}
+
+/**
+ * Persönliche Meldung (Attention Item) – zustandsbehaftet, kein Archiv. Regeln, Lebensdauer und Auflösung
+ * stehen zentral in `core/aufmerksamkeit.ts`. Was passiert ist, steht im Zeitstrahl des Objekts, nicht hier.
+ */
 export interface Benachrichtigung extends Basis {
   titel: string;
   text?: string;
+  /** worum es geht – nur die ID; der Zustand dieses Objekts entscheidet, ob die Meldung noch gilt */
   bezug?: Bezug;
+  /** übergeordnetes Objekt zum Bündeln (z. B. der Auftrag einer Kundennachricht) */
+  gruppe?: Bezug;
+  /** Empfänger (jede Meldung gehört genau einem Menschen) */
   fuerMitarbeiterId?: ID;
-  gelesen: boolean;
+  /** Ereignisart aus dem Regelwerk, z. B. `abwesenheit.beantragt` */
+  art?: string;
+  stufe?: Aufmerksamkeit;
+  /** Warum du das siehst („Du bist für die Freigabe zuständig.“) */
+  grund?: string;
+  /** Pain-Score 1–100 (Dringlichkeit × Wirkung) – Reihenfolge innerhalb der Stufe */
+  gewicht?: number;
+  aktionen?: MeldungsAktion[];
+  /** Deduplizierung: gleiche Art + Objekt + Empfänger = ein Eintrag */
+  schluessel?: string;
+  /** ID des auslösenden Ereignisses – gleiche Quelle wird nie zweimal gemeldet (Wiederholungen, Retries) */
+  quelleId?: string;
+  /** wie oft das Ereignis zusammengefasst wurde */
+  anzahl?: number;
+  /** danach nicht mehr in der Inbox (nur `info`/`aktivitaet` oder ausdrücklich gesetzt) */
+  ablaufAm?: Zeitpunkt;
+  /** bleibt, bis der Grund weg ist – verfällt nicht wegen des Alters */
+  bisGeloest?: boolean;
+  /** „Später“: bis dahin ausgeblendet, zählt nicht */
+  spaeterBis?: Zeitpunkt;
+  /** Grund erledigt (von wem auch immer) */
+  geloestAm?: Zeitpunkt;
+  /** vom Empfänger bewusst geschlossen („Erledigt“) */
+  geschlossenAm?: Zeitpunkt;
+  /** @deprecated altes Gelesen-Modell – nur noch für Bestandsdaten gelesen */
+  gelesen?: boolean;
+  /** @deprecated wird zu `stufe: 'aktion'` */
   wichtig?: boolean;
-  /** aus dem Posteingang ins Archiv gelegt (bleibt erhalten, zählt nicht mehr als neu) */
+  /** @deprecated altes Archiv – gilt als geschlossen */
   archiviert?: boolean;
 }
 

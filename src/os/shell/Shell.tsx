@@ -18,16 +18,18 @@
 import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { oeffne } from '@core/overlay';
-import { db, useDatenstand, useSpeicherStatus } from '@core/db';
+import { db, useSpeicherStatus } from '@core/db';
 import { setzeIch, useIch } from '@core/session';
 import { useEinstellung } from '@core/einstellungen';
 import { personName } from '@core/format';
 import { alleModule, modul } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Auswahl, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
+import { Auswahl, Button, Icon, IconButton, KiKugel, Meldung, ThemenIcon } from '@ui/index';
 import { Personenbild } from '@ui/person';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
+import { useInboxZahl } from '@modules/benachrichtigungen/Inbox';
 import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
+import { useAbo } from '@modules/abo/stand';
 import { BASIS } from '@core/basis';
 import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
@@ -187,13 +189,17 @@ export function Shell({ children }: { children: ReactNode }) {
   );
 }
 
+/** Zahl an der Glocke: nur was gerade Aufmerksamkeit braucht (Jetzt + Aktion nötig) – nie „ungelesen“ */
 function useUngelesen() {
-  useDatenstand();
-  const ich = useIch();
-  return db.benachrichtigungen.where((b) => !b.gelesen && (!b.fuerMitarbeiterId || b.fuerMitarbeiterId === ich?.id)).length;
+  return useInboxZahl();
 }
 
-/** Ein Einstieg für beides: Treffer in deinen Daten oder eine Frage an Macher (Strg K). */
+const istMac = () => typeof navigator !== 'undefined' && /mac|iphone|ipad/i.test(navigator.platform || navigator.userAgent);
+
+/**
+ * Ein Einstieg für beides: links „Suchen“ mit Lupe und Tastenkürzel, rechts die KI-Kugel. Beide öffnen dieselbe
+ * KI-Leiste (Treffer in deinen Daten oder eine Frage an Macher, Strg K bzw. ⌘K).
+ */
 function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
   if (kompakt)
     return (
@@ -201,11 +207,18 @@ function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
         <Icon name="suche" />
       </button>
     );
+  const kuerzel = istMac() ? '⌘K' : 'Strg K';
   return (
-    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K" title="Suchen oder Macher fragen (Strg K)">
-      <Icon name="suche" size={18} />
-      <span className="mm-leiste-suche-text mm-leiste-text">Suchen oder fragen</span>
-    </button>
+    <div className="mm-leiste-suchzeile">
+      <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" title={`Suchen oder Macher fragen (${kuerzel})`}>
+        <Icon name="suche" size={18} />
+        <span className="mm-leiste-suche-text mm-leiste-text">Suchen</span>
+        <kbd className="mm-leiste-kbd mm-leiste-text">{kuerzel}</kbd>
+      </button>
+      <button type="button" className="mm-leiste-ki" onClick={() => oeffne('suche')} aria-label="Macher fragen" title="Macher fragen">
+        <KiKugel groesse={26} />
+      </button>
+    </div>
   );
 }
 
@@ -215,7 +228,7 @@ function Glocke() {
     <button
       type="button"
       className="mm-leiste-zeile"
-      aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} ungelesen` : ''}`}
+      aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} brauchen dich` : ''}`}
       title="Benachrichtigungen"
       onClick={() => oeffne('benachrichtigungen')}
     >
@@ -245,7 +258,7 @@ function Profil({ oben }: { oben?: boolean }) {
         className="mm-profil-knopf"
         aria-expanded={offen}
         aria-haspopup="true"
-        aria-label={`Profil von ${personName(ich)}${ungelesen && !oben ? `, ${ungelesen} ungelesene Benachrichtigungen` : ''}`}
+        aria-label={`Profil von ${personName(ich)}${ungelesen && !oben ? `, ${ungelesen} Benachrichtigungen brauchen dich` : ''}`}
         onClick={() => setOffen(!offen)}
       >
         <Personenbild m={ich} dekorativ />
@@ -277,11 +290,23 @@ function Profil({ oben }: { oben?: boolean }) {
                 )}
               </>
             )}
+            {!istMonteurRolle(ich) && <UpgradeEintrag onWeg={() => setOffen(false)} />}
+            <p className="mm-nav-titel mm-menue-titel">Du</p>
             {modul('konto') && (
               <Link to="/macher/konto" onClick={() => setOffen(false)}>
                 <Icon name="schloss" /> Konto & Geräte
               </Link>
             )}
+            {/* Einstellungen des Betriebs: Chef und Büro (die Monteur-App hat keine Wege dorthin) */}
+            {modul('einstellungen') && !istMonteurRolle(ich) && (
+              <Link to="/betrieb/einstellungen" onClick={() => setOffen(false)}>
+                <Icon name="einstellungen" /> Einstellungen
+              </Link>
+            )}
+            <p className="mm-nav-titel mm-menue-titel">Hilfe</p>
+            <a href="/hilfe-center" target="_blank" rel="noreferrer" onClick={() => setOffen(false)}>
+              <Icon name="info" /> Hilfe & Support
+            </a>
             {modul('rueckmeldung') && (
               <Link to={rueckmeldungLink(pfad)} onClick={() => setOffen(false)}>
                 <Icon name="chat" /> Rückmeldung geben
@@ -294,6 +319,27 @@ function Profil({ oben }: { oben?: boolean }) {
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * „Plan wählen“ im Profilmenü – nur in der kostenlosen Testphase (und im Lesemodus danach), nur für den Chef.
+ * Wer einen Plan hat, sieht hier keine Werbung.
+ */
+function UpgradeEintrag({ onWeg }: { onWeg: () => void }) {
+  const ich = useIch();
+  const { zustand } = useAbo();
+  if (!modul('abo') || ich?.rolle !== 'chef') return null;
+  if (zustand.status !== 'test' && zustand.status !== 'lesemodus') return null;
+  const rest = zustand.status === 'test' && zustand.tageUebrig != null ? `Noch ${zustand.tageUebrig} ${zustand.tageUebrig === 1 ? 'Tag' : 'Tage'} kostenlos` : 'Testphase vorbei';
+  return (
+    <Link to="/betrieb/abo" className="mm-menue-upgrade" onClick={onWeg}>
+      <Icon name="stern" />
+      <span className="mm-leiste-menue-text">
+        Plan wählen
+        <span className="mm-meta">{rest}</span>
+      </span>
+    </Link>
   );
 }
 

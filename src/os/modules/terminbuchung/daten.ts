@@ -210,7 +210,7 @@ export function buchen(a: BuchungsAngaben, jetzt = new Date()): BuchungsErgebnis
   });
   const r = ergebnis as Extract<BuchungsErgebnis, { ok: true }>;
   emit({ typ: 'anfrage.eingegangen', sammlung: 'auftraege', objekt: r.auftrag, daten: { kanal: 'website', terminId: r.termin.id } });
-  benachrichtigen(`Online gebucht: ${r.kunde.name}`, { text: `${f.name} am ${datumKurz(r.termin.start)}, ${uhrzeit(r.termin.start)} Uhr – bitte bestätigen.`, bezug: { typ: 'termine', id: r.termin.id }, wichtig: true });
+  benachrichtigen(`Online gebucht: ${r.kunde.name}`, { text: `${f.name} am ${datumKurz(r.termin.start)}, ${uhrzeit(r.termin.start)} Uhr – bitte bestätigen.`, bezug: { typ: 'termine', id: r.termin.id }, gruppe: { typ: 'auftraege', id: r.auftrag.id }, art: 'termin.online_gebucht' });
   erledigt('terminbuchung.buchung', `Online-Buchung aufgenommen: ${r.kunde.name}`, {
     text: `${r.neuerKunde ? 'Kunde angelegt' : 'Kunde wiedererkannt'}, Anfrage ${r.auftrag.nummer} und Termin angelegt.`,
     bezug: { typ: 'auftraege', id: r.auftrag.id },

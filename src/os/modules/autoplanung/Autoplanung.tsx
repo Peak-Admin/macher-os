@@ -101,7 +101,7 @@ export function Autoplanung() {
                 }
                 titel={
                   <>
-                    {p.auftrag.titel} {p.auftrag.dringend && <Status ton="achtung">Dringend</Status>}
+                    {p.auftrag.titel} {p.auftrag.dringend && <Status ton="gefahr">Dringend</Status>}
                   </>
                 }
                 untertitel={

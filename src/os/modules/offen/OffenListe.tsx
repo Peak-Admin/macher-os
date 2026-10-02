@@ -60,7 +60,7 @@ export function OffenEintraege({ eintraege, max }: { eintraege: OffenerEintrag[]
               titel={
                 <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
                   <Link to={pfadZu({ typ: 'auftraege', id: a.id }) ?? '#'}>{a.titel}</Link>
-                  {a.dringend && <Status ton="achtung">Dringend</Status>}
+                  {a.dringend && <Status ton="gefahr">Dringend</Status>}
                   <Status ton="neutral">{e.grund === 'besichtigung' ? 'Besichtigung' : 'Einsatz'}</Status>
                 </span>
               }

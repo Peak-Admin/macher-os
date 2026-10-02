@@ -77,7 +77,7 @@ export default defineModul({
             erledigt('anfragen.zuweisen', `Anfrage „${a.titel}“ an ${personName(buero)} zugewiesen`, { bezug: { typ: 'auftraege', id: a.id } });
           }
           if (a.dringend) {
-            benachrichtigen(`Dringende Anfrage: ${a.titel}`, { text: db.kunden.get(a.kundeId)?.name, bezug: { typ: 'auftraege', id: a.id }, fuer: buero?.id, wichtig: true });
+            benachrichtigen(`Dringende Anfrage: ${a.titel}`, { text: db.kunden.get(a.kundeId)?.name, bezug: { typ: 'auftraege', id: a.id }, fuer: buero?.id, art: 'anfrage.neu', grund: 'Die dringende Anfrage ist dir zugewiesen.', dringend: true });
           }
         }),
     },

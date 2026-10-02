@@ -109,7 +109,7 @@ export function AnliegenFormular({
       <div className="mt-6 flex flex-wrap items-center gap-4">
         <button
           type="submit"
-          className="inline-flex h-11 items-center justify-center gap-2 btn-primaer px-5"
+          className="inline-flex min-h-12 items-center justify-center gap-2 btn-primaer px-5"
         >
           E-Mail vorbereiten <Icon name="arrow-right" className="size-4" />
         </button>
@@ -138,7 +138,7 @@ export function AnliegenFormular({
 }
 
 const feldKlasse =
-  "block h-11 w-full rounded-lg border border-line bg-paper px-3.5 text-[0.95rem] outline-none transition focus:border-ink focus:bg-white";
+  "feld";
 
 function Feld({
   id,
@@ -153,7 +153,7 @@ function Feld({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold">
+      <label htmlFor={id} className="feld-label">
         {label} {optional && <span className="font-normal text-muted">(optional)</span>}
       </label>
       {children}

@@ -43,12 +43,12 @@ function ImportMock() {
         <span className="flex items-center gap-2 font-display text-sm font-bold">
           <Icon name="download" className="size-4 text-signal-dark" /> Kunden importieren
         </span>
-        <span className="rounded-md bg-sky-soft px-2 py-0.5 text-xs font-semibold text-sky">kunden.xlsx</span>
+        <span className="rounded-md bg-sky-soft px-2 py-0.5 text-sm font-semibold text-sky">kunden.xlsx</span>
       </div>
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2 p-4 text-sm">
-        <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Deine Spalte</span>
+        <span className="text-sm font-semibold font-tagline uppercase tracking-wider text-muted">Deine Spalte</span>
         <span />
-        <span className="text-xs font-semibold font-tagline uppercase tracking-wider text-muted">Macher OS</span>
+        <span className="text-sm font-semibold font-tagline uppercase tracking-wider text-muted">Macher OS</span>
         {zeilen.map(([von, nach]) => (
           <div key={von} className="contents">
             <span className="rounded-md bg-paper px-2.5 py-1.5 ring-1 ring-line">{von}</span>
@@ -59,7 +59,7 @@ function ImportMock() {
           </div>
         ))}
       </div>
-      <div className="border-t border-line bg-signal-soft px-4 py-2.5 text-xs">
+      <div className="border-t border-line bg-signal-soft px-4 py-2.5 text-sm">
         <b>Vorschau:</b> 248 Kunden erkannt · 3 mögliche Doppelte zum Prüfen
       </div>
     </div>

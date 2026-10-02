@@ -7,6 +7,7 @@ export interface KundeEntwurf {
   name: string;
   telefon: string;
   email: string;
+  website: string;
   strasse: string;
   plz: string;
   ort: string;
@@ -21,6 +22,7 @@ export const leererEntwurf = (): KundeEntwurf => ({
   name: '',
   telefon: '',
   email: '',
+  website: '',
   strasse: '',
   plz: '',
   ort: '',
@@ -36,6 +38,7 @@ export function entwurfAus(k: Kunde): KundeEntwurf {
     name: k.name,
     telefon: k.telefon ?? '',
     email: k.email ?? '',
+    website: k.website ?? '',
     strasse: k.adresse?.strasse ?? '',
     plz: k.adresse?.plz ?? '',
     ort: k.adresse?.ort ?? '',
@@ -65,6 +68,7 @@ export function kundenDatenAus(f: KundeEntwurf): Partial<Kunde> {
     firma: f.art !== 'privat' ? name : undefined,
     telefon: f.telefon.trim() || undefined,
     email: f.email.trim() || undefined,
+    website: f.website.trim() || undefined,
     adresse: hatAdresse ? { strasse: f.strasse.trim(), plz: f.plz.trim(), ort: f.ort.trim() } : undefined,
     quelle: f.quelle || undefined,
     nummer: f.nummer.trim() || undefined,
@@ -93,6 +97,7 @@ export function KundeFelder({
         <Eingabe label={wert.art === 'privat' ? 'Name' : 'Firmenname'} value={wert.name} onChange={set('name')} fehler={fehler.name} autoComplete="name" />
         <Eingabe label="Telefon" type="tel" value={wert.telefon} onChange={set('telefon')} optional autoComplete="tel" />
         <Eingabe label="E-Mail" type="email" value={wert.email} onChange={set('email')} fehler={fehler.email} optional autoComplete="email" />
+        <Eingabe label="Website" value={wert.website} onChange={set('website')} optional autoComplete="url" hilfe="Daraus kommt das Logo in deinen Listen." />
         <Eingabe label="Straße und Hausnummer" value={wert.strasse} onChange={set('strasse')} optional autoComplete="street-address" />
         <Eingabe label="PLZ" value={wert.plz} onChange={set('plz')} fehler={fehler.plz} optional inputMode="numeric" autoComplete="postal-code" />
         <Eingabe label="Ort" value={wert.ort} onChange={set('ort')} optional autoComplete="address-level2" />

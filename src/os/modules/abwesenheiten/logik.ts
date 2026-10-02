@@ -69,7 +69,9 @@ export function bescheidSenden(a: Abwesenheit) {
     text: a.status === 'genehmigt' ? 'Viel Spaß und gute Erholung!' : 'Sprich bei Fragen kurz mit dem Chef.',
     bezug: { typ: 'abwesenheiten', id: a.id },
     fuer: a.mitarbeiterId,
-    wichtig: a.status === 'abgelehnt',
+    art: 'abwesenheit.bescheid',
+    grund: 'Es ist dein Antrag.',
+    quelleId: `abwesenheit-bescheid:${a.id}:${a.status}`,
   });
 }
 
@@ -82,7 +84,10 @@ export function krankInfo(a: Abwesenheit) {
       text: termine.length ? `${termine.length === 1 ? '1 Termin muss' : `${termine.length} Termine müssen`} umgeplant werden.` : 'Keine Termine betroffen.',
       bezug: { typ: 'abwesenheiten', id: a.id },
       fuer: e.id,
-      wichtig: termine.length > 0,
+      art: 'abwesenheit.krank',
+      // betroffene Termine meldet die Einsatzplanung als eigene Aktion („umplanen“)
+      grund: e.rolle === 'chef' ? 'Du bist Chef im Betrieb.' : 'Du planst im Büro.',
+      quelleId: `krank:${a.id}:${a.von}:${a.bis}`,
     });
   return empfaenger.length;
 }
