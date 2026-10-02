@@ -24,10 +24,11 @@ import { useEinstellung } from '@core/einstellungen';
 import { personName } from '@core/format';
 import { alleModule, modul } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Auswahl, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
+import { Auswahl, Button, Icon, IconButton, KiKugel, Meldung, ThemenIcon } from '@ui/index';
 import { Personenbild } from '@ui/person';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { rueckmeldungLink } from '@modules/rueckmeldung/regeln';
+import { useAbo } from '@modules/abo/stand';
 import { BASIS } from '@core/basis';
 import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
@@ -193,7 +194,12 @@ function useUngelesen() {
   return db.benachrichtigungen.where((b) => !b.gelesen && (!b.fuerMitarbeiterId || b.fuerMitarbeiterId === ich?.id)).length;
 }
 
-/** Ein Einstieg für beides: Treffer in deinen Daten oder eine Frage an Macher (Strg K). */
+const istMac = () => typeof navigator !== 'undefined' && /mac|iphone|ipad/i.test(navigator.platform || navigator.userAgent);
+
+/**
+ * Ein Einstieg für beides: links „Suchen“ mit Lupe und Tastenkürzel, rechts die KI-Kugel. Beide öffnen dieselbe
+ * KI-Leiste (Treffer in deinen Daten oder eine Frage an Macher, Strg K bzw. ⌘K).
+ */
 function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
   if (kompakt)
     return (
@@ -201,11 +207,18 @@ function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
         <Icon name="suche" />
       </button>
     );
+  const kuerzel = istMac() ? '⌘K' : 'Strg K';
   return (
-    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K" title="Suchen oder Macher fragen (Strg K)">
-      <Icon name="suche" size={18} />
-      <span className="mm-leiste-suche-text mm-leiste-text">Suchen oder fragen</span>
-    </button>
+    <div className="mm-leiste-suchzeile">
+      <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" title={`Suchen oder Macher fragen (${kuerzel})`}>
+        <Icon name="suche" size={18} />
+        <span className="mm-leiste-suche-text mm-leiste-text">Suchen</span>
+        <kbd className="mm-leiste-kbd mm-leiste-text">{kuerzel}</kbd>
+      </button>
+      <button type="button" className="mm-leiste-ki" onClick={() => oeffne('suche')} aria-label="Macher fragen" title="Macher fragen">
+        <KiKugel groesse={26} />
+      </button>
+    </div>
   );
 }
 
@@ -277,11 +290,23 @@ function Profil({ oben }: { oben?: boolean }) {
                 )}
               </>
             )}
+            {!istMonteurRolle(ich) && <UpgradeEintrag onWeg={() => setOffen(false)} />}
+            <p className="mm-nav-titel mm-menue-titel">Du</p>
             {modul('konto') && (
               <Link to="/macher/konto" onClick={() => setOffen(false)}>
                 <Icon name="schloss" /> Konto & Geräte
               </Link>
             )}
+            {/* Einstellungen des Betriebs: Chef und Büro (die Monteur-App hat keine Wege dorthin) */}
+            {modul('einstellungen') && !istMonteurRolle(ich) && (
+              <Link to="/betrieb/einstellungen" onClick={() => setOffen(false)}>
+                <Icon name="einstellungen" /> Einstellungen
+              </Link>
+            )}
+            <p className="mm-nav-titel mm-menue-titel">Hilfe</p>
+            <a href="/hilfe-center" target="_blank" rel="noreferrer" onClick={() => setOffen(false)}>
+              <Icon name="info" /> Hilfe & Support
+            </a>
             {modul('rueckmeldung') && (
               <Link to={rueckmeldungLink(pfad)} onClick={() => setOffen(false)}>
                 <Icon name="chat" /> Rückmeldung geben
@@ -294,6 +319,27 @@ function Profil({ oben }: { oben?: boolean }) {
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * „Plan wählen“ im Profilmenü – nur in der kostenlosen Testphase (und im Lesemodus danach), nur für den Chef.
+ * Wer einen Plan hat, sieht hier keine Werbung.
+ */
+function UpgradeEintrag({ onWeg }: { onWeg: () => void }) {
+  const ich = useIch();
+  const { zustand } = useAbo();
+  if (!modul('abo') || ich?.rolle !== 'chef') return null;
+  if (zustand.status !== 'test' && zustand.status !== 'lesemodus') return null;
+  const rest = zustand.status === 'test' && zustand.tageUebrig != null ? `Noch ${zustand.tageUebrig} ${zustand.tageUebrig === 1 ? 'Tag' : 'Tage'} kostenlos` : 'Testphase vorbei';
+  return (
+    <Link to="/betrieb/abo" className="mm-menue-upgrade" onClick={onWeg}>
+      <Icon name="stern" />
+      <span className="mm-leiste-menue-text">
+        Plan wählen
+        <span className="mm-meta">{rest}</span>
+      </span>
+    </Link>
   );
 }
 

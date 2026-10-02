@@ -105,6 +105,11 @@ export function KundeDetail() {
               <Stapel abstand={8}>
                 {k.telefon && <a href={telLink(k.telefon)}>{k.telefon}</a>}
                 {k.email && <a href={`mailto:${k.email}`}>{k.email}</a>}
+                {k.website && (
+                  <a href={/^https?:\/\//.test(k.website) ? k.website : `https://${k.website}`} target="_blank" rel="noreferrer">
+                    {k.website.replace(/^https?:\/\//, '')}
+                  </a>
+                )}
                 {k.adresse && (
                   <a href={mapsLink(k.adresse)} target="_blank" rel="noreferrer">
                     {adresseText(k.adresse)}

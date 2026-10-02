@@ -114,7 +114,7 @@ export function AuftragsZeilen({ tage, ohneTermin, markiert, onMarkieren, darfPl
           <Status ton={b.status.ton} icon={false}>
             {b.status.text}
           </Status>
-          {a.dringend && <Status ton="achtung">Dringend</Status>}
+          {a.dringend && <Status ton="gefahr">Dringend</Status>}
         </span>
       </div>,
       <div key={`${a.id}-spur`} className="ep-spur">

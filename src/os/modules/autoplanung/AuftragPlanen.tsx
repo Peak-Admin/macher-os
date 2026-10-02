@@ -67,7 +67,7 @@ export function AuftragPlanen() {
             <Meta>Noch einzuplanen: {zahl(offen)} h</Meta>
             {auftrag.wunschtermin && <Meta>Kundenwunsch: {auftrag.wunschtermin}</Meta>}
             {quali.length > 0 && <Meta>Braucht: {quali.join(', ')}</Meta>}
-            {auftrag.dringend && <Status ton="achtung">Dringend</Status>}
+            {auftrag.dringend && <Status ton="gefahr">Dringend</Status>}
           </Zeile>
         </Karte>
         <div style={{ maxWidth: 240 }}>

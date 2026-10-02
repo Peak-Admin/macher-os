@@ -5,11 +5,11 @@ import { useIch } from '@core/session';
 import { datumKurz, heute, personName, uhrzeit } from '@core/format';
 import { nummerAnzeige } from '@core/nummern';
 import type { Auftrag, ID, Phase } from '@core/objects';
-import { Auswahl, BeispielMarke, Button, Eingabe, Feld, Filter, Leer, Liste, Meta, Seite, Segmente, Stapel, Status, Suchfeld } from '@ui/index';
+import { Auswahl, BeispielMarke, Button, Eingabe, Feld, Filter, Leer, Liste, Meta, Seite, Segmente, Stapel, Status, Suchfeld, TypIcon } from '@ui/index';
 import { ZuletztBearbeitet, useZuletztBearbeitet } from '@ui/listen';
 import { auftragsAdresse } from '@ui/listen-logik';
 import { Pipeline, meineAuftraege } from './Pipeline';
-import { istOffen, kommendeEinsaetze, phaseLabel, phaseTon } from './logik';
+import { ART_ICON, ART_LABEL, istOffen, kommendeEinsaetze, phaseLabel, phaseTon } from './logik';
 import { auftragPfad, schrittFuer } from './daten';
 import { useAbBreite } from './hooks';
 import { AuftragNeuDialog } from './AuftragNeu';
@@ -285,16 +285,19 @@ function AuftragZeile({ a, zuletzt }: { a: Auftrag; zuletzt: string }) {
     <li>
       <Link to={auftragPfad(a.id)} className="ak-zeile">
         <span className="ak-zeile-titel">
-          <strong>
-            {a.titel} <BeispielMarke zeigen={a.beispiel} />
-          </strong>
-          {ort && (
-            <span className="ak-zeile-ort">
-              <span className="sr-only">Ort: </span>
-              {ort}
-            </span>
-          )}
-          <span className="mm-meta">{[nummerAnzeige(a.nummer), kunde].filter(Boolean).join(' · ')}</span>
+          <TypIcon name={ART_ICON[a.art] ?? 'auftraege'} label={ART_LABEL[a.art] ?? 'Auftrag'} />
+          <span className="ak-zeile-titel-text">
+            <strong>
+              {a.titel} <BeispielMarke zeigen={a.beispiel} />
+            </strong>
+            {ort && (
+              <span className="ak-zeile-ort">
+                <span className="sr-only">Ort: </span>
+                {ort}
+              </span>
+            )}
+            <span className="mm-meta">{[nummerAnzeige(a.nummer), kunde].filter(Boolean).join(' · ')}</span>
+          </span>
         </span>
         <span className="ak-zeile-schritt">
           {schritt && (
@@ -313,7 +316,7 @@ function AuftragZeile({ a, zuletzt }: { a: Auftrag; zuletzt: string }) {
           )}
         </span>
         <span className="ak-zeile-status">
-          {a.dringend && offen ? <Status ton="achtung">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{offen ? schrittLabel(a) : phaseLabel(a.phase)}</Status>}
+          {a.dringend && offen ? <Status ton="gefahr">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{offen ? schrittLabel(a) : phaseLabel(a.phase)}</Status>}
           <ZuletztBearbeitet text={zuletzt} />
         </span>
       </Link>

@@ -89,7 +89,8 @@
 }
 .ak-zeile > * { min-width: 0; }
 .ak-zeile:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: -3px; }
-.ak-zeile-titel { grid-area: titel; display: flex; flex-direction: column; gap: 2px; }
+.ak-zeile-titel { grid-area: titel; display: flex; align-items: flex-start; gap: 12px; }
+.ak-zeile-titel-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .ak-zeile-titel strong { font-weight: 600; color: var(--mm-black); overflow-wrap: anywhere; }
 .ak-zeile-ort { color: var(--mm-text); overflow-wrap: anywhere; }
 .ak-zeile-schritt { grid-area: schritt; color: var(--mm-text); }

@@ -79,7 +79,7 @@ function EintragZeile({ e }: { e: EingangsEintrag }) {
       titel={
         <Zeile abstand={8}>
           <span>{e.titel}</span>
-          {e.dringend && <Status ton="achtung">Dringend</Status>}
+          {e.dringend && <Status ton="gefahr">Dringend</Status>}
         </Zeile>
       }
       untertitel={[ART_LABEL[e.art], e.kanal, relativ(e.zeit), e.text].filter(Boolean).join(' · ')}

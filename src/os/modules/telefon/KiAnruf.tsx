@@ -8,10 +8,10 @@ import { DRINGLICHKEIT_TEXT, ERGEBNIS_TEXT, FRAGEN, FRAGEN_REIHENFOLGE } from '.
 import { kurztitel } from './daten';
 import './telefon.css';
 
-/** Dringlichkeit als Text; Rot nur beim echten Notfall */
+/** Dringlichkeit als Text; Dringend und Notfall rot (Festlegung Oktober 2026) */
 export function DringlichkeitStatus({ d, immer }: { d: AnrufDetails['dringlichkeit']; immer?: boolean }) {
   if (d === 'notfall') return <Status ton="gefahr">Notfall</Status>;
-  if (d === 'dringend') return <Status ton="achtung">Dringend</Status>;
+  if (d === 'dringend') return <Status ton="gefahr">Dringend</Status>;
   return immer ? <Status>{DRINGLICHKEIT_TEXT.normal}</Status> : null;
 }
 

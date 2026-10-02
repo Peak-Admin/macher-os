@@ -37,8 +37,15 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
   Linien `#dce2dc` (Software seit Oktober 2026 in sanftem Beige: Canvas `#fbf9f5`, ruhige Fläche `#f5f2ec`, Linien `#e8e3da`), Feldrahmen `#7a8780`. Status: Warnung `#765000` auf `#fff4d6`, Gefahr `#a02b24` auf `#fdeceb`,
   Erfolg `#1f6040` auf `#e8f2ec`. Akzentgrün `#69af44` nur auf dunklen Flächen. Orange `#e69433` nur für Kampagnen.
   EU-Blau `#003399` (Token `eu` / `--mm-eu`) nur für den Vertrauenskasten (DSGVO, Server in Frankfurt, EU AI Act).
-- **Form:** Radien Controls 8 px, Karten/Panels 12 px, Menüs/Dialoge 16 px; flach, feine Schatten.
-- **Raster:** 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 px. App: Sidebar 232 px, Topbar 64 px, Inhalt max. 1280 px, Formulare max. 800 px.
+- **Form:** Radien Controls 8 px, Karten/Panels 12 px, Menüs/Dialoge 16 px. Karten, Listen, Widgets und Seitenleiste
+  liegen als aufgelegte Blätter auf dem Canvas (`--mm-shadow-lift`: Lichtkante oben, Kontakt- und weicher Fallschatten).
+- **Bento (Software, Oktober 2026):** Boxen nicht alle gleich – Fläche nach Bedeutung. Die wichtigste große Box
+  (Heute: „Dein nächster Schritt“) ist grün mit weißer Schrift und weißem Hauptknopf; Begleiter warm beige (`#f4efe6`),
+  Neuigkeiten hellgrün, Arbeitslisten weiß. Überfälliges färbt die ganze Kennzahl-Karte (Warnfläche).
+- **KI:** Macher (die KI) hat ein eigenes Zeichen – die Kugel Pink → Orange (`KiKugel`, Tokens `--mm-ki-*`). Nur für KI:
+  Suchen-und-Fragen-Leiste, Orb, „Macher fragen“. Nie für Aktionen, Status oder Daten. In der Seitenleiste: links
+  „Suchen“ mit Lupe und Kürzel, rechts die Kugel; beide öffnen die KI-Leiste.
+- **Raster:** 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 px. App: Sidebar 264 px (schwebend, 16 px Abstand zum Rand, Radius 20 px), Topbar 64 px, Inhalt max. 1280 px, Formulare max. 800 px.
 - **Controls:** Buttons und Felder 48 px hoch, Label oberhalb, sichtbarer 3-px-Fokusring. Primärbutton: Weiß auf `#0d6b45`, 16 px halbfett.
   Genau eine gefüllte grüne Hauptaktion je Aufgabe; häufige Nebenaktionen sichtbar.
 - **Steuerelemente:** Bereichsnavigation als unterstrichene Reihe, untergeordnete Ansichten als heller Umschalter –
@@ -48,7 +55,13 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
   Website über `IconTile`, Software über `ThemenIcon`). Bedien-Icons und alles Kleinere bleiben Strich-Icons.
   Die Navigation der Software (Seitenleiste, untere Leiste, Favoriten) zeigt ebenfalls Glas-Icons.
   Neue Motive in `glas.tsx` ergänzen. Details: `docs/design/festlegungen.md`.
-- **Status:** immer Text + optional Icon, nie nur Farbe. Neutral als Standard; Rot nur für echte Sperre/Gefahr („Nicht verwenden“).
+- **Status:** immer Text + optional Icon, nie nur Farbe. Neutral als Standard; Rot für echte Sperre/Gefahr („Nicht verwenden“)
+  und für „Dringend“ (nie gelb). Gelb für Warnungen wie „Überfällig“.
+- **Typ-Icons in Listen:** einfache Strich-Icons auf ruhiger Kachel (`TypIcon`), z. B. je Auftragsart (`ART_ICON`) – keine
+  Glas-Icons in Listen, wenige Arten. Kunden zeigen ihr Logo (Favicon ihrer Website bzw. Firmen-E-Mail-Domain) oder Initialen
+  (`Kundenbild`).
+- **Einstellungen:** Landkarte und Plan in `docs/os/EINSTELLUNGEN.md`; Einstieg über das Profilmenü (Einstellungen, Hilfe,
+  „Plan wählen“ nur in der Testphase).
 - **Tonalität:** direkte Du-Ansprache („du“, „dein“ klein), konkrete Verben („Auftrag anlegen“), kurze Sätze, keine erfundenen Zahlen.
 - **Bewegung:** 140–180 ms ease-out, keine Layoutsprünge, `prefers-reduced-motion` respektieren. Markenintro nur beim Erstkontakt.
 - **Vermeiden:** durchscheinende Fotos hinter Arbeitsinhalt, nur per Hover/Swipe/Drag-and-drop erreichbare Aktionen,
