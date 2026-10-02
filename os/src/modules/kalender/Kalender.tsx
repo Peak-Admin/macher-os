@@ -72,7 +72,7 @@ export function Kalender() {
         : monatFmt.format(new Date(`${datum}T12:00:00`));
 
   return (
-    <Seite titel="Kalender" breit aktion={<Button icon="plus" onClick={() => setze({ neu: '1' })}>Termin anlegen</Button>}>
+    <Seite titel="Kalender" breit aktion={<Button icon="plus" onClick={() => setze({ neu: '1' })}>Termin planen</Button>}>
       <div className="pl-kopfleiste">
         {!schmal && (
           <Segmente<Ansicht>
@@ -187,7 +187,7 @@ function Agenda({ von, bis, termine, konflikte, mitarbeiterId, onNeu }: { von: D
         titel="Keine Termine in diesen 2 Wochen"
         text={mitarbeiterId ? 'Für diesen Mitarbeiter ist nichts geplant.' : 'Leg einen Termin an oder plane offene Aufträge ein.'}
         icon="kalender"
-        aktion={<Button onClick={onNeu}>Termin anlegen</Button>}
+        aktion={<Button onClick={onNeu}>Termin planen</Button>}
       />
     );
   const k = kontextAusDb();
@@ -232,7 +232,7 @@ function TagListe({ datum, termine, konflikte, mitarbeiterId, onNeu }: { datum: 
         </Meta>
       )}
       <Liste
-        leer={<Leer titel="An diesem Tag ist nichts geplant" text="Leg einen Termin an oder wähle einen anderen Tag." icon="kalender" aktion={<Button onClick={onNeu}>Termin anlegen</Button>} />}
+        leer={<Leer titel="An diesem Tag ist nichts geplant" text="Leg einen Termin an oder wähle einen anderen Tag." icon="kalender" aktion={<Button onClick={onNeu}>Termin planen</Button>} />}
       >
         {termine.map((t) => (
           <TerminZeile key={t.id} t={t} konflikt={konflikte.has(t.id)} />

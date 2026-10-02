@@ -38,7 +38,7 @@ export default defineModul({
       sichtbar: (id) => db.auftraege.get(id)?.phase !== 'verloren' || db.termine.where((t) => t.auftragId === id).length > 0,
     },
   ],
-  erstellen: [{ label: 'Termin anlegen', pfad: '/plan/kalender?neu=1', gewicht: 70 }],
+  erstellen: [{ label: 'Termin planen', pfad: '/plan/kalender?neu=1', gewicht: 70 }],
   suche: (q) =>
     db.termine
       .where((t) => t.status !== 'abgesagt' && passt(q, t.titel, db.kunden.get(t.kundeId)?.name, db.orte.get(t.ortId)?.adresse.ort))

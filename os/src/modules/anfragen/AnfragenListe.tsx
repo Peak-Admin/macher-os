@@ -50,7 +50,7 @@ export function AnfragenListe() {
     .sort((a, b) => b.geaendertAm.localeCompare(a.geaendertAm));
 
   return (
-    <Seite titel="Anfragen" untertitel="Jede Anfrage bekommt einen nächsten Schritt – heute noch." aktion={<Button icon="plus" to="/auftraege/anfragen/neu">Anfrage erfassen</Button>}>
+    <Seite titel="Anfragen" untertitel="Jede Anfrage bekommt einen nächsten Schritt – heute noch." aktion={<Button icon="plus" to="/auftraege/anfragen/neu">Anfrage aufnehmen</Button>}>
       <Stapel>
         <Filter
           label="Ansicht"
@@ -68,7 +68,7 @@ export function AnfragenListe() {
               q ? (
                 <Leer titel="Keine Treffer" text="Zu dieser Suche gibt es keine offene Anfrage." icon="suche" />
               ) : (
-                <Leer titel="Keine offenen Anfragen" text="Alles beantwortet. Neue Anfragen erfasst du hier oder über „Anruf notieren“." aktion={<Button to="/auftraege/anfragen/neu">Anfrage erfassen</Button>} icon="check" />
+                <Leer titel="Keine offenen Anfragen" text="Alles beantwortet. Neue Anfragen erfasst du hier oder über „Anruf notieren“." aktion={<Button to="/auftraege/anfragen/neu">Anfrage aufnehmen</Button>} icon="check" />
               )
             }
           >
@@ -122,7 +122,7 @@ export function NeueAnfragenWidget() {
       titel={`Neue Anfragen${offen.length ? ` (${offen.length})` : ''}`}
       aktion={
         <Button klein variante="sekundaer" icon="plus" to="/auftraege/anfragen/neu">
-          Anfrage erfassen
+          Anfrage aufnehmen
         </Button>
       }
     >
