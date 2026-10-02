@@ -1,6 +1,8 @@
 /**
- * Setup: in höchstens 5 Schritten mit EIGENEN Daten startklar.
- * Gewerk → Betrieb (Foto/Website/von Hand) → Kunden & Preise → Team → Konto sichern.
+ * Magic Setup: eine einzige Frage – „Welcher Betrieb bist du?“. Aus der Website liest Macher Firmendaten,
+ * Logo, Gewerk und Leistungen und richtet den Betrieb aus der passenden Gewerk-Vorlage ein. Ohne Website
+ * genügt ein Tipp aufs Gewerk. Alles Weitere (Briefkopf prüfen, Kunden & Preise, Team) fragt Macher erst,
+ * wenn es gebraucht wird (Just-in-Time Setup, siehe `docs/os/ONBOARDING.md`).
  *
  * Reine Logik: Briefkopf-Entwurf (KI über `/api/ki/briefkopf`), Bundesland aus PLZ, Kunden aus
  * Excel/CSV (Vorlagen gängiger Programme) und Handy-Kontakten mit Dubletten-Zusammenführung,
@@ -11,7 +13,7 @@ import { alleSammlungen, batch, db, sammlung, type Neu } from '@core/db';
 import { cloud, cloudAktiv } from '@core/cloud';
 import { setzeEinstellung, einstellung } from '@core/einstellungen';
 import { emit } from '@core/events';
-import { VORLAGE_KEY, gewerkVorlage, vorlageFuer, type FachrichtungId, type LeistungVorlage, type Vorlage } from '@core/gewerke';
+import { GEWERKE, VORLAGE_KEY, gewerkVorlage, vorlageFuer, type FachrichtungId, type LeistungVorlage, type Vorlage } from '@core/gewerke';
 import type { Bundesland } from '@core/kalender';
 import { automationAn, setzeAutomation } from '@core/macher';
 import { messen } from '@core/messung';
@@ -25,14 +27,17 @@ import { istXlsx, xlsxZeilen } from './xlsx';
 
 // ------------------------------------------------------------------ Ablauf
 
+/** Bildschirme des Magic Setup. „konto“ erscheint nur, wenn Konten verbunden sind und noch keins besteht. */
 export const SCHRITTE = [
+  { id: 'konto', titel: 'Konto' },
+  { id: 'website', titel: 'Betrieb finden' },
+  { id: 'gefunden', titel: 'Betrieb prüfen' },
   { id: 'gewerk', titel: 'Gewerk' },
-  { id: 'betrieb', titel: 'Betrieb' },
-  { id: 'kunden', titel: 'Kunden & Preise' },
-  { id: 'team', titel: 'Team' },
-  { id: 'konto', titel: 'Konto sichern' },
 ] as const;
 export type SchrittId = (typeof SCHRITTE)[number]['id'];
+
+/** Name eines Betriebs ohne Website – der Briefkopf-Check vor dem ersten Dokument fragt danach */
+export { PLATZHALTER_NAME } from '@modules/start/daten';
 
 // ------------------------------------------------------------------ Briefkopf
 
@@ -91,6 +96,52 @@ export interface BriefkopfErkannt {
   logo: { gefunden: boolean; x: number; y: number; breite: number; hoehe: number };
   /** Logo von der Website (Data-URL) */
   logoBild?: string;
+  /** Gewerk laut Website (leer = nicht eindeutig); ältere Server liefern es nicht */
+  gewerk?: string;
+  /** Leistungen, die der Betrieb auf seiner Website nennt */
+  leistungen?: string[];
+}
+
+// ------------------------------------------------------------------ Gewerk erkennen (Regeln vor KI)
+
+/** Stichworte je Gewerk – Reihenfolge = Vorrang (spezielle vor allgemeinen) */
+const GEWERK_WORTE: [Gewerk, RegExp][] = [
+  ['shk', /sanit[äa]r|heizung|\bshk\b|klima|installateur|bad(sanierung|planung)|w[äa]rmepumpe/],
+  ['elektro', /elektr|photovoltaik|\bpv\b|wallbox|smart ?home/],
+  ['maler', /maler|lackier|anstrich|tapezier|fassadengestalt/],
+  ['dach', /dachdeck|bedachung|zimmer(ei|er)|spengler|klempner/],
+  ['fliesen', /fliese|platten|naturstein/],
+  ['tischler', /tischler|schreiner|fensterbau|innenausbau|m[öo]belbau/],
+  ['garten', /garten|landschaftsbau|galabau|pflaster/],
+  ['metall', /metallbau|schlosser|stahlbau|schmied|edelstahl/],
+  ['bau', /bauunternehm|hochbau|maurer|trockenbau|beton|estrich|rohbau|\bbau\b/],
+];
+
+/** Gewerk aus Name und Leistungen ableiten – nur bei eindeutigem Treffer, sonst undefined */
+export function gewerkAusText(...texte: (string | undefined)[]): Gewerk | undefined {
+  const t = texte.filter(Boolean).join(' ').toLowerCase();
+  return GEWERK_WORTE.find(([, w]) => w.test(t))?.[0];
+}
+
+/** Feinere Vorlage aus den Leistungen (Solar bei Elektro, Fensterbau bei Tischler, Reinigung bei „Anderes“) */
+export function fachrichtungAusText(gewerk: Gewerk, ...texte: (string | undefined)[]): FachrichtungId | undefined {
+  const t = texte.filter(Boolean).join(' ').toLowerCase();
+  if (gewerk === 'elektro' && /photovoltaik|\bpv\b|solar/.test(t)) return 'solar';
+  if (gewerk === 'tischler' && /fenster/.test(t)) return 'fensterbau';
+  if (gewerk === 'sonstiges' && /reinigung/.test(t)) return 'reinigung';
+  return undefined;
+}
+
+/** Was die Website ergeben hat: KI-Gewerk zuerst, sonst Stichworte aus Name und Leistungen */
+export function vorlageErkennen(e: Pick<BriefkopfErkannt, 'name'> & { gewerk?: string; leistungen?: string[] }): { gewerk?: Gewerk; fachrichtung?: FachrichtungId } {
+  const ki = GEWERKE.find((g) => g.id === e.gewerk)?.id;
+  const gewerk = ki ?? gewerkAusText(e.name, ...(e.leistungen ?? []));
+  return { gewerk, fachrichtung: gewerk ? fachrichtungAusText(gewerk, e.name, ...(e.leistungen ?? [])) : undefined };
+}
+
+/** Adresse wie „maler-mueller.de“ für die Anzeige */
+export function websiteAnzeige(eingabe: string): string {
+  return eingabe.trim().replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/+$/, '');
 }
 
 /** „Max Müller“ → Vorname/Nachname; „Dipl.-Ing. Max Müller“ → ohne Titel */
@@ -779,11 +830,11 @@ export function setupGestartet(quelle: string): number {
   return jetzt;
 }
 
-export function setupSchritt(start: number, index: number) {
-  messen('setup.schritt', { schritt: index + 1, id: SCHRITTE[index]?.id ?? String(index), sekunden: Math.round((Date.now() - start) / 1000) });
+export function setupSchritt(start: number, id: SchrittId) {
+  messen('setup.schritt', { schritt: SCHRITTE.findIndex((x) => x.id === id) + 1, id, sekunden: Math.round((Date.now() - start) / 1000) });
 }
 
-export function setupFertig(start: number, e: SetupErgebnis & { konto: 'gesichert' | 'lokal' | 'offen'; briefkopfQuelle: string; preise: string }) {
+export function setupFertig(start: number, e: SetupErgebnis & { konto: 'gesichert' | 'lokal' | 'offen'; briefkopfQuelle: string; preise: string; gewerkQuelle?: 'website' | 'regel' | 'tipp' }) {
   sitzung()?.removeItem(START_KEY);
   messen('setup.fertig', {
     sekunden: Math.round((Date.now() - start) / 1000),
@@ -794,10 +845,11 @@ export function setupFertig(start: number, e: SetupErgebnis & { konto: 'gesicher
     briefkopfQuelle: e.briefkopfQuelle,
     preise: e.preise,
     konto: e.konto,
+    ...(e.gewerkQuelle ? { gewerkQuelle: e.gewerkQuelle } : {}),
   });
 }
 
-/** Erste Aufgabe nach dem Setup: `/start` (Paket erstwert), sonst Heute */
+/** Nach dem Setup: „Was möchtest du als Erstes erledigen?“ (`/start`), sonst Heute */
 export function zielNachSetup(): string {
   return alleModule().some((m) => m.id === 'start') ? '/start' : '/heute';
 }

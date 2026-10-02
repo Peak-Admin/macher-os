@@ -32,7 +32,14 @@ export interface BriefkopfErkannt {
   logo: { gefunden: boolean; x: number; y: number; breite: number; hoehe: number };
   /** Logo von der Website als Data-URL (nur bei Website) */
   logoBild?: string;
+  /** Gewerk-Kennung (siehe `GEWERK_IDS`), leer = nicht eindeutig erkannt */
+  gewerk: string;
+  /** Leistungen, die der Betrieb selbst nennt (höchstens 12, wie geschrieben) */
+  leistungen: string[];
 }
+
+/** Gewerke von Macher OS (`Gewerk` in `src/os/core/objects.ts`); die Erkennung wählt eins davon oder keins */
+export const GEWERK_IDS = ['elektro', 'shk', 'maler', 'dach', 'tischler', 'fliesen', 'garten', 'metall', 'bau', 'sonstiges'] as const;
 
 export interface KiUmgebung {
   apiKey?: string;
@@ -269,10 +276,12 @@ const S = { type: 'string' } as const;
 export const BRIEFKOPF_SCHEMA = {
   type: 'object',
   additionalProperties: false,
-  required: ['name', 'inhaber', 'strasse', 'plz', 'ort', 'telefon', 'email', 'website', 'steuernummer', 'ustId', 'iban', 'bic', 'zahlungszielTage', 'stundensatz', 'logo'],
+  required: ['name', 'inhaber', 'strasse', 'plz', 'ort', 'telefon', 'email', 'website', 'steuernummer', 'ustId', 'iban', 'bic', 'zahlungszielTage', 'stundensatz', 'logo', 'gewerk', 'leistungen'],
   properties: {
     name: S, inhaber: S, strasse: S, plz: S, ort: S, telefon: S, email: S, website: S,
     steuernummer: S, ustId: S, iban: S, bic: S,
+    gewerk: { type: 'string', enum: ['', ...GEWERK_IDS] },
+    leistungen: { type: 'array', items: S },
     zahlungszielTage: { type: 'integer' },
     stundensatz: { type: 'number' },
     logo: {
@@ -294,6 +303,8 @@ Regeln:
 - iban ohne Leerzeichen, bic wie geschrieben.
 - zahlungszielTage: z. B. "zahlbar innerhalb 14 Tagen" → 14.
 - stundensatz: Netto-Stundensatz in Euro, wenn eine Position wie "Arbeitsstunde Geselle" mit Einheit Stunde erkennbar ist, sonst 0.
+- gewerk: Das Hauptgewerk des Betriebs, genau eins aus: elektro (Elektro, auch Photovoltaik), shk (Sanitär, Heizung, Klima), maler (Maler & Lackierer), dach (Dachdecker, Zimmerer), tischler (Tischler, Schreiner, Fensterbau), fliesen (Fliesen & Platten), garten (Garten- & Landschaftsbau), metall (Metallbau, Schlosser), bau (Bau, Ausbau, Trockenbau, Maurer), sonstiges (anderes Handwerk, z. B. Gebäudereinigung). Nicht eindeutig = leerer Text.
+- leistungen: Die Leistungen, die der Betrieb selbst nennt (z. B. "Fassadenanstrich", "Badsanierung"), kurz und wie geschrieben, höchstens 12. Keine erfundenen Leistungen.
 - logo: Bei Fotos den Bereich des Firmenlogos als Anteile der Bildbreite/-höhe (0 bis 1, x/y = linke obere Ecke). Ohne Logo oder bei Website-Text: gefunden=false und 0.`;
 
 /** Werte säubern, damit der Browser sich auf das Format verlassen kann */
@@ -320,6 +331,8 @@ export function briefkopfBereinigen(r: Partial<BriefkopfErkannt>): BriefkopfErka
     zahlungszielTage: Math.round(n(r.zahlungszielTage)),
     stundensatz: Math.round(n(r.stundensatz) * 100) / 100,
     logo: logoOk ? { gefunden: true, x: anteil(l.x), y: anteil(l.y), breite: anteil(l.breite), hoehe: anteil(l.hoehe) } : { gefunden: false, x: 0, y: 0, breite: 0, hoehe: 0 },
+    gewerk: (GEWERK_IDS as readonly string[]).includes(t(r.gewerk)) ? t(r.gewerk) : '',
+    leistungen: [...new Set((Array.isArray(r.leistungen) ? r.leistungen : []).map(t).filter((x) => x && x.length <= 80))].slice(0, 12),
   };
 }
 
@@ -331,7 +344,7 @@ export async function briefkopfErkennen(eingabe: unknown, env: KiUmgebung): Prom
   if (typeof e.website === 'string' && e.website.trim()) {
     const { text, logo } = await websiteLesen(e.website, env);
     logoBild = logo;
-    inhalt = [{ type: 'text', text: `Website ${e.website.trim()}:\n\n${text}\n\nLies den Briefkopf des Betriebs aus.` }];
+    inhalt = [{ type: 'text', text: `Website ${e.website.trim()}:\n\n${text}\n\nLies Briefkopf, Gewerk und Leistungen des Betriebs aus.` }];
   } else if (e.bild) {
     inhalt = [dateiInhalt(e.bild, false), { type: 'text', text: 'Lies den Briefkopf des Absenders aus diesem Dokument aus.' }];
   } else throw new KiFehler(400, 'Schick ein Foto oder eine Website-Adresse.');

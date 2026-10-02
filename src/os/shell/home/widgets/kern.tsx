@@ -12,6 +12,7 @@ import { homeInhalte, useLaden } from '../quellen/inhalte';
 import { STATUS_TEXT } from '../quellen/arbeit';
 import type { NewsItem, NewsTyp, WidgetProps, WorkItem } from '../typen';
 import { darf } from '@core/session';
+import { setzeEinstellung } from '@core/einstellungen';
 
 // ------------------------------------------------------------------ Dein nächster Schritt
 
@@ -78,6 +79,11 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
         <Button to={a.actionUrl} icon="pfeilRechts" onClick={() => homeMessen('home_next_action_clicked', { typ: a.type })}>
           {a.actionLabel}
         </Button>
+        {a.ausblenden && (
+          <Button variante="tertiaer" onClick={() => (setzeEinstellung(a.ausblenden!, true), homeMessen('home_next_action_hidden', { typ: a.type }))}>
+            Ausblenden
+          </Button>
+        )}
       </div>
       {danach.length > 0 && (
         <div className="mm-home-danach">

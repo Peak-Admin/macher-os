@@ -4,7 +4,7 @@ import { LOKALE_CLOUD, type Cloud } from '@core/cloud';
 import { messpunkte } from '@core/messung';
 import { on } from '@core/events';
 import { positionenErkennen, zahlAusWort, einheitAusWort, zerlegen } from './sprache';
-import { dokumentVersendet, kartenReihenfolge, kontaktArt, sendenMitRueckfall, startHaken, versandText } from './daten';
+import { briefkopfVorSenden, dokumentVersendet, erstwertPfad, kontaktArt, sendenMitRueckfall, startHaken, startKarten, versandText } from './daten';
 
 const l = (id: string, name: string, einheit: Leistung['einheit'], preis: number): Leistung => ({ id, name, einheit, preis, aktiv: true, erstelltAm: '', geaendertAm: '' });
 const KATALOG: Leistung[] = [
@@ -99,43 +99,45 @@ describe('Sprach-Parser: Katalog-Abgleich', () => {
   });
 });
 
-describe('Was willst du als Erstes erledigen?', () => {
-  it('sortiert nach Arbeitsweise', () => {
-    expect(kartenReihenfolge([])).toEqual(['angebot', 'rechnung', 'planen']);
-    expect(kartenReihenfolge(['baustelle'])).toEqual(['angebot', 'rechnung', 'planen']);
-    expect(kartenReihenfolge(['kundendienst'])).toEqual(['rechnung', 'angebot', 'planen']);
-    expect(kartenReihenfolge(['wartung'])[0]).toBe('planen');
-    expect(kartenReihenfolge(['kundendienst', 'wartung'])).toEqual(['rechnung', 'angebot', 'planen']);
-    expect(kartenReihenfolge(['kundendienst', 'baustelle', 'wartung'])).toEqual(['angebot', 'rechnung', 'planen']);
+describe('Was möchtest du als Erstes erledigen?', () => {
+  it('Angebot vorn, ohne Geld-Recht nur Kunden und Auftrag', () => {
+    expect(startKarten(true)).toEqual(['angebot', 'kunden', 'auftrag']);
+    expect(startKarten(false)).toEqual(['kunden', 'auftrag']);
+  });
+  it('erkennt die drei First-Value-Pfade – Beispiele und Anfragen zählen nicht', () => {
+    expect(erstwertPfad({ typ: 'angebot.erstellt', objekt: {} })).toBe('angebot');
+    expect(erstwertPfad({ typ: 'auftrag.angelegt', objekt: { phase: 'auftrag' } })).toBe('auftrag');
+    expect(erstwertPfad({ typ: 'auftrag.angelegt', objekt: { phase: 'anfrage' } })).toBeUndefined();
+    expect(erstwertPfad({ typ: 'import.abgeschlossen' })).toBe('wechsel');
+    expect(erstwertPfad({ typ: 'angebot.erstellt', objekt: { beispiel: true } })).toBeUndefined();
+    expect(erstwertPfad({ typ: 'kunde.angelegt', objekt: {} })).toBeUndefined();
   });
 });
 
-describe('Dein Start – Haken', () => {
-  const leer = { angebote: [], mitarbeiter: [{ aktiv: true }], termine: [] };
-  it('frischer Betrieb: nichts erledigt, jeder Haken mit konkretem Schritt', () => {
-    const h = startHaken(leer);
-    expect(h.map((x) => x.erledigt)).toEqual([false, false, false]);
-    expect(h.map((x) => x.aktion.pfad)).toEqual(['/start/angebot', '/betrieb/team', '/plan']);
+describe('Macher fertig machen', () => {
+  const betrieb = { onboardingFertig: true, gewerk: 'maler' as const };
+  it('nach dem Magic Setup: 2 von 4 erledigt, jeder offene Haken mit konkretem Schritt', () => {
+    const h = startHaken({ betrieb, kunden: [], mitarbeiter: [{ aktiv: true }] });
+    expect(h.map((x) => x.titel)).toEqual(['Betrieb eingerichtet', 'Gewerk eingerichtet', 'Kunden & Preise übernehmen', 'Team hinzufügen']);
+    expect(h.map((x) => x.erledigt)).toEqual([true, true, false, false]);
+    expect(h.filter((x) => !x.erledigt).map((x) => x.aktion.pfad)).toEqual(['/betrieb/import?art=kunden', '/betrieb/mitarbeiter/neu']);
   });
   it('Beispieldaten zählen nicht', () => {
-    const h = startHaken({
-      angebote: [{ status: 'versendet', versendetAm: '2026-10-01T10:00:00Z', beispiel: true }],
-      mitarbeiter: [{ aktiv: true }, { aktiv: true, beispiel: true }],
-      termine: [{ status: 'geplant', beispiel: true }],
-    });
-    expect(h.every((x) => !x.erledigt)).toBe(true);
+    const h = startHaken({ betrieb, kunden: [{ beispiel: true }], mitarbeiter: [{ aktiv: true }, { aktiv: true, beispiel: true }] });
+    expect(h.map((x) => x.erledigt)).toEqual([true, true, false, false]);
   });
-  it('erledigt mit echten Daten', () => {
-    const h = startHaken({
-      angebote: [{ status: 'entwurf' }, { status: 'angenommen', versendetAm: '2026-10-01T10:00:00Z' }],
-      mitarbeiter: [{ aktiv: true }, { aktiv: true }],
-      termine: [{ status: 'geplant' }],
-    });
-    expect(h.every((x) => x.erledigt)).toBe(true);
+  it('erledigt mit echten Kunden, einem Import oder einer Einladung', () => {
+    expect(startHaken({ betrieb, kunden: [{}], mitarbeiter: [{ aktiv: true }, { aktiv: true }] }).every((x) => x.erledigt)).toBe(true);
+    expect(startHaken({ betrieb, kunden: [], mitarbeiter: [], datenUebernommen: true, teamEingeladen: true }).every((x) => x.erledigt)).toBe(true);
   });
-  it('Entwurf allein ist noch nicht raus; Einladung zählt auch ohne zweiten Mitarbeiter', () => {
-    const h = startHaken({ ...leer, angebote: [{ status: 'entwurf' }], teamEingeladen: true, termine: [{ status: 'abgesagt' }] });
-    expect(h.map((x) => x.erledigt)).toEqual([false, true, false]);
+});
+
+describe('Briefkopf just in time', () => {
+  const voll = { name: 'Maler Müller GmbH', adresse: { strasse: 'Musterstraße 12', plz: '97070', ort: 'Würzburg' }, steuernummer: '', ustId: 'DE123456789' };
+  it('fragt nur, was fürs Dokument fehlt', () => {
+    expect(briefkopfVorSenden(voll, 'Mein Betrieb')).toEqual([]);
+    expect(briefkopfVorSenden({ ...voll, ustId: '' }, 'Mein Betrieb').map((l) => l.feld)).toEqual(['steuer']);
+    expect(briefkopfVorSenden({ ...voll, name: 'Mein Betrieb', adresse: { strasse: '', plz: '', ort: '' } }, 'Mein Betrieb').map((l) => l.feld)).toEqual(['name', 'adresse']);
   });
 });
 

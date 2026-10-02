@@ -8,6 +8,7 @@ export type HomeEreignis =
   | 'home_viewed'
   | 'home_widget_clicked'
   | 'home_next_action_clicked'
+  | 'home_next_action_hidden'
   | 'home_work_item_clicked'
   | 'home_contact_clicked'
   | 'home_news_clicked'
