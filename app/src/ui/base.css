@@ -17,6 +17,7 @@ h4 { font: 600 16px/24px var(--mm-font); }
 p { margin: 0; }
 a { color: var(--mm-link); }
 button, input, select, textarea { font: inherit; color: inherit; }
+code, kbd, pre, samp { font-family: var(--mm-font); }
 :focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
 .mm-number, td.num, .num { font-variant-numeric: tabular-nums; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
