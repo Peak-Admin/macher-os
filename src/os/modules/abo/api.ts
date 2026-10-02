@@ -55,7 +55,9 @@ async function aufrufen<T>(pfad: string, body?: unknown): Promise<Ergebnis<T>> {
 }
 
 export const aboApi = {
-  stand: () => {
+  stand: (): Promise<Ergebnis<AboAntwort>> => {
+    // Ohne Konto kennt der Server keinen Betrieb – gar nicht erst fragen (keine 501-Meldung in der Konsole)
+    if (!cloud().konto()) return Promise.resolve({ ok: false, nichtVerbunden: true });
     const betrieb = cloud().konto()?.betriebId;
     return aufrufen<AboAntwort>(`/api/abo/stand${betrieb ? `?betrieb=${encodeURIComponent(betrieb)}` : ''}`);
   },
