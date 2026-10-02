@@ -33,12 +33,11 @@ export const herausgeber = {
   },
 };
 
-/** Die Software selbst (eigenes Vercel-Projekt aus `os/`). Ohne Login: Daten bleiben im Browser. */
+/** Die Software selbst – gleiche Domain, Pfad `/os` (Code in `src/os/`). Ohne Login: Daten bleiben im Browser. */
 export const app = {
-  url: "https://macher-os-app.vercel.app",
+  url: "/os",
   /** Einrichtung, optional mit vorausgewähltem Gewerk der Software (`elektro`, `shk`, …) */
-  einrichten: (gewerk?: string) =>
-    `https://macher-os-app.vercel.app/willkommen${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
+  einrichten: (gewerk?: string) => `/os/willkommen${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
 };
 
 /** „Kostenlos testen“ führt direkt in die Einrichtung von Macher OS – ohne Konto, ohne Login. */
