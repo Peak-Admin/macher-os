@@ -13,9 +13,11 @@ import {
   telLink,
   uhrzeit,
 } from "@core/format";
-import { useDarf } from "@core/session";
+import { useDarf, useIch, istBuero } from "@core/session";
+import { hauptaktion } from "@modules/naechster-einsatz/Einsatz";
 import type { Auftrag } from "@core/objects";
 import {
+  AktionsMenue,
   BeispielMarke,
   Button,
   Karte,
@@ -31,12 +33,10 @@ import {
   Zeile,
   useToast,
 } from "@ui/index";
-import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from "@ui/objekt";
+import { ErfassenKnopf, ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from "@ui/objekt";
 import {
   ART_LABEL,
-  PHASEN_REIHE,
   kommendeEinsaetze,
-  phaseIndex,
   phaseLabel,
   phaseTon,
 } from "./logik";
@@ -59,6 +59,7 @@ export function AuftragAkte() {
     "bearbeiten" | "phase" | "verloren" | null
   >(null);
   const darfSchreiben = useDarf("schreiben");
+  const ich = useIch();
 
   if (!a || a.geloeschtAm)
     return (
@@ -76,6 +77,18 @@ export function AuftragAkte() {
     );
 
   const schritt = schrittFuer(a);
+  // Läuft gerade ein Einsatz an diesem Auftrag? Dann ist „Arbeit abschließen“ die Hauptaktion.
+  const laufend = db.termine.all().find((t) => t.auftragId === a.id && t.status === "vor_ort" && (!ich || t.mitarbeiterIds.includes(ich.id)));
+  const haupt = laufend ? hauptaktion(laufend) : undefined;
+  const einsatzAusfuehren = (fn: () => string | void, erfolg: string) => {
+    try {
+      const ziel = fn();
+      toast(erfolg);
+      if (ziel) navigate(ziel);
+    } catch {
+      toast("Das hat nicht geklappt. Versuch es noch einmal.", { ton: "achtung" });
+    }
+  };
   const ausfuehren = () => {
     if (!schritt) return;
     try {
@@ -104,7 +117,11 @@ export function AuftragAkte() {
       }
       zurueck={{ to: "/auftraege/auftraege", label: "Aufträge" }}
       aktion={
-        schritt && darfSchreiben ? (
+        laufend && haupt ? (
+          <Button icon={haupt.icon} onClick={() => einsatzAusfuehren(haupt.fn, haupt.erfolg)}>
+            {haupt.label}
+          </Button>
+        ) : schritt && darfSchreiben ? (
           <Button icon={schritt.icon} onClick={ausfuehren}>
             {schritt.label}
           </Button>
@@ -112,8 +129,12 @@ export function AuftragAkte() {
       }
     >
       <Stapel abstand={12}>
-        <PhasenLeiste a={a} />
-        {a.phase === "verloren" ? (
+        {laufend ? (
+          <Meta>
+            <strong>Arbeit läuft</strong> · {laufend.titel}
+            {schritt ? ` · Danach: ${schritt.label}` : ""}
+          </Meta>
+        ) : a.phase === "verloren" ? (
           <Meldung ton="neutral" titel="Nicht zustande gekommen">
             {a.verlorenGrund ?? "Kein Grund angegeben."}
           </Meldung>
@@ -131,30 +152,19 @@ export function AuftragAkte() {
         )}
         {darfSchreiben && (
           <Zeile abstand={8}>
-            <Button
-              variante="sekundaer"
+            <ErfassenKnopf aktion="foto" auftragId={a.id} klein />
+            <ErfassenKnopf aktion="notiz" auftragId={a.id} klein variante="tertiaer" />
+            <AktionsMenue
               klein
-              icon="stift"
-              onClick={() => setDialog("bearbeiten")}
-            >
-              Bearbeiten
-            </Button>
-            <Button
-              variante="tertiaer"
-              klein
-              onClick={() => setDialog("phase")}
-            >
-              Phase ändern
-            </Button>
-            {a.phase !== "verloren" && a.phase !== "erledigt" && (
-              <Button
-                variante="tertiaer"
-                klein
-                onClick={() => setDialog("verloren")}
-              >
-                Als verloren markieren
-              </Button>
-            )}
+              aktionen={[
+                { label: "Bearbeiten", icon: "stift", onClick: () => setDialog("bearbeiten") },
+                { label: "Phase ändern", icon: "wiederholen", onClick: () => setDialog("phase") },
+                ...(laufend && schritt ? [{ label: schritt.label, icon: schritt.icon ?? "pfeilRechts", onClick: ausfuehren }] : []),
+                ...(a.phase !== "verloren" && a.phase !== "erledigt"
+                  ? [{ label: "Als verloren markieren", icon: "x", onClick: () => setDialog("verloren") }]
+                  : []),
+              ]}
+            />
           </Zeile>
         )}
       </Stapel>
@@ -175,6 +185,11 @@ export function AuftragAkte() {
                     onBearbeiten={() => setDialog("bearbeiten")}
                   />
                 ),
+              },
+              {
+                id: "zeiten",
+                titel: "Zeit",
+                inhalt: <ZeitenAmAuftrag auftragId={a.id} />,
               },
               {
                 id: "verlauf",
@@ -204,41 +219,6 @@ export function AuftragAkte() {
         <VerlorenDialog a={a} offen onSchliessen={() => setDialog(null)} />
       )}
     </Seite>
-  );
-}
-
-/** Phase als sichtbarer Fortschritt */
-function PhasenLeiste({ a }: { a: Auftrag }) {
-  const jetzt = phaseIndex(a.phase);
-  return (
-    <div>
-      <ol className="akte-phasen" aria-label="Fortschritt des Auftrags">
-        {PHASEN_REIHE.map((p, i) => {
-          const zustand =
-            a.phase === "verloren"
-              ? ""
-              : i < jetzt || a.phase === "erledigt"
-                ? "akte-phase--fertig"
-                : i === jetzt
-                  ? "akte-phase--jetzt"
-                  : "";
-          return (
-            <li
-              key={p}
-              className={`akte-phase ${zustand}`}
-              aria-current={i === jetzt ? "step" : undefined}
-            >
-              <span>{phaseLabel(p)}</span>
-            </li>
-          );
-        })}
-      </ol>
-      <p className="mm-meta mm-nur-mobil" style={{ marginTop: 4 }}>
-        {a.phase === "verloren"
-          ? "Nicht zustande gekommen"
-          : `Schritt ${jetzt + 1} von ${PHASEN_REIHE.length}: ${phaseLabel(a.phase)}`}
-      </p>
-    </div>
   );
 }
 
@@ -502,3 +482,30 @@ const RECHNUNG_STATUS: Record<string, string> = {
   bezahlt: "Bezahlt",
   storniert: "Storniert",
 };
+
+/** Zeiten an diesem Auftrag – Monteure sehen ihre eigenen, Büro und Chef alle */
+function ZeitenAmAuftrag({ auftragId }: { auftragId: string }) {
+  useDatenstand();
+  const ich = useIch();
+  const alle = istBuero(ich);
+  const zeiten = db.zeiten
+    .where((z) => z.auftragId === auftragId && (alle || z.mitarbeiterId === ich?.id))
+    .sort((x, y) => (y.datum + y.start).localeCompare(x.datum + x.start));
+  return (
+    <Stapel abstand={12}>
+      <div>
+        <ErfassenKnopf aktion="zeit" auftragId={auftragId} />
+      </div>
+      <Liste leer={<Leer icon="uhr" titel="Noch keine Zeiten" text="Starte die Zeit hier oder mit „Arbeit starten“ am Einsatz." />}>
+        {zeiten.slice(0, 30).map((z) => (
+          <ListenZeile
+            key={z.id}
+            titel={`${datumKurz(z.datum)}, ${z.start}–${z.ende ?? "läuft"}`}
+            untertitel={[personName(db.mitarbeiter.get(z.mitarbeiterId)), z.art === "fahrt" ? "Fahrt" : "Arbeit", z.notiz].filter(Boolean).join(" · ")}
+            rechts={!z.ende ? <Status ton="aktiv">Läuft</Status> : undefined}
+          />
+        ))}
+      </Liste>
+    </Stapel>
+  );
+}

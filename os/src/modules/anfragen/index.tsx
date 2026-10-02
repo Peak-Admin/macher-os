@@ -24,7 +24,7 @@ export default defineModul({
   ],
   hubWidget: NeueAnfragenWidget,
   panels: [{ objekt: 'auftraege', component: QualiPanel, gewicht: 95 }],
-  erstellen: [{ label: 'Anfrage erfassen', pfad: '/auftraege/anfragen/neu', gewicht: 90 }],
+  erstellen: [{ label: 'Anfrage aufnehmen', pfad: '/auftraege/anfragen/neu', gewicht: 90 }],
   aktionen: {
     'anfrage.qualifizieren': (p) => `/auftraege/anfragen?anfrage=${(p as { auftragId: string }).auftragId}`,
   },

@@ -10,7 +10,10 @@
  * - Tabs in Detailansichten anderer Objekte einhängen (z. B. „Fotos“ in der Auftragsakte),
  * - Hinweise für „Braucht dich“ liefern (Exception-First),
  * - Automationen registrieren (laufen über Events, protokollieren in „Erledigt“),
- * - Suchtreffer, Schnellerfassung, „Neu anlegen“-Einträge und Beispieldaten beisteuern.
+ * - Suchtreffer, Erfassungsformulare (direkt aus dem Kontext geöffnet) und Beispieldaten beisteuern.
+ *
+ * WO ein Modul in der Oberfläche erscheint, bestimmt allein `src/shell/struktur.ts`
+ * (Heute · Aufträge · Planen · Betrieb, je Ebene höchstens vier Ziele).
  */
 import type { ComponentType } from 'react';
 import type { Bezug, ID, Rolle, SammlungsName } from './objects';
@@ -99,7 +102,7 @@ export interface SchnellAktion {
   id: string;
   label: string;
   icon?: string;
-  /** Formular im Schnell-erfassen-Blatt. `fertig` schließt das Blatt. */
+  /** Formular, das ein kontextueller Knopf (`oeffne('schnell', { aktion: id, auftragId })`) direkt öffnet. */
   component: ComponentType<{ fertig: () => void; auftragId?: ID }>;
   gewicht?: number;
 }
@@ -115,18 +118,17 @@ export interface ModulDef {
   /** Pain-Score des Moduls 1–100 – bestimmt Position in Navigation und Hub */
   gewicht?: number;
   /**
-   * `haupt`: in der Unternavigation des Bereichs sichtbar
-   * `hub`: nur auf der Bereichsseite verlinkt
-   * `versteckt`: nur per Link/Kontext erreichbar
+   * Ohne Wirkung auf die Navigation: Wo ein Modul erscheint, legt `src/shell/struktur.ts` fest.
+   * Bleibt als Hinweis für die Suche erhalten (`versteckt` = technische Seite, nicht als Funktion vorschlagen).
    */
   navigation?: 'haupt' | 'hub' | 'versteckt';
   /** Routen relativ zu `/<bereich>/<id>` – `''` ist die Startansicht. Pfade mit `/` am Anfang sind absolut. */
   routen?: { pfad: string; element: ComponentType }[];
   /** Routen ohne App-Rahmen (Onboarding, Kundenbereich, Terminbuchung für Kunden). Absolute Pfade. */
   vollbildRouten?: { pfad: string; element: ComponentType }[];
-  /** Widget auf der Bereichsseite */
+  /** Altfeld: Bereichsseiten zeigen keine Modul-Widgets mehr (Heute und Betrieb sind fest gestaltet) */
   hubWidget?: ComponentType;
-  /** Kurzer Status in der Betrieb-Übersicht, z. B. „3 Prüfungen fällig“ */
+  /** Kurzer Status, z. B. „3 Prüfungen fällig“; mit `ton: 'achtung'` ggf. als Hinweis auf der Betrieb-Kachel */
   kurzinfo?: () => { text: string; ton?: Ton } | undefined;
   /** Detailansicht eines Objekttyps gehört diesem Modul */
   detail?: { objekt: SammlungsName; pfad: (id: ID) => string }[];
@@ -138,7 +140,7 @@ export interface ModulDef {
   automationen?: Automation[];
   suche?: (q: string) => Treffer[];
   schnell?: SchnellAktion[];
-  /** Einträge im globalen „Neu“-Menü */
+  /** Erstellungsabläufe des Moduls (Verzeichnis, kein Menü). Der Knopf steht im Arbeitskontext. */
   erstellen?: { label: string; pfad: string; gewicht?: number }[];
   /** Global gerenderte Komponente (Overlays, Tastenkürzel …) */
   global?: ComponentType;
@@ -214,6 +216,15 @@ export function alleSchnellAktionen(): SchnellAktion[] {
   return module.flatMap((m) => m.schnell ?? []).sort((a, b) => (b.gewicht ?? 50) - (a.gewicht ?? 50));
 }
 
+/** Eine bestimmte Erfassungsaktion (für kontextuelle Knöpfe wie „Foto hinzufügen“) */
+export function schnellAktion(id: string): SchnellAktion | undefined {
+  return module.flatMap((m) => m.schnell ?? []).find((s) => s.id === id);
+}
+
+/**
+ * @deprecated Es gibt kein globales „Neu“-Menü mehr. Die Einträge dokumentieren nur noch, welche
+ * Erstellungsabläufe ein Modul anbietet; der Einstieg steht als beschrifteter Knopf im Arbeitskontext.
+ */
 export function alleErstellen() {
   return module.flatMap((m) => m.erstellen ?? []).sort((a, b) => (b.gewicht ?? 50) - (a.gewicht ?? 50));
 }
