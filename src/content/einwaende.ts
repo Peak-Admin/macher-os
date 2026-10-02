@@ -3,7 +3,7 @@ import type { FaqItem, IconName } from "@/components/ui";
 /**
  * Einwände von Handwerkern gegen Software – und unsere Antworten.
  * Rangfolge und Stärke (1–100): `docs/produkt/einwaende.md`. Jede Antwort muss heute stimmen.
- * Eingesetzt auf der Startseite (Abschnitt „Bedenken“) und sinngemäß im Markenkopf der Anmeldung.
+ * Eingesetzt auf der Startseite (Abschnitt „Bedenken“, nur die wichtigsten), vollständig unter `/bedenken` und sinngemäß im Markenkopf der Anmeldung.
  */
 
 export type Kernangst = { angst: string; antwort: string; text: string; icon: IconName; staerke: number };
@@ -78,8 +78,13 @@ export const einwaende: Einwand[] = [
   { rang: 25, staerke: 70, einwand: "Das sieht wieder nach Bürosoftware aus.", antwort: "Gebaut für Baustelle und Büro: große Knöpfe, klare Sprache, Handy zuerst." },
 ];
 
-/** Einwände ohne die fünf stärksten (die stehen als Karten darüber) – als aufklappbare Fragen. */
-export const weitereEinwaende: FaqItem[] = einwaende.slice(5).map((e) => ({ frage: `„${e.einwand}“`, antwort: e.antwort }));
+const alsFrage = (e: Einwand): FaqItem => ({ frage: `„${e.einwand}“`, antwort: e.antwort });
+
+/** Alle Einwände als aufklappbare Fragen – für die Seite `/bedenken` (mit Suche). */
+export const alleEinwaende: FaqItem[] = einwaende.map(alsFrage);
+
+/** Startseite: nur die nächststärksten Einwände nach den fünf Kernängsten, der Rest steht unter `/bedenken`. */
+export const weitereEinwaende: FaqItem[] = einwaende.slice(5, 10).map(alsFrage);
 
 /** Blauer Vertrauenskasten (Footer, Anmeldung) – Quelle in der Software, damit beide dasselbe sagen. */
 export { DATEN_VERTRAUEN as datenVertrauen } from "@/os/core/vertrauen";
