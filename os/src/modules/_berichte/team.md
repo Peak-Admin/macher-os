@@ -1,7 +1,7 @@
 # Abschlussbericht Paket `team`
 
 Branch: `claude/fervent-pascal-joztaz-team` · Bereich `betrieb`, Gruppe `team`.
-Alle Dateien liegen in `app/src/modules/{mitarbeiter,arbeitszeiten,abwesenheiten,qualifikationen,schulungen,unterweisungen,einarbeitung,bewerber}/` plus dieser Bericht.
+Alle Dateien liegen in `os/src/modules/{mitarbeiter,arbeitszeiten,abwesenheiten,qualifikationen,schulungen,unterweisungen,einarbeitung,bewerber}/` plus dieser Bericht.
 
 ## Gebaute Module und Ansichten
 
@@ -80,7 +80,7 @@ Beispieldaten (`seed`, `beispiel: true`): eine geplante und eine abgeschlossene 
 ## Testergebnis
 
 ```
-cd app && npm ci && npx tsc -b && npx vitest run && npx vite build
+cd os && npm ci && npx tsc -b && npx vitest run && npx vite build
 Test Files  8 passed (8) · Tests  36 passed (36) · build ✓
 ```
 

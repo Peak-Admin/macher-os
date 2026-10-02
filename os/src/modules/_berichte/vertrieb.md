@@ -39,8 +39,8 @@ Events: `anfrage.eingegangen`, `angebot.versendet`, `angebot.angenommen`.
 
 ## Eigene Sammlungen
 
-- `aufmasse` (`app/src/modules/aufmass/daten.ts`) – Räume → Zeilen (Art, L/B/H, Anzahl, Abzüge, `leistungId`), Verweis `auftragId`, `angebotId`
-- `kalkulationen` (`app/src/modules/kalkulation/daten.ts`) – Zeilen (Menge, Minuten, Material-EK, Fremd), Lohnkosten, Zuschläge, Verweis `auftragId`, `angebotId`
+- `aufmasse` (`os/src/modules/aufmass/daten.ts`) – Räume → Zeilen (Art, L/B/H, Anzahl, Abzüge, `leistungId`), Verweis `auftragId`, `angebotId`
+- `kalkulationen` (`os/src/modules/kalkulation/daten.ts`) – Zeilen (Menge, Minuten, Material-EK, Fremd), Lohnkosten, Zuschläge, Verweis `auftragId`, `angebotId`
 
 Alles andere über `db.*`: Anfragen = `auftraege` (Phase `anfrage`), Anrufe = `nachrichten` (`kanal: 'telefon'`), Rückrufe = `aufgaben` (`quelle: 'rueckruf'`), Besichtigungen = `termine` (`art: 'besichtigung'`), Fotos/Notizen = `dokumente` (Bezug Termin + `auftragId`).
 

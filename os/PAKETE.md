@@ -2,10 +2,10 @@
 
 Macher OS wird in 14 parallelen Paketen gebaut. Jedes Paket arbeitet auf einem eigenen Branch
 `claude/fervent-pascal-joztaz-<paket>` ausgehend von `claude/fervent-pascal-joztaz` und berührt **nur**
-seine eigenen Ordner `app/src/modules/<modul-id>/`. Dadurch entstehen beim Zusammenführen keine Konflikte.
+seine eigenen Ordner `os/src/modules/<modul-id>/`. Dadurch entstehen beim Zusammenführen keine Konflikte.
 
-Pflichtlektüre: `CLAUDE.md`, `app/MODULE.md`, `app/src/core/objects.ts`, `app/src/core/modul.ts`,
-`app/src/ui/index.tsx`, `app/src/ui/objekt.tsx`, Referenzmodul `app/src/modules/kunden/`,
+Pflichtlektüre: `CLAUDE.md`, `os/MODULE.md`, `os/src/core/objects.ts`, `os/src/core/modul.ts`,
+`os/src/ui/index.tsx`, `os/src/ui/objekt.tsx`, Referenzmodul `os/src/modules/kunden/`,
 Quelle der Modulliste: `docs/produkt/module.md`.
 
 ## Pakete und Modul-IDs (Ordnernamen)

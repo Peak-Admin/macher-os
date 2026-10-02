@@ -1,6 +1,6 @@
 # Module bauen – Leitfaden
 
-Verbindlich für jedes Modul in `app/src/modules/<id>/`.
+Verbindlich für jedes Modul in `os/src/modules/<id>/`.
 
 ## 1. Grundregeln
 
@@ -97,5 +97,5 @@ Status immer als Text (`<Status ton="achtung">Überfällig</Status>`), nie nur F
 ## 6. Prüfen
 
 ```
-cd app && npx tsc -b && npx vitest run && npx vite build
+cd os && npx tsc -b && npx vitest run && npx vite build
 ```

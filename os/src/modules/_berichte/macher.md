@@ -69,7 +69,7 @@ Kern-Sammlungen genutzt: `benachrichtigungen` (+ Beispiel-Seed), `hinweise`, `er
 ## Testergebnis
 
 ```
-cd app && npm ci && npx tsc -b && npx vitest run && npx vite build
+cd os && npm ci && npx tsc -b && npx vitest run && npx vite build
 ```
 - `tsc -b`: ohne Fehler
 - `vitest run`: 7 Dateien, 34 Tests grün (davon 29 in diesem Paket)

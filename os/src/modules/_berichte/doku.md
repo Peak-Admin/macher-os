@@ -72,7 +72,7 @@ Beispieldaten (`beispiel: true`): 2 Platzhalter-Fotos + 1 Notiz und 1 Plan an ‚Ä
 ## Testergebnis
 
 ```
-cd app && npm ci && npx tsc -b && npx vitest run && npx vite build
+cd os && npm ci && npx tsc -b && npx vitest run && npx vite build
 ```
 - `tsc -b`: ohne Fehler
 - `vitest run`: 8 Dateien, 40 Tests gr√ºn (35 Modul-/Integrationstests des Pakets + 5 Kern)

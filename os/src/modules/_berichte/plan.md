@@ -78,7 +78,7 @@ Verschieben/Absagen/Einplanen wird per `vermerken` im Zeitstrahl des Auftrags fe
 ## Testergebnis
 
 ```
-cd app && npm ci && npx tsc -b && npx vitest run && npx vite build
+cd os && npm ci && npx tsc -b && npx vitest run && npx vite build
 ```
 - `tsc -b`: fehlerfrei
 - `vitest run`: 7 Testdateien, 42 Tests grün (davon 37 im Paket plan: verfuegbarkeit 14, kalender 7, terminbuchung 8, einsatzplanung 3, offen 3, auslastung 2)

@@ -72,7 +72,7 @@ Seeds: ein Link für den Beispielkunden mit versendetem Angebot; eine vorbereite
 ## Testergebnis
 
 ```
-cd app && npm ci && npx tsc -b && npx vitest run && npx vite build
+cd os && npm ci && npx tsc -b && npx vitest run && npx vite build
 Test Files  6 passed (6)
 Tests       47 passed (47)   – davon 42 neu in kunden, orte, anlagen, kundenbereich, bewertungen
 vite build  ✓
