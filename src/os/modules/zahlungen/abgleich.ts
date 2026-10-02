@@ -16,7 +16,7 @@ import { euro } from '@core/format';
 import type { Cent, ID, Kunde } from '@core/objects';
 import { offenerBetrag, offenePosten, rechnungsSummen } from '../rechnungen/logik';
 import { rechnungX, type RechnungX } from '../rechnungen/typen';
-import { bankumsaetze, type Bankumsatz, type UmsatzQuelle, type ZahlungMitUmsatz } from './daten';
+import { bankumsaetze, type Bankumsatz, type UmsatzQuelle } from './daten';
 import { zahlungBuchen, zahlungLoeschen, type Umsatz } from './logik';
 
 export const AUTOMATION_ABGLEICH = 'zahlungen.abgleich';
@@ -245,7 +245,7 @@ export const skontoAutomatisch = () => einstellung('zahlungen.skontoAutomatisch'
 export function bewerten(u: Umsatz, ctx: Kontext, vorhanden: Set<string> = new Set()): Bewertung {
   if (u.referenz && vorhanden.has(u.referenz)) return { umsatz: u, entscheidung: 'doppelt', treffer: [], grund: 'Schon importiert' };
   // ältere Importe (vor dem Abgleich) haben nur Zahlungen ohne Umsatz
-  const alt = (db.zahlungen.all() as ZahlungMitUmsatz[]).find((z) => z.quelle === 'kontoauszug' && !z.umsatzId && z.betrag === u.betrag && z.datum === u.datum);
+  const alt = db.zahlungen.all().find((z) => z.quelle === 'kontoauszug' && !z.umsatzId && z.betrag === u.betrag && z.datum === u.datum);
   if (alt) return { umsatz: u, entscheidung: 'doppelt', treffer: [], grund: 'Schon gebucht' };
 
   const liste = treffer(u, ctx);

@@ -14,6 +14,7 @@
  * Nichts davon muss der Monteur ein zweites Mal eintippen.
  */
 import { batch, db, vermerken, zeitstrahl } from '@core/db';
+import { emit } from '@core/events';
 import { datum as datumText, datumVon, heute, isoDatum, minutenAus, minutenVon, uhrAus } from '@core/format';
 import { hinweis } from '@core/macher';
 import type { Artikel, Cent, Einheit, ID, Leistung, Materialbuchung, Termin, Zeiteintrag } from '@core/objects';
@@ -213,6 +214,8 @@ export function problemMelden(terminId: ID, text: string): ID | undefined {
   });
   vermerken({ typ: 'termine', id: t.id }, VERMERK_PROBLEM, `Problem gemeldet: ${sauber}`);
   if (t.auftragId) vermerken({ typ: 'auftraege', id: t.auftragId }, VERMERK_PROBLEM, `Problem gemeldet: ${sauber}`);
+  // fachliches Ereignis (Katalog: einsatz.problem_gemeldet → visit.issue_reported) für Automationen und Webhooks
+  emit({ typ: 'einsatz.problem_gemeldet', sammlung: 'termine', objekt: t, daten: { terminId: t.id, auftragId: t.auftragId, text: sauber.slice(0, 500), mitarbeiterId: wer?.id } });
   return h.id;
 }
 

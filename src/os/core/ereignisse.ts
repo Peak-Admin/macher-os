@@ -49,7 +49,9 @@ export const EREIGNISSE: EreignisArt[] = [
   art('termin.abgesagt', 'Termin abgesagt', 'termine', 'appointment.cancelled', 'abgeleitet', 'Ein Termin wurde abgesagt.'),
   art('einsatz.gestartet', 'Einsatz gestartet', 'termine', 'visit.started', 'modul', 'Ein Monteur hat einen Einsatz vor Ort begonnen.'),
   art('einsatz.beendet', 'Einsatz beendet', 'termine', 'visit.completed', 'modul', 'Ein Monteur hat einen Einsatz beendet.'),
+  art('einsatz.problem_gemeldet', 'Problem beim Einsatz gemeldet', 'termine', 'visit.issue_reported', 'modul', 'Ein Monteur hat vom Einsatz ein Problem an Chef und Büro gemeldet.'),
   art('abnahme.unterschrieben', 'Abnahme unterschrieben', 'abnahmen', 'job.signed_off', 'modul', 'Der Kunde hat die Abnahme unterschrieben.'),
+  art('bericht.unterschrieben', 'Bericht unterschrieben', 'berichte', 'report.signed', 'modul', 'Der Kunde hat einen Baustellen- oder Arbeitsbericht unterschrieben.'),
   art('angebot.erstellt', 'Angebot erstellt', 'angebote', 'quote.created', 'abgeleitet', 'Ein Angebot ist als Entwurf angelegt.'),
   art('angebot.versendet', 'Angebot versendet', 'angebote', 'quote.sent', 'abgeleitet', 'Ein Angebot ist beim Kunden.'),
   art('angebot.angenommen', 'Angebot angenommen', 'angebote', 'quote.accepted', 'abgeleitet', 'Der Kunde hat das Angebot angenommen.'),
@@ -59,23 +61,64 @@ export const EREIGNISSE: EreignisArt[] = [
   art('rechnung.bezahlt', 'Rechnung bezahlt', 'rechnungen', 'invoice.paid', 'abgeleitet', 'Eine Rechnung ist vollständig bezahlt.'),
   art('rechnung.storniert', 'Rechnung storniert', 'rechnungen', 'invoice.cancelled', 'abgeleitet', 'Eine Rechnung wurde storniert.'),
   art('rechnung.ueberfaellig', 'Rechnung überfällig', 'rechnungen', 'invoice.overdue', 'frist', 'Eine Rechnung ist nach dem Fälligkeitsdatum noch offen.'),
+  art('mahnung.versendet', 'Mahnung versendet', 'mahnungen', 'dunning.sent', 'modul', 'Eine Zahlungserinnerung oder Mahnung ging an den Kunden.'),
   art('zahlung.eingegangen', 'Zahlung eingegangen', 'zahlungen', 'payment.received', 'abgeleitet', 'Geld ist eingegangen und einer Rechnung zugeordnet.'),
   art('aufgabe.angelegt', 'Aufgabe angelegt', 'aufgaben', 'task.created', 'abgeleitet', 'Eine Aufgabe ist angelegt.'),
   art('aufgabe.erledigt', 'Aufgabe erledigt', 'aufgaben', 'task.completed', 'abgeleitet', 'Eine Aufgabe ist abgehakt.'),
   art('mitarbeiter.angelegt', 'Mitarbeiter angelegt', 'mitarbeiter', 'employee.created', 'abgeleitet', 'Ein neuer Mitarbeiter ist im Team.'),
   art('mitarbeiter.abwesend', 'Mitarbeiter abwesend', 'abwesenheiten', 'employee.absent', 'abgeleitet', 'Eine Abwesenheit (Urlaub, Krankheit …) steht fest.'),
+  art('zeit.freigegeben', 'Zeiten freigegeben', 'zeiten', 'time_entry.approved', 'modul', 'Arbeitszeiten wurden für die Lohnabrechnung freigegeben.'),
   art('material.knapp', 'Material knapp', 'artikel', 'material.low_stock', 'abgeleitet', 'Ein Lagerartikel ist unter den Mindestbestand gefallen.'),
   art('nachricht.eingegangen', 'Nachricht eingegangen', 'nachrichten', 'message.received', 'abgeleitet', 'Ein Kunde hat geschrieben oder angerufen.'),
   art('beleg.erfasst', 'Beleg erfasst', 'belege', 'bill.created', 'abgeleitet', 'Eine Eingangsrechnung oder Quittung ist erfasst.'),
   art('bestellung.angelegt', 'Bestellung angelegt', 'bestellungen', 'purchase_order.created', 'abgeleitet', 'Eine Materialbestellung ist angelegt.'),
   art('reklamation.eingegangen', 'Reklamation eingegangen', 'reklamationen', 'complaint.created', 'abgeleitet', 'Ein Kunde hat etwas reklamiert.'),
   art('dokument.versendet', 'Dokument versendet', 'dokumente', 'document.sent', 'modul', 'Ein Dokument (Angebot, Rechnung, Bericht) ging an den Kunden.'),
+  art('dokument.erstellt', 'Dokument erstellt', 'geschaeftsdokumente', 'document.created', 'modul', 'Eine Auftragsbestätigung oder ein Lieferschein ist angelegt.'),
+  art('auftragsbestaetigung.versendet', 'Auftragsbestätigung versendet', 'geschaeftsdokumente', 'order_confirmation.sent', 'modul', 'Eine Auftragsbestätigung ging an den Kunden.'),
+  art('lieferschein.versendet', 'Lieferschein versendet', 'geschaeftsdokumente', 'delivery_note.sent', 'modul', 'Ein Lieferschein ging an den Kunden.'),
+  art('lieferschein.unterschrieben', 'Lieferschein unterschrieben', 'geschaeftsdokumente', 'delivery_note.signed', 'modul', 'Der Kunde hat den Empfang auf dem Lieferschein bestätigt.'),
   art('portal.geoeffnet', 'Kundenbereich geöffnet', 'kunden', 'portal.opened', 'modul', 'Ein Kunde hat seinen Kundenbereich geöffnet.'),
   art('team.eingeladen', 'Team eingeladen', 'mitarbeiter', 'team.invited', 'modul', 'Mitarbeiter wurden zu Macher OS eingeladen.'),
   art('team.beigetreten', 'Mitarbeiter beigetreten', 'mitarbeiter', 'team.joined', 'modul', 'Ein Mitarbeiter hat sich angemeldet.'),
-  art('import.abgeschlossen', 'Import abgeschlossen', 'betrieb', 'import.completed', 'modul', 'Ein Datenimport ist fertig.'),
+  art('import.abgeschlossen', 'Import abgeschlossen', 'importe', 'import.completed', 'modul', 'Ein Datenimport ist fertig (Excel/CSV, DATANORM, GAEB).'),
+  art('import.rueckgaengig', 'Import rückgängig gemacht', 'importe', 'import.reverted', 'modul', 'Ein Datenimport wurde zurückgenommen.'),
+  art('formular.ausgefuellt', 'Formular ausgefüllt', 'eigeneFormulare', 'form.completed', 'modul', 'Ein eigenes Formular wurde an einem Kunden, Auftrag oder Ort ausgefüllt.'),
   art('macher.aktion_ausgefuehrt', 'Macher hat etwas erledigt', 'chat', 'assistant.action_executed', 'modul', 'Macher hat nach deiner Freigabe eine Aktion ausgeführt.'),
 ];
+
+/** Gruppe für Auswahllisten (Webhooks, Automationen) – nach dem Objekt des Ereignisses */
+const GRUPPEN: Record<string, string> = {
+  kunde: 'Kunden und Anfragen',
+  anfrage: 'Kunden und Anfragen',
+  nachricht: 'Kunden und Anfragen',
+  reklamation: 'Kunden und Anfragen',
+  portal: 'Kunden und Anfragen',
+  angebot: 'Angebote',
+  auftrag: 'Aufträge und Einsätze',
+  termin: 'Aufträge und Einsätze',
+  einsatz: 'Aufträge und Einsätze',
+  abnahme: 'Aufträge und Einsätze',
+  bericht: 'Aufträge und Einsätze',
+  aufgabe: 'Aufträge und Einsätze',
+  rechnung: 'Geld',
+  zahlung: 'Geld',
+  mahnung: 'Geld',
+  beleg: 'Geld',
+  dokument: 'Dokumente',
+  auftragsbestaetigung: 'Dokumente',
+  lieferschein: 'Dokumente',
+  mitarbeiter: 'Team',
+  team: 'Team',
+  zeit: 'Team',
+  material: 'Material',
+  bestellung: 'Material',
+};
+
+/** `rechnung.bezahlt` → „Geld“ */
+export function ereignisGruppe(typ: string): string {
+  return GRUPPEN[typ.split('.')[0]] ?? 'Daten und Macher';
+}
 
 const nachTyp = new Map(EREIGNISSE.map((a) => [a.typ, a]));
 const nachApi = new Map(EREIGNISSE.map((a) => [a.api, a]));
@@ -286,8 +329,10 @@ export interface Webhook extends Basis {
   /** API-Namen (`invoice.paid`) oder deutsche Typen; `*` = alle */
   ereignisse: string[];
   aktiv: boolean;
-  /** Das Signatur-Geheimnis liegt nur auf dem Server; hier nur, ob eines gesetzt ist */
+  /** Das Signatur-Geheimnis selbst steht nie im Webhook; hier nur, ob eines gesetzt ist */
   geheimnisGesetzt?: boolean;
+  /** letzte vier Zeichen des Geheimnisses – zum Wiedererkennen */
+  geheimnisEnde?: string;
   /** letzte erfolgreiche Zustellung */
   zuletztZugestelltAm?: Zeitpunkt;
   /** letzter Fehler (Klartext) */
@@ -326,13 +371,26 @@ export function webhookUrlPruefen(url: string): string | undefined {
   return 'Aus Sicherheitsgründen gehen nur verschlüsselte Adressen (https://).';
 }
 
-export function webhookAnlegen(w: { name: string; url: string; ereignisse: string[]; aktiv?: boolean }): Webhook {
+export function webhookAnlegen(w: { id?: ID; name: string; url: string; ereignisse: string[]; aktiv?: boolean; geheimnisEnde?: string }): Webhook {
   const fehler = webhookUrlPruefen(w.url);
   if (fehler) throw new Error(fehler);
-  return webhooks.create({ name: w.name.trim() || 'Webhook', url: w.url.trim(), ereignisse: w.ereignisse.length ? w.ereignisse : ['*'], aktiv: w.aktiv ?? true });
+  return webhooks.create({
+    ...(w.id ? { id: w.id } : {}),
+    name: w.name.trim() || 'Webhook',
+    url: w.url.trim(),
+    ereignisse: w.ereignisse.length ? w.ereignisse : ['*'],
+    aktiv: w.aktiv ?? true,
+    geheimnisGesetzt: w.geheimnisEnde ? true : undefined,
+    geheimnisEnde: w.geheimnisEnde,
+  });
 }
 
-const passt = (w: Webhook, e: Pick<ProtokollEreignis, 'typ' | 'api'>) => w.aktiv && !w.geloeschtAm && (w.ereignisse.includes('*') || w.ereignisse.includes(e.api) || w.ereignisse.includes(e.typ));
+/** Passt ein Ereignis zu den abonnierten Namen? `*` = alle, `rechnung.*`/`invoice.*` = alle zu diesem Objekt */
+export function ereignisAbonniert(ereignisse: string[], e: Pick<ProtokollEreignis, 'typ' | 'api'>): boolean {
+  return ereignisse.some((x) => x === '*' || x === e.api || x === e.typ || (x.endsWith('.*') && (e.typ.startsWith(x.slice(0, -1)) || e.api.startsWith(x.slice(0, -1)))));
+}
+
+const passt = (w: Webhook, e: Pick<ProtokollEreignis, 'typ' | 'api'>) => w.aktiv && !w.geloeschtAm && ereignisAbonniert(w.ereignisse, e);
 
 function webhooksVormerken(e: ProtokollEreignis) {
   for (const w of webhooks.all()) {
@@ -373,6 +431,11 @@ let versender: WebhookVersender | undefined;
 /** Versand anbinden (Server, Edge-Funktion, Test). Ohne Versender bleibt die Warteschlange für den Server liegen. */
 export function setzeWebhookVersender(v: WebhookVersender | undefined) {
   versender = v;
+}
+
+/** Ist ein Versender angebunden (werden Webhooks auf diesem Gerät wirklich zugestellt)? */
+export function webhookVersandAktiv(): boolean {
+  return !!versender;
 }
 
 export function wartendeAuslieferungen(jetzt: Zeitpunkt = new Date().toISOString()): WebhookAuslieferung[] {

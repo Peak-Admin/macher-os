@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { db, zuruecksetzen } from '@core/db';
+import { db, zeitstrahl, zuruecksetzen } from '@core/db';
 import { on } from '@core/events';
 import { csvZeilen } from '@modules/onboarding/daten';
 import { artErkennen, datumAus, geldAus, ibanGueltig, musterVon, spaltenMuster, tabelleAus, zuordnungAus, zuordnungVorschlagen, type ImportArt, type Tabelle } from './erkennen';
@@ -225,6 +225,14 @@ describe('Import: übernehmen und rückgängig machen', () => {
     expect(k.find((x) => x.name === 'Müller')?.adresse).toEqual({ strasse: 'Lindenweg 1', plz: '34117', ort: 'Kassel' });
     expect(lauf.angelegt).toHaveLength(2);
     expect(ereignisse).toEqual([{ art: 'kunden', angelegt: 2, geaendert: 0, fehler: 0, doppelt: 0 }]);
+  });
+
+  it('läuft als Akteur „Import“: der Verlauf zeigt die Herkunft, auch beim Rückgängig', () => {
+    const lauf = importAusfuehren(vorschau('kunden', 'Name;Ort\nMüller;Kassel'));
+    const k = db.kunden.all()[0];
+    expect(zeitstrahl({ typ: 'kunden', id: k.id }).find((e) => e.aenderung === 'created')).toMatchObject({ quelle: 'import', akteurId: 'import.kunden' });
+    importRueckgaengig(lauf.id);
+    expect(zeitstrahl({ typ: 'kunden', id: k.id }).find((e) => e.aenderung === 'removed')).toMatchObject({ quelle: 'import', akteurId: 'import.rueckgaengig' });
   });
 
   it('verknüpft Rechnungen per ID mit vorhandenen oder neu angelegten Kunden – Geld in Cent', () => {

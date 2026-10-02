@@ -50,7 +50,7 @@ export function zahlungBuchen(b: Buchung): ZahlungX | undefined {
     zahler: b.zahler,
     ...(b.umsatzId ? { umsatzId: b.umsatzId } : {}),
     beispiel: r.beispiel,
-  } as Parameters<typeof db.zahlungen.create>[0]) as ZahlungX;
+  });
   statusAbgleichen(r.id);
   vermerken({ typ: 'rechnungen', id: r.id }, 'zahlung.eingegangen', `Zahlung über ${euro(b.betrag)} erfasst${z.skonto ? ` (Skonto ${euro(z.skonto)})` : ''}`);
   emit({ typ: 'zahlung.eingegangen', sammlung: 'zahlungen', objekt: z, daten: { rechnungId: r.id } });

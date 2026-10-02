@@ -157,7 +157,10 @@ Leitsatz: **Viele Fähigkeiten im Produkt. Wenige Entscheidungen auf jedem Scree
   - Versand: `setzeWebhookVersender(fn)` bindet einen Versender an (Server/Edge-Funktion); `webhooksZustellen()` stellt fällige zu,
     `auslieferungErgebnis(id, { ok, code, fehler })` trägt Ergebnisse ein (Wiederholung nach 1, 5, 30, 120, 720 Minuten, danach
     „aufgegeben“). Im Browser ist kein Versender gesetzt – die Warteschlange wird mit dem Konto abgeglichen und kann serverseitig
-    abgearbeitet werden. Das Signatur-Geheimnis gehört nur auf den Server (`geheimnisGesetzt` zeigt nur, ob es eins gibt).
+    abgearbeitet werden. Das Signatur-Geheimnis steht nie im Webhook (`geheimnisGesetzt`, `geheimnisEnde` = letzte vier Zeichen);
+    die Oberfläche (`schnittstellen`, Adapter `kernQuelle`) zeigt es beim Anlegen einmal und legt es für die Zustellung ab
+    (`webhookGeheimnis(id)`). Abonniert werden deutsche Typen, API-Namen, `*` oder `rechnung.*` (`ereignisAbonniert`).
+  - Gruppen für Auswahllisten: `ereignisGruppe(typ)` („Geld“, „Team“ …).
 
 ### 8.2 Audit und Rückgängig (`@core/audit`, `@core/akteur`)
 

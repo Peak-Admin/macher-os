@@ -5,10 +5,10 @@ import { datum, euro, heute, plusTage, relativ } from '@core/format';
 import { useDarf } from '@core/session';
 import { BeispielMarke, Button, Filter, Kennzahl, Leer, Liste, ListenZeile, Meldung, Raster, Seite, Status } from '@ui/index';
 import { istUeberfaellig, offenePosten, offenerBetrag, statusText } from '../rechnungen/logik';
-import { alleRechnungen, type ZahlungX } from '../rechnungen/typen';
+import { alleRechnungen } from '../rechnungen/typen';
 import { KeinZugriff } from '../rechnungen/RechnungenListe';
 import { ZahlungDialog } from './ZahlungDialog';
-import { bankumsaetze, brauchtDich, type ZahlungMitUmsatz } from './daten';
+import { bankumsaetze, brauchtDich } from './daten';
 
 type F = 'alle' | 'ueberfaellig' | 'eingang';
 
@@ -24,9 +24,9 @@ export function OffenePosten() {
   const ueber = posten.filter((r) => istUeberfaellig(r));
   const summe = posten.reduce((s, r) => s + offenerBetrag(r), 0);
   const ueberSumme = ueber.reduce((s, r) => s + offenerBetrag(r), 0);
-  const eingaenge = (db.zahlungen.all() as ZahlungMitUmsatz[]).sort((a, b) => b.datum.localeCompare(a.datum) || b.erstelltAm.localeCompare(a.erstelltAm)).slice(0, 30);
+  const eingaenge = db.zahlungen.all().sort((a, b) => b.datum.localeCompare(a.datum) || b.erstelltAm.localeCompare(a.erstelltAm)).slice(0, 30);
   const seit = plusTage(heute(), -30);
-  const letzte30 = (db.zahlungen.all() as ZahlungX[]).filter((z) => z.datum >= seit);
+  const letzte30 = db.zahlungen.all().filter((z) => z.datum >= seit);
   const gezeigt = filter === 'ueberfaellig' ? ueber : posten;
   const oeffnen = (id: string) => setParams({ rechnung: id });
   const unklar = bankumsaetze.where(brauchtDich);

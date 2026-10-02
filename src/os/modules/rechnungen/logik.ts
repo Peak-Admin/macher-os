@@ -8,7 +8,7 @@ import { einstellung } from '@core/einstellungen';
 import { datum, euro, heute, plusTage, summen, tageZwischen, type Summen, minutenAus } from '@core/format';
 import { naechsteDokumentNummer, type NummerArt } from '@modules/dokumente/nummern';
 import type { Betrieb, Cent, Datum, ID, Kunde, Position, RechnungsArt } from '@core/objects';
-import { alleRechnungen, rechnungAendern, rechnungX, type RechnungX, type ZahlungX } from './typen';
+import { alleRechnungen, rechnungAendern, rechnungX, type RechnungX } from './typen';
 import { alsPositionen } from '@modules/material-am-auftrag/logik';
 import { materialAufschlagProzent } from '@modules/material-am-auftrag/daten';
 import { abrechenbareZu, alsAbgerechnetMarkieren, alsPosition, vonRechnungLoesen, type Zusatzleistung } from '@modules/zusatzleistungen/daten';
@@ -146,7 +146,7 @@ export function verrechnetIn(r: RechnungX, alle: RechnungX[] = alleRechnungen())
 
 // ------------------------------------------------------------------ Zahlungen & offene Beträge
 
-export const zahlungenZu = (rechnungId: ID) => db.zahlungen.where((z) => z.rechnungId === rechnungId) as ZahlungX[];
+export const zahlungenZu = (rechnungId: ID) => db.zahlungen.where((z) => z.rechnungId === rechnungId);
 
 /** beglichen = gezahlt + abgezogenes Skonto */
 export function beglichen(rechnungId: ID): Cent {
@@ -495,7 +495,7 @@ export function rechnungErstellen(auftragId: ID, art: RechnungsArt = 'rechnung',
     nummernkreis: opts.nummernkreis?.trim().toUpperCase() || undefined,
     beispiel: auftrag.beispiel,
   };
-  const r = db.rechnungen.create(neu as Parameters<typeof db.rechnungen.create>[0]) as RechnungX;
+  const r = db.rechnungen.create(neu);
   for (const id of v.materialIds) db.material.update(id, { abgerechnetIn: r.id }, { leise: true });
   alsAbgerechnetMarkieren(v.zusatzleistungIds, r);
   vermerken({ typ: 'auftraege', id: auftragId }, 'rechnung.entwurf', `${ART_LABEL[art]} als Entwurf angelegt`);
@@ -517,7 +517,7 @@ export function freieRechnung(kundeId: ID): RechnungX {
     datum: heute(),
     faelligAm: plusTage(heute(), ziel),
     mahnstufe: 0,
-  }) as RechnungX;
+  });
   erstelltMelden(r);
   return r;
 }
@@ -645,12 +645,13 @@ export function stornieren(id: ID, grund?: string): RechnungX | undefined {
     reverseCharge: r.reverseCharge,
     bemerkung: grund ? `Grund: ${grund}` : undefined,
     beispiel: r.beispiel,
-  } as Parameters<typeof db.rechnungen.create>[0]) as RechnungX;
-  rechnungAendern(id, { status: 'storniert', stornoDurchId: storno.id }, { text: `Storniert durch ${storno.nummer}` });
+  });
+  const storniert = rechnungAendern(id, { status: 'storniert', stornoDurchId: storno.id }, { text: `Storniert durch ${storno.nummer}` });
   materialFreigeben(id);
   vonRechnungLoesen(id);
   if (r.auftragId) vermerken({ typ: 'auftraege', id: r.auftragId }, 'rechnung.storniert', `${r.nummer} storniert (${storno.nummer})`);
-  emit({ typ: 'rechnung.storniert', sammlung: 'rechnungen', objekt: storno, daten: { rechnungId: r.id, stornoId: storno.id, grund } });
+  // Objekt ist die stornierte Rechnung (wie bei der Ableitung des Kerns) – so kommt das Ereignis nur einmal an
+  emit({ typ: 'rechnung.storniert', sammlung: 'rechnungen', objekt: storniert ?? r, daten: { rechnungId: r.id, stornoId: storno.id, grund } });
   return storno;
 }
 
@@ -682,7 +683,7 @@ export function korrekturEntwurf(id: ID): RechnungX | undefined {
     zusatzleistungIds: r.zusatzleistungIds,
     bemerkung: `Ersetzt ${r.nummer}.`,
     beispiel: r.beispiel,
-  } as Parameters<typeof db.rechnungen.create>[0]) as RechnungX;
+  });
   erstelltMelden(neu);
   for (const mid of r.materialIds ?? []) {
     const m = db.material.get(mid);

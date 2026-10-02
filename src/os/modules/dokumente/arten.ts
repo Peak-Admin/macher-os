@@ -118,7 +118,7 @@ export function artVon(bezug: Bezug): DokumentArt | undefined {
     case 'angebote':
       return db.angebote.get(bezug.id) ? dokumentArt('angebot') : undefined;
     case 'rechnungen': {
-      const r = db.rechnungen.get(bezug.id) as RechnungX | undefined;
+      const r = db.rechnungen.get(bezug.id);
       return r ? dokumentArt(rechnungDokArt(r)) : undefined;
     }
     case 'berichte': {

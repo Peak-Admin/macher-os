@@ -32,7 +32,7 @@
 .mm-nav-haupt--aktiv .mm-nav-haupt-icon { background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); }
 .mm-menue-titel { padding: 12px 12px 4px; border-top: 1px solid var(--mm-border); margin-top: 4px; }
 .mm-profil { position: relative; }
-.mm-profil--leiste { padding-top: 8px; border-top: 1px solid var(--mm-border); }
+.mm-profil--leiste { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--mm-border); }
 .mm-profil-knopf { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 6px 8px; border: 0; border-radius: var(--mm-radius-control); background: none; color: var(--mm-black); font-weight: 600; cursor: pointer; text-align: left; }
 .mm-profil-knopf:hover { background: var(--mm-hover); }
 .mm-profil-knopf .mm-glocke-zahl { top: 2px; right: 0; }

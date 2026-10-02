@@ -7,6 +7,7 @@ import { DatanormImport } from './DatanormImport';
 import { GaebImport } from './GaebImport';
 import { Webhooks } from './Webhooks';
 import { connectoren, ZUSTAND_LABEL } from './connectoren';
+import { alteAbosUebernehmen } from './webhooks';
 
 const PFAD = '/betrieb/schnittstellen';
 
@@ -32,6 +33,10 @@ export default defineModul({
     if (fehler) return { text: `${fehler.titel}: ${ZUSTAND_LABEL.fehler}`, ton: 'achtung' };
     const verbunden = sichtbar.filter((c) => c.status().zustand === 'verbunden').length;
     return { text: verbunden ? `${verbunden === 1 ? '1 Verbindung' : `${verbunden} Verbindungen`} in Gebrauch` : 'Kalender, Bank, DATEV und mehr verbinden' };
+  },
+  // Webhooks: eine Abo-Sammlung (Kern). Früher als Einstellung gespeicherte Abos einmal übernehmen.
+  init: () => {
+    alteAbosUebernehmen();
   },
   aktionen: {
     /** Leistungsverzeichnis (GAEB) ins Angebot eines Auftrags übernehmen */

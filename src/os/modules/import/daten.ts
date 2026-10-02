@@ -8,8 +8,9 @@
  * - Jeder Import ist ein Eintrag in `importe` mit allen angelegten Objekten und den alten Werten geänderter
  *   Objekte. „Rückgängig“ legt alles Angelegte in den Papierkorb und stellt die alten Werte wieder her.
  */
-import { batch, db, defineCollection, sammlung, type Neu } from '@core/db';
+import { aktuellerNutzerId, batch, db, defineCollection, sammlung, type Neu } from '@core/db';
 import { emit } from '@core/events';
+import { alsAkteur } from '@core/akteur';
 import { naechsteNummer } from '@core/nummern';
 import { plusTage, heute } from '@core/format';
 import type { Angebot, Artikel, Auftrag, Basis, Bezug, Cent, ID, Kunde, Leistung, Mitarbeiter, Phase, Position, Rechnung, Rolle } from '@core/objects';
@@ -443,6 +444,11 @@ function position(text: string, netto: Cent): Position {
  * Meldet `import.abgeschlossen` und gibt den Import-Eintrag zurück (für „Rückgängig“).
  */
 export function importAusfuehren(v: Vorschau, opts: { dateiname?: string } = {}): ImportLauf {
+  // Audit: alles, was der Import ändert, steht im Verlauf als „durch Import“ (im Auftrag des Menschen, der ihn startet)
+  return alsAkteur({ quelle: 'import', id: `import.${v.art}`, name: 'Import', mitarbeiterId: aktuellerNutzerId() }, () => uebernehmen(v, opts));
+}
+
+function uebernehmen(v: Vorschau, opts: { dateiname?: string }): ImportLauf {
   const angelegt: Bezug[] = [];
   const geaendert: ImportLauf['geaendert'] = [];
   const ust = ustSatz();
@@ -627,6 +633,10 @@ export function importAusfuehren(v: Vorschau, opts: { dateiname?: string } = {})
 
 /** Ganzen Import zurücknehmen: Angelegtes in den Papierkorb, Geändertes auf den alten Stand */
 export function importRueckgaengig(id: ID): { entfernt: number; zurueck: number } {
+  return alsAkteur({ quelle: 'import', id: 'import.rueckgaengig', name: 'Import', mitarbeiterId: aktuellerNutzerId() }, () => zuruecknehmen(id));
+}
+
+function zuruecknehmen(id: ID): { entfernt: number; zurueck: number } {
   const lauf = importe.get(id);
   if (!lauf || lauf.rueckgaengigAm) return { entfernt: 0, zurueck: 0 };
   let entfernt = 0;

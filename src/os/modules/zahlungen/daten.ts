@@ -43,7 +43,7 @@ export interface Bankumsatz extends Basis {
 
 export const bankumsaetze = defineCollection<Bankumsatz>('bankumsaetze');
 
-/** Zahlung mit Verweis auf den Kontoumsatz, aus dem sie stammt */
-export type ZahlungMitUmsatz = ZahlungX & { umsatzId?: ID };
+/** Zahlung mit Verweis auf den Kontoumsatz – `umsatzId` steht inzwischen am Kernobjekt */
+export type ZahlungMitUmsatz = ZahlungX;
 
 export const brauchtDich = (u: Bankumsatz) => u.status === 'vorschlag' || u.status === 'offen';

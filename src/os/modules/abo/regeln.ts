@@ -179,8 +179,11 @@ export const STATUS_TEXT: Record<AboStatus, string> = {
 
 // ------------------------------------------------------------------ Lesemodus
 
-/** Immer frei: Protokoll, Einstellungen, Benachrichtigungen, Erledigt, Hinweise, Chat, Kundenbereich-Zugänge */
-export const SYSTEM_SAMMLUNGEN = ['ereignisse', 'einstellungen', 'benachrichtigungen', 'erledigungen', 'hinweise', 'chat', 'portalzugaenge'];
+/**
+ * Immer frei: Protokoll, Einstellungen, Benachrichtigungen, Erledigt, Hinweise, Chat, Kundenbereich-Zugänge,
+ * Ereignisprotokoll und Webhook-Warteschlange (Kern – sonst gehen fachliche Ereignisse und Zustellungen verloren)
+ */
+export const SYSTEM_SAMMLUNGEN = ['ereignisse', 'einstellungen', 'benachrichtigungen', 'erledigungen', 'hinweise', 'chat', 'portalzugaenge', 'ereignisprotokoll', 'webhook_auslieferungen'];
 /** Laufende Vorgänge (Geldeingang, Mahnungen, Kundennachrichten) dürfen auch Neues anlegen */
 export const LAUFENDE_SAMMLUNGEN = ['zahlungen', 'mahnungen', 'nachrichten'];
 /**

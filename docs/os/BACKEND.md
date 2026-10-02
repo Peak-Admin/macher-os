@@ -188,7 +188,11 @@ Die Anmeldung bei der Bank übernimmt ein Kontoinformationsdienst (Integrationsp
 Reine Logik und Tests: `src/os/server/bank.ts`, `src/os/server/signatur.ts` (`bank.test.ts`).
 
 **Webhooks (ausgehend)** – eingerichtet unter **Betrieb → Einstellungen → Verbindungen → Webhooks**.
-Die Oberfläche arbeitet gegen `WebhookQuelle` (`src/os/modules/schnittstellen/webhooks.ts`). Zustellung:
-POST mit JSON `{ id, typ, zeitpunkt, betriebId, objekt, daten }`, Kopfzeilen `x-macher-ereignis` und
-`x-macher-signatur` (`webhookSignatur()` aus `src/os/server/signatur.ts`). Die serverseitige Zustellung ist noch nicht
-verdrahtet – bis dahin zeigt die App „Wird zugestellt, sobald Macher OS mit der Cloud verbunden ist“.
+Die Oberfläche arbeitet gegen `WebhookQuelle` (`src/os/modules/schnittstellen/webhooks.ts`), Standard ist der
+Adapter `kernQuelle` auf die Kern-Sammlungen `webhooks` und `webhook_auslieferungen` (`src/os/core/ereignisse.ts`).
+Zustellung: POST mit JSON aus `webhookNutzlast()` (`{ id, type, event, created_at, source, actor, object, data }`),
+Kopfzeilen `x-macher-ereignis` (API-Name, z. B. `invoice.paid`) und `x-macher-signatur`
+(`webhookSignatur()` aus `src/os/server/signatur.ts`, Geheimnis je Webhook in der Einstellung
+`schnittstellen.webhook-geheimnisse`). Die serverseitige Zustellung (`setzeWebhookVersender`, `webhooksZustellen`) ist noch
+nicht verdrahtet – bis dahin zeigt die App „Wird zugestellt, sobald Macher OS mit der Cloud verbunden ist“.
+Empfehlung: `webhooks`, `webhook_auslieferungen` und `ereignisprotokoll` in `sammlung_rechte` auf Chef und Büro beschränken.

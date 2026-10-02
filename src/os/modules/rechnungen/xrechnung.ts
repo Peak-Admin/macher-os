@@ -14,7 +14,7 @@ export { xrechnungAus, type XRechnungDaten } from './xrechnung-xml';
 export function xrechnungFuer(r: RechnungX): string {
   const b = aktuellerBetrieb();
   const k = db.kunden.get(r.kundeId);
-  const original = r.stornoFuerId ? (db.rechnungen.get(r.stornoFuerId) as RechnungX | undefined) : undefined;
+  const original = r.stornoFuerId ? db.rechnungen.get(r.stornoFuerId) : undefined;
   return xrechnungAus({
     r,
     s: rechnungsSummen(r, b),

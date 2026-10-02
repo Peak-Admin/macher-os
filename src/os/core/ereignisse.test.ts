@@ -8,6 +8,7 @@ import {
   apiName,
   auslieferungErgebnis,
   ereignisArt,
+  ereignisGruppe,
   ereignisprotokoll,
   ereignisseAbarbeiten,
   ereignisseSeit,
@@ -45,6 +46,11 @@ describe('Katalog', () => {
     }
     for (const api of ['customer.created', 'request.created', 'quote.sent', 'quote.accepted', 'job.created', 'job.scheduled', 'job.started', 'job.completed', 'invoice.created', 'invoice.sent', 'invoice.paid', 'employee.absent', 'material.low_stock'])
       expect(ereignisArt(api), api).toBeDefined();
+    // fachliche Events, die Module heute selbst senden (emit), stehen alle im Katalog
+    for (const typ of ['zeit.freigegeben', 'import.abgeschlossen', 'import.rueckgaengig', 'formular.ausgefuellt', 'mahnung.versendet', 'bericht.unterschrieben', 'einsatz.gestartet', 'einsatz.beendet', 'einsatz.problem_gemeldet', 'abnahme.unterschrieben', 'dokument.versendet', 'dokument.erstellt', 'auftragsbestaetigung.versendet', 'lieferschein.versendet', 'lieferschein.unterschrieben', 'rechnung.storniert', 'kunde.zusammengefuehrt', 'portal.geoeffnet', 'team.eingeladen', 'team.beigetreten', 'macher.aktion_ausgefuehrt'])
+      expect(ereignisArt(typ), typ).toBeDefined();
+    expect(ereignisGruppe('rechnung.bezahlt')).toBe('Geld');
+    expect(ereignisGruppe('macher.aktion_ausgefuehrt')).toBe('Daten und Macher');
     expect(apiName('rechnung.bezahlt')).toBe('invoice.paid');
     expect(apiName('unbekannt.passiert')).toBe('unbekannt.passiert');
   });
@@ -79,6 +85,15 @@ describe('Ableitung', () => {
     ereignisseAbarbeiten();
     expect(gehoert.filter((e) => e.typ === 'rechnung.versendet')).toHaveLength(1);
     expect(ereignisprotokoll.where((p) => p.typ === 'rechnung.versendet')).toHaveLength(1);
+  });
+
+  it('sendet ein Storno nur einmal, wenn das Modul es zur stornierten Rechnung meldet', () => {
+    gehoert.length = 0;
+    const r = rechnung('versendet');
+    const neu = db.rechnungen.update(r.id, { status: 'storniert' })!;
+    emit({ typ: 'rechnung.storniert', sammlung: 'rechnungen', objekt: neu, daten: { rechnungId: r.id, stornoId: 'st' } });
+    ereignisseAbarbeiten();
+    expect(gehoert.filter((e) => e.typ === 'rechnung.storniert')).toHaveLength(1);
   });
 
   it('meldet überfällige Rechnungen genau einmal je Fälligkeit', () => {

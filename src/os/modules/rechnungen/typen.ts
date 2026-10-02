@@ -1,47 +1,13 @@
 /**
- * Erweiterungen der Kernobjekte Rechnung und Zahlung, die das Paket „geld“ braucht.
- * Die Felder werden direkt am Kernobjekt gespeichert (eine Quelle, keine Kopie).
- * Kernwunsch: diese Felder in `objects.ts` aufnehmen.
+ * Typen des Pakets „geld“. Rechnung und Zahlung tragen alle Felder direkt im Kern (`objects.ts`);
+ * nur der Beleg hat noch Erweiterungen (Skonto, Zuordnungsgrund).
  */
 import { db } from '@core/db';
-import type { Cent, Datum, ID, Rechnung, Zahlung, Beleg } from '@core/objects';
+import type { Datum, ID, Rechnung, Zahlung, Beleg } from '@core/objects';
 
-export type RechnungX = Rechnung & {
-  /** diese Rechnung ist die Stornorechnung zu … */
-  stornoFuerId?: ID;
-  /** diese Rechnung wurde storniert durch … */
-  stornoDurchId?: ID;
-  /** Steuerschuldnerschaft des Leistungsempfängers (§ 13b UStG) */
-  reverseCharge?: boolean;
-  angebotId?: ID;
-  /** Materialbuchungen, die in dieser Rechnung stehen */
-  materialIds?: ID[];
-  /** Zeiteinträge, die in dieser Rechnung stehen */
-  zeitIds?: ID[];
-  /** Zusatzleistungen (Sammlung des Pakets doku), die in dieser Rechnung stehen */
-  zusatzleistungIds?: ID[];
-  leistungVon?: Datum;
-  leistungBis?: Datum;
-  /** von Macher automatisch vorbereitet */
-  vonMacher?: boolean;
-  abschlagProzent?: number;
-  /** freier Text unter den Positionen */
-  bemerkung?: string;
-  /** Sicherheitseinbehalt in Prozent vom Gesamtbetrag (z. B. 5 nach § 17 VOB/B) */
-  einbehaltProzent?: number;
-  /** beim Festschreiben eingefroren: wie viel auf jede abgezogene Abschlags-/Teilrechnung bezahlt war (Cent je ID) */
-  abzugStand?: Record<ID, Cent>;
-  /** eigenes Nummernkürzel nur für diese Rechnung (Standard aus den Nummernkreisen der Dokumenten-Engine) */
-  nummernkreis?: string;
-};
-
-export type ZahlungX = Zahlung & {
-  /** abgezogenes Skonto (zählt als beglichen) */
-  skonto?: Cent;
-  quelle?: 'manuell' | 'kontoauszug';
-  /** Name des Zahlers laut Kontoauszug */
-  zahler?: string;
-};
+/** Die Felder stehen inzwischen direkt am Kernobjekt (`objects.ts`) – die Namen bleiben als Kurzform. */
+export type RechnungX = Rechnung;
+export type ZahlungX = Zahlung;
 
 export type BelegX = Beleg & {
   skontoBis?: Datum;
@@ -50,11 +16,11 @@ export type BelegX = Beleg & {
   zuordnungGrund?: string;
 };
 
-export const rechnungX = (id: ID | undefined) => db.rechnungen.get(id) as RechnungX | undefined;
-export const alleRechnungen = () => db.rechnungen.all() as RechnungX[];
+export const rechnungX = (id: ID | undefined) => db.rechnungen.get(id);
+export const alleRechnungen = () => db.rechnungen.all();
 
 export function rechnungAendern(id: ID, patch: Partial<RechnungX>, opts?: { leise?: boolean; text?: string }) {
-  return db.rechnungen.update(id, patch as Partial<Rechnung>, opts) as RechnungX | undefined;
+  return db.rechnungen.update(id, patch, opts);
 }
 
 export function belegAendern(id: ID, patch: Partial<BelegX>, opts?: { leise?: boolean; text?: string }) {
