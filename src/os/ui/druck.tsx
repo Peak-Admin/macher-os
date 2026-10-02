@@ -36,7 +36,7 @@ export function briefkopf(e: BriefkopfEinstellung = einstellung(BRIEFKOPF_KEY, B
   const fusszeilen = [
     [b?.name, adresse].filter(Boolean).join(' · '),
     [b?.telefon && `Tel. ${b.telefon}`, b?.email].filter(Boolean).join(' · '),
-    e.zeigeBank && b?.iban ? `IBAN ${ibanFormat(b.iban)}` : '',
+    e.zeigeBank && b?.iban ? [`IBAN ${ibanFormat(b.iban)}`, b.bic && `BIC ${b.bic}`].filter(Boolean).join(' · ') : '',
     e.zeigeSteuer ? [b?.steuernummer && `Steuernr. ${b.steuernummer}`, b?.ustId && `USt-IdNr. ${b.ustId}`].filter(Boolean).join(' · ') : '',
     e.zusatz?.trim() ?? '',
   ].filter(Boolean);
