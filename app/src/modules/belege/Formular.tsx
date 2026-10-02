@@ -177,7 +177,7 @@ export function BelegFormular({
           {fristen.skontoBis ? ` · ${String(fristen.skontoProzent).replace('.', ',')} % Skonto bis ${datum(fristen.skontoBis)}` : ''}
         </Meta>
       )}
-      <AuftragAuswahl wert={werte.auftragId} onChange={(id) => set('auftragId', id)} optional />
+      <AuftragAuswahl wert={werte.auftragId} onChange={(id) => set('auftragId', id)} optional nurOffene={false} />
       <AuftragVorschlag beleg={{ datum: werte.datum, ...lief, kategorie: werte.kategorie }} aktuell={werte.auftragId} onWahl={(id) => set('auftragId', id)} />
     </Stapel>
   );

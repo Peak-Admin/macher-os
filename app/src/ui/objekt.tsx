@@ -135,7 +135,8 @@ export function MitarbeiterAuswahl({ wert, onChange, label = 'Mitarbeiter', opti
 }
 
 export function AuftragAuswahl({ wert, onChange, label = 'Auftrag', optional, nurOffene = true }: { wert?: ID; onChange: (id: ID) => void; label?: string; optional?: boolean; nurOffene?: boolean }) {
-  const auftraege = db.auftraege.use((a) => !nurOffene || !['erledigt', 'verloren'].includes(a.phase), [nurOffene]);
+  // der gewählte Auftrag bleibt immer in der Liste, auch wenn er schon erledigt ist
+  const auftraege = db.auftraege.use((a) => !nurOffene || a.id === wert || !['erledigt', 'verloren'].includes(a.phase), [nurOffene, wert]);
   return (
     <Auswahl
       label={label}

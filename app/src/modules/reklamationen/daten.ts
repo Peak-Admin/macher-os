@@ -4,9 +4,10 @@
  */
 import { batch, db, defineCollection, vermerken } from '@core/db';
 import { einstellung } from '@core/einstellungen';
-import { datum, heute, plusTage, tageZwischen, plusMonate } from '@core/format';
+import { datum, heute, tageZwischen, plusMonate } from '@core/format';
 import { naechsteNummer, naechsteNummerFuer } from '@core/nummern';
 import type { Auftrag, Basis, Datum, ID, Kanal } from '@core/objects';
+import { abnahmen } from '@modules/abnahme/daten';
 
 /** Rechtsgrundlage der Mängelhaftung */
 export type Grundlage = 'bgb_bau' | 'bgb' | 'vob_bau' | 'vob';
@@ -97,7 +98,8 @@ export function pruefeGewaehrleistung(p: {
     quelle = 'Gewährleistung bis laut Anlage';
   } else if (p.abnahmeAm) {
     const g = grundlage(p.grundlage);
-    bis = plusTage(plusMonate(p.abnahmeAm, g.jahre * 12), -1);
+    // §§ 187 Abs. 1, 188 Abs. 2 BGB: Der Abnahmetag zählt nicht mit, die Frist endet am gleichnamigen Tag
+    bis = plusMonate(p.abnahmeAm, g.jahre * 12);
     quelle = `Abnahme ${datum(p.abnahmeAm)} + ${g.jahre} Jahre (${g.label})`;
   } else {
     return { ergebnis: 'unklar', quelle: 'Kein Abnahme- oder Abschlussdatum bekannt' };
@@ -106,9 +108,11 @@ export function pruefeGewaehrleistung(p: {
   return { ergebnis: restTage >= 0 ? 'gewaehrleistung' : 'kostenpflichtig', bis, ab: p.abnahmeAm, quelle, restTage };
 }
 
-/** Abnahme-/Abschlussdatum: von Hand → Auftrag abgeschlossen am */
+/** Abnahme-/Abschlussdatum: von Hand → unterschriebene Abnahme → Auftrag abgeschlossen am */
 export function referenzDatum(r: Pick<Reklamation, 'abnahmeAm' | 'auftragId'>): Datum | undefined {
   if (r.abnahmeAm) return r.abnahmeAm;
+  const abnahme = abnahmen.where((x) => x.auftragId === r.auftragId && x.status === 'unterschrieben').sort((x, y) => x.datum.localeCompare(y.datum))[0];
+  if (abnahme) return abnahme.datum;
   const a = db.auftraege.get(r.auftragId);
   return a?.abgeschlossenAm?.slice(0, 10);
 }
