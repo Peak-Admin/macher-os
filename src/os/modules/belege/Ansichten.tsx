@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { db, useDatenstand, vermerken } from '@core/db';
-import { datum, euro, passt } from '@core/format';
+import { datum, euro, heute, passt } from '@core/format';
 import type { ID } from '@core/objects';
 import { useDarf } from '@core/session';
 import {
@@ -15,6 +15,7 @@ import {
   Leer,
   Liste,
   ListenZeile,
+  Zeile,
   Meldung,
   Meta,
   Seite,
@@ -27,10 +28,12 @@ import {
   GeldEingabe,
   DateiKnopf,
 } from '@ui/index';
-import { AuftragAuswahl, ObjektLink, Zeitstrahl } from '@ui/objekt';
+import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
-import { ART_LABEL, KATEGORIEN, alleBelege, belegX, brutto, dateiAblegen, lieferantName, naechsteFrist } from './logik';
-import { AuftragVorschlag, BelegFormular, LieferantenListe, Vorschau, belegAusWerten, leereWerte, lieferantAus, type FormularWerte } from './Formular';
+import { ART_LABEL, KATEGORIEN, alleBelege, belegX, belegeCsv, brutto, dateiAblegen, lieferantName, naechsteFrist, passtZuordnung, type ZuordnungFilter } from './logik';
+import { betriebsbereiche, zuAuftrag, zuBereich } from './bereiche';
+import { herunterladen } from '../rechnungen/xrechnung';
+import { BelegFormular, ZuordnungFelder, LieferantenListe, Vorschau, belegAusWerten, leereWerte, lieferantAus, type FormularWerte } from './Formular';
 
 const STATUS = { neu: { text: 'Neu', ton: 'aktiv' }, geprueft: { text: 'Geprüft', ton: 'neutral' }, bezahlt: { text: 'Bezahlt', ton: 'erfolg' } } as const;
 
@@ -43,39 +46,67 @@ export function BelegStatus({ b }: { b: BelegX }) {
   return <Status ton={s.ton}>{s.text}</Status>;
 }
 
-type F = 'offen' | 'neu' | 'ohne' | 'bezahlt' | 'alle';
+type F = 'alle' | 'neu' | 'offen' | 'bezahlt';
 
 export function BelegeListe() {
   useDatenstand();
   const geld = useDarf('geld');
-  const [filter, setFilter] = useState<F>('offen');
+  const toast = useToast();
+  const [filter, setFilter] = useState<F>('alle');
+  const [zuordnung, setZuordnung] = useState<ZuordnungFilter>('');
   const [q, setQ] = useState('');
   const alle = alleBelege();
+  const bereiche = betriebsbereiche();
   const zeigen = alle
-    .filter((b) => (filter === 'offen' ? b.status !== 'bezahlt' : filter === 'neu' ? b.status === 'neu' : filter === 'ohne' ? !b.auftragId : filter === 'bezahlt' ? b.status === 'bezahlt' : true))
-    .filter((b) => !q || passt(q, lieferantName(b), b.nummer, b.kategorie, db.auftraege.get(b.auftragId)?.nummer))
+    .filter((b) => (filter === 'offen' ? b.status !== 'bezahlt' : filter === 'neu' ? b.status === 'neu' : filter === 'bezahlt' ? b.status === 'bezahlt' : true))
+    .filter((b) => passtZuordnung(b, zuordnung))
+    .filter((b) => !q || passt(q, lieferantName(b), b.nummer, b.kategorie, b.bereich, db.auftraege.get(b.auftragId)?.nummer))
     .sort((a, b) => (naechsteFrist(a)?.datum ?? '9999').localeCompare(naechsteFrist(b)?.datum ?? '9999') || b.datum.localeCompare(a.datum));
+  const gefiltert = !!(q || zuordnung || filter !== 'alle');
+  const csv = () => {
+    herunterladen(`belege-${heute()}.csv`, belegeCsv(zeigen), 'text/csv');
+    toast(zeigen.length === 1 ? '1 Beleg als CSV heruntergeladen.' : `${zeigen.length} Belege als CSV heruntergeladen.`);
+  };
   return (
-    <Seite titel="Eingangsrechnungen & Belege" aktion={<Button icon="kamera" to="/betrieb/belege/neu">Beleg fotografieren</Button>}>
-      <Filter
-        label="Belege filtern"
-        wert={filter}
-        onChange={setFilter}
-        optionen={[
-          { wert: 'offen', label: 'Unbezahlt', zaehler: alle.filter((b) => b.status !== 'bezahlt').length },
-          { wert: 'neu', label: 'Zu prüfen', zaehler: alle.filter((b) => b.status === 'neu').length },
-          { wert: 'ohne', label: 'Ohne Auftrag', zaehler: alle.filter((b) => !b.auftragId).length },
-          { wert: 'bezahlt', label: 'Bezahlt' },
-          { wert: 'alle', label: 'Alle' },
-        ]}
-      />
-      <Suchfeld wert={q} onChange={setQ} platzhalter="Lieferant, Nummer, Auftrag …" />
+    <Seite titel="Eingangsrechnungen & Belege" aktion={<Button icon="plus" to="/betrieb/belege/neu">Rechnung hinzufügen</Button>}>
+      <Stapel abstand={12}>
+        <Filter
+          label="Belege filtern"
+          wert={filter}
+          onChange={setFilter}
+          optionen={[
+            { wert: 'alle', label: 'Alle' },
+            { wert: 'neu', label: 'Zu prüfen', zaehler: alle.filter((b) => b.status === 'neu').length },
+            { wert: 'offen', label: 'Unbezahlt', zaehler: alle.filter((b) => b.status !== 'bezahlt').length },
+            { wert: 'bezahlt', label: 'Bezahlt' },
+          ]}
+        />
+        <FormRaster>
+          <Auswahl
+            label="Zuordnung"
+            value={zuordnung}
+            leer="Alle Aufträge und Bereiche"
+            onChange={(e) => setZuordnung(e.target.value)}
+            optionen={[
+              { wert: 'auftrag', label: 'Zu einem Auftrag' },
+              ...bereiche.map((b) => ({ wert: b, label: b })),
+              { wert: 'ohne', label: `Noch nicht zugeordnet (${alle.filter((b) => passtZuordnung(b, 'ohne')).length})` },
+            ]}
+          />
+        </FormRaster>
+        <Suchfeld wert={q} onChange={setQ} platzhalter="Lieferant, Nummer, Auftrag …" />
+      </Stapel>
       <Liste
         leer={
-          q || filter !== 'offen' ? (
+          gefiltert ? (
             <Leer titel="Keine Belege gefunden" text="Ändere den Filter oder die Suche." icon="suche" />
           ) : (
-            <Leer titel="Keine offenen Belege" text="Fotografiere Lieferantenrechnungen und Quittungen direkt auf der Baustelle – Macher schlägt den Auftrag vor." aktion={<Button to="/betrieb/belege/neu">Beleg fotografieren</Button>} icon="kamera" />
+            <Leer
+              titel="Noch keine Belege"
+              text="Fotografiere Lieferantenrechnungen und Quittungen oder lade das PDF hoch – Macher schlägt Auftrag oder Betriebsbereich vor."
+              aktion={<Button to="/betrieb/belege/neu">Rechnung hinzufügen</Button>}
+              icon="kamera"
+            />
           )
         }
       >
@@ -92,12 +123,20 @@ export function BelegeListe() {
                   {geld ? ` · ${euro(brutto(b))}` : ''} <BeispielMarke zeigen={b.beispiel} />
                 </>
               }
-              untertitel={[ART_LABEL[b.art], datum(b.datum), a ? a.nummer : 'ohne Auftrag', f ? `${f.art === 'skonto' ? 'Skonto bis' : 'zahlen bis'} ${datum(f.datum)}` : null].filter(Boolean).join(' · ')}
+              untertitel={[ART_LABEL[b.art], datum(b.datum), a ? a.nummer : b.bereich ?? 'nicht zugeordnet', f ? `${f.art === 'skonto' ? 'Skonto bis' : 'zahlen bis'} ${datum(f.datum)}` : null].filter(Boolean).join(' · ')}
               rechts={<BelegStatus b={b} />}
             />
           );
         })}
       </Liste>
+      {geld && zeigen.length > 0 && (
+        <Zeile zwischen>
+          <Meta>{zeigen.length === 1 ? '1 Beleg in dieser Ansicht' : `${zeigen.length} Belege in dieser Ansicht`}</Meta>
+          <Button variante="sekundaer" icon="download" onClick={csv}>
+            Herunterladen
+          </Button>
+        </Zeile>
+      )}
     </Seite>
   );
 }
@@ -116,7 +155,7 @@ export function BelegNeu() {
     navigate(`/betrieb/belege/${b.id}`, { replace: true });
   };
   return (
-    <Seite titel="Beleg fotografieren" zurueck={{ to: '/betrieb/belege', label: 'Belege' }}>
+    <Seite titel="Rechnung hinzufügen" zurueck={{ to: '/betrieb/belege', label: 'Belege' }}>
       <Karte>
         <Stapel abstand={24}>
           <BelegFormular werte={werte} setWerte={(w) => (setWerte(w), setFehler(undefined))} datei={datei} setDatei={setDatei} fehler={fehler} />
@@ -205,7 +244,7 @@ export function BelegDetail() {
           {skontoBetrag ? `Zahlst du rechtzeitig, sparst du ${euro(skontoBetrag)}.` : 'Zahl rechtzeitig, dann darfst du Skonto abziehen.'}
         </Meldung>
       )}
-      {b.zuordnungGrund && b.auftragId && <Meldung ton="neutral" titel="Von Macher zugeordnet">{b.zuordnungGrund}</Meldung>}
+      {b.zuordnungGrund && (b.auftragId || b.bereich) && <Meldung ton="neutral" titel="Von Macher zugeordnet">{b.zuordnungGrund}</Meldung>}
       <ZweiSpalten
         haupt={
           <Karte>
@@ -235,8 +274,19 @@ export function BelegDetail() {
                   />
                 )}
               </FormRaster>
-              <AuftragAuswahl wert={b.auftragId ?? ''} onChange={(aid) => (set({ auftragId: aid || undefined, zuordnungGrund: undefined }), b.dokumentId && db.dokumente.update(b.dokumentId, { auftragId: aid || undefined }, { leise: true }))} optional nurOffene={false} />
-              <AuftragVorschlag beleg={b} aktuell={b.auftragId} onWahl={(aid) => (set({ auftragId: aid, zuordnungGrund: undefined }), toast('Auftrag zugeordnet.'))} />
+              <ZuordnungFelder
+                beleg={b}
+                onAuftrag={(aid) => {
+                  belegAendern(b.id, zuAuftrag(aid), { text: aid ? `Auftrag ${db.auftraege.get(aid)?.nummer ?? ''} zugeordnet` : 'Auftrag entfernt' });
+                  if (b.dokumentId) db.dokumente.update(b.dokumentId, { auftragId: aid }, { leise: true });
+                  if (aid) toast('Auftrag zugeordnet.');
+                }}
+                onBereich={(bereich) => {
+                  belegAendern(b.id, zuBereich(bereich), { text: bereich ? `Bereich ${bereich} zugeordnet` : 'Bereich entfernt' });
+                  if (bereich && b.dokumentId && b.auftragId) db.dokumente.update(b.dokumentId, { auftragId: undefined }, { leise: true });
+                  if (bereich) toast(`Bereich ${bereich} zugeordnet.`);
+                }}
+              />
             </Stapel>
           </Karte>
         }

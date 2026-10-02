@@ -6,6 +6,7 @@ import type { Arbeitsweise, Betrieb, Gewerk } from '@core/objects';
 import { useDarf } from '@core/session';
 import { Abschnitt, Auswahl, Button, Checkbox, Eingabe, FormRaster, Karte, Leer, Meldung, Meta, Schalter, Seite, Stapel, Zeile, useToast } from '@ui/index';
 import { istBetrag } from '@modules/leistungen/daten';
+import { BereicheEinstellung } from '@modules/belege/BereicheEinstellung';
 import { EinstellungenTabs } from './Navigation';
 import { fehlendeRechnungsangaben, ibanGueltig, papierkorbEintraege, ustIdFormatOk } from './daten';
 
@@ -13,11 +14,13 @@ export function Betriebsdaten() {
   useDatenstand();
   const b = db.betrieb.get('betrieb');
   const papierkorb = papierkorbEintraege().length;
+  const geld = useDarf('geld');
   return (
     <Seite titel="Einstellungen" untertitel="Grunddaten deines Betriebs – sie stehen auf Angeboten und Rechnungen.">
       <Stapel abstand={24}>
         <EinstellungenTabs aktiv="" papierkorb={papierkorb} />
         {b ? <Formular key={b.geaendertAm} betrieb={b} /> : <Leer titel="Noch kein Betrieb eingerichtet" icon="betrieb" />}
+        {b && geld && <BereicheEinstellung />}
       </Stapel>
     </Seite>
   );

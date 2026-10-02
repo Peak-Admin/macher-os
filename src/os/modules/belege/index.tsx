@@ -7,6 +7,7 @@ import type { ID } from '@core/objects';
 import { darf } from '@core/session';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
 import { AuftragBelegeTab, BelegDetail, BelegeListe, BelegNeu, BelegSchnell } from './Ansichten';
+import { bereichVorschlag } from './bereiche';
 import { alleBelege, auftragVorschlaege, belegX, brutto, fristenAusKonditionen, lieferantName, naechsteFrist, sichererVorschlag } from './logik';
 
 const pfad = (id: ID) => `/betrieb/belege/${id}`;
@@ -35,7 +36,7 @@ export default defineModul({
     return neu ? { text: neu === 1 ? '1 Beleg zu prüfen' : `${neu} Belege zu prüfen`, ton: 'aktiv' } : undefined;
   },
   schnell: [{ id: 'beleg', label: 'Beleg fotografieren', icon: 'kamera', component: BelegSchnell, gewicht: 45 }],
-  erstellen: [{ label: 'Beleg fotografieren', pfad: '/betrieb/belege/neu', gewicht: 35 }],
+  erstellen: [{ label: 'Rechnung hinzufügen', pfad: '/betrieb/belege/neu', gewicht: 35 }],
   tabs: [
     {
       objekt: 'auftraege',
@@ -101,23 +102,34 @@ export default defineModul({
     },
     'beleg.zuordnung-aufheben': (payload) => {
       const id = (payload as { belegId: ID }).belegId;
-      belegAendern(id, { auftragId: undefined, zuordnungGrund: undefined }, { text: 'Zuordnung aufgehoben' });
+      belegAendern(id, { auftragId: undefined, bereich: undefined, zuordnungGrund: undefined }, { text: 'Zuordnung aufgehoben' });
       return pfad(id);
     },
   },
   automationen: [
     {
       id: 'belege.zuordnen',
-      titel: 'Belege dem richtigen Auftrag zuordnen',
-      beschreibung: 'Passt ein Beleg eindeutig zu einem Auftrag (gleicher Lieferant, Einsatz am selben Tag), ordnet Macher ihn zu. Du kannst es rückgängig machen.',
+      titel: 'Belege dem richtigen Auftrag oder Betriebsbereich zuordnen',
+      beschreibung:
+        'Passt ein Beleg eindeutig zu einem Auftrag (gleicher Lieferant, Einsatz am selben Tag), ordnet Macher ihn zu. Sonst nimmt Macher den Betriebsbereich, wenn er klar ist (Tankbeleg → Fahrzeuge, Lieferant wie beim letzten Mal). Du kannst es rückgängig machen.',
       standardAn: true,
       minuten: 2,
       start: () =>
         on('belege.created', (e) => {
           const b = e.objekt as BelegX | undefined;
-          if (!b || b.auftragId) return;
+          if (!b || b.auftragId || b.bereich) return;
           const v = sichererVorschlag(auftragVorschlaege(b));
-          if (!v) return;
+          if (!v) {
+            const bv = bereichVorschlag(b);
+            if (!bv?.sicher) return;
+            belegAendern(b.id, { bereich: bv.bereich, zuordnungGrund: bv.grund }, { text: `Macher hat den Bereich ${bv.bereich} zugeordnet` });
+            erledigt('belege.zuordnen', `Beleg von ${lieferantName(b)} dem Bereich ${bv.bereich} zugeordnet`, {
+              text: bv.grund,
+              bezug: { typ: 'belege', id: b.id },
+              rueckgaengig: { aktion: 'beleg.zuordnung-aufheben', payload: { belegId: b.id } },
+            });
+            return;
+          }
           const a = db.auftraege.get(v.auftragId);
           const grund = v.gruende.join(' · ');
           belegAendern(b.id, { auftragId: v.auftragId, zuordnungGrund: grund }, { text: `Macher hat ${a?.nummer} zugeordnet` });
@@ -150,7 +162,7 @@ export default defineModul({
   ],
   suche: (q) =>
     alleBelege()
-      .filter((b) => passt(q, lieferantName(b), b.nummer, b.kategorie, db.auftraege.get(b.auftragId)?.nummer))
+      .filter((b) => passt(q, lieferantName(b), b.nummer, b.kategorie, b.bereich, db.auftraege.get(b.auftragId)?.nummer))
       .slice(0, 6)
       .map((b) => ({
         typ: 'Beleg',
