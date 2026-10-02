@@ -1,0 +1,30 @@
+# macher-os – Hinweise für Claude
+
+macher-os ist ein Handwerks-OS (siehe `README.md`). Projektsprache ist Deutsch.
+
+## Design & Marke – verbindlich
+
+Für **jede** Oberfläche, jedes Mockup und jeden UI-Text gilt das Brand & Software Design Playbook:
+**[`docs/design/brand-playbook.md`](docs/design/brand-playbook.md)** (Mission Mittelstand, v1.0).
+
+Vor UI-Arbeit lesen: Abschnitte 2–5 (Marke, Farben, Schrift), 6–11 (Layout, Komponenten, Tonalität, Screens),
+14 (Design-Tokens als CSS-Start), 16 (Abnahmecheckliste).
+
+Die wichtigsten Festlegungen in Kürze:
+
+- **Schrift:** Barlow (400–900) für alles; Poppins 600 nur für kleine Oberzeilen in Versalien. Kein Ersatz durch Inter/System-Fonts.
+- **Farben:** nur die Palette aus Abschnitt 4 / Tokens aus Abschnitt 14 (`--mm-*`).
+  - Primärbutton: `#06480C` mit weißer Schrift. Hover `#1F6135`.
+  - Markengrün `#2F9250` für Akzente, aktive Rahmen, große Typo – nicht für kleinen weißen Buttontext.
+  - Kleine grüne Links/Texte: `#1F6135`.
+  - Arbeitsfläche hell: `#F7FAFB`, Karten `#FFFFFF`, Linien `#D9D9D9`, Text `#374040`.
+  - Orange `#E69433` nur für Kampagnen, nie als konkurrierende Hauptaktion.
+- **Form:** kleine Radien (Controls 4 px, Karten 5–8 px, Dialoge 8 px), überwiegend flach, feine Schatten.
+- **Raster:** 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 px. Sidebar 240 px, Topbar 64 px, max. Inhaltsbreite 1360 px.
+- **Controls:** Höhe 44 px, Label oberhalb jedes Feldes, sichtbarer 2-px-Fokusring.
+- **Status:** immer Text + optional Icon, nie nur Farbe (neutral / in Bearbeitung / erfolgreich / Aufmerksamkeit).
+- **Tonalität:** direkte Du-Ansprache („du“, „dein“ klein), konkrete Verben („Auftrag anlegen“), kurze Sätze, keine erfundenen Zahlen.
+- **Bewegung:** 120–180 ms ease-out, keine Layoutsprünge, `prefers-reduced-motion` respektieren.
+- **Vermeiden:** große Pillen-Radien überall, beliebiges Smaragdgrün, lila/blaue KI-Verläufe, Versalien im Arbeitsalltag,
+  Stockfotos als Ansprechpartner, mehrere bunte Hauptaktionen.
+- Jeder Screen braucht gestaltete Leer-, Lade-, Fehler- und Erfolgszustände und funktioniert bei 390 px Breite.

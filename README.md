@@ -18,6 +18,10 @@ Handwerker sollen sich auf ihr Handwerk konzentrieren können, nicht auf Zettelw
 - **Material & Lager** – Bestände und Bestellungen im Griff
 - **Dokumentation** – Fotos, Notizen und Abnahmen pro Auftrag
 
+## Design
+
+Gestaltung und Tonalität folgen dem [Brand & Software Design Playbook](docs/design/brand-playbook.md).
+
 ## Status
 
 🚧 Das Projekt steht ganz am Anfang.
