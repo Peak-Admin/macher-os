@@ -1,6 +1,6 @@
 import { PageHero } from "@/components/sections";
 import { Section } from "@/components/ui";
-import { gewerkBildnachweise, missionMittelstandBilder, type Bildnachweis } from "@/content/bilder";
+import { auftaktBilder, gewerkBildnachweise, missionMittelstandBilder, type Bildnachweis } from "@/content/bilder";
 import { gewerkCluster, topGewerke } from "@/content/registry";
 import { pageMeta } from "@/lib/metadata";
 
@@ -61,6 +61,7 @@ export default function BildnachweisePage() {
       />
       <Section tone="white" containerSize="narrow">
         <Liste titel="Mission Mittelstand" bilder={missionMittelstandBilder} />
+        <Liste titel="Markenauftakt" bilder={auftaktBilder} />
         {gewerke.length > 0 && <Liste titel="Gewerke" bilder={gewerke} />}
       </Section>
     </>

@@ -69,6 +69,7 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - `src/content/bilder.ts` – Bildregister; Fotos liegen unter `public/bilder/`, eingebunden nur über `<Foto bild="…" />`
   (`src/components/ui/Foto.tsx`, serverseitig). Fehlt eine Datei, erscheint eine Markenfläche. Liste: `docs/design/bilder.md`
 - `src/components/sections/Bild.tsx` – Bildbausteine im Mission-Mittelstand-Stil (BildKarten, BereichsKarte, BildText, FotoBuehne, DunklerAbschnitt)
+- `src/components/auftakt/` – Markenauftakt (Preloader, einmal pro Sitzung, Website und Software). Doku: `docs/design/auftakt.md`
 - `src/lib/site.ts` – Navigation, Footer, CTAs
 - `src/lib/metadata.ts` – `pageMeta()` für Titel, Beschreibung, Canonical
 
