@@ -41,7 +41,7 @@ für `/os/sw.js`.
 
 ## Was nur mit Schlüsseln geht
 
-- `SUPABASE_URL`/`VITE_SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (und die Migrationen von fundament + `…_aktivierung.sql`): `/api/oeffentlich/lesen`, `/api/oeffentlich/aktion`, `/api/eingang/email`. Ohne → `501 { fehler: "nicht verbunden" }`, der Browser zeigt den lokalen Rückfall.
+- `SUPABASE_URL` bzw. `NEXT_PUBLIC_SUPABASE_URL` (wie fundament) + `SUPABASE_SERVICE_ROLE_KEY` (und die Migrationen von fundament + `…_aktivierung.sql`): `/api/oeffentlich/lesen`, `/api/oeffentlich/aktion`, `/api/eingang/email`. Ohne → `501 { fehler: "nicht verbunden" }`, der Browser zeigt den lokalen Rückfall.
 - Optional `EINGANG_WEBHOOK_SECRET` (neu): wenn gesetzt, muss der Webhook `?schluessel=…` oder Basic-Auth-Passwort mitschicken.
 - Mail-Dienst: Inbound-Domain `*.macher-os.de` (MX) beim Anbieter einrichten und Webhook auf `/api/eingang/email` zeigen lassen.
 - Echte SMS/E-Mail für „Wir sind unterwegs“ und echter Push: über die Cloud-Implementierung von `fundament`.
