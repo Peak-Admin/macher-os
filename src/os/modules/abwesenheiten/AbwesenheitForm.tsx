@@ -11,13 +11,13 @@ import { eintragen } from './logik';
 type Art = Extract<AbwesenheitsArt, 'urlaub' | 'krank' | 'schule' | 'frei' | 'sonstiges'>;
 
 /** Antrag in Sekunden: Urlaub beantragen, krank melden, Berufsschule eintragen */
-export function AbwesenheitForm({ fertig, vorgabeArt = 'urlaub' }: { fertig?: (id: ID) => void; vorgabeArt?: Art }) {
+export function AbwesenheitForm({ fertig, vorgabeArt = 'urlaub', vorgabeMa }: { fertig?: (id: ID) => void; vorgabeArt?: Art; vorgabeMa?: ID }) {
   const ich = useIch();
   const personal = useDarf('personal');
   const buero = istBuero(ich);
   const toast = useToast();
   const [art, setArt] = useState<Art>(vorgabeArt);
-  const [maId, setMaId] = useState<ID>(ich?.id ?? '');
+  const [maId, setMaId] = useState<ID>(((buero || personal) && vorgabeMa && db.mitarbeiter.get(vorgabeMa)?.id) || ich?.id || '');
   const [von, setVon] = useState(heute());
   const [bis, setBis] = useState(heute());
   const [halbtags, setHalbtags] = useState(false);
