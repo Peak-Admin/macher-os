@@ -66,8 +66,8 @@ export function HerausgeberMarke({ dark = false, className = "" }: { dark?: bool
 }
 
 const punkte = [
-  "Gemeinsam mit Mission Mittelstand entwickelt",
-  "Gebaut für Betriebe, wie Mission Mittelstand sie in der Beratung begleitet",
+  "Von Handwerkern für Handwerker entwickelt",
+  "Gebaut aus dem Alltag echter Betriebe – nicht am Schreibtisch",
   "Eine Software für Büro und Baustelle – kein Flickenteppich aus Programmen",
 ];
 
@@ -77,8 +77,8 @@ const punkte = [
  */
 export function MissionMittelstand({
   id,
-  title = "Aus der Beratung. Fürs Handwerk.",
-  intro = `Macher OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. ${herausgeber.name} begleitet Handwerksbetriebe und Mittelständler in der Beratung – Macher OS bringt diese Erfahrung in deinen Betriebsalltag.`,
+  title = "Von Handwerkern. Für Handwerker.",
+  intro = `Macher OS ist eine Mission Mittelstand: ein Projekt von ${herausgeber.name}, gemacht von Leuten, die den Betriebsalltag kennen – für Betriebe, die lieber arbeiten als verwalten.`,
 }: {
   id?: string;
   title?: string;
@@ -171,7 +171,7 @@ export function MissionMittelstandStreifen({ className = "" }: { className?: str
               Hinter Macher OS steht {herausgeber.name}.
             </h2>
             <p className="mt-3 text-lg leading-relaxed text-muted">
-              {person.name} und sein Team begleiten Handwerksbetriebe in der Beratung. Diese Erfahrung steckt in Macher OS.
+              Von Handwerkern für Handwerker: Macher OS ist aus dem Alltag echter Betriebe gebaut, nicht am Schreibtisch.
             </p>
             <Link
               href="/ueber-uns#mission-mittelstand"

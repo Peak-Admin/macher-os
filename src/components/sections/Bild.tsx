@@ -171,11 +171,11 @@ export function BildText({
   bild: BildKey;
   children: ReactNode;
   seite?: "links" | "rechts";
-  tone?: "white" | "paper" | "ink";
+  tone?: "white" | "paper" | "ink" | "beige";
   /** Optional über dem Foto, z. B. ein Handy-Mock. */
   overlay?: ReactNode;
 }) {
-  const tones = { white: "bg-white text-ink", paper: "bg-paper text-ink", ink: "bg-ink text-white" };
+  const tones = { white: "bg-white text-ink", paper: "bg-paper text-ink", ink: "bg-ink text-white", beige: "bg-beige text-ink" };
   const rechts = seite === "rechts";
   // Ohne Foto und ohne Produktansicht keine Bildfläche: der Text steht allein, ruhig und lesbar.
   if (!fotoVorhanden(bild) && !overlay) {
