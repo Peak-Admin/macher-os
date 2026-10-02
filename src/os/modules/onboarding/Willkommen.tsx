@@ -5,7 +5,7 @@ import { ARBEITSWEISEN, GEWERKE, gewerkVorlage } from '@core/gewerke';
 import { euro } from '@core/format';
 import type { Arbeitsweise, Gewerk } from '@core/objects';
 import { einrichten } from '@core/seed';
-import { AuswahlKarten, Button, Eingabe, FormRaster, Fortschritt, Kennzahl, Liste, ListenZeile, Meldung, Meta, Oberzeile, Raster, Stapel, Zeile, useBestaetigen, type IconName, DateiFeld } from '@ui/index';
+import { AuswahlKarten, Button, Icon, Eingabe, FormRaster, Fortschritt, Kennzahl, Liste, ListenZeile, Meldung, Meta, Oberzeile, Raster, Stapel, Zeile, useBestaetigen, type IconName, DateiFeld } from '@ui/index';
 import { betriebEinrichten, gewerkLabel, kundenAusCsv, TEAM, vorbereitet, type Antworten, type CsvErgebnis, type Startdaten, type Teamgroesse } from './daten';
 import './onboarding.css';
 
@@ -147,12 +147,7 @@ function Ablauf({ onFertig }: { onFertig: () => void }) {
 
       {schritt === 0 && (
         <Frage titel="Was macht ihr?" text="Dein Gewerk bestimmt Leistungen, Material, Qualifikationen und Begriffe. Alles lässt sich später ändern.">
-          <AuswahlKarten
-            label="Gewerk"
-            wert={a.gewerk ?? ('' as Gewerk)}
-            onChange={(v) => gewerkWaehlen(v as Gewerk)}
-            optionen={GEWERKE.map((g) => ({ wert: g.id, label: g.label, text: g.leistungen.slice(1, 4).map((l) => l.name).join(', ') }))}
-          />
+          <GewerkKarten wert={a.gewerk} onChange={gewerkWaehlen} />
         </Frage>
       )}
 
@@ -279,6 +274,67 @@ function Ablauf({ onFertig }: { onFertig: () => void }) {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Fotos aus dem Bildregister der Website (`public/bilder/gewerke/…`, siehe `docs/design/bilder.md`).
+ * Fehlt ein Foto, zeigt die Karte eine Markenfläche mit Pfeilmotiv und Icon.
+ */
+const GEWERK_BILD: Record<Gewerk, { datei: string; icon: IconName }> = {
+  elektro: { datei: 'elektriker', icon: 'stecker' },
+  shk: { datei: 'shk', icon: 'werkzeug' },
+  maler: { datei: 'maler', icon: 'stift' },
+  dach: { datei: 'dachdecker', icon: 'betrieb' },
+  tischler: { datei: 'tischler', icon: 'werkzeug' },
+  fliesen: { datei: 'fliesenleger', icon: 'liste' },
+  garten: { datei: 'galabau', icon: 'ort' },
+  metall: { datei: 'metall-maschinen', icon: 'werkzeug' },
+  bau: { datei: 'bau', icon: 'lager' },
+  sonstiges: { datei: 'weitere-gewerke', icon: 'werkzeug' },
+};
+
+function GewerkKarten({ wert, onChange }: { wert?: Gewerk; onChange: (g: Gewerk) => void }) {
+  return (
+    <div className="ob-gewerke" role="radiogroup" aria-label="Gewerk">
+      {GEWERKE.map((g) => {
+        const an = wert === g.id;
+        return (
+          <button key={g.id} type="button" role="radio" aria-checked={an} className={`ob-gewerk${an ? ' ob-gewerk--an' : ''}`} onClick={() => onChange(g.id)}>
+            <GewerkFoto gewerk={g.id} />
+            {an && (
+              <span className="ob-gewerk-haken" aria-hidden="true">
+                <Icon name="check" size={16} />
+              </span>
+            )}
+            <span className="ob-gewerk-text">
+              <strong>{g.label}</strong>
+              <span className="mm-meta">{g.leistungen.slice(1, 4).map((l) => l.name).join(', ')}</span>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function GewerkFoto({ gewerk }: { gewerk: Gewerk }) {
+  const { datei, icon } = GEWERK_BILD[gewerk];
+  const [fehlt, setFehlt] = useState(false);
+  return (
+    <span className={`ob-gewerk-bild${fehlt ? ' ob-gewerk-bild--ersatz' : ''}`} aria-hidden="true">
+      {fehlt ? (
+        <>
+          <svg viewBox="0 0 220 200" className="ob-gewerk-pfeile" fill="currentColor">
+            <path d="M0 0h52l70 100-70 100H0l70-100Z" />
+            <path d="M90 0h52l70 100-70 100H90l70-100Z" opacity=".55" />
+          </svg>
+          <Icon name={icon} size={32} className="ob-gewerk-icon" />
+        </>
+      ) : (
+        <img src={`/bilder/gewerke/${datei}.jpg`} alt="" loading="lazy" decoding="async" onError={() => setFehlt(true)} />
+      )}
+    </span>
   );
 }
 
