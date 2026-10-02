@@ -52,7 +52,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-paper/90 backdrop-blur-md supports-[backdrop-filter]:bg-paper/80">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:gap-6 sm:px-6 lg:px-8">
         <Logo />
 
         <nav aria-label="Hauptnavigation" className="hidden flex-1 lg:block" onMouseLeave={scheduleClose}>
@@ -116,7 +116,7 @@ export function Header() {
         </div>
 
         {/* Mobil: primärer CTA bleibt sichtbar */}
-        <div className="ml-auto flex items-center gap-2 lg:hidden">
+        <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2 lg:hidden">
           <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg btn-primaer px-3 py-1.5">
             {cta.primary.label}
           </Link>

@@ -4,13 +4,13 @@ import { app } from "@/lib/site";
  * Pläne: ein Preis je Betrieb nach Teamgröße, alles drin.
  *
  * Gemeinsame Quelle der Werte (Namen, Grenzen, Preise, Testtage) ist
- * `os/src/modules/abo/plaene.ts` – dieselbe Datei rechnet in der App „Dein Plan“ und
+ * `src/os/modules/abo/plaene.ts` – dieselbe Datei rechnet in der App „Dein Plan“ und
  * in den Server-Funktionen für Stripe. Hier nur Texte für die Website ergänzen, keine Zahlen.
  *
  * ACHTUNG: Die Preise sind vorläufig (`preiseVorlaeufig`), bis sie freigegeben sind.
  * Alle Preise netto pro Monat.
  */
-import { PLAN_QUELLE } from "../../os/src/modules/abo/plaene";
+import { PLAN_QUELLE } from "@/os/modules/abo/plaene";
 
 export type Plan = {
   id: "solo" | "team" | "betrieb" | "unternehmen";
