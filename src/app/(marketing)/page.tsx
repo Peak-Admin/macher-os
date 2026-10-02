@@ -23,6 +23,7 @@ import {
   Faq,
   FaqJsonLd,
   Icon,
+  IconTile,
   Section,
   SectionHeading,
   type FaqItem,
@@ -335,9 +336,7 @@ export default function HomePage() {
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {machtMacher.map((m) => (
               <li key={m.text} className="flex items-center gap-3 karte-dunkel p-4">
-                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg icon-kachel">
-                  <Icon name={m.icon} className="size-5" />
-                </span>
+                <IconTile name={m.icon} className="size-9" />
                 <span className="font-semibold leading-snug">{m.text}</span>
               </li>
             ))}

@@ -13,6 +13,8 @@
   --mm-forest: #102c21;
   /* Akzentgrün nur auf dunklen Markenflächen (Kontrast auf Weiß reicht nicht) */
   --mm-brand-accent: #69af44;
+  /* Logogrün: nur im Logo und hinten in den Glas-Icons */
+  --mm-brand-logo: #2f9250;
   --mm-brand-deep: var(--mm-brand-ink);
   --mm-brand-text: var(--mm-brand-ink);
   --mm-dark: var(--mm-forest);
@@ -46,6 +48,11 @@
   /* Icon-Flächen: helles Markengrün, Icon in dunklem Grün (ein Grünton für alles) */
   --mm-icon-tile: var(--mm-brand-soft);
   --mm-on-icon-tile: var(--mm-brand-ink);
+  /* Glas-Icons (Themen-Icons, src/os/ui/glas.tsx) – gleiche Namen wie auf der Website */
+  --glas-hell: var(--mm-brand-logo);
+  --glas-dunkel: var(--mm-brand);
+  --glas-milch: var(--mm-brand-soft);
+  --glas-licht: var(--mm-surface);
   /* Wechsler (Segmente, Ansichten): heller, kompakter Umschalter – nie dunkle Balken */
   --mm-switch-bg: var(--mm-surface-subtle);
   --mm-switch-active: var(--mm-surface);

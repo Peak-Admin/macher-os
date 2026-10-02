@@ -1,4 +1,4 @@
-import type { GlasIconName } from "@/components/ui/GlasIcon";
+import type { GlasIconName } from "@/os/ui/glas";
 
 export const site = {
   name: "Macher OS",
@@ -108,7 +108,7 @@ export const mainNav: NavItem[] = [
           titel: "Aufträge",
           links: [
             { label: "Anfragen", href: f("anfragen"), icon: "anfragen" },
-            { label: "Angebote schreiben", href: f("angebote"), icon: "angebot" },
+            { label: "Angebote schreiben", href: f("angebote"), icon: "dokument" },
             { label: "Aufträge bearbeiten", href: f("auftraege"), icon: "auftrag" },
             { label: "Rechnungen schreiben", href: f("rechnungen"), icon: "rechnung" },
           ],

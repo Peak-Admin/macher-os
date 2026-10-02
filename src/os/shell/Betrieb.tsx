@@ -10,7 +10,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { modul, modulPfad, type ModulDef } from '@core/modul';
 import { useDatenstand } from '@core/db';
 import { istBuero, useIch } from '@core/session';
-import { Abschnitt, Icon, Leer, Seite, Status, Suchfeld } from '@ui/index';
+import { Abschnitt, Icon, Leer, Seite, Status, Suchfeld, ThemenIcon } from '@ui/index';
 import { STRUKTUR, modulVerzeichnis, sichtbareAnsichten, sichtbareZiele, zielPfad, type Kategorie } from './struktur';
 import { FAVORITEN_MAX, useFavoriten } from './favoriten';
 import type { Mitarbeiter } from '@core/objects';
@@ -55,7 +55,7 @@ export function BetriebSeite() {
             <li key={k.id}>
               <Link to={`/betrieb/${k.id}`} className="mm-tuer">
                 <span className="mm-modulkachel-icon" aria-hidden>
-                  <Icon name={k.icon} />
+                  <ThemenIcon name={k.icon} />
                 </span>
                 <span className="mm-tuer-text">
                   <strong>{k.titel}</strong>
@@ -104,7 +104,7 @@ function AlleModule({ suche }: { suche: string }) {
                     <li key={m.id} className="mm-verzeichnis-eintrag">
                       <Link to={modulPfad(m)} className="mm-listenzeile mm-listenzeile--klickbar">
                         <span className="mm-verzeichnis-icon" aria-hidden>
-                          <Icon name={m.icon ?? 'info'} size={20} />
+                          <ThemenIcon name={m.icon ?? 'info'} size={36} />
                         </span>
                         <span className="mm-listenzeile-text">
                           <span className="mm-listenzeile-titel">{m.titel}</span>

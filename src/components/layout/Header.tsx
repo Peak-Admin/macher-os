@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type FocusEvent, type MouseEvent } from "react";
 import { BtnPfeil } from "@/components/ui/Button";
-import { GlasIcon } from "@/components/ui/GlasIcon";
+import { GlasIcon } from "@/os/ui/glas";
 import { Icon } from "@/components/ui/Icon";
 import { cta, mainNav, type Mega, type MegaGewerk, type MegaGruppe, type MegaVorschau, type NavItem } from "@/lib/site";
 import { Logo } from "./Logo";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Icon, type IconName } from "@/components/ui";
+import { Icon, IconTile, type IconName } from "@/components/ui";
 import { tourSchritte, type DemoGewerk } from "@/content/demo";
 
 const icons: IconName[] = ["inbox", "calendar", "smartphone", "camera", "euro"];
@@ -48,9 +48,7 @@ export function DemoTour({ daten }: { daten: DemoGewerk }) {
             Schritt {schritt + 1} von {tourSchritte.length} · Bereich „{tourSchritte[schritt].bereich}“
           </p>
           <div className="mt-4 flex items-start gap-4">
-            <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-lg icon-kachel">
-              <Icon name={icons[schritt]} className="size-6" />
-            </span>
+            <IconTile name={icons[schritt]} className="size-12" />
             <div>
               <h3 className="font-display text-2xl font-extrabold leading-tight sm:text-3xl">
                 {tourSchritte[schritt].titel}

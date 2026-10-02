@@ -33,6 +33,9 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
 - **Steuerelemente:** Bereichsnavigation als unterstrichene Reihe, untergeordnete Ansichten als heller Umschalter –
   keine dunklen Balken, keine dunklen Filterflächen.
 - **App-Flächen:** deckend und ruhig – kein Foto und kein Glas (`backdrop-filter`) hinter Daten, Formularen, Listen.
+- **Icons:** Themen-Icons ab ca. 32 px sind Glas-Icons (`src/os/ui/glas.tsx`, eine Quelle für Website und Software;
+  Website über `IconTile`, Software über `ThemenIcon`). Bedien-Icons und alles Kleinere bleiben Strich-Icons.
+  Neue Motive in `glas.tsx` ergänzen. Details: `docs/design/festlegungen.md`.
 - **Status:** immer Text + optional Icon, nie nur Farbe. Neutral als Standard; Rot nur für echte Sperre/Gefahr („Nicht verwenden“).
 - **Tonalität:** direkte Du-Ansprache („du“, „dein“ klein), konkrete Verben („Auftrag anlegen“), kurze Sätze, keine erfundenen Zahlen.
 - **Bewegung:** 140–180 ms ease-out, keine Layoutsprünge, `prefers-reduced-motion` respektieren. Markenintro nur beim Erstkontakt.

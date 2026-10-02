@@ -8,7 +8,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import type { Mitarbeiter } from '@core/objects';
-import { AktionsMenue, Button, Dialog, Icon, IconButton, Status, Suchfeld, useBestaetigen, type MenueAktion } from '@ui/index';
+import { AktionsMenue, Button, Dialog, Icon, IconButton, Status, Suchfeld, ThemenIcon, useBestaetigen, type MenueAktion } from '@ui/index';
 import { passt } from '@core/format';
 import { groesseSetzen, kannSchritt, schritt, sichtbarSetzen, spalteSetzen, verschieben, type Ziel } from './layout';
 import { homeMessen } from './messen';
@@ -346,7 +346,7 @@ function Bibliothek({
                   onPointerDown={an || !greifen ? undefined : greifen(d.id)}
                 >
                   <span className="mm-home-kachel mm-home-kachel--klein" aria-hidden>
-                    <Icon name={d.icon} size={18} />
+                    <ThemenIcon name={d.icon} size={36} strichGroesse={18} />
                   </span>
                   <span className="mm-home-bibliothek-text">
                     <span className="mm-home-bibliothek-name">{d.name}</span>

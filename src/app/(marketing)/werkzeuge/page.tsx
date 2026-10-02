@@ -8,6 +8,7 @@ import {
   Faq,
   FaqJsonLd,
   Icon,
+  IconTile,
   Section,
   SectionHeading,
 } from "@/components/ui";
@@ -116,9 +117,7 @@ export default function WerkzeugeHub() {
       <Section tone="sand" tight>
         <div className="grid items-center gap-8 rounded-2xl bg-white p-6 ring-1 ring-line sm:p-10 lg:grid-cols-[1fr_auto]">
           <div className="flex gap-5">
-            <span className="hidden size-12 shrink-0 items-center justify-center rounded-lg icon-kachel sm:inline-flex">
-              <Icon name="file" className="size-6" />
-            </span>
+            <IconTile name="file" className="hidden size-12 sm:block" />
             <div>
               <p className="mb-2 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">Vorlagen</p>
               <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">

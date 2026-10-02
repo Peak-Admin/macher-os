@@ -60,7 +60,18 @@
   --shadow-popover: 0 16px 40px rgb(16 44 33 / 12%), 0 2px 8px rgb(16 44 33 / 5%);
 }
 
-/* Icon-Fläche: helles Markengrün, Icon in dunklem Grün. Immer mit Textlabel daneben. */
+/*
+ * Glas-Icons (Themen-Icons, `src/os/ui/glas.tsx`): hinten Logogrün → Aktionsgrün, davor Milchglas aus der hellen
+ * Grünfläche, Details in Aktionsgrün, Kante weiß. Die Software setzt dieselben Namen in `src/os/ui/tokens.css`.
+ */
+:root {
+  --glas-hell: var(--color-logo);
+  --glas-dunkel: var(--color-primary);
+  --glas-milch: var(--color-signal-soft);
+  --glas-licht: #ffffff;
+}
+
+/* Icon-Fläche: helles Markengrün, Icon in dunklem Grün. Für Strich-Icons, die kein Glas-Icon haben. */
 @utility icon-kachel {
   background-color: var(--color-signal-soft);
   color: var(--color-signal-dark);
