@@ -7,6 +7,7 @@ import { db } from '@core/db';
 import { GEWERKE, vorlageFuer, type FachrichtungId } from '@core/gewerke';
 import type { Gewerk } from '@core/objects';
 import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
+import { DATEN_VERTRAUEN } from '@core/vertrauen';
 import { Button, Eingabe, Icon, Meldung, Meta, Oberzeile, useBestaetigen, type IconName } from '@ui/index';
 import {
   briefkopfErkennen,
@@ -45,8 +46,12 @@ export function Willkommen() {
   );
 }
 
-/** Was beim Start zählt – steht bei der Anmeldung (`/signup`) im Markenkopf. */
-const VORTEILE = ['Keine Kündigung notwendig', 'Keine versteckten Kosten', 'Alle Funktionen ab Tag 1 freigeschaltet', 'Sofort startklar – ohne Installation, ohne Setup'];
+/**
+ * Was beim Start zählt – steht bei der Anmeldung (`/signup`) im Markenkopf.
+ * Antworten auf die stärksten Einwände aus `docs/produkt/einwaende.md` (Zeit, kompliziert, Risiko, allein gelassen).
+ * Jeder Punkt muss heute stimmen. Keine Minutenzahl, solange `setup.fertig` sie nicht im Median belegt.
+ */
+const VORTEILE = ['Kostenlos starten – ohne Kreditkarte', 'In wenigen Minuten startklar', 'Du musst keine Software lernen', 'Kostenlose Hilfe beim Einrichten'];
 
 function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
   return (
@@ -74,6 +79,19 @@ function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolea
                 </li>
               ))}
             </ul>
+          )}
+          {vorteile && (
+            <div className="ob-eu">
+              <Icon name="schild" size={20} />
+              <ul aria-label="Datenschutz">
+                {DATEN_VERTRAUEN.map((v) => (
+                  <li key={v.titel}>
+                    <Icon name="check" size={16} strokeWidth={2.5} />
+                    {v.titel}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
           <ZurueckZumBetrieb />
         </div>

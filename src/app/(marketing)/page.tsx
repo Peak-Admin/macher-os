@@ -28,6 +28,8 @@ import {
   type IconName,
 } from "@/components/ui";
 import { gewerkBild } from "@/content/bilder";
+import { kernaengste, weitereEinwaende } from "@/content/einwaende";
+import { testTage } from "@/content/preise";
 import { kunden, topGewerke } from "@/content/registry";
 import type { ObjektSchluessel } from "@/lib/objekte";
 import { cta, herausgeber, site } from "@/lib/site";
@@ -458,6 +460,44 @@ export default function HomePage() {
                 Kostenlos starten
               </ButtonLink>
             </div>
+          </div>
+        </Section>
+      </Zone>
+
+      {/* 12b. Bedenken – die fünf Kernängste als Karten, die übrigen Einwände zum Aufklappen (docs/produkt/einwaende.md) */}
+      <Zone ton="dunkel" id="bedenken">
+        <Section tone="transparent">
+          <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Bedenken</p>
+          <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
+            Ehrliche Antworten auf deine Bedenken.
+          </h2>
+          <p className="mt-5 max-w-xl text-lg text-white/70">Das hören wir von Handwerkern am häufigsten, bevor sie anfangen.</p>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {kernaengste.map((k) => (
+              <li key={k.angst} className="rounded-2xl bg-white p-6 text-ink">
+                <p className="text-muted">„{k.angst}“</p>
+                <p className="mt-3 flex items-start gap-3 font-display text-xl font-bold leading-snug">
+                  <Icon name={k.icon} className="mt-0.5 size-6 shrink-0 text-primary" />
+                  {k.antwort}
+                </p>
+                <p className="mt-2 leading-relaxed text-muted">{k.text}</p>
+              </li>
+            ))}
+            <li className="flex flex-col justify-between rounded-2xl bg-ink-soft p-6 ring-1 ring-white/15">
+              <div>
+                <p className="font-display text-xl font-bold leading-snug">Überzeug dich selbst.</p>
+                <p className="mt-2 leading-relaxed text-on-dark">
+                  Mit deinem echten Betrieb. {testTage} Tage kostenlos, ohne Kreditkarte.
+                </p>
+              </div>
+              <ButtonLink href={cta.primary.href} className="mt-6 self-start">
+                {cta.primary.label}
+              </ButtonLink>
+            </li>
+          </ul>
+          <h3 className="mt-14 font-display text-2xl font-bold">Weitere Bedenken</h3>
+          <div className="mt-6">
+            <Faq items={weitereEinwaende} dark />
           </div>
         </Section>
       </Zone>
