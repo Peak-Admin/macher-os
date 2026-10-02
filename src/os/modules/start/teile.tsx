@@ -8,7 +8,7 @@ import { euro, passt, positionSumme } from '@core/format';
 import type { Adresse, Einheit, ID, Position } from '@core/objects';
 import { Auswahl, Button, Eingabe, IconButton, ListenZeile, Liste, Meldung, Meta, Stapel, Status, ZahlEingabe } from '@ui/index';
 import { positionAusLeistung } from '@modules/angebote/daten';
-import { positionenAusText } from '@modules/angebote/erstwert';
+import { kiModus, positionenAusText } from '@modules/angebote/erstwert';
 import { EINHEITEN } from '@modules/angebote/Positionen';
 import { kontaktArt } from './daten';
 import './start.css';
@@ -210,6 +210,14 @@ export function PositionenSchnell({ positionen, onChange }: { positionen: Positi
   const [text, setText] = useState('');
   const [laedt, setLaedt] = useState(false);
   const [meldung, setMeldung] = useState<{ ton: 'erfolg' | 'achtung' | 'neutral'; text: string }>();
+  const [ki, setKi] = useState<'ki' | 'demo' | 'aus'>('aus');
+  useEffect(() => {
+    let aktiv = true;
+    void kiModus().then((m) => aktiv && setKi(m));
+    return () => {
+      aktiv = false;
+    };
+  }, []);
   const leistungen = db.leistungen.use((l) => l.aktiv);
   const treffer = text.trim().length >= 2 && !laedt ? leistungen.filter((l) => passt(text, l.name, l.kategorie)).slice(0, 4) : [];
 
@@ -225,7 +233,7 @@ export function PositionenSchnell({ positionen, onChange }: { positionen: Positi
       onChange([...positionen, ...neu]);
       setText('');
       const ohnePreis = neu.filter((p) => !p.einzelpreis).length;
-      const herkunft = quelle === 'ki' ? 'mit KI erkannt, Preise aus deinem Katalog' : 'aus deinem Katalog erkannt';
+      const herkunft = quelle === 'ki' ? 'mit KI erkannt, Preise aus deinem Katalog' : quelle === 'demo' ? 'von der KI-Demo erkannt, Preise aus deinem Katalog' : 'aus deinem Katalog erkannt';
       setMeldung(
         ohnePreis
           ? { ton: 'achtung', text: `${neu.length} ${neu.length === 1 ? 'Position' : 'Positionen'} ${herkunft}. ${ohnePreis} ${ohnePreis === 1 ? 'steht' : 'stehen'} nicht im Katalog – trag dort den Preis ein.` }
@@ -272,10 +280,16 @@ export function PositionenSchnell({ positionen, onChange }: { positionen: Positi
             {sprache.an ? 'Fertig' : 'Sprechen'}
           </Button>
         )}
-        <Button variante="sekundaer" icon="plus" onClick={() => void uebernehmen()} laedt={laedt} laedtText="Erkenne …" disabled={!text.trim()}>
-          Übernehmen
+        <Button variante="sekundaer" icon={ki === 'aus' ? 'plus' : 'macher'} onClick={() => void uebernehmen()} laedt={laedt} laedtText="Macher erkennt …" disabled={!text.trim()}>
+          {ki === 'aus' ? 'Übernehmen' : 'Erkennen'}
         </Button>
       </div>
+      {ki === 'demo' && (
+        <div className="mm-zeile" style={{ gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <Status ton="neutral">KI-Demo</Status>
+          <Meta>Macher erkennt Mengen, Einheiten und Leistungen aus deinem Katalog. Mit eingerichteter KI versteht er auch freie Sätze.</Meta>
+        </div>
+      )}
       {sprache.an && <Meta>Ich höre zu … sprich einfach los, z. B. „zwei Steckdosen setzen, zehn Meter Leitung, Anfahrt“.</Meta>}
       {sprache.fehler && <Meldung ton="achtung">{sprache.fehler}</Meldung>}
       {treffer.length > 0 && (
