@@ -125,6 +125,11 @@ export interface AbsichtDef<A = unknown> {
   /** Auffang-Absicht, wenn nichts anderes passt (z. B. Suche) */
   auffang?: boolean;
   /**
+   * Nur gezielt erreichbar: `frage(text, k, { absicht: id })` aus einem Formular (z. B. „Positionen vorschlagen“).
+   * Freie Sätze (Regeln, Jev) landen nie hier.
+   */
+  direkt?: boolean;
+  /**
    * Minimum Necessary Context: nur diese Daten bekommt ein Modell zu sehen.
    * Ohne Angabe bekommt ein Modell keinen Unternehmenskontext.
    */
@@ -353,9 +358,10 @@ async function verstehe(text: string, absichten: AbsichtDef[], k: GatewayKontext
 }
 
 /**
- * Vorbelegte Absicht aus einer kontextuellen Aktion („Mit Macher vorbereiten“ am Angebot, an der Rechnung …):
- * Die Oberfläche weiß schon, was gemeint ist und um welches Objekt es geht – kein Raten aus dem Text.
- * Rechte, Lane-Wahl, Protokoll und Bestätigung laufen genauso wie bei einer getippten Frage.
+ * Vorbelegte Absicht aus einer kontextuellen Aktion („Mit Macher vorbereiten“ am Angebot, an der Rechnung …) oder aus
+ * einem Formular (`direkt`-Absichten wie „Positionen vorschlagen“): Die Oberfläche weiß schon, was gemeint ist und um
+ * welches Objekt es geht – kein Raten aus dem Text. Rechte, Lane-Wahl, Protokoll und Bestätigung laufen genauso wie bei
+ * einer getippten Frage.
  */
 export interface Vorgabe {
   absicht: string;
@@ -363,13 +369,33 @@ export interface Vorgabe {
   werte?: Record<string, unknown>;
 }
 
-/** Eine Eingabe beantworten. Führt nie selbst etwas aus – Aktionen kommen als Vorschlag zurück. */
+/** Vorbelegte Absicht: kein Raten, die Regel liefert höchstens Werte; Werte der Vorgabe gehen vor. */
+function gezielt(vorgabe: Vorgabe, text: string, absichten: AbsichtDef[], k: GatewayKontext): Erkennung | undefined {
+  const a = absichten.find((x) => x.id === vorgabe.absicht);
+  if (!a) return undefined;
+  const r = a.erkenne?.(text, k);
+  const ausRegel = r && typeof r === 'object' ? r.werte : undefined;
+  const werte = ausRegel || vorgabe.werte ? { ...ausRegel, ...vorgabe.werte } : undefined;
+  return { absicht: a.id, sicherheit: 1, lane: 0, werte };
+}
+
+/**
+ * Eine Eingabe beantworten. Führt nie selbst etwas aus – Aktionen kommen als Vorschlag zurück.
+ * `vorgabe`: gezielt diese Absicht beantworten (kontextuelle Aktionen, `direkt`-Absichten aus Formularen).
+ * Freie Sätze erreichen `direkt`-Absichten nie.
+ */
 export async function frage<A = unknown>(text: string, k: GatewayKontext, vorgabe?: Vorgabe): Promise<GatewayAntwort<A>> {
   const kanal = k.kanal ?? 'text';
   const basis = { mitarbeiterId: k.ich?.id, kanal, eingabe: text };
   const absichten = alleAbsichten();
-  const vorbelegt = vorgabe && absichten.some((a) => a.id === vorgabe.absicht);
-  const e: Erkennung | undefined = vorbelegt ? { absicht: vorgabe.absicht, werte: vorgabe.werte, sicherheit: 1, lane: 0 } : await verstehe(text, absichten, k);
+  // Vorgabe mit unbekannter Absicht: nicht raten, sondern „unbekannt“
+  const e: Erkennung | undefined = vorgabe
+    ? gezielt(vorgabe, text, absichten, k)
+    : await verstehe(
+        text,
+        absichten.filter((a) => !a.direkt),
+        k,
+      );
   const def = e && (absichten.find((a) => a.id === e.absicht) as AbsichtDef<A> | undefined);
 
   if (!e || !def) {

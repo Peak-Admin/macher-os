@@ -12,6 +12,7 @@ import type { Basis, ID } from '@core/objects';
 import { Auswahl, Segmente } from './index';
 import {
   BETRAGSARTEN,
+  OHNE_AUFTRAG,
   ZEITRAEUME,
   bearbeiterName,
   gueltigeBetragsart,
@@ -102,6 +103,8 @@ export function FinanzFilter({
   status,
   suche,
   auftraege,
+  ohneAuftrag,
+  zusatz,
 }: {
   ansicht: FinanzAnsicht;
   /** Status-Filter der jeweiligen Liste (`<Filter>`) */
@@ -110,20 +113,27 @@ export function FinanzFilter({
   suche?: ReactNode;
   /** Aufträge, die in der Liste vorkommen */
   auftraege: { id: ID; label: string }[];
+  /** Auswahl „Ohne Auftrag“ anbieten (Rechnungen ohne Auftragsbezug) */
+  ohneAuftrag?: boolean;
+  /** weitere Auswahlfelder der Liste (z. B. Art bei Rechnungen), stehen vor dem Auftrag */
+  zusatz?: ReactNode;
 }) {
-  const gewaehlt = ansicht.auftragId && !auftraege.some((a) => a.id === ansicht.auftragId) ? [{ id: ansicht.auftragId, label: 'Gewählter Auftrag' }] : [];
+  const gewaehlt =
+    ansicht.auftragId && ansicht.auftragId !== OHNE_AUFTRAG && !auftraege.some((a) => a.id === ansicht.auftragId) ? [{ id: ansicht.auftragId, label: 'Gewählter Auftrag' }] : [];
+  const ohne = ohneAuftrag || ansicht.auftragId === OHNE_AUFTRAG ? [{ id: OHNE_AUFTRAG, label: 'Ohne Auftrag' }] : [];
   return (
     <div className="mm-finanzfilter">
       {status}
       <div className="mm-finanzfilter-zeile">
         {suche && <div className="mm-finanzfilter-suche">{suche}</div>}
         <Auswahl label="Zeitraum" value={ansicht.zeitraum} onChange={(e) => ansicht.setZeitraum(e.target.value as Zeitraum)} optionen={ZEITRAEUME} />
+        {zusatz}
         <Auswahl
           label="Auftrag"
           value={ansicht.auftragId}
           onChange={(e) => ansicht.setAuftragId(e.target.value)}
           leer="Alle Aufträge"
-          optionen={[...auftraege, ...gewaehlt].map((a) => ({ wert: a.id, label: a.label }))}
+          optionen={[...auftraege, ...gewaehlt, ...ohne].map((a) => ({ wert: a.id, label: a.label }))}
         />
         <Segmente<Betragsart> label="Beträge" wert={ansicht.betragsart} onChange={ansicht.setBetragsart} optionen={BETRAGSARTEN} />
       </div>

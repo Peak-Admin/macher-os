@@ -9,6 +9,7 @@ import { darfTeamDaten } from '@modules/mitarbeiter/team';
 import { ART_LABEL, laufende, starten, stoppen } from './daten';
 import { einsatzBeenden, einsatzStarten, vergesseneBeenden, zeitenFreigeben, zeitenHinweise } from './einsatz';
 import { MitarbeiterZeitenTab, StempeluhrSeite, StundenkontoSeite } from './Ansichten';
+import { AlleZeiten } from './AlleZeiten';
 import { MonatSeite } from './MonatSeite';
 import { kontoHinweise } from './regelwerk';
 import { ZeitenWoche } from './ZeitenWoche';
@@ -20,12 +21,13 @@ export default defineModul({
   titel: 'Arbeitszeiten',
   bereich: 'betrieb',
   gruppe: 'team',
-  beschreibung: 'Stempeluhr mit einem Tap, Wochenfreigabe, Stundenkonto mit Pausenregel nach ArbZG und Monatsübersicht für den Lohn.',
+  beschreibung: 'Stempeluhr mit einem Tap, Wochenfreigabe, alle Zeiten mit Filter und Excel-Download, Stundenkonto mit Pausenregel nach ArbZG und Monatsübersicht für den Lohn.',
   icon: 'uhr',
   gewicht: 85,
   routen: [
     { pfad: '', element: StempeluhrSeite },
     { pfad: 'woche', element: ZeitenWoche },
+    { pfad: 'alle', element: AlleZeiten },
     { pfad: 'konto', element: StundenkontoSeite },
     { pfad: 'monat', element: MonatSeite },
   ],

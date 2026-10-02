@@ -41,8 +41,9 @@ describe('Kern', () => {
   });
 
   it('vergibt fortlaufende Nummern', () => {
-    const j = new Date().getFullYear();
-    expect(naechsteNummer('auftrag')).toBe(`A-${j}-0001`);
+    const d = new Date();
+    expect(naechsteNummer('auftrag')).toBe(`${String(d.getFullYear() % 100).padStart(2, '0')}${String(d.getMonth() + 1).padStart(2, '0')}-001`);
+    expect(naechsteNummer('angebot')).toBe(`AN-${d.getFullYear()}-0001`);
   });
 });
 

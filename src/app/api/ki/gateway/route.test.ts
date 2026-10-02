@@ -85,6 +85,16 @@ describe('/api/ki/gateway', () => {
     expect(body.messages[0].content).toContain('"name":"Schneider"');
   });
 
+  it('Angebotspositionen: strukturierte Ausgabe statt Fließtext', async () => {
+    const json = JSON.stringify({ positionen: [{ katalogId: 'l1', text: 'Fliesen', menge: 8, einheit: 'm²', preisEuro: 0 }] });
+    erstellen.mockResolvedValue(antwort(json));
+    const r = await (await POST(anfrage({ lane: 2, aufgabe: 'schreiben', text: 'Bad 8 m² fliesen', kontext: { format: 'angebot.positionen', katalog: [] } }))).json();
+    expect(r.text).toBe(json);
+    const aufruf = erstellen.mock.calls[0][0];
+    expect(aufruf.output_config.format.type).toBe('json_schema');
+    expect(aufruf.system).toContain('Angebotspositionen');
+  });
+
   it('Ablehnung oder leere Antwort → 422', async () => {
     erstellen.mockResolvedValue(antwort('', { stop_reason: 'refusal' }));
     expect((await POST(anfrage({ lane: 2, aufgabe: 'schreiben', text: 'x' }))).status).toBe(422);

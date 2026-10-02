@@ -10,6 +10,7 @@ import {
   imZeitraum,
   letzteBearbeitungen,
   nutzerSchluessel,
+  OHNE_AUFTRAG,
   passtFinanzFilter,
   summeNach,
   zeitpunktKurz,
@@ -123,6 +124,11 @@ describe('Finanzmuster', () => {
     expect(passtFinanzFilter({ datum: '2026-03-01', auftragId: 'a2' }, f, '2026-10-02')).toBe(false);
     expect(passtFinanzFilter({ datum: '2025-03-01', auftragId: 'a1' }, f, '2026-10-02')).toBe(false);
     expect(passtFinanzFilter({ datum: '2025-03-01' }, { zeitraum: 'alle' }, '2026-10-02')).toBe(true);
+  });
+  it('„Ohne Auftrag“ zeigt nur Einträge ohne Auftragsbezug', () => {
+    const f = { zeitraum: 'alle' as const, auftragId: OHNE_AUFTRAG };
+    expect(passtFinanzFilter({ datum: '2026-03-01' }, f, '2026-10-02')).toBe(true);
+    expect(passtFinanzFilter({ datum: '2026-03-01', auftragId: 'a1' }, f, '2026-10-02')).toBe(false);
   });
   it('Beträge und Summen passen sich der Betragsart an', () => {
     const l = [

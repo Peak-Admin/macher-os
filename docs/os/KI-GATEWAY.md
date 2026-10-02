@@ -20,6 +20,7 @@ Verstehen → Routen → Kontext → Rechte → günstigste ausreichende Lane
 | Verstehen, Lane 0 | `AbsichtDef.erkenne` – Regeln, geprüft nach `rang` |
 | Verstehen, Lane 1 (Jev) | `ModellAdapter.erkenne` – nur wenn keine Regel greift; gilt ab Sicherheit `MIN_SICHERHEIT` (0,7) |
 | Auffang | Absicht mit `auffang: true` (in „Macher fragen“: Suche) |
+| Gezielt aus einem Formular | Absicht mit `direkt: true`, nur über die Vorgabe `frage(text, k, { absicht })` (wie bei „Mit Macher vorbereiten“) – z. B. `offer.positions.suggest` (Angebot: „Beschreib kurz, was gemacht wird“). Freie Sätze landen nie dort. |
 | Rechte | `AbsichtDef.rechte` / `AktionDef.rechte` gegen `darf()` – KI-Recht = Macher-OS-Recht |
 | Lane wählen | `waehleLane(mindestens, kontext)` – von unten nach oben, gedeckelt durch den Kostenrahmen |
 | Minimaler Kontext | `AbsichtDef.kontext` – nur das bekommt ein Modell (Lane 2+) zu sehen |
@@ -143,6 +144,9 @@ Auftrag A-2026-0007 abschließen
 | `order.create_draft` | bedarf | schreiben | schreiben | Bestellentwürfe je Lieferant für fehlendes Material – bestellt wird erst beim Lieferanten |
 | `invoice.remind` | mahnungen | kritisch | geld, veroeffentlichen | nächste Mahnstufe vorbereiten und freigeben, E-Mail als Link (`oeffnen`) |
 | `offer.create_draft` | angebote | schreiben | schreiben, geld | Angebotsentwurf aus der Anfrage (Positionen aus der Vorschau) – nie versendet |
+| `call.customer_lookup` | telefon | lesen | lesen | Telefonassistent: Anrufer bekannt? (nur ja/nein + Zahl offener Aufträge) |
+| `call.request_create` / `call.callback_create` / `call.note_create` | telefon | schreiben | schreiben | Telefonassistent: Gesprächsergebnis als Anfrage, Rückruf oder Notiz eintragen (`docs/os/KI-TELEFONIE.md`) |
+| `call.emergency_forward` | telefon | schreiben | schreiben | Telefonassistent: Notfall an die Bereitschaft (Mitteilung, Ereignis `anruf.notfall_weitergeleitet`) |
 
 `endgueltig` (kein „Rückgängig“): `message.send`, `offer.send`, `invoice.send`, `review.request`, `invoice.remind`.
 
@@ -216,8 +220,9 @@ während der Arbeit, bei `prefers-reduced-motion` statisch. Zustand aus Absicht/
 
 ### Nächste Schritte
 
-1. `/api/ki/positionen` (Angebotspositionen aus Diktat, `angebote/erstwert.ts`) spricht noch direkt mit dem Modell –
-   als Absicht mit `lane: 2` über den Gateway führen.
+1. Erledigt: Angebotspositionen aus Diktat oder Freitext (`angebote/erstwert.ts`) laufen über die Absicht
+   `offer.positions.suggest` (`direkt`, Regeln zuerst, Modell ab Lane 2). `/api/ki/positionen` dient nur noch der
+   Prüfung per GET, ob KI eingerichtet ist (`kiModus`).
 2. Weitere Aktionen: `offer.update`, `job.create`, `document.create`, `time.correct`.
 3. Anmeldung und Mandanten (Paket Fundament): Route hinter die Anmeldung, Kosten je Betrieb serverseitig messen statt im Browser.
 4. Sprache: Speech-to-Text vor `frage(…, { kanal: 'sprache' })` – sonst nichts Neues.

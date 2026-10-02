@@ -6,6 +6,8 @@ import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Textfe
 import { KundeAuswahl, MitarbeiterAuswahl, OrtAuswahl } from '@ui/objekt';
 import { ART_LABEL, phaseLabel } from './logik';
 import { setzePhase } from './daten';
+import { auftragsnummerFehler, nummerBereinigt } from '@core/nummern';
+import { MitarbeiterWahl } from './MitarbeiterWahl';
 
 export function BearbeitenDialog({ a, offen, onSchliessen }: { a: Auftrag; offen: boolean; onSchliessen: () => void }) {
   const toast = useToast();
@@ -15,17 +17,22 @@ export function BearbeitenDialog({ a, offen, onSchliessen }: { a: Auftrag; offen
 
   const speichern = () => {
     if (!f.titel.trim()) return setFehler('Der Auftrag braucht einen Titel.');
+    const nummer = nummerBereinigt(f.nummer);
+    const nummerFalsch = nummer !== a.nummer ? auftragsnummerFehler(nummer, a.id) : undefined;
+    if (nummerFalsch) return setFehler(nummerFalsch);
     if (!f.kundeId) return setFehler('Wähle einen Kunden.');
     const stunden = f.geplanteStunden.trim() ? Number(f.geplanteStunden.replace(',', '.')) : undefined;
     if (stunden != null && !(stunden >= 0)) return setFehler('Gib die Stunden als Zahl ein, z. B. 4,5.');
     db.auftraege.update(
       a.id,
       {
+        nummer,
         titel: f.titel.trim(),
         art: f.art,
         kundeId: f.kundeId,
         ortId: f.ortId || undefined,
         verantwortlichId: f.verantwortlichId || undefined,
+        mitarbeiterIds: f.mitarbeiterIds.length ? f.mitarbeiterIds : undefined,
         dringend: f.dringend || undefined,
         wunschtermin: f.wunschtermin.trim() || undefined,
         geplanteStunden: stunden,
@@ -55,10 +62,12 @@ export function BearbeitenDialog({ a, offen, onSchliessen }: { a: Auftrag; offen
       {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
       <FormRaster>
         <Eingabe label="Titel" value={f.titel} onChange={(e) => set('titel', e.target.value)} />
+        <Eingabe label="Projektnummer" value={f.nummer} onChange={(e) => set('nummer', e.target.value)} autoComplete="off" spellCheck={false} />
         <Auswahl label="Art" value={f.art} onChange={(e) => set('art', e.target.value as Auftragsart)} optionen={(Object.keys(ART_LABEL) as Auftragsart[]).map((x) => ({ wert: x, label: ART_LABEL[x] }))} />
         <KundeAuswahl wert={f.kundeId} onChange={(v) => setF((x) => ({ ...x, kundeId: v, ortId: '' }))} />
         <OrtAuswahl kundeId={f.kundeId} wert={f.ortId} onChange={(v) => set('ortId', v)} optional />
         <MitarbeiterAuswahl label="Verantwortlich" wert={f.verantwortlichId} onChange={(v) => set('verantwortlichId', v)} optional />
+        <MitarbeiterWahl label="Team" wert={f.mitarbeiterIds} onChange={(v) => set('mitarbeiterIds', v)} />
         <Eingabe label="Wunschtermin des Kunden" optional value={f.wunschtermin} onChange={(e) => set('wunschtermin', e.target.value)} placeholder="z. B. nächste Woche vormittags" />
         <Eingabe label="Geplante Stunden" optional inputMode="decimal" value={f.geplanteStunden} onChange={(e) => set('geplanteStunden', e.target.value)} />
       </FormRaster>
@@ -71,6 +80,8 @@ export function BearbeitenDialog({ a, offen, onSchliessen }: { a: Auftrag; offen
 function werte(a: Auftrag) {
   return {
     titel: a.titel,
+    nummer: a.nummer,
+    mitarbeiterIds: a.mitarbeiterIds ?? [],
     art: a.art,
     kundeId: a.kundeId,
     ortId: a.ortId ?? '',

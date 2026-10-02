@@ -16,6 +16,7 @@ import {
   ListenZeile,
   Meldung,
   Raster,
+  Schalter,
   Segmente,
   Stapel,
   Status,
@@ -81,7 +82,7 @@ function Export({ monatVorschlag, zuEinstellungen }: { monatVorschlag?: string; 
   const einstellungenOk = !Object.keys(fehlerEinstellungen).length;
   const v = useDatenstand();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const vorschau = useMemo(() => (fehlerZeitraum ? undefined : exportVorbereiten(von, bis, auchExportierte)), [von, bis, auchExportierte, v, e.rahmen]);
+  const vorschau = useMemo(() => (fehlerZeitraum ? undefined : exportVorbereiten(von, bis, auchExportierte)), [von, bis, auchExportierte, v, e.rahmen, e.kostenstellen]);
   const doppelt = vorschau ? vorschau.doppelt.rechnungen.length + vorschau.doppelt.belege.length : 0;
   const summe = vorschau?.buchungen.reduce((s, x) => s + (x.quelle.typ === 'rechnungen' ? (x.sh === 'S' ? x.umsatz : -x.umsatz) : 0), 0) ?? 0;
   const ausgaben = vorschau?.buchungen.reduce((s, x) => s + (x.quelle.typ === 'belege' ? x.umsatz : 0), 0) ?? 0;
@@ -346,6 +347,12 @@ function SteuerberaterForm() {
             <Eingabe label="Beraternummer" inputMode="numeric" value={e.beraterNr} onChange={(x) => setEForm({ ...e, beraterNr: x.target.value.trim() })} fehler={versucht ? fehler.beraterNr : undefined} hilfe="4 bis 7 Ziffern" />
             <Eingabe label="Mandantennummer" inputMode="numeric" value={e.mandantNr} onChange={(x) => setEForm({ ...e, mandantNr: x.target.value.trim() })} fehler={versucht ? fehler.mandantNr : undefined} hilfe="1 bis 5 Ziffern" />
           </FormRaster>
+          <Schalter
+            label="Betriebsbereiche als Kostenstelle mitgeben"
+            beschreibung="Belege ohne Auftrag bekommen ihren Bereich (z. B. Fahrzeuge) als Kostenstelle KOST1. Nur einschalten, wenn dein Steuerberater Kostenstellen nutzt."
+            checked={!!e.kostenstellen}
+            onChange={(an) => setEForm({ ...e, kostenstellen: an })}
+          />
         </Stapel>
       </Karte>
       <div>

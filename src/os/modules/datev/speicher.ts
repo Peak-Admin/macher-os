@@ -61,6 +61,7 @@ export function exportVorbereiten(von: string, bis: string, auchExportierte: boo
       kreditoren: einstellung(K.kreditoren, {}),
       rechnungenExportiert: einstellung(K.rechnungen, {}),
       auchExportierte,
+      kostenstellen: e.kostenstellen,
     },
   );
 }

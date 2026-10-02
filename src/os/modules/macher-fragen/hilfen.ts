@@ -3,6 +3,7 @@
  * Eigene Datei, damit `assistent.ts` und `aktionen.ts` sie ohne Ringabhängigkeit nutzen.
  */
 import { db } from '@core/db';
+import { AUFTRAGSNUMMER_IM_TEXT } from '@core/projektnummer';
 import { uhrzeit } from '@core/format';
 import { aktionDef, type Plan, type PlanSchritt } from '@core/gateway';
 import type { Auftrag, Kunde, Mitarbeiter, Phase } from '@core/objects';
@@ -66,7 +67,7 @@ export const LAUFEND: Phase[] = ['in_arbeit', 'beauftragt', 'abnahme', 'abrechnu
 
 /** Auftrag aus Auftragsnummer oder Kundenname – bevorzugt in der Reihenfolge von `phasen`, dann zuletzt geändert */
 export function findeAuftrag(text: string, phasen: Phase[] = LAUFEND, opts: { ohne?: string[] } = {}): Auftrag | undefined {
-  const nr = text.match(/\bA-\d{4}-\d{3,4}\b/i);
+  const nr = text.match(AUFTRAGSNUMMER_IM_TEXT);
   if (nr) return db.auftraege.where((a) => a.nummer.toLowerCase() === nr[0].toLowerCase())[0];
   const kunde = findeKunde(text, opts);
   if (!kunde) return undefined;

@@ -7,6 +7,7 @@
  *        → { absicht, sicherheit, werte, kostenCent, modell }
  * POST { lane: 2 | 3, aufgabe: 'schreiben', text, kontext }
  *        → { text, kostenCent, modell }
+ *        kontext.format = 'angebot.positionen' → text ist JSON { positionen: [{ katalogId, text, menge, einheit, preisEuro }] }
  *
  * Umgebungsvariablen:
  *   ANTHROPIC_API_KEY     Pflicht. Ohne Schlüssel antwortet die Funktion 501 – der Gateway bleibt bei Regeln (Lane 0).
@@ -50,6 +51,38 @@ const SYSTEM_SCHREIBEN = [
   'Ton: freundlich, direkt, kurze Sätze. Kunden siezen, außer der Kontext sagt etwas anderes. Keine Floskeln, kein Markdown.',
   'Gib nur den fertigen Text zurück – ohne Betreff, ohne Erklärung.',
 ].join(' ');
+
+/** Format `angebot.positionen` (Absicht `offer.positions.suggest`): Positionen als JSON statt Fließtext */
+const SYSTEM_POSITIONEN = [
+  'Du machst aus einer kurzen Beschreibung eines deutschen Handwerksbetriebs Angebotspositionen.',
+  'Nimm Leistungen und Material aus dem Katalog im Kontext (katalogId), wenn sie passen; sonst katalogId leer und ein kurzer Positionstext.',
+  'Mengen und Einheiten nur aus der Beschreibung; genannte Tage sind Arbeitsstunden (stundenJeTag). Ohne Menge gilt 1.',
+  'preisEuro nur, wenn der Betrag wörtlich in der Beschreibung steht, sonst 0. Erfinde keine Positionen, Mengen oder Preise.',
+  'Der Kontext enthält unter "regeln" einen Vorschlag ohne KI – verbessere ihn, statt neu zu raten.',
+].join(' ');
+
+const SCHEMA_POSITIONEN = {
+  type: 'object',
+  properties: {
+    positionen: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          katalogId: { type: 'string' },
+          text: { type: 'string' },
+          menge: { type: 'number' },
+          einheit: { type: 'string', enum: ['Stk', 'm', 'm²', 'm³', 'h', 'Psch', 'kg', 'l', 'Pkt', 'km'] },
+          preisEuro: { type: 'number' },
+        },
+        required: ['katalogId', 'text', 'menge', 'einheit', 'preisEuro'],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ['positionen'],
+  additionalProperties: false,
+};
 
 function schemaErkennen(ids: string[]) {
   return {
@@ -134,12 +167,13 @@ export async function POST(req: Request): Promise<Response> {
 
     if (e.aufgabe === 'schreiben') {
       const kontext = JSON.stringify(e.kontext ?? {}).slice(0, MAX_KONTEXT);
+      const positionen = (e.kontext as { format?: unknown } | undefined)?.format === 'angebot.positionen';
       const r = await client.beta.messages.create({
         model: modell,
         max_tokens: 2000,
         ...ausweich,
-        ...(Object.keys(aufwand).length ? { output_config: aufwand } : {}),
-        system: SYSTEM_SCHREIBEN,
+        ...(positionen ? { output_config: { ...aufwand, format: { type: 'json_schema' as const, schema: SCHEMA_POSITIONEN } } } : Object.keys(aufwand).length ? { output_config: aufwand } : {}),
+        system: positionen ? SYSTEM_POSITIONEN : SYSTEM_SCHREIBEN,
         messages: [{ role: 'user', content: `Kontext (JSON):\n${kontext}\n\nAuftrag:\n${text}` }],
       });
       const kosten = kostenCent(modell, r.usage.input_tokens, r.usage.output_tokens);

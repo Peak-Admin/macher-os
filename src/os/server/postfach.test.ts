@@ -51,10 +51,10 @@ describe('Anfrage-Postfach: Kunde, Anfrage, Dubletten', () => {
   const mail = { vonEmail: 'petra@example.de', vonName: 'Petra Schulz', an: [], betreff: 'Steckdose im Bad', text: 'Geht nicht mehr.' };
 
   test('neuer Kunde → Kunde + Anfrage + Nachricht, Nummer fortlaufend', () => {
-    const p = anfragePlanen(mail, { kunden: [], auftraege: [{ id: 'x', nummer: 'A-2026-0007' }] }, { id: ids(), jetzt });
+    const p = anfragePlanen(mail, { kunden: [], auftraege: [{ id: 'x', nummer: '2610-007' }] }, { id: ids(), jetzt });
     expect(p.kunde.neu).toBe(true);
     expect(p.kunde.daten).toMatchObject({ name: 'Petra Schulz', email: 'petra@example.de', quelle: 'email' });
-    expect(p.auftrag?.daten).toMatchObject({ nummer: 'A-2026-0008', phase: 'anfrage', quelle: 'email', titel: 'Steckdose im Bad', kundeId: p.kunde.id });
+    expect(p.auftrag?.daten).toMatchObject({ nummer: '2610-008', phase: 'anfrage', quelle: 'email', titel: 'Steckdose im Bad', kundeId: p.kunde.id });
     expect(p.nachricht.daten).toMatchObject({ kanal: 'email', richtung: 'ein', gelesen: false, auftragId: p.auftrag?.id });
   });
 
@@ -82,7 +82,8 @@ describe('Anfrage-Postfach: Kunde, Anfrage, Dubletten', () => {
     expect(p.auftrag).toBeDefined();
   });
 
-  test('Auftragsnummer je Jahr', () => {
-    expect(naechsteAuftragsnummer(['A-2025-0099', undefined], 2026)).toBe('A-2026-0001');
+  test('Projektnummer je Monat', () => {
+    expect(naechsteAuftragsnummer(['A-2025-0099', '2609-004', undefined], new Date(2026, 9, 2))).toBe('2610-001');
+    expect(naechsteAuftragsnummer(['2610-004'], new Date(2026, 9, 30))).toBe('2610-005');
   });
 });

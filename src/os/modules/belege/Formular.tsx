@@ -7,6 +7,7 @@ import { Auswahl, Button, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, 
 import { AuftragAuswahl } from '@ui/objekt';
 import type { BelegX } from '../rechnungen/typen';
 import { ART_LABEL, KATEGORIEN, auftragVorschlaege, ausBrutto, dateiAblegen, fristenAusKonditionen } from './logik';
+import { bereichVorschlag, betriebsbereiche } from './bereiche';
 
 export function LieferantenListe() {
   const l = db.lieferanten.use();
@@ -37,16 +38,61 @@ export function Vorschau({ url, mime }: { url?: string; mime?: string }) {
   );
 }
 
-/** Vorschlag zum Auftrag mit „Übernehmen“ */
-export function AuftragVorschlag({ beleg, aktuell, onWahl }: { beleg: Pick<BelegX, 'datum' | 'lieferantId' | 'lieferantName' | 'kategorie'>; aktuell?: ID; onWahl: (id: ID) => void }) {
+type ZuordnungsDaten = Pick<BelegX, 'art' | 'datum' | 'lieferantId' | 'lieferantName' | 'kategorie' | 'auftragId' | 'bereich'> & { id?: ID };
+
+/** Vorschlag mit „Übernehmen“: erst ein passender Auftrag, sonst ein Betriebsbereich. Nur solange nichts zugeordnet ist. */
+export function ZuordnungVorschlag({ beleg, onAuftrag, onBereich }: { beleg: ZuordnungsDaten; onAuftrag: (id: ID) => void; onBereich: (bereich: string) => void }) {
   const v = useMemo(() => auftragVorschlaege(beleg), [beleg.datum, beleg.lieferantId, beleg.lieferantName, beleg.kategorie]); // eslint-disable-line react-hooks/exhaustive-deps
+  const bv = useMemo(() => bereichVorschlag(beleg), [beleg.id, beleg.art, beleg.lieferantId, beleg.lieferantName, beleg.kategorie]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (beleg.auftragId || beleg.bereich) return null;
   const top = v[0];
-  if (!top || top.auftragId === aktuell) return null;
-  const a = db.auftraege.get(top.auftragId);
+  if (top) {
+    const a = db.auftraege.get(top.auftragId);
+    return (
+      <Meldung ton="neutral" titel={`Vorschlag: ${a?.nummer} · ${a?.titel}`} aktion={<Button klein variante="sekundaer" onClick={() => onAuftrag(top.auftragId)}>Übernehmen</Button>}>
+        {top.gruende.join(' · ')}
+      </Meldung>
+    );
+  }
+  if (!bv) return null;
   return (
-    <Meldung ton="neutral" titel={`Vorschlag: ${a?.nummer} · ${a?.titel}`} aktion={<Button klein variante="sekundaer" onClick={() => onWahl(top.auftragId)}>Übernehmen</Button>}>
-      {top.gruende.join(' · ')}
+    <Meldung ton="neutral" titel={`Vorschlag: ${bv.bereich}`} aktion={<Button klein variante="sekundaer" onClick={() => onBereich(bv.bereich)}>Übernehmen</Button>}>
+      {bv.grund}
     </Meldung>
+  );
+}
+
+/** Wohin gehört der Beleg? Auftrag oder Betriebsbereich – wer eins wählt, leert das andere. */
+export function ZuordnungFelder({
+  beleg,
+  onAuftrag,
+  onBereich,
+  ohneVorschlag,
+}: {
+  beleg: ZuordnungsDaten;
+  onAuftrag: (id: ID | undefined) => void;
+  onBereich: (bereich: string | undefined) => void;
+  /** Vorschlag nicht zeigen (z. B. wenn ihn schon die Hauptaktion anbietet) */
+  ohneVorschlag?: boolean;
+}) {
+  const bereiche = betriebsbereiche();
+  // ein Bereich, den es in der Liste nicht mehr gibt, bleibt sichtbar
+  const optionen = [...bereiche, ...(beleg.bereich && !bereiche.includes(beleg.bereich) ? [beleg.bereich] : [])];
+  return (
+    <Stapel abstand={12}>
+      <FormRaster>
+        <AuftragAuswahl wert={beleg.auftragId ?? ''} onChange={(id) => onAuftrag(id || undefined)} optional nurOffene={false} />
+        <Auswahl
+          label="Oder Betriebsbereich"
+          optional
+          value={beleg.bereich ?? ''}
+          leer="Kein Bereich"
+          onChange={(e) => onBereich(e.target.value || undefined)}
+          optionen={optionen.map((b) => ({ wert: b, label: b }))}
+        />
+      </FormRaster>
+      {!ohneVorschlag && <ZuordnungVorschlag beleg={beleg} onAuftrag={onAuftrag} onBereich={onBereich} />}
+    </Stapel>
   );
 }
 
@@ -59,6 +105,7 @@ export interface FormularWerte {
   satz: string;
   kategorie: string;
   auftragId: string;
+  bereich: string;
   faelligAm: string;
 }
 
@@ -71,6 +118,7 @@ export const leereWerte = (auftragId?: ID): FormularWerte => ({
   satz: '19',
   kategorie: 'Material',
   auftragId: auftragId ?? '',
+  bereich: '',
   faelligAm: '',
 });
 
@@ -87,6 +135,7 @@ export function belegAusWerten(f: FormularWerte, dokumentId?: ID): Omit<BelegX, 
     netto,
     ust,
     auftragId: f.auftragId || undefined,
+    bereich: f.auftragId ? undefined : f.bereich || undefined,
     kategorie: f.kategorie || undefined,
     faelligAm: fristen.faelligAm,
     skontoBis: fristen.skontoBis,
@@ -177,8 +226,11 @@ export function BelegFormular({
           {fristen.skontoBis ? ` · ${String(fristen.skontoProzent).replace('.', ',')} % Skonto bis ${datum(fristen.skontoBis)}` : ''}
         </Meta>
       )}
-      <AuftragAuswahl wert={werte.auftragId} onChange={(id) => set('auftragId', id)} optional nurOffene={false} />
-      <AuftragVorschlag beleg={{ datum: werte.datum, ...lief, kategorie: werte.kategorie }} aktuell={werte.auftragId} onWahl={(id) => set('auftragId', id)} />
+      <ZuordnungFelder
+        beleg={{ art: werte.art, datum: werte.datum, ...lief, kategorie: werte.kategorie, auftragId: werte.auftragId || undefined, bereich: werte.bereich || undefined }}
+        onAuftrag={(id) => setWerte({ ...werte, auftragId: id ?? '', bereich: id ? '' : werte.bereich })}
+        onBereich={(b) => setWerte({ ...werte, bereich: b ?? '', auftragId: b ? '' : werte.auftragId })}
+      />
     </Stapel>
   );
 }

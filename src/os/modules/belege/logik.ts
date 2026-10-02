@@ -9,6 +9,7 @@ import type { Cent, Datum, ID } from '@core/objects';
 import { ichId } from '@core/session';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
 import { dateiLesen } from '@ui/index';
+import { betragCsv, csvText } from '../rechnungen/liste';
 import { belegePostfachAdresse } from '@/os/server/belege-postfach';
 
 export const alleBelege = () => db.belege.all() as BelegX[];
@@ -163,7 +164,7 @@ export function naechsteFrist(b: BelegX, stichtag: Datum = heute()): Frist | und
  * Schritte einer Eingangsrechnung. Der Kern-Status (`neu` | `geprueft` | `bezahlt`) bleibt, damit alte Daten und andere
  * Module (DATEV, Auswertung) unverändert funktionieren. Abbildung:
  * - `neu` → „Prüfen“
- * - `geprueft` ohne Auftrag (und nicht „ohne Auftrag“ markiert) → „Zuordnen“
+ * - `geprueft` ohne Auftrag und ohne Betriebsbereich (und nicht „ohne Auftrag“ markiert) → „Zuordnen“
  * - `geprueft` mit Auftrag, nicht freigegeben → „Freigeben“
  * - `geprueft` und freigegeben → „Zahlen“
  * - `bezahlt` → „Bezahlt“
@@ -172,11 +173,12 @@ export function naechsteFrist(b: BelegX, stichtag: Datum = heute()): Frist | und
  */
 export type Schritt = 'pruefen' | 'zuordnen' | 'freigeben' | 'zahlen' | 'bezahlt';
 
-export function belegSchritt(b: Pick<BelegX, 'status' | 'geprueftAm' | 'freigegebenAm' | 'auftragId' | 'ohneAuftrag'>): Schritt {
+export function belegSchritt(b: Pick<BelegX, 'status' | 'geprueftAm' | 'freigegebenAm' | 'auftragId' | 'ohneAuftrag' | 'bereich'>): Schritt {
   if (b.status === 'bezahlt') return 'bezahlt';
   if (b.status !== 'geprueft') return 'pruefen';
   if (!b.geprueftAm && !b.freigegebenAm) return 'zahlen';
-  if (!b.auftragId && !b.ohneAuftrag) return 'zuordnen';
+  // zugeordnet heißt: Auftrag, Betriebsbereich (Lager, Büro, Fahrzeuge …) oder bewusst „ohne Auftrag“
+  if (!b.auftragId && !b.bereich && !b.ohneAuftrag) return 'zuordnen';
   if (!b.freigegebenAm) return 'freigeben';
   return 'zahlen';
 }
@@ -235,7 +237,7 @@ export function alsGeprueft(id: ID) {
 export function auftragZuordnen(id: ID, auftragId: ID | undefined) {
   const b = belegX(id);
   if (!b) return;
-  belegAendern(id, { auftragId, ohneAuftrag: auftragId ? undefined : b.ohneAuftrag, zuordnungGrund: undefined }, { text: auftragId ? `Auftrag ${db.auftraege.get(auftragId)?.nummer ?? ''} zugeordnet`.trim() : 'Zuordnung aufgehoben' });
+  belegAendern(id, { auftragId, bereich: auftragId ? undefined : b.bereich, ohneAuftrag: auftragId ? undefined : b.ohneAuftrag, zuordnungGrund: undefined }, { text: auftragId ? `Auftrag ${db.auftraege.get(auftragId)?.nummer ?? ''} zugeordnet`.trim() : 'Zuordnung aufgehoben' });
   if (b.dokumentId) db.dokumente.update(b.dokumentId, { auftragId }, { leise: true });
 }
 
@@ -337,4 +339,40 @@ export async function dateiAblegen(datei: File, opts: { auftragId?: ID } = {}) {
     auftragId: opts.auftragId,
     tags: ['beleg'],
   });
+}
+
+// ------------------------------------------------------------------ Liste & Export
+
+/** Zuordnungsfilter: `''` = alle, `'auftrag'` = mit Auftrag, `'ohne'` = weder Auftrag noch Bereich, sonst Bereichsname */
+export type ZuordnungFilter = string;
+
+export function passtZuordnung(b: Pick<BelegX, 'auftragId' | 'bereich'>, f: ZuordnungFilter): boolean {
+  if (!f) return true;
+  if (f === 'auftrag') return !!b.auftragId;
+  if (f === 'ohne') return !b.auftragId && !b.bereich;
+  return !b.auftragId && b.bereich === f;
+}
+
+const tmj = (d: string | undefined) => (d ? `${d.slice(8, 10)}.${d.slice(5, 7)}.${d.slice(0, 4)}` : '');
+
+export const BELEG_CSV_SPALTEN = ['Datum', 'Lieferant', 'Art', 'Nummer', 'Auftrag', 'Betriebsbereich', 'Kategorie', 'Netto', 'USt', 'Brutto', 'Status', 'Zahlen bis'];
+
+export function belegeCsv(liste: BelegX[]): string {
+  return csvText([
+    BELEG_CSV_SPALTEN,
+    ...liste.map((b) => [
+      tmj(b.datum),
+      lieferantName(b),
+      ART_LABEL[b.art],
+      b.nummer ?? '',
+      db.auftraege.get(b.auftragId)?.nummer ?? '',
+      b.auftragId ? '' : (b.bereich ?? ''),
+      b.kategorie ?? '',
+      betragCsv(b.netto),
+      betragCsv(b.ust),
+      betragCsv(brutto(b)),
+      SCHRITT_STATUS[belegSchritt(b)].text,
+      tmj(b.faelligAm),
+    ]),
+  ]);
 }

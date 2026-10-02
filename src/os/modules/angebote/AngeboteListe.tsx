@@ -108,7 +108,16 @@ export function AngeboteListe() {
         <Liste
           leer={
             q || ansicht.zeitraum !== 'alle' || ansicht.auftragId ? (
-              <Leer titel="Keine Treffer" text="Zu dieser Suche oder diesem Filter gibt es kein Angebot." icon="suche" />
+              <Leer
+                titel="Keine Treffer"
+                text="Zu dieser Suche oder diesem Filter gibt es kein Angebot."
+                icon="suche"
+                aktion={
+                  <Button variante="sekundaer" onClick={() => (setQ(''), ansicht.setZeitraum('alle'), ansicht.setAuftragId(''))}>
+                    Filter zurücksetzen
+                  </Button>
+                }
+              />
             ) : (
               <Leer
                 titel={sicht === 'offen' ? 'Kein Angebot wartet auf Antwort' : 'Hier ist nichts'}
