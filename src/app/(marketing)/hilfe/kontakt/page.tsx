@@ -15,7 +15,7 @@ export const metadata = pageMeta({
 });
 
 const selbstHilfe = [
-  { titel: "Schnellstart", text: "In 7 Schritten startklar.", href: "/hilfe/schnellstart", icon: "bolt" },
+  { titel: "Schnellstart", text: "Mit einer Frage startklar.", href: "/hilfe/schnellstart", icon: "bolt" },
   { titel: "Hilfe-Center", text: "Anleitungen zu allen Bereichen.", href: "/hilfe-center", icon: "book" },
   { titel: "Daten übernehmen", text: "So kommen deine Listen rein.", href: "/hilfe/daten-uebernehmen", icon: "download" },
 ] as const;

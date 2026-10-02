@@ -1,4 +1,4 @@
-import { Icon, type IconName } from "@/components/ui";
+import { Icon } from "@/components/ui";
 import type { SchnellstartAnsicht as Ansicht } from "@/content/hilfe/schnellstart";
 
 /** Kleine, stilisierte Ansicht je Schnellstart-Schritt. Rein dekorativ, keine Screenshots. */
@@ -28,26 +28,6 @@ function Zeile({ label, wert }: { label: string; wert: string }) {
   );
 }
 
-function Auswahl({ items, aktiv }: { items: [string, IconName][]; aktiv: string[] }) {
-  return (
-    <div className="grid grid-cols-2 gap-1.5">
-      {items.map(([label, icon]) => {
-        const an = aktiv.includes(label);
-        return (
-          <span
-            key={label}
-            className={`flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold ring-1 ${
-              an ? "bg-signal-soft text-signal-dark ring-signal" : "ring-line text-muted"
-            }`}
-          >
-            <Icon name={an ? "check" : icon} className="size-3.5" /> {label}
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
 function Knopf({ children }: { children: React.ReactNode }) {
   return (
     <span className="mt-3 flex items-center justify-center gap-1.5 rounded-md bg-signal py-2 text-xs font-bold text-white">
@@ -67,44 +47,10 @@ const inhalt: Record<Ansicht, React.ReactNode> = {
   ),
   gewerk: (
     <>
-      <p className="mb-3 font-display font-bold">Was für ein Betrieb seid ihr?</p>
-      <Auswahl
-        items={[
-          ["Elektro", "bolt"],
-          ["SHK", "wrench"],
-          ["Maler", "pen"],
-          ["Tischler", "ruler"],
-          ["Dach", "home"],
-          ["Weitere", "plus"],
-        ]}
-        aktiv={["Elektro"]}
-      />
-      <Knopf>Weiter</Knopf>
-    </>
-  ),
-  leistungen: (
-    <>
-      <p className="mb-3 font-display font-bold">Was bietet ihr an?</p>
-      <ul className="space-y-1.5 text-xs">
-        {[
-          ["Hausinstallation", true],
-          ["Wallbox & E-Mobilität", true],
-          ["Photovoltaik", false],
-          ["Kundendienst", true],
-        ].map(([l, an]) => (
-          <li key={String(l)} className="flex items-center gap-2">
-            <span
-              className={`inline-flex size-4 items-center justify-center rounded ${an ? "bg-moss text-white" : "ring-1 ring-line"}`}
-            >
-              {an && <Icon name="check" className="size-3" />}
-            </span>
-            {l}
-          </li>
-        ))}
-      </ul>
-      <p className="mt-3 rounded-md bg-moss-soft px-2.5 py-1.5 text-[0.7rem] font-semibold text-moss">
-        Vorlagen und Checklisten werden angelegt
-      </p>
+      <p className="mb-3 font-display font-bold">Welcher Betrieb bist du?</p>
+      <Zeile label="Website" wert="elektro-meier.de" />
+      <Knopf>Betrieb übernehmen</Knopf>
+      <p className="mt-2 text-center text-xs font-semibold text-signal-dark">Keine Website? Gewerk auswählen</p>
     </>
   ),
   mitarbeiter: (

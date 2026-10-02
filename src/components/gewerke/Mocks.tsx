@@ -150,13 +150,10 @@ export function EinrichtungMock() {
       className="rounded-xl border border-ink/10 bg-white shadow-2xl shadow-ink/10"
     >
       <div className="flex items-center justify-between border-b border-line px-4 py-3">
-        <span className="text-sm font-semibold">Einrichtung · Schritt 1 von 4</span>
-        <span className="h-1.5 w-24 overflow-hidden rounded-full bg-sand">
-          <span className="block h-full w-1/4 bg-signal" />
-        </span>
+        <span className="text-sm font-semibold">Einrichtung · eine Frage</span>
       </div>
       <div className="space-y-4 p-4 sm:p-5">
-        <p className="font-display text-lg font-bold">Was macht dein Betrieb?</p>
+        <p className="font-display text-lg font-bold">Welcher Betrieb bist du?</p>
         <div className="grid grid-cols-4 gap-2">
           {gewerke.map((g) => (
             <span

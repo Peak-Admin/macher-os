@@ -82,7 +82,7 @@ const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSch
     titel: "Betrieb",
     text: "Mitarbeiter, Material, Geld und Unternehmen.",
     icon: "home",
-    objekt: "werkzeugkiste",
+    objekt: "werkbank",
     href: "/funktionen/mitarbeiter",
     inhalt: ["Geld: Rechnungen und Belege", "Team: Menschen und Zeiten", "Ausstattung und Unternehmen"],
   },
@@ -436,16 +436,23 @@ export default function HomePage() {
               <SectionHeading
                 eyebrow="Einrichtung"
                 title="Dein Betrieb ist schon vorbereitet."
-                intro="Beim Start beantwortest du vier kurze Fragen. Den Rest richtet Macher OS für dich ein."
+                intro="Beim Start beantwortest du eine Frage: Welcher Betrieb bist du? Den Rest richtet Macher OS für dich ein."
               />
-              <ol className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
-                {["Gewerk", "Leistungen", "Arbeitsweise", "Teamgröße"].map((s, i) => (
-                  <li key={s} className="flex items-center gap-3 rounded-xl bg-white p-4 ring-1 ring-line">
-                    <span className="font-display text-sm font-extrabold text-signal-dark">{i + 1}</span>
-                    <span className="font-semibold">{s}</span>
+              <ul className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
+                {[
+                  { titel: "Website angeben", text: "Macher liest Name, Logo, Gewerk und Leistungen aus.", icon: "link" as const },
+                  { titel: "Keine Website?", text: "Dann tippst du einfach dein Gewerk an.", icon: "wrench" as const },
+                ].map((w) => (
+                  <li key={w.titel} className="flex items-start gap-3 rounded-xl bg-white p-4 ring-1 ring-line">
+                    <Icon name={w.icon} className="mt-0.5 size-5 shrink-0 text-signal-dark" />
+                    <span>
+                      <span className="block font-semibold">{w.titel}</span>
+                      <span className="block text-muted">{w.text}</span>
+                    </span>
                   </li>
                 ))}
-              </ol>
+              </ul>
+              <p className="mt-4 text-muted">Briefkopf, Kunden, Preise und Team fragt Macher erst, wenn du sie brauchst.</p>
             </div>
             <div className="min-w-0 rounded-2xl bg-ink p-6 text-white sm:p-8">
               <p className="font-display text-xl font-bold">Macher OS richtet automatisch ein:</p>

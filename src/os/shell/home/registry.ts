@@ -34,7 +34,7 @@ const beide = ['klein', 'gross'] as WidgetDefinition['availableSizes'];
 export const WIDGETS: WidgetDefinition[] = [
   // Das Wichtigste – die vier Standard-Widgets
   { id: 'naechster-schritt', name: 'Dein nächster Schritt', description: 'Die eine wichtigste Handlung – Einrichtung, Anfragen, Angebote, Rechnungen.', icon: 'start', objekt: 'werkzeugkiste', kategorie: 'kern', component: NaechsterSchrittWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'links' },
-  { id: 'arbeit', name: 'Deine Arbeit', description: 'Aufgaben, Freigaben, Urlaubsaufgaben und vorbereitete Angebote an einer Stelle.', icon: 'liste', objekt: 'klemmbrett', kategorie: 'kern', component: ArbeitWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'links', alle: { label: 'Alle ansehen', pfad: '/auftraege/aufgaben' } },
+  { id: 'arbeit', name: 'Deine Arbeit', description: 'Aufgaben, Freigaben, Urlaubsaufgaben und vorbereitete Angebote an einer Stelle.', icon: 'liste', objekt: 'hammer', kategorie: 'kern', component: ArbeitWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'links', alle: { label: 'Alle ansehen', pfad: '/auftraege/aufgaben' } },
   { id: 'ansprechpartner', name: 'Dein Ansprechpartner', description: 'Persönliche Betreuung und technischer Support in einem.', icon: 'person', kategorie: 'kern', component: AnsprechpartnerWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'rechts', roles: ['chef', 'buero'] },
   { id: 'neu', name: 'Neu für dich', description: 'Workshops, neue Funktionen, Vorlagen und Tipps.', icon: 'stern', objekt: 'bauplan', kategorie: 'kern', component: NeuWidget, availableSizes: beide, defaultSize: 'klein', defaultSpalte: 'rechts' },
 

@@ -3,7 +3,6 @@
  * Echte Fotos von Handwerksobjekten als ruhige, emotionale Ebene. Funktionale Navigation bleibt bei Linien-Icons.
  * Website (`<Objekt>`, src/components/ui/Objekt.tsx) und Software (`<MacherAsset>`, src/os/ui/asset.tsx) nutzen dieses Register.
  * Fotos sind frei lizenziert (CC0 / CC BY / CC BY-SA) – Nachweise erscheinen auf /bildnachweise.
- * Noch ohne Foto (fällt auf ein Linien-Icon zurück): Hammer, Materialkiste, Kaffeebecher, Werkbank.
  */
 export type ObjektSchluessel =
   | "werkzeugkiste"
@@ -19,7 +18,11 @@ export type ObjektSchluessel =
   | "schrauben"
   | "kabeltrommel"
   | "helm"
-  | "werkzeugwand";
+  | "werkzeugwand"
+  | "hammer"
+  | "materialkiste"
+  | "kaffeebecher"
+  | "werkbank";
 
 export type Objekt = {
   name: string;
@@ -157,6 +160,42 @@ export const objekte: Record<ObjektSchluessel, Objekt> = {
     src: "/bilder/objekte/werkzeugwand.webp",
     urheber: "huw-ogilvie",
     quelleUrl: "https://www.flickr.com/photos/97438202@N00/28135419",
+    lizenz: "CC BY 2.0",
+    lizenzUrl: "https://creativecommons.org/licenses/by/2.0/",
+  },
+  "hammer": {
+    name: "Hammer",
+    zweck: "Arbeit, Erledigen, Aufgaben",
+    src: "/bilder/objekte/hammer.webp",
+    urheber: "Homedust",
+    quelleUrl: "https://www.flickr.com/photos/159630537@N08/28918563378",
+    lizenz: "CC BY 2.0",
+    lizenzUrl: "https://creativecommons.org/licenses/by/2.0/",
+  },
+  "materialkiste": {
+    name: "Materialkiste",
+    zweck: "Material, Lager, Bestellungen",
+    src: "/bilder/objekte/materialkiste.webp",
+    urheber: "keyimages-photography",
+    quelleUrl: "https://www.flickr.com/photos/23505652@N03/48902944282",
+    lizenz: "CC BY-SA 2.0",
+    lizenzUrl: "https://creativecommons.org/licenses/by-sa/2.0/",
+  },
+  "kaffeebecher": {
+    name: "Kaffeebecher",
+    zweck: "Pause, alles erledigt, Start in den Tag",
+    src: "/bilder/objekte/kaffeebecher.webp",
+    urheber: "basheertome",
+    quelleUrl: "https://www.flickr.com/photos/10019047@N05/8747148779",
+    lizenz: "CC BY 2.0",
+    lizenzUrl: "https://creativecommons.org/licenses/by/2.0/",
+  },
+  "werkbank": {
+    name: "Werkbank",
+    zweck: "Betrieb, Rechnungen, Handwerk",
+    src: "/bilder/objekte/werkbank.webp",
+    urheber: "Phil Gradwell",
+    quelleUrl: "https://www.flickr.com/photos/73228447@N02/15225483531",
     lizenz: "CC BY 2.0",
     lizenzUrl: "https://creativecommons.org/licenses/by/2.0/",
   },
