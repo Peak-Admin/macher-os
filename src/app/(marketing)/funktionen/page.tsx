@@ -235,6 +235,12 @@ export default function FunktionenPage() {
             >
               Was Macher automatisch erledigt <Icon name="arrow-right" className="size-4" />
             </Link>
+            <Link
+              href={funktionHref("macher-fragen")}
+              className="mt-4 flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
+            >
+              Macher fragen: die Bürokraft im Programm <Icon name="arrow-right" className="size-4" />
+            </Link>
           </div>
           <ul className="grid content-start gap-3 sm:grid-cols-2">
             {macherAufgaben.map((a) => (

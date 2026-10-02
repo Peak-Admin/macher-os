@@ -16,6 +16,7 @@ import {
   type KundeSlug,
   type WerkzeugSlug,
 } from "./registry";
+import { anwendungsfaelle } from "./anwendungsfaelle";
 
 export type Ton = "signal" | "moss" | "sky" | "ink" | "sand";
 
@@ -116,6 +117,7 @@ export function gewerkTitel(slug: GewerkSlug) {
 }
 
 export const funktionInhalte: Inhalte = {
+  ...anwendungsfaelle,
   /* ───────────────────────── Aufträge ───────────────────────── */
 
   anfragen: {
