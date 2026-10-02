@@ -44,3 +44,13 @@ Score = Frequenz (1–10) × Intensität (1–10). Betroffen: C = Chef, B = Bür
 - Kalender-Abo-URL (braucht Server)
 - Echte DATEV-/IDS-/FinTS-Anbindung
 - E-Mail-Postfach-Anbindung
+
+## Integration Hub (Delta 8)
+- Connector-Registry (`connectoren.ts`): Bank, Buchhaltung (DATEV, Lexware), Großhandel (DATANORM, IDS Connect, OCI, UGL,
+  SHK Connect), Ausschreibungen (GAEB), Kalender (Datei, Google, Microsoft), E-Mail & Telefon, Plattform (Datenexport,
+  Webhooks, API). Je Connector: Verbindungsart (Datei / über Integrationspartner per OAuth / Zugangsschlüssel / eingebaut),
+  Fähigkeiten, Status als Text (verbunden / nicht verbunden / Fehler / geplant). Zustand je Connector in `anbindungen`.
+- Ruhige Kartenliste „Verbinden“; Technisches (Formate, Versionen, Adressen) hinter „Weitere Optionen“.
+- DATANORM 4/5 (Satzarten A/B, CP850) → Artikel über `artikelImportieren` (kein Doppeln).
+- GAEB DA XML X83/X84 → Positionen in den Angebotsentwurf des Auftrags (Titel als Text, Bedarf/Wahl optional).
+- Webhooks gegen die lokale Schnittstelle `WebhookQuelle` (`webhooks.ts`), anschließbar an den Kern-Katalog.

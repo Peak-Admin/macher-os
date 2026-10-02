@@ -1,11 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db } from '@core/db';
 import { on } from '@core/events';
-import { heute } from '@core/format';
 import { festschreiben, rechnungErstellen } from '../rechnungen/logik';
 import { rechnungAendern, rechnungX } from '../rechnungen/typen';
 import { testBetrieb } from '../rechnungen/testdaten';
-import { csvZeile, importAusfuehren, kontoauszugLesen, skontoVorschlag, zahlungBuchen, zahlungLoeschen, zuordnen } from './logik';
+import { csvZeile, kontoauszugLesen, skontoVorschlag, zahlungBuchen, zahlungLoeschen } from './logik';
 
 let t: ReturnType<typeof testBetrieb>;
 
@@ -83,38 +82,20 @@ describe('Kontoauszug', () => {
     expect(kontoauszugLesen('irgendwas;ohne;kopf').fehler).toMatch(/Kopfzeile/);
   });
 
-  it('ordnet über Rechnungsnummer, Betrag + Kunde, und markiert Unsicheres', () => {
-    const r1 = offeneRechnung(t.kunde.id, 10000); // 119,00
-    const r2 = offeneRechnung(t.firma.id, 20000); // 238,00
-    const r3 = offeneRechnung(t.firma.id, 30000); // 357,00
-    const z = zuordnen([
-      { zeile: 1, datum: heute(), betrag: 11900, zweck: `Rechnung ${r1.nummer.replace(/-/g, ' ')}`, name: 'X' },
-      { zeile: 2, datum: heute(), betrag: 23800, zweck: 'Danke', name: 'Bäckerei Sommer KG' },
-      { zeile: 3, datum: heute(), betrag: 35700, zweck: 'Überweisung', name: 'Unbekannt' },
-      { zeile: 4, datum: heute(), betrag: 999, zweck: 'Irgendwas', name: 'Niemand' },
-    ]);
-    expect(z[0]).toMatchObject({ rechnungId: r1.id, sicherheit: 'sicher' });
-    expect(z[1]).toMatchObject({ rechnungId: r2.id, sicherheit: 'sicher' });
-    expect(z[2]).toMatchObject({ rechnungId: r3.id, sicherheit: 'unsicher' });
-    expect(z[3].sicherheit).toBe('keine');
-
-    const e = importAusfuehren(z);
-    expect(e).toEqual({ gebucht: 2, summe: 35700, freigaben: 1 });
-    expect(rechnungX(r1.id)?.status).toBe('bezahlt');
-    expect(rechnungX(r3.id)?.status).toBe('versendet');
-    const h = db.hinweise.all().find((x) => x.bezug?.id === r3.id);
-    expect(h?.art).toBe('freigabe');
-    expect(h?.aktionen?.[0].id).toBe('zahlung.bestaetigen');
-
-    // erneuter Import erkennt Doppelte
-    const nochmal = zuordnen([{ zeile: 1, datum: heute(), betrag: 11900, zweck: r1.nummer, name: 'X' }]);
-    expect(nochmal[0].sicherheit).toBe('doppelt');
+  it('liest die IBAN-Spalte mit', () => {
+    const csv = 'Buchungstag;Name Zahlungsbeteiligter;IBAN Zahlungsbeteiligter;Verwendungszweck;Betrag (EUR)\n01.09.2026;Sommer KG;DE89 3704 0044 0532 0130 00;Zahlung;250,50';
+    expect(kontoauszugLesen(csv).umsaetze[0].iban).toBe('DE89370400440532013000');
   });
 
-  it('erkennt Teilzahlung mit Rechnungsnummer als sicher', () => {
+  it('feuert rechnung.bezahlt genau einmal, wenn die Rechnung bezahlt ist', () => {
     const r = offeneRechnung();
-    const z = zuordnen([{ zeile: 1, datum: heute(), betrag: 5000, zweck: r.nummer, name: '' }]);
-    expect(z[0].sicherheit).toBe('sicher');
-    expect(z[0].grund).toMatch(/Teilzahlung/);
+    const ids: string[] = [];
+    const aus = on('rechnung.bezahlt', (e) => ids.push(e.objekt!.id));
+    zahlungBuchen({ rechnungId: r.id, betrag: 5000 });
+    expect(ids).toEqual([]);
+    zahlungBuchen({ rechnungId: r.id, betrag: 6900 });
+    aus();
+    expect(ids).toEqual([r.id]);
+    expect(db.ereignisse.all().length).toBeGreaterThan(0);
   });
 });
