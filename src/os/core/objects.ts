@@ -586,6 +586,8 @@ export interface Benachrichtigung extends Basis {
   fuerMitarbeiterId?: ID;
   gelesen: boolean;
   wichtig?: boolean;
+  /** aus dem Posteingang ins Archiv gelegt (bleibt erhalten, zählt nicht mehr als neu) */
+  archiviert?: boolean;
 }
 
 /** Wer eine Änderung ausgelöst hat: Mensch, Automation, Macher (KI), Import, Abgleich */

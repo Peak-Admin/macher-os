@@ -1,79 +1,115 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '@core/db';
 import { relativ, uhrzeit } from '@core/format';
 import { pfadZu } from '@core/modul';
 import { useIch } from '@core/session';
-import { Button, Filter, Leer, Liste, ListenZeile, Stapel, Status, Zeile, useToast } from '@ui/index';
-import { alleGelesen, fuerMich } from './daten';
+import { Button, Leer, Liste, ListenZeile, Stapel, Status, Tabs, Zeile, useToast } from '@ui/index';
+import { alleGelesen, archivieren, fuerMich, meldungsGruppen, zurueckholen, type Ablage, type MeldungsGruppe } from './daten';
 
-/** Liste der Benachrichtigungen – im Glocken-Overlay und auf der Seite gleich. */
+/** Punkt für Ungelesenes – der Text („Neu“) steht zusätzlich rechts, nie nur Farbe */
+function Punkt({ an }: { an: boolean }) {
+  return <span aria-hidden style={{ width: 8, height: 8, borderRadius: '50%', background: an ? 'var(--mm-brand)' : 'transparent', flexShrink: 0 }} />;
+}
+
+/**
+ * Posteingang wie in Notion – im Glocken-Overlay und auf der Seite gleich.
+ * Beim Öffnen gilt alles als gelesen (bleibt aber für diesen Besuch als „Neu“ markiert).
+ * Mehrere Meldungen zum selben Objekt erscheinen als ein Eintrag mit Zähler.
+ */
 export function BenachrichtigungsListe({ onNavigiert }: { onNavigiert?: () => void }) {
   const ich = useIch();
   const navigate = useNavigate();
   const toast = useToast();
   const alle = fuerMich(db.benachrichtigungen.use(), ich?.id);
-  const ungelesen = alle.filter((b) => !b.gelesen);
-  const [zeigen, setZeigen] = useState<'neu' | 'alle'>(ungelesen.length ? 'neu' : 'alle');
-  const liste = zeigen === 'neu' ? ungelesen : alle.slice(0, 50);
+  const [ablage, setAblage] = useState<Ablage>('posteingang');
+  // Was beim Öffnen neu war, bleibt in diesem Besuch markiert – gespeichert wird es sofort als gelesen
+  const [warNeu] = useState(() => new Set(alle.filter((b) => !b.gelesen && !b.archiviert).map((b) => b.id)));
+  useEffect(() => {
+    alleGelesen(db.benachrichtigungen.where((b) => warNeu.has(b.id)));
+  }, [warNeu]);
 
-  const oeffnen = (id: string) => {
-    const b = db.benachrichtigungen.get(id);
-    if (!b) return;
-    if (!b.gelesen) db.benachrichtigungen.update(id, { gelesen: true }, { leise: true });
-    const pfad = pfadZu(b.bezug);
+  const posteingang = meldungsGruppen(alle, 'posteingang', warNeu);
+  const archiv = meldungsGruppen(alle, 'archiv');
+  const gruppen = ablage === 'posteingang' ? posteingang : archiv.slice(0, 50);
+
+  const oeffnen = (g: MeldungsGruppe) => {
+    alleGelesen(g.eintraege);
+    const pfad = pfadZu(g.neueste.bezug);
     if (pfad) {
       onNavigiert?.();
       navigate(pfad);
     }
   };
 
+  const zeile = (g: MeldungsGruppe) => {
+    const b = g.neueste;
+    const n = g.eintraege.length;
+    const neu = ablage === 'posteingang' && g.ungelesen;
+    return (
+      <ListenZeile
+        key={g.schluessel}
+        titel={b.titel}
+        untertitel={[b.text, n > 1 ? `${n} Meldungen` : undefined, `${relativ(b.erstelltAm)}, ${uhrzeit(b.erstelltAm)} Uhr`].filter(Boolean).join(' · ')}
+        links={<Punkt an={neu} />}
+        rechts={neu ? <Status ton={g.wichtig ? 'achtung' : 'aktiv'}>{g.wichtig ? 'Wichtig' : 'Neu'}</Status> : undefined}
+        onClick={() => oeffnen(g)}
+        aktion={
+          ablage === 'posteingang' ? (
+            <Button variante="tertiaer" klein icon="check" aria-label={`„${b.titel}“ archivieren`} onClick={() => archivieren(g.eintraege)}>
+              Archivieren
+            </Button>
+          ) : (
+            <Button variante="tertiaer" klein icon="zurueck" aria-label={`„${b.titel}“ zurückholen`} onClick={() => zurueckholen(g.eintraege)}>
+              Zurückholen
+            </Button>
+          )
+        }
+      />
+    );
+  };
+
   return (
     <Stapel abstand={16}>
       <Zeile zwischen>
-        <Filter
-          label="Benachrichtigungen zeigen"
-          wert={zeigen}
-          onChange={setZeigen}
-          optionen={[
-            { wert: 'neu', label: 'Ungelesen', zaehler: ungelesen.length },
-            { wert: 'alle', label: 'Alle' },
+        <Tabs
+          aktiv={ablage}
+          onWechsel={(id) => setAblage(id as Ablage)}
+          tabs={[
+            { id: 'posteingang', titel: 'Posteingang', zaehler: posteingang.length },
+            { id: 'archiv', titel: 'Archiv' },
           ]}
         />
-        {ungelesen.length > 0 && (
+        {ablage === 'posteingang' && posteingang.length > 0 && (
           <Button
             variante="tertiaer"
             klein
             icon="check"
             onClick={() => {
-              alleGelesen(ungelesen);
-              toast('Alles als gelesen markiert.');
+              const n = posteingang.length;
+              archivieren(posteingang.flatMap((g) => g.eintraege));
+              toast(n === 1 ? 'Eine Meldung archiviert.' : `${n} Meldungen archiviert.`);
             }}
           >
-            Alle als gelesen markieren
+            Alle archivieren
           </Button>
         )}
       </Zeile>
       <Liste
         leer={
-          <Leer
-            icon="glocke"
-            titel={zeigen === 'neu' ? 'Nichts Neues' : 'Noch keine Benachrichtigungen'}
-            text="Macher meldet sich nur, wenn du reagieren solltest: neue Anfrage, Kundennachricht, Urlaubsantrag, angenommenes Angebot, Zahlungseingang oder eine Aufgabe für dich."
-            aktion={zeigen === 'neu' && alle.length ? <Button variante="sekundaer" onClick={() => setZeigen('alle')}>Gelesene zeigen</Button> : undefined}
-          />
+          ablage === 'posteingang' ? (
+            <Leer
+              icon="glocke"
+              titel="Dein Posteingang ist leer"
+              text="Macher meldet sich nur, wenn du reagieren solltest: neue Anfrage, Kundennachricht, Urlaubsantrag, angenommenes Angebot, Zahlungseingang oder eine Aufgabe für dich."
+              aktion={archiv.length ? <Button variante="sekundaer" onClick={() => setAblage('archiv')}>Archiv ansehen</Button> : undefined}
+            />
+          ) : (
+            <Leer icon="glocke" titel="Noch nichts archiviert" text="Was du im Posteingang archivierst, findest du hier wieder." />
+          )
         }
       >
-        {liste.map((b) => (
-          <ListenZeile
-            key={b.id}
-            titel={b.titel}
-            untertitel={[b.text, `${relativ(b.erstelltAm)}, ${uhrzeit(b.erstelltAm)} Uhr`].filter(Boolean).join(' · ')}
-            aktiv={!b.gelesen}
-            rechts={!b.gelesen ? <Status ton={b.wichtig ? 'achtung' : 'aktiv'}>{b.wichtig ? 'Wichtig' : 'Neu'}</Status> : <Status>Gelesen</Status>}
-            onClick={() => oeffnen(b.id)}
-          />
-        ))}
+        {gruppen.map(zeile)}
       </Liste>
     </Stapel>
   );
