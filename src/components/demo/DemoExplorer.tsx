@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
-import { Container, Icon, zone, type IconName } from "@/components/ui";
+import { ButtonLink, Container, Icon, zone, type IconName } from "@/components/ui";
+import { app } from "@/lib/site";
 import { demoGewerke } from "@/content/demo";
 import { DemoApp } from "./DemoApp";
 import { DemoTour } from "./DemoTour";
@@ -28,7 +29,8 @@ export function DemoExplorer() {
                 Wähle dein Gewerk.
               </h2>
               <p className="mt-3 text-lg text-muted">
-                Die Demo zeigt Aufträge, Material und Abläufe aus deinem Alltag. Klick dich durch die Bereiche.
+                Die Vorschau zeigt Aufträge, Material und Abläufe aus deinem Alltag. Mit einem Klick öffnest du den
+                Beispielbetrieb im echten Macher OS.
               </p>
             </div>
           </div>
@@ -86,8 +88,11 @@ export function DemoExplorer() {
                   </li>
                 ))}
               </ul>
+              <ButtonLink href={app.demo(daten.id)} className="mt-6 w-full justify-center">
+                <Icon name="play" className="size-4" /> Beispielbetrieb öffnen
+              </ButtonLink>
               <p className="mt-5 border-t border-line pt-4 text-sm text-muted">
-                Alle Namen und Zahlen sind Beispieldaten.
+                Alle Namen und Zahlen sind Beispieldaten. Deine echten Daten bleiben unberührt.
               </p>
               {daten.gewerk ? (
                 <Link

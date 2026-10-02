@@ -41,12 +41,14 @@ export const app = {
   url: "/os",
   /** Einrichtung, optional mit vorausgewähltem Gewerk der Software (`elektro`, `shk`, …) */
   einrichten: (gewerk?: string) => `/os/willkommen${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
+  /** Echte Demo: öffnet die Software als Spielwiese mit Beispielbetrieb (getrennt von echten Daten), optional mit Gewerk */
+  demo: (gewerk?: string) => `/os/demo${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
 };
 
 /** „Kostenlos testen“ führt direkt in die Einrichtung von Macher OS – ohne Konto, ohne Login. */
 export const cta = {
   primary: { label: "Kostenlos testen", href: app.einrichten() },
-  secondary: { label: "Demo ansehen", href: "/demo" },
+  secondary: { label: "Demo ansehen", href: app.demo() },
   /** Wer schon eingerichtet hat, kommt direkt zu „Heute“ (ohne Einrichtung leitet die App zur Einrichtung) */
   login: { label: "App öffnen", href: `${app.url}/heute` },
 };

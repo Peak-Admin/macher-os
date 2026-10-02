@@ -108,7 +108,7 @@ export const zielgruppenSeiten = {
       intro:
         "In der Meisterschule lernst du Kalkulation, Angebot und Betriebsführung. Mit Macher OS übst du es an einer echten Software – und hast sie schon parat, wenn du dich selbstständig machst oder Verantwortung übernimmst.",
       bild: "alltag/team",
-      aktionen: { primaer: { label: "Demo mit Beispieldaten", href: "/demo" }, sekundaer: { label: "Kostenlos testen", href: cta.primary.href } },
+      aktionen: { primaer: { label: "Demo mit Beispieldaten", href: cta.secondary.href }, sekundaer: { label: "Kostenlos testen", href: cta.primary.href } },
     },
     vorteile: {
       eyebrow: "Was du lernst",
@@ -166,7 +166,7 @@ export const zielgruppenSeiten = {
       intro:
         "Eure Meisterschüler führen bald selbst einen Betrieb. Mit Macher OS zeigt ihr an einer echten Software, wie Kalkulation, Angebot, Planung und Rechnung zusammenhängen.",
       bild: "seite/partner",
-      aktionen: { primaer: { label: "Kooperation anfragen", href: "#anfrage" }, sekundaer: { label: "Demo ansehen", href: "/demo" } },
+      aktionen: { primaer: { label: "Kooperation anfragen", href: "#anfrage" }, sekundaer: cta.secondary },
     },
     vorteile: {
       eyebrow: "Im Unterricht",

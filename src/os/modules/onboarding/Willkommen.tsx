@@ -53,7 +53,7 @@ export function Willkommen() {
  */
 const VORTEILE = ['Kostenlos starten – ohne Kreditkarte', 'In wenigen Minuten startklar', 'Du musst keine Software lernen', 'Kostenlose Hilfe beim Einrichten'];
 
-function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
+export function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
   return (
     <div className="ob-rahmen">
       <header className={`ob-marke${vorteile ? ' ob-marke--vorteile' : ''}`}>

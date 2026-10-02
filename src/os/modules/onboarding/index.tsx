@@ -1,4 +1,5 @@
 import { defineModul } from '@core/modul';
+import { Demo } from './Demo';
 import { SpielwieseLeiste } from './Spielwiese';
 import { Willkommen } from './Willkommen';
 
@@ -10,6 +11,9 @@ export default defineModul({
   icon: 'start',
   gewicht: 40,
   navigation: 'versteckt',
-  vollbildRouten: [{ pfad: '/willkommen', element: Willkommen }],
+  vollbildRouten: [
+    { pfad: '/willkommen', element: Willkommen },
+    { pfad: '/demo', element: Demo },
+  ],
   leiste: SpielwieseLeiste,
 });
