@@ -59,7 +59,7 @@ export function BetriebsmittelDetail() {
         haupt={
           <Stapel>
             {f.stufe === 'ueberfaellig' && (
-              <Meldung ton="achtung" titel="Prüfung überfällig – nicht verwenden!" aktion={<Button klein onClick={() => setPruefung(true)}>Prüfung dokumentieren</Button>}>
+              <Meldung ton="gefahr" titel="Prüfung überfällig – nicht verwenden!" aktion={<Button klein onClick={() => setPruefung(true)}>Prüfung dokumentieren</Button>}>
                 {b.pruefungArt ?? 'Prüfung'} war am {datum(b.naechstePruefung)} fällig.
               </Meldung>
             )}

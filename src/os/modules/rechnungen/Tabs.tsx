@@ -67,7 +67,7 @@ export function KundeRechnungenTab({ id }: { id: ID }) {
   return (
     <Stapel>
       {o.ueberfaellig.length > 0 && (
-        <Meldung ton="achtung" titel={`Überfällig: ${euro(o.ueberfaelligSumme)}`}>
+        <Meldung ton="gefahr" titel={`Überfällig: ${euro(o.ueberfaelligSumme)}`}>
           {o.ueberfaellig.map((r) => r.nummer).join(', ')}
         </Meldung>
       )}

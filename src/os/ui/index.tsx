@@ -802,14 +802,8 @@ export function Zeile({ children, abstand = 8, umbruch = true, zwischen }: { chi
 
 const tonIcon: Record<Ton, IconName | undefined> = { neutral: undefined, aktiv: 'uhr', erfolg: 'check', achtung: 'achtung', gefahr: 'achtung' };
 
-/** „Überfällig“ ist in der ganzen App eine Gefahr (hellrot, dunkelrote Schrift) – nie nur eine Warnung */
-const UEBERFAELLIG = /überfällig/i;
-const tonFuer = (ton: Ton | undefined, text: unknown): Ton | undefined =>
-  ton === 'achtung' && typeof text === 'string' && UEBERFAELLIG.test(text) ? 'gefahr' : ton;
-
 /** Status immer mit Text, Farbe nur unterstützend */
-export function Status({ ton: tonVorgabe = 'neutral', children, icon = true }: { ton?: Ton; children: ReactNode; icon?: boolean }) {
-  const ton = tonFuer(tonVorgabe, children) ?? 'neutral';
+export function Status({ ton = 'neutral', children, icon = true }: { ton?: Ton; children: ReactNode; icon?: boolean }) {
   const i = tonIcon[ton];
   return (
     <span className={cx('mm-status', `mm-status--${ton}`)}>
@@ -821,8 +815,7 @@ export function Status({ ton: tonVorgabe = 'neutral', children, icon = true }: {
 
 /** Kennzahl-Karte. Das Strich-Icon (`icon`, sonst aus dem Label abgeleitet, `false` = keins) unterscheidet die Karten;
  *  mit `ton` „achtung“/„gefahr“ hebt sich die ganze Karte ab (Ausnahmen zuerst). */
-export function Kennzahl({ wert, label, zeitraum, hinweis, to, ton: tonVorgabe, icon }: { wert: ReactNode; label: string; zeitraum?: string; hinweis?: ReactNode; to?: string; ton?: Ton; icon?: IconName | false }) {
-  const ton = tonFuer(tonVorgabe, label);
+export function Kennzahl({ wert, label, zeitraum, hinweis, to, ton, icon }: { wert: ReactNode; label: string; zeitraum?: string; hinweis?: ReactNode; to?: string; ton?: Ton; icon?: IconName | false }) {
   const iconName = icon === false ? undefined : (icon ?? kartenIcon(label));
   const inhalt = (
     <>
@@ -1110,8 +1103,8 @@ export function Laden({ text = 'Wird geladen …' }: { text?: string }) {
 
 export function Meldung({ ton = 'neutral', titel, children, aktion }: { ton?: Ton; titel?: string; children?: ReactNode; aktion?: ReactNode }) {
   return (
-    <div className={cx('mm-meldung', `mm-meldung--${ton}`)} role={ton === 'achtung' ? 'alert' : 'status'}>
-      <Icon name={ton === 'achtung' ? 'achtung' : ton === 'erfolg' ? 'check' : 'info'} />
+    <div className={cx('mm-meldung', `mm-meldung--${ton}`)} role={ton === 'achtung' || ton === 'gefahr' ? 'alert' : 'status'}>
+      <Icon name={ton === 'achtung' || ton === 'gefahr' ? 'achtung' : ton === 'erfolg' ? 'check' : 'info'} />
       <div className="mm-meldung-text">
         {titel && <strong>{titel}</strong>}
         {children && <div>{children}</div>}

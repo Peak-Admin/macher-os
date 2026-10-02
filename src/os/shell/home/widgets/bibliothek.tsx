@@ -320,7 +320,7 @@ export function ZahlenWidget({ groesse }: WidgetProps) {
   const leer = 'Noch keine Daten';
   const werte: Wert[] = [
     { label: 'Umsatz netto', wert: k.umsatz.anzahl ? euro(k.umsatz.netto) : leer, hinweis: k.zeitraum.label },
-    { label: 'Offene Posten', wert: euro(k.offen.summe), hinweis: k.offen.ueberfaellig ? `${euro(k.offen.ueberfaellig)} überfällig` : 'nichts überfällig', ton: k.offen.ueberfaellig ? 'achtung' : undefined },
+    { label: 'Offene Posten', wert: euro(k.offen.summe), hinweis: k.offen.ueberfaellig ? `${euro(k.offen.ueberfaellig)} überfällig` : 'nichts überfällig', ton: k.offen.ueberfaellig ? 'gefahr' : undefined },
   ];
   if (groesse === 'gross')
     werte.push(
@@ -365,7 +365,7 @@ export function WartungWidget({ groesse }: WidgetProps) {
             to={pfadZu({ typ: 'anlagen', id: a.id })}
             titel={`${a.typ}${a.hersteller ? ` · ${a.hersteller}` : ''}`}
             untertitel={db.kunden.get(a.kundeId)?.name}
-            rechts={<Status ton={z === 'ueberfaellig' ? 'achtung' : 'neutral'}>{z === 'ueberfaellig' ? 'Überfällig' : `fällig ${relativ(a.naechsteWartung)}`}</Status>}
+            rechts={<Status ton={z === 'ueberfaellig' ? 'gefahr' : 'neutral'}>{z === 'ueberfaellig' ? 'Überfällig' : `fällig ${relativ(a.naechsteWartung)}`}</Status>}
           />
         );
       })}

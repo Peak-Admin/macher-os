@@ -183,7 +183,7 @@ export function EinarbeitungDetail() {
                               Öffnen
                             </Button>
                           )}
-                          {ueber ? <Status ton="achtung">{`seit ${datum(faellig)}`}</Status> : <Status>{ART_LABEL[s.art]}</Status>}
+                          {ueber ? <Status ton="gefahr">{`seit ${datum(faellig)}`}</Status> : <Status>{ART_LABEL[s.art]}</Status>}
                         </Zeile>
                       </Zeile>
                     );
@@ -220,7 +220,7 @@ export function EinarbeitungDetail() {
                   Zum Mitarbeiter
                 </Button>
               )}
-              {ueberfaellig(e, t).length > 0 && <Meldung ton="achtung">{`${ueberfaellig(e, t).length} Schritte sind überfällig.`}</Meldung>}
+              {ueberfaellig(e, t).length > 0 && <Meldung ton="gefahr">{`${ueberfaellig(e, t).length} Schritte sind überfällig.`}</Meldung>}
             </Stapel>
           </Karte>
         }

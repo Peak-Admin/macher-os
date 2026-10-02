@@ -74,7 +74,7 @@ describe('Macher fragen', () => {
     expect(a.absicht).toBe('rechnungen-offen');
     expect(a.eintraege).toHaveLength(1);
     expect(a.text).toMatch(/1 Rechnung ist offen, zusammen 79,00/);
-    expect(a.eintraege![0].status?.ton).toBe('achtung');
+    expect(a.eintraege![0].status?.ton).toBe('gefahr');
   });
 
   it('beantwortet „Was steht morgen an?“', () => {

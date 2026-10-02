@@ -41,7 +41,7 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
   liegen als aufgelegte Blätter auf dem Canvas (`--mm-shadow-lift`: Lichtkante oben, Kontakt- und weicher Fallschatten).
 - **Bento (Software, Oktober 2026):** Boxen nicht alle gleich – Fläche nach Bedeutung. Die wichtigste große Box
   (Heute: „Dein nächster Schritt“) ist grün mit weißer Schrift und weißem Hauptknopf; Begleiter warm beige (`#f4efe6`),
-  Neuigkeiten hellgrün, Arbeitslisten weiß. Überfälliges färbt die ganze Kennzahl-Karte (Warnfläche).
+  Neuigkeiten hellgrün, Arbeitslisten weiß. Überfälliges färbt die ganze Kennzahl-Karte (Gefahrfläche: hellrot, dunkelrote Schrift).
 - **KI:** Macher (die KI) hat ein eigenes Zeichen – die Kugel Pink → Orange (`KiKugel`, Tokens `--mm-ki-*`). Nur für KI:
   Suchen-und-Fragen-Leiste, Orb, „Macher fragen“. Nie für Aktionen, Status oder Daten. In der Seitenleiste: links
   „Suchen“ mit Lupe und Kürzel, rechts die Kugel; beide öffnen die KI-Leiste.
@@ -56,7 +56,10 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
   Die Navigation der Software (Seitenleiste, untere Leiste, Favoriten) zeigt ebenfalls Glas-Icons.
   Neue Motive in `glas.tsx` ergänzen. Details: `docs/design/festlegungen.md`.
 - **Status:** immer Text + optional Icon, nie nur Farbe. Neutral als Standard; Rot für echte Sperre/Gefahr („Nicht verwenden“)
-  und für „Dringend“ (nie gelb). Gelb für Warnungen wie „Überfällig“.
+  und für „Dringend“ und „Überfällig“ (hellrote Fläche, dunkelrote Schrift – nie gelb). Gelb für übrige Warnungen
+  (z. B. „Termin fehlt“, Überlast). Den Ton setzt die Geschäftsregel (Ton `gefahr`), nicht eine Worterkennung.
+- **Karten-Icons:** `Karte` und `Kennzahl` zeigen vor dem Titel ein Strich-Icon auf ruhiger Fläche, abgeleitet aus dem Titel
+  (`src/os/ui/karten-icon.ts`); `icon="…"` setzt es gezielt, `icon={false}` schaltet es ab. Keine Glas-Icons in Karten-Köpfen.
 - **Typ-Icons in Listen:** einfache Strich-Icons auf ruhiger Kachel (`TypIcon`), z. B. je Auftragsart (`ART_ICON`) – keine
   Glas-Icons in Listen, wenige Arten. Kunden zeigen ihr Logo (Favicon ihrer Website bzw. Firmen-E-Mail-Domain) oder Initialen
   (`Kundenbild`).
