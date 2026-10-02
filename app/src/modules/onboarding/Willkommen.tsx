@@ -30,14 +30,19 @@ export function Willkommen() {
 function Rahmen({ children }: { children: ReactNode }) {
   return (
     <div className="ob-rahmen">
-      <div className="ob-logo">
-        <span className="mm-logo-zeichen" aria-hidden>
-          M
-        </span>
-        <span>
-          Macher <strong>OS</strong>
-        </span>
-      </div>
+      <header className="ob-marke">
+        <div className="ob-marke-innen">
+          <div className="ob-logo">
+            <span className="mm-logo-zeichen" aria-hidden>
+              M
+            </span>
+            <span>
+              Macher <strong>OS</strong>
+            </span>
+          </div>
+          <p className="ob-marke-statement">Dein Betrieb. Klar geführt.</p>
+        </div>
+      </header>
       <main className="ob-inhalt" id="inhalt">
         {children}
       </main>

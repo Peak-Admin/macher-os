@@ -48,6 +48,16 @@
   --mm-danger-surface: #fef3f2;
   --mm-warning: #854d0e;
   --mm-warning-surface: #fefce8;
+
+  /* Abgeleitete Flächen/Ränder für Status und Meldungen (aus Markengrün bzw. Funktionsfarben) */
+  --mm-success-surface: #e6f2e9;
+  --mm-success-border: #c9d6c0;
+  --mm-warning-border: #f1e3a8;
+  --mm-danger-border: #f3c5c0;
+  /* Auf der dunklen Markenfläche */
+  --mm-on-dark: #ffffff;
+  --mm-on-dark-muted: #c9d1c6;
+  --mm-focus-on-dark: var(--mm-brand-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {

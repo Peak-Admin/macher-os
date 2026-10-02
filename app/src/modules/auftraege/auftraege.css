@@ -10,7 +10,7 @@
   flex-direction: column;
   gap: var(--mm-space-2);
   flex: 1 1 0;
-  min-width: 152px;
+  min-width: 176px;
   padding: var(--mm-space-2);
   border-radius: var(--mm-radius-card);
   background: var(--mm-hover);
@@ -25,8 +25,9 @@
   font-weight: 700;
   color: var(--mm-black);
 }
-.akte-karte-titel { font-weight: 600; color: var(--mm-black); overflow-wrap: break-word; hyphens: auto; }
-.akte-spalte .mm-karte { hyphens: auto; overflow-wrap: break-word; }
+.akte-karte-titel { font-weight: 600; color: var(--mm-black); overflow-wrap: break-word; hyphens: manual; }
+.akte-spalte .mm-karte { padding: 12px; overflow-wrap: break-word; font-size: 14px; line-height: 20px; }
+.akte-spalte .mm-karte .akte-karte-titel { font-size: 15px; line-height: 20px; }
 
 .akte-phasen {
   list-style: none;
@@ -36,7 +37,7 @@
   grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: var(--mm-space-1);
 }
-.akte-phase { display: flex; flex-direction: column; gap: var(--mm-space-1); font-size: 13px; line-height: 18px; color: var(--mm-muted-on-white); }
+.akte-phase { display: flex; flex-direction: column; gap: var(--mm-space-1); font-size: 13px; line-height: 18px; color: var(--mm-text); }
 .akte-phase::before { content: ''; display: block; height: 6px; border-radius: 3px; background: var(--mm-border); }
 .akte-phase--fertig::before { background: var(--mm-brand); }
 .akte-phase--jetzt::before { background: var(--mm-brand-deep); }

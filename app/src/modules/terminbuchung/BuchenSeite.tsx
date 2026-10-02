@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { adresseText, datumKurz, isoDatum, telLink, uhrzeit } from '@core/format';
-import { AuswahlKarten, Button, Eingabe, FormRaster, Filter, Karte, Leer, Meldung, Meta, Oberzeile, Stapel, Textfeld } from '@ui/index';
+import { AuswahlKarten, Button, KundenRahmen, Eingabe, FormRaster, Filter, Karte, Leer, Meldung, Meta, Oberzeile, Stapel, Textfeld } from '@ui/index';
 import { terminAlsIcs, icsDateiname } from '../kalender/daten';
 import { herunterladen } from '../kalender/hooks';
 import '../kalender/plan.css';
@@ -36,32 +36,32 @@ export function BuchenSeite() {
   const slotsAmTag = slots.filter((s) => isoDatum(new Date(s.start)) === aktiverTag);
 
   const rahmen = (inhalt: React.ReactNode) => (
-    <div className="pl-buchen">
-      <main className="pl-buchen-inhalt">
-        <header>
+    <KundenRahmen breite={720}>
+      <div className="pl-buchen-inhalt">
+        <header className="mm-stapel" style={{ gap: 8 }}>
           <Oberzeile>Termin online buchen</Oberzeile>
-          <h1 style={{ margin: 0 }}>{betrieb?.name ?? 'Terminbuchung'}</h1>
+          <h1>Wann dürfen wir kommen?</h1>
           {betrieb?.telefon && (
             <Meta>
-              Lieber anrufen? <a href={telLink(betrieb.telefon)}>{betrieb.telefon}</a>
+              Sie möchten lieber anrufen? <a href={telLink(betrieb.telefon)}>{betrieb.telefon}</a>
             </Meta>
           )}
         </header>
         {inhalt}
-      </main>
-    </div>
+      </div>
+    </KundenRahmen>
   );
 
   if (!betrieb || !link)
-    return rahmen(<Leer titel="Dieser Buchungslink ist nicht gültig" text="Bitte frag beim Betrieb nach einem aktuellen Link oder ruf direkt an." icon="schloss" />);
-  if (!fenster.length) return rahmen(<Leer titel="Gerade sind keine Online-Termine möglich" text="Bitte ruf uns an – wir finden gemeinsam einen Termin." icon="kalender" />);
+    return rahmen(<Leer titel="Dieser Buchungslink ist nicht gültig" text="Bitte fragen Sie uns nach einem aktuellen Link oder rufen Sie direkt an." icon="schloss" />);
+  if (!fenster.length) return rahmen(<Leer titel="Gerade sind keine Online-Termine möglich" text="Bitte rufen Sie uns an – wir finden gemeinsam einen Termin." icon="kalender" />);
 
   if (ergebnis?.ok) {
     const t = ergebnis.termin;
     const ort = db.orte.get(t.ortId);
     return rahmen(
       <Stapel>
-        <Meldung ton="erfolg" titel="Danke, dein Termin ist eingetragen.">
+        <Meldung ton="erfolg" titel="Vielen Dank, Ihr Termin ist eingetragen.">
           {tagFmt.format(new Date(t.start))}, {uhrzeit(t.start)}–{uhrzeit(t.ende)} Uhr. Wir bestätigen den Termin kurz per Telefon oder E-Mail.
         </Meldung>
         <Karte titel={gewaehlt?.name} kompakt>
@@ -70,12 +70,12 @@ export function BuchenSeite() {
               {datumKurz(t.start)}, {uhrzeit(t.start)} Uhr · {dauerText(gewaehlt?.dauerMinuten ?? 60)}
             </span>
             {ort && <Meta>{adresseText(ort.adresse)}</Meta>}
-            <Meta>Deine Vorgangsnummer: {ergebnis.auftrag.nummer}</Meta>
+            <Meta>Ihre Vorgangsnummer: {ergebnis.auftrag.nummer}</Meta>
           </Stapel>
         </Karte>
         <div>
           <Button variante="sekundaer" icon="download" onClick={() => herunterladen(icsDateiname(t), terminAlsIcs(t, { ort: ort ? adresseText(ort.adresse) : undefined, betrieb: betrieb.name }))}>
-            In meinen Kalender
+            In den Kalender eintragen
           </Button>
         </div>
       </Stapel>,
@@ -109,11 +109,11 @@ export function BuchenSeite() {
 
       {gewaehlt && (
         <section className="mm-stapel" style={{ gap: 12 }}>
-          <h2 style={{ fontSize: 20, margin: 0 }}>{fenster.length > 1 ? '2. ' : '1. '}Wann passt es dir?</h2>
+          <h2 style={{ fontSize: 20, margin: 0 }}>{fenster.length > 1 ? '2. ' : '1. '}Wann passt es Ihnen?</h2>
           {fenster.length === 1 && <Meta>{gewaehlt.name} · {dauerText(gewaehlt.dauerMinuten)}{gewaehlt.beschreibung ? ` · ${gewaehlt.beschreibung}` : ''}</Meta>}
           {ergebnis && !ergebnis.ok && <Meldung ton="achtung" titel={ergebnis.fehler} />}
           {!slots.length ? (
-            <Leer titel="Gerade ist kein Termin frei" text="Bitte ruf uns an – wir finden gemeinsam einen Termin." icon="kalender" />
+            <Leer titel="Gerade ist kein Termin frei" text="Bitte rufen Sie uns an – wir finden gemeinsam einen Termin." icon="kalender" />
           ) : (
             <>
               <Filter
@@ -136,7 +136,7 @@ export function BuchenSeite() {
 
       {start && (
         <section className="mm-stapel" style={{ gap: 12 }}>
-          <h2 style={{ fontSize: 20, margin: 0 }}>{fenster.length > 1 ? '3. ' : '2. '}Wie erreichen wir dich?</h2>
+          <h2 style={{ fontSize: 20, margin: 0 }}>{fenster.length > 1 ? '3. ' : '2. '}Wie erreichen wir Sie?</h2>
           <form
             className="mm-stapel"
             style={{ gap: 20 }}
@@ -159,7 +159,7 @@ export function BuchenSeite() {
             )}
             <Textfeld label="Worum geht es?" optional value={f.anliegen} onChange={set('anliegen')} placeholder="z. B. Steckdose im Bad ohne Strom" />
             <Meta>
-              Gewählt: {tagFmt.format(new Date(start))}, {uhrzeit(start)} Uhr. Deine Angaben nutzen wir nur für diesen Termin.
+              Gewählt: {tagFmt.format(new Date(start))}, {uhrzeit(start)} Uhr. Ihre Angaben nutzen wir nur für diesen Termin.
             </Meta>
             <div>
               <Button type="submit" laedt={sendet} laedtText="Wird gebucht …">

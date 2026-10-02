@@ -33,7 +33,7 @@ export function istVor(p: Phase, ziel: Phase): boolean {
 export function phaseTon(p: Phase): Ton {
   if (p === 'erledigt') return 'erfolg';
   if (p === 'verloren') return 'neutral';
-  if (p === 'anfrage') return 'achtung';
+  if (p === 'anfrage') return 'aktiv';
   return 'aktiv';
 }
 

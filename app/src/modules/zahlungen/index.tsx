@@ -4,7 +4,7 @@ import { on } from '@core/events';
 import { erledigt, hinweisErledigen } from '@core/macher';
 import { euro } from '@core/format';
 import type { Cent, Datum, ID, Zahlung } from '@core/objects';
-import { OffenePosten, GeldWidget } from './OffenePosten';
+import { OffenePosten } from './OffenePosten';
 import { KontoauszugImport } from './KontoauszugImport';
 import { statusAbgleichen, zahlungBuchen } from './logik';
 import { istUeberfaellig, offenePosten, offenerBetrag } from '../rechnungen/logik';
@@ -27,7 +27,7 @@ export default defineModul({
     { pfad: '', element: OffenePosten },
     { pfad: 'import', element: KontoauszugImport },
   ],
-  hubWidget: GeldWidget,
+  // Kein eigenes Hub-Widget: „Offene Posten“ steht schon in „Zahlen auf einen Blick“ (Auswertung) – jede Zahl genau einmal
   kurzinfo: () => {
     const p = offenePosten();
     if (!p.length) return { text: 'Alles bezahlt', ton: 'erfolg' };

@@ -101,6 +101,22 @@ function Empfaenger({ kundeId }: { kundeId: ID }) {
   );
 }
 
+/** Informationsblock (Nummer, Datum, Kundennummer …) – im Brief rechts neben der Anschrift */
+function Datenblock({ block }: { block: [string, ReactNode][] }) {
+  return (
+    <table className="mm-druck-daten">
+      <tbody>
+        {block.map(([l, w]) => (
+          <tr key={l}>
+            <td>{l}</td>
+            <td>{w}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
 /**
  * Briefbogen: Logo und Absender, optional Empfänger, Titel mit Datenblock, Inhalt, Fußzeile.
  * Für Protokolle ohne Empfänger einfach `kundeId` weglassen.
@@ -143,29 +159,31 @@ export function Briefbogen({
           </div>
         )}
       </header>
-      {kundeId && (
+      {kundeId ? (
         <>
-          {kopf.absenderzeile && <div className="mm-druck-absenderzeile">{kopf.absenderzeile}</div>}
-          <Empfaenger kundeId={kundeId} />
+          <div className="mm-druck-anschrift">
+            <div>
+              {kopf.absenderzeile && <div className="mm-druck-absenderzeile">{kopf.absenderzeile}</div>}
+              <Empfaenger kundeId={kundeId} />
+            </div>
+            {block.length > 0 && <Datenblock block={block} />}
+          </div>
+          <h1 className="mm-druck-titel">
+            {titel} <BeispielMarke zeigen={beispiel} />
+          </h1>
+          {nummer && <Meta>{nummer}</Meta>}
+        </>
+      ) : (
+        <>
+          <h1 className="mm-druck-titel">
+            {titel} <BeispielMarke zeigen={beispiel} />
+          </h1>
+          {nummer && <Meta>{nummer}</Meta>}
+          {block.length > 0 && <Datenblock block={block} />}
         </>
       )}
-      <h1 className="mm-druck-titel">
-        {titel} <BeispielMarke zeigen={beispiel} />
-      </h1>
-      {nummer && <Meta>{nummer}</Meta>}
-      {block.length > 0 && (
-        <table className="mm-druck-daten">
-          <tbody>
-            {block.map(([l, w]) => (
-              <tr key={l}>
-                <td>{l}</td>
-                <td>{w}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
       {children}
+      <div className="mm-druck-abstand" aria-hidden />
       {kopf.fusszeilen.length > 0 && (
         <footer className="mm-druck-fuss">
           {kopf.fusszeilen.map((z) => (

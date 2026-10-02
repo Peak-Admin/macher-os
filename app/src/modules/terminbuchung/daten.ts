@@ -133,8 +133,8 @@ export type BuchungsErgebnis = { ok: true; termin: Termin; auftrag: Auftrag; kun
 
 export function pruefeAngaben(a: Pick<BuchungsAngaben, 'name' | 'telefon' | 'email'>): Partial<Record<'name' | 'telefon' | 'email', string>> {
   const f: Partial<Record<'name' | 'telefon' | 'email', string>> = {};
-  if (a.name.trim().length < 2) f.name = 'Bitte gib deinen Namen an.';
-  if (!telefonNormal(a.telefon)) f.telefon = 'Bitte gib eine Telefonnummer an, unter der wir dich erreichen.';
+  if (a.name.trim().length < 2) f.name = 'Bitte geben Sie Ihren Namen an.';
+  if (!telefonNormal(a.telefon)) f.telefon = 'Bitte geben Sie eine Telefonnummer an, unter der wir Sie erreichen.';
   if (a.email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email.trim())) f.email = 'Diese E-Mail-Adresse sieht nicht richtig aus.';
   return f;
 }
@@ -144,14 +144,14 @@ export function buchen(a: BuchungsAngaben, jetzt = new Date()): BuchungsErgebnis
   if (!link) return { ok: false, fehler: 'Dieser Buchungslink ist nicht mehr gültig.' };
   const f = buchungsfenster.get(a.fensterId);
   if (!f || !f.aktiv || f.geloeschtAm) return { ok: false, fehler: 'Diese Terminart kann gerade nicht gebucht werden.' };
-  if (Object.keys(pruefeAngaben(a)).length) return { ok: false, fehler: 'Bitte prüfe deine Angaben.' };
+  if (Object.keys(pruefeAngaben(a)).length) return { ok: false, fehler: 'Bitte prüfen Sie Ihre Angaben.' };
 
   const k = kontextAusDb();
   // Slot erneut prüfen – vielleicht hat in der Zwischenzeit jemand anderes gebucht
   const slot = slotsFuer(f, k, jetzt).find((s) => s.start === a.start);
-  if (!slot) return { ok: false, fehler: 'Dieser Termin ist leider gerade vergeben worden. Bitte wähle einen anderen.' };
+  if (!slot) return { ok: false, fehler: 'Dieser Termin ist leider gerade vergeben worden. Bitte wählen Sie einen anderen.' };
   const mitarbeiterId = mitarbeiterWaehlen(slot, k);
-  if (!mitarbeiterId || !verfuegbar(mitarbeiterId, slot.start, slot.ende, { kontext: k })) return { ok: false, fehler: 'Dieser Termin ist leider gerade vergeben worden. Bitte wähle einen anderen.' };
+  if (!mitarbeiterId || !verfuegbar(mitarbeiterId, slot.start, slot.ende, { kontext: k })) return { ok: false, fehler: 'Dieser Termin ist leider gerade vergeben worden. Bitte wählen Sie einen anderen.' };
 
   let ergebnis: BuchungsErgebnis | undefined;
   batch(() => {

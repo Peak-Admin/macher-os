@@ -73,9 +73,9 @@ export function sollAnfragen(
 }
 
 export function anfrageText(kunde: Pick<Kunde, 'name' | 'art' | 'ansprechpartner'>, betrieb: Pick<Betrieb, 'name'> | undefined, link: string): string {
-  const anrede = kunde.art === 'privat' ? `Hallo ${kunde.name}` : kunde.ansprechpartner[0] ? `Hallo ${kunde.ansprechpartner[0].name}` : 'Guten Tag';
+  const anrede = kunde.art === 'privat' ? `Guten Tag ${kunde.name}` : kunde.ansprechpartner[0] ? `Guten Tag ${kunde.ansprechpartner[0].name}` : 'Guten Tag';
   const wir = betrieb?.name ?? 'uns';
-  return `${anrede},\n\nvielen Dank für deinen Auftrag. Wir hoffen, du bist mit unserer Arbeit zufrieden.\n\nWenn ja, hilft uns eine kurze Bewertung sehr – das dauert eine Minute:\n${link}\n\nWenn etwas nicht gepasst hat, antworte einfach auf diese Nachricht. Dann kümmern wir uns darum.\n\nViele Grüße\n${wir}`;
+  return `${anrede},\n\nvielen Dank für Ihren Auftrag. Wir hoffen, Sie sind mit unserer Arbeit zufrieden.\n\nWenn ja, hilft uns eine kurze Bewertung sehr – das dauert eine Minute:\n${link}\n\nWenn etwas nicht gepasst hat, antworten Sie einfach auf diese Nachricht. Dann kümmern wir uns darum.\n\nViele Grüße\n${wir}`;
 }
 
 /** Empfehler mit Anzahl der gebrachten Kunden, meiste zuerst */

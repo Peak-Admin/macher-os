@@ -5,7 +5,7 @@ import { hinweisAusblenden, hinweisErledigen, offeneHinweise, type OffenerHinwei
 import { aktionAusfuehren, pfadZu, type Ton } from '@core/modul';
 import { relativ } from '@core/format';
 import { istBuero, useIch } from '@core/session';
-import { Abschnitt, Button, Filter, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, useToast, Zeile } from '@ui/index';
+import { Abschnitt, Button, Filter, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, useToast } from '@ui/index';
 import { aktionVorhanden } from '@core/modul';
 import { ART_LABEL, type HinweisArt, nachArt, sichtbareAktionen } from './logik';
 
@@ -38,55 +38,77 @@ export function HinweisZeile({ h }: { h: OffenerHinweis }) {
     }
   };
 
+  const weitere = h.weitere ?? [];
   return (
-    <li>
-      <div className="mm-listenzeile" style={{ alignItems: 'flex-start', flexWrap: 'wrap' }}>
-        <span className="mm-listenzeile-text" style={{ minWidth: 220 }}>
-          <span className="mm-listenzeile-titel">{h.titel}</span>
+    <li className={`mm-hinweis mm-hinweis--${ART_TON[h.art]}`}>
+      <div className="mm-hinweis-kopf">
+        <div className="mm-hinweis-text">
+          <span className="mm-hinweis-titel">{h.titel}</span>
           {(h.text || faellig) && <span className="mm-meta">{[h.text, faellig].filter(Boolean).join(' · ')}</span>}
-        </span>
-        <Status ton={ART_TON[h.art]}>{ART_LABEL[h.art]}</Status>
-        <div style={{ flexBasis: '100%' }}>
-          <Zeile abstand={8}>
-            {aktionen.map((a, i) => (
-              <Button key={a.aktion + i} klein variante={a.primaer || (i === 0 && !pfad) ? 'primaer' : 'sekundaer'} onClick={() => ausfuehren(a)}>
-                {a.label}
-              </Button>
-            ))}
-            {pfad && (
-              <Button klein variante={aktionen.length ? 'tertiaer' : 'sekundaer'} to={pfad} icon="pfeilRechts">
-                Öffnen
-              </Button>
-            )}
-            {h.hinweisId ? (
-              <Button
-                klein
-                variante="tertiaer"
-                icon="check"
-                onClick={() => {
-                  hinweisErledigen(h.hinweisId!);
-                  toast('Als erledigt markiert.');
-                }}
-              >
-                Erledigt
-              </Button>
-            ) : (
-              <Button
-                klein
-                variante="tertiaer"
-                icon="uhr"
-                onClick={() => {
-                  hinweisAusblenden(h.schluessel, 1);
-                  toast('Ausgeblendet bis morgen.');
-                }}
-              >
-                Morgen erinnern
-              </Button>
-            )}
-          </Zeile>
         </div>
+        <Status ton={ART_TON[h.art]}>{ART_LABEL[h.art]}</Status>
+      </div>
+      {weitere.length > 0 && <Weitere liste={weitere} />}
+      <div className="mm-hinweis-aktionen">
+        {aktionen.map((a, i) => (
+          <Button key={a.aktion + i} klein variante={i === 0 ? 'primaer' : 'sekundaer'} onClick={() => ausfuehren(a)}>
+            {a.label}
+          </Button>
+        ))}
+        {pfad && (
+          <Button klein variante={aktionen.length ? 'tertiaer' : 'sekundaer'} to={pfad} icon="pfeilRechts">
+            Öffnen
+          </Button>
+        )}
+        {h.hinweisId ? (
+          <Button
+            klein
+            variante="tertiaer"
+            icon="check"
+            onClick={() => {
+              hinweisErledigen(h.hinweisId!);
+              toast('Als erledigt markiert.');
+            }}
+          >
+            Erledigt
+          </Button>
+        ) : (
+          <Button
+            klein
+            variante="tertiaer"
+            icon="uhr"
+            onClick={() => {
+              hinweisAusblenden(h.schluessel, 1);
+              toast('Ausgeblendet bis morgen.');
+            }}
+          >
+            Morgen erinnern
+          </Button>
+        )}
       </div>
     </li>
+  );
+}
+
+/** Gebündelte Hinweise zum selben Objekt: „+N weitere“ zum Aufklappen */
+function Weitere({ liste }: { liste: OffenerHinweis[] }) {
+  const [offen, setOffen] = useState(false);
+  return (
+    <>
+      <button type="button" className="mm-hinweis-weitere-knopf" aria-expanded={offen} onClick={() => setOffen(!offen)}>
+        {offen ? 'Weniger zeigen' : `+${liste.length} ${liste.length === 1 ? 'weiterer Punkt' : 'weitere Punkte'} dazu`}
+      </button>
+      {offen && (
+        <ul className="mm-hinweis-weitere">
+          {liste.map((w) => (
+            <li key={w.schluessel}>
+              <strong>{w.titel}</strong>
+              {w.text && <span className="mm-meta"> · {w.text}</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }
 

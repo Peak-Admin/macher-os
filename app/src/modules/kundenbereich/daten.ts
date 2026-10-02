@@ -127,9 +127,9 @@ export type Entscheidung = 'angenommen' | 'abgelehnt';
 export function angebotEntscheiden(kundeId: ID, angebotId: ID, entscheidung: Entscheidung, name: string): { ok: true } | { ok: false; fehler: string } {
   const a = db.angebote.get(angebotId);
   if (!a || a.kundeId !== kundeId) return { ok: false, fehler: 'Dieses Angebot gibt es nicht.' };
-  if (!angebotEntscheidbar(a)) return { ok: false, fehler: a.gueltigBis < heute() && a.status === 'versendet' ? 'Das Angebot ist abgelaufen. Bitte melde dich kurz bei uns.' : 'Über dieses Angebot wurde schon entschieden.' };
+  if (!angebotEntscheidbar(a)) return { ok: false, fehler: a.gueltigBis < heute() && a.status === 'versendet' ? 'Das Angebot ist abgelaufen. Bitte melden Sie sich kurz bei uns.' : 'Über dieses Angebot wurde schon entschieden.' };
   const unterschrift = name.trim();
-  if (unterschrift.length < 3 || !/\s/.test(unterschrift)) return { ok: false, fehler: 'Bitte gib deinen vollständigen Namen ein (Vor- und Nachname).' };
+  if (unterschrift.length < 3 || !/\s/.test(unterschrift)) return { ok: false, fehler: 'Bitte geben Sie Ihren vollständigen Namen ein (Vor- und Nachname).' };
   const zeit = new Date().toISOString();
   const text = `Angebot ${a.nummer} ${entscheidung === 'angenommen' ? 'angenommen' : 'abgelehnt'} von ${unterschrift} (Kundenbereich)`;
   // Derselbe Ablauf wie im Büro (Phase, ältere Versionen, Stunden fürs Planen) – nur mit Namen aus dem Kundenbereich
@@ -147,8 +147,8 @@ export function angebotEntscheiden(kundeId: ID, angebotId: ID, entscheidung: Ent
 
 export function nachrichtSenden(kundeId: ID, text: string, auftragId?: ID): { ok: true } | { ok: false; fehler: string } {
   const t = text.trim();
-  if (t.length < 2) return { ok: false, fehler: 'Schreib bitte kurz, worum es geht.' };
-  if (t.length > 4000) return { ok: false, fehler: 'Die Nachricht ist zu lang. Bitte kürze sie auf 4000 Zeichen.' };
+  if (t.length < 2) return { ok: false, fehler: 'Bitte schreiben Sie kurz, worum es geht.' };
+  if (t.length > 4000) return { ok: false, fehler: 'Die Nachricht ist zu lang. Bitte kürzen Sie sie auf 4000 Zeichen.' };
   db.nachrichten.create({ kanal: 'portal', richtung: 'ein', kundeId, auftragId: auftragId || undefined, text: t, gelesen: false, betreff: 'Nachricht aus dem Kundenbereich' });
   // Benachrichtigung kommt von der Regel „Benachrichtigungen“ (Kundennachricht) – nicht doppelt
   return { ok: true };

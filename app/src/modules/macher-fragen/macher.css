@@ -9,3 +9,7 @@
 .mf-beispiele .mm-btn { white-space: normal; text-align: left; }
 .mf-seite { display: flex; flex-direction: column; gap: 24px; }
 .mf-eingabe--fix { position: sticky; bottom: -24px; margin-bottom: -24px; padding: 12px 0 24px; background: var(--mm-surface); border-top: 1px solid var(--mm-border); }
+/* Beispielfragen ruhig darstellen – sie sind Vorschläge, keine konkurrierenden Hauptaktionen */
+.mf-beispiele .mm-btn--sekundaer { border-color: var(--mm-border); background: var(--mm-canvas); color: var(--mm-black); font-weight: 500; }
+.mf-beispiele .mm-btn--sekundaer:hover:not(:disabled) { border-color: var(--mm-brand); background: var(--mm-soft-green); }
+.mf-frage { border-left: 3px solid var(--mm-brand); }

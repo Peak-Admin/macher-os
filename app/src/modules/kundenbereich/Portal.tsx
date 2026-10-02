@@ -4,32 +4,17 @@ import { useParams } from 'react-router-dom';
 import { db, setAktuellerNutzer } from '@core/db';
 import { datum, datumKurz, euro, positionSumme, telLink, uhrzeit } from '@core/format';
 import type { Angebot, ID } from '@core/objects';
-import { Abschnitt, Auswahl, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, useToast } from '@ui/index';
+import { Abschnitt, Auswahl, KundenRahmen, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, useToast } from '@ui/index';
 import { angebotEntscheidbar, angebotEntscheiden, bruttoVon, nachrichtSenden, portalDaten, portalzugaenge, rechnungStatusKunde, zugangPruefen, zugangZuToken, type Entscheidung } from './daten';
 
 function Rahmen({ children }: { children: ReactNode }) {
-  const betrieb = db.betrieb.useOne('betrieb');
-  return (
-    <div style={{ minHeight: '100vh', background: 'var(--mm-canvas)' }}>
-      <header style={{ background: 'var(--mm-surface)', borderBottom: '1px solid var(--mm-border)' }}>
-        <div style={{ maxWidth: 880, margin: '0 auto', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-          <strong style={{ fontSize: 20 }}>{betrieb?.name ?? 'Kundenbereich'}</strong>
-          {betrieb?.telefon && (
-            <a href={telLink(betrieb.telefon)} className="mm-btn mm-btn--sekundaer mm-btn--klein">
-              Anrufen: {betrieb.telefon}
-            </a>
-          )}
-        </div>
-      </header>
-      <main style={{ maxWidth: 880, margin: '0 auto', padding: '24px 16px 64px' }}>{children}</main>
-    </div>
-  );
+  return <KundenRahmen>{children}</KundenRahmen>;
 }
 
 const FEHLER: Record<'unbekannt' | 'widerrufen' | 'abgelaufen', { titel: string; text: string }> = {
-  unbekannt: { titel: 'Diesen Link kennen wir nicht', text: 'Bitte prüfe, ob du den Link vollständig kopiert hast, oder frag uns nach einem neuen.' },
-  widerrufen: { titel: 'Dieser Link ist nicht mehr gültig', text: 'Der Zugang wurde gesperrt. Frag uns gern nach einem neuen Link.' },
-  abgelaufen: { titel: 'Dieser Link ist abgelaufen', text: 'Aus Sicherheitsgründen gelten Links nur eine Zeit lang. Frag uns nach einem neuen Link.' },
+  unbekannt: { titel: 'Diesen Link kennen wir nicht', text: 'Bitte prüfen Sie, ob der Link vollständig kopiert ist, oder fragen Sie uns nach einem neuen.' },
+  widerrufen: { titel: 'Dieser Link ist nicht mehr gültig', text: 'Der Zugang wurde gesperrt. Fragen Sie uns gern nach einem neuen Link.' },
+  abgelaufen: { titel: 'Dieser Link ist abgelaufen', text: 'Aus Sicherheitsgründen gelten Links nur eine Zeit lang. Fragen Sie uns nach einem neuen Link.' },
 };
 
 export function Portal() {
@@ -69,14 +54,14 @@ function PortalInhalt({ kundeId, name }: { kundeId: ID; name: string }) {
   const d = portalDaten(kundeId);
   const offeneAngebote = d.angebote.filter((a) => angebotEntscheidbar(a));
   return (
-    <Seite titel={`Hallo ${name}`} oberzeile="Dein Kundenbereich" untertitel="Hier findest du deine Termine, Angebote, Rechnungen und Unterlagen.">
+    <Seite titel={`Guten Tag, ${name}`} oberzeile="Ihr Kundenbereich" untertitel="Hier finden Sie Ihre Termine, Angebote, Rechnungen und Unterlagen.">
       <Stapel abstand={32}>
         {offeneAngebote.length > 0 && (
-          <Meldung ton="neutral" titel={offeneAngebote.length === 1 ? 'Ein Angebot wartet auf deine Antwort' : `${offeneAngebote.length} Angebote warten auf deine Antwort`} />
+          <Meldung ton="neutral" titel={offeneAngebote.length === 1 ? 'Ein Angebot wartet auf Ihre Antwort' : `${offeneAngebote.length} Angebote warten auf Ihre Antwort`} />
         )}
 
-        <Abschnitt titel="Deine Termine">
-          <Liste leer={<Leer titel="Gerade kein Termin geplant" text="Sobald wir einen Termin mit dir haben, steht er hier." icon="kalender" />}>
+        <Abschnitt titel="Ihre Termine">
+          <Liste leer={<Leer titel="Gerade kein Termin geplant" text="Sobald wir einen Termin mit Ihnen vereinbart haben, steht er hier." icon="kalender" />}>
             {d.termine.map((t) => (
               <ListenZeile
                 key={t.id}
@@ -96,12 +81,12 @@ function PortalInhalt({ kundeId, name }: { kundeId: ID; name: string }) {
               ))}
             </Stapel>
           ) : (
-            <Leer titel="Keine Angebote" text="Wenn wir dir ein Angebot schicken, kannst du es hier ansehen und annehmen." icon="dokument" />
+            <Leer titel="Keine Angebote" text="Wenn wir Ihnen ein Angebot schicken, können Sie es hier ansehen und annehmen." icon="dokument" />
           )}
         </Abschnitt>
 
         <Abschnitt titel="Rechnungen">
-          <Liste leer={<Leer titel="Keine Rechnungen" text="Deine Rechnungen erscheinen hier, sobald wir sie verschickt haben." icon="euro" />}>
+          <Liste leer={<Leer titel="Keine Rechnungen" text="Ihre Rechnungen erscheinen hier, sobald wir sie verschickt haben." icon="euro" />}>
             {d.rechnungen.map((r) => {
               const s = rechnungStatusKunde(r);
               return <ListenZeile key={r.id} titel={r.titel} untertitel={`${r.nummer} vom ${datum(r.datum)} · ${euro(bruttoVon(r.positionen))}`} rechts={<Status ton={s.ton}>{s.text}</Status>} />;
@@ -110,7 +95,7 @@ function PortalInhalt({ kundeId, name }: { kundeId: ID; name: string }) {
         </Abschnitt>
 
         <Abschnitt titel="Unterlagen">
-          <Liste leer={<Leer titel="Noch keine Unterlagen" text="Fotos, Protokolle und Pläne, die wir für dich freigeben, findest du hier." icon="ordner" />}>
+          <Liste leer={<Leer titel="Noch keine Unterlagen" text="Fotos, Protokolle und Pläne, die wir für Sie freigeben, finden Sie hier." icon="ordner" />}>
             {d.dokumente.map((x) => (
               <ListenZeile
                 key={x.id}
@@ -143,7 +128,7 @@ function AngebotKarte({ angebot: a, kundeId }: { angebot: Angebot; kundeId: ID }
   const [ansehen, setAnsehen] = useState(false);
   const entscheidbar = angebotEntscheidbar(a);
   const status =
-    a.status === 'angenommen' ? <Status ton="erfolg">Angenommen</Status> : a.status === 'abgelehnt' ? <Status ton="neutral">Abgelehnt</Status> : entscheidbar ? <Status ton="aktiv">Wartet auf dich</Status> : <Status ton="neutral">Abgelaufen</Status>;
+    a.status === 'angenommen' ? <Status ton="erfolg">Angenommen</Status> : a.status === 'abgelehnt' ? <Status ton="neutral">Abgelehnt</Status> : entscheidbar ? <Status ton="aktiv">Wartet auf Ihre Antwort</Status> : <Status ton="neutral">Abgelaufen</Status>;
   return (
     <Karte titel={a.titel} oberzeile={`${a.nummer} vom ${datum(a.datum)}`} aktion={status}>
       <Stapel abstand={12}>
@@ -198,7 +183,7 @@ function EntscheidungDialog({ angebot, kundeId, entscheidung, onSchliessen }: { 
   const bestaetigen = () => {
     const r = angebotEntscheiden(kundeId, angebot.id, entscheidung, name);
     if (!r.ok) return setFehler(r.fehler);
-    toast(annehmen ? 'Danke! Dein Auftrag ist bei uns angekommen. Wir melden uns mit einem Termin.' : 'Danke für deine Rückmeldung. Wir haben das Angebot geschlossen.');
+    toast(annehmen ? 'Vielen Dank! Ihr Auftrag ist bei uns angekommen. Wir melden uns mit einem Termin.' : 'Danke für Ihre Rückmeldung. Wir haben das Angebot geschlossen.');
     onSchliessen();
   };
   return (
@@ -220,8 +205,8 @@ function EntscheidungDialog({ angebot, kundeId, entscheidung, onSchliessen }: { 
       <Stapel abstand={16}>
         <p>
           {annehmen
-            ? `Du beauftragst „${angebot.titel}“ (${angebot.nummer}) zum Preis von ${euro(bruttoVon(angebot.positionen, angebot.rabattProzent))} inkl. MwSt. Bestätige mit deinem vollständigen Namen.`
-            : `Schade! Bestätige mit deinem Namen, dass du „${angebot.titel}“ nicht beauftragen möchtest.`}
+            ? `Sie beauftragen „${angebot.titel}“ (${angebot.nummer}) zum Preis von ${euro(bruttoVon(angebot.positionen, angebot.rabattProzent))} inkl. MwSt. Bitte bestätigen Sie mit Ihrem vollständigen Namen.`
+            : `Bitte bestätigen Sie mit Ihrem Namen, dass Sie „${angebot.titel}“ nicht beauftragen möchten.`}
         </p>
         <Eingabe label="Vor- und Nachname" value={name} onChange={(e) => (setName(e.target.value), setFehler(undefined))} fehler={fehler} autoComplete="name" autoFocus />
       </Stapel>
@@ -238,8 +223,8 @@ function NachrichtFormular({ kundeId }: { kundeId: ID }) {
   const [gesendet, setGesendet] = useState(false);
   if (gesendet)
     return (
-      <Meldung ton="erfolg" titel="Nachricht ist angekommen" aktion={<Button klein variante="sekundaer" onClick={() => setGesendet(false)}>Noch eine schreiben</Button>}>
-        Wir melden uns so schnell wie möglich bei dir.
+      <Meldung ton="erfolg" titel="Ihre Nachricht ist angekommen" aktion={<Button klein variante="sekundaer" onClick={() => setGesendet(false)}>Noch eine schreiben</Button>}>
+        Wir melden uns so schnell wie möglich bei Ihnen.
       </Meldung>
     );
   return (
@@ -253,13 +238,13 @@ function NachrichtFormular({ kundeId }: { kundeId: ID }) {
           if (!r.ok) return setFehler(r.fehler);
           setText('');
           setGesendet(true);
-          toast('Deine Nachricht ist gesendet.');
+          toast('Ihre Nachricht ist gesendet.');
         }}
       >
         {auftraege.length > 1 && (
           <Auswahl label="Worum geht es?" optional value={auftragId} onChange={(e) => setAuftragId(e.target.value)} leer="Allgemein" optionen={auftraege.map((a) => ({ wert: a.id, label: a.titel || a.nummer }))} />
         )}
-        <Textfeld label="Deine Nachricht" value={text} onChange={(e) => (setText(e.target.value), setFehler(undefined))} fehler={fehler} rows={4} placeholder="z. B. Passt der Termin auch eine Stunde später?" />
+        <Textfeld label="Ihre Nachricht" value={text} onChange={(e) => (setText(e.target.value), setFehler(undefined))} fehler={fehler} rows={4} placeholder="z. B. Passt der Termin auch eine Stunde später?" />
         <div>
           <Button type="submit" icon="chat">
             Nachricht senden

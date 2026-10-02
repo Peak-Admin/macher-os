@@ -25,8 +25,12 @@ export { Icon } from './icons';
 export type { IconName } from './icons';
 export * from './eingaben';
 export * from './druck';
+export * from './kunde';
 
 const cx = (...k: (string | false | undefined | null)[]) => k.filter(Boolean).join(' ');
+
+/** Versalien (Poppins) nur für kurze Marken-Oberzeilen; Nummern, Orte und lange Texte in normaler Schreibweise */
+export const oberzeileKlasse = (text: string) => cx('mm-oberzeile', (text.length > 20 || /\d{3,}|\d[.,:/-]\d/.test(text)) && 'mm-oberzeile--daten');
 
 // ------------------------------------------------------------------ Buttons
 
@@ -321,13 +325,25 @@ export function Seite({
   return (
     <div className={cx('mm-seite', breit && 'mm-seite--breit')}>
       {zurueck && (
-        <Link to={zurueck.to} className="mm-zurueck">
-          <Icon name="zurueck" size={16} /> {zurueck.label}
-        </Link>
+        <nav className="mm-brotkrumen" aria-label="Brotkrumen">
+          <Link to={zurueck.to}>
+            <Icon name="zurueck" size={16} /> {zurueck.label}
+          </Link>
+          {typeof titel === 'string' && (
+            <>
+              <span className="mm-brotkrumen-trenner" aria-hidden>
+                /
+              </span>
+              <span className="mm-brotkrumen-aktuell" aria-current="page">
+                {titel}
+              </span>
+            </>
+          )}
+        </nav>
       )}
       <header className="mm-seitenkopf">
         <div className="mm-seitenkopf-text">
-          {oberzeile && <p className="mm-oberzeile">{oberzeile}</p>}
+          {oberzeile && <p className={oberzeileKlasse(oberzeile)}>{oberzeile}</p>}
           <div className="mm-seitenkopf-titel">
             <h1>{titel}</h1>
             {status}
@@ -362,7 +378,7 @@ export function Karte({ titel, oberzeile, aktion, children, className, kompakt, 
       {(titel || aktion || oberzeile) && (
         <div className="mm-karte-kopf">
           <div>
-            {oberzeile && <p className="mm-oberzeile">{oberzeile}</p>}
+            {oberzeile && <p className={oberzeileKlasse(oberzeile)}>{oberzeile}</p>}
             {titel && <h3 className="mm-karte-titel">{titel}</h3>}
           </div>
           {aktion}
@@ -436,7 +452,7 @@ export function Kennzahl({ wert, label, zeitraum, hinweis, to, ton }: { wert: Re
   const inhalt = (
     <>
       <span className="mm-kennzahl-label">{label}</span>
-      <span className={cx('mm-kennzahl-wert mm-number', ton && `mm-kennzahl-wert--${ton}`)}>{wert ?? 'Noch keine Daten'}</span>
+      <span className={cx('mm-kennzahl-wert mm-number', ton && `mm-kennzahl-wert--${ton}`, wert == null && 'mm-kennzahl-wert--leer')}>{wert ?? 'Noch keine Daten'}</span>
       {(zeitraum || hinweis) && (
         <span className="mm-meta">
           {zeitraum}
@@ -470,9 +486,27 @@ export function Fortschritt({ wert, max = 100, label }: { wert: number; max?: nu
   );
 }
 
+/** Helle Hintergrundfarbe? Dann dunkle Initialen, damit der Kontrast reicht (4,5:1) */
+function hell(farbe: string) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(farbe.trim());
+  if (!m) return false;
+  const n = parseInt(m[1], 16);
+  const kanal = (c: number) => {
+    const v = c / 255;
+    return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const l = 0.2126 * kanal((n >> 16) & 255) + 0.7152 * kanal((n >> 8) & 255) + 0.0722 * kanal(n & 255);
+  return 1.05 / (l + 0.05) < 4.5;
+}
+
 export function Avatar({ text, farbe, groesse = 32, titel }: { text: string; farbe?: string; groesse?: number; titel?: string }) {
   return (
-    <span className="mm-avatar" style={{ width: groesse, height: groesse, background: farbe ?? 'var(--mm-brand-text)', fontSize: groesse * 0.4 }} title={titel} aria-label={titel}>
+    <span
+      className="mm-avatar"
+      style={{ width: groesse, height: groesse, background: farbe ?? 'var(--mm-brand-text)', color: farbe && hell(farbe) ? 'var(--mm-dark)' : '#fff', fontSize: groesse * 0.4 }}
+      title={titel}
+      aria-label={titel}
+    >
       {text}
     </span>
   );
@@ -483,7 +517,7 @@ export function Meta({ children }: { children: ReactNode }) {
 }
 
 export function Oberzeile({ children }: { children: ReactNode }) {
-  return <p className="mm-oberzeile">{children}</p>;
+  return <p className={typeof children === 'string' ? oberzeileKlasse(children) : 'mm-oberzeile'}>{children}</p>;
 }
 
 // ------------------------------------------------------------------ Listen & Tabellen

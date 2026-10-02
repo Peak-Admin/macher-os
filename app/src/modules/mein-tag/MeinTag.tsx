@@ -3,7 +3,7 @@ import { useDatenstand } from '@core/db';
 import { datum, heute, plusTage, relativ } from '@core/format';
 import { istBuero, useIch } from '@core/session';
 import { Abschnitt, Button, Kennzahl, Leer, Liste, Meldung, Raster, Seite, Segmente, Stapel } from '@ui/index';
-import { ABWESENHEIT_LABEL, abwesenheitAm, aufgabenFuer, betriebHeute, gruss, termineAm } from './logik';
+import { ABWESENHEIT_LABEL, abwesenheitAm, aufgabenFuer, betriebHeute, termineAm } from './logik';
 import { AufgabeZeile, LageZeile, TerminZeile } from './teile';
 
 const WIDGET_MAX = 5;
@@ -22,7 +22,7 @@ export function MeinTagWidget() {
 
   return (
     <Abschnitt
-      titel={`${gruss()}, ${ich.vorname}`}
+      titel="Dein Tag"
       aktion={
         <Button variante="tertiaer" klein to="/heute/mein-tag" icon="pfeilRechts">
           {mehr ? 'Alles ansehen' : 'Mein Tag'}
