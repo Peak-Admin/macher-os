@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DatenVertrauen } from "@/components/sections/DatenVertrauen";
 import { HerausgeberMarke } from "@/components/sections/MissionMittelstand";
 import { footerNav, herausgeber, legalNav, site } from "@/lib/site";
 import { Logo } from "./Logo";
@@ -13,6 +14,7 @@ export function Footer() {
             <p className="mt-4 text-sm leading-relaxed text-white/65">
               Das Betriebssystem für Handwerksbetriebe. Einfach vorne. Vollständig hinten.
             </p>
+            <DatenVertrauen className="mt-6" />
             <div className="mt-6 border-t border-white/10 pt-5">
               <p className="text-sm text-white/65">{herausgeber.kurz}</p>
               <a

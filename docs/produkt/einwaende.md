@@ -1,58 +1,86 @@
 # Einwände von Handwerkern gegen Software
 
-Woran wir Verkaufsargumente festmachen: Anmeldung (`/os/willkommen`), Vertrauensreihe der Website (`TrustRow`),
-Preise, FAQ. Ein Satz kommt nur dorthin, wenn er einen Einwand aus dieser Liste beantwortet **und** heute stimmt.
+Woran wir Verkaufsargumente festmachen: Startseite (Abschnitt „Bedenken“), Anmeldung (`/os/willkommen`),
+Vertrauensreihe (`TrustRow`), Footer, Preise, FAQ. Ein Satz kommt nur dorthin, wenn er einen Einwand aus dieser Liste
+beantwortet **und** heute stimmt.
 
-**Pain Score = Häufigkeit × Schwere (je 1–10, also 1–100).** So wie in der Constitution und im
-[PRD Setup → Paid](prd-setup-bis-paid.md).
+Texte im Code: `src/content/einwaende.ts` (Kernängste, alle Einwände mit Antwort), `src/os/core/vertrauen.ts`
+(blauer Vertrauenskasten, gemeinsam für Website und Software).
 
-## Woher die Werte kommen
+## Woher die Stärke kommt
 
-- **PRD:** Werte aus `prd-setup-bis-paid.md` bzw. `src/os/modules/*/PAINPOINTS.md`. Das sind unsere eigenen Einschätzungen.
-- **Bitkom:** Bitkom Research 2025, „Digitalisierung des Handwerks“, 504 Handwerksbetriebe, Mehrfachnennungen
-  ([Studienbericht, PDF](https://www.bitkom.org/sites/main/files/2026-01/bitkom-studienbericht-handwerk.pdf), Abb. 19).
-  Gefragt wurde nach Hemmnissen der Digitalisierung, nicht nach Gründen gegen eine bestimmte Software.
-  Häufigkeit = Anteil in Prozent ÷ 10, gerundet. Die Schwere schätzen wir.
-- **Schätzung:** Es gibt noch keine Quelle. Prüfen wir in Gesprächen mit Betrieben und über die Kündigungsgründe in „Dein Plan“.
+Stärke 1–100 ist die Einschätzung des Produktteams (Oktober 2026). Wo eine Zahl aus einer Studie dabei steht, stammt sie aus
+Bitkom Research 2025, „Digitalisierung des Handwerks“, 504 Handwerksbetriebe, Mehrfachnennungen
+([Studienbericht, PDF](https://www.bitkom.org/sites/main/files/2026-01/bitkom-studienbericht-handwerk.pdf), Abb. 19).
+Gefragt wurde dort nach Hemmnissen der Digitalisierung, nicht nach einer bestimmten Software.
+Ältere Pain Scores (Häufigkeit × Schwere) stehen in [prd-setup-bis-paid.md](prd-setup-bis-paid.md).
 
-Alle Werte sind Schätzungen (Evidenzklasse ESTIMATE). Sie werden ersetzt, sobald echte Daten da sind.
+Prüfen und ersetzen, sobald wir echte Daten haben: Gespräche mit Betrieben, Kündigungsgründe in „Dein Plan“, Abbrüche in der Einrichtung (`setup.schritt`).
 
-## Tabelle
+## Die fünf Kernängste
 
-| # | Einwand (so sagt es der Betrieb) | H | S | Score | Quelle | Unsere Antwort heute |
-|---|---|---:|---:|---:|---|---|
-| 1 | „Ich hab keine Zeit, mich da reinzufuchsen.“ | 9 | 10 | 90 | PRD Setup #1 · Bitkom: 72 % „zu viel zu tun“ | Einrichtung in 5 Schritten, Briefkopf per Foto oder Website, Vorlagen je Gewerk |
-| 2 | „Sind meine Daten da sicher? Wo liegen die?“ | 10 | 8 | 80 | Bitkom: 96 % Bedenken bei IT-Sicherheit und Datenschutz | **Offen:** Datenbank ist für Frankfurt (eu-central-1) geplant (`docs/os/BACKEND.md`), Hosting-Angaben in der Datenschutzerklärung sind noch Platzhalter |
-| 3 | „Was kostet das am Ende wirklich?“ | 8 | 9 | 72 | PRD Paid #1 · Bitkom: 69 % hohe Investitionskosten | Ein Preis je Betrieb nach Teamgröße, alles drin, 30 Tage kostenlos testen |
-| 4 | „Ich muss alles abtippen – Kunden, Preise.“ | 7 | 10 | 70 | PRD Setup #3 und #4 | Import aus Excel/CSV, Lexware, sevDesk, Handy-Kontakten; Preisliste per Foto |
-| 5 | „Meine Leute machen da nicht mit.“ | 7 | 10 | 70 | PRD Activation #5 · Bitkom: 58 % fehlende Digitalkompetenz der Mitarbeitenden | Einladung per SMS, kein Passwort, die App zeigt nur den eigenen Einsatz |
-| 6 | „Ich will mich nicht lange binden.“ | 7 | 9 | 63 | PRD Paid #2 | Der Test endet von selbst, danach monatlich kündbar |
-| 7 | „Meine Kreditkarte geb ich nicht raus.“ | 7 | 8 | 56 | PRD Paid #3 | Test ohne Kreditkarte und ohne Bankverbindung, später SEPA-Lastschrift |
-| 8 | „Wenn ich aufhöre, sind meine Daten weg.“ | 6 | 9 | 54 | PRD Paid #4 | Lesemodus statt Sperre, Export immer kostenlos |
-| 9 | „Das lohnt sich nur für die Großen.“ | 6 | 8 | 48 | Bitkom: 59 % | Solo-Plan für 1–2 Leute, alles drin |
-| 10 | „Ich stell bestimmt was falsch ein.“ | 6 | 8 | 48 | PRD Setup #6 | Alles lässt sich später ändern, Spielwiese getrennt von echten Daten |
-| 11 | „Das passt nicht zu meinem Gewerk.“ | 6 | 7 | 42 | Onboarding-Pains #7 | Leistungen, Preise und Begriffe je Gewerk |
-| 12 | „Auf der Baustelle hab ich kein Netz.“ | 5 | 8 | 40 | Bitkom: 49 % unzureichende Internetversorgung | Zeiten, Fotos, Material und Unterschrift gehen ohne Empfang |
-| 13 | „Wenn's hakt, erreich ich keinen.“ | 5 | 8 | 40 | Schätzung | Support auf Deutsch in jedem Plan, eigenes Thema „Einrichtung“ |
-| 14 | „Ich bin kein Computermensch.“ | 4 | 9 | 36 | Bitkom: 42 % Berührungsängste | Eine Frage je Schritt, Handwerkersprache, Hilfe beim Einrichten |
-| 15 | „Taugt das im Alltag überhaupt?“ | 6 | 6 | 36 | Bitkom: 57 % mangelnde Praxisreife | Spielwiese mit Beispielbetrieb, Test mit echten Aufträgen |
+| Kernangst | Stärke | Was Macher OS vermitteln muss | Wo |
+|---|---:|---|---|
+| „Das kostet mich Zeit.“ | 100 | In wenigen Minuten startklar. | Startseite, Anmeldung |
+| „Das ist kompliziert.“ | 99 | Du musst keine Software lernen. | Startseite, Anmeldung |
+| „Das macht zusätzliche Arbeit.“ | 97 | Weniger doppelt eingeben. Weniger Büro. | Startseite |
+| „Meine Leute nutzen das nicht.“ | 95 | So einfach wie eine Nachricht aufs Handy. | Startseite, Schritt „Team“ |
+| „Ich weiß nicht, ob es mir etwas bringt.“ | 94 | Erst der Nutzen, dann der Rest: erstes echtes Angebot direkt nach dem Start. | Startseite |
+
+„So einfach wie WhatsApp“ nennen wir bewusst nicht beim Namen: fremde Marke, wir wollen nicht mit ihrem Ruf werben.
+
+## Alle Einwände
+
+| Rang | Einwand | Stärke | Unsere Antwort (Kurzform) | Beleg im Produkt |
+|---:|---|---:|---|---|
+| 1 | „Ich hab keine Zeit, mich da jetzt reinzufuchsen.“ | 100 | Einrichtung in wenigen Minuten, Vorlagen je Gewerk | 5 Schritte, `gewerke.ts`. Bitkom: 72 % „zu viel zu tun“ |
+| 2 | „Das ist mir bestimmt wieder zu kompliziert.“ | 98 | Eine Frage pro Schritt, Handwerkersprache | Einrichtung `/willkommen` |
+| 3 | „Bis ich das eingerichtet habe, mache ich's lieber wie bisher.“ | 97 | Fünf kurze Schritte, danach direkt das erste Angebot | `zielNachSetup()` |
+| 4 | „Meine Leute benutzen das am Ende sowieso nicht.“ | 96 | Link per SMS, kein Passwort, nur der eigene Einsatz | Schritt „Team“, Mitarbeiter-App |
+| 5 | „Bei uns funktioniert es doch auch so.“ | 95 | Bis eine Rechnung liegen bleibt – Macher erinnert | Hinweise, Mahnungen |
+| 6 | „Ich will nicht noch ein Programm.“ | 95 | Eins statt fünf | Alle Module in einem OS |
+| 7 | „Dann muss ich alles doppelt pflegen.“ | 94 | Angebot → Auftrag → Rechnung, nichts zweimal | `angebote`, `rechnungen` |
+| 8 | „Was passiert mit meinen Daten?“ | 94 | DSGVO, Server in Frankfurt, Export jederzeit | Siehe „Datensicherheit“ unten. Bitkom: 96 % Bedenken |
+| 9 | „Ich will jetzt nicht alle Kunden und Projekte da reinziehen.“ | 93 | Mit dem nächsten Auftrag anfangen, Kunden später holen | Import Excel/CSV, Lexware, sevDesk, Kontakte |
+| 10 | „Und wenn ich nach zwei Wochen merke, dass es nichts taugt?“ | 92 | Test endet von selbst, keine Kreditkarte, Daten mitnehmen | `abo`: Lesemodus, Export |
+| 11 | „Was bringt mir das konkret?“ | 91 | Angebote vom Handy, Rechnungen am selben Tag, Tagesplan | `start`, `rechnungen`, `mein-tag` |
+| 12 | „Das passt bestimmt nicht zu unserem Betrieb.“ | 90 | Gewerk wählen, alles änderbar | Gewerk-Vorlagen |
+| 13 | „Wir sind dafür viel zu klein.“ | 89 | Solo-Plan für 1–2 Leute, alles drin | `abo/plaene.ts`. Bitkom: 59 % |
+| 14 | „Meine Mitarbeiter verstehen das nicht.“ | 88 | Jeder sieht nur, was er braucht | Rechte und Rollen. Bitkom: 58 % |
+| 15 | „Was kostet mich das nachher wirklich?“ | 87 | Fester Preis nach Teamgröße, keine Zusatzmodule | `preise.ts`. Bitkom: 69 % |
+| 16 | „Kann das überhaupt das, was wir brauchen?“ | 86 | Mit echtem Auftrag testen oder Spielwiese | Spielwiese |
+| 17 | „Funktioniert das mit DATEV / meiner Buchhaltung / meinem Kalender?“ | 85 | DATEV-Export, Termine als Kalenderdatei | Module `datev`, `kalender` |
+| 18 | „Ich will nicht alles umstellen.“ | 84 | Mit einem Teil anfangen | – |
+| 19 | „Dann bin ich von dem Anbieter abhängig.“ | 80 | Monatlich kündbar, Export immer kostenlos | `abo` |
+| 20 | „Ich bin einfach kein Computer-Mensch.“ | 79 | Handy zuerst, große Knöpfe, Hilfe auf Deutsch | UX-Spezifikation. Bitkom: 42 % |
+| 21 | „Auf der Baustelle funktioniert sowas doch sowieso nicht richtig.“ | 77 | Zeiten, Fotos, Material, Unterschrift ohne Netz | Offline-Sync |
+| 22 | „Ich habe schon mal so eine Software probiert.“ | 76 | Mit dem echten Betrieb testen, ohne Vertrag | Testphase |
+| 23 | „Nachher muss ich dafür erst eine Schulung machen.“ | 75 | Nein – Schritt für Schritt, Anleitungen im Hilfe-Center | Hilfe-Center |
+| 24 | „Dafür brauche ich wieder irgendeinen ITler.“ | 73 | Browser und Handy, nichts installieren | Web-App |
+| 25 | „Das sieht wieder nach Bürosoftware aus.“ | 70 | Gebaut für Baustelle und Büro | UX-Spezifikation |
 
 ## Anmeldung: vier Punkte im Markenkopf
 
-`src/os/modules/onboarding/Willkommen.tsx` (`VORTEILE`). Wer hier ankommt, hat schon auf „Kostenlos testen“ geklickt.
-Die Punkte nehmen die Einwände, die jetzt noch vom Weitermachen abhalten.
+`src/os/modules/onboarding/Willkommen.tsx` (`VORTEILE`), darunter der blaue Vertrauenskasten.
 
-| Punkt | Beantwortet | Belegt durch |
-|---|---|---|
-| Kostenlos starten | #3 Kosten (72), #6 Bindung (63), #9 nur für Große (48) | 30 Testtage (`abo/plaene.ts`) |
-| Ohne Kreditkarte | #7 Kreditkarte (56), #6 Bindung (63) | Test ohne Zahlungsdaten (Preis-FAQ) |
-| In wenigen Minuten eingerichtet | #1 keine Zeit (90), #4 abtippen (70) | 5 Schritte, Import, Foto-Briefkopf. Ziel laut PRD: unter 5 Minuten. Eine genaue Zahl („2 Minuten“) erst, wenn `setup.fertig` sie im Median zeigt |
-| Kostenlose Hilfe beim Einrichten | #10 falsch einstellen (48), #13 erreich keinen (40), #14 kein Computermensch (36) | Support auf Deutsch in jedem Plan (`preise.ts`), Thema „Einrichtung“ unter `/hilfe/kontakt` |
+| Punkt | Beantwortet |
+|---|---|
+| Kostenlos starten – ohne Kreditkarte | #10, #15, #19, #22 |
+| In wenigen Minuten startklar | #1, #3 |
+| Du musst keine Software lernen | #2, #20, #23 |
+| Kostenlose Hilfe beim Einrichten | #20, #24 (Fragen zur Einrichtung ohne Aufpreis; die *persönliche Einrichtung* bleibt laut `preise-vergleich.ts` eine Zusatzleistung auf Anfrage) |
 
-## Noch offen
+Keine Minutenzahl („in 2 Minuten“), solange `setup.fertig` sie nicht im Median belegt. Ziel laut PRD: unter 5 Minuten.
 
-- **#2 Datensicherheit (80)** ist der zweitgrößte Einwand. Wir beantworten ihn noch nirgends mit einer festen Zusage.
-  Dafür müssen Hosting-Anbieter, Standort und Auftragsverarbeitung (AVV) feststehen und in der Datenschutzerklärung stehen.
-- **#5 Leute machen nicht mit (70)** steht nicht im Markenkopf der Anmeldung. Kandidat für die Website und den Schritt „Team“.
-- „Kostenlose Hilfe beim Einrichten“ heißt: Wir beantworten Fragen zur Einrichtung ohne Aufpreis. Eine *persönliche Einrichtung*
-  (wir richten für dich ein) ist laut `preise-vergleich.ts` und `hilfe/daten-uebernehmen.ts` eine Zusatzleistung auf Anfrage.
+## Datensicherheit: der blaue Kasten
+
+EU-Blau (`--color-eu` / `--mm-eu`, `#003399`) gibt es nur hier: im Website-Footer und im Markenkopf der Anmeldung.
+Bewusst ohne EU-Sternenkranz – der würde wie ein offizielles Siegel wirken.
+
+| Aussage | Stand |
+|---|---|
+| Server in Frankfurt | Datenbank: Supabase `eu-central-1` laut `docs/os/BACKEND.md` – im Supabase-Dashboard bestätigen. Server-Funktionen: `vercel.json` → `regions: ["fra1"]` (vorher `iad1`, USA). |
+| DSGVO-konform | Vertrag zur Auftragsverarbeitung liegt als Text vor (`/auftragsverarbeitung`). **Vor dem Livegang:** Platzhalter in Datenschutzerklärung und AVV füllen (Hosting-Anbieter, Speicherdauer, Anlage TOM, Aufsichtsbehörde) und die Unterauftragsverarbeiter nennen. |
+| KI nach EU AI Act | KI-Vorschläge sind gekennzeichnet („Vorschlag von Macher“), kritische Aktionen brauchen eine Bestätigung, alles steht im Protokoll (`docs/os/KI-GATEWAY.md`). Kein Zertifikat. Die KI-Anfragen gehen an Anthropic (USA) – das muss in der Datenschutzerklärung stehen. |
+
+Bevor die Aussagen öffentlich laufen: einmal juristisch prüfen lassen.

@@ -43,6 +43,8 @@
   --color-sky-soft: #eef1ed;
   /* Kampagnen und Warnungen – sparsam */
   --color-campaign: #e69433;
+  /* EU-Blau: nur für den Vertrauenskasten (DSGVO, Server in Frankfurt, EU AI Act) – sonst nirgends */
+  --color-eu: #003399;
   --color-warning: #765000;
   --color-warning-soft: #fff4d6;
   --color-danger: #a02b24;

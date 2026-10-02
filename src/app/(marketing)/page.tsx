@@ -30,6 +30,8 @@ import {
 } from "@/components/ui";
 import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import { gewerkBild } from "@/content/bilder";
+import { kernaengste, weitereEinwaende } from "@/content/einwaende";
+import { testTage } from "@/content/preise";
 import { kunden, topGewerke } from "@/content/registry";
 import { cta, herausgeber, site } from "@/lib/site";
 
@@ -419,6 +421,42 @@ export default function HomePage() {
               Kostenlos starten <Icon name="arrow-right" className="size-4" />
             </ButtonLink>
           </div>
+        </div>
+      </Section>
+
+      {/* 9b. Bedenken – die fünf Kernängste als Karten, die übrigen Einwände zum Aufklappen (docs/produkt/einwaende.md) */}
+      <Section tone="white" id="bedenken">
+        <SectionHeading
+          eyebrow="Bedenken"
+          title="Ehrliche Antworten auf deine Bedenken."
+          intro="Das hören wir von Handwerkern am häufigsten, bevor sie anfangen."
+        />
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {kernaengste.map((k) => (
+            <li key={k.angst} className="rounded-2xl border border-line bg-paper p-6">
+              <p className="text-muted">„{k.angst}“</p>
+              <p className="mt-3 flex items-start gap-3 font-display text-xl font-bold leading-snug text-ink">
+                <Icon name={k.icon} className="mt-0.5 size-6 shrink-0 text-primary" />
+                {k.antwort}
+              </p>
+              <p className="mt-2 leading-relaxed text-muted">{k.text}</p>
+            </li>
+          ))}
+          <li className="flex flex-col justify-between rounded-2xl bg-ink p-6 text-white">
+            <div>
+              <p className="font-display text-xl font-bold leading-snug">Überzeug dich selbst.</p>
+              <p className="mt-2 leading-relaxed text-on-dark">
+                Mit deinem echten Betrieb. {testTage} Tage kostenlos, ohne Kreditkarte.
+              </p>
+            </div>
+            <ButtonLink href={cta.primary.href} className="mt-6 self-start">
+              {cta.primary.label}
+            </ButtonLink>
+          </li>
+        </ul>
+        <h3 className="mt-14 font-display text-2xl font-bold">Weitere Bedenken</h3>
+        <div className="mt-6">
+          <Faq items={weitereEinwaende} />
         </div>
       </Section>
 
