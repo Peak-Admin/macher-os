@@ -36,7 +36,7 @@ export function Card({
       {children && <div className="mt-2 text-[0.95rem] leading-relaxed text-muted">{children}</div>}
     </>
   );
-  const base = `group block rounded-2xl border border-line bg-white p-6 ${className}`;
+  const base = `group block rounded-2xl border border-line bg-white p-6 shadow-[0_1px_2px_rgb(14_19_12/0.04)] ${className}`;
   if (href) {
     return (
       <Link href={href} className={`${base} transition hover:-translate-y-0.5 hover:border-ink/30 hover:shadow-lg hover:shadow-ink/5`}>

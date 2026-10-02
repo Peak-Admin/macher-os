@@ -6,13 +6,23 @@ weil sie jüngere, ausdrücklich bestätigte Entscheidungen enthält.
 ## Bestätigte Bausteine
 
 ### Primärbutton
-Markengrün `#2F9250`, weiße Schrift **Barlow 700 in 19 px**, Hover `#1F6135`, 4 px Radius, leichter Schatten erlaubt beim großen Einstiegs-CTA.
+Markengrün `#2F9250` mit leichtem Verlauf nach `#1F6135`, hellem Innenschein und feinen Pixel-Würfeln
+(`public/marke/button-pixel.svg`), weiße Schrift **Barlow 700 in 19 px**, **12 px Radius**.
+Links ein weißer Kreis mit grünem Pfeil; beim Hover wandert der Pfeil nach rechts, die Würfel laufen langsam durch
+(mit `prefers-reduced-motion` ohne Bewegung). Hover dunkler Richtung `#1F6135`, Fokus 2-px-Ring in Akzentgrün.
+Funktioniert auf hellen und dunklen Flächen gleich – auch im dunklen Abschluss-CTA ist das die Hauptaktion.
 Weiß auf `#2F9250` hat 3,9:1 – das reicht nur für große Schrift (ab 19 px fett). Die Buttonschrift darf deshalb nicht kleiner werden.
 Kleine weiße Texte auf Grün (Badges, Schrittnummern, Mini-Buttons in Mocks) bleiben auf tiefem Grün `#06480C`.
-Vorbild: Startseiten-CTA „Jetzt Erstgespräch buchen“ (optional mit kleinem Personenbild links).
+Vorbild: CTA „Jetzt Erstgespräch vereinbaren“ auf matthias-aumann.de (Wirkung nachgebaut, keine fremden Dateien).
 
-- Website: Utility `btn-primaer` (`src/app/globals.css`, Tokens `--color-primary`, `--color-primary-hover`); `ButtonLink` Variante `primary`
-- Software: `.mm-btn--primaer` (`--mm-action`)
+- Website: Utility `btn-primaer` (`src/app/globals.css`), Pfeil über `BtnPfeil`; `ButtonLink` Variante `primary` bringt beides mit.
+  Zweitbuttons daneben gleich hoch und ebenfalls 12 px Radius.
+- Software: `.mm-btn--primaer` (`--mm-action`) – bleibt schlicht mit 4 px Radius (Arbeitsoberfläche).
+
+### Karten (Website)
+Helle Karten 12 px Radius (`rounded-2xl`), 1-px-Linie `#D9D9D9`, sehr feiner Schatten.
+Auf Markendunkel: Utility `karte-dunkel` – leicht aufgehellte Fläche (Weiß 6 % → 2,5 %), feiner heller Rahmen (Weiß 11 %), 12 px Radius.
+Radien Website: Controls 4 px (`rounded-lg`), kleine Flächen 8 px (`rounded-xl`), Karten 12 px (`rounded-2xl`), große Flächen 16 px (`rounded-3xl`).
 
 ### Themen-Icon-Kacheln
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.

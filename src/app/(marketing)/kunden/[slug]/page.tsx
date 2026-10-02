@@ -92,7 +92,7 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-white/80 sm:text-xl">{story.kurz}</p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink href={cta.primary.href} size="lg" variant="onDark">
+                <ButtonLink href={cta.primary.href} size="lg">
                   {cta.primary.label}
                 </ButtonLink>
                 <ButtonLink href={cta.secondary.href} variant="light" size="lg">
@@ -224,7 +224,7 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
             </ul>
             <p className="mt-6 text-sm text-white/55">Beschreibung eines typischen Ablaufs – keine gemessenen Werte.</p>
           </div>
-          <figure className="rounded-xl bg-white/5 p-8 ring-1 ring-white/10">
+          <figure className="karte-dunkel p-8">
             <Badge tone="signal">Beispielzitat</Badge>
             <blockquote className="mt-5 font-display text-2xl font-bold leading-snug text-balance">
               „{story.zitat.text}“

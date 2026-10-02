@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { BtnPfeil } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { cta, mainNav, type NavItem } from "@/lib/site";
 import { Logo } from "./Logo";
@@ -52,7 +53,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-paper/90 backdrop-blur-md supports-[backdrop-filter]:bg-paper/80">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 lg:gap-6 sm:px-6 lg:px-8">
         <Logo />
 
         <nav aria-label="Hauptnavigation" className="hidden flex-1 lg:block" onMouseLeave={scheduleClose}>
@@ -103,21 +104,21 @@ export function Header() {
           </Link>
           <Link
             href={cta.secondary.href}
-            className="rounded-lg px-4 py-2 text-[0.95rem] font-semibold text-ink ring-1 ring-inset ring-line hover:ring-ink/40"
+            className="inline-flex h-11 items-center rounded-2xl px-4 text-[0.95rem] font-semibold text-ink ring-1 ring-inset ring-line hover:ring-ink/40"
           >
             {cta.secondary.label}
           </Link>
           <Link
             href={cta.primary.href}
-            className="rounded-lg btn-primaer px-4 py-1.5"
+            className="btn-primaer inline-flex h-11 items-center px-5"
           >
-            {cta.primary.label}
+            <BtnPfeil>{cta.primary.label}</BtnPfeil>
           </Link>
         </div>
 
         {/* Mobil: primärer CTA bleibt sichtbar */}
-        <div className="ml-auto flex items-center gap-2 lg:hidden">
-          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg btn-primaer px-3 py-1.5">
+        <div className="ml-auto flex items-center gap-1 lg:hidden">
+          <Link href={cta.primary.href} className="inline-flex h-10 items-center whitespace-nowrap btn-primaer px-2.5">
             {cta.primary.label}
           </Link>
           <button
@@ -125,7 +126,7 @@ export function Header() {
             aria-label={mobileOpen ? "Menü schließen" : "Menü öffnen"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="rounded-lg p-2 hover:bg-sand"
+            className="rounded-lg p-1.5 hover:bg-sand"
           >
             <Icon name={mobileOpen ? "x" : "menu"} className="size-6" />
           </button>
@@ -229,10 +230,10 @@ function MobileMenu() {
           )}
         </ul>
         <div className="mt-6 grid gap-3">
-          <Link href={cta.primary.href} className="rounded-lg btn-primaer py-3 text-center">
-            {cta.primary.label}
+          <Link href={cta.primary.href} className="btn-primaer inline-flex h-13 items-center justify-center">
+            <BtnPfeil>{cta.primary.label}</BtnPfeil>
           </Link>
-          <Link href={cta.secondary.href} className="rounded-lg bg-white py-3 text-center font-semibold ring-1 ring-line">
+          <Link href={cta.secondary.href} className="inline-flex h-13 items-center justify-center rounded-2xl bg-white font-semibold ring-1 ring-line">
             {cta.secondary.label}
           </Link>
           <Link href={cta.login.href} className="py-2 text-center font-semibold text-muted">

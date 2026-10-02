@@ -142,7 +142,7 @@ export default function AppPage() {
           </div>
           <ul className="grid gap-3 sm:grid-cols-2">
             {offline.map((o) => (
-              <li key={o} className="flex items-center gap-3 rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
+              <li key={o} className="flex items-center gap-3 karte-dunkel p-4">
                 <Icon name="check" className="size-5 shrink-0 text-accent" />
                 <span className="font-semibold">{o}</span>
               </li>
