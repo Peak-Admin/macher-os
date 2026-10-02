@@ -43,7 +43,8 @@ export function unterweisungenHinweise(t = heute()): HinweisVorschlag[] {
 
 /** Automatische Erinnerung: einmal je fälliger Runde (Datum der nächsten Fälligkeit) */
 export function automatischErinnern(t = heute()): number {
-  let n = 0;
+  // je Mitarbeiter eine gebündelte Benachrichtigung statt einer je Unterweisung
+  const offen = new Map<string, string[]>();
   for (const u of unterweisungen.where((x) => x.aktiv)) {
     for (const m of zielgruppe(u, db.mitarbeiter.all())) {
       const s = stand(u, m.id, t);
@@ -51,10 +52,16 @@ export function automatischErinnern(t = heute()): number {
       const key = `unterweisungen.erinnert.${u.id}.${m.id}.${s.naechste ?? 'erstmals'}`;
       if (einstellung(key, false)) continue;
       setzeEinstellung(key, true);
-      benachrichtigen(`Unterweisung „${u.titel}“ ${s.status === 'bald' ? 'steht bald an' : 'bestätigen'}`, { text: 'Öffne sie in Macher OS, lies sie kurz und bestätige.', fuer: m.id });
-      n++;
+      offen.set(m.id, [...(offen.get(m.id) ?? []), u.titel]);
     }
   }
+  for (const [mitarbeiterId, titel] of offen) {
+    benachrichtigen(titel.length === 1 ? `Unterweisung „${titel[0]}“ bestätigen` : `${titel.length} Unterweisungen bestätigen`, {
+      text: `${titel.join(', ')}. Öffne sie in Macher OS, lies sie kurz und bestätige.`,
+      fuer: mitarbeiterId,
+    });
+  }
+  const n = offen.size;
   if (n) erledigt('unterweisungen.erinnern', `${n === 1 ? '1 Mitarbeiter' : `${n} Mitarbeiter`} an Unterweisungen erinnert`);
   return n;
 }

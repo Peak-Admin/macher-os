@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { db, zuruecksetzen } from '@core/db';
 import { bestaetigen, brauchtBestaetigung, offeneFuer, stand, unterweisungen } from './daten';
+import { automatischErinnern } from './index';
 
 describe('Unterweisungen', () => {
   beforeEach(() => zuruecksetzen());
@@ -26,5 +27,16 @@ describe('Unterweisungen', () => {
     expect(db.nachweise.all()).toHaveLength(1);
     expect(db.nachweise.all()[0].gueltigBis).toBe('2028-09-20');
     expect(offeneFuer(m, unterweisungen.all(), '2026-10-02')).toHaveLength(0);
+  });
+
+  it('erinnert je Mitarbeiter einmal, gebündelt über alle offenen Unterweisungen', () => {
+    const neu = (vorname: string) => db.mitarbeiter.create({ vorname, nachname: 'X', rolle: 'monteur', wochenstunden: 40, urlaubstageJahr: 30, kostensatz: 0, aktiv: true });
+    neu('A');
+    neu('B');
+    for (const titel of ['Leitern', 'Elektro', 'Erste Hilfe']) unterweisungen.create({ titel, inhalt: 'x', intervallMonate: 12, rollen: ['monteur'], bestaetigungen: [], aktiv: true });
+    expect(automatischErinnern('2026-10-02')).toBe(2);
+    expect(db.benachrichtigungen.all()).toHaveLength(2);
+    expect(db.benachrichtigungen.all()[0].titel).toBe('3 Unterweisungen bestätigen');
+    expect(automatischErinnern('2026-10-02')).toBe(0);
   });
 });
