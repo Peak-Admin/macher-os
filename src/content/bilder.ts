@@ -12,7 +12,15 @@
  * - `motiv` beschreibt, was auf dem Foto zu sehen sein soll
  */
 import type { IconName } from "@/components/ui/Icon";
-import { gewerkCluster, kunden, topGewerke, type GewerkSlug, type KundeSlug, type TopGewerkSlug } from "./registry";
+import {
+  gewerkCluster,
+  kunden,
+  topGewerke,
+  type GewerkClusterSlug,
+  type GewerkSlug,
+  type KundeSlug,
+  type TopGewerkSlug,
+} from "./registry";
 
 export type Bild = {
   /** Pfad unter `public/`. */
@@ -237,3 +245,53 @@ export function kundenBild(slug: KundeSlug): BildKey {
   const k = kunden.find((x) => x.slug === slug)!;
   return `gewerk/${k.gewerk}-alltag`;
 }
+
+/**
+ * Bildnachweise für Fotos mit Fremdrechten. Gewerke-Fotos nur mit Lizenz, die
+ * kommerzielle Nutzung erlaubt (z. B. Pexels-, Unsplash-Lizenz, CC0).
+ * Jedes solche Bild hier eintragen – daraus entsteht die Seite `/bildnachweise`.
+ */
+export type Bildnachweis = {
+  /** Pfad unter `public/` */
+  src: string;
+  alt: string;
+  fotograf: string;
+  quelle: string;
+  quelleUrl?: string;
+  lizenz: string;
+  lizenzUrl?: string;
+};
+
+/** Fotos von Mission Mittelstand (Herausgeber von Macher OS). */
+export const missionMittelstandBilder: Bildnachweis[] = [
+  {
+    src: "/bilder/mission-mittelstand/matthias-aumann.webp",
+    alt: "Matthias Aumann",
+    fotograf: "Mission Mittelstand",
+    quelle: "mission-mittelstand.de",
+    quelleUrl: "https://www.mission-mittelstand.de",
+    lizenz: "© Mission Mittelstand GmbH",
+  },
+  {
+    src: "/bilder/mission-mittelstand/team.webp",
+    alt: "Besprechung im Team von Mission Mittelstand",
+    fotograf: "Mission Mittelstand",
+    quelle: "mission-mittelstand.de",
+    quelleUrl: "https://www.mission-mittelstand.de",
+    lizenz: "© Mission Mittelstand GmbH",
+  },
+  {
+    src: "/bilder/mission-mittelstand/logo-dunkel.webp",
+    alt: "Logo Mission Mittelstand",
+    fotograf: "Mission Mittelstand",
+    quelle: "mission-mittelstand.de",
+    quelleUrl: "https://www.mission-mittelstand.de",
+    lizenz: "© Mission Mittelstand GmbH",
+  },
+];
+
+/**
+ * Ein Foto pro Gewerk (Querformat, mind. 1600 px breit), abgelegt unter
+ * `public/bilder/gewerke/…` (siehe Bildregister oben), mit Nachweis.
+ */
+export const gewerkBildnachweise: Partial<Record<TopGewerkSlug | GewerkClusterSlug, Bildnachweis>> = {};

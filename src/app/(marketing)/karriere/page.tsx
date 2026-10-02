@@ -6,7 +6,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Karriere",
   description:
-    "Arbeiten bei Macher OS: Wir bauen Software für das Handwerk. Aktuell keine offenen Stellen – Initiativbewerbungen sind willkommen.",
+    "Arbeiten bei Macher OS, dem Joint-Venture-Projekt von Mission Mittelstand: Wir bauen Software für das Handwerk. Aktuell keine offenen Stellen – Initiativbewerbungen sind willkommen.",
   path: "/karriere",
 });
 
@@ -25,7 +25,7 @@ export default function KarrierePage() {
         bild="seite/karriere"
         eyebrow="Karriere"
         title="Bau mit uns Software fürs Handwerk."
-        intro="Wir wollen Handwerksbetrieben die Büroarbeit abnehmen. Dafür suchen wir Leute, die Lust auf echte Probleme und einfache Lösungen haben."
+        intro="Macher OS ist ein Joint-Venture-Projekt von Mission Mittelstand. Wir wollen Handwerksbetrieben die Büroarbeit abnehmen. Dafür suchen wir Leute, die Lust auf echte Probleme und einfache Lösungen haben."
         breadcrumbs={[{ label: "Karriere" }]}
         actions="none"
       />

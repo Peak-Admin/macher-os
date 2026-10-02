@@ -11,6 +11,7 @@ import {
   Flow,
   KundenCard,
   PlanCards,
+  MissionMittelstand,
   TrustRow,
 } from "@/components/sections";
 import {
@@ -30,7 +31,7 @@ import {
 import { Chevrons, Foto } from "@/components/ui/Foto";
 import { gewerkBild } from "@/content/bilder";
 import { kunden, topGewerke } from "@/content/registry";
-import { cta, site } from "@/lib/site";
+import { cta, herausgeber, site } from "@/lib/site";
 
 export const metadata = {
   title: { absolute: `${site.name} – Dein Betrieb. Eine Software.` },
@@ -92,6 +93,10 @@ const wissen: { titel: string; text: string; href: string; icon: IconName }[] = 
 
 const faq: FaqItem[] = [
   {
+    frage: "Wer steckt hinter Macher OS?",
+    antwort: `Macher OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. ${herausgeber.name} berät Handwerksbetriebe und Mittelständler – diese Erfahrung steckt in Macher OS.`,
+  },
+  {
     frage: "Für welche Gewerke ist Macher OS geeignet?",
     antwort:
       "Für fast alle Handwerksbetriebe – von Elektro, SHK, Maler und Tischler bis Dach, Bau und GaLaBau. Beim Start wählst du dein Gewerk, und Macher OS richtet Begriffe, Vorlagen und Abläufe passend ein.",
@@ -148,7 +153,7 @@ export default function HomePage() {
         <Container className="relative -mt-20 pb-36 sm:-mt-24 lg:mt-0 lg:pb-52 lg:pt-28">
           <div className="max-w-2xl">
             <p className="mb-5 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
-              Das Betriebssystem für Handwerker
+              Von {herausgeber.name} · Das Betriebssystem für Handwerker
             </p>
             <h1 className="font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-balance sm:text-6xl lg:text-7xl">
               Dein Betrieb.
@@ -378,6 +383,9 @@ export default function HomePage() {
           Alle Kunden ansehen
         </ArrowLink>
       </Section>
+
+      {/* 9a. Von Mission Mittelstand */}
+      <MissionMittelstand />
 
       {/* 9. Einrichtung */}
       <Section>

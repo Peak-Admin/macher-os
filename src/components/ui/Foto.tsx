@@ -5,8 +5,8 @@ import type { ReactNode } from "react";
 import { bilder, type BildKey } from "@/content/bilder";
 import { Icon } from "./Icon";
 
-/** Prüft beim statischen Erzeugen, ob das Foto unter `public/` liegt. */
-function vorhanden(src: string) {
+/** Prüft beim statischen Erzeugen, ob ein Bild unter `public/` liegt. */
+export function bildVorhanden(src: string) {
   return existsSync(path.join(process.cwd(), "public", src));
 }
 
@@ -33,7 +33,7 @@ export function Foto({
 }) {
   const b = bilder[bild];
 
-  if (vorhanden(b.src)) {
+  if (bildVorhanden(b.src)) {
     return (
       <Image
         src={b.src}
@@ -65,6 +65,29 @@ export function Foto({
       )}
     </div>
   );
+}
+
+/**
+ * Echtes Foto aus `public/` ohne Eintrag im Bildregister (z. B. Herausgeber-Fotos).
+ * Fehlt die Datei noch, erscheint `ersatz`, damit die Seite gestaltet bleibt.
+ */
+export function FotoDatei({
+  src,
+  alt,
+  sizes,
+  ersatz,
+  className = "",
+  preload = false,
+}: {
+  src: string;
+  alt: string;
+  sizes: string;
+  ersatz: ReactNode;
+  className?: string;
+  preload?: boolean;
+}) {
+  if (!bildVorhanden(src)) return <>{ersatz}</>;
+  return <Image src={src} alt={alt} fill sizes={sizes} preload={preload} className={className} />;
 }
 
 /**
