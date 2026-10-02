@@ -1,4 +1,4 @@
-import type { IconName } from "@/components/ui/Icon";
+import type { GlasIconName } from "@/components/ui/GlasIcon";
 
 export const site = {
   name: "Macher OS",
@@ -70,11 +70,8 @@ export const appGewerk: Record<string, string> = {
 };
 
 export type NavLink = { label: string; href: string };
-/**
- * Eintrag im Mega-Menü: jeder Punkt trägt ein Themenicon vor dem Text – dasselbe Icon wie auf der Zielseite
- * (Funktionen, Werkzeuge, Hilfe), damit ein Thema überall gleich aussieht.
- */
-export type MegaLink = NavLink & { icon: IconName };
+/** Eintrag im Mega-Menü: jeder Punkt trägt ein Glas-Icon (`GlasIcon`) vor dem Text. */
+export type MegaLink = NavLink & { icon: GlasIconName };
 /** Gruppe im Mega-Menü: höchstens vier Hauptlinks, Titel in normaler Schreibweise. */
 export type MegaGruppe = { titel: string; links: MegaLink[] };
 /** Eine einzige, vollständig klickbare Vorschau rechts im Menü – nur mit echtem Bild einer vorhandenen Seite. */
@@ -110,28 +107,28 @@ export const mainNav: NavItem[] = [
         {
           titel: "Aufträge",
           links: [
-            { label: "Anfragen", href: f("anfragen"), icon: "inbox" },
-            { label: "Angebote schreiben", href: f("angebote"), icon: "file" },
-            { label: "Aufträge bearbeiten", href: f("auftraege"), icon: "clipboard" },
-            { label: "Rechnungen schreiben", href: f("rechnungen"), icon: "euro" },
+            { label: "Anfragen", href: f("anfragen"), icon: "anfragen" },
+            { label: "Angebote schreiben", href: f("angebote"), icon: "angebot" },
+            { label: "Aufträge bearbeiten", href: f("auftraege"), icon: "auftrag" },
+            { label: "Rechnungen schreiben", href: f("rechnungen"), icon: "rechnung" },
           ],
         },
         {
           titel: "Planen",
           links: [
-            { label: "Kalender & Termine", href: f("kalender"), icon: "calendar" },
-            { label: "Einsätze & Mitarbeiter", href: f("einsatzplanung"), icon: "route" },
-            { label: "Material planen", href: f("material"), icon: "box" },
-            { label: "Fahrzeuge planen", href: f("fahrzeuge"), icon: "truck" },
+            { label: "Kalender & Termine", href: f("kalender"), icon: "kalender" },
+            { label: "Einsätze & Mitarbeiter", href: f("einsatzplanung"), icon: "einsatz" },
+            { label: "Material planen", href: f("material"), icon: "material" },
+            { label: "Fahrzeuge planen", href: f("fahrzeuge"), icon: "fahrzeug" },
           ],
         },
         {
           titel: "Betrieb",
           links: [
-            { label: "Mitarbeiter", href: f("mitarbeiter"), icon: "users" },
-            { label: "Arbeitszeiten", href: f("zeiterfassung"), icon: "clock" },
-            { label: "Material & Lager", href: f("lager"), icon: "warehouse" },
-            { label: "Kosten & Auswertung", href: f("auswertung"), icon: "chart" },
+            { label: "Mitarbeiter", href: f("mitarbeiter"), icon: "mitarbeiter" },
+            { label: "Arbeitszeiten", href: f("zeiterfassung"), icon: "zeit" },
+            { label: "Material & Lager", href: f("lager"), icon: "lager" },
+            { label: "Kosten & Auswertung", href: f("auswertung"), icon: "auswertung" },
           ],
         },
       ],
@@ -183,27 +180,27 @@ export const mainNav: NavItem[] = [
         {
           titel: "Praxistipps",
           links: [
-            { label: "Blog", href: "/wissen/blog", icon: "newspaper" },
-            { label: "Webinare", href: "/wissen/webinare", icon: "video" },
-            { label: "Macher Akademie", href: "/wissen/akademie", icon: "academy" },
+            { label: "Blog", href: "/wissen/blog", icon: "blog" },
+            { label: "Webinare", href: "/wissen/webinare", icon: "webinar" },
+            { label: "Macher Akademie", href: "/wissen/akademie", icon: "akademie" },
           ],
         },
         {
           titel: "Vorlagen & Rechner",
           links: [
-            { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen", icon: "checklist" },
-            { label: "Stundensatz berechnen", href: "/werkzeuge/stundensatz-rechner", icon: "clock" },
-            { label: "Angebot berechnen", href: "/werkzeuge/angebots-rechner", icon: "file" },
-            { label: "Alle Rechner", href: "/werkzeuge", icon: "calculator" },
+            { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen", icon: "vorlagen" },
+            { label: "Stundensatz berechnen", href: "/werkzeuge/stundensatz-rechner", icon: "stundensatz" },
+            { label: "Angebot berechnen", href: "/werkzeuge/angebots-rechner", icon: "preis" },
+            { label: "Alle Rechner", href: "/werkzeuge", icon: "rechner" },
           ],
         },
         {
           titel: "Hilfe beim Start",
           links: [
-            { label: "Schnellstart", href: "/hilfe/schnellstart", icon: "bolt" },
-            { label: "Daten übernehmen", href: "/hilfe/daten-uebernehmen", icon: "download" },
-            { label: "Hilfe-Center", href: "/hilfe-center", icon: "book" },
-            { label: "Kontakt & Support", href: "/hilfe/kontakt", icon: "chat" },
+            { label: "Schnellstart", href: "/hilfe/schnellstart", icon: "start" },
+            { label: "Daten übernehmen", href: "/hilfe/daten-uebernehmen", icon: "import" },
+            { label: "Hilfe-Center", href: "/hilfe-center", icon: "hilfe" },
+            { label: "Kontakt & Support", href: "/hilfe/kontakt", icon: "kontakt" },
           ],
         },
       ],

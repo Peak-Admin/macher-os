@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type FocusEvent, type MouseEvent } from "react";
 import { BtnPfeil } from "@/components/ui/Button";
-import { Icon, type IconName } from "@/components/ui/Icon";
+import { GlasIcon } from "@/components/ui/GlasIcon";
+import { Icon } from "@/components/ui/Icon";
 import { cta, mainNav, type Mega, type MegaGewerk, type MegaGruppe, type MegaVorschau, type NavItem } from "@/lib/site";
 import { Logo } from "./Logo";
 
@@ -237,27 +238,15 @@ function Gruppe({ gruppe }: { gruppe: MegaGruppe }) {
           <li key={l.href + l.label}>
             <Link
               href={l.href}
-              className="group -mx-2 flex min-h-12 items-center gap-3 rounded-md px-2 py-1.5 text-base font-medium leading-snug text-ink transition-colors duration-150 ease-out hover:bg-signal-soft hover:text-signal-dark hover:underline hover:underline-offset-4 focus-visible:bg-signal-soft"
+              className="-mx-2 flex min-h-12 items-center gap-3 rounded-md px-2 py-1.5 text-base font-medium leading-snug text-ink transition-colors duration-150 ease-out hover:bg-signal-soft hover:text-signal-dark hover:underline hover:underline-offset-4 focus-visible:bg-signal-soft"
             >
-              <MenueIcon name={l.icon} />
+              <GlasIcon name={l.icon} className="size-9 shrink-0" />
               {l.label}
             </Link>
           </li>
         ))}
       </ul>
     </div>
-  );
-}
-
-/**
- * Themenicon vor einem Menüeintrag: helle Grünfläche, dunkelgrünes Strich-Icon (wie `IconTile`, nur kleiner).
- * Rein dekorativ – der Text trägt die Bedeutung. Liegt der Eintrag selbst auf Grün (Hover/Fokus), wird die Fläche weiß.
- */
-function MenueIcon({ name }: { name: IconName }) {
-  return (
-    <span className="icon-kachel inline-flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors duration-150 ease-out group-hover:bg-white group-focus-visible:bg-white">
-      <Icon name={name} className="size-5" />
-    </span>
   );
 }
 
@@ -488,8 +477,8 @@ function MobileUnteransicht({ mega }: { mega: Mega }) {
             <ul>
               {gr.links.map((l) => (
                 <li key={l.href + l.label}>
-                  <Link href={l.href} className="group flex min-h-14 items-center gap-3 border-b border-line py-2 text-base font-medium">
-                    <MenueIcon name={l.icon} />
+                  <Link href={l.href} className="flex min-h-14 items-center gap-3 border-b border-line py-2 text-base font-medium">
+                    <GlasIcon name={l.icon} className="size-9 shrink-0" />
                     {l.label}
                   </Link>
                 </li>

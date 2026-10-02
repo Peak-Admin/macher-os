@@ -180,25 +180,6 @@ const paths = {
   link: (
     <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7L11.5 7M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.5-1.5" />
   ),
-  newspaper: (
-    <>
-      <path d="M7 20h11a2 2 0 0 0 2-2V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v13a2 2 0 0 1-2 2Zm-2 0a2 2 0 0 1-2-2v-8h4" />
-      <path d="M10.5 8h6M10.5 12h6M10.5 16h4" />
-    </>
-  ),
-  video: (
-    <>
-      <rect x="3" y="4.5" width="18" height="12.5" rx="2" />
-      <path d="m10.5 8.25 4 2.5-4 2.5ZM8 20.5h8" />
-    </>
-  ),
-  academy: (
-    <>
-      <path d="m12 4.5 9.5 4.5-9.5 4.5L2.5 9Z" />
-      <path d="M6.5 11.2V16c0 1.4 2.5 3 5.5 3s5.5-1.6 5.5-3v-4.8M21.5 9v5.5" />
-    </>
-  ),
-  checklist: <path d="m4 6 1.5 1.5L8 5M4 12l1.5 1.5L8 11M4 18l1.5 1.5L8 17M11.5 6.5H20M11.5 12.5H20M11.5 18.5H20" />,
 } as const;
 
 export type IconName = keyof typeof paths;
