@@ -254,6 +254,28 @@ h3 {
   }
 }
 
+/* Kartenreihe (KartenReihe.tsx): waagerecht scrollen ohne sichtbaren Balken – geblättert wird per Knopf ‹ ›. */
+.karten-reihe {
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.karten-reihe::-webkit-scrollbar {
+  display: none;
+}
+/* Detail-Dialog hinter „+“: nur geöffnet sichtbar, kurzer Auftritt (160 ms ease-out). */
+.karten-dialog[open] {
+  animation: karten-dialog-auf 160ms ease-out;
+}
+.karten-dialog::backdrop {
+  background: color-mix(in srgb, var(--color-ink) 35%, transparent);
+}
+@keyframes karten-dialog-auf {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 details > summary {
   list-style: none;
 }
