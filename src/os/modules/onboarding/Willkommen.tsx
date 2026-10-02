@@ -1,37 +1,58 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { db } from '@core/db';
-import { ARBEITSWEISEN, GEWERKE, gewerkVorlage } from '@core/gewerke';
-import { euro } from '@core/format';
-import type { Arbeitsweise, Gewerk } from '@core/objects';
-import { einrichten } from '@core/seed';
-import { AuswahlKarten, Button, Icon, Eingabe, FormRaster, Fortschritt, Kennzahl, Liste, ListenZeile, Meldung, Meta, Oberzeile, Raster, Stapel, Zeile, useBestaetigen, type IconName, DateiFeld } from '@ui/index';
-import { betriebEinrichten, gewerkLabel, kundenAusCsv, TEAM, vorbereitet, type Antworten, type CsvErgebnis, type Startdaten, type Teamgroesse } from './daten';
+import { appPfad } from '@core/basis';
+import { aktiverBetrieb, leerenBetriebVerwerfen, useBetriebe } from '@core/betriebe';
+import { cloud, cloudAktiv } from '@core/cloud';
+import { db, type Neu } from '@core/db';
+import { GEWERKE } from '@core/gewerke';
+import type { Gewerk, Kunde } from '@core/objects';
+import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
+import { Button, Fortschritt, Icon, Meldung, Meta, Oberzeile, Stapel, useBestaetigen, type IconName } from '@ui/index';
+import {
+  briefkopfLuecken,
+  briefkopfPruefen,
+  LEERER_BRIEFKOPF,
+  SCHRITTE,
+  setupEinrichten,
+  setupFertig,
+  setupGestartet,
+  setupSchritt,
+  teamEinladen,
+  zielNachSetup,
+  type BriefkopfEntwurf,
+  type KundenImport,
+  type Preise,
+  type TeamEintrag,
+} from './daten';
+import { SchrittBetrieb, SchrittKonto, SchrittKundenPreise, SchrittTeam, type KontoStand } from './Schritte';
 import './onboarding.css';
 
-const SCHRITTE = ['Gewerk', 'Leistungen', 'Arbeitsweise', 'Team', 'Daten', 'Betrieb'] as const;
-
-const AW_ICON: Record<Arbeitsweise, IconName> = { kundendienst: 'werkzeug', baustelle: 'auftraege', werkstatt: 'lager', wartung: 'wiederholen' };
-
-/** Vollbild `/willkommen`: geführte Einrichtung im KI-Check-Muster – eine Frage je Schritt. */
+/** Vollbild `/willkommen`: Setup in höchstens 5 Schritten – eine Frage je Bildschirm. */
 export function Willkommen() {
   const betrieb = db.betrieb.useOne('betrieb');
-  const [fertig, setFertig] = useState(false);
+  const [params] = useSearchParams();
   const [neu, setNeu] = useState(false);
-  if (fertig) return <Rahmen><Erfolg /></Rahmen>;
-  if (betrieb?.onboardingFertig && !neu) return <Rahmen><SchonEingerichtet onNeu={() => setNeu(true)} /></Rahmen>;
+  const spielwiese = istSpielwiese();
+  const einladung = params.get('einladung');
+  if (einladung && !betrieb?.onboardingFertig) return <Rahmen><Einladung betrieb={params.get('betrieb') ?? ''} /></Rahmen>;
+  if (spielwiese && !neu) return <Rahmen><AufDerSpielwiese onNeu={() => setNeu(true)} /></Rahmen>;
+  if (betrieb?.onboardingFertig && !spielwiese && !neu) return <Rahmen><SchonEingerichtet onNeu={() => setNeu(true)} /></Rahmen>;
   return (
-    <Rahmen>
-      <Ablauf onFertig={() => setFertig(true)} />
+    <Rahmen vorteile>
+      <Ablauf />
     </Rahmen>
   );
 }
 
-function Rahmen({ children }: { children: ReactNode }) {
+/** Was beim Start zählt – steht bei der Anmeldung (`/signup`) im Markenkopf. */
+const VORTEILE = ['Keine Kündigung notwendig', 'Keine versteckten Kosten', 'Alle Funktionen ab Tag 1 freigeschaltet', 'Sofort startklar – ohne Installation, ohne Setup'];
+
+function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?: boolean }) {
   return (
     <div className="ob-rahmen">
-      <header className="ob-marke">
+      <header className={`ob-marke${vorteile ? ' ob-marke--vorteile' : ''}`}>
         <div className="ob-marke-innen">
+          {vorteile && <HandwerkerFoto />}
           <div className="ob-logo">
             <span className="mm-logo-zeichen" aria-hidden>
               M
@@ -41,6 +62,19 @@ function Rahmen({ children }: { children: ReactNode }) {
             </span>
           </div>
           <p className="ob-marke-statement">Dein Betrieb. Klar geführt.</p>
+          {vorteile && (
+            <ul className="ob-vorteile">
+              {VORTEILE.map((v) => (
+                <li key={v}>
+                  <span className="ob-vorteil-haken" aria-hidden="true">
+                    <Icon name="check" size={14} strokeWidth={2.5} />
+                  </span>
+                  {v}
+                </li>
+              ))}
+            </ul>
+          )}
+          <ZurueckZumBetrieb />
         </div>
       </header>
       <main className="ob-inhalt" id="inhalt">
@@ -50,226 +84,204 @@ function Rahmen({ children }: { children: ReactNode }) {
   );
 }
 
-function Ablauf({ onFertig }: { onFertig: () => void }) {
+/** Neuer Betrieb über den Wechsler angelegt, Setup noch offen: zurück zum vorigen Betrieb, der leere wird verworfen */
+function ZurueckZumBetrieb() {
+  const betrieb = db.betrieb.useOne('betrieb');
+  const alle = useBetriebe();
+  const hier = aktiverBetrieb();
+  const ziel = alle.find((b) => b.id !== hier && b.eingerichtet);
+  if (betrieb?.onboardingFertig || !ziel || alle.find((b) => b.id === hier)?.eingerichtet) return null;
+  return (
+    <button
+      type="button"
+      className="ob-zurueck-betrieb"
+      onClick={() => {
+        leerenBetriebVerwerfen(hier, ziel.id);
+        window.location.assign(appPfad('/heute'));
+      }}
+    >
+      <Icon name="zurueck" size={18} /> Zurück zu {ziel.name}
+    </button>
+  );
+}
+
+export interface AblaufStand {
+  gewerk?: Gewerk;
+  briefkopf: BriefkopfEntwurf;
+  /** woher der Briefkopf stammt – für die Messung */
+  briefkopfQuelle: 'hand' | 'foto' | 'website';
+  /** KI-Entwurf liegt vor und ist noch nicht bestätigt */
+  entwurf: boolean;
+  kunden: Neu<Kunde>[];
+  kundenInfo?: Omit<KundenImport, 'kunden'> & { quelle: string };
+  preise: Preise;
+  team: TeamEintrag[];
+}
+
+function Ablauf() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [schritt, setSchritt] = useState(0);
   const [fehler, setFehler] = useState<string>();
   const [laedt, setLaedt] = useState(false);
-  const [csv, setCsv] = useState<CsvErgebnis & { datei?: string }>();
-  const [params] = useSearchParams();
-  const [a, setA] = useState<Partial<Antworten> & { leistungen: string[]; arbeitsweisen: Arbeitsweise[]; start: Startdaten; betriebName: string; vorname: string; nachname: string }>(() => {
-    // Von der Website („Kostenlos testen“) kommt das gewählte Gewerk mit: ?gewerk=elektro
+  const [konto, setKonto] = useState<KontoStand>({ art: cloudAktiv() ? 'offen' : 'lokal' });
+  const start = useRef(0);
+  const [s, setS] = useState<AblaufStand>(() => {
+    // Von der Website („Kostenlos testen“) kommen Gewerk und Betriebsname mit: ?gewerk=elektro&betrieb=…
     const g = GEWERKE.find((x) => x.id === params.get('gewerk'));
     return {
       gewerk: g?.id,
-      leistungen: g ? g.leistungen.map((l) => l.name) : [],
-      arbeitsweisen: g ? g.standardArbeitsweisen : [],
-      start: 'beispiele',
-      betriebName: params.get('betrieb') ?? '',
-      vorname: '',
-      nachname: '',
+      briefkopf: { ...LEERER_BRIEFKOPF, name: params.get('betrieb') ?? '' },
+      briefkopfQuelle: 'hand',
+      entwurf: false,
+      kunden: [],
+      preise: { art: 'vorlage', prozent: 0 },
+      team: [],
     };
   });
-  const set = (patch: Partial<typeof a>) => (setA({ ...a, ...patch }), setFehler(undefined));
-  const vorlage = a.gewerk ? gewerkVorlage(a.gewerk) : undefined;
+  const set = (patch: Partial<AblaufStand>) => (setS((alt) => ({ ...alt, ...patch })), setFehler(undefined));
+
+  useEffect(() => {
+    start.current = setupGestartet(params.get('gewerk') ? 'website' : 'direkt');
+  }, [params]);
 
   const pruefen = (): string | undefined => {
-    switch (schritt) {
-      case 0:
-        return a.gewerk ? undefined : 'Wähle dein Gewerk.';
-      case 1:
-        return a.leistungen.length ? undefined : 'Wähle mindestens eine Leistung. Du kannst sie später ändern.';
-      case 2:
-        return a.arbeitsweisen.length ? undefined : 'Wähle mindestens eine Arbeitsweise.';
-      case 3:
-        return a.team ? undefined : 'Wähle, wie groß dein Team ist.';
-      case 4:
-        if (a.start === 'csv' && !csv?.kunden.length) return 'Lade eine Kundenliste hoch oder starte mit Beispieldaten.';
+    switch (SCHRITTE[schritt].id) {
+      case 'gewerk':
+        return s.gewerk ? undefined : 'Wähle dein Gewerk.';
+      case 'betrieb':
+        return briefkopfPruefen(s.briefkopf);
+      case 'kunden':
+        if (s.preise.art === 'eigen' && !s.preise.liste.some((l) => l.an)) return 'Wähle mindestens eine Leistung aus deiner Preisliste – oder nimm die Vorlage.';
         return undefined;
-      case 5:
-        if (!a.betriebName.trim()) return 'Trage den Namen deines Betriebs ein.';
-        if (!a.vorname.trim()) return 'Trage deinen Vornamen ein.';
+      default:
         return undefined;
     }
   };
 
-  const weiter = () => {
-    const f = pruefen();
+  const geheZu = (n: number) => {
+    setSchritt(n);
+    setFehler(undefined);
+    window.scrollTo?.({ top: 0 });
+  };
+
+  const weiter = (gewerk?: Gewerk) => {
+    const f = gewerk ? undefined : pruefen();
     if (f) return setFehler(f);
-    if (schritt < SCHRITTE.length - 1) {
-      setSchritt(schritt + 1);
-      window.scrollTo?.({ top: 0 });
-      return;
-    }
+    if (SCHRITTE[schritt].id === 'betrieb') set({ entwurf: false });
+    setupSchritt(start.current, schritt);
+    if (schritt < SCHRITTE.length - 1) return geheZu(schritt + 1);
+    void abschliessen();
+  };
+
+  const abschliessen = async () => {
     setLaedt(true);
     // kurz rendern lassen, damit „Wird eingerichtet …“ sichtbar ist
-    setTimeout(() => {
-      try {
-        betriebEinrichten({ ...(a as Antworten), kunden: a.start === 'csv' ? csv?.kunden ?? [] : [] });
-        onFertig();
-      } catch (e) {
-        console.error(e);
-        setFehler('Dein Betrieb wurde noch nicht eingerichtet. Versuche es erneut.');
-        setLaedt(false);
-      }
-    }, 30);
-  };
-
-  const gewerkWaehlen = (g: Gewerk) => {
-    const v = gewerkVorlage(g);
-    set({ gewerk: g, leistungen: v.leistungen.map((l) => l.name), arbeitsweisen: a.gewerk === g && a.arbeitsweisen.length ? a.arbeitsweisen : v.standardArbeitsweisen });
-  };
-
-  const dateiLesen = async (datei: File | undefined) => {
-    if (!datei) return;
+    await new Promise((r) => setTimeout(r, 30));
     try {
-      const text = await datei.text();
-      setCsv({ ...kundenAusCsv(text), datei: datei.name });
-      setFehler(undefined);
-    } catch {
-      setCsv({ kunden: [], hinweise: [], fehler: 'Die Datei konnte nicht gelesen werden. Speichere sie als CSV und versuche es erneut.', datei: datei.name });
+      const e = setupEinrichten({ gewerk: s.gewerk!, briefkopf: s.briefkopf, kunden: s.kunden, preise: s.preise, team: s.team });
+      await teamEinladen(s.team).catch(() => undefined);
+      setupFertig(start.current, {
+        ...e,
+        konto: konto.art === 'gesichert' ? 'gesichert' : konto.art === 'lokal' ? 'lokal' : 'offen',
+        briefkopfQuelle: s.briefkopfQuelle,
+        preise: s.preise.art === 'eigen' ? 'eigen' : s.preise.prozent ? 'vorlage-angepasst' : 'vorlage',
+      });
+      navigate(zielNachSetup(), { replace: true, state: { setup: 'fertig' } });
+    } catch (err) {
+      console.error(err);
+      setFehler('Dein Betrieb wurde noch nicht eingerichtet. Versuche es erneut.');
+      setLaedt(false);
     }
   };
 
-  const schnellstart = () => {
-    einrichten({ betriebName: 'Musterbetrieb', gewerk: 'elektro', arbeitsweisen: [], teamgroesse: 5, chefVorname: 'Max', chefNachname: 'Macher', beispiele: true });
-    navigate('/heute');
+  const umsehen = async () => {
+    try {
+      await spielwieseStarten(s.gewerk ?? 'elektro');
+      navigate('/heute');
+    } catch (e) {
+      setFehler(e instanceof Error ? e.message : 'Die Spielwiese konnte nicht geöffnet werden.');
+    }
   };
+
+  const id = SCHRITTE[schritt].id;
+  const letzter = schritt === SCHRITTE.length - 1;
+  const hauptLabel =
+    id === 'betrieb' && s.entwurf
+      ? 'Briefkopf übernehmen'
+      : id === 'kunden' && !s.kunden.length && s.preise.art === 'vorlage' && !s.preise.prozent
+        ? 'Weiter mit Vorlage'
+        : id === 'team' && !s.team.length
+          ? 'Erst mal ohne Team'
+          : letzter
+            ? 'Fertig – los geht’s'
+            : 'Weiter';
 
   return (
     <div className="ob-ablauf">
       <Stapel abstand={8}>
         <Oberzeile>
-          Schritt {schritt + 1} von {SCHRITTE.length} · {SCHRITTE[schritt]}
+          Schritt {schritt + 1} von {SCHRITTE.length} · {SCHRITTE[schritt].titel}
         </Oberzeile>
         <Fortschritt wert={schritt + 1} max={SCHRITTE.length} label="Fortschritt der Einrichtung" />
       </Stapel>
 
-      {schritt === 0 && (
-        <Frage titel="Was macht ihr?" text="Dein Gewerk bestimmt Leistungen, Material, Qualifikationen und Begriffe. Alles lässt sich später ändern.">
-          <GewerkKarten wert={a.gewerk} onChange={gewerkWaehlen} />
-        </Frage>
-      )}
-
-      {schritt === 1 && vorlage && (
-        <Frage titel="Welche Arbeiten bietet ihr an?" text="Macher legt diese Leistungen mit üblichen Richtpreisen an. Wähle ab, was du nicht anbietest – Preise passt du später an.">
-          <Zeile zwischen>
-            <Meta>
-              {a.leistungen.length} von {vorlage.leistungen.length} gewählt
-            </Meta>
-            <Button variante="tertiaer" klein onClick={() => set({ leistungen: a.leistungen.length === vorlage.leistungen.length ? [] : vorlage.leistungen.map((l) => l.name) })}>
-              {a.leistungen.length === vorlage.leistungen.length ? 'Alle abwählen' : 'Alle wählen'}
-            </Button>
-          </Zeile>
-          <AuswahlKarten
-            label="Leistungen"
-            mehrfach
-            wert={a.leistungen}
-            onChange={(v) => set({ leistungen: v as string[] })}
-            optionen={vorlage.leistungen.map((l) => ({ wert: l.name, label: l.name, text: `${l.kategorie} · Richtpreis ${euro(Math.round(l.preis * 100))} je ${l.einheit}` }))}
-          />
-        </Frage>
-      )}
-
-      {schritt === 2 && (
-        <Frage titel="Wie arbeitet ihr?" text="Danach richtet Macher Abläufe, Planung und Erinnerungen ein. Mehrere Antworten sind möglich.">
-          <AuswahlKarten
-            label="Arbeitsweisen"
-            mehrfach
-            wert={a.arbeitsweisen}
-            onChange={(v) => set({ arbeitsweisen: v as Arbeitsweise[] })}
-            optionen={ARBEITSWEISEN.map((w) => ({ wert: w.id, label: w.label, text: w.text, icon: AW_ICON[w.id] }))}
-          />
-        </Frage>
-      )}
-
-      {schritt === 3 && (
-        <Frage titel="Wie groß ist euer Team?" text="Davon hängt ab, wie viel Planung und Abstimmung Macher dir anbietet.">
-          <AuswahlKarten label="Teamgröße" wert={a.team ?? ('' as Teamgroesse)} onChange={(v) => set({ team: v as Teamgroesse })} optionen={TEAM.map((t) => ({ wert: t.wert, label: t.label, text: t.text, icon: t.zahl === 1 ? 'person' : 'team' }))} />
-        </Frage>
-      )}
-
-      {schritt === 4 && (
-        <Frage titel="Welche Daten gibt es schon?" text="Starte mit Beispieldaten zum Ausprobieren oder bring deine Kundenliste mit.">
-          <AuswahlKarten
-            label="Startdaten"
-            wert={a.start}
-            onChange={(v) => set({ start: v as Startdaten })}
-            optionen={[
-              { wert: 'beispiele', label: 'Mit Beispieldaten starten', text: 'Beispielkunden, Aufträge und Termine – als „Beispiel“ markiert und mit einem Klick entfernbar.', icon: 'stern' },
-              { wert: 'csv', label: 'Kundenliste importieren', text: 'CSV-Datei aus Excel oder deinem bisherigen Programm.', icon: 'upload' },
-              { wert: 'leer', label: 'Ohne Daten starten', text: 'Du legst Kunden und Aufträge selbst an.', icon: 'plus' },
-            ]}
-          />
-          {a.start === 'csv' && (
-            <Stapel abstand={12}>
-              <DateiFeld
-                label="CSV-Datei"
-                accept=".csv,text/csv,text/plain"
-                knopf="CSV-Datei wählen"
-                hilfe="Erste Zeile mit Überschriften, z. B. Name; Straße; PLZ; Ort; Telefon; E-Mail."
-                dateien={csv?.datei ? [{ name: csv.datei }] : []}
-                onDateien={([f]) => dateiLesen(f)}
-              />
-              {csv?.fehler && <Meldung ton="achtung" titel="Import nicht möglich">{csv.fehler}</Meldung>}
-              {csv && !csv.fehler && (
-                <Meldung ton={csv.kunden.length ? 'erfolg' : 'achtung'} titel={csv.kunden.length === 1 ? '1 Kunde erkannt' : `${csv.kunden.length} Kunden erkannt`}>
-                  {csv.hinweise.length ? `${csv.hinweise.length} Zeilen übersprungen: ${csv.hinweise.slice(0, 2).join(' ')}` : `Aus ${csv.datei}. Sie werden beim Einrichten angelegt.`}
-                </Meldung>
-              )}
-              {!!csv?.kunden.length && (
-                <Liste>
-                  {csv.kunden.slice(0, 3).map((k, i) => (
-                    <ListenZeile key={i} titel={k.name} untertitel={[k.adresse ? `${k.adresse.plz} ${k.adresse.ort}`.trim() : undefined, k.telefon].filter(Boolean).join(' · ')} />
-                  ))}
-                </Liste>
-              )}
-            </Stapel>
-          )}
-        </Frage>
-      )}
-
-      {schritt === 5 && (
-        <Frage titel="Wie heißt dein Betrieb?" text="Der Name erscheint auf Angeboten und Rechnungen. Du bist als Chef angelegt.">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              weiter();
+      {id === 'gewerk' && (
+        <Frage titel="Was macht ihr?" text="Dein Gewerk bestimmt Leistungen, Preise, Material und Begriffe. Alles lässt sich später ändern.">
+          <GewerkKarten
+            wert={s.gewerk}
+            onChange={(g) => {
+              set({ gewerk: g });
+              // ein Tipp genügt
+              setupSchritt(start.current, 0);
+              geheZu(1);
             }}
-          >
-            <FormRaster spalten={1}>
-              <Eingabe label="Name des Betriebs" value={a.betriebName} onChange={(e) => set({ betriebName: e.target.value })} autoFocus autoComplete="organization" placeholder="z. B. Elektro Meier GmbH" />
-            </FormRaster>
-            <div style={{ height: 20 }} />
-            <FormRaster>
-              <Eingabe label="Dein Vorname" value={a.vorname} onChange={(e) => set({ vorname: e.target.value })} autoComplete="given-name" />
-              <Eingabe label="Dein Nachname" value={a.nachname} onChange={(e) => set({ nachname: e.target.value })} autoComplete="family-name" optional />
-            </FormRaster>
-            <button type="submit" hidden />
-          </form>
+          />
+        </Frage>
+      )}
+
+      {id === 'betrieb' && (
+        <Frage titel="Dein Briefkopf" text="Mach ein Foto von einer alten Rechnung oder gib deine Website an – Macher liest alles aus. Du prüfst nur.">
+          <SchrittBetrieb stand={s} set={set} />
+        </Frage>
+      )}
+
+      {id === 'kunden' && s.gewerk && (
+        <Frage titel="Kunden und Preise übernehmen" text="Bring mit, was du schon hast. Doppelte Kunden führt Macher zusammen. Du kannst das auch später machen.">
+          <SchrittKundenPreise stand={s} set={set} gewerk={s.gewerk} />
+        </Frage>
+      )}
+
+      {id === 'team' && (
+        <Frage titel="Wer arbeitet mit dir?" text="Name und Handynummer reichen. Deine Leute brauchen kein Passwort und keine eigene Einrichtung.">
+          <SchrittTeam stand={s} set={set} />
+        </Frage>
+      )}
+
+      {id === 'konto' && (
+        <Frage titel="Konto sichern" text={cloudAktiv() ? 'Mit deiner E-Mail oder Handynummer kommst du jederzeit wieder rein – ohne Passwort.' : 'Damit nichts verloren geht und dein Team mitarbeiten kann.'}>
+          <SchrittKonto konto={konto} setKonto={setKonto} />
         </Frage>
       )}
 
       {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
 
-      <div className="ob-navigation">
-        {schritt > 0 ? (
-          <Button variante="tertiaer" icon="zurueck" onClick={() => (setSchritt(schritt - 1), setFehler(undefined))} disabled={laedt}>
+      {id !== 'gewerk' && (
+        <div className="ob-navigation">
+          <Button variante="tertiaer" icon="zurueck" onClick={() => geheZu(schritt - 1)} disabled={laedt}>
             Zurück
           </Button>
-        ) : (
-          <span />
-        )}
-        <WeiterButton icon={schritt === SCHRITTE.length - 1 ? 'check' : 'pfeil'} onClick={weiter} laedt={laedt} laedtText="Dein Betrieb wird eingerichtet …">
-          {schritt === SCHRITTE.length - 1 ? 'Betrieb einrichten' : 'Weiter'}
-        </WeiterButton>
-      </div>
+          <WeiterButton icon={letzter ? 'check' : 'pfeil'} onClick={() => weiter()} laedt={laedt || (id === 'konto' && konto.art === 'laedt')} laedtText={laedt ? 'Dein Betrieb wird eingerichtet …' : 'Einen Moment …'}>
+            {hauptLabel}
+          </WeiterButton>
+        </div>
+      )}
 
-      {schritt === 0 && (
+      {id === 'gewerk' && (
         <div className="ob-schnell">
-          <Meta>Erst mal nur umsehen?</Meta>
-          <Button variante="tertiaer" onClick={schnellstart}>
-            Beispielbetrieb einrichten
+          <Meta>Erst mal nur umsehen? Die Spielwiese zeigt einen Beispielbetrieb – getrennt von deinen echten Daten.</Meta>
+          <Button variante="tertiaer" onClick={umsehen}>
+            Spielwiese öffnen
           </Button>
         </div>
       )}
@@ -347,6 +359,24 @@ function GewerkFoto({ gewerk }: { gewerk: Gewerk }) {
   );
 }
 
+/** Handwerker im Markenkopf der Anmeldung; fehlt das Foto, bleibt die grüne Markenfläche stehen. */
+function HandwerkerFoto() {
+  const [fehlt, setFehlt] = useState(false);
+  if (fehlt) return null;
+  return (
+    <span className="ob-marke-foto" aria-hidden="true">
+      <img
+        src={klein('tischler', 640)}
+        srcSet={`${klein('tischler', 640)} 640w, ${klein('tischler', 1080)} 1080w`}
+        sizes="(max-width: 600px) 100vw, 480px"
+        alt=""
+        decoding="async"
+        onError={() => setFehlt(true)}
+      />
+    </span>
+  );
+}
+
 /**
  * Hauptaktion der Einrichtung im Stil des Mission-Mittelstand-CTAs: grüne Fläche mit feinem Würfelraster,
  * weißer Kreis mit Pfeil links. Beim Hover wandert der Kreis nach rechts.
@@ -367,7 +397,7 @@ function WeiterButton({ icon, onClick, laedt, laedtText, children }: { icon: Ico
   );
 }
 
-function Frage({ titel, text, children }: { titel: string; text: string; children: ReactNode }) {
+export function Frage({ titel, text, children }: { titel: string; text: string; children: ReactNode }) {
   return (
     <section className="ob-frage" aria-label={titel}>
       <div className="ob-frage-kopf">
@@ -379,48 +409,22 @@ function Frage({ titel, text, children }: { titel: string; text: string; childre
   );
 }
 
-function Erfolg() {
-  const navigate = useNavigate();
-  const b = db.betrieb.get('betrieb');
-  const liste = vorbereitet();
-  const kunden = db.kunden.all();
-  const beispiele = kunden.some((k) => k.beispiel);
-  return (
-    <div className="ob-ablauf">
-      <div className="ob-frage-kopf">
-        <Oberzeile>Fertig</Oberzeile>
-        <h1>Dein Betrieb ist eingerichtet</h1>
-        <p>
-          {b?.name} ist für {b ? gewerkLabel(b.gewerk) : 'dein Gewerk'} vorbereitet. Das hat Macher für dich angelegt:
-        </p>
-      </div>
-      <Raster min={180}>
-        {liste.map((x) => (
-          <Kennzahl key={x.label} label={x.label} wert={x.anzahl} />
-        ))}
-        {kunden.length > 0 && <Kennzahl label={beispiele ? 'Beispielkunden' : 'Kunden importiert'} wert={kunden.length} />}
-      </Raster>
-      {beispiele && <Meldung>Beispieldaten sind mit „Beispiel“ markiert, damit du sie von echten Daten unterscheidest. Sie lassen sich später gesammelt entfernen.</Meldung>}
-      <Meta>Preise, Leistungen und Regeln sind Startwerte. Passe sie an, wann immer du willst.</Meta>
-      <div>
-        <Button icon="weiter" onClick={() => navigate('/heute', { replace: true })}>
-          Zu Heute
-        </Button>
-      </div>
-    </div>
-  );
-}
-
 function SchonEingerichtet({ onNeu }: { onNeu: () => void }) {
   const navigate = useNavigate();
   const b = db.betrieb.get('betrieb');
   const [fragen, dialog] = useBestaetigen();
+  const [fehler, setFehler] = useState<string>();
+  const luecken = b
+    ? briefkopfLuecken({ ...LEERER_BRIEFKOPF, name: b.name, inhaber: '-', strasse: b.adresse?.strasse ?? '', plz: b.adresse?.plz ?? '', ort: b.adresse?.ort ?? '', steuernummer: b.steuernummer ?? '', ustId: b.ustId ?? '', iban: b.iban ?? '', logo: 'egal' })
+    : [];
   return (
     <div className="ob-ablauf">
       <div className="ob-frage-kopf">
         <h1>{b?.name} ist schon eingerichtet</h1>
         <p>Du kannst direkt weiterarbeiten.</p>
       </div>
+      {luecken.length > 0 && <Meldung titel="Briefkopf noch nicht vollständig">Es fehlt: {luecken.join(', ')}. Ergänze das unter Betrieb → Einstellungen, bevor dein erstes Angebot rausgeht.</Meldung>}
+      {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
       <div className="ob-navigation">
         <Button
           variante="tertiaer"
@@ -434,7 +438,82 @@ function SchonEingerichtet({ onNeu }: { onNeu: () => void }) {
           Zu Heute
         </Button>
       </div>
+      <div className="ob-schnell">
+        <Meta>Etwas ausprobieren, ohne deine Daten anzufassen?</Meta>
+        <Button
+          variante="tertiaer"
+          onClick={async () => {
+            try {
+              await spielwieseStarten(b?.gewerk);
+              navigate('/heute');
+            } catch (e) {
+              setFehler(e instanceof Error ? e.message : 'Die Spielwiese konnte nicht geöffnet werden.');
+            }
+          }}
+        >
+          Spielwiese öffnen
+        </Button>
+      </div>
       {dialog}
+    </div>
+  );
+}
+
+function AufDerSpielwiese({ onNeu }: { onNeu: () => void }) {
+  const navigate = useNavigate();
+  const [gesichert, setGesichert] = useState<boolean>();
+  const [laedt, setLaedt] = useState(false);
+  useEffect(() => {
+    void hatGesicherteDaten().then(setGesichert);
+  }, []);
+  const verlassen = async () => {
+    setLaedt(true);
+    const r = await spielwieseVerlassen();
+    if (r === 'zurueck') navigate('/heute', { replace: true });
+    else onNeu();
+  };
+  return (
+    <div className="ob-ablauf">
+      <div className="ob-frage-kopf">
+        <Oberzeile>Spielwiese</Oberzeile>
+        <h1>Du bist gerade auf der Spielwiese</h1>
+        <p>Alles hier sind Beispieldaten. {gesichert ? 'Deine echten Daten liegen sicher zur Seite und kommen unverändert zurück.' : 'Wenn du deinen eigenen Betrieb einrichtest, verschwinden sie vollständig.'}</p>
+      </div>
+      <div className="ob-navigation">
+        <Button variante="tertiaer" onClick={() => navigate('/heute')}>
+          Weiter umsehen
+        </Button>
+        <Button icon="weiter" onClick={verlassen} laedt={laedt || gesichert === undefined}>
+          {gesichert ? 'Zurück zu deinen Daten' : 'Eigenen Betrieb einrichten'}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function Einladung({ betrieb }: { betrieb: string }) {
+  const verbunden = cloudAktiv() && !!cloud().konto();
+  return (
+    <div className="ob-ablauf">
+      <div className="ob-frage-kopf">
+        <Oberzeile>Einladung</Oberzeile>
+        <h1>{betrieb ? `${betrieb} hat dich eingeladen` : 'Du wurdest eingeladen'}</h1>
+        <p>Über Macher OS bekommst du deine Einsätze, Adressen und Aufgaben aufs Handy.</p>
+      </div>
+      {verbunden ? (
+        <Meldung ton="erfolg" titel="Du bist angemeldet">Deine Einsätze erscheinen unter Heute.</Meldung>
+      ) : (
+        <Meldung titel="Noch nicht verbunden">
+          Dein Betrieb arbeitet noch ohne verbundenes Konto. Seine Daten liegen bisher nur auf seinem Gerät – deshalb siehst du hier noch nichts. Sobald das Konto gesichert ist, bekommst du eine SMS mit einem neuen Link.
+        </Meldung>
+      )}
+      {verbunden && (
+        <div>
+          <Button to="/heute" variante="sekundaer">
+            Zu Heute
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

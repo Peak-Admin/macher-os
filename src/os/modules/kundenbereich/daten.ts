@@ -147,11 +147,13 @@ export function angebotEntscheiden(kundeId: ID, angebotId: ID, entscheidung: Ent
   return { ok: true };
 }
 
-export function nachrichtSenden(kundeId: ID, text: string, auftragId?: ID): { ok: true } | { ok: false; fehler: string } {
+/** `id` (optional): feste ID, damit dieselbe Nachricht vom Kundengerät nie doppelt angelegt wird */
+export function nachrichtSenden(kundeId: ID, text: string, auftragId?: ID, id?: ID): { ok: true } | { ok: false; fehler: string } {
+  if (id && db.nachrichten.get(id)) return { ok: true };
   const t = text.trim();
   if (t.length < 2) return { ok: false, fehler: 'Bitte schreiben Sie kurz, worum es geht.' };
   if (t.length > 4000) return { ok: false, fehler: 'Die Nachricht ist zu lang. Bitte kürzen Sie sie auf 4000 Zeichen.' };
-  db.nachrichten.create({ kanal: 'portal', richtung: 'ein', kundeId, auftragId: auftragId || undefined, text: t, gelesen: false, betreff: 'Nachricht aus dem Kundenbereich' });
+  db.nachrichten.create({ id, kanal: 'portal', richtung: 'ein', kundeId, auftragId: auftragId || undefined, text: t, gelesen: false, betreff: 'Nachricht aus dem Kundenbereich' });
   // Benachrichtigung kommt von der Regel „Benachrichtigungen“ (Kundennachricht) – nicht doppelt
   return { ok: true };
 }

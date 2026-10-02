@@ -13,6 +13,7 @@ import { ladeModule } from './shell/module';
 import { starteAutomationen } from './core/macher';
 import { initDb, setAktuellerNutzer } from './core/db';
 import { ichId } from './core/session';
+import { starteCloud } from './core/cloud-supabase';
 import { App } from './shell/App';
 
 let start: Promise<void> | undefined;
@@ -21,6 +22,9 @@ function starte() {
   start ??= (async () => {
     await initDb();
     ladeModule();
+    // Backend nur mit Schlüsseln (NEXT_PUBLIC_SUPABASE_*): Supabase-Cloud + Messung an den Server.
+    // Ohne Schlüssel passiert nichts – die App bleibt lokal im Browser.
+    void starteCloud();
     setAktuellerNutzer(ichId());
     starteAutomationen();
   })();
@@ -32,11 +36,20 @@ export default function MacherOs() {
   const [fehler, setFehler] = useState(false);
 
   useEffect(() => {
+    // Der Markenauftakt (src/components/auftakt) wartet auf dieses Signal – auch im Fehlerfall, damit die Meldung sichtbar wird.
+    const melden = () => {
+      document.documentElement.dataset.osBereit = 'ja';
+      window.dispatchEvent(new Event('macher-os:bereit')); // = OS_BEREIT_EREIGNIS
+    };
     starte().then(
-      () => setBereit(true),
+      () => {
+        setBereit(true);
+        melden();
+      },
       (e) => {
         console.error('Macher OS konnte nicht starten', e);
         setFehler(true);
+        melden();
       },
     );
   }, []);

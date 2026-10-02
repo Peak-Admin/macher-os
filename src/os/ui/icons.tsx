@@ -14,6 +14,7 @@ const pfade: Record<string, string> = {
   pfeilLinks: 'M19 12H5M11 6l-6 6 6 6',
   zurueck: 'M15 6l-6 6 6 6',
   weiter: 'M9 6l6 6-6 6',
+  auswahl: 'M8 9l4-4 4 4M8 15l4 4 4-4',
   pfeil: 'M5 12h14M13 6l6 6-6 6',
   check: 'M5 12l5 5L20 7',
   x: 'M6 6l12 12M18 6L6 18',
@@ -58,6 +59,7 @@ const pfade: Record<string, string> = {
   schloss: 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4',
   stecker: 'M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4',
   kalender: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4M8 14h2M12 14h2M16 14h.5',
+  leiste: 'M4 5h16v14H4zM9 5v14',
 };
 
 export type IconName = keyof typeof pfade | string;

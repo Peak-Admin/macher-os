@@ -29,9 +29,9 @@ describe('Kundenbereich meldet das Öffnen', () => {
     oeffne(`/k/${z.token}?angebot=${angebot.id}`).unmount();
     oeffne(`/k/${z.token}?angebot=${fremdesAngebot.id}`).unmount();
     weg();
-    expect(events[0]).toEqual({ kundeId: k.id, bezug: { typ: 'angebote', id: angebot.id } });
+    expect(events[0]).toMatchObject({ kundeId: k.id, bezug: { typ: 'angebote', id: angebot.id }, quelle: 'lokal' });
     // fremdes Angebot im Link: zählt nicht als dessen Öffnen
-    expect(events.at(-1)).toEqual({ kundeId: k.id, bezug: { typ: 'kunden', id: k.id } });
+    expect(events.at(-1)).toMatchObject({ kundeId: k.id, bezug: { typ: 'kunden', id: k.id } });
   });
 
   it('unbekannter Link meldet nichts', () => {

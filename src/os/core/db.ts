@@ -8,14 +8,18 @@
  * - Löschen ist reversibel (Soft Delete).
  *
  * Speicherung lokal im Browser: IndexedDB (genug Platz für Fotos und Dateien), Rückfall
- * auf localStorage. Die API ist so geschnitten, dass sie später 1:1 gegen ein Backend
- * (z. B. Supabase mit RLS) getauscht werden kann.
+ * auf localStorage. Mit Konto ist IndexedDB nur noch der Cache: `sync.ts` hängt sich über
+ * `setzeSyncBeobachter` an, lädt geänderte Objekte hoch und spielt fremde Änderungen über
+ * `fremdeAenderungen` ein. Die API für Module bleibt dieselbe.
  */
 import { useSyncExternalStore, useMemo } from 'react';
 import type { Basis, Bezug, ID, ObjektMap, ObjektTyp, Ereignis } from './objects';
 import { emit } from './events';
+import { betriebsSchluessel } from './betriebe';
 
-const SPEICHER_KEY = 'macher-os:v1';
+/** Jeder Betrieb hat seinen eigenen Stand (siehe `betriebe.ts`) */
+const SPEICHER_KEY = betriebsSchluessel('macher-os:v1');
+const DATEN_KEY = betriebsSchluessel('daten');
 const IDB_NAME = 'macher-os';
 const IDB_STORE = 'stand';
 
@@ -36,12 +40,78 @@ let idb: IDBDatabase | undefined;
 let offen = new Map<string, Set<ID>>();
 /** Ganzer Stand ersetzt (Zurücksetzen, Import) */
 let allesOffen = false;
-const kanal: BroadcastChannel | undefined = typeof BroadcastChannel === 'function' ? new BroadcastChannel('macher-os:daten') : undefined;
+const kanal: BroadcastChannel | undefined = typeof BroadcastChannel === 'function' ? new BroadcastChannel(betriebsSchluessel('macher-os:daten')) : undefined;
 
 function markieren(name: string, id: ID) {
   let ids = offen.get(name);
   if (!ids) offen.set(name, (ids = new Set()));
   ids.add(id);
+}
+
+// ------------------------------------------------------------------ Anbindung an den Abgleich (Sync)
+
+export interface SyncBeobachter {
+  /** Dieser Tab hat ein Objekt angelegt, geändert oder entfernt */
+  geaendert(sammlung: string, id: ID): void;
+  /** Der ganze Stand wurde ersetzt (Zurücksetzen, Import) – wird bewusst nicht hochgeladen */
+  ersetzt?(): void;
+}
+let syncBeobachter: SyncBeobachter | undefined;
+
+/** Vom Abgleich (`sync.ts`) gesetzt, solange ein Konto verbunden ist */
+export function setzeSyncBeobachter(b: SyncBeobachter | undefined) {
+  syncBeobachter = b;
+}
+
+/** Eigene Änderung: speichern und (mit Konto) hochladen */
+function lokalGeaendert(name: string, id: ID) {
+  markieren(name, id);
+  try {
+    syncBeobachter?.geaendert(name, id);
+  } catch (e) {
+    console.warn('Abgleich konnte die Änderung nicht vormerken.', e);
+  }
+}
+
+/** Ein Objekt so, wie es gerade im Speicher liegt (ohne Kopie) */
+export function rohObjekt(sammlung: string, id: ID): Basis | undefined {
+  return daten[sammlung]?.[id];
+}
+
+/** Änderungen von anderen Geräten einspielen. `objekt: null` = endgültig entfernt. Erzeugt keine Ereignisse. */
+export function fremdeAenderungen(liste: { sammlung: string; id: ID; objekt: Basis | null }[]) {
+  if (!liste.length) return;
+  for (const { sammlung: name, id, objekt } of liste) {
+    if (objekt) tabelle(name)[id] = objekt;
+    else if (daten[name]) delete daten[name][id];
+    markieren(name, id);
+  }
+  geaendert();
+}
+
+/**
+ * Kompletten Stand als Sicherung in IndexedDB ablegen (z. B. bevor ein Gerät die Daten eines Betriebs übernimmt).
+ * Liefert den Schlüssel der Sicherung oder undefined, wenn es keinen dauerhaften Speicher gibt.
+ */
+export async function sicherungAnlegen(grund: string): Promise<string | undefined> {
+  if (!idb) return undefined;
+  const schluessel = `sicherung:${jetzt()}`;
+  const tx = idb.transaction(IDB_STORE, 'readwrite');
+  tx.objectStore(IDB_STORE).put({ grund, angelegtAm: jetzt(), daten: exportieren() }, schluessel);
+  await new Promise<void>((ok, fehler) => {
+    tx.oncomplete = () => ok();
+    tx.onerror = () => fehler(tx.error);
+    tx.onabort = () => fehler(tx.error);
+  });
+  return schluessel;
+}
+
+/** Eine mit `sicherungAnlegen` abgelegte Sicherung lesen (z. B. zum Herunterladen) */
+export async function sicherungLesen(schluessel: string): Promise<{ grund: string; angelegtAm: string; daten: Daten } | undefined> {
+  if (!idb) return undefined;
+  return (await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get(schluessel))) as
+    | { grund: string; angelegtAm: string; daten: Daten }
+    | undefined;
 }
 
 export interface SpeicherStatus {
@@ -84,7 +154,7 @@ export async function initDb(): Promise<void> {
     const open = indexedDB.open(IDB_NAME, 1);
     open.onupgradeneeded = () => open.result.createObjectStore(IDB_STORE);
     idb = await idbAnfrage(open);
-    const gespeichert = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get('daten'));
+    const gespeichert = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get(DATEN_KEY));
     if (gespeichert) {
       daten = gespeichert as Daten;
     } else if (Object.keys(daten).length) {
@@ -133,12 +203,12 @@ async function schreibeIdb(): Promise<void> {
   const tx = idb.transaction(IDB_STORE, 'readwrite');
   const store = tx.objectStore(IDB_STORE);
   let neuerStand: Daten | undefined;
-  if (ganz) store.put(daten, 'daten');
+  if (ganz) store.put(daten, DATEN_KEY);
   else {
-    const g = store.get('daten');
+    const g = store.get(DATEN_KEY);
     g.onsuccess = () => {
       neuerStand = ueberlagern((g.result as Daten | undefined) ?? {}, aenderungen, daten);
-      store.put(neuerStand, 'daten');
+      store.put(neuerStand, DATEN_KEY);
     };
   }
   try {
@@ -169,7 +239,7 @@ function uebernehmen(stand: Daten) {
 async function neuLaden() {
   if (!idb) return;
   try {
-    const g = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get('daten'));
+    const g = await idbAnfrage(idb.transaction(IDB_STORE).objectStore(IDB_STORE).get(DATEN_KEY));
     if (g) uebernehmen(g as Daten);
   } catch {
     /* beim nächsten Mal */
@@ -210,6 +280,17 @@ function speichern() {
       setzeStatus({ fehler: SPEICHER_FEHLER });
     }
   }, 150);
+}
+
+/** Geplantes Speichern sofort ausführen – z. B. vor dem Wechsel in einen anderen Betrieb (Seite lädt neu) */
+export async function jetztSpeichern(): Promise<void> {
+  if (!speichernGeplant) return;
+  clearTimeout(speichernGeplant);
+  speichernGeplant = undefined;
+  if (idb) return schreibeIdb();
+  offen = new Map();
+  allesOffen = false;
+  globalThis.localStorage?.setItem(SPEICHER_KEY, JSON.stringify(daten));
 }
 
 /** Speicherort, Fehler und Platz – z. B. für Fotos: vor großen Uploads prüfen */
@@ -332,7 +413,7 @@ function protokoll(name: string, aktion: string, obj: Basis, text?: string) {
     vonMitarbeiterId: aktuellerNutzer,
   };
   tabelle('ereignisse')[e.id] = e;
-  markieren('ereignisse', e.id);
+  lokalGeaendert('ereignisse', e.id);
 }
 
 function standardText(aktion: string) {
@@ -393,7 +474,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
         erstelltVon: aktuellerNutzer,
       } as unknown as T;
       tabelle(name)[obj.id] = obj;
-      markieren(name, obj.id);
+      lokalGeaendert(name, obj.id);
       if (!opts?.leise) protokoll(name, 'created', obj);
       geaendert();
       if (!opts?.leise) emit({ typ: `${name}.created`, sammlung: name, objekt: obj });
@@ -405,7 +486,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
       if (!alt) return undefined;
       const neu = { ...alt, ...patch, id, geaendertAm: jetzt() } as T;
       tabelle(name)[id] = neu;
-      markieren(name, id);
+      lokalGeaendert(name, id);
       if (!opts?.leise) protokoll(name, 'updated', neu, opts?.text);
       geaendert();
       if (!opts?.leise) emit({ typ: `${name}.updated`, sammlung: name, objekt: neu, vorher: alt });
@@ -417,7 +498,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
       if (!alt) return;
       const neu = { ...alt, geloeschtAm: jetzt() };
       tabelle(name)[id] = neu;
-      markieren(name, id);
+      lokalGeaendert(name, id);
       protokoll(name, 'removed', neu);
       geaendert();
       emit({ typ: `${name}.removed`, sammlung: name, objekt: neu });
@@ -428,14 +509,14 @@ function collection<T extends Basis>(name: string): Collection<T> {
       const neu = { ...alt };
       delete neu.geloeschtAm;
       tabelle(name)[id] = neu;
-      markieren(name, id);
+      lokalGeaendert(name, id);
       protokoll(name, 'restored', neu);
       geaendert();
       emit({ typ: `${name}.restored`, sammlung: name, objekt: neu });
     },
     purge(id) {
       delete tabelle(name)[id];
-      markieren(name, id);
+      lokalGeaendert(name, id);
       geaendert();
     },
     use(pred, deps = []) {
@@ -532,6 +613,7 @@ export function zuruecksetzen() {
   daten = {};
   offen = new Map();
   allesOffen = true;
+  syncBeobachter?.ersetzt?.();
   geaendert();
 }
 
@@ -544,5 +626,6 @@ export function importieren(d: Daten) {
   daten = d;
   offen = new Map();
   allesOffen = true;
+  syncBeobachter?.ersetzt?.();
   geaendert();
 }
