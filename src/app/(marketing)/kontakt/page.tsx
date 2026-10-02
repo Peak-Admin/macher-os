@@ -7,7 +7,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Kontakt",
   description:
-    "Kontakt zu Macher OS: Fragen zum Produkt, Hilfe, Partnerschaft oder Presse. Wähle dein Thema und schreib uns ein paar Zeilen.",
+    "Kontakt zu Macher OS, der Software von Mission Mittelstand: Fragen zum Produkt, Hilfe, Partnerschaft oder Presse. Wähle dein Thema und schreib uns ein paar Zeilen.",
   path: "/kontakt",
 });
 

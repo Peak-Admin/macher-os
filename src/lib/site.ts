@@ -2,8 +2,34 @@ export const site = {
   name: "Macher OS",
   claim: "Dein Betrieb. Eine Software.",
   description:
-    "Macher OS ist das Betriebssystem für Handwerksbetriebe: Aufträge, Mitarbeiter, Planung und Büroarbeit in einer einfachen Software – für Büro und Baustelle.",
+    "Macher OS ist das Betriebssystem für Handwerksbetriebe von Mission Mittelstand: Aufträge, Mitarbeiter, Planung und Büroarbeit in einer einfachen Software – für Büro und Baustelle.",
   url: "https://macher-os.de",
+};
+
+/**
+ * Herausgeber: Macher OS ist ein Joint-Venture-Projekt von Mission Mittelstand.
+ *
+ * Bilder liegen unter `public/` und erscheinen automatisch, sobald die Datei
+ * existiert (siehe `Foto`). Nur freigegebene Originalbilder von Mission
+ * Mittelstand verwenden – keine Stockfotos, keine nachbearbeiteten Personen.
+ */
+export const herausgeber = {
+  name: "Mission Mittelstand",
+  url: "https://www.mission-mittelstand.de",
+  kurz: "Ein Joint Venture von Mission Mittelstand",
+  beschreibung: "Beratung für Handwerk und Mittelstand",
+  logo: {
+    hell: "/bilder/mission-mittelstand/logo-hell.svg",
+    dunkel: "/bilder/mission-mittelstand/logo-dunkel.svg",
+  },
+  /** Echtes Foto von Team, Bühne oder Veranstaltung (Querformat, ca. 3:2). */
+  teamFoto: "/bilder/mission-mittelstand/team.jpg",
+  person: {
+    name: "Matthias Aumann",
+    rolle: "Gründer von Mission Mittelstand",
+    /** Freigestelltes Porträt (Hochformat, ca. 4:5, transparenter oder heller Hintergrund). */
+    foto: "/bilder/mission-mittelstand/matthias-aumann.png",
+  },
 };
 
 export const cta = {
@@ -273,6 +299,7 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
     titel: "Unternehmen",
     links: [
       { label: "Über uns", href: "/ueber-uns" },
+      { label: "Mission Mittelstand", href: "/ueber-uns#mission-mittelstand" },
       { label: "Kunden", href: "/kunden" },
       { label: "Partner", href: "/partner" },
       { label: "Kontakt", href: "/kontakt" },

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PhoneMock, PlanBoardMock, ProductMock } from "@/components/mocks";
-import { FinalCta, Flow, KundenCard, PlanCards, TrustRow } from "@/components/sections";
+import { FinalCta, Flow, KundenCard, MissionMittelstand, PlanCards, TrustRow } from "@/components/sections";
 import {
   ArrowLink,
   ButtonLink,
@@ -17,7 +17,7 @@ import {
   type IconName,
 } from "@/components/ui";
 import { kunden, topGewerke } from "@/content/registry";
-import { cta, site } from "@/lib/site";
+import { cta, herausgeber, site } from "@/lib/site";
 
 export const metadata = {
   title: { absolute: `${site.name} – Dein Betrieb. Eine Software.` },
@@ -79,6 +79,10 @@ const wissen: { titel: string; text: string; href: string; icon: IconName }[] = 
 
 const faq: FaqItem[] = [
   {
+    frage: "Wer steckt hinter Macher OS?",
+    antwort: `Macher OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. ${herausgeber.name} berät Handwerksbetriebe und Mittelständler – diese Erfahrung steckt in Macher OS.`,
+  },
+  {
     frage: "Für welche Gewerke ist Macher OS geeignet?",
     antwort:
       "Für fast alle Handwerksbetriebe – von Elektro, SHK, Maler und Tischler bis Dach, Bau und GaLaBau. Beim Start wählst du dein Gewerk, und Macher OS richtet Begriffe, Vorlagen und Abläufe passend ein.",
@@ -131,7 +135,7 @@ export default function HomePage() {
         <Container className="relative grid items-center gap-14 py-14 sm:py-20 lg:grid-cols-[1fr_1.1fr] lg:py-24">
           <div>
             <p className="mb-5 inline-flex items-center gap-2 rounded bg-white px-3 py-1 text-sm font-semibold ring-1 ring-line">
-              <span className="size-2 rounded-full bg-moss" /> Das Betriebssystem für Handwerker
+              <span className="size-2 rounded-full bg-moss" /> Von {herausgeber.name} · Das Betriebssystem für Handwerker
             </p>
             <h1 className="font-display text-5xl font-black leading-[0.98] tracking-tight text-balance sm:text-6xl lg:text-7xl">
               Dein Betrieb.
@@ -298,7 +302,10 @@ export default function HomePage() {
         </ArrowLink>
       </Section>
 
-      {/* 9. Einrichtung */}
+      {/* 9. Von Mission Mittelstand */}
+      <MissionMittelstand />
+
+      {/* 10. Einrichtung */}
       <Section>
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
@@ -335,7 +342,7 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* 10. Wissen & Werkzeuge */}
+      {/* 11. Wissen & Werkzeuge */}
       <Section tone="sand">
         <SectionHeading eyebrow="Wissen" title="Wissen, das deinen Betrieb besser macht." />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -350,7 +357,7 @@ export default function HomePage() {
         </ArrowLink>
       </Section>
 
-      {/* 11. Preise */}
+      {/* 12. Preise */}
       <Section tone="white">
         <SectionHeading
           eyebrow="Preise"
@@ -365,7 +372,7 @@ export default function HomePage() {
         </ArrowLink>
       </Section>
 
-      {/* 12. FAQ */}
+      {/* 13. FAQ */}
       <Section containerSize="narrow">
         <SectionHeading title="Häufige Fragen" />
         <div className="mt-8">
@@ -374,7 +381,7 @@ export default function HomePage() {
         <FaqJsonLd items={faq} />
       </Section>
 
-      {/* 13. Final CTA */}
+      {/* 14. Final CTA */}
       <FinalCta />
     </>
   );

@@ -7,7 +7,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Partner",
   description:
-    "Partner von Macher OS werden: für Steuerberater, Großhändler, Verbände, Berater, Hersteller und Integrationspartner, die Handwerksbetriebe begleiten.",
+    "Partner von Macher OS werden – der Software von Mission Mittelstand: für Steuerberater, Großhändler, Verbände, Berater, Hersteller und Integrationspartner, die Handwerksbetriebe begleiten.",
   path: "/partner",
 });
 
@@ -33,7 +33,7 @@ export default function PartnerPage() {
       <PageHero
         eyebrow="Partner"
         title="Gemeinsam fürs Handwerk."
-        intro="Ihr begleitet Handwerksbetriebe – als Steuerberater, Großhändler, Verband, Berater, Hersteller oder mit eurer eigenen Software? Dann lasst uns reden."
+        intro="Ihr begleitet Handwerksbetriebe – als Steuerberater, Großhändler, Verband, Berater, Hersteller oder mit eurer eigenen Software? Dann lasst uns reden – mit Macher OS, dem Joint-Venture-Projekt von Mission Mittelstand."
         breadcrumbs={[{ label: "Partner" }]}
         actions={
           <>
