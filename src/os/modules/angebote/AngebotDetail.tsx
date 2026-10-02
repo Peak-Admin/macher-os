@@ -8,7 +8,10 @@ import type { Angebot } from '@core/objects';
 import { Auswahl, BeispielMarke, Button, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, ZweiSpalten, useBestaetigen, useToast, ZahlEingabe } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { PositionenEditor, PositionenTabelle } from './Positionen';
-import { ABLEHN_GRUENDE, alsNachgefasstMarkieren, STATUS_TEXT, STATUS_TON, ablehnen, angebotSummen, annehmen, istAktuelleVersion, laeuftBaldAb, mailtoLink, nachfassenFaellig, nachfassenTage, neueVersion, optionalSumme, ustSatz, versenden, versionen } from './daten';
+import { ABLEHN_GRUENDE, alsNachgefasstMarkieren, STATUS_TEXT, STATUS_TON, ablehnen, angebotSummen, annehmen, istAktuelleVersion, laeuftBaldAb, nachfassenFaellig, nachfassenTage, neueVersion, optionalSumme, ustSatz, versenden, versionen } from './daten';
+import { cloudAktiv } from '@core/cloud';
+import { kontaktArt, versandText } from '@modules/start/daten';
+import { angebotSenden } from './erstwert';
 
 export function KeinGeldRecht() {
   return (
@@ -161,6 +164,7 @@ export function AngebotDetail() {
                     Datum {datum(a.datum)} · gültig bis {datum(a.gueltigBis)}
                     {a.versendetAm ? ` · versendet ${relativ(a.versendetAm)}` : ''}
                   </Meta>
+                  {a.geoeffnetAm && <Status ton="erfolg">{`Vom Kunden geöffnet ${relativ(a.geoeffnetAm)}`}</Status>}
                 </Stapel>
               </Karte>
               <Karte titel="Aktionen" kompakt>
@@ -260,11 +264,27 @@ function SummenZeile({ label, wert, stark }: { label: string; wert: string; star
 export function VersandDialog({ angebot, onSchliessen }: { angebot?: Angebot; onSchliessen: () => void }) {
   const toast = useToast();
   const kunde = db.kunden.get(angebot?.kundeId);
-  const fertig = (weg: 'email' | 'anders') => {
+  const [an, setAn] = useState('');
+  const [sendet, setSendet] = useState(false);
+  const ziel = an || kunde?.email || kunde?.telefon || '';
+  const kanal = kontaktArt(ziel);
+  const lokal = !cloudAktiv();
+  const anders = () => {
     if (!angebot) return;
-    if (angebot.status === 'entwurf') versenden(angebot.id, weg);
-    toast(weg === 'email' ? 'E-Mail ist vorbereitet, Angebot als versendet markiert.' : 'Angebot als versendet markiert.');
+    if (angebot.status === 'entwurf') versenden(angebot.id, 'anders');
+    toast('Angebot als versendet markiert.');
     onSchliessen();
+  };
+  const senden = async () => {
+    if (!angebot || !kanal) return;
+    setSendet(true);
+    try {
+      const r = await angebotSenden(angebot.id, ziel, kanal);
+      toast(versandText(r, kanal, 'Das Angebot'), r.status === 'fehler' ? { ton: 'achtung' } : undefined);
+      if (r.status !== 'fehler') onSchliessen();
+    } finally {
+      setSendet(false);
+    }
   };
   return (
     <Dialog
@@ -273,33 +293,24 @@ export function VersandDialog({ angebot, onSchliessen }: { angebot?: Angebot; on
       titel="Angebot versenden"
       aktionen={
         <>
-          <Button variante="tertiaer" onClick={() => fertig('anders')}>
+          <Button variante="tertiaer" onClick={anders}>
             Anders übergeben
           </Button>
-          <Button
-            icon="mail"
-            onClick={() => {
-              if (angebot) window.location.href = mailtoLink(angebot);
-              fertig('email');
-            }}
-          >
-            E-Mail öffnen
+          <Button icon={kanal === 'sms' ? 'chat' : 'mail'} onClick={senden} laedt={sendet} disabled={!kanal}>
+            {!lokal ? 'Senden' : kanal === 'sms' ? 'In der SMS-App öffnen' : 'Im Mailprogramm öffnen'}
           </Button>
         </>
       }
     >
       <Stapel abstand={12}>
-        <p>So geht's:</p>
-        <ol style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 8 }}>
-          <li>
-            <Button klein variante="sekundaer" icon="download" onClick={() => angebot && window.open(appPfad(`/druck/angebot/${angebot.id}`), '_blank')}>
-              Druckansicht öffnen
-            </Button>{' '}
-            und als PDF speichern.
-          </li>
-          <li>„E-Mail öffnen“ – Betreff und Text sind vorbereitet. PDF anhängen, absenden.</li>
-        </ol>
-        {kunde?.email ? <Meta>Empfänger: {kunde.email}</Meta> : <Meldung ton="achtung">Beim Kunden ist keine E-Mail hinterlegt. Trag sie im Mailprogramm ein.</Meldung>}
+        <Eingabe label="An (E-Mail oder Telefon)" value={ziel} onChange={(e) => setAn(e.target.value)} fehler={ziel && !kanal ? 'Bitte eine gültige E-Mail oder Telefonnummer.' : undefined} />
+        <Meta>Dein Kunde bekommt einen Link zum Kundenbereich: Dort sieht er das Angebot als Briefbogen und nimmt es mit einem Klick an.</Meta>
+        {lokal && <Meta>Dein Konto ist noch nicht verbunden: Macher öffnet dein Programm mit fertigem Text und Link – du drückst dort auf Senden.</Meta>}
+        <div>
+          <Button klein variante="sekundaer" icon="download" onClick={() => angebot && window.open(appPfad(`/druck/angebot/${angebot.id}`), '_blank')}>
+            Druckansicht / PDF
+          </Button>
+        </div>
         <Meta>Nach {nachfassenTage()} Tagen ohne Antwort erinnert dich Macher ans Nachfassen.</Meta>
       </Stapel>
     </Dialog>

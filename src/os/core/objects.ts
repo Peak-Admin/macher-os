@@ -372,6 +372,8 @@ export interface Angebot extends Basis {
   datum: Datum;
   gueltigBis: Datum;
   versendetAm?: Zeitpunkt;
+  /** Kunde hat das Angebot zuerst im Kundenbereich geöffnet */
+  geoeffnetAm?: Zeitpunkt;
   entschiedenAm?: Zeitpunkt;
   version: number;
 }

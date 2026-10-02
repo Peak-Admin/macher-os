@@ -37,8 +37,8 @@ Umsetzung von `docs/produkt/prd-setup-bis-paid.md`, Abschnitt 1 (Setup → Ziel 
 5. **Konto sichern** – `cloudAktiv()`: E-Mail-Link oder SMS-Code (`cloud().anmelden` / `codeBestaetigen`), überspringbar.
    Sonst: „Deine Daten bleiben in diesem Browser“ + Hinweis auf Sicherung. Danach „Fertig – los geht’s“.
 
-**Ende = erste Aufgabe:** Navigation nach `/start` (Paket erstwert). Solange es kein Modul `start` gibt,
-fällt es auf `/heute` zurück (`zielNachSetup()`), damit nie eine leere Seite kommt.
+**Ende = erste Aufgabe:** Navigation nach `/os/start` (Paket erstwert, „Was willst du als Erstes erledigen?“).
+Fehlt das Modul `start`, fällt es auf `/heute` zurück (`zielNachSetup()`).
 
 **Spielwiese** (`src/os/core/seed.ts`): Beispieldaten nur noch als getrennter Modus („Spielwiese öffnen“ auf
 Schritt 1 und auf „schon eingerichtet“). Ein echter Betrieb wird vorher vollständig zur Seite gelegt
@@ -74,16 +74,15 @@ nur öffentliche Hostnamen; jede Adresse und jede Weiterleitung wird per DNS gep
 ## Geprüft
 
 - `npm ci && npm run typecheck && npm test && npm run lint && npm run build` im Wurzelprojekt – alles grün
-  (619/619 Tests; Lint ohne Fehler, nur bestehende Warnungen). Der zeitabhängige Autoplanungs-Test ist jetzt fest auf 7 Uhr gestellt.
+  (649/649 Tests nach Zusammenführen mit main inkl. erstwert; Lint ohne Fehler, nur bestehende Warnungen). Der zeitabhängige Autoplanungs-Test ist jetzt fest auf 7 Uhr gestellt.
 - Tests: `src/os/modules/onboarding/daten.test.ts`, `spielwiese.test.ts`, `src/lib/ki/ki.test.ts` (Claude-Aufruf,
   Website + Logo, SSRF-Schutz inkl. Weiterleitung auf interne Adresse, Preisliste, Kundenliste, POST-Handler).
 - Playwright gegen `next start` unter `/os` bei **1440 px** (KI gemockt: Rechnungsfoto → Briefkopf mit Logo, Preisliste)
   und **390 px** (echte Route ohne Schlüssel → 501 → Eingabe von Hand, CSV mit Dublette, Regler +10 %), je mit Team und
-  Spielwiese hin und zurück: Betrieb, 3 Kunden, Leistungen, Team, Bundesland korrekt, 0 Beispielobjekte.
+  Spielwiese hin und zurück; das Setup endet auf `/os/start`. Betrieb, 3 Kunden, Leistungen, Team, Bundesland korrekt, 0 Beispielobjekte.
 
 ## Offen
 
 - `ANTHROPIC_API_KEY` muss in Vercel gesetzt sein, sonst arbeitet das Setup mit dem Rückfall (von Hand / Vorlage / Excel).
 - Einladungslink annehmen (`/os/willkommen?einladung=…`) und SMS/Konto kommen mit dem Paket fundament;
   bis dahin erklärt die Linkseite ehrlich, dass der Betrieb erst sein Konto verbinden muss.
-- `/start` kommt mit dem Paket erstwert; bis dahin endet das Setup auf Heute.

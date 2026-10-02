@@ -1,12 +1,14 @@
 import { darf } from '@core/session';
 import { defineModul, type HinweisVorschlag } from '@core/modul';
 import { db } from '@core/db';
+import { on } from '@core/events';
 import { erledigt } from '@core/macher';
 import { euro, heute, passt, relativ, tageZwischen } from '@core/format';
 import type { ID } from '@core/objects';
 import { AngeboteListe, AngeboteTab } from './AngeboteListe';
 import { AngebotDetail } from './AngebotDetail';
 import { AngebotDruck } from './AngebotDruck';
+import { portalGeoeffnet } from './erstwert';
 import { alsNachgefasstMarkieren, angebotSummen, entwurfFuer, istAktuelleVersion, istAbgelaufen, laeuftBaldAb, nachfassenFaellig, nachfassenTage } from './daten';
 
 const aktuelleAngebote = () => {
@@ -165,6 +167,12 @@ export default defineModul({
       pruefen: ablaufPruefen,
     },
   ],
+  init: () => {
+    // „Der Kunde hat dein Angebot geöffnet“ – Event kommt aus dem Kundenbereich (Paket Aktivierung)
+    on('portal.geoeffnet', (e) => {
+      portalGeoeffnet(e.daten as { kundeId?: ID; bezug?: { typ: string; id: ID } } | undefined);
+    });
+  },
   suche: (q) =>
     db.angebote
       .where((a) => passt(q, a.nummer, a.titel, db.kunden.get(a.kundeId)?.name))
