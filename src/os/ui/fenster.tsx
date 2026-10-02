@@ -36,7 +36,7 @@ export function FensterSkizze({
 }) {
   const id = useId().replace(/[^\w-]/g, '');
   const nah = ausschnitt === 'nah';
-  // Im Nah-Ausschnitt (kleine Kacheln) kräftigere Linien und eine größere Kachel, damit das Icon lesbar bleibt
+  // Im Nah-Ausschnitt (kleine Kacheln) kräftigere Linien und eine größere Kachel genau in der Mitte des Ausschnitts
   const k = nah ? 1.6 : 1;
   const linie = { stroke: 'currentColor', fill: 'none' } as const;
   const balken = (x: number, y: number, b: number, deckkraft = 0.1) => (
@@ -90,7 +90,7 @@ export function FensterSkizze({
         )}
       </g>
 
-      <g transform={nah ? 'translate(160 98) scale(1.25) translate(-160 -98)' : undefined}>
+      <g transform={nah ? 'translate(160 86) scale(1.25) translate(-160 -98)' : undefined}>
         <circle cx="160" cy="98" r="68" fill={`url(#${id}-schein)`} />
         <rect x="128" y="66" width="64" height="64" rx="17" fill={`url(#${id}-kachel)`} stroke="currentColor" strokeOpacity={0.32 * k} strokeWidth={1.2} />
         <rect x="133.5" y="71.5" width="53" height="53" rx="13" {...linie} strokeOpacity={0.14 * k} />
