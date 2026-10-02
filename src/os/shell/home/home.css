@@ -13,11 +13,12 @@
 .mm-home-spalte { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
 @media (min-width: 768px) {
   .mm-home-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .mm-home-band--breit, .mm-home-band--eine { grid-template-columns: minmax(0, 1fr); }
 }
 @media (min-width: 1024px) {
   .mm-home-band { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 }
+/* Große Widgets und Bänder mit nur einer Spalte immer über die volle Breite – muss nach den Spaltenregeln stehen */
+.mm-home-band.mm-home-band--breit, .mm-home-band.mm-home-band--eine { grid-template-columns: minmax(0, 1fr); }
 
 /* ------------------------------------------------ Widget-Rahmen */
 .mm-home-widget {
@@ -219,6 +220,13 @@
 .mm-home-bearbeiten:hover, .mm-home-bearbeiten:focus-within { border-color: var(--mm-brand); }
 .mm-home-bearbeiten--zieht { border-style: solid; border-color: var(--mm-brand); background: var(--mm-soft-green); }
 .mm-home-bearbeiten--zieht .mm-home-vorschau { opacity: 0.35; }
+/* Live-Feedback: das gerade geänderte Widget leuchtet kurz auf (zwei gleiche Animationen, damit sie bei jeder Änderung neu startet) */
+.mm-home-bearbeiten--geaendert { border-style: solid; border-color: var(--mm-brand); }
+.mm-home-bearbeiten--puls-a { animation: mm-home-puls-a 1200ms ease-out; }
+.mm-home-bearbeiten--puls-b { animation: mm-home-puls-b 1200ms ease-out; }
+@keyframes mm-home-puls-a { from { background-color: var(--mm-soft-green); box-shadow: 0 0 0 4px var(--mm-soft-green); } to { background-color: var(--mm-canvas); box-shadow: 0 0 0 0 transparent; } }
+@keyframes mm-home-puls-b { from { background-color: var(--mm-soft-green); box-shadow: 0 0 0 4px var(--mm-soft-green); } to { background-color: var(--mm-canvas); box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .mm-home-bearbeiten--puls-a, .mm-home-bearbeiten--puls-b { animation: none; background-color: var(--mm-soft-green); } }
 .mm-home-werkzeug { display: flex; align-items: center; gap: 8px; padding: 6px 8px; min-height: 52px; }
 .mm-home-werkzeug-titel { flex: 1; min-width: 0; font-weight: 600; color: var(--mm-black); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-home-griff {

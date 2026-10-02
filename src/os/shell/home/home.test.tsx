@@ -96,6 +96,14 @@ describe('Home', () => {
     await act(async () => fireEvent.click(within(gruppe).getByRole('button', { name: 'Groß' })));
     l = einstellung<HomeLayout | null>(layoutSchluessel(chef.id), null)!;
     expect(l.widgets.find((w) => w.widgetId === 'offene-posten')!.size).toBe('gross');
+    // Live-Feedback: Widget markiert, Meldung sichtbar, Rückgängig stellt die Größe wieder her
+    expect(document.querySelector('[data-home-widget="offene-posten"] [data-geaendert]')).toBeTruthy();
+    expect(screen.getByText('Offene Rechnungen: Groß – volle Breite. Gespeichert.')).toBeTruthy();
+    const rueck = screen.getAllByRole('button', { name: 'Rückgängig' });
+    await act(async () => fireEvent.click(rueck[rueck.length - 1]));
+    l = einstellung<HomeLayout | null>(layoutSchluessel(chef.id), null)!;
+    expect(l.widgets.find((w) => w.widgetId === 'offene-posten')!.size).toBe('klein');
+    await act(async () => fireEvent.click(within(gruppe).getByRole('button', { name: 'Groß' })));
 
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Neu für dich ausblenden' })));
     l = einstellung<HomeLayout | null>(layoutSchluessel(chef.id), null)!;
