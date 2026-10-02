@@ -53,7 +53,7 @@ const momente: Moment[] = [
     href: "/funktionen/dokumentation",
     ort: "Einsatz · Haus 24",
     app: (
-      <div className="grid grid-cols-3 gap-1.5 text-center font-semibold">
+      <div className="grid flex-1 grid-cols-3 gap-1.5 text-center font-semibold">
         {(
           [
             ["camera", "3 Fotos"],
@@ -61,7 +61,7 @@ const momente: Moment[] = [
             ["box", "Material"],
           ] as [IconName, string][]
         ).map(([i, l]) => (
-          <span key={l} className="flex flex-col items-center gap-1 rounded-md border border-line py-2">
+          <span key={l} className="flex flex-col items-center justify-center gap-1 rounded-md border border-line py-2">
             <Icon name={i} className="size-4 text-signal-dark" />
             {l}
           </span>
@@ -101,12 +101,12 @@ export function Alltag() {
           {momente.map((m, n) => (
             <li key={m.titel}>
               <Karte3D href={m.href} innen="flex flex-col rounded-2xl border border-line bg-white">
-                <div className="relative min-h-48 rounded-t-2xl bg-ink px-4 pb-5 pt-4" style={{ transformStyle: "preserve-3d" }}>
+                <div className="relative rounded-t-2xl bg-ink px-4 pb-5 pt-4" style={{ transformStyle: "preserve-3d" }}>
                   <div className="mb-3 flex items-center justify-between text-white">
                     <IconTile name={m.icon} className="size-9" />
                     <span className="font-display text-sm font-bold tabular-nums text-white/60">0{n + 1}</span>
                   </div>
-                  <div className="karte-3d-tief rounded-xl bg-white p-3 text-[12px] text-ink shadow-[0_18px_30px_-18px_rgb(0_0_0/0.7)]">
+                  <div className="karte-3d-tief flex min-h-40 flex-col rounded-xl bg-white p-3 text-[12px] text-ink shadow-[0_18px_30px_-18px_rgb(0_0_0/0.7)]">
                     <p className="mb-1.5 flex items-center justify-between text-[11px] text-muted">
                       <span className="font-semibold">{m.ort}</span>
                       <span className="rounded-sm border border-dashed border-line-dark px-1 text-[10px] font-semibold">Beispiel</span>
