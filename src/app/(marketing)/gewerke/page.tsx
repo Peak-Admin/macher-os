@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { EinrichtungMock } from "@/components/gewerke/Mocks";
 import { GewerkSuche } from "@/components/gewerke/GewerkSuche";
-import { BereichsKarte, DunkleHeadline, DunklerAbschnitt, FinalCta, FotoBuehne, PageHero } from "@/components/sections";
+import { BereichsKarte, DunkleHeadline, DunklerAbschnitt, FinalCta, FotoBuehne, PageHero, MissionMittelstandStreifen } from "@/components/sections";
 import {
   ButtonLink,
   Faq,
@@ -201,6 +201,8 @@ export default function GewerkeHubPage() {
       </Section>
 
       {/* 6. Final CTA */}
+      <MissionMittelstandStreifen />
+
       <FinalCta
         title="Dein Gewerk. Deine Abläufe. Eine Software."
         intro="Wähle beim Start dein Gewerk – Macher OS richtet Begriffe, Vorlagen und Abläufe für dich ein."
