@@ -228,9 +228,12 @@
 :is(.mm-auswahlkarte-icon, .mm-leer-icon, .mm-modulkachel-icon, .mm-verzeichnis-icon, .mm-home-kachel, .mm-home-news-icon) > [data-glas] { width: 100%; height: 100%; }
 .mm-leer-aktion { margin-top: 8px; }
 /* Fenster-Skizze (fenster.tsx): Drahtgitter mit Glas-Icon – nur für Einstiege und Teaser, nie hinter Daten */
-.mm-fenster { display: block; max-width: 520px; overflow: hidden; border-radius: var(--mm-radius-card); background: var(--mm-surface-subtle); color: var(--mm-text); }
+.mm-fenster { display: block; width: 100%; max-width: 520px; margin-inline: auto; overflow: hidden; border-radius: var(--mm-radius-card); background: var(--mm-surface-subtle); color: var(--mm-text); }
 .mm-fenster > svg { max-width: 360px; margin-inline: auto; }
-.mm-fenster--kachel { flex-shrink: 0; border-radius: var(--mm-radius-control); }
+.mm-fenster--kachel { flex-shrink: 0; margin-inline: 0; border-radius: var(--mm-radius-control); }
+/* Einstieg: Fenster-Skizze über kurzem Text (Titel, ein, zwei Sätze, eine Aktion) – alles mittig.
+   Folgen Listen, Formulare oder Daten, bleibt der Text linksbündig; die Skizze steht trotzdem mittig. */
+.mm-einstieg { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
 .mm-fenster--kachel > svg { max-width: none; }
 .mm-leer .mm-leer-skizze { width: min(100%, 360px); margin-bottom: 8px; }
 .mm-fenster-teaser { display: grid; gap: var(--mm-space-4); align-items: center; }

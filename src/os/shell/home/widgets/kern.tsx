@@ -280,7 +280,7 @@ export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
   const wege = kontaktWege(p ?? {});
   if (!p) {
     return (
-      <div className="mm-home-kontakt">
+      <div className="mm-home-kontakt mm-einstieg">
         <span className="mm-fenster" aria-hidden>
           <FensterSkizze icon="kontakt" />
         </span>

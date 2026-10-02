@@ -75,7 +75,7 @@ export default function AkademiePage() {
           {lernbereiche.map((l) => {
             const anzahl = kurse.filter((k) => k.lernbereich === l.titel).length;
             return (
-              <div key={l.titel} className="rounded-lg border border-line bg-paper p-6">
+              <div key={l.titel} className="rounded-lg border border-line bg-paper p-6 text-center">
                 <Fenster icon={l.icon} flaeche="weiss" className="-mx-2 -mt-2" />
                 <h3 className="mt-5 font-display text-lg font-bold">{l.titel}</h3>
                 <p className="mt-1 text-muted">{l.text}</p>

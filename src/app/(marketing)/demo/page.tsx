@@ -82,7 +82,7 @@ export default function DemoPage() {
             </div>
             <TrustRow dark className="mt-6" />
           </div>
-          <div className="karte-dunkel p-6">
+          <div className="karte-dunkel p-6 text-center">
             <Fenster icon="chat" ton="dunkel" className="mb-5" />
             <p className="font-display text-lg font-bold">Lieber persönlich?</p>
             <p className="mt-2 text-white/70">

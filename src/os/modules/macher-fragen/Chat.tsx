@@ -67,7 +67,7 @@ export function MacherChat({ onNavigiert, start }: { onNavigiert?: () => void; s
   return (
     <div className="mf-seite">
       {!verlauf.length && (
-        <div className="mm-stapel" style={{ gap: 12 }}>
+        <div className="mm-stapel mf-einstieg" style={{ gap: 12 }}>
           <span className="mm-fenster" aria-hidden>
             <FensterSkizze icon="macher" />
           </span>

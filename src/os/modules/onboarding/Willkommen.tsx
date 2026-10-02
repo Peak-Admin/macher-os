@@ -555,7 +555,7 @@ function SchonEingerichtet({ onNeu }: { onNeu: () => void }) {
       <span className="mm-fenster" aria-hidden>
         <FensterSkizze icon="erledigt" />
       </span>
-      <div className="ob-frage-kopf">
+      <div className="ob-frage-kopf ob-frage-kopf--mitte">
         <h1>{b?.name} ist schon eingerichtet</h1>
         <p>Du kannst direkt weiterarbeiten.</p>
       </div>
@@ -613,7 +613,7 @@ function AufDerSpielwiese({ onNeu }: { onNeu: () => void }) {
       <span className="mm-fenster" aria-hidden>
         <FensterSkizze icon="start" />
       </span>
-      <div className="ob-frage-kopf">
+      <div className="ob-frage-kopf ob-frage-kopf--mitte">
         <Oberzeile>Spielwiese</Oberzeile>
         <h1>Du bist gerade auf der Spielwiese</h1>
         <p>Alles hier sind Beispieldaten. {gesichert ? 'Deine echten Daten liegen sicher zur Seite und kommen unverändert zurück.' : 'Wenn du deinen eigenen Betrieb einrichtest, verschwinden sie vollständig.'}</p>
@@ -637,7 +637,7 @@ function Einladung({ betrieb }: { betrieb: string }) {
       <span className="mm-fenster" aria-hidden>
         <FensterSkizze icon="handy" rahmen="handy" />
       </span>
-      <div className="ob-frage-kopf">
+      <div className="ob-frage-kopf ob-frage-kopf--mitte">
         <Oberzeile>Einladung</Oberzeile>
         <h1>{betrieb ? `${betrieb} hat dich eingeladen` : 'Du wurdest eingeladen'}</h1>
         <p>Über Macher OS bekommst du deine Einsätze, Adressen und Aufgaben aufs Handy.</p>

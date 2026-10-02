@@ -6,6 +6,8 @@
 .mf-eingabe { display: flex; gap: 8px; align-items: flex-end; width: 100%; }
 .mf-eingabe > .mm-feld { flex: 1; }
 .mf-beispiele { display: flex; flex-wrap: wrap; gap: 8px; }
+.mf-einstieg { align-items: center; text-align: center; }
+.mf-einstieg .mf-beispiele { justify-content: center; }
 .mf-beispiele .mm-btn { white-space: normal; text-align: left; }
 .mf-seite { display: flex; flex-direction: column; gap: 24px; }
 .mf-eingabe--fix { position: sticky; bottom: -24px; margin-bottom: -24px; padding: 12px 0 24px; background: var(--mm-surface); border-top: 1px solid var(--mm-border); }

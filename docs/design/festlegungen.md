@@ -93,6 +93,9 @@ mit geringer Deckkraft: hell auf der ruhigen Fläche (`sand` / `--mm-surface-sub
 
 - Einsatz: Einstiege und Teaser – erste Schritte, Schnittstellen, Hilfe-Einstiege, „Geplant“/„Kommt bald“,
   einzelne dunkle Karten. Nie in Listen, Tabellen, Formularen oder hinter Daten.
+- **Mittig:** Die Skizze steht immer mittig. Folgt nur kurzer Einstiegstext (Titel, ein, zwei Sätze, eine Aktion), ist auch
+  der Text zentriert (Software `.mm-einstieg`, Website `Card` mit `fenster` automatisch). Folgen Listen, Formulare oder
+  Daten, bleibt der Text linksbündig.
 - Abgrenzung: Die **Skizze** erklärt, was eine Funktion tut (Inhalt angedeutet). Die **Fenster-Skizze** zeigt nur,
   *wo* etwas sitzt bzw. dass es dazukommt (ein Thema, ein Icon). Je Raster nur eine Form.
 - Gemeinsame Quelle: `src/os/ui/fenster.tsx` (`FensterSkizze`, Glas-Icon-Name). Website: `Fenster`

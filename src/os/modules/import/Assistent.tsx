@@ -142,7 +142,7 @@ export function Assistent() {
               {laedt ? (
                 <MacherArbeitet zustand="verbindet" text="Macher liest die Datei …" />
               ) : (
-                <Stapel>
+                <div className="mm-einstieg">
                   <span className="mm-fenster" aria-hidden>
                     <FensterSkizze icon="import" />
                   </span>
@@ -153,7 +153,7 @@ export function Assistent() {
                     </DateiKnopf>
                   </div>
                   <Meta>Das geht: {arten.map((a) => a.label).join(', ')}.</Meta>
-                </Stapel>
+                </div>
               )}
             </Karte>
             <LetzteImporte />
