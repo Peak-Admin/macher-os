@@ -10,10 +10,10 @@
  *
  * `?trocken=1` berechnet nur, was zugestellt würde (ohne Senden und ohne Speichern).
  */
-import { emailAus } from '../../src/modules/takte/zustellung';
-import { zuletztSchluessel } from '../../src/modules/takte/regeln';
-import { betriebsDaten, planen, SAMMLUNGEN, type Mitglied, type ObjektZeile, type Zustellung } from './planen';
-import { pushSenden, type PushAbo } from './webpush';
+import { emailAus } from '../../src/modules/takte/zustellung.js';
+import { zuletztSchluessel } from '../../src/modules/takte/regeln.js';
+import { betriebsDaten, planen, SAMMLUNGEN, type Mitglied, type ObjektZeile, type Zustellung } from './planen.js';
+import { pushSenden, type PushAbo } from './webpush.js';
 
 declare const process: { env: Record<string, string | undefined> };
 
@@ -36,7 +36,7 @@ async function rest<T>(u: Umgebung, pfad: string, init: RequestInit = {}): Promi
     headers: { apikey: u.schluessel, Authorization: `Bearer ${u.schluessel}`, 'Content-Type': 'application/json', ...(init.headers ?? {}) },
   });
   if (!antwort.ok) throw new Error(`Supabase ${antwort.status}: ${pfad.split('?')[0]}`);
-  return antwort.status === 204 || init.method === 'POST' ? (undefined as T) : ((await antwort.json()) as T);
+  return antwort.status === 204 || init.method === 'POST' || init.method === 'DELETE' ? (undefined as T) : ((await antwort.json()) as T);
 }
 
 /** Alle benötigten Objekte eines Betriebs, seitenweise */
@@ -62,13 +62,23 @@ async function einstellungSchreiben(u: Umgebung, betriebId: string, id: string, 
   });
 }
 
-async function zustellen(z: Zustellung, abos: { nutzer_id: string; abo: PushAbo }[]): Promise<'push' | 'email' | 'kein-weg'> {
+async function zustellen(u: Umgebung, betriebId: string, z: Zustellung, abos: { nutzer_id: string; abo: PushAbo }[]): Promise<'push' | 'email' | 'kein-weg'> {
   const vapid = process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY ? { oeffentlich: process.env.VAPID_PUBLIC_KEY, privat: process.env.VAPID_PRIVATE_KEY, kontakt: process.env.VAPID_KONTAKT ?? 'mailto:hallo@macher-os.de' } : undefined;
-  const meine = abos.filter((a) => a.nutzer_id === z.nutzerId);
+  const meine = [...abos.filter((a) => a.nutzer_id === z.nutzerId), ...z.geraete.map((abo) => ({ nutzer_id: z.nutzerId, abo, ausEinstellung: true }))].filter(
+    (a, n, alle) => alle.findIndex((b) => b.abo.endpoint === a.abo.endpoint) === n,
+  );
   // Push zuerst (wenn gewählt und möglich), sonst E-Mail als Rückfall
   if (z.kanal === 'push' && vapid && meine.length) {
     const nutzlast = { titel: z.nachricht.titel, text: z.nachricht.text, pfad: z.nachricht.pfad, takt: z.takt, aktionen: z.nachricht.aktionen };
     const ergebnisse = await Promise.all(meine.map((a) => pushSenden(a.abo, nutzlast, vapid).catch(() => ({ ok: false, status: 0, abgelaufen: false }))));
+    // abgelaufene Abos (Gerät abgemeldet, App gelöscht) aufräumen
+    await Promise.all(
+      ergebnisse.map((e, n) =>
+        e.abgelaufen && !('ausEinstellung' in meine[n])
+          ? rest(u, `push_abos?betrieb_id=eq.${betriebId}&nutzer_id=eq.${z.nutzerId}&abo->>endpoint=eq.${encodeURIComponent(meine[n].abo.endpoint)}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } }).catch(() => undefined)
+          : undefined,
+      ),
+    );
     if (ergebnisse.some((e) => e.ok)) return 'push';
   }
   if (z.email && process.env.RESEND_API_KEY) {
@@ -107,7 +117,7 @@ async function lauf(request: Request): Promise<Response> {
       const abos = zustellungen.length ? await rest<{ nutzer_id: string; abo: PushAbo }[]>(u, `push_abos?select=nutzer_id,abo&betrieb_id=eq.${betriebId}`) : [];
       const zugestellt = [];
       for (const z of zustellungen) {
-        const weg = await zustellen(z, abos);
+        const weg = await zustellen(u, betriebId, z, abos);
         zugestellt.push({ mitarbeiterId: z.mitarbeiterId, takt: z.takt, weg });
       }
       if (zugestellt.length) {

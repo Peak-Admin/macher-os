@@ -5,7 +5,7 @@
  *
  * Nur relative Importe und reine Funktionen: läuft im Browser und in Node (`os/api/takte/cron.ts`).
  */
-import type { Datum } from '../../core/objects';
+import type { Datum } from '../../core/objects.js';
 
 export const ZEITZONE = 'Europe/Berlin';
 

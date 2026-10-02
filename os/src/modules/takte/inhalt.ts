@@ -8,7 +8,7 @@
  * Geld-Definitionen wie in `modules/auswertung/daten.ts` (Umsatz = zählende Rechnungen netto,
  * offene Posten = Brutto-Forderung minus Zahlungen).
  */
-import { euro, plusTage, summen, wochenStart } from '../../core/format';
+import { euro, plusTage, summen, wochenStart } from '../../core/format.js';
 import type {
   Abwesenheit,
   Aufgabe,
@@ -25,9 +25,9 @@ import type {
   Termin,
   Zahlung,
   Zeiteintrag,
-} from '../../core/objects';
-import type { TaktId } from './regeln';
-import { textVonMinuten, uhrVon, type Uhr } from './zeit';
+} from '../../core/objects.js';
+import type { TaktId } from './regeln.js';
+import { textVonMinuten, uhrVon, type Uhr } from './zeit.js';
 
 /** Alle Objekte des Betriebs, die die Takte brauchen (Namen = Sammlungen) */
 export interface Bestand {

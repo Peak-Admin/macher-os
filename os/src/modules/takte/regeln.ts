@@ -4,8 +4,8 @@
  * Reine Funktionen ohne Datenbank: dieselbe Logik plant im Browser (lokaler Rückfall)
  * und auf dem Server (`os/api/takte/cron.ts`).
  */
-import type { Datum, Rolle } from '../../core/objects';
-import { minutenVonText, type Uhr } from './zeit';
+import type { Datum, Rolle } from '../../core/objects.js';
+import { minutenVonText, type Uhr } from './zeit.js';
 
 export type TaktId = 'dein-tag' | 'tagesbrief' | 'zeiten' | 'wochenbilanz';
 

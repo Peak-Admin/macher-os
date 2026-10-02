@@ -3,11 +3,12 @@
  * berechnen, wer jetzt welchen Takt bekommt – mit denselben Funktionen wie im Browser
  * (`src/modules/takte/*`). Keine Netzwerkzugriffe, damit es testbar bleibt.
  */
-import type { Mitarbeiter, Rolle } from '../../src/core/objects';
-import { deinTag, entscheidungenAusBestand, leererBestand, tagesbrief, wochenbilanz, zeitenHeute, type Bestand, type TaktInhalt } from '../../src/modules/takte/inhalt';
-import { einstellungenAus, einstellungsSchluessel, faelligeTakte, zuletztSchluessel, type Kanal, type TaktId } from '../../src/modules/takte/regeln';
-import { uhrVon } from '../../src/modules/takte/zeit';
-import { nachrichtAus, type TaktNachricht } from '../../src/modules/takte/zustellung';
+import type { Mitarbeiter, Rolle } from '../../src/core/objects.js';
+import { deinTag, entscheidungenAusBestand, leererBestand, tagesbrief, wochenbilanz, zeitenHeute, type Bestand, type TaktInhalt } from '../../src/modules/takte/inhalt.js';
+import { einstellungenAus, einstellungsSchluessel, faelligeTakte, zuletztSchluessel, type Kanal, type TaktId } from '../../src/modules/takte/regeln.js';
+import { istArbeitstagServer } from '../../src/modules/takte/feiertage.js';
+import { uhrVon } from '../../src/modules/takte/zeit.js';
+import { nachrichtAus, type TaktNachricht } from '../../src/modules/takte/zustellung.js';
 
 /** Eine Zeile aus `objekte` (laut Datenvertrag) */
 export interface ObjektZeile {
@@ -30,6 +31,8 @@ export interface Zustellung {
   kanal: Kanal;
   email?: string;
   nachricht: TaktNachricht;
+  /** Push-Abos, die das Gerät selbst als Einstellung `takte.push-abo.<mitarbeiterId>` abgelegt hat */
+  geraete: { endpoint: string; keys: { p256dh: string; auth: string } }[];
 }
 
 /** Diese Sammlungen braucht der Takt (der Rest wird gar nicht geladen) */
@@ -110,19 +113,23 @@ export function planen(d: BetriebsDaten, mitglieder: Mitglied[], jetzt: Date): {
   const zustellungen: Zustellung[] = [];
   const zuletzt = new Map<string, Partial<Record<TaktId, string>>>();
   if (d.bestand.betrieb && !(d.bestand.betrieb as { onboardingFertig?: boolean }).onboardingFertig) return { zustellungen, zuletzt };
-  const arbeitstage = (d.einstellungen.get('plan.arbeitstage') as number[] | undefined) ?? [1, 2, 3, 4, 5];
+  const gesetzt = d.einstellungen.get('plan.arbeitstage') as number[] | undefined;
+  const arbeitstage = Array.isArray(gesetzt) && gesetzt.length ? gesetzt : [1, 2, 3, 4, 5];
+  const bundesland = (d.einstellungen.get('plan.bundesland') as string | undefined) || null;
+  const arbeitstag = istArbeitstagServer(uhr.datum, arbeitstage, bundesland);
   for (const mg of mitglieder) {
     const m = d.bestand.mitarbeiter.find((x) => x.id === mg.mitarbeiter_id);
     if (!m || !m.aktiv) continue;
     const einstellungen = einstellungenAus(d.einstellungen.get(einstellungsSchluessel(m.id)));
     const bisher = (d.einstellungen.get(zuletztSchluessel(m.id)) as Partial<Record<TaktId, string>> | undefined) ?? {};
-    const faellig = faelligeTakte({ rolle: m.rolle, einstellungen, uhr, zuletzt: bisher, arbeitstag: arbeitstage.includes(uhr.wochentag) });
+    const faellig = faelligeTakte({ rolle: m.rolle, einstellungen, uhr, zuletzt: bisher, arbeitstag });
     if (!faellig.length) continue;
     const neu = { ...bisher };
     for (const takt of faellig) {
       neu[takt] = uhr.datum;
       const nachricht = nachrichtAus(inhaltAufServer(takt, d, m, jetzt), m.id);
-      if (!nachricht.leer) zustellungen.push({ nutzerId: mg.nutzer_id, mitarbeiterId: m.id, takt, kanal: einstellungen.kanal, email: m.email, nachricht });
+      const geraete = ((d.einstellungen.get(`takte.push-abo.${m.id}`) as Zustellung['geraete'] | undefined) ?? []).filter((a) => a?.endpoint && a.keys?.p256dh && a.keys?.auth);
+      if (!nachricht.leer) zustellungen.push({ nutzerId: mg.nutzer_id, mitarbeiterId: m.id, takt, kanal: einstellungen.kanal, email: m.email, nachricht, geraete });
     }
     zuletzt.set(m.id, neu);
   }

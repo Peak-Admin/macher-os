@@ -74,22 +74,32 @@ sonst `VERCEL_URL`), `VAPID_KONTAKT` (Standard `mailto:hallo@macher-os.de`).
   laufende Zeit endet, Link bereinigt), Monteur sieht kein Geld, Einstellungen (Ruhezeit speichern, Warnung), kein horizontales Scrollen,
   keine Konsolenfehler.
 
-## Offene Punkte / Kernwünsche
+## Nachträglich erledigt (zweite Runde)
 
-1. **Kernwunsch `src/shell/struktur.ts`:** `takte` ist (noch) kein eigenes Modul mit `index.tsx`, weil jedes Modul dort genau einmal stehen
-   muss und die Datei nicht zu diesem Paket gehört. Die Route `/macher/takte/:takt` hängt deshalb am Modul `benachrichtigungen`.
-   Wer `takte` als eigenes Modul will: `index.tsx` anlegen und `'takte'` unter Heute › `kontext` eintragen.
-2. **Fundament (`os/vercel.json`):** Cron eintragen, z. B. `{ "path": "/api/takte/cron", "schedule": "*/15 * * * *" }` (auf Vercel Hobby
-   sind nur tägliche Crons möglich → dann reicht es nicht). Vercel schickt `Authorization: Bearer $CRON_SECRET` automatisch.
-3. **Aktivierung (`src/sw.ts`):** Push-Nutzlast ist `{ titel, text, pfad, takt, aktionen: [{ aktion, label, payload }] }`. Beim
-   `notificationclick` bitte `pfad` öffnen, bei `event.action` den Link aus `aktionsLink(pfad, aktion, payload)` (Format oben) – dann
-   entscheidet die Takt-Ansicht sofort. Lokale Systemmeldungen legen dieselben Daten in `notification.data`.
-4. **Fundament (`cloud().push`):** Für Push außerhalb der Takte (Ereignis-Benachrichtigungen) bitte die Ruhezeit beachten:
-   `jetztMelden(mitarbeiterId, { dringend })` aus `@modules/takte/browser` bzw. `darfMelden()` aus `regeln.ts` (Server).
-5. Server kennt die live berechneten Hinweise der Module nicht: der Tagesbrief vom Server nutzt gespeicherte Hinweise,
-   Urlaubsanträge und Rechnungen > 7 Tage überfällig (`entscheidungenAusBestand`). In der App sind es alle Hinweise aus „Braucht dich“.
-6. Server berücksichtigt `plan.arbeitstage`, aber keine Feiertage (die Feiertagslogik in `@core/kalender` hängt an `db`).
-   Dein Tag/Zeiten bleiben an Feiertagen ohnehin leer und werden nicht verschickt; Tagesbrief/Wochenbilanz könnten kommen.
-7. Abgelaufene Push-Abos (404/410) werden erkannt, aber noch nicht aus `push_abos` gelöscht (gehört zu Fundament).
-8. „Entscheiden ohne App zu öffnen“: Die Aktion läuft in der App (local-first-Daten), der Knopf an der Mitteilung öffnet die Takt-Ansicht und
-   führt sofort aus. Rein serverseitige Ausführung braucht serverseitige Aktionen (späteres Release).
+Auf Wunsch die offenen Punkte geschlossen – dabei wurden Dateien anderer Pakete angefasst (beim Zusammenführen beachten):
+
+1. **Absturz des Server-Takts behoben:** `os/package.json` hat `"type": "module"`, Node verlangt dann Dateiendungen.
+   Alle Dateien, die der Server lädt (`api/takte/*`, `takte/{zeit,regeln,inhalt,zustellung,feiertage}.ts`), importieren jetzt mit `.js`.
+   Geprüft durch Transpilieren Datei für Datei und Aufruf in Node 22 (501/401 wie erwartet).
+2. **`takte` ist ein eigenes Modul** (`takte/index.tsx`: Route, Aktion `takte.zeiten-bestaetigen`, lokaler Planer, Suche) und steht in
+   `src/shell/struktur.ts` als Kontext unter Heute. *(Datei gehört der Shell.)*
+3. **`os/vercel.json`:** Cron `/api/takte/cron` alle 15 Minuten; `/api/` und `/sw.js` werden nicht mehr auf `index.html` umgeschrieben;
+   `sw.js` ohne Cache. *(Datei gehört Fundament – bitte deren Crons ergänzen, nicht ersetzen.)*
+4. **Service Worker `os/public/sw.js`:** zeigt Push an (bis 2 Aktionsknöpfe), Klick öffnet die Takt-Ansicht, Aktionsknopf öffnet sie mit
+   `?aktion=…&payload=…` und die Entscheidung läuft sofort. Wird vom Modul Takte angemeldet (nur im Produktions-Build).
+   *(Datei gehört Aktivierung – deren Offline-Cache gehört in dieselbe Datei, ein Service Worker je Scope.)*
+5. **Push-Abo je Gerät:** mit `VITE_VAPID_PUBLIC_KEY` und Erlaubnis wird das Gerät abonniert und als Einstellung
+   `takte.push-abo.<mitarbeiterId>` gemerkt – über den Sync landet es in `objekte`; der Cron nutzt es zusätzlich zu `push_abos`.
+6. **Feiertage auf dem Server** (`takte/feiertage.ts`, Bundesland aus `plan.bundesland`); ein Test hält sie gleich mit `@core/kalender`.
+7. **Abgelaufene Push-Abos** (404/410) werden aus `push_abos` gelöscht.
+8. **Ruhezeit für alle Pushes:** wichtige Ereignis-Benachrichtigungen (dringende Anfrage, Urlaubsantrag, Angebot angenommen) gehen über
+   `pushMitRuhezeit()` zusätzlich aufs Handy – nur außerhalb der Ruhezeit, Dringendes bei Notdienst auch nachts.
+
+## Weiterhin offen
+
+- **Entscheiden ganz ohne App:** Die Aktion läuft in der App (local-first). Der Knopf an der Mitteilung öffnet die Takt-Ansicht und führt
+  sofort aus. Rein serverseitig braucht es serverseitige Aktionen – späteres Release.
+- **Live gehen braucht Fundament:** Supabase-Projekt mit den Tabellen laut Datenvertrag, Sync von `db` nach `objekte`, Konto/Mitglieder.
+  Bis dahin antwortet der Cron mit 501 und die App arbeitet im lokalen Rückfall.
+- **Umzug auf `main`:** `main` hat Macher OS inzwischen nach `src/os/` (Next.js, `/os`) verlegt. Die Pakete dieses Releases liegen noch in
+  der alten Struktur `os/` und müssen beim Zusammenführen umziehen (API-Funktionen dann unter `src/app/api/...` oder `api/` im Wurzelprojekt).

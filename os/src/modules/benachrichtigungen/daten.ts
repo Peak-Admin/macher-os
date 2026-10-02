@@ -7,10 +7,10 @@ import { db } from '@core/db';
 import { on, type DbEvent } from '@core/events';
 import { datum, euro, personName } from '@core/format';
 import { benachrichtigen } from '@core/macher';
-import type { Automation } from '@core/modul';
 import type { Abwesenheit, Angebot, Aufgabe, Auftrag, Benachrichtigung, Bezug, ID, Mitarbeiter, Nachricht, Zahlung } from '@core/objects';
 import { darf } from '@core/session';
-import { taktePruefen } from '@modules/takte/browser';
+import { pfadZu, type Automation } from '@core/modul';
+import { pushMitRuhezeit } from '@modules/takte/browser';
 
 export const REGEL_ID = 'macher.benachrichtigen';
 
@@ -37,7 +37,7 @@ function buero(recht?: Parameters<typeof darf>[0]): Mitarbeiter[] {
  * Gleicher Titel zum gleichen Objekt innerhalb von 10 Minuten zählt als doppelt
  * (z. B. `angebote.updated` und `angebot.angenommen` für dasselbe Angebot).
  */
-export function melden(empfaenger: (Mitarbeiter | undefined)[], titel: string, opts: { text?: string; bezug?: Bezug; ausloeser?: ID; wichtig?: boolean }) {
+export function melden(empfaenger: (Mitarbeiter | undefined)[], titel: string, opts: { text?: string; bezug?: Bezug; ausloeser?: ID; wichtig?: boolean; dringend?: boolean }) {
   const seit = new Date(Date.now() - 10 * 60_000).toISOString();
   const ids = [...new Set(empfaenger.filter((m): m is Mitarbeiter => !!m).map((m) => m.id))].filter((id) => id !== opts.ausloeser);
   let n = 0;
@@ -47,6 +47,8 @@ export function melden(empfaenger: (Mitarbeiter | undefined)[], titel: string, o
     ).length;
     if (doppelt) continue;
     benachrichtigen(titel, { text: opts.text, bezug: opts.bezug, fuer: id, wichtig: opts.wichtig });
+    // Wichtiges auch aufs Handy – außerhalb der Ruhezeit; Dringendes bei Notdienst auch nachts
+    if (opts.wichtig) void pushMitRuhezeit({ anMitarbeiterId: id, titel, text: opts.text, pfad: pfadZu(opts.bezug) }, { dringend: opts.dringend }).catch(() => {});
     n++;
   }
   return n;
@@ -61,7 +63,7 @@ const istStatus = (e: DbEvent, feld: string, wert: string) =>
 
 export function neueAnfrage(a: Auftrag) {
   if (a.beispiel || a.phase !== 'anfrage') return;
-  melden(buero(), `Neue Anfrage: ${a.titel}`, { text: `${kundeName(a.kundeId)}${a.dringend ? ' · dringend' : ''}`, bezug: { typ: 'auftraege', id: a.id }, ausloeser: a.erstelltVon, wichtig: a.dringend });
+  melden(buero(), `Neue Anfrage: ${a.titel}`, { text: `${kundeName(a.kundeId)}${a.dringend ? ' · dringend' : ''}`, bezug: { typ: 'auftraege', id: a.id }, ausloeser: a.erstelltVon, wichtig: a.dringend, dringend: a.dringend });
 }
 
 export function kundenNachricht(n: Nachricht) {
@@ -153,21 +155,3 @@ export function beispielBenachrichtigungen() {
   if (anfrage)
     db.benachrichtigungen.create({ ...B, titel: `Neue Anfrage: ${anfrage.titel}`, text: `${kundeName(anfrage.kundeId)} · dringend`, bezug: { typ: 'auftraege', id: anfrage.id }, wichtig: true });
 }
-
-// ------------------------------------------------------------------ Takte (Tagesbrief, Dein Tag, Zeiten, Wochenbilanz)
-
-/**
- * Lokaler Planer für die Takte. Läuft nur ohne Backend – mit Backend stellt der Server-Takt
- * (`os/api/takte/cron.ts`) zu, auch wenn niemand die App offen hat.
- */
-export const takteAutomation: Automation = {
-  id: 'macher.takte',
-  titel: 'Feste Takte statt Dauerbeschallung',
-  beschreibung: 'Dein Tag um 6:30, Tagesbrief um 7:00, Zeiten bestätigen um 16:30, Wochenbilanz freitags um 15:00 – mit Ruhezeiten je Person.',
-  standardAn: true,
-  start: () => {
-    const t = setInterval(() => void taktePruefen().catch(() => {}), 60_000);
-    return () => clearInterval(t);
-  },
-  pruefen: () => void taktePruefen().catch(() => {}),
-};

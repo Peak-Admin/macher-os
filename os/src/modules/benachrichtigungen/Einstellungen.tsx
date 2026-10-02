@@ -2,30 +2,38 @@
  * Einstellungen je Nutzer: welche Takte, um wie viel Uhr, über welchen Kanal – und wann Ruhe ist.
  * Jede Änderung gilt sofort (kein Speichern-Knopf).
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cloudAktiv } from '@core/cloud';
 import { useEinstellung } from '@core/einstellungen';
 import { useIch } from '@core/session';
 import { Abschnitt, Button, Eingabe, FormRaster, Leer, Meldung, Meta, Seite, Schalter, Segmente, Stapel, Zeile, useToast } from '@ui/index';
 import { systemmeldungErlauben, systemmeldungStatus } from '@modules/takte/browser';
 import { einstellungenAus, einstellungsSchluessel, takteFuer, taktAn, taktInRuhezeit, taktUhr, type Kanal, type TaktEinstellungen, type TaktId } from '@modules/takte/regeln';
+import { pushAbonnieren, pushMoeglich } from '@modules/takte/sw';
 import { taktPfad } from '@modules/takte/zustellung';
 import { minutenVonText } from '@modules/takte/zeit';
 
-function Kanalhinweis({ kanal, email }: { kanal: Kanal; email?: string }) {
+function Kanalhinweis({ kanal, email, mitarbeiterId }: { kanal: Kanal; email?: string; mitarbeiterId: string }) {
   const [status, setStatus] = useState(systemmeldungStatus());
   const toast = useToast();
-  if (cloudAktiv()) {
-    if (kanal === 'email' && !email) return <Meldung ton="achtung" titel="Keine E-Mail-Adresse">Trag unter Team deine E-Mail-Adresse ein, sonst kommen die Takte nicht an.</Meldung>;
-    return <Meta>{kanal === 'push' ? 'Die Takte kommen als Mitteilung aufs Handy – auch wenn Macher OS geschlossen ist.' : `Die Takte kommen per E-Mail an ${email}.`}</Meta>;
-  }
+  const verbunden = cloudAktiv();
+  // Ist die Erlaubnis schon da, dieses Gerät still für Push anmelden (geht nur mit VAPID-Schlüssel)
+  useEffect(() => {
+    if (status === 'erlaubt' && kanal === 'push') void pushAbonnieren(mitarbeiterId);
+  }, [status, kanal, mitarbeiterId]);
   return (
     <Stapel abstand={8}>
+      {kanal === 'email' && !email && <Meldung ton="achtung" titel="Keine E-Mail-Adresse">Trag unter Team deine E-Mail-Adresse ein, sonst kommen die Takte nicht an.</Meldung>}
       <Meta>
-        Noch ohne verbundenes Konto: Die Takte erscheinen in der Glocke und – wenn du es erlaubst – als Mitteilung auf diesem Gerät,
-        aber nur solange Macher OS geöffnet ist. {kanal === 'email' ? 'E-Mails gehen erst mit verbundenem Konto raus.' : ''}
+        {verbunden
+          ? kanal === 'push'
+            ? pushMoeglich()
+              ? 'Die Takte kommen als Mitteilung aufs Handy – auch wenn Macher OS geschlossen ist. Ohne Mitteilung auf dem Gerät kommen sie per E-Mail.'
+              : 'Mitteilungen aufs Handy sind noch nicht eingerichtet. Bis dahin kommen die Takte per E-Mail und in der Glocke.'
+            : `Die Takte kommen per E-Mail${email ? ` an ${email}` : ''}.`
+          : `Noch ohne verbundenes Konto: Die Takte erscheinen in der Glocke und – wenn du es erlaubst – als Mitteilung auf diesem Gerät, aber nur solange Macher OS geöffnet ist.${kanal === 'email' ? ' E-Mails gehen erst mit verbundenem Konto raus.' : ''}`}
       </Meta>
-      {status === 'offen' && (
+      {kanal === 'push' && status === 'offen' && (
         <Zeile>
           <Button
             variante="sekundaer"
@@ -41,8 +49,8 @@ function Kanalhinweis({ kanal, email }: { kanal: Kanal; email?: string }) {
           </Button>
         </Zeile>
       )}
-      {status === 'verweigert' && <Meta>Mitteilungen sind im Browser blockiert. Du kannst sie in den Website-Einstellungen wieder erlauben.</Meta>}
-      {status === 'erlaubt' && <Meta>Mitteilungen auf diesem Gerät sind erlaubt.</Meta>}
+      {kanal === 'push' && status === 'verweigert' && <Meta>Mitteilungen sind im Browser blockiert. Du kannst sie in den Website-Einstellungen wieder erlauben.</Meta>}
+      {kanal === 'push' && status === 'erlaubt' && <Meta>Mitteilungen auf diesem Gerät sind erlaubt.</Meta>}
     </Stapel>
   );
 }
@@ -116,7 +124,7 @@ export function EinstellungenSeite() {
                 { wert: 'email', label: 'E-Mail' },
               ]}
             />
-            <Kanalhinweis kanal={e.kanal} email={ich.email} />
+            <Kanalhinweis kanal={e.kanal} email={ich.email} mitarbeiterId={ich.id} />
           </Stapel>
         </Abschnitt>
 

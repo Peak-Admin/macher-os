@@ -52,6 +52,21 @@ describe('Server-Takt (planen)', () => {
     expect(planen(ohne, mitglieder, new Date('2026-10-02T05:00:00Z')).zustellungen).toEqual([]);
   });
 
+  it('an Feiertagen kommt nichts (Bundesland aus den Einstellungen)', () => {
+    // 25.12.2026 ist ein Freitag
+    expect(planen(betriebsDaten(zeilen), mitglieder, new Date('2026-12-25T06:00:00Z')).zustellungen).toEqual([]);
+    // Reformationstag 31.10.2029 (Mittwoch) nur in z. B. Niedersachsen
+    const ni = betriebsDaten([...zeilen, zeile('einstellungen', 'plan.bundesland', { wert: 'NI' })]);
+    expect(planen(ni, mitglieder, new Date('2029-10-31T06:00:00Z')).zustellungen).toEqual([]);
+    expect(planen(betriebsDaten(zeilen), mitglieder, new Date('2029-10-31T06:00:00Z')).zustellungen.map((z) => z.takt)).toEqual(['tagesbrief']);
+  });
+
+  it('nimmt Push-Abos mit, die das Gerät als Einstellung abgelegt hat', () => {
+    const abo = { endpoint: 'https://push.example/1', keys: { p256dh: 'p', auth: 'a' } };
+    const d = betriebsDaten([...zeilen, zeile('einstellungen', 'takte.push-abo.jonas', { wert: [abo, { endpoint: 'kaputt' }] })]);
+    expect(planen(d, mitglieder, new Date('2026-10-02T04:30:00Z')).zustellungen[0].geraete).toEqual([abo]);
+  });
+
   it('Wochenbilanz freitags 15 Uhr nur für den Chef', () => {
     const z = planen(betriebsDaten(zeilen), mitglieder, new Date('2026-10-02T13:00:00Z')).zustellungen;
     expect(z.map((x) => [x.mitarbeiterId, x.takt])).toEqual([['chef', 'wochenbilanz']]);

@@ -2,10 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { defineModul } from '@core/modul';
 import { useOverlay } from '@core/overlay';
 import { Button, Dialog, Seite } from '@ui/index';
-import { ZEITEN_BESTAETIGEN, zeitenBestaetigen } from '@modules/takte/aktionen';
-import { TaktSeite } from '@modules/takte/Ansicht';
-import { taktPfad } from '@modules/takte/zustellung';
-import { beispielBenachrichtigungen, benachrichtigenAutomation, takteAutomation } from './daten';
+import { beispielBenachrichtigungen, benachrichtigenAutomation } from './daten';
 import { EinstellungenSeite } from './Einstellungen';
 import { BenachrichtigungsListe } from './Liste';
 
@@ -62,17 +59,8 @@ export default defineModul({
   routen: [
     { pfad: '', element: Seitenansicht },
     { pfad: 'einstellungen', element: EinstellungenSeite },
-    // Takte (Modul-Ordner `takte`): Ziel jeder Takt-Benachrichtigung
-    { pfad: '/macher/takte/:takt', element: TaktSeite },
   ],
-  // Takt-Benachrichtigungen verweisen auf `{ typ: 'takte', id: <takt> }` → Takt-Ansicht
-  detail: [{ objekt: 'takte', pfad: (id) => `${taktPfad(id)}?quelle=benachrichtigung` }],
   global: GlockenOverlay,
-  automationen: [benachrichtigenAutomation, takteAutomation],
-  aktionen: {
-    [ZEITEN_BESTAETIGEN]: (p) => {
-      zeitenBestaetigen(p as { mitarbeiterId: string; datum: string });
-    },
-  },
+  automationen: [benachrichtigenAutomation],
   seed: beispielBenachrichtigungen,
 });

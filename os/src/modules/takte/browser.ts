@@ -8,7 +8,7 @@
  *   über die Notification-API. Das klappt nur, solange die App (oder ihr Service Worker) offen ist.
  */
 import { db } from '@core/db';
-import { cloud, cloudAktiv } from '@core/cloud';
+import { cloud, cloudAktiv, type PushNachricht } from '@core/cloud';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';
 import { istArbeitstag } from '@core/kalender';
 import { benachrichtigen, offeneHinweise } from '@core/macher';
@@ -158,4 +158,23 @@ export async function taktePruefen(jetzt = new Date(), m: Mitarbeiter | undefine
 /** Für andere Module: Darf jetzt eine Systemmeldung an diese Person gehen? (Ruhezeit, Notdienst) */
 export function jetztMelden(mitarbeiterId: ID, opts: { dringend?: boolean } = {}, jetzt = new Date()): boolean {
   return darfMelden(taktEinstellungen(mitarbeiterId), uhrVon(jetzt), opts);
+}
+
+/**
+ * Push für Ereignisse außerhalb der Takte (z. B. dringende Anfrage, Urlaubsantrag) – mit Ruhezeit.
+ * Mit Backend über `cloud().push`; ohne Backend nur als Systemmeldung auf diesem Gerät,
+ * wenn die Person hier angemeldet ist und es erlaubt hat. Die Glocke bekommt es ohnehin.
+ */
+export async function pushMitRuhezeit(n: PushNachricht, opts: { dringend?: boolean } = {}, jetzt = new Date()): Promise<boolean> {
+  if (!jetztMelden(n.anMitarbeiterId, opts, jetzt)) return false;
+  if (cloudAktiv()) {
+    await cloud().push(n);
+    return true;
+  }
+  if (ich()?.id !== n.anMitarbeiterId || systemmeldungStatus() !== 'erlaubt') return false;
+  new Notification(n.titel, { body: n.text, tag: `ereignis-${n.pfad ?? n.titel}`, data: { pfad: n.pfad } }).onclick = () => {
+    window.focus();
+    if (n.pfad) window.location.assign(n.pfad);
+  };
+  return true;
 }

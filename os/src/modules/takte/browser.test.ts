@@ -7,7 +7,7 @@ import { heute } from '@core/format';
 import { aufbauen } from '../mein-tag/testdaten';
 import { registriereModule } from '@core/modul';
 import { aktionAusLink, aktionsLink, taktAktionAusfuehren, zeitenBestaetigen } from './aktionen';
-import { inhaltFuer, setzeTaktEinstellungen, taktEinstellungen, taktePruefen, taktZustellen, zeitenBestaetigtAm } from './browser';
+import { inhaltFuer, pushMitRuhezeit, setzeTaktEinstellungen, taktEinstellungen, taktePruefen, taktZustellen, zeitenBestaetigtAm } from './browser';
 import { einstellungenAus } from './regeln';
 
 // Freitag, 2.10.2026, 07:05 Uhr deutscher Zeit
@@ -50,6 +50,21 @@ describe('Takte im Browser (ohne Backend)', () => {
     const { jonas } = aufbauen();
     expect(await taktePruefen(new Date('2026-10-02T04:35:00Z'), jonas)).toEqual([]);
     expect(db.benachrichtigungen.all()).toHaveLength(0);
+  });
+});
+
+describe('Push für Ereignisse mit Ruhezeit', () => {
+  it('tagsüber ja, abends nur Dringendes bei Notdienst', async () => {
+    const { chef } = aufbauen();
+    const push = vi.fn(async () => {});
+    setzeCloud({ ...LOKALE_CLOUD, aktiv: () => true, push } as Cloud);
+    const n = { anMitarbeiterId: chef.id, titel: 'Neue Anfrage: Heizung aus' };
+    expect(await pushMitRuhezeit(n, {}, new Date('2026-10-02T08:00:00Z'))).toBe(true);
+    expect(await pushMitRuhezeit(n, { dringend: true }, new Date('2026-10-02T19:00:00Z'))).toBe(false);
+    setzeTaktEinstellungen(chef.id, { ...einstellungenAus(undefined), notdienst: true });
+    expect(await pushMitRuhezeit(n, { dringend: true }, new Date('2026-10-02T19:00:00Z'))).toBe(true);
+    expect(await pushMitRuhezeit(n, {}, new Date('2026-10-03T08:00:00Z'))).toBe(false);
+    expect(push).toHaveBeenCalledTimes(2);
   });
 });
 

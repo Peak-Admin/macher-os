@@ -3,11 +3,11 @@
  * und höchstens zwei Aktionen direkt an der Nachricht. Für E-Mail derselbe Inhalt als Text.
  * Rein – läuft im Browser und auf dem Server.
  */
-import { euro } from '../../core/format';
-import type { ID } from '../../core/objects';
-import type { TaktAktion, TaktInhalt } from './inhalt';
-import { dauerText } from './inhalt';
-import { taktDef } from './regeln';
+import { euro } from '../../core/format.js';
+import type { ID } from '../../core/objects.js';
+import type { TaktAktion, TaktInhalt } from './inhalt.js';
+import { dauerText } from './inhalt.js';
+import { taktDef } from './regeln.js';
 
 /** Höchstens so viele Knöpfe an einer Benachrichtigung (Web-Push zeigt meist zwei) */
 export const AKTIONEN_MAX = 2;
