@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FinalCta } from "@/components/sections";
-import { ArrowLink, Breadcrumbs, Container, Icon, Section } from "@/components/ui";
+import { ArrowLink, Breadcrumbs, Container, Icon, Section, zone } from "@/components/ui";
 import { artikelVonKategorie, hilfeArtikel, hilfeKategorien, kategorieVon } from "@/content/hilfe/artikel";
 import { funktionen } from "@/content/registry";
 import { pageMeta } from "@/lib/metadata";
@@ -42,7 +42,7 @@ export default async function HilfeArtikelPage({ params }: { params: Promise<{ s
 
   return (
     <>
-      <section className="border-b border-line bg-paper">
+      <section {...zone("weiss")}>
         <Container className="py-12 sm:py-16">
           <Breadcrumbs
             items={[

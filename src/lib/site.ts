@@ -1,4 +1,5 @@
-import type { IconName } from "@/components/ui/Icon";
+import type { GlasIconName } from "@/os/ui/glas";
+
 export const site = {
   name: "Macher OS",
   claim: "Dein Betrieb. Einfach im Griff.",
@@ -69,9 +70,11 @@ export const appGewerk: Record<string, string> = {
 };
 
 export type NavLink = { label: string; href: string };
+/** Eintrag im Mega-Menü: jeder Punkt trägt ein Glas-Icon (`GlasIcon`) vor dem Text. */
+export type MegaLink = NavLink & { icon: GlasIconName };
 /** Gruppe im Mega-Menü: höchstens vier Hauptlinks, Titel in normaler Schreibweise. */
-/** Gruppe im Mega-Menü; `icon` erscheint als hellgrüne Kachel vor der Überschrift. */
-export type MegaGruppe = { titel: string; icon?: IconName; links: NavLink[] };
+/** Gruppe im Mega-Menü: höchstens vier Hauptlinks, Titel in normaler Schreibweise (ohne Icon – die Einträge tragen es). */
+export type MegaGruppe = { titel: string; links: MegaLink[] };
 /** Eine einzige, vollständig klickbare Vorschau rechts im Menü – nur mit echtem Bild einer vorhandenen Seite. */
 export type MegaVorschau = {
   href: string;
@@ -104,32 +107,29 @@ export const mainNav: NavItem[] = [
       gruppen: [
         {
           titel: "Aufträge",
-          icon: "clipboard",
           links: [
-            { label: "Anfragen", href: f("anfragen") },
-            { label: "Angebote schreiben", href: f("angebote") },
-            { label: "Aufträge bearbeiten", href: f("auftraege") },
-            { label: "Rechnungen schreiben", href: f("rechnungen") },
+            { label: "Anfragen", href: f("anfragen"), icon: "anfragen" },
+            { label: "Angebote schreiben", href: f("angebote"), icon: "dokument" },
+            { label: "Aufträge bearbeiten", href: f("auftraege"), icon: "auftrag" },
+            { label: "Rechnungen schreiben", href: f("rechnungen"), icon: "rechnung" },
           ],
         },
         {
           titel: "Planen",
-          icon: "calendar",
           links: [
-            { label: "Kalender & Termine", href: f("kalender") },
-            { label: "Einsätze & Mitarbeiter", href: f("einsatzplanung") },
-            { label: "Material planen", href: f("material") },
-            { label: "Fahrzeuge planen", href: f("fahrzeuge") },
+            { label: "Kalender & Termine", href: f("kalender"), icon: "kalender" },
+            { label: "Einsätze & Mitarbeiter", href: f("einsatzplanung"), icon: "einsatz" },
+            { label: "Material planen", href: f("material"), icon: "material" },
+            { label: "Fahrzeuge planen", href: f("fahrzeuge"), icon: "fahrzeug" },
           ],
         },
         {
           titel: "Betrieb",
-          icon: "home",
           links: [
-            { label: "Mitarbeiter", href: f("mitarbeiter") },
-            { label: "Arbeitszeiten", href: f("zeiterfassung") },
-            { label: "Material & Lager", href: f("lager") },
-            { label: "Kosten & Auswertung", href: f("auswertung") },
+            { label: "Mitarbeiter", href: f("mitarbeiter"), icon: "mitarbeiter" },
+            { label: "Arbeitszeiten", href: f("zeiterfassung"), icon: "zeit" },
+            { label: "Material & Lager", href: f("lager"), icon: "lager" },
+            { label: "Kosten & Auswertung", href: f("auswertung"), icon: "auswertung" },
           ],
         },
       ],
@@ -180,31 +180,29 @@ export const mainNav: NavItem[] = [
       gruppen: [
         {
           titel: "Praxistipps",
-          icon: "book",
           links: [
-            { label: "Blog", href: "/wissen/blog" },
-            { label: "Webinare", href: "/wissen/webinare" },
-            { label: "Macher Akademie", href: "/wissen/akademie" },
+            { label: "Blog", href: "/wissen/blog", icon: "blog" },
+            { label: "Webinare", href: "/wissen/webinare", icon: "webinar" },
+            { label: "Macher Akademie", href: "/wissen/akademie", icon: "akademie" },
+            { label: "Video-Anleitungen", href: "/wissen/videos", icon: "bildschirm" },
           ],
         },
         {
           titel: "Vorlagen & Rechner",
-          icon: "calculator",
           links: [
-            { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen" },
-            { label: "Stundensatz berechnen", href: "/werkzeuge/stundensatz-rechner" },
-            { label: "Angebot berechnen", href: "/werkzeuge/angebots-rechner" },
-            { label: "Alle Rechner", href: "/werkzeuge" },
+            { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen", icon: "vorlagen" },
+            { label: "Stundensatz berechnen", href: "/werkzeuge/stundensatz-rechner", icon: "stundensatz" },
+            { label: "Angebot berechnen", href: "/werkzeuge/angebots-rechner", icon: "preis" },
+            { label: "Alle Rechner", href: "/werkzeuge", icon: "rechner" },
           ],
         },
         {
           titel: "Hilfe beim Start",
-          icon: "chat",
           links: [
-            { label: "Schnellstart", href: "/hilfe/schnellstart" },
-            { label: "Daten übernehmen", href: "/hilfe/daten-uebernehmen" },
-            { label: "Hilfe-Center", href: "/hilfe-center" },
-            { label: "Kontakt & Support", href: "/hilfe/kontakt" },
+            { label: "Schnellstart", href: "/hilfe/schnellstart", icon: "start" },
+            { label: "Daten übernehmen", href: "/hilfe/daten-uebernehmen", icon: "import" },
+            { label: "Hilfe-Center", href: "/hilfe-center", icon: "hilfe" },
+            { label: "Kontakt & Support", href: "/hilfe/kontakt", icon: "kontakt" },
           ],
         },
       ],
@@ -236,6 +234,7 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
       { label: "Preise", href: "/preise" },
       { label: "Demo", href: "/demo" },
       { label: "App", href: "/app" },
+      { label: "Was ist neu?", href: "/neu" },
       { label: "Kostenlos testen", href: app.einrichten() },
     ],
   },
@@ -283,6 +282,30 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
     ],
   },
   {
+    titel: "Vergleich & Wechsel",
+    links: [
+      { label: "Software-Vergleich", href: "/vergleich" },
+      { label: "Macher OS vs. Word & Excel", href: "/vergleich/word-excel" },
+      { label: "Macher OS vs. HERO", href: "/vergleich/hero" },
+      { label: "Macher OS vs. ToolTime", href: "/vergleich/tooltime" },
+      { label: "Macher OS vs. klassische Software", href: "/vergleich/klassische-handwerkersoftware" },
+      { label: "Wechseln zu Macher OS", href: "/wechseln" },
+      { label: "Wechselbonus", href: "/wechselbonus" },
+    ],
+  },
+  {
+    titel: "Für dich",
+    links: [
+      { label: "Für Neugründer", href: "/fuer/neugruender" },
+      { label: "Für Meisterschüler", href: "/fuer/meisterschueler" },
+      { label: "Für Meisterschulen", href: "/fuer/meisterschulen" },
+      { label: "Handwerker-App", href: "/handwerker-app" },
+      { label: "Bürosoftware fürs Handwerk", href: "/buerosoftware-handwerk" },
+      { label: "Cloud-Handwerkersoftware", href: "/cloud-handwerkersoftware" },
+      { label: "Schnittstellen", href: "/schnittstellen" },
+    ],
+  },
+  {
     titel: "Werkzeuge",
     links: [
       { label: "Stundensatz-Rechner", href: "/werkzeuge/stundensatz-rechner" },
@@ -296,8 +319,12 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
     links: [
       { label: "Über uns", href: "/ueber-uns" },
       { label: "Mission Mittelstand", href: "/ueber-uns#mission-mittelstand" },
+      { label: "Was ist neu?", href: "/neuigkeiten" },
       { label: "Kunden", href: "/kunden" },
-      { label: "Partner", href: "/partner" },
+      { label: "Partner & Kooperationen", href: "/partner" },
+      { label: "Partnerbetriebe", href: "/partnerbetriebe" },
+      { label: "Empfehlungsprogramm", href: "/empfehlen" },
+      { label: "Creator & Botschafter", href: "/botschafter" },
       { label: "Kontakt", href: "/kontakt" },
       { label: "Karriere", href: "/karriere" },
     ],

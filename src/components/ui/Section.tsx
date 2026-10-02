@@ -1,22 +1,23 @@
 import type { ReactNode } from "react";
 import { Container } from "./Container";
+import { zone, type ZonenTon } from "./Zone";
 
 export type Tone = "paper" | "sand" | "white" | "ink" | "gruen" | "beige" | "transparent";
 
-const tones: Record<Tone, string> = {
-  paper: "bg-paper text-ink",
-  sand: "bg-sand text-ink",
-  white: "bg-white text-ink",
-  ink: "bg-ink text-white",
-  /** helle Grünfläche #e8f2ec mit dunklem Text */
-  gruen: "bg-signal-soft text-ink",
-  /** helles Beige – Gegenfarbe zu den grünen Boxen */
-  beige: "bg-beige text-ink",
-  /** in einer Zone: Fläche kommt von der Box */
-  transparent: "",
+/** Jeder Ton wird zu einer Box wie auf der Startseite: dunkelgrün · beige · weiß. */
+const boxen: Record<Exclude<Tone, "transparent">, ZonenTon> = {
+  paper: "weiss",
+  white: "weiss",
+  sand: "beige",
+  beige: "beige",
+  gruen: "beige",
+  ink: "dunkel",
 };
 
-/** Standard-Abschnitt mit einheitlichem vertikalen Rhythmus. */
+/**
+ * Standard-Abschnitt mit einheitlichem vertikalen Rhythmus – als Box (`Zone`) wie auf der Startseite.
+ * `transparent` nur innerhalb einer Zone: dann kommt die Fläche von der Box.
+ */
 export function Section({
   children,
   tone = "paper",
@@ -33,10 +34,14 @@ export function Section({
   tight?: boolean;
 }) {
   return (
-    <section id={id} className={`${tones[tone]} ${tight ? "py-12 sm:py-16" : "py-16 sm:py-24"} ${className}`}>
+    <section id={id} {...rahmen(tone, `${tight ? "py-12 sm:py-16" : "py-16 sm:py-24"} ${className}`)}>
       <Container size={containerSize}>{children}</Container>
     </section>
   );
+}
+
+function rahmen(tone: Tone, className: string) {
+  return tone === "transparent" ? { className } : zone(boxen[tone], className);
 }
 
 /** Überschriftenblock eines Abschnitts: Dachzeile, Headline, Einleitung. */

@@ -17,10 +17,12 @@ import {
   type TextareaHTMLAttributes,
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { ThemenIcon } from './glas';
 import { Icon, type IconName } from './icons';
 import type { Ton } from '@core/modul';
 import './ui.css';
 
+export { GlasIcon, ThemenIcon, type GlasIconName } from './glas';
 import { MacherAsset, type ObjektSchluessel } from './asset';
 export { Icon } from './icons';
 export { MacherAsset, type ObjektSchluessel } from './asset';
@@ -326,7 +328,7 @@ export function AuswahlKarten<T extends string>({
         >
           {o.icon && (
             <span className="mm-auswahlkarte-icon">
-              <Icon name={o.icon} />
+              <ThemenIcon name={o.icon} />
             </span>
           )}
           <span className="mm-auswahlkarte-text">
@@ -743,7 +745,7 @@ export function Leer({ titel, text, aktion, icon = 'info', objekt }: { titel: st
         <MacherAsset asset={bild} groesse="gross" />
       ) : (
         <span className="mm-leer-icon">
-          <Icon name={icon} size={24} />
+          <ThemenIcon name={icon} size={48} strichGroesse={24} />
         </span>
       )}
       <h3>{titel}</h3>

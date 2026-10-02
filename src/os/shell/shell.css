@@ -12,7 +12,7 @@
 }
 .mm-logo { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 8px; color: var(--mm-black); text-decoration: none; font: 500 20px/1 var(--mm-font); }
 .mm-logo strong { font-weight: 900; }
-.mm-logo-zeichen { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--mm-radius-control); background: var(--mm-brand-deep); color: #fff; font-weight: 900; }
+.mm-logo-zeichen { display: block; flex-shrink: 0; width: 32px; height: 32px; }
 .mm-nav { display: flex; flex-direction: column; gap: 4px; flex: 0 0 auto; }
 /* Hauptbereiche: beschriftet, 48 px hoch; aktiv mit hellgrüner Fläche, dunkelgrüner Schrift und fetterem Gewicht */
 .mm-nav-haupt {

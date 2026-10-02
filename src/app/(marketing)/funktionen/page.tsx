@@ -199,14 +199,14 @@ export default function FunktionenPage() {
         />
         <div className="mt-12 grid gap-14">
           {gruppen.map((g) => (
-            <div key={g.id} id={g.id} className="grid scroll-mt-24 gap-6 border-t border-line pt-10 lg:grid-cols-[18rem_1fr] lg:gap-10">
+            <div key={g.id} id={g.id} className="grid scroll-mt-24 grid-cols-1 gap-6 border-t border-line pt-10 lg:grid-cols-[18rem_1fr] lg:gap-10">
               <div>
                 <IconTile name={gruppenIcons[g.id]} tone="ink" />
                 <h3 className="mt-4 font-display text-2xl font-extrabold">{g.titel}</h3>
                 <p className="mt-2 text-muted">{g.beschreibung}</p>
                 <p className="mt-3 text-sm font-semibold text-ink-soft">{g.slugs.length} Funktionen</p>
               </div>
-              <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <ul className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {g.slugs.map((s) => (
                   <li key={s}>
                     <FunktionKarte slug={s} mitUnterpunkten />
@@ -235,6 +235,19 @@ export default function FunktionenPage() {
             >
               Was Macher automatisch erledigt <Icon name="arrow-right" className="size-4" />
             </Link>
+            {funktionen
+              .filter((f) => f.gruppe === "macher" && f.slug !== "automatisch-erledigen")
+              .map((f) => (
+                <Link
+                  key={f.slug}
+                  href={funktionHref(f.slug)}
+                  className="mt-4 flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
+                >
+                  {f.titel}
+                  {funktionInhalte[f.slug].bald && <span className="font-semibold text-white/70">(kommt bald)</span>}
+                  <Icon name="arrow-right" className="size-4" />
+                </Link>
+              ))}
           </div>
           <ul className="grid content-start gap-3 sm:grid-cols-2">
             {macherAufgaben.map((a) => (
@@ -243,9 +256,7 @@ export default function FunktionenPage() {
                   href={funktionHref(a.funktion)}
                   className="flex items-center gap-3 karte-dunkel p-4 transition hover:bg-white/10"
                 >
-                  <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md icon-kachel">
-                    <Icon name={a.icon} className="size-5" />
-                  </span>
+                  <IconTile name={a.icon} className="size-9" />
                   <span className="font-semibold leading-snug">{a.titel}</span>
                 </Link>
               </li>
@@ -321,6 +332,10 @@ export default function FunktionenPage() {
           <Faq items={faq} />
         </div>
         <FaqJsonLd items={faq} />
+        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+          <ArrowLink href="/schnittstellen">Schnittstellen: DATEV, GAEB, Datanorm</ArrowLink>
+          <ArrowLink href="/vergleich">Software-Vergleich</ArrowLink>
+        </div>
       </Section>
 
       {/* 6. Final CTA */}

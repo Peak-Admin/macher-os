@@ -1,3 +1,5 @@
+import { GlasIcon, type GlasIconName } from "@/os/ui/glas";
+
 /**
  * Schlichtes Strich-Icon-Set (24×24, 1.75px). Bewusst klein gehalten –
  * neue Icons hier ergänzen, nicht in Seiten inline zeichnen.
@@ -201,16 +203,73 @@ export function Icon({ name, className = "size-5" }: { name: IconName; className
   );
 }
 
-/** Icon in einem farbigen Quadrat – für Feature-Karten. */
+/**
+ * Strich-Icon → Glas-Icon (`@/os/ui/glas`). Themen-Icons ab ca. 32 px erscheinen überall als Glas-Icon;
+ * Bedien-Icons (Pfeile, Schließen, Menü, Plus) haben bewusst keins.
+ */
+const glas: Partial<Record<IconName, GlasIconName>> = {
+  inbox: "anfragen",
+  phone: "telefon",
+  user: "person",
+  users: "mitarbeiter",
+  clipboard: "auftrag",
+  ruler: "lineal",
+  calculator: "rechner",
+  file: "dokument",
+  camera: "kamera",
+  pen: "stift",
+  euro: "rechnung",
+  calendar: "kalender",
+  route: "route",
+  clock: "zeit",
+  award: "auszeichnung",
+  book: "buch",
+  box: "material",
+  warehouse: "lager",
+  cart: "einkauf",
+  wrench: "werkzeug",
+  truck: "fahrzeug",
+  chart: "auswertung",
+  spark: "macher",
+  mic: "mikro",
+  map: "einsatz",
+  home: "haus",
+  shield: "schild",
+  bell: "glocke",
+  smartphone: "handy",
+  monitor: "bildschirm",
+  search: "suche",
+  play: "webinar",
+  download: "import",
+  chat: "kontakt",
+  layers: "ebenen",
+  bolt: "start",
+  heart: "herz",
+  signature: "unterschrift",
+  link: "link",
+  frage: "hilfe",
+  check: "erledigt",
+  achtung: "achtung",
+};
+
+/**
+ * Themen-Icon für Karten und Abschnitte: das Glas-Icon zum Strich-Icon (Standard 44 px, mit `size-*` änderbar).
+ * Gibt es kein Glas-Icon, erscheint das Strich-Icon in einer hellen Kachel.
+ */
 export function IconTile({
   name,
   tone = "signal",
   className = "",
 }: {
   name: IconName;
+  /** Nur für die Kachel-Ausweichform ohne Glas-Icon */
   tone?: "signal" | "moss" | "sky" | "ink";
   className?: string;
 }) {
+  const glasName = glas[name];
+  if (glasName) {
+    return <GlasIcon name={glasName} className={`shrink-0 ${/(^|\s)size-/.test(className) ? "" : "size-11"} ${className}`} />;
+  }
   const tones = {
     signal: "bg-signal-soft text-signal-dark",
     moss: "bg-moss-soft text-moss",

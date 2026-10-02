@@ -4,7 +4,7 @@
  * persönlicher Kontakt + Support, News + Workshops + Produktneuigkeiten.
  */
 import { Link } from 'react-router-dom';
-import { Avatar, BeispielMarke, Button, Icon, Status } from '@ui/index';
+import { Avatar, BeispielMarke, Button, Icon, Status, ThemenIcon } from '@ui/index';
 import { Skelett, LadeFehler } from '../Rahmen';
 import { homeMessen } from '../messen';
 import { bezugKennung, useArbeit, useNaechsteAktionen } from '../quellen/hooks';
@@ -23,7 +23,7 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
     return (
       <div className="mm-home-naechster mm-home-naechster--fertig">
         <span className="mm-home-kachel" aria-hidden>
-          <Icon name="check" />
+          <ThemenIcon name="check" size={44} />
         </span>
         <div className="mm-home-naechster-text">
           <h3 className="mm-home-naechster-titel">Alles eingerichtet.</h3>
@@ -45,7 +45,7 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
     <div className="mm-home-naechster">
       <div className="mm-home-naechster-kopf">
         <span className="mm-home-kachel" aria-hidden>
-          <Icon name={a.icon} />
+          <ThemenIcon name={a.icon} size={44} />
         </span>
         <div className="mm-home-naechster-text">
           <h3 className="mm-home-naechster-titel">{a.title}</h3>
@@ -250,7 +250,7 @@ function NewsZeile({ n }: { n: NewsItem }) {
   return (
     <li className="mm-home-news">
       <span className="mm-home-news-icon" aria-hidden>
-        <Icon name={NEWS_ICON[n.type]} size={18} />
+        <ThemenIcon name={NEWS_ICON[n.type]} size={32} strichGroesse={18} />
       </span>
       <div className="mm-home-news-text">
         <span className="mm-meta">

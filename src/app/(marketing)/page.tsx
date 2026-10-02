@@ -20,6 +20,7 @@ import {
   Faq,
   FaqJsonLd,
   Icon,
+  IconTile,
   Karte3D,
   Objekt,
   Section,
@@ -201,9 +202,7 @@ export default function HomePage() {
                 <Karte3D href={b.href} innen="flex flex-col rounded-2xl border border-line bg-white p-6">
                   <Objekt objekt={b.objekt} className="-mx-2 -mt-2 mb-5" sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw" />
                   <div className="flex items-center justify-between">
-                    <span className="karte-3d-tief inline-flex size-12 items-center justify-center rounded-xl bg-primary text-white shadow-[0_12px_24px_-12px_rgb(13_107_69/0.8)]">
-                      <Icon name={b.icon} className="size-6" />
-                    </span>
+                    <IconTile name={b.icon} className="karte-3d-tief size-12" />
                     <span className="font-display text-sm font-bold tabular-nums text-muted">0{n + 1}</span>
                   </div>
                   <h3 className="mt-6 font-display text-2xl font-bold text-ink">{b.titel}</h3>
@@ -297,9 +296,7 @@ export default function HomePage() {
               {feierabend.map((p) => (
                 <li key={p.text}>
                   <Karte3D innen="flex h-full flex-col gap-4 rounded-2xl bg-beige p-5 ring-1 ring-beige-line">
-                    <span className="karte-3d-tief inline-flex size-11 items-center justify-center rounded-xl bg-white text-signal-dark ring-1 ring-beige-line">
-                      <Icon name={p.icon} className="size-5" />
-                    </span>
+                    <IconTile name={p.icon} className="karte-3d-tief size-11" />
                     <span className="font-display text-lg font-bold leading-snug text-ink">{p.text}</span>
                   </Karte3D>
                 </li>
@@ -335,9 +332,7 @@ export default function HomePage() {
               {machtMacher.map((m) => (
                 <li key={m.text}>
                   <Karte3D innen="flex items-center gap-3 karte-dunkel p-4" stark={8}>
-                    <span className="karte-3d-tief inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-ink">
-                      <Icon name={m.icon} className="size-5" />
-                    </span>
+                    <IconTile name={m.icon} className="karte-3d-tief size-10" />
                     <span className="font-semibold leading-snug">{m.text}</span>
                   </Karte3D>
                 </li>
@@ -391,9 +386,7 @@ export default function HomePage() {
       </Zone>
 
       {/* 11. Von Mission Mittelstand */}
-      <Zone ton="dunkel">
-        <MissionMittelstand />
-      </Zone>
+      <MissionMittelstand />
 
       {/* 12. Einrichtung */}
       <Zone ton="beige">
@@ -441,7 +434,7 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 12b. Bedenken – die fünf Kernängste als Karten, die übrigen Einwände zum Aufklappen (docs/produkt/einwaende.md) */}
+      {/* 12b. Bedenken – die fünf Kernängste als Karten, die nächsten fünf zum Aufklappen, alle unter /bedenken (docs/produkt/einwaende.md) */}
       <Zone ton="dunkel" id="bedenken">
         <Section tone="transparent">
           <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Bedenken</p>
@@ -476,6 +469,9 @@ export default function HomePage() {
           <div className="mt-6">
             <Faq items={weitereEinwaende} dark />
           </div>
+          <ButtonLink href="/bedenken" variant="light" className="mt-6">
+            Alle Bedenken ansehen und durchsuchen
+          </ButtonLink>
         </Section>
       </Zone>
 

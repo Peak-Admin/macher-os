@@ -27,6 +27,13 @@ const vorteile = [
   "früh mitreden, wenn neue Funktionen entstehen",
 ];
 
+const weitereWege = [
+  { label: "Partnerbetriebe", href: "/partnerbetriebe", text: "Handwerksbetriebe, die zeigen, wie sie mit Macher OS arbeiten." },
+  { label: "Creator & Botschafter", href: "/botschafter", text: "Für alle, die online vom Handwerk erzählen." },
+  { label: "Meisterschulen", href: "/fuer/meisterschulen", text: "Betriebsführung an echter Software unterrichten." },
+  { label: "Empfehlungsprogramm", href: "/empfehlen", text: "Macher OS im Kollegenkreis weitersagen." },
+];
+
 export default function PartnerPage() {
   return (
     <>
@@ -80,7 +87,19 @@ export default function PartnerPage() {
         </div>
       </Section>
 
-      <Section tone="white">
+      <Section tone="white" tight>
+        <h2 className="font-display text-2xl font-bold">Weitere Wege zur Zusammenarbeit</h2>
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {weitereWege.map((w) => (
+            <li key={w.href} className="rounded-2xl border border-line bg-paper p-5">
+              <ArrowLink href={w.href}>{w.label}</ArrowLink>
+              <p className="mt-2 text-[0.95rem] text-muted">{w.text}</p>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section>
         <SectionHeading eyebrow="So geht's los" title="In drei Schritten zur Partnerschaft." />
         <Steps
           className="mt-10"
@@ -92,7 +111,7 @@ export default function PartnerPage() {
         />
       </Section>
 
-      <Section id="anfrage" className="scroll-mt-20">
+      <Section id="anfrage" tone="white" className="scroll-mt-20">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
             <SectionHeading title="Partner werden" intro="Wählt eure Gruppe und schreibt uns ein paar Zeilen." />
