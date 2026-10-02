@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { db, vermerken } from '@core/db';
-import { datum as datumFmt, heute, minutenAus, personName } from '@core/format';
+import { db, vermerken, zeitstrahl } from '@core/db';
+import { datum as datumFmt, heute, minutenAus, personName, uhrzeit } from '@core/format';
 import type { Datum, ID, Zeiteintrag } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
-import { Button, Eingabe, FormRaster, Meldung, Segmente, Stapel, Textfeld, Dialog, useBestaetigen, useToast } from '@ui/index';
+import { Button, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, Textfeld, Dialog, useBestaetigen, useToast } from '@ui/index';
 import { AuftragAuswahl, MitarbeiterAuswahl } from '@ui/objekt';
 import { ART_LABEL, pruefeTag, spanne } from './daten';
 
@@ -32,6 +32,7 @@ export function ZeitDialog({
     art: eintrag?.art ?? ('arbeit' as Zeiteintrag['art']),
     auftragId: eintrag?.auftragId ?? '',
     notiz: eintrag?.notiz ?? '',
+    grund: '',
   });
   const [f, setF] = useState(leer);
   const [fehler, setFehler] = useState<string>();
@@ -39,6 +40,9 @@ export function ZeitDialog({
   useEffect(() => (offen ? (setF(leer()), setFehler(undefined)) : undefined), [offen, eintrag?.id, vorgabe?.datum, vorgabe?.mitarbeiterId]);
 
   const gesperrt = !!eintrag?.freigegeben && !buero;
+  /** Abgeschlossene Zeit ändern = Korrektur → Grund ist Pflicht, Verlauf bleibt am Eintrag */
+  const korrektur = !!eintrag?.ende;
+  const verlauf = eintrag ? zeitstrahl({ typ: 'zeiten', id: eintrag.id }).slice(0, 4) : [];
   const pauseMin = Math.max(0, Number(f.pause) || 0);
   const andere = db.zeiten.where((z) => z.mitarbeiterId === f.mitarbeiterId && z.datum === f.datum && z.id !== eintrag?.id);
   const vorschau = f.start && f.ende ? pruefeTag([...andere, { datum: f.datum, start: f.start, ende: f.ende, pauseMinuten: pauseMin }]) : undefined;
@@ -56,6 +60,7 @@ export function ZeitDialog({
       return s < ze && zs < e;
     });
     if (ueber) return setFehler(`Überschneidet sich mit ${ueber.start}–${ueber.ende ?? 'läuft'} (${ART_LABEL[ueber.art]}).`);
+    if (korrektur && !f.grund.trim()) return setFehler('Schreib kurz dazu, warum du die Zeit korrigierst. So bleibt es nachvollziehbar.');
     const daten = {
       mitarbeiterId: f.mitarbeiterId,
       datum: f.datum,
@@ -69,7 +74,8 @@ export function ZeitDialog({
       freigegeben: buero ? eintrag?.freigegeben ?? false : false,
     };
     if (eintrag) {
-      db.zeiten.update(eintrag.id, daten, { text: `Korrigiert: ${f.start}–${f.ende}` });
+      const vorher = `${eintrag.start}–${eintrag.ende ?? 'läuft'}${eintrag.pauseMinuten ? `, ${eintrag.pauseMinuten} min Pause` : ''}`;
+      db.zeiten.update(eintrag.id, daten, { text: `Korrigiert von ${personName(ich)}: ${vorher} → ${f.start}–${f.ende}${pauseMin ? `, ${pauseMin} min Pause` : ''}${f.grund.trim() ? ` · Grund: ${f.grund.trim()}` : ''}` });
       toast('Zeit korrigiert.');
     } else {
       const z = db.zeiten.create(daten);
@@ -119,6 +125,17 @@ export function ZeitDialog({
           </FormRaster>
           <AuftragAuswahl optional nurOffene={false} wert={f.auftragId} onChange={(v) => setF({ ...f, auftragId: v })} />
           <Textfeld label="Notiz" optional value={f.notiz} onChange={(e) => setF({ ...f, notiz: e.target.value })} placeholder="Zum Beispiel: Stempeln vergessen" />
+          {korrektur && !gesperrt && (
+            <Eingabe label="Grund der Korrektur" value={f.grund} onChange={(e) => setF({ ...f, grund: e.target.value })} placeholder="Zum Beispiel: Pause vergessen einzutragen" />
+          )}
+          {verlauf.length > 0 && (
+            <Stapel abstand={4}>
+              <Meta>Verlauf</Meta>
+              {verlauf.map((v) => (
+                <Meta key={v.id}>{`${datumFmt(v.erstelltAm)} ${uhrzeit(v.erstelltAm)} · ${v.text}`}</Meta>
+              ))}
+            </Stapel>
+          )}
           {fehler && (
             <Meldung ton="achtung" titel="Bitte prüfen">
               {fehler}
