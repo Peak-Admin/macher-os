@@ -2,10 +2,10 @@ import { defineModul, aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { db } from '@core/db';
 import { on, type DbEvent } from '@core/events';
 import { passt } from '@core/format';
+import { nummerAnzeige } from '@core/nummern';
 import type { Basis, ID, Rechnung, Termin, Zeiteintrag, Angebot } from '@core/objects';
 import { AuftragAkte } from './AuftragAkte';
-import { AuftragNeu } from './AuftragNeu';
-import { AuftraegeSeite, PipelineWidget } from './AuftraegeSeite';
+import { AuftraegeSeite, AuftragNeuRoute, PipelineWidget } from './AuftraegeSeite';
 import { auftragHinweise } from './hinweise';
 import { istOffen, phaseLabel } from './logik';
 import {
@@ -38,7 +38,7 @@ export default defineModul({
   gewicht: 96,
   routen: [
     { pfad: '', element: AuftraegeSeite },
-    { pfad: 'neu', element: AuftragNeu },
+    { pfad: 'neu', element: AuftragNeuRoute },
     { pfad: '/auftrag/:id', element: AuftragAkte },
   ],
   hubWidget: PipelineWidget,
@@ -60,7 +60,7 @@ export default defineModul({
       .map((a) => ({
         typ: 'Auftrag',
         titel: a.titel,
-        untertitel: [a.nummer, db.kunden.get(a.kundeId)?.name, phaseLabel(a.phase)].filter(Boolean).join(' · '),
+        untertitel: [nummerAnzeige(a.nummer), db.kunden.get(a.kundeId)?.name, phaseLabel(a.phase)].filter(Boolean).join(' · '),
         pfad: auftragPfad(a.id),
         relevanz: istOffen(a) ? 75 : 55,
       })),
