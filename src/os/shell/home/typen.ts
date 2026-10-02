@@ -1,3 +1,4 @@
+import type { ObjektSchluessel } from '@/lib/objekte';
 /**
  * Datenmodell des Home-Screens („Heute“). Bewusst generisch: Widgets, Aktionen und Arbeitsposten kommen aus
  * verschiedenen Quellen (Kernobjekte, Macher-Hinweise, Inhalte von Mission Mittelstand) und werden hier nur
@@ -133,6 +134,8 @@ export interface WidgetDefinition {
   name: string;
   description: string;
   icon: IconName;
+  /** Kleines Werkzeug-Objekt im Kopf (docs/design/visual-assets.md) – nur bei wenigen, wichtigen Widgets */
+  objekt?: ObjektSchluessel;
   kategorie: WidgetKategorie;
   component: ComponentType<WidgetProps>;
   availableSizes: WidgetGroesse[];

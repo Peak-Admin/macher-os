@@ -196,6 +196,11 @@ export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
   }
   return (
     <div className={`mm-home-kontakt${groesse === 'gross' ? ' mm-home-kontakt--breit' : ''}`}>
+      {/* Echtes Teamfoto von Mission Mittelstand: Hinter dem Ansprechpartner steht ein ganzes Team */}
+      <figure className="mm-home-kontakt-team">
+        <img src="/bilder/mission-mittelstand/team.webp" alt="Das Team von Mission Mittelstand bei einer Besprechung" loading="lazy" decoding="async" />
+        <figcaption>Das Team von Mission Mittelstand</figcaption>
+      </figure>
       <div className="mm-home-kontakt-person">
         {p.avatarUrl ? <img src={p.avatarUrl} alt="" width={56} height={56} className="mm-home-kontakt-foto" /> : <Avatar text={initialenAus(p.name)} groesse={56} />}
         <div>
