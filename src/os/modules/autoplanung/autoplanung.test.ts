@@ -148,7 +148,8 @@ describe('Automatische Planung', () => {
     c.orte.push(ort('nachbar', '34119'));
     c.auftraege.push(auftrag('a', { geplanteStunden: 3, ortId: 'nah' }), auftrag('vor', { ortId: 'nachbar' }));
     c.termine.push(termin('t', MO, '07:00', '10:00', { auftragId: 'vor', mitarbeiterIds: ['jonas'] }));
-    const r = vorschlaege(c, 'a', { ab: MO });
+    // feste Uhrzeit: ist MO „heute“, plant die Logik sonst erst ab der echten Uhrzeit + 30 min
+    const r = vorschlaege(c, 'a', { ab: MO, jetzt: 7 * 60 });
     const v = r.vorschlaege.find((x) => x.bloecke[0].datum === MO)!;
     expect(v).toBeDefined();
     expect(v.bloecke[0].von).toBeGreaterThan(10 * 60 + 10);

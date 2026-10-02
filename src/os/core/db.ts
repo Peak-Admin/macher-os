@@ -264,6 +264,32 @@ export function neueId(prefix = ''): ID {
 
 const jetzt = () => new Date().toISOString();
 
+// ------------------------------------------------------------------ Schreibschutz
+
+/** Wird geworfen, wenn Schreiben gesperrt ist (z. B. Testphase abgelaufen → Lesemodus). */
+export class SchreibGesperrt extends Error {
+  constructor(grund: string) {
+    super(grund);
+    this.name = 'SchreibGesperrt';
+  }
+}
+
+let schreibPruefer: ((sammlung: string) => string | undefined) | undefined;
+
+/**
+ * Hängt eine Prüfung vor jedes create/update/remove. Gibt sie einen Grund zurück, wird nicht
+ * geschrieben und `SchreibGesperrt` geworfen. Systemsammlungen (Ereignisse, Einstellungen …)
+ * entscheidet der Prüfer selbst. Genutzt vom Paket Paid (Lesemodus nach der Testphase).
+ */
+export function setzeSchreibschutz(pruefer: ((sammlung: string) => string | undefined) | undefined) {
+  schreibPruefer = pruefer;
+}
+
+function schreibenPruefen(name: string) {
+  const grund = schreibPruefer?.(name);
+  if (grund) throw new SchreibGesperrt(grund);
+}
+
 // ------------------------------------------------------------------ Collection
 
 export type Neu<T extends Basis> = Omit<T, keyof Basis> & Partial<Pick<Basis, 'id' | 'beispiel'>>;
@@ -357,6 +383,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
     get: (id) => (id ? (tabelle(name)[id] as T | undefined) : undefined),
     where: (pred) => c.all().filter(pred),
     create(neu, opts) {
+      schreibenPruefen(name);
       const zeit = jetzt();
       const obj = {
         ...neu,
@@ -373,6 +400,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
       return obj;
     },
     update(id, patch, opts) {
+      schreibenPruefen(name);
       const alt = tabelle(name)[id] as T | undefined;
       if (!alt) return undefined;
       const neu = { ...alt, ...patch, id, geaendertAm: jetzt() } as T;
@@ -384,6 +412,7 @@ function collection<T extends Basis>(name: string): Collection<T> {
       return neu;
     },
     remove(id) {
+      schreibenPruefen(name);
       const alt = tabelle(name)[id];
       if (!alt) return;
       const neu = { ...alt, geloeschtAm: jetzt() };
