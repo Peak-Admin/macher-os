@@ -8,7 +8,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Schnellstart",
   description:
-    "In 7 Schritten mit Macher OS starten: Konto erstellen, Gewerk und Leistungen wählen, Mitarbeiter einladen, ersten Auftrag anlegen, App installieren und planen.",
+    "Mit einer Frage startklar: Welcher Betrieb bist du? Danach erstes Angebot oder ersten Auftrag anlegen, Team hinzufügen, App installieren und planen.",
   path: "/hilfe/schnellstart",
 });
 
@@ -17,8 +17,8 @@ export default function SchnellstartPage() {
     <>
       <PageHero
         eyebrow="Schnellstart"
-        title="In 7 Schritten startklar."
-        intro="Vom Konto bis zur ersten Planung. Die meisten Schritte dauern nur ein, zwei Minuten – und du kannst jederzeit später weitermachen."
+        title="Mit einer Frage startklar."
+        intro="Zum Start beantwortest du eine Frage. Alles Weitere machst du, wenn du so weit bist – Macher erinnert dich."
         breadcrumbs={[{ label: "Hilfe", href: "/hilfe" }, { label: "Schnellstart" }]}
         actions={
           <>
@@ -47,7 +47,7 @@ export default function SchnellstartPage() {
 
       <Section tone="white">
         <ol className="space-y-6 sm:space-y-8">
-          {schnellstartSchritte.map((s, i) => (
+          {schnellstartSchritte.map((s) => (
             <li
               key={s.id}
               id={s.id}
@@ -57,7 +57,7 @@ export default function SchnellstartPage() {
                 <div className="flex items-center gap-3">
                   <IconTile name={s.icon} />
                   <span className="text-sm font-extrabold font-tagline uppercase tracking-wider text-signal-dark">
-                    Schritt {i + 1} von {schnellstartSchritte.length}
+                    {s.wann}
                   </span>
                 </div>
                 <h2 className="mt-4 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{s.titel}</h2>

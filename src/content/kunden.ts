@@ -156,7 +156,7 @@ export const kundenStories: Record<KundeSlug, KundenStory> = {
     warum:
       "Der Betrieb wollte Werkstatt und Montage in einem Auftrag sehen – mit echten Stunden und echtem Material.",
     einrichtung: [
-      "Gewerk Tischler gewählt, Werkstatt und Fertigung als Arbeitsweise angegeben.",
+      "Gewerk Tischler gewählt – Werkstatt und Fertigung kamen aus der Vorlage.",
       "Arbeitsschritte wie Zuschnitt, Fertigung und Montage als Vorlage angelegt.",
       "Mitarbeiter buchen Zeiten am Tablet in der Werkstatt.",
     ],
