@@ -89,11 +89,12 @@ export const STRUKTUR: Hauptbereich[] = [
         id: 'eingang',
         titel: 'Eingang',
         ansichten: [
+          { titel: 'Alles', module: ['eingang'] },
           { titel: 'Anfragen', module: ['anfragen'] },
           { titel: 'Nachrichten', module: ['nachrichten'] },
           { titel: 'Rückrufe', module: ['telefon'] },
         ],
-        stichworte: ['Anfrage', 'Anruf', 'Telefon', 'Rückruf', 'Nachricht', 'E-Mail', 'Posteingang'],
+        stichworte: ['Anfrage', 'Anruf', 'Telefon', 'Rückruf', 'Nachricht', 'E-Mail', 'Posteingang', 'Eingang', 'Freigabe', 'Anfrage-Postfach'],
       },
       {
         id: 'kunden',

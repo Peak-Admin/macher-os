@@ -2,12 +2,15 @@ import { Navigate, Route, Routes, BrowserRouter } from 'react-router-dom';
 import { alleModule, modulPfad } from '@core/modul';
 import { db } from '@core/db';
 import { ToastProvider } from '@ui/index';
-import { Shell } from './Shell';
+import { Shell, pwaStarten } from './Shell';
 import { HeuteSeite } from './Heute';
 import { BetriebSeite, KategorieWeiter } from './Betrieb';
 import { BereichWeiter } from './BereichWeiter';
 import { Erststart } from './Erststart';
 import { NichtGefunden } from './NichtGefunden';
+
+// PWA: Service Worker und Installieren-Moment – einmal je Seitenaufruf, auch für Kundenbereich und Terminbuchung
+pwaStarten();
 
 export function App() {
   const betrieb = db.betrieb.useOne('betrieb');
