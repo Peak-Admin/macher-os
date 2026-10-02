@@ -41,6 +41,7 @@ Unterpunkte, keine zweite Ebene unter den Bereichen.
   Navigation unter „Favoriten“ – ebenfalls flach, ein Klick. Ohne Favoriten zeigt der Abschnitt einen kurzen Hinweis.
 - **Persönlich:** Favoriten speichert jeder Nutzer für sich, so passt jede Rolle (Chef, Büro, Monteur, Azubi) ihre
   Navigation selbst an. Module, die eine Rolle nicht sehen darf, erscheinen auch nicht als Favorit.
+  Zum Start bekommt jede Rolle eine kleine Vorauswahl (`STANDARD_FAVORITEN`), bis der Nutzer sie selbst ändert.
 - Mobil: Unterleiste mit den vier Bereichen; Favoriten im Menü.
 
 - Software: `Favoriten` in `os/src/shell/Shell.tsx`, Verzeichnis `AlleModule` in `os/src/shell/Hub.tsx`,

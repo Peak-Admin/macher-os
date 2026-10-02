@@ -5,7 +5,15 @@
 import { alleModule, type ModulDef } from './modul';
 import { useEinstellung } from './einstellungen';
 import { useIch } from './session';
-import type { Mitarbeiter } from './objects';
+import type { Mitarbeiter, Rolle } from './objects';
+
+/** Startauswahl je Rolle, solange der Nutzer seine Favoriten noch nicht selbst angepasst hat */
+export const STANDARD_FAVORITEN: Record<Rolle, string[]> = {
+  chef: ['angebote', 'rechnungen', 'auswertung'],
+  buero: ['anfragen', 'angebote', 'rechnungen', 'einsatzplanung'],
+  monteur: ['arbeitszeiten', 'fotos', 'abwesenheiten'],
+  azubi: ['arbeitszeiten', 'fotos', 'schulungen'],
+};
 
 const schluessel = (mitarbeiterId: string | undefined) => `navigation.favoriten.${mitarbeiterId ?? 'alle'}`;
 
@@ -16,7 +24,7 @@ export function modulSichtbar(m: ModulDef, ich: Mitarbeiter | undefined): boolea
 
 export function useFavoriten() {
   const ich = useIch();
-  const [ids, setzen] = useEinstellung<string[]>(schluessel(ich?.id), []);
+  const [ids, setzen] = useEinstellung<string[]>(schluessel(ich?.id), (ich && STANDARD_FAVORITEN[ich.rolle]) ?? []);
   const module = ids.map((id) => alleModule().find((m) => m.id === id)).filter((m): m is ModulDef => !!m && modulSichtbar(m, ich));
   return {
     module,
