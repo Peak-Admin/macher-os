@@ -26,7 +26,7 @@ export function AuftragReklamationenTab({ id }: { id: ID }) {
         ))}
       </Liste>
       <div>
-        <Button variante="sekundaer" icon="plus" to={`/auftraege/reklamationen/neu?auftragId=${id}`}>Mangel aufnehmen</Button>
+        <Button variante="sekundaer" icon="plus" to={`/auftraege/reklamationen/neu?auftragId=${id}`}>Mangel melden</Button>
       </div>
     </Stapel>
   );
@@ -62,7 +62,7 @@ export function AnlageGewaehrleistungPanel({ id }: { id: ID }) {
         <Meta>{a.gewaehrleistungBis ? `${laeuft ? 'Läuft bis' : 'Abgelaufen am'} ${datum(a.gewaehrleistungBis)}` : 'Kein Gewährleistungsende eingetragen.'}</Meta>
         {liste.length > 0 && <Meta>{liste.filter(offen).length} offen, {liste.length} insgesamt</Meta>}
         <div>
-          <Button klein variante="sekundaer" to={`/auftraege/reklamationen/neu?anlageId=${id}`}>Mangel aufnehmen</Button>
+          <Button klein variante="sekundaer" to={`/auftraege/reklamationen/neu?anlageId=${id}`}>Mangel melden</Button>
         </div>
       </Stapel>
     </Karte>

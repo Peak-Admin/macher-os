@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FinalCta, Flow, KundenCard, PageHero } from "@/components/sections";
+import { BereichsKarte, BildText, DunkleHeadline, FinalCta, Flow, FotoBuehne, KundenCard, PageHero } from "@/components/sections";
 import {
   ArrowLink,
   Badge,
@@ -13,6 +13,7 @@ import {
   SectionHeading,
   type IconName,
 } from "@/components/ui";
+import { gewerkBild } from "@/content/bilder";
 import { topGewerkInhalte } from "@/content/gewerke";
 import { kunden, topGewerke, werkzeuge, type TopGewerkSlug } from "@/content/registry";
 import { ChipLink, EinrichtungsListe, FunktionLink, funktionTitel } from "./Bausteine";
@@ -35,12 +36,31 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         eyebrow={g.seoTitel}
         title={
           <>
-            Macher OS für <span className="text-signal-dark">{g.name}</span>.
+            Macher OS für <span>{g.name}</span>.
           </>
         }
         intro={g.hero.intro}
-        visual={<GewerkTagMock betrieb={g.hero.betrieb} label={g.name} tag={g.hero.tag} hinweis={g.hero.hinweis} />}
+        bild={gewerkBild(slug)}
       />
+
+      {/* 1b. Produktbeweis: Tagesansicht vor Gewerk-Foto */}
+      <Section tone="white">
+        <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.15fr]">
+          <div>
+            <SectionHeading
+              eyebrow={`Ein Tag bei ${g.hero.betrieb}`}
+              title="Dein Tag auf einen Blick."
+              intro="Termine, Mitarbeiter und Hinweise in einer Ansicht. So sieht der Tag in Macher OS aus – eingerichtet für dein Gewerk."
+            />
+            <p className="mt-4 flex items-center gap-2 text-sm text-muted">
+              <Badge>Beispiel</Badge> Beispieldaten, kein echter Betrieb.
+            </p>
+          </div>
+          <FotoBuehne bild={`gewerk/${slug}-detail`}>
+            <GewerkTagMock betrieb={g.hero.betrieb} label={g.name} tag={g.hero.tag} hinweis={g.hero.hinweis} />
+          </FotoBuehne>
+        </div>
+      </Section>
 
       {/* 2. Typischer Arbeitsablauf */}
       <Section tone="white">
@@ -62,23 +82,25 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         </div>
       </Section>
 
-      {/* 3. Die größten Probleme */}
-      <Section>
+      {/* 3. Die größten Probleme – neben einem Alltagsfoto */}
+      <BildText bild={`gewerk/${slug}-alltag`} tone="paper">
         <SectionHeading
           eyebrow="Kennst du das?"
           title="Wo es im Alltag hakt."
           intro="Das hören wir von Betrieben immer wieder. Keine Theorie – Alltag."
         />
-        <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="mt-8 grid gap-3">
           {g.probleme.map((p, i) => (
-            <li key={p.titel} className="rounded-lg border border-line bg-white p-6">
+            <li key={p.titel} className="flex gap-4 rounded-lg border border-line bg-white p-5">
               <span className="font-display text-sm font-extrabold text-signal-dark">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-2 font-display text-lg font-bold leading-snug">{p.titel}</h3>
-              <p className="mt-2 text-[0.95rem] leading-relaxed text-muted">{p.text}</p>
+              <span>
+                <span className="block font-display text-lg font-bold leading-snug">{p.titel}</span>
+                <span className="mt-1 block text-[0.95rem] leading-relaxed text-muted">{p.text}</span>
+              </span>
             </li>
           ))}
         </ol>
-      </Section>
+      </BildText>
 
       {/* 4. So hilft Macher OS */}
       <Section tone="sand">
@@ -167,7 +189,9 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
       <Section>
         <div className="grid items-center gap-14 lg:grid-cols-2">
           <div className="order-2 lg:order-1">
-            <GewerkPhoneMock einsatz={g.mobil.einsatz} />
+            <FotoBuehne bild="alltag/handy">
+              <GewerkPhoneMock einsatz={g.mobil.einsatz} />
+            </FotoBuehne>
           </div>
           <div className="order-1 lg:order-2">
             <SectionHeading eyebrow="Auf der Baustelle und unterwegs" title="Alles Wichtige auf dem Handy." intro={g.mobil.intro} />
@@ -276,28 +300,33 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         </div>
       </Section>
 
-      {/* 13. FAQ */}
-      <Section tone="white" containerSize="narrow">
-        <SectionHeading title={`Häufige Fragen: Macher OS für ${g.name}`} />
-        <div className="mt-8">
-          <Faq items={g.faq} />
-        </div>
-        <FaqJsonLd items={g.faq} />
-      </Section>
-
-      {/* Weitere Gewerke */}
-      <Section tight>
-        <p className="font-display text-lg font-bold">Andere Gewerke</p>
-        <ul className="mt-4 flex flex-wrap gap-2.5">
+      {/* Weitere Gewerke – Fotokarten */}
+      <Section tone="white">
+        <SectionHeading eyebrow="Andere Gewerke" title="Macher OS für jedes Handwerk." />
+        <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {andereGewerke.map((x) => (
             <li key={x.slug}>
-              <ChipLink href={`/gewerke/${x.slug}`}>{x.titel}</ChipLink>
+              <BereichsKarte
+                href={`/gewerke/${x.slug}`}
+                bild={gewerkBild(x.slug)}
+                titel={x.kurz}
+                icon={topGewerkInhalte[x.slug].icon}
+              />
             </li>
           ))}
           <li>
-            <ChipLink href="/gewerke">Alle Gewerke</ChipLink>
+            <BereichsKarte href="/gewerke" bild="seite/gewerke" titel="Alle Gewerke" icon="layers" />
           </li>
         </ul>
+      </Section>
+
+      {/* 13. FAQ */}
+      <Section tone="ink" containerSize="narrow">
+        <DunkleHeadline gruen="Häufige Fragen:" rest={`Macher OS für ${g.name}`} />
+        <div className="mt-10">
+          <Faq items={g.faq} dark />
+        </div>
+        <FaqJsonLd items={g.faq} />
       </Section>
 
       {/* 14. Final CTA */}

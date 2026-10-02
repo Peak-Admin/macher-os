@@ -1,5 +1,6 @@
 /** Termin anlegen / bearbeiten / verschieben – ein Formular für Kalender, Plantafel und Auftragsakte. */
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { db, vermerken } from '@core/db';
 import { datumKurz, heute, isoDatum, minutenAus, personName, plusTage, uhrAus, uhrzeit, zeitpunkt } from '@core/format';
 import type { Datum, ID, Termin, TerminArt } from '@core/objects';
@@ -54,7 +55,7 @@ export function TerminFormular({
   titel?: string;
 }) {
   return (
-    <Dialog offen={offen} onSchliessen={onSchliessen} titel={titel ?? (termin ? 'Termin bearbeiten' : 'Termin anlegen')} breit>
+    <Dialog offen={offen} onSchliessen={onSchliessen} titel={titel ?? (termin ? 'Termin bearbeiten' : 'Termin planen')} breit>
       <Formular
         termin={termin}
         vorgabe={vorgabe}
@@ -237,13 +238,22 @@ function Formular({ termin, vorgabe = {}, onFertig }: { termin?: Termin; vorgabe
         </Meldung>
       )}
 
+      {!termin && (
+        <Meta>
+          Wiederkehrender Termin, z. B. jährliche Wartung?{' '}
+          <Link to={`/plan/wiederkehrend/neu${db.auftraege.get(f.auftragId)?.kundeId ? `?kundeId=${db.auftraege.get(f.auftragId)!.kundeId}` : ''}`} onClick={() => onFertig()}>
+            Regelmäßig wiederholen
+          </Link>
+        </Meta>
+      )}
+
       <Textfeld label="Notiz für das Team" optional value={f.notiz} onChange={(e) => set('notiz', e.target.value)} placeholder="z. B. Schlüssel beim Hausmeister" />
 
       <div className="mm-zeile" style={{ gap: 8, justifyContent: 'flex-end' }}>
         <Button variante="tertiaer" onClick={() => onFertig()}>
           Abbrechen
         </Button>
-        <Button type="submit">{termin ? 'Speichern' : konflikte.length ? 'Trotzdem anlegen' : 'Termin anlegen'}</Button>
+        <Button type="submit">{termin ? 'Speichern' : konflikte.length ? 'Trotzdem anlegen' : 'Termin planen'}</Button>
       </div>
     </form>
   );

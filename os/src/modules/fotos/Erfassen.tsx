@@ -104,8 +104,9 @@ export function FotoErfassen({ fertig, auftragId }: ErfassenProps) {
       {bilder.length > 0 && <Meta>{bilder.length === 1 ? '1 Foto' : `${bilder.length} Fotos`} · zusammen {groesseText(bilder.reduce((s, b) => s + b.bytes, 0))} nach dem Verkleinern</Meta>}
       <Segmente label="Art des Fotos" wert={tag} onChange={setTag} optionen={[{ wert: '', label: 'Ohne' }, ...FOTO_TAGS.map((t) => ({ wert: t, label: t }))]} />
       <Textfeld label="Notiz" optional value={notiz} onChange={(e) => setNotiz(e.target.value)} placeholder="z. B. Wasserschaden hinter der Verkleidung" />
-      <AuftragAuswahl label="Auftrag" optional wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />
-      {!auftrag && <Meta>Ohne Auftrag ordnet Macher das Foto deinem laufenden Einsatz zu, sobald es einen gibt.</Meta>}
+      {/* Der Auftrag ist aus dem Kontext bekannt – nicht noch einmal fragen */}
+      {!auftragId && <AuftragAuswahl label="Auftrag" optional wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />}
+      {!auftragId && !auftrag && <Meta>Ohne Auftrag ordnet Macher das Foto deinem laufenden Einsatz zu, sobald es einen gibt.</Meta>}
       {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
       <Button breit onClick={speichern} disabled={laedt || !bilder.length} icon="check">
         {bilder.length > 1 ? `${bilder.length} Fotos speichern` : 'Foto speichern'}
@@ -288,7 +289,8 @@ export function SpracheErfassen({ fertig, auftragId }: ErfassenProps) {
           placeholder={transkriptMoeglich ? 'Es wurde kein Text erkannt.' : 'Optional: kurz aufschreiben, worum es geht'}
         />
       )}
-      <AuftragAuswahl label="Auftrag" optional wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />
+      {/* Der Auftrag ist aus dem Kontext bekannt – nicht noch einmal fragen */}
+      {!auftragId && <AuftragAuswahl label="Auftrag" optional wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />}
       {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
       <Button breit icon="check" onClick={speichern} disabled={!audio || zustand === 'aufnahme'}>
         Sprachnotiz speichern
@@ -320,7 +322,8 @@ export function NotizErfassen({ fertig, auftragId }: ErfassenProps) {
       }}
     >
       <Textfeld label="Notiz" value={text} onChange={(e) => (setText(e.target.value), setFehler(undefined))} fehler={fehler} autoFocus rows={5} placeholder="z. B. Kunde wünscht Steckdose zusätzlich neben der Tür" />
-      <AuftragAuswahl label="Auftrag" optional wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />
+      {/* Der Auftrag ist aus dem Kontext bekannt – nicht noch einmal fragen */}
+      {!auftragId && <AuftragAuswahl label="Auftrag" optional wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />}
       <Button type="submit" breit icon="check">
         Notiz speichern
       </Button>

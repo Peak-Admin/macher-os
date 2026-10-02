@@ -56,7 +56,7 @@ export function BelegeListe() {
     .filter((b) => !q || passt(q, lieferantName(b), b.nummer, b.kategorie, db.auftraege.get(b.auftragId)?.nummer))
     .sort((a, b) => (naechsteFrist(a)?.datum ?? '9999').localeCompare(naechsteFrist(b)?.datum ?? '9999') || b.datum.localeCompare(a.datum));
   return (
-    <Seite titel="Eingangsrechnungen & Belege" aktion={<Button icon="kamera" to="/betrieb/belege/neu">Beleg erfassen</Button>}>
+    <Seite titel="Eingangsrechnungen & Belege" aktion={<Button icon="kamera" to="/betrieb/belege/neu">Beleg fotografieren</Button>}>
       <Filter
         label="Belege filtern"
         wert={filter}
@@ -75,7 +75,7 @@ export function BelegeListe() {
           q || filter !== 'offen' ? (
             <Leer titel="Keine Belege gefunden" text="Ändere den Filter oder die Suche." icon="suche" />
           ) : (
-            <Leer titel="Keine offenen Belege" text="Fotografiere Lieferantenrechnungen und Quittungen direkt auf der Baustelle – Macher schlägt den Auftrag vor." aktion={<Button to="/betrieb/belege/neu">Beleg erfassen</Button>} icon="kamera" />
+            <Leer titel="Keine offenen Belege" text="Fotografiere Lieferantenrechnungen und Quittungen direkt auf der Baustelle – Macher schlägt den Auftrag vor." aktion={<Button to="/betrieb/belege/neu">Beleg fotografieren</Button>} icon="kamera" />
           )
         }
       >
@@ -116,7 +116,7 @@ export function BelegNeu() {
     navigate(`/betrieb/belege/${b.id}`, { replace: true });
   };
   return (
-    <Seite titel="Beleg erfassen" zurueck={{ to: '/betrieb/belege', label: 'Belege' }}>
+    <Seite titel="Beleg fotografieren" zurueck={{ to: '/betrieb/belege', label: 'Belege' }}>
       <Karte>
         <Stapel abstand={24}>
           <BelegFormular werte={werte} setWerte={(w) => (setWerte(w), setFehler(undefined))} datei={datei} setDatei={setDatei} fehler={fehler} />
@@ -305,7 +305,7 @@ export function AuftragBelegeTab({ id }: { id: ID }) {
   const geld = useDarf('geld');
   const liste = alleBelege().filter((b) => b.auftragId === id);
   if (!liste.length)
-    return <Leer titel="Keine Belege" text="Fotografiere Quittungen und Lieferscheine direkt am Auftrag." aktion={<Button variante="sekundaer" to="/betrieb/belege/neu">Beleg erfassen</Button>} icon="kamera" />;
+    return <Leer titel="Keine Belege" text="Fotografiere Quittungen und Lieferscheine direkt am Auftrag." aktion={<Button variante="sekundaer" to="/betrieb/belege/neu">Beleg fotografieren</Button>} icon="kamera" />;
   return (
     <Stapel>
       {geld && <Meta>Summe netto: {euro(liste.reduce((s, b) => s + b.netto, 0))}</Meta>}

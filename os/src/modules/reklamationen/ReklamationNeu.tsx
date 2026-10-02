@@ -106,7 +106,7 @@ export function ReklamationNeu() {
   };
 
   return (
-    <Seite titel="Mangel aufnehmen" zurueck={{ to: '/auftraege/reklamationen', label: 'Reklamationen' }}>
+    <Seite titel="Mangel melden" zurueck={{ to: '/auftraege/reklamationen', label: 'Reklamationen' }}>
       <form
         onSubmit={(e) => {
           e.preventDefault();

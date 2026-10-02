@@ -65,6 +65,7 @@ export default function AppPage() {
     <>
       {/* 1. Hero */}
       <PageHero
+        bild="alltag/baustelle"
         eyebrow="Die App"
         title="Dein Betrieb in der Hosentasche."
         intro="Für die Baustelle gemacht: große Knöpfe, wenig Text. Deine Leute sehen nur, was sie für den nächsten Einsatz brauchen."

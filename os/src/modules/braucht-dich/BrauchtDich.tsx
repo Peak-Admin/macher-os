@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDatenstand } from '@core/db';
 import { hinweisAusblenden, hinweisErledigen, offeneHinweise, type OffenerHinweis } from '@core/macher';
 import { aktionAusfuehren, pfadZu, type Ton } from '@core/modul';
@@ -20,11 +20,12 @@ function useMeineHinweise(team = false) {
 }
 
 /** Ein Hinweis mit seinen Aktionen: primäre Aktion, Öffnen, Später/Erledigt */
-export function HinweisZeile({ h }: { h: OffenerHinweis }) {
+export function HinweisZeile({ h, kompakt }: { h: OffenerHinweis; kompakt?: boolean }) {
   const toast = useToast();
   const navigate = useNavigate();
   const pfad = h.pfad ?? pfadZu(h.bezug);
-  const aktionen = sichtbareAktionen(h, aktionVorhanden);
+  // Vorschau auf „Heute“: nur die empfohlene Handlung und „Öffnen“
+  const aktionen = sichtbareAktionen(h, aktionVorhanden).slice(0, kompakt ? 1 : undefined);
   const faellig = h.faellig ? `fällig ${relativ(h.faellig)}` : null;
 
   const ausfuehren = (a: (typeof aktionen)[number]) => {
@@ -48,7 +49,7 @@ export function HinweisZeile({ h }: { h: OffenerHinweis }) {
         </div>
         <Status ton={ART_TON[h.art]}>{ART_LABEL[h.art]}</Status>
       </div>
-      {weitere.length > 0 && <Weitere liste={weitere} />}
+      {weitere.length > 0 && !kompakt && <Weitere liste={weitere} />}
       <div className="mm-hinweis-aktionen">
         {aktionen.map((a, i) => (
           <Button key={a.aktion + i} klein variante={i === 0 ? 'primaer' : 'sekundaer'} onClick={() => ausfuehren(a)}>
@@ -60,7 +61,7 @@ export function HinweisZeile({ h }: { h: OffenerHinweis }) {
             Öffnen
           </Button>
         )}
-        {h.hinweisId ? (
+        {kompakt ? null : h.hinweisId ? (
           <Button
             klein
             variante="tertiaer"
@@ -176,6 +177,9 @@ export function BrauchtDichSeite() {
         />
       </Stapel>
       {team && <Meta>Du siehst auch Hinweise, die an einzelne Mitarbeiter gehen.</Meta>}
+      <Meta>
+        Auch hier: <Link to="/macher/hinweise">Freigaben & alle Hinweise</Link> · <Link to="/heute/erledigt">Was Macher schon erledigt hat</Link>
+      </Meta>
       <Liste
         leer={
           art === 'alle' ? (

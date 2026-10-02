@@ -13,6 +13,8 @@ import {
   Section,
   SectionHeading,
 } from "@/components/ui";
+import { Chevrons, Foto } from "@/components/ui/Foto";
+import { gewerkBild, kundenBild } from "@/content/bilder";
 import { aehnlicheKunden, funktionTitel, gewerkVon, groessen, groesseVon, kundenStories } from "@/content/kunden";
 import { funktionHref, gewerkHref, kunden, type KundeSlug } from "@/content/registry";
 import { pageMeta } from "@/lib/metadata";
@@ -70,42 +72,39 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
 
   return (
     <>
-      {/* 1. Hero – Betrieb + Ergebnis */}
-      <section className="relative overflow-hidden border-b border-line bg-paper">
-        <Container className="relative py-12 sm:py-16">
-          <Breadcrumbs items={[{ label: "Kunden", href: "/kunden" }, { label: k.betrieb }]} />
-          <BeispielHinweis className="mb-10 max-w-3xl" />
-          <div className="grid items-start gap-10 lg:grid-cols-[1.3fr_1fr]">
+      {/* 1. Hero – Fallstudie: Foto, Betrieb, Ergebnis */}
+      <section className="relative isolate overflow-hidden bg-ink text-white">
+        <div className="absolute inset-0 -z-10">
+          <Foto bild={kundenBild(k.slug)} preload sizes="100vw" ersatz={null} />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/40" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
+        </div>
+        <Chevrons className="absolute -bottom-8 right-[3%] -z-10 hidden h-[60%] max-h-80 text-brand/70 mix-blend-screen lg:block" />
+        <Container className="relative py-12 sm:py-16 lg:py-24">
+          <Breadcrumbs items={[{ label: "Kunden", href: "/kunden" }, { label: k.betrieb }]} dark />
+          <div className="grid items-end gap-10 lg:grid-cols-[1.4fr_1fr]">
             <div>
-              <p className="mb-4 flex flex-wrap items-center gap-2 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
-                Kundenstory <Badge>Beispiel</Badge>
+              <p className="mb-4 flex flex-wrap items-center gap-2 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
+                Fallstudie {gewerk.kurz} <Badge>Beispiel</Badge>
               </p>
-              <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl lg:text-6xl">
-                {k.betrieb}: {k.ergebnis}.
+              <h1 className="font-display text-4xl font-extrabold uppercase leading-[1.02] tracking-tight text-balance sm:text-5xl lg:text-6xl">
+                <span className="text-accent">{k.betrieb}:</span> {k.ergebnis}.
               </h1>
-              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-pretty text-muted sm:text-xl">{story.kurz}</p>
+              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-white/80 sm:text-xl">{story.kurz}</p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink href={cta.primary.href} size="lg">
+                <ButtonLink href={cta.primary.href} size="lg" variant="onDark">
                   {cta.primary.label}
                 </ButtonLink>
-                <ButtonLink href={cta.secondary.href} variant="secondary" size="lg">
+                <ButtonLink href={cta.secondary.href} variant="light" size="lg">
                   {cta.secondary.label}
                 </ButtonLink>
               </div>
+              <p className="mt-6 text-sm text-white/60">Symbolbild. Beispielbetrieb, keine echte Firma.</p>
             </div>
-            <aside aria-label="Steckbrief" className="overflow-hidden rounded-xl border border-line bg-white">
-              <div className="relative flex h-28 items-end bg-[linear-gradient(135deg,var(--color-ink),var(--color-ink-soft))] p-5">
-                <div
-                  aria-hidden
-                  className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,color-mix(in_oklab,var(--color-signal)_45%,transparent),transparent_55%)]"
-                />
-                <span aria-hidden className="relative font-display text-4xl font-extrabold text-white/90">
-                  {initialen}
-                </span>
-                <span className="absolute right-4 top-4">
-                  <Badge>Beispielbetrieb</Badge>
-                </span>
-              </div>
+            <aside aria-label="Steckbrief" className="overflow-hidden rounded-lg bg-white text-ink shadow-2xl shadow-black/30">
+              <p className="flex items-center justify-between gap-3 bg-signal px-5 py-3 font-display font-bold text-white">
+                Steckbrief <Badge>Beispielbetrieb</Badge>
+              </p>
               <dl className="divide-y divide-line">
                 {steckbrief.map((s) => (
                   <div key={s.label} className="flex items-start gap-3 px-5 py-3.5">
@@ -118,7 +117,11 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
             </aside>
           </div>
         </Container>
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-brand" />
       </section>
+      <Container className="pt-8">
+        <BeispielHinweis className="max-w-3xl" />
+      </Container>
 
       {/* 2. Betrieb + 3. Vorher */}
       <Section tone="white">
@@ -126,6 +129,12 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
           <div>
             <SectionHeading eyebrow="Der Betrieb" title="Wer ist das?" />
             <p className="mt-5 text-lg leading-relaxed text-ink-soft">{story.betrieb}</p>
+            <figure className="mt-8">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-ink">
+                <Foto bild={gewerkBild(k.gewerk)} sizes="(min-width: 1024px) 40vw, 100vw" />
+              </div>
+              <figcaption className="mt-2 text-sm text-muted">Symbolbild: {gewerk.titel}</figcaption>
+            </figure>
           </div>
           <div>
             <SectionHeading eyebrow="Vorher" title="Was war das Problem?" />

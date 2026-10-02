@@ -7,6 +7,7 @@ import { oeffne } from '@core/overlay';
 import { useIch } from '@core/session';
 import { Button, Icon, Leer, Liste, ListenZeile, Meta, Oberzeile, Suchfeld, Zeile } from '@ui/index';
 import { gruppieren, merkeSuche, ohneDoppelte } from './daten';
+import { funktionsTreffer } from '../../shell/struktur';
 
 /** Suchfeld + gruppierte Treffer mit Pfeiltasten/Enter. Im Overlay und auf der Seite gleich. */
 export function SuchKern({ onFertig }: { onFertig?: () => void }) {
@@ -18,7 +19,7 @@ export function SuchKern({ onFertig }: { onFertig?: () => void }) {
   const [letzte, setLetzte] = useEinstellung<string[]>(`suche.letzte.${ich?.id ?? 'alle'}`, []);
   const liste = useRef<HTMLDivElement>(null);
 
-  const gruppen = useMemo(() => gruppieren(ohneDoppelte(sucheUeberall(q))), [q]);
+  const gruppen = useMemo(() => gruppieren(ohneDoppelte([...sucheUeberall(q), ...funktionsTreffer(q, ich)])), [q, ich]);
   const flach = gruppen.flatMap((g) => g.treffer);
 
   useEffect(() => setAktiv(0), [q]);
@@ -49,7 +50,7 @@ export function SuchKern({ onFertig }: { onFertig?: () => void }) {
   let i = -1;
   return (
     <div className="mm-stapel" style={{ gap: 16 }} onKeyDown={taste}>
-      <Suchfeld wert={q} onChange={setQ} platzhalter="Kunde, Auftrag, Rechnungsnummer, Adresse …" autoFocus />
+      <Suchfeld wert={q} onChange={setQ} platzhalter="Kunde, Auftrag, Rechnung, Adresse oder Funktion …" autoFocus />
       {!q.trim() ? (
         letzte.length ? (
           <div className="mm-stapel" style={{ gap: 8 }}>
