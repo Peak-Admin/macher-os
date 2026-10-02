@@ -69,6 +69,16 @@ describe('Gateway: Regeln, Rechte, Lanes', () => {
     expect((await frage('Kabel 3x1,5', kontext())).ergebnis).toBe('suche:Kabel 3x1,5');
   });
 
+  it('direkte Absichten nur gezielt – nie aus freien Sätzen', async () => {
+    aus.push(registriereGateway({ absichten: [{ id: 'offer.positions.suggest', titel: 'Positionen', risiko: 'schreiben', rechte: ['geld'], direkt: true, erkenne: () => true, beantworte: (t) => `vorschlag:${t}` }] }));
+    expect((await frage('Bad fliesen', kontext())).ergebnis).toBe('suche:Bad fliesen');
+    const g = await frage<string>('Bad fliesen', kontext(), { absicht: 'offer.positions.suggest' });
+    expect(g).toMatchObject({ lane: 0, ergebnis: 'vorschlag:Bad fliesen', erkennung: { absicht: 'offer.positions.suggest', sicherheit: 1 } });
+    expect(kiProtokoll.get(g.protokollId)?.ergebnis).toBe('vorgeschlagen');
+    expect((await frage('Bad fliesen', kontext(['lesen']), { absicht: 'offer.positions.suggest' })).verweigert).toBe('rechte');
+    expect((await frage('x', kontext(), { absicht: 'gibt.es.nicht' })).verweigert).toBe('unbekannt');
+  });
+
   it('nutzt Jev nur, wenn keine Regel greift und es sicher genug ist', async () => {
     let aufrufe = 0;
     aus.push(

@@ -20,6 +20,7 @@ Verstehen → Routen → Kontext → Rechte → günstigste ausreichende Lane
 | Verstehen, Lane 0 | `AbsichtDef.erkenne` – Regeln, geprüft nach `rang` |
 | Verstehen, Lane 1 (Jev) | `ModellAdapter.erkenne` – nur wenn keine Regel greift; gilt ab Sicherheit `MIN_SICHERHEIT` (0,7) |
 | Auffang | Absicht mit `auffang: true` (in „Macher fragen“: Suche) |
+| Gezielt aus einem Formular | Absicht mit `direkt: true`, nur über `frage(text, k, { absicht })` – z. B. `offer.positions.suggest` (Angebot: „Beschreib kurz, was gemacht wird“). Freie Sätze landen nie dort. |
 | Rechte | `AbsichtDef.rechte` / `AktionDef.rechte` gegen `darf()` – KI-Recht = Macher-OS-Recht |
 | Lane wählen | `waehleLane(mindestens, kontext)` – von unten nach oben, gedeckelt durch den Kostenrahmen |
 | Minimaler Kontext | `AbsichtDef.kontext` – nur das bekommt ein Modell (Lane 2+) zu sehen |

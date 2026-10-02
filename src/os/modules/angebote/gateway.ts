@@ -1,9 +1,10 @@
 /** Aktionen der Angebote für den Macher AI Gateway (`@core/gateway`). */
 import { db } from '@core/db';
-import { AktionsFehler, type AktionDef } from '@core/gateway';
+import { AktionsFehler, type AbsichtDef, type AktionDef } from '@core/gateway';
 import type { ID } from '@core/objects';
 import { kontaktArt } from '@modules/start/daten';
 import { angebotSenden } from './erstwert';
+import { modellKontext, POSITIONEN_VORSCHLAGEN, vorschlagAusModell, vorschlagAusRegeln, type PositionsVorschlag } from './vorschlag';
 
 export interface AngebotSendenDaten {
   angebotId: ID;
@@ -37,6 +38,35 @@ export const ANGEBOT_AKTIONEN: AktionDef<AngebotSendenDaten>[] = [
       const r = await angebotSenden(d.angebotId, ziel, kontaktArt(ziel)!);
       if (r.status === 'fehler') throw new AktionsFehler(r.fehler ?? 'Das Angebot wurde nicht versendet.');
       return { bezug: { typ: 'angebote', id: d.angebotId }, text: `An ${ziel}` };
+    },
+  },
+];
+
+// ------------------------------------------------------------------ Positionen vorschlagen
+
+const katalog = () => ({ leistungen: db.leistungen.where((l) => l.aktiv), artikel: db.artikel.where((a) => a.aktiv) });
+
+/**
+ * „Bad 8 m² fliesen, alte Fliesen raus, 2 Tage, Material ca. 900 €“ → Positionen als Vorschlag.
+ * Nur gezielt aus dem Angebotsformular erreichbar (`direkt`). Regeln zuerst; ist Luna (oder stärker) angeschlossen und im
+ * Kostenrahmen, verbessert das Modell den Vorschlag. Es ändert nichts: Übernehmen und Senden macht der Mensch.
+ */
+export const ANGEBOT_ABSICHTEN: AbsichtDef<PositionsVorschlag>[] = [
+  {
+    id: POSITIONEN_VORSCHLAGEN,
+    titel: 'Angebotspositionen vorschlagen',
+    risiko: 'schreiben',
+    rechte: ['geld'],
+    direkt: true,
+    besserMit: 2,
+    kontext: (_e, _k, text) => {
+      const { leistungen, artikel } = katalog();
+      return modellKontext(text, leistungen, artikel);
+    },
+    beantworte: (text, _e, _k, { modellText }) => {
+      const { leistungen, artikel } = katalog();
+      const ki = modellText ? vorschlagAusModell(modellText, text, leistungen, artikel) : undefined;
+      return ki ? { positionen: ki, quelle: 'ki' } : { positionen: vorschlagAusRegeln(text, leistungen, artikel), quelle: 'regeln' };
     },
   },
 ];
