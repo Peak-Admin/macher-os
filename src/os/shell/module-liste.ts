@@ -73,6 +73,7 @@ import m_servicevertraege from '../modules/servicevertraege';
 import m_start from '../modules/start';
 import m_subunternehmer from '../modules/subunternehmer';
 import m_suche from '../modules/suche';
+import m_takte from '../modules/takte';
 import m_telefon from '../modules/telefon';
 import m_terminbuchung from '../modules/terminbuchung';
 import m_unterweisungen from '../modules/unterweisungen';
@@ -160,6 +161,7 @@ export const modulListe: [string, ModulDef][] = [
   ['start', m_start],
   ['subunternehmer', m_subunternehmer],
   ['suche', m_suche],
+  ['takte', m_takte],
   ['telefon', m_telefon],
   ['terminbuchung', m_terminbuchung],
   ['unterweisungen', m_unterweisungen],

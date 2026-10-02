@@ -3,6 +3,7 @@
   "framework": "nextjs",
   "crons": [
     { "path": "/api/abo/erinnern", "schedule": "0 8 * * *" },
-    { "path": "/api/cron/taeglich", "schedule": "17 3 * * *" }
+    { "path": "/api/cron/taeglich", "schedule": "17 3 * * *" },
+    { "path": "/api/takte/cron", "schedule": "30 4 * * *" }
   ]
 }

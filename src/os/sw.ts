@@ -6,6 +6,9 @@
  * - Dateien (`/_next/static/*` mit Hash, Schriften, Icons): zuerst aus dem Cache, sonst Netz – und dann gemerkt.
  * - Server-Funktionen (`/api/*`) gehen immer ans Netz, nie in den Cache.
  * - Push: zeigt die Nachricht mit Aktionen; ein Tipp öffnet `pfad` bzw. `/os/macher/hinweise?aktion=<id>`.
+ * - Takte (`tag: 'takt-…'`): Aktionsknopf mit `schluessel` entscheidet direkt über `/api/takte/aktion` – ohne die App
+ *   zu öffnen, danach eine kurze Bestätigung. Ohne Schlüssel oder wenn der Server ablehnt, öffnet sich die Takt-Ansicht
+ *   mit `?quelle=benachrichtigung&aktion=…&payload=…` und entscheidet dort.
  *
  * `scripts/os-sw.mjs` übersetzt diese Datei vor `dev`/`build` nach `public/os/sw.js`. Keine Abhängigkeiten.
  */
@@ -187,14 +190,26 @@ export interface PushInhalt {
   pfad?: string;
   /** zum Zusammenfassen gleicher Nachrichten */
   tag?: string;
-  aktionen?: { aktion: string; label: string; payload?: unknown }[];
+  /** `schluessel`: signiert vom Server-Takt – damit entscheidet der Server direkt (Takte) */
+  aktionen?: { aktion: string; label: string; payload?: unknown; schluessel?: string }[];
 }
+
+/** Takt-Mitteilung (Dein Tag, Tagesbrief, Zeiten, Wochenbilanz)? Die Takt-Ansicht führt Aktionen selbst aus. */
+export const istTakt = (inhalt: PushInhalt | undefined) => !!inhalt?.tag?.startsWith('takt-');
 
 /**
  * Wohin führt ein Tipp? Aktion → Hinweise mit Aktion, sonst `pfad`, sonst Heute.
  * `pfad` ist ein Pfad der App (`/heute`) oder schon mit `/os` davor.
  */
 export function zielVonKlick(inhalt: PushInhalt | undefined, aktion: string | undefined): string {
+  if (istTakt(inhalt) && inhalt?.pfad?.startsWith('/') && !inhalt.pfad.startsWith('//')) {
+    const pfad = inhalt.pfad === BASIS || inhalt.pfad.startsWith(`${BASIS}/`) ? inhalt.pfad : `${BASIS}${inhalt.pfad}`;
+    const q = new URLSearchParams({ quelle: 'benachrichtigung' });
+    const a = aktion ? inhalt.aktionen?.find((x) => x.aktion === aktion) : undefined;
+    if (aktion) q.set('aktion', aktion);
+    if (a?.payload !== undefined) q.set('payload', JSON.stringify(a.payload));
+    return `${pfad}${pfad.includes('?') ? '&' : '?'}${q}`;
+  }
   if (aktion) {
     const a = inhalt?.aktionen?.find((x) => x.aktion === aktion);
     const payload = a?.payload !== undefined ? `&payload=${encodeURIComponent(JSON.stringify(a.payload))}` : '';
@@ -230,17 +245,43 @@ sw.addEventListener('push', (e) => {
   );
 });
 
+/** Entscheidung mit signiertem Schlüssel direkt auf dem Server ausführen; true = erledigt (auch „abgelehnt mit Grund“) */
+async function aufDemServer(inhalt: PushInhalt | undefined, aktion: string): Promise<boolean> {
+  const a = inhalt?.aktionen?.find((x) => x.aktion === aktion);
+  if (!a?.schluessel) return false;
+  try {
+    const r = await fetch('/api/takte/aktion', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ schluessel: a.schluessel }) });
+    const antwort = (await r.json().catch(() => ({}))) as { text?: string; fehler?: string };
+    const weiter = { icon: '/os/icons/icon-192.png', badge: '/os/icons/icon-192.png', lang: 'de', tag: 'takt-ergebnis', data: { pfad: inhalt?.pfad } };
+    if (r.ok) {
+      await sw.registration.showNotification(antwort.text || 'Erledigt', { ...weiter, body: 'Direkt aus der Mitteilung erledigt.' });
+      return true;
+    }
+    // abgelehnt mit Grund (z. B. schon genehmigt) → kurz sagen, nicht die App aufzwingen
+    if (r.status === 409 && antwort.fehler) {
+      await sw.registration.showNotification('Nicht ausgeführt', { ...weiter, body: antwort.fehler });
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+async function oeffnen(ziel: string) {
+  const fenster = await sw.clients.matchAll({ type: 'window', includeUncontrolled: true });
+  const offen = fenster.find((f) => new URL(f.url).origin === sw.location.origin);
+  if (offen) {
+    const neu = offen.navigate ? await offen.navigate(ziel).catch(() => null) : null;
+    return (neu ?? offen).focus();
+  }
+  return sw.clients.openWindow(ziel);
+}
+
 sw.addEventListener('notificationclick', (e) => {
   e.notification.close();
-  const ziel = new URL(zielVonKlick(e.notification.data as PushInhalt | undefined, e.action || undefined), sw.location.origin).href;
-  e.waitUntil(
-    sw.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (fenster) => {
-      const offen = fenster.find((f) => new URL(f.url).origin === sw.location.origin);
-      if (offen) {
-        const neu = offen.navigate ? await offen.navigate(ziel).catch(() => null) : null;
-        return (neu ?? offen).focus();
-      }
-      return sw.clients.openWindow(ziel);
-    }),
-  );
+  const inhalt = e.notification.data as PushInhalt | undefined;
+  const aktion = e.action || undefined;
+  const ziel = new URL(zielVonKlick(inhalt, aktion), sw.location.origin).href;
+  e.waitUntil((aktion ? aufDemServer(inhalt, aktion) : Promise.resolve(false)).then((erledigt) => (erledigt ? undefined : oeffnen(ziel))));
 });

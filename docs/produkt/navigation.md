@@ -36,6 +36,10 @@ Der Baum wird nie als Menü gezeigt. Sichtbar ist immer nur die aktuelle Ebene:
   Kein „+ Neu“, kein „Erfassen“, kein Plus, kein Hamburger-Menü. Die vier Bereiche haben in der Navigation keine
   Unterpunkte. Darunter höchstens **drei Favoriten** des Nutzers (flach, ein Klick; mobil im Profilmenü), dann Profil
   (Benachrichtigungen, Macher fragen, Mitarbeiter wechseln für die Vorführung). Suche oben, auch per Strg K.
+- **Betriebs-Wechsler:** ganz oben in der Seitenleiste (mobil links im Kopf) – aktiver Betrieb mit Gewerk und Personen.
+  Aufgeklappt: Mitarbeiter einladen · Betrieb einstellen, Liste „Deine Betriebe“ (ab fünf mit Suche), „Neuen Betrieb
+  anlegen“ (führt ins Setup, dort „Zurück zu …“). Jeder Betrieb hat getrennte Daten; der Wechsel lädt die Seite neu.
+  Verzeichnis und Speicherschlüssel: `src/os/core/betriebe.ts` (später Organization/Workspace in Supabase).
 - **Betrieb als Modulverzeichnis:** Unter den vier Kacheln stehen alle Module, die der Nutzer sehen darf – gruppiert
   nach Geld · Team · Ausstattung · Unternehmen, dann „Aus Aufträge“ und „Aus Planen“ – mit Suche „Modul finden“.
   Mit dem Stern holt man bis zu drei Module als Favorit in die Navigation. Gespeichert je Mitarbeiter

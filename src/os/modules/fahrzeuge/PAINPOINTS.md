@@ -35,10 +35,19 @@ Score = Frequenz × Intensität. C = Chef, B = Büro, M = Monteur.
 - Detail: Fahrer festlegen/wechseln mit einem Tap, Ausstattung (welches Werkzeug ist drin) mit Ein-/Ausladen,
   Material im Fahrzeuglager (aus Lager), Kilometerstand optional, Defekt melden (3, 4, 6, 7, 16).
 - Jedes Fahrzeug ist automatisch ein Lagerort im Lager (4, 25).
+- Liste als Fahrzeugkarten: Profilbild des Fahrers, Fahrzeugfoto, Kennzeichen, Modell und Ampel
+  (grün verfügbar, gelb im Einsatz, rot nicht fahren) mit „frei ab …“ bzw. „wieder da ab …“ (2, 8, 18, 23).
 
 ## Macher erledigt automatisch
 - TÜV/HU- und UVV-Fristen mit 30/14-Tage-Hinweis und Überfällig-Warnung (Modul Prüfungen) (1, 5).
 - Verbrauch am Auftrag wird vom Fahrzeuglager des Fahrers abgebucht (Modul Lager).
+- Ampel und „frei ab“ rechnet Macher aus Terminen (Fahrzeug oder Fahrer eingeplant), Abwesenheit des Fahrers,
+  Defekt/Werkstatt mit optionalem Datum „wieder einsatzbereit“ und TÜV-Frist.
+
+## Kernwünsche
+- Profil- und Fahrzeugfoto sind Dokumente mit Tag (`profilbild`, `fahrzeugbild`). Besser: `bildId` an Mitarbeiter/Betriebsmittel
+  und ein `Avatar` mit Bild im UI-Kern.
+- `wiederVerfuegbarAb` am Betriebsmittel aufnehmen (steht bisher als Zusatzfeld in `werkzeuge/daten.ts`).
 
 ## Bewusst weggelassen
 - Fahrtenbuch, Tankkarten, Schäden, Leasing, Reifen, Führerscheinkontrolle (→ Qualifikationen), GPS, Kosten (9–14, 19, 20).

@@ -161,7 +161,7 @@
   background: linear-gradient(180deg, color-mix(in srgb, var(--mm-brand-deep) 10%, transparent), color-mix(in srgb, var(--mm-brand-deep) 30%, transparent));
 }
 .ob-marke--vorteile .ob-marke-innen { position: relative; overflow: visible; }
-.ob-marke--vorteile .ob-logo, .ob-marke--vorteile .ob-marke-statement, .ob-marke--vorteile .ob-vorteile { position: relative; z-index: 1; }
+.ob-marke--vorteile .ob-logo, .ob-marke--vorteile .ob-marke-statement, .ob-marke--vorteile .ob-vorteile, .ob-marke--vorteile .ob-zurueck-betrieb { position: relative; z-index: 1; }
 @media (max-width: 900px) {
   .ob-marke-foto { width: 38%; }
   .ob-vorteile { max-width: 60%; }
@@ -182,3 +182,11 @@
 @media (prefers-reduced-transparency: reduce) {
   .ob-inhalt::before, .ob-navigation { background: var(--mm-surface); }
 }
+
+.ob-zurueck-betrieb {
+  display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; min-height: 44px; padding: 0 12px;
+  border: 1px solid rgb(255 255 255 / 40%); border-radius: var(--mm-radius-control); background: none;
+  color: var(--mm-on-dark); font: inherit; font-weight: 600; cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
+}
+.ob-zurueck-betrieb:hover { background: rgb(255 255 255 / 8%); }
+.ob-zurueck-betrieb:focus-visible { outline-color: var(--mm-focus-on-dark); }

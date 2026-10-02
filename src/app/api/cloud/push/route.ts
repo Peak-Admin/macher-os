@@ -20,6 +20,7 @@ export async function POST(req: Request): Promise<Response> {
     text: n.text?.slice(0, 500),
     pfad: n.pfad,
     aktionen: n.aktionen?.slice(0, 2),
+    tag: typeof n.tag === 'string' ? n.tag.slice(0, 64) : undefined,
   });
   return json(200, r);
 }

@@ -3,7 +3,7 @@
  * Liegt im privaten Ordner `_lib` – keine eigene Route.
  *
  * Schlüssel nur aus `process.env`: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`,
- * `VITE_SUPABASE_URL` (oder `SUPABASE_URL`). Optional: `RESEND_API_KEY` + `ABO_ABSENDER` für Zahlungserinnerungen,
+ * `SUPABASE_URL` (oder `NEXT_PUBLIC_SUPABASE_URL`). Optional: `RESEND_API_KEY` + `ABO_ABSENDER` für Zahlungserinnerungen,
  * `STRIPE_AUTOMATISCHE_STEUER=1` für Stripe Tax, `CRON_SECRET` für den täglichen Erinnerungslauf.
  * Fehlt etwas Nötiges: `501 { fehler: "nicht verbunden" }`.
  */
@@ -11,7 +11,7 @@ import { aktivePersonen, planLesen, testBisAus, type PlanId } from '@modules/abo
 
 
 export const env = (k: string) => process.env[k]?.trim() || undefined;
-export const supabaseUrl = () => (env('SUPABASE_URL') ?? env('VITE_SUPABASE_URL'))?.replace(/\/$/, '');
+export const supabaseUrl = () => (env('SUPABASE_URL') ?? env('NEXT_PUBLIC_SUPABASE_URL') ?? env('VITE_SUPABASE_URL'))?.replace(/\/$/, '');
 
 export function json(daten: unknown, status = 200): Response {
   return new Response(JSON.stringify(daten), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
