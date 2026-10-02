@@ -117,7 +117,7 @@ export function Header() {
 
         {/* Mobil: primärer CTA bleibt sichtbar */}
         <div className="ml-auto flex items-center gap-2 lg:hidden">
-          <Link href={cta.primary.href} className="rounded-lg bg-signal px-3.5 py-2 text-sm font-bold text-ink">
+          <Link href={cta.primary.href} className="whitespace-nowrap rounded-lg bg-signal px-3 py-2 text-sm font-bold text-ink">
             {cta.primary.label}
           </Link>
           <button

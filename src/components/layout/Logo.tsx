@@ -7,7 +7,7 @@ export function Logo({ dark = false }: { dark?: boolean }) {
         <rect width="32" height="32" rx="8" className="fill-signal" />
         <path d="M8 23V10l8 7 8-7v13" fill="none" stroke="#15181d" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />
       </svg>
-      <span className={`font-display text-lg font-extrabold tracking-tight ${dark ? "text-white" : "text-ink"}`}>
+      <span className={`whitespace-nowrap font-display text-base font-extrabold tracking-tight sm:text-lg ${dark ? "text-white" : "text-ink"}`}>
         MACHER<span className="text-signal-dark"> OS</span>
       </span>
     </Link>
