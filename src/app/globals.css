@@ -464,6 +464,21 @@ details > summary::-webkit-details-marker {
     }
   }
 
+  /* Kernelemente im Hero: Füllung der aktiven Pille wie bei Stories (Dauer setzt die Komponente) */
+  .kern-fuellung {
+    animation-name: kern-fuellung;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  @keyframes kern-fuellung {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
   /* Glas-Kopf: zwei Glasebenen, die je nach Fläche darunter überblenden */
   .kopf-glas {
     transition: opacity 400ms ease;

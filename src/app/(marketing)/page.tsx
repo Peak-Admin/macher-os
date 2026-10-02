@@ -7,7 +7,6 @@ import {
   DunkleHeadline,
   FinalCta,
   FotoBuehne,
-  KernBereiche,
   KundenCard,
   PlanCards,
   MissionMittelstand,
@@ -179,23 +178,8 @@ export default function HomePage() {
     <>
       {/* Alle Abschnitte sind Boxen im Wechsel dunkelgrün · beige · weiß (nach Peak One). Der Glas-Kopf liegt auf dem Hero. */}
 
-      {/* 1. Hero – Text mittig, Einstieg per Google oder E-Mail, rechts Matthias Aumann */}
+      {/* 1. Hero – Text mittig, Einstieg per Google oder E-Mail, darunter fünf Kernelemente und die Software; rechts Matthias Aumann */}
       <StartHero />
-
-      {/* 1b. Fünf Kernelemente – Umschalter, darunter die klickbare Oberfläche */}
-      <Zone ton="beige">
-        <Section tone="transparent">
-          <SectionHeading
-            align="center"
-            eyebrow="So sieht Macher OS aus"
-            title="Fünf Kernelemente. Eine Oberfläche."
-            intro="Wähl aus, was dich interessiert – und klick dich durch die echte Oberfläche."
-          />
-          <div className="mt-10">
-            <KernBereiche />
-          </div>
-        </Section>
-      </Zone>
 
       {/* 2. Dein Alltag – 3D-Karten mit Blick in die App */}
       <Alltag />
