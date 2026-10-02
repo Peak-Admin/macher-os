@@ -81,7 +81,7 @@ export default async function WerkzeugSeite({ params }: Props) {
         <Container className="pb-14 pt-8 sm:pb-20 sm:pt-10">
           <Breadcrumbs items={[{ label: "Werkzeuge", href: "/werkzeuge" }, { label: werkzeug.titel }]} />
           <div className="mb-8 max-w-3xl print:hidden">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
               Kostenloser Rechner · ohne Anmeldung
             </p>
             <h1 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl">
@@ -133,7 +133,7 @@ export default async function WerkzeugSeite({ params }: Props) {
           <div className="overflow-hidden rounded-2xl border border-line bg-white">
             <table className="w-full text-left">
               <caption className="sr-only">Beispielrechnung {werkzeug.titel}</caption>
-              <thead className="bg-sand text-xs uppercase tracking-wider text-muted">
+              <thead className="bg-sand text-xs font-tagline uppercase tracking-wider text-muted">
                 <tr>
                   <th scope="col" className="px-5 py-3 font-semibold">Schritt</th>
                   <th scope="col" className="px-5 py-3 text-right font-semibold">Betrag</th>

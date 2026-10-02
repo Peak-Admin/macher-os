@@ -82,7 +82,7 @@ export function ErgebnisKarte({
       <div className="p-6 sm:p-7">
         <div role="status" aria-live="polite" aria-atomic="true">
           {status}
-          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-white/60">{hauptLabel}</p>
+          <p className="text-sm font-semibold font-tagline uppercase tracking-[0.12em] text-white/60">{hauptLabel}</p>
           <p className="mt-1 font-display text-4xl font-extrabold tabular-nums tracking-tight sm:text-5xl">
             {hauptWert}
           </p>
@@ -125,7 +125,7 @@ export function ErgebnisZeile({
 export function EingabeHinweis({ children }: { children: ReactNode }) {
   return (
     <p className="mt-4 flex items-start gap-2 rounded-lg bg-white/10 p-3 text-sm text-white/85">
-      <Icon name="bell" className="mt-0.5 size-4 shrink-0 text-signal" />
+      <Icon name="bell" className="mt-0.5 size-4 shrink-0 text-accent" />
       <span>{children}</span>
     </p>
   );
@@ -163,7 +163,7 @@ export function ErgebnisAktionen({ text, betreff }: { text: string; betreff: str
 
   return (
     <div className="border-t border-white/10 bg-white/5 p-4 print:hidden">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-white/55">Ergebnis speichern oder senden</p>
+      <p className="mb-3 text-xs font-semibold font-tagline uppercase tracking-[0.12em] text-white/55">Ergebnis speichern oder senden</p>
       <div className="flex flex-wrap gap-2">
         <button type="button" onClick={kopieren} className={`${knopf} bg-signal text-white hover:bg-signal-dark`}>
           <Icon name="clipboard" className="size-4" /> Kopieren

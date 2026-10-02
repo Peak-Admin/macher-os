@@ -58,7 +58,7 @@ function RechnerVorschau() {
         </div>
       </div>
       <div className="-mt-4 ml-6 rounded-2xl bg-ink p-5 text-white shadow-xl sm:ml-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/60">Dein Stundensatz netto</p>
+        <p className="text-xs font-semibold font-tagline uppercase tracking-[0.12em] text-white/60">Dein Stundensatz netto</p>
         <p className="mt-1 font-display text-4xl font-extrabold tabular-nums">{euro(r.netto)}</p>
         <dl className="mt-4 divide-y divide-white/10 border-t border-white/10 text-sm">
           {zeilen.map(([l, w]) => (
@@ -120,7 +120,7 @@ export default function WerkzeugeHub() {
               <Icon name="file" className="size-6" />
             </span>
             <div>
-              <p className="mb-2 text-sm font-semibold uppercase tracking-[0.14em] text-signal-dark">Vorlagen</p>
+              <p className="mb-2 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">Vorlagen</p>
               <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">
                 Vorlagen und Checklisten zum Mitnehmen.
               </h2>

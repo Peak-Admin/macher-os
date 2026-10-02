@@ -38,19 +38,19 @@ const ampelText: Record<Ampel, { titel: string; text: string; icon: IconName; kl
     titel: "Der Auftrag deckt seine Kosten.",
     text: "Er bezahlt Material, Lohn und seinen Anteil an den Fixkosten – und bringt Gewinn.",
     icon: "check",
-    klasse: "bg-moss text-white",
+    klasse: "bg-signal text-white",
   },
   gelb: {
     titel: "Der Auftrag deckt seine Kosten nicht ganz.",
     text: "Die direkten Kosten sind bezahlt, aber nicht der volle Anteil an den Fixkosten.",
     icon: "bell",
-    klasse: "bg-signal-soft text-ink",
+    klasse: "bg-warning-soft text-warning ring-1 ring-inset ring-warning/30",
   },
   rot: {
     titel: "Der Auftrag deckt seine Kosten nicht.",
     text: "Schon Material, Fremdleistung und Lohn sind teurer als der Umsatz.",
     icon: "x",
-    klasse: "bg-signal text-white",
+    klasse: "bg-danger-soft text-danger ring-1 ring-inset ring-danger/30",
   },
 };
 
@@ -118,7 +118,7 @@ export function DeckungsbeitragRechner() {
                     <span
                       key={stufe}
                       data-balken
-                      className={`flex h-7 items-center rounded-md px-2.5 text-xs font-bold uppercase tracking-wider ${
+                      className={`flex h-7 items-center rounded-md px-2.5 text-xs font-bold font-tagline uppercase tracking-wider ${
                         stufe === r.ampel
                           ? ampelText[stufe].klasse
                           : "bg-white/5 text-white/35 ring-1 ring-inset ring-white/10"
