@@ -4,6 +4,7 @@ import { passt } from '@core/format';
 import { VorlagenListe } from './VorlagenListe';
 import { VorlageBearbeiten } from './VorlageBearbeiten';
 import { Briefkopf } from './Briefkopf';
+import { Nummernkreise } from './Nummernkreise';
 import { startVorlagen, vorlagen } from './daten';
 
 export default defineModul({
@@ -11,12 +12,13 @@ export default defineModul({
   titel: 'Vorlagen & Formulare',
   bereich: 'betrieb',
   gruppe: 'unternehmen',
-  beschreibung: 'Texte für Angebot, Rechnung, Mahnung, E-Mail und Termin – mit Platzhaltern.',
+  beschreibung: 'Briefkopf, Textbausteine mit Variablen und Nummernkreise für alle Dokumente.',
   icon: 'dokument',
   gewicht: 56,
   routen: [
     { pfad: '', element: VorlagenListe },
     { pfad: 'briefkopf', element: Briefkopf },
+    { pfad: 'nummern', element: Nummernkreise },
     { pfad: ':id', element: VorlageBearbeiten },
   ],
   kurzinfo: () => {

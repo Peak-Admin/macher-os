@@ -1,3 +1,4 @@
+import { MissionMittelstandFoto } from "@/components/sections/MissionMittelstand";
 import Link from "next/link";
 import { PageHero } from "@/components/sections";
 import { ArrowLink, Icon, Section } from "@/components/ui";
@@ -28,6 +29,7 @@ export default function SupportKontaktPage() {
         intro="Wähle kurz dein Thema und schreib, wobei du Hilfe brauchst. Ein paar Sätze reichen."
         breadcrumbs={[{ label: "Hilfe", href: "/hilfe" }, { label: "Kontakt & Support" }]}
         actions="none"
+        visual={<MissionMittelstandFoto className="rounded-xl shadow-popover" />}
       />
 
       <Section tone="white">

@@ -16,7 +16,9 @@ export function oeffne(name: OverlayName, payload?: unknown) {
   l.forEach((f) => f());
 }
 
-export function schliesse() {
+/** Schließt das offene Overlay – mit `name` nur, wenn genau dieses noch offen ist */
+export function schliesse(name?: OverlayName) {
+  if (name !== undefined && offen?.name !== name) return;
   offen = null;
   l.forEach((f) => f());
 }
@@ -24,5 +26,7 @@ export function schliesse() {
 /** `const { offen, payload } = useOverlay('suche')` */
 export function useOverlay(name: OverlayName) {
   const o = useSyncExternalStore(sub, get, get);
-  return { offen: o?.name === name, payload: o?.name === name ? o.payload : undefined, schliessen: schliesse };
+  // Nur das eigene Overlay schließen: Ein Dialog meldet „close“ erst nach dem Schließen (asynchron) –
+  // war inzwischen ein anderes Overlay geöffnet (Suche → Macher fragen), bleibt es offen.
+  return { offen: o?.name === name, payload: o?.name === name ? o.payload : undefined, schliessen: () => schliesse(name) };
 }

@@ -15,6 +15,8 @@ import {
 } from "@core/format";
 import { useDarf, useIch, istBuero } from "@core/session";
 import { hauptaktion } from "@modules/naechster-einsatz/Einsatz";
+import { WoStehtDerAuftrag } from "@modules/ablauf/WoSteht";
+import { begriff } from "@modules/ablauf/daten";
 import type { Auftrag } from "@core/objects";
 import {
   AktionsMenue,
@@ -129,26 +131,33 @@ export function AuftragAkte() {
       }
     >
       <Stapel abstand={12}>
-        {laufend ? (
-          <Meta>
-            <strong>Arbeit läuft</strong> · {laufend.titel}
-            {schritt ? ` · Danach: ${schritt.label}` : ""}
-          </Meta>
-        ) : a.phase === "verloren" ? (
+        {a.phase === "verloren" ? (
           <Meldung ton="neutral" titel="Nicht zustande gekommen">
             {a.verlorenGrund ?? "Kein Grund angegeben."}
           </Meldung>
-        ) : schritt ? (
-          <Meta>
-            <strong>Nächster Schritt:</strong> {schritt.text}
-          </Meta>
         ) : (
-          <Meta>
-            Alles erledigt.{" "}
-            {a.abgeschlossenAm
-              ? `Abgeschlossen am ${datum(a.abgeschlossenAm)}.`
-              : ""}
-          </Meta>
+          <WoStehtDerAuftrag
+            auftrag={a}
+            naechstes={
+              laufend ? (
+                <Meta>
+                  <strong>Arbeit läuft</strong> · {laufend.titel}
+                  {schritt ? ` · Danach: ${schritt.label}` : ""}
+                </Meta>
+              ) : schritt ? (
+                <Meta>
+                  <strong>Als Nächstes:</strong> {schritt.text}
+                </Meta>
+              ) : (
+                <Meta>
+                  Alles erledigt.{" "}
+                  {a.abgeschlossenAm
+                    ? `Abgeschlossen am ${datum(a.abgeschlossenAm)}.`
+                    : ""}
+                </Meta>
+              )
+            }
+          />
         )}
         {darfSchreiben && (
           <Zeile abstand={8}>
@@ -272,7 +281,7 @@ function Kopf({ a }: { a: Auftrag }) {
         </div>
       </Karte>
       {!ortPanel && (
-        <Karte kompakt oberzeile="Einsatzort">
+        <Karte kompakt oberzeile={begriff("einsatzort")}>
           <div className="akte-info">
             {o ? (
               <>
@@ -300,7 +309,7 @@ function Kopf({ a }: { a: Auftrag }) {
                 </div>
               </>
             ) : (
-              <Meta>Noch kein Einsatzort. Trag ihn über „Bearbeiten“ ein.</Meta>
+              <Meta>Noch nicht hinterlegt. Trag die Adresse über „Bearbeiten“ ein.</Meta>
             )}
           </div>
         </Karte>

@@ -6,6 +6,7 @@ import type { Mitarbeiter, Rolle } from '@core/objects';
 import { ROLLEN, istBuero, useDarf, useIch } from '@core/session';
 import { Button, Eingabe, FormRaster, Karte, Leer, Meldung, Segmente, Seite, Stapel, useToast } from '@ui/index';
 import { einarbeitungen } from '@modules/einarbeitung/daten';
+import { wochenstundenGeaendert } from '@modules/arbeitszeiten/modell';
 import { naechsteFarbe } from './team';
 
 /** Anlegen (`/betrieb/mitarbeiter/neu`) und Bearbeiten (`/betrieb/mitarbeiter/:id/bearbeiten`) */
@@ -69,6 +70,8 @@ export function MitarbeiterForm() {
     };
     if (personal) daten.kostensatz = centAus(f.kostensatz);
     if (vorhanden) {
+      // Neue Wochenstunden gelten ab dieser Woche – vergangene Wochen rechnen weiter mit der alten Soll-Zeit
+      wochenstundenGeaendert(vorhanden.id, vorhanden.wochenstunden, std);
       db.mitarbeiter.update(vorhanden.id, daten, { text: 'Stammdaten geändert' });
       toast('Änderungen gespeichert.');
       navigate(`/betrieb/mitarbeiter/${vorhanden.id}`, { replace: true });
@@ -99,7 +102,7 @@ export function MitarbeiterForm() {
             <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} optional />
           </FormRaster>
           <FormRaster>
-            <Eingabe label="Wochenstunden laut Vertrag" inputMode="decimal" value={f.wochenstunden} onChange={set('wochenstunden')} fehler={fehler.wochenstunden} hilfe="Grundlage für Soll-Stunden und Stundenkonto." />
+            <Eingabe label="Wochenstunden laut Vertrag" inputMode="decimal" value={f.wochenstunden} onChange={set('wochenstunden')} fehler={fehler.wochenstunden} hilfe="Grundlage für Soll-Stunden und Stundenkonto. Stunden je Wochentag (Teilzeit) stellst du am Mitarbeiter unter Zeiten ein." />
             <Eingabe label="Urlaubstage pro Jahr" inputMode="numeric" value={f.urlaubstageJahr} onChange={set('urlaubstageJahr')} fehler={fehler.urlaubstageJahr} />
             <Eingabe label="Eintritt" type="date" value={f.eintritt} onChange={set('eintritt')} optional />
             <Eingabe label="Team / Kolonne" value={f.team} onChange={set('team')} optional hilfe="Zum Beispiel „Kolonne Nord“." />

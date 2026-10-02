@@ -9,6 +9,7 @@ import { einsatzHinweise } from './hinweise';
 import { STATUS_ID, terminstatusAutomation, terminstatusNachziehen } from './automationen';
 import { UNTERWEGS_AKTION, unterwegsAutomation, unterwegsSenden } from './unterwegs';
 import { ErfassenSeite } from './Erfassen';
+import { AbschlussSeite } from './Abschluss';
 
 const terminId = (p: unknown) => (p as { terminId?: ID } | undefined)?.terminId;
 
@@ -22,6 +23,8 @@ export default defineModul({
   routen: [
     { pfad: '', element: NaechsterEinsatzSeite },
     { pfad: ':id', element: EinsatzSeite },
+    // Einsatz per Sprache abschließen: „Passt das so?“ → einmal übernehmen
+    { pfad: ':id/abschliessen', element: AbschlussSeite },
     // Monteur-App: Tab „Erfassen“
     { pfad: '/erfassen', element: ErfassenSeite },
   ],

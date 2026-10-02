@@ -33,6 +33,7 @@ import { gewerkBild } from "@/content/bilder";
 import { kernaengste, weitereEinwaende } from "@/content/einwaende";
 import { testTage } from "@/content/preise";
 import { kunden, topGewerke } from "@/content/registry";
+import type { ObjektSchluessel } from "@/lib/objekte";
 import { cta, herausgeber, site } from "@/lib/site";
 
 export const metadata = {
@@ -53,11 +54,11 @@ const machtMacher: { text: string; icon: IconName }[] = [
   { text: "verfolgt offene Zahlungen", icon: "chart" },
 ];
 
-const bereiche: { titel: string; text: string; icon: IconName; href: string }[] = [
-  { titel: "Heute", text: "Was jetzt wichtig ist.", icon: "home", href: "/funktionen" },
-  { titel: "Aufträge", text: "Alles rund um Kunden und Arbeit.", icon: "clipboard", href: "/funktionen/auftraege" },
-  { titel: "Planen", text: "Was als Nächstes passiert.", icon: "calendar", href: "/funktionen/einsatzplanung" },
-  { titel: "Betrieb", text: "Mitarbeiter, Material, Geld und Unternehmen.", icon: "layers", href: "/funktionen/mitarbeiter" },
+const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSchluessel; href: string }[] = [
+  { titel: "Heute", text: "Was jetzt wichtig ist.", icon: "home", objekt: "werkzeugwand", href: "/funktionen" },
+  { titel: "Aufträge", text: "Alles rund um Kunden und Arbeit.", icon: "clipboard", objekt: "klemmbrett", href: "/funktionen/auftraege" },
+  { titel: "Planen", text: "Was als Nächstes passiert.", icon: "calendar", objekt: "zollstock", href: "/funktionen/einsatzplanung" },
+  { titel: "Betrieb", text: "Mitarbeiter, Material, Geld und Unternehmen.", icon: "layers", objekt: "werkzeugkiste", href: "/funktionen/mitarbeiter" },
 ];
 
 const gewerkIcons: Record<string, IconName> = {
@@ -238,7 +239,7 @@ export default function HomePage() {
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {bereiche.map((b) => (
-            <Card key={b.titel} title={b.titel} icon={b.icon} href={b.href}>
+            <Card key={b.titel} title={b.titel} icon={b.icon} objekt={b.objekt} href={b.href}>
               {b.text}
             </Card>
           ))}

@@ -3,6 +3,7 @@ import { Section } from "@/components/ui";
 import { auftaktBilder, gewerkBildnachweise, missionMittelstandBilder, type Bildnachweis } from "@/content/bilder";
 import { gewerkCluster, topGewerke } from "@/content/registry";
 import { pageMeta } from "@/lib/metadata";
+import { objekte } from "@/lib/objekte";
 
 export const metadata = {
   ...pageMeta({
@@ -63,6 +64,18 @@ export default function BildnachweisePage() {
         <Liste titel="Mission Mittelstand" bilder={missionMittelstandBilder} />
         <Liste titel="Markenauftakt" bilder={auftaktBilder} />
         {gewerke.length > 0 && <Liste titel="Gewerke" bilder={gewerke} />}
+        <Liste
+          titel="Werkzeug-Objekte (Website und Software)"
+          bilder={Object.values(objekte).map((o) => ({
+            src: o.src,
+            alt: o.name,
+            fotograf: o.urheber,
+            quelle: new URL(o.quelleUrl).hostname.replace(/^www\./, ""),
+            quelleUrl: o.quelleUrl,
+            lizenz: o.lizenz,
+            lizenzUrl: o.lizenzUrl || undefined,
+          }))}
+        />
       </Section>
     </>
   );

@@ -10,7 +10,7 @@ import { RechnungNeu } from './RechnungNeu';
 import { RechnungDetail } from './RechnungDetail';
 import { RechnungDruck } from './Druck';
 import { AuftragRechnungenTab, KundeRechnungenTab } from './Tabs';
-import { ART_LABEL, ENTWURF_TAGE, gueltigeRechnungen, nummerText, rechnungErstellen, rechnungsSummen } from './logik';
+import { abschlussRechnung, ART_LABEL, ENTWURF_TAGE, gueltigeRechnungen, nummerText, passendeArt, rechnungErstellen, rechnungsSummen } from './logik';
 import { alleRechnungen } from './typen';
 import { RECHNUNG_AKTIONEN, RECHNUNG_SENDEN } from './gateway';
 
@@ -62,16 +62,17 @@ export default defineModul({
     const liste = [];
     // Auftrag in Abrechnung, aber keine Rechnung
     for (const a of db.auftraege.where((x) => x.phase === 'abrechnung')) {
-      if (gueltigeRechnungen(a.id).length) continue;
+      if (abschlussRechnung(a.id) || gueltigeRechnungen(a.id).some((r) => r.status === 'entwurf')) continue;
+      const art = passendeArt(a.id);
       liste.push({
         schluessel: `rechnung-fehlt:${a.id}`,
         art: 'entscheidung' as const,
-        titel: `Rechnung schreiben: ${a.titel}`,
+        titel: `${art === 'schluss' ? 'Schlussrechnung' : 'Rechnung'} schreiben: ${a.titel}`,
         text: `${a.nummer} · ${db.kunden.get(a.kundeId)?.name ?? ''} – der Auftrag ist fertig, aber noch nicht abgerechnet.`,
         bezug: { typ: 'auftraege' as const, id: a.id },
         gewicht: 81,
         fuerRollen: ['chef' as const, 'buero' as const],
-        aktionen: [{ aktion: 'rechnung.erstellen', label: 'Rechnung erstellen', primaer: true, payload: { auftragId: a.id } }],
+        aktionen: [{ aktion: 'rechnung.erstellen', label: art === 'schluss' ? 'Schlussrechnung erstellen' : 'Rechnung erstellen', primaer: true, payload: { auftragId: a.id, art } }],
       });
     }
     // Entwürfe, die liegen bleiben
@@ -96,7 +97,7 @@ export default defineModul({
   aktionen: {
     'rechnung.erstellen': (payload) => {
       const p = payload as { auftragId: ID; art?: RechnungsArt; prozent?: number; nachAufwand?: boolean };
-      const r = rechnungErstellen(p.auftragId, p.art ?? 'rechnung', { prozent: p.prozent, nachAufwand: p.nachAufwand });
+      const r = rechnungErstellen(p.auftragId, p.art ?? passendeArt(p.auftragId), { prozent: p.prozent, nachAufwand: p.nachAufwand });
       return r ? pfad(r.id) : undefined;
     },
     'rechnung.oeffnen': (payload) => pfad((payload as { rechnungId: ID }).rechnungId),
@@ -105,7 +106,7 @@ export default defineModul({
     {
       id: 'rechnungen.entwurf-bei-abrechnung',
       titel: 'Rechnung vorbereiten, wenn der Auftrag fertig ist',
-      beschreibung: 'Kommt ein Auftrag in die Phase „Abrechnung“, legt Macher den Rechnungsentwurf aus Angebot, Material und Zeiten an.',
+      beschreibung: 'Kommt ein Auftrag in die Phase „Abrechnung“, legt Macher den Rechnungsentwurf aus Angebot, Material und Zeiten an – nach Abschlägen gleich als Schlussrechnung.',
       standardAn: true,
       minuten: 15,
       start: () =>
@@ -113,9 +114,9 @@ export default defineModul({
           const a = e.objekt as Auftrag | undefined;
           const vorher = e.vorher as Auftrag | undefined;
           if (!a || a.phase !== 'abrechnung' || vorher?.phase === 'abrechnung') return;
-          if (gueltigeRechnungen(a.id).length) return;
-          const hatAbschlag = gueltigeRechnungen(a.id).some((r) => r.art === 'abschlag');
-          const r = rechnungErstellen(a.id, hatAbschlag ? 'schluss' : 'rechnung', { vonMacher: true });
+          // schon abgerechnet oder ein Entwurf liegt bereit → nichts tun; nur Abschläge da → Schlussrechnung
+          if (abschlussRechnung(a.id) || gueltigeRechnungen(a.id).some((r) => r.status === 'entwurf')) return;
+          const r = rechnungErstellen(a.id, passendeArt(a.id), { vonMacher: true });
           if (r)
             erledigt('rechnungen.entwurf-bei-abrechnung', `Rechnungsentwurf für ${a.nummer} vorbereitet`, {
               text: `${a.titel} · ${euro(rechnungsSummen(r).zahlbetrag)}`,

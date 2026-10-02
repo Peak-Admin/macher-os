@@ -12,7 +12,19 @@ export const klein = (t: string) => t.toLowerCase();
 export const vid = () => Math.random().toString(36).slice(2, 10);
 export const gross = (t: string) => (t ? t[0].toUpperCase() + t.slice(1) : t);
 
-const STOPP = new Set(['familie', 'frau', 'herr', 'firma', 'gmbh', 'kg', 'ohg', 'gbr', 'und', 'der', 'die', 'das', 'von', 'e.k.']);
+const STOPP = new Set(['familie', 'frau', 'herr', 'herrn', 'firma', 'gmbh', 'kg', 'ohg', 'gbr', 'und', 'der', 'die', 'das', 'von', 'e', 'k', 'co', 'ag', 'baustelle']);
+
+/** Kleinbuchstaben, Umlaute ausgeschrieben, Satzzeichen weg – „Müller“ = „Mueller“ */
+export function normalisieren(t: string): string {
+  return klein(t)
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .replace(/[^\p{L}\p{N}\s-]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 export function woerter(t: string) {
   return klein(t)
@@ -21,38 +33,42 @@ export function woerter(t: string) {
     .filter(Boolean);
 }
 
-/** Mitarbeiter, dessen Vor- oder Nachname als Wort im Text vorkommt */
+const nWoerter = (t: string) => normalisieren(t).split(' ').filter(Boolean);
+
+/** Mitarbeiter, dessen Vor- oder Nachname als Wort vorkommt (Vor- und Nachname zusammen zählt mehr; Umlaute egal) */
 export function findeMitarbeiter(text: string): Mitarbeiter | undefined {
-  const w = new Set(woerter(text));
+  const w = new Set(nWoerter(text));
   const alle = db.mitarbeiter.where((m) => m.aktiv);
-  return (
-    alle.find((m) => w.has(klein(m.vorname)) && w.has(klein(m.nachname))) ??
-    alle.find((m) => w.has(klein(m.vorname))) ??
-    alle.find((m) => m.nachname.length > 2 && w.has(klein(m.nachname)))
-  );
+  const v = (m: Mitarbeiter) => normalisieren(m.vorname);
+  const n = (m: Mitarbeiter) => normalisieren(m.nachname);
+  return alle.find((m) => w.has(v(m)) && w.has(n(m))) ?? alle.find((m) => w.has(v(m))) ?? alle.find((m) => n(m).length > 2 && w.has(n(m)));
 }
 
-/** Kunde, dessen Namensbestandteile im Text vorkommen (beste Übereinstimmung) */
-export function findeKunde(text: string): Kunde | undefined {
-  const w = new Set(woerter(text));
+/** Kunde, dessen Namensbestandteile im Text vorkommen (beste Übereinstimmung). `ohne`: Wörter, die nicht zählen (z. B. Mitarbeiternamen). */
+export function findeKunde(text: string, opts: { ohne?: string[] } = {}): Kunde | undefined {
+  const ohne = new Set((opts.ohne ?? []).map(normalisieren));
+  const w = new Set(nWoerter(text).filter((x) => !ohne.has(x)));
   let best: { k: Kunde; score: number } | undefined;
   for (const k of db.kunden.all()) {
-    const teile = woerter(`${k.name} ${k.firma ?? ''}`).filter((x) => x.length >= 3 && !STOPP.has(x));
+    const teile = nWoerter(`${k.name} ${k.firma ?? ''}`).filter((x) => x.length >= 3 && !STOPP.has(x));
     const score = teile.filter((x) => w.has(x)).length;
     if (score > 0 && (!best || score > best.score)) best = { k, score };
   }
   return best?.k;
 }
 
+/** Vor- und Nachname eines Mitarbeiters – damit „Plane Jonas … bei Schneider“ Jonas nicht für einen Kunden hält */
+export const namenVon = (m?: Mitarbeiter) => (m ? [m.vorname, m.nachname] : []);
+
 export const stand = (k: Kontext) => `Stand ${uhrzeit(k.jetzt.toISOString())} Uhr`;
 
 export const LAUFEND: Phase[] = ['in_arbeit', 'beauftragt', 'abnahme', 'abrechnung'];
 
 /** Auftrag aus Auftragsnummer oder Kundenname – bevorzugt in der Reihenfolge von `phasen`, dann zuletzt geändert */
-export function findeAuftrag(text: string, phasen: Phase[] = LAUFEND): Auftrag | undefined {
+export function findeAuftrag(text: string, phasen: Phase[] = LAUFEND, opts: { ohne?: string[] } = {}): Auftrag | undefined {
   const nr = text.match(/\bA-\d{4}-\d{3,4}\b/i);
   if (nr) return db.auftraege.where((a) => a.nummer.toLowerCase() === nr[0].toLowerCase())[0];
-  const kunde = findeKunde(text);
+  const kunde = findeKunde(text, opts);
   if (!kunde) return undefined;
   return db.auftraege
     .where((a) => a.kundeId === kunde.id && phasen.includes(a.phase))

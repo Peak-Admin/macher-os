@@ -1,3 +1,4 @@
+import { aktionVorhanden } from '@core/modul';
 import { appPfad } from '@core/basis';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -187,6 +188,11 @@ export function AngebotDetail() {
                         Abgelehnt
                       </Button>
                     </>
+                  )}
+                  {entwurf && aktuell && aktionVorhanden('angebot.lv_importieren') && (
+                    <Button variante="sekundaer" icon="upload" breit to={`/betrieb/schnittstellen/gaeb?auftrag=${a.auftragId}`}>
+                      Leistungsverzeichnis einlesen
+                    </Button>
                   )}
                   {entwurf && (
                     <Button

@@ -39,13 +39,25 @@ Score = Frequenz (1–10) × Intensität (1–10). Sicht: Chef, Büro, Monteur a
 - ArbZG-Prüfung (6/9/10 h, 11 h Ruhezeit)
 - CSV-Export (Semikolon, Dezimalkomma, BOM)
 
+## Regelwerk (Delta 10)
+- Arbeitszeitmodell je Mitarbeiter: Stunden je Wochentag (Teilzeit, kurzer Freitag, Samstag), versioniert ab Datum
+- Automatischer Pausenabzug nach §4 ArbZG (gestaffelt: nur was fehlt), abschaltbar
+- Zeitarten für den Lohn: Baustelle, Fahrt, Intern (Werkstatt + Büro)
+- Stundenkonto läuft über Jahre; Feiertage aus `@core/kalender`; Urlaub/Krank/Schule zählen als erfüllt, Überstundenabbau nicht
+- Kontobuchungen mit Pflicht-Grund: Übertrag aus altem System, ausgezahlte Überstunden, Korrektur
+- Korrektur einer Zeit nur mit Grund, Verlauf am Eintrag sichtbar
+- Wochenfreigabe (Hinweis je abgeschlossener Woche), Event `zeit.freigegeben`
+- Monat & Lohn: Vorschau je Mitarbeiter, Monatsübersicht als CSV (Summen je Zeitart, Überstunden, Abwesenheitstage, Feiertage)
+- Monteur sieht nur „Diese Woche: 38 von 40 Std“ und seinen Kontostand
+
 ## Macher erledigt automatisch
 - Stempeln über Terminstatus (unterwegs → Fahrt, vor Ort → Arbeit, erledigt → Stopp)
 - Vergessene Zeit auf Terminen zum Terminende beenden (zur Prüfung markiert)
-- Hinweise: Zeit läuft seit gestern (1-Tap-Beenden), keine Zeiten gestern, ArbZG, Freigabe
+- Hinweise: Zeit läuft seit gestern (1-Tap-Beenden), keine Zeiten gestern (nur an Tagen mit Soll), fehlende Pause / ArbZG,
+  Wochenfreigabe offen, Stundenkonto stark im Plus (freie Tage eintragen) oder Minus (Zeiten prüfen)
 
 ## Bewusst weggelassen (Pareto)
 - GPS/Geofencing
-- Zuschläge, Lohnarten, Schichtmodelle
+- Zuschläge, Lohnarten, Schichtmodelle, DATEV-Lohn-Format (CSV-Monatsübersicht reicht dem Lohnbüro)
 - Direkte Lohn-Schnittstelle (CSV reicht)
 - Stempel-Terminal

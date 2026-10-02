@@ -7,7 +7,7 @@ import { defineCollection, vermerken } from '@core/db';
 import { euro } from '@core/format';
 import type { Auftrag, Basis, Cent, Einheit, ID, Position, Rechnung, Zeitpunkt } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
-import { rechnungAendern, type RechnungX } from '@modules/rechnungen/typen';
+import { rechnungAendern } from '@modules/rechnungen/typen';
 import { unterschriftSpeichern, type UnterschriftDaten } from '@modules/abnahme/unterschrift';
 import type { UnterschriftEingabe } from '@ui/index';
 
@@ -154,7 +154,7 @@ export function anRechnungHaengen(r: Rechnung): number {
   if (!rechnungNimmtNachtraege(r)) return 0;
   const offen = abrechenbareZu(r.auftragId!);
   if (!offen.length) return 0;
-  const vorher = (r as RechnungX).zusatzleistungIds ?? [];
+  const vorher = r.zusatzleistungIds ?? [];
   rechnungAendern(
     r.id,
     { positionen: positionenAnhaengen(r.positionen, offen), zusatzleistungIds: [...vorher, ...offen.map((z) => z.id).filter((id) => !vorher.includes(id))] },

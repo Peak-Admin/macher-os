@@ -11,13 +11,15 @@ import { alleSammlungen, batch, db, sammlung, type Neu } from '@core/db';
 import { cloud, cloudAktiv } from '@core/cloud';
 import { setzeEinstellung, einstellung } from '@core/einstellungen';
 import { emit } from '@core/events';
-import { gewerkVorlage, type LeistungVorlage } from '@core/gewerke';
+import { VORLAGE_KEY, gewerkVorlage, vorlageFuer, type FachrichtungId, type LeistungVorlage, type Vorlage } from '@core/gewerke';
 import type { Bundesland } from '@core/kalender';
-import { automationAn } from '@core/macher';
+import { automationAn, setzeAutomation } from '@core/macher';
 import { messen } from '@core/messung';
 import { alleAutomationen, alleModule } from '@core/modul';
 import type { Gewerk, ID, Kunde, Rolle } from '@core/objects';
-import { beispieleEntfernen, einrichten, sicherungVerwerfen } from '@core/seed';
+import { beispieleEntfernen, einrichten, preisAnpassen, sicherungVerwerfen } from '@core/seed';
+import { checklistenVorlagen } from '@modules/checklisten/daten';
+import { feldvorlagenAnwenden } from '@modules/felder/daten';
 import { dublettenGruende, normEmail, normTelefon } from '@modules/kunden/daten';
 import { istXlsx, xlsxZeilen } from './xlsx';
 
@@ -583,6 +585,8 @@ export function einladungsText(name: string, betrieb: string, link: string): str
 
 export interface SetupAntworten {
   gewerk: Gewerk;
+  /** feinere Vorlage (Solar, Fensterbau, Gebäudereinigung); ohne Angabe gilt die Wahl aus dem Preisschritt */
+  fachrichtung?: FachrichtungId;
   briefkopf: BriefkopfEntwurf;
   kunden: Neu<Kunde>[];
   preise: Preise;
@@ -599,12 +603,85 @@ export interface SetupErgebnis {
 
 export const BRIEFKOPF_KEY = 'vorlagen.briefkopf';
 
+// ------------------------------------------------------------------ Gewerk-Vorlage (Schwerpunkt)
+
+/** Im Preisschritt gewählter Schwerpunkt (z. B. Solar bei Elektro) – gilt bis zum Einrichten */
+let schwerpunkt: FachrichtungId | undefined;
+export const gewaehlterSchwerpunkt = () => schwerpunkt;
+export function setzeSchwerpunkt(id: FachrichtungId | undefined) {
+  schwerpunkt = id;
+}
+
+/**
+ * Vorkonfiguration aus der Gewerk-Vorlage, die nicht schon `einrichten` erledigt: gewählte Fachrichtung merken
+ * (Abläufe und Begriffe folgen daraus), fehlendes Material und Qualifikationen der Fachrichtung, zusätzliche
+ * Checklisten, abweichende Automationen. Alles ohne Dubletten – mehrfach aufrufen ändert nichts.
+ */
+export function vorlageAnwenden(v: Vorlage): { artikel: number; qualifikationen: number; checklisten: number; felder: number } {
+  const n = { artikel: 0, qualifikationen: 0, checklisten: 0, felder: 0 };
+  const name = (x: string) => x.trim().toLowerCase();
+  batch(() => {
+    if (v.id !== v.gewerk) setzeEinstellung(VORLAGE_KEY, v.id);
+    const artikel = new Set(db.artikel.all().map((x) => name(x.name)));
+    const lieferantId = db.lieferanten.all()[0]?.id;
+    for (const x of v.artikel) {
+      if (artikel.has(name(x.name))) continue;
+      db.artikel.create({
+        name: x.name,
+        einheit: x.einheit,
+        ek: Math.round(x.ek * 100),
+        vk: Math.round(x.vk * 100),
+        kategorie: x.kategorie,
+        mindestbestand: x.mindestbestand,
+        bestand: x.mindestbestand ? Math.round(x.mindestbestand * 1.5) : undefined,
+        lagerort: x.mindestbestand ? 'Hauptlager' : undefined,
+        lieferantId,
+        aktiv: true,
+      });
+      n.artikel++;
+    }
+    const quali = new Set(db.qualifikationen.all().map((q) => name(q.name)));
+    for (const q of v.qualifikationen) {
+      if (quali.has(name(q.name))) continue;
+      db.qualifikationen.create({ ...q });
+      n.qualifikationen++;
+    }
+    const listen = new Set(checklistenVorlagen.all().map((c) => name(c.name)));
+    for (const c of v.checklisten) {
+      if (listen.has(name(c.name))) continue;
+      checklistenVorlagen.create({
+        name: c.name,
+        beschreibung: `Aus der Vorlage ${v.label}`,
+        gewerke: [v.gewerk],
+        arten: c.arten,
+        automatisch: false,
+        aktiv: true,
+        punkte: c.punkte.map((text, i) => ({ id: `p${i + 1}`, text })),
+      });
+      n.checklisten++;
+    }
+  });
+  // Aufmaß-/Formularfelder des Gewerks gleich mitbringen – der Betrieb muss nichts einrichten
+  n.felder = feldvorlagenAnwenden(v.felder).angelegt.length;
+  const bekannt = new Set(alleAutomationen().map((x) => x.id));
+  for (const id of v.automationen.an) if (bekannt.has(id)) setzeAutomation(id, true);
+  for (const id of v.automationen.aus) if (bekannt.has(id)) setzeAutomation(id, false);
+  return n;
+}
+
 export function setupEinrichten(a: SetupAntworten): SetupErgebnis {
-  const v = gewerkVorlage(a.gewerk);
+  const fachrichtung = a.fachrichtung ?? schwerpunkt;
+  const v = vorlageFuer(a.gewerk, fachrichtung);
   const b = a.briefkopf;
-  const eigene = a.preise.art === 'eigen' ? a.preise.liste.filter((l) => l.an) : [];
   const faktor = a.preise.art === 'vorlage' ? 1 + a.preise.prozent / 100 : 1;
-  const stundensatz = b.stundensatz > 0 ? b.stundensatz : undefined;
+  // Fachrichtung: ihre Leistungen statt der des Basis-Gewerks (mit dem Regler angepasst)
+  const eigene =
+    a.preise.art === 'eigen'
+      ? a.preise.liste.filter((l) => l.an)
+      : v.id !== a.gewerk
+        ? v.leistungen.map((l) => ({ ...l, preis: preisAnpassen(l.preis, faktor), an: true }))
+        : [];
+  const stundensatz = b.stundensatz > 0 ? b.stundensatz : v.id !== a.gewerk ? preisAnpassen(v.stundensatz, faktor) : undefined;
 
   einrichten({
     betriebName: b.name.trim(),
@@ -615,7 +692,7 @@ export function setupEinrichten(a: SetupAntworten): SetupErgebnis {
     chefNachname: nameTeilen(b.inhaber).nachname,
     beispiele: false,
     preisFaktor: faktor,
-    eigeneLeistungen: eigene.length ? eigene.map((l) => ({ name: l.name, einheit: l.einheit, preis: l.preis, kategorie: l.kategorie })) : undefined,
+    eigeneLeistungen: eigene.length ? eigene.map((l) => ({ name: l.name, einheit: l.einheit, preis: l.preis, kategorie: l.kategorie, minuten: (l as { minuten?: number }).minuten })) : undefined,
     betrieb: {
       adresse: { strasse: b.strasse.trim(), plz: b.plz.trim(), ort: b.ort.trim() },
       telefon: b.telefon.trim(),
@@ -629,6 +706,9 @@ export function setupEinrichten(a: SetupAntworten): SetupErgebnis {
     },
     team: a.team.map((m) => ({ id: m.id, ...nameTeilen(m.name), telefon: m.telefon.trim(), rolle: m.rolle })),
   });
+
+  vorlageAnwenden(v);
+  setzeSchwerpunkt(undefined);
 
   const bundesland = bundeslandAusPlz(b.plz);
   batch(() => {

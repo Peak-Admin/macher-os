@@ -26,9 +26,35 @@ function anrede(k: Kunde): string {
 }
 
 /** Einfache Vorlage, wenn kein Modell angeschlossen ist – bewusst schlicht, der Mensch kann sie ändern */
-export function vorlage(k: Kunde, inhalt: string): string {
+export function vorlage(k: Kunde, inhalt: string, anredeText?: string): string {
   const satz = gross(inhalt.trim().replace(/[.!\s]+$/, ''));
-  return `${anrede(k)},\n\n${satz}.\n\nViele Grüße\n${betriebName()}`.trim();
+  return `${anredeText ?? anrede(k)},\n\n${satz}.\n\nViele Grüße\n${betriebName()}`.trim();
+}
+
+const PRONOMEN = new Set(['wir', 'ich', 'er', 'sie', 'es', 'der', 'die', 'das', 'unser', 'unsere']);
+
+/** „wir morgen um 8 Uhr kommen“ → „wir kommen morgen um 8 Uhr“ (Verb aus dem dass-Satz nach vorn) */
+export function hauptsatz(nebensatz: string): string {
+  const w = nebensatz.trim().replace(/[.!]+$/, '').split(/\s+/).filter(Boolean);
+  if (w.length >= 3 && PRONOMEN.has(w[0].toLowerCase())) {
+    const verb = w.pop()!;
+    return [w[0], verb, ...w.slice(1)].join(' ');
+  }
+  return w.join(' ');
+}
+
+/** Satz für die Vorlage: Hauptsatz, „morgen“ mit Datum, „um 8 Uhr“ → „um 8:00 Uhr“ */
+export function nachrichtSatz(inhalt: string, heute: Datum): string {
+  let satz = hauptsatz(inhalt);
+  const z = zeitraumAus(satz, heute);
+  if (z?.tag && /\b(morgen|übermorgen|heute)\b/i.test(satz)) satz = satz.replace(/\b(übermorgen|morgen|heute)\b/i, (w) => `${w} (${datumKurz(z.von)})`);
+  return satz.replace(/\bum (\d{1,2})\s*uhr\b/i, (_, h) => `um ${h}:00 Uhr`);
+}
+
+/** „Schreib Frau Müller, …“ → „Guten Tag Frau Müller“ – so, wie der Mensch den Kunden nennt */
+export function anredeAusText(text: string): string | undefined {
+  const m = text.match(/\b(Frau|Herrn?|Familie)\s+([A-ZÄÖÜ][\p{L}-]+)/u);
+  return m ? `Guten Tag ${m[1] === 'Herrn' ? 'Herr' : m[1]} ${m[2]}` : undefined;
 }
 
 /** „…, dass wir später kommen“ → „wir später kommen“ – der Kern der Nachricht */
@@ -169,7 +195,7 @@ function kundenSchreiben(k: Kontext, frage: string, modellText?: string): Antwor
   const inhalt = anliegen(frage);
   if (!inhalt && !modellText) return { absicht: 'nachricht-unklar', text: `Was soll ${kunde.name} erfahren? Zum Beispiel: „Schreib ${kunde.name}, dass wir gegen neun kommen“.` };
   const a = findeAuftrag(frage, [...LAUFEND, 'angebot', 'besichtigung', 'anfrage']);
-  const text = modellText ?? vorlage(kunde, inhalt);
+  const text = modellText ?? vorlage(kunde, nachrichtSatz(inhalt, k.heute), anredeAusText(frage));
   const plan: Plan = {
     titel: `Nachricht an ${kunde.name}`,
     schritte: schritte([{ aktion: 'message.send', absicht: 'message.send', daten: { kundeId: kunde.id, auftragId: a?.id, text }, label: `An ${kunde.email || kunde.telefon || kunde.name} senden`, textFeld: { feld: 'text', label: 'Nachricht' } }]),

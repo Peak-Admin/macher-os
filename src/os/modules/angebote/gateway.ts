@@ -22,6 +22,7 @@ export const ANGEBOT_AKTIONEN: AktionDef<AngebotSendenDaten>[] = [
     id: 'offer.send',
     titel: 'Angebot versendet',
     risiko: 'kritisch',
+    endgueltig: 'Ein gesendetes Angebot lässt sich nicht zurückholen.',
     rechte: ['veroeffentlichen'],
     pruefe: (d) => {
       const a = db.angebote.get(d.angebotId);

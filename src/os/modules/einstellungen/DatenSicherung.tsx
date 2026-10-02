@@ -98,6 +98,17 @@ export function DatenSicherung() {
           </Stapel>
         </Karte>
 
+        <Karte titel="Daten übernehmen">
+          <Stapel>
+            <Meta>Kunden, Artikel, Preise oder offene Rechnungen aus Excel oder deinem alten Programm übernehmen. Macher erkennt die Spalten selbst.</Meta>
+            <div>
+              <Button variante="sekundaer" icon="upload" to="/betrieb/import">
+                Daten übernehmen
+              </Button>
+            </div>
+          </Stapel>
+        </Karte>
+
         <Karte titel="Beispieldaten">
           <Stapel>
             {beispiele ? (

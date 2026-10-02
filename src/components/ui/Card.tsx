@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import type { ObjektSchluessel } from "@/lib/objekte";
 import { Icon, IconTile, type IconName } from "./Icon";
+import { Objekt } from "./Objekt";
 
 /** Einfache Karte. Mit `href` wird die ganze Karte klickbar. */
 export function Card({
@@ -10,9 +12,12 @@ export function Card({
   icon,
   iconTone,
   eyebrow,
+  objekt,
   className = "",
 }: {
   title: ReactNode;
+  /** Objektbild oben in der Karte (statt Icon) – ein starkes Objekt pro Karte */
+  objekt?: ObjektSchluessel;
   children?: ReactNode;
   href?: string;
   icon?: IconName;
@@ -22,7 +27,11 @@ export function Card({
 }) {
   const body = (
     <>
-      {icon && <IconTile name={icon} tone={iconTone} className="mb-4" />}
+      {objekt ? (
+        <Objekt objekt={objekt} className="-mx-2 -mt-2 mb-5" />
+      ) : (
+        icon && <IconTile name={icon} tone={iconTone} className="mb-4" />
+      )}
       {eyebrow && <div className="mb-2 text-xs font-semibold font-tagline uppercase tracking-wider text-muted">{eyebrow}</div>}
       <h3 className="font-display text-xl font-semibold leading-snug">
         {title}

@@ -10,6 +10,7 @@ export const BEWERTUNG_AKTIONEN: AktionDef<{ auftragId: ID }>[] = [
     id: 'review.request',
     titel: 'Bewertung angefragt',
     risiko: 'kritisch',
+    endgueltig: 'Eine gesendete Anfrage lässt sich nicht zurückholen.',
     rechte: ['veroeffentlichen'],
     pruefe: (d) => {
       const a = db.auftraege.get(d.auftragId);

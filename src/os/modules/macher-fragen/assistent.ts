@@ -12,9 +12,11 @@ import { datum, datumKurz, euro, personName, relativ, summen, tage as tageIn, uh
 import { offeneHinweise } from '@core/macher';
 import { pfadZu, sucheUeberall, type Ton } from '@core/modul';
 import type { Angebot, Bezug, Datum, ID, Phase, Rechnung, Termin } from '@core/objects';
-import { frage as gatewayFrage, type AbsichtDef, type Plan, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal } from '@core/gateway';
+import { frage as gatewayFrage, type AbsichtDef, type Plan, type AktionDef, type GatewayAntwort, type GatewayKontext, type Kanal, type OeffnenLink } from '@core/gateway';
 import { zeitraumAus, type Zeitraum } from './zeit';
+import { rechnungsVorschau } from '../rechnungen/logik';
 import { AKTIONS_ABSICHTEN } from './aktionen';
+import { MEHR_ABSICHTEN, auftragEintrag } from './absichten';
 import { FRAGE, LAUFEND, findeAuftrag, findeKunde, findeMitarbeiter, gross, klein, planAntwort, schritte, stand, woerter } from './hilfen';
 
 export { FRAGE, LAUFEND, findeAuftrag, findeKunde, findeMitarbeiter, gross, klein, planAntwort, schritte, stand };
@@ -46,12 +48,18 @@ export interface PlanSchrittStand {
   status: 'ausgefuehrt' | 'fehler' | 'uebersprungen';
   text?: string;
   bezug?: Bezug;
+  /** Verlaufseinträge (Audit) des Schritts – für „Rückgängig“ */
+  eintraege?: ID[];
+  /** Links, die der Mensch selbst öffnet (mailto: …) */
+  oeffnen?: OeffnenLink[];
+  /** gesetzt, wenn sich der Schritt nicht zurücknehmen lässt */
+  endgueltig?: string;
 }
 
 export type Vorschlag =
   | { id: string; art: 'aufgabe'; label: string; entwurf: AufgabeEntwurf; status: 'entwurf' | 'ausgefuehrt' | 'verworfen'; ergebnisId?: ID }
   /** eine oder mehrere strukturierte Aktionen – erst nach Bestätigung über den Gateway ausgeführt */
-  | { id: string; art: 'plan'; label: string; plan: Plan; status: 'entwurf' | 'ausgefuehrt' | 'verworfen'; ergebnisse?: PlanSchrittStand[] }
+  | { id: string; art: 'plan'; label: string; plan: Plan; status: 'entwurf' | 'ausgefuehrt' | 'verworfen' | 'zurueckgenommen'; ergebnisse?: PlanSchrittStand[] }
   | { id: string; art: 'oeffnen'; label: string; pfad: string };
 
 export interface Antwort {
@@ -515,7 +523,7 @@ function auftragFertig(k: Kontext, frage: string): Antwort {
   );
 }
 
-const PHASE_LABEL: Partial<Record<Phase, string>> = { beauftragt: 'Beauftragt', in_arbeit: 'In Arbeit', abnahme: 'Abnahme', abrechnung: 'Abrechnung' };
+const PHASE_LABEL: Partial<Record<Phase, string>> = { anfrage: 'Anfrage', besichtigung: 'Besichtigung', angebot: 'Angebot', beauftragt: 'Beauftragt', in_arbeit: 'In Arbeit', abnahme: 'Abnahme', abrechnung: 'Abrechnung' };
 
 /** „Schreib bei Müller noch zwei Stunden Nacharbeit auf das Projekt.“ */
 function zeitErfassen(k: Kontext, frage: string): Antwort {
@@ -574,17 +582,42 @@ function angebotSenden(k: Kontext, frage: string): Antwort {
 /** „Mach aus dem Auftrag von Schneider schon mal eine Rechnung.“ */
 function rechnungVorbereiten(k: Kontext, frage: string): Antwort {
   const a = findeAuftrag(frage, ['abrechnung', 'abnahme', 'in_arbeit', 'beauftragt']);
-  if (!a) return { absicht: 'auftrag-unklar', text: 'Für welchen Auftrag? Nenn mir den Kunden oder die Auftragsnummer.' };
+  if (!a) {
+    const kunde = findeKunde(frage);
+    const frueh = kunde && findeAuftrag(frage, ['angebot', 'besichtigung', 'anfrage']);
+    if (frueh) return { absicht: 'rechnung-zu-frueh', text: `${frueh.titel} (${frueh.nummer}) ist erst im Schritt „${PHASE_LABEL[frueh.phase] ?? frueh.phase}“. Es gibt noch nichts abzurechnen.`, eintraege: [auftragEintrag(frueh)] };
+    return { absicht: 'auftrag-unklar', text: kunde ? `Bei ${kunde.name} gibt es keinen offenen Auftrag zum Abrechnen.` : 'Für welchen Auftrag? Nenn mir den Kunden oder die Auftragsnummer, z. B. „Mach Müller die Rechnung fertig“.' };
+  }
+  const kunde = db.kunden.get(a.kundeId)?.name ?? 'Kunde';
+  // Liegt schon ein Entwurf? Dann keinen zweiten anlegen – prüfen und versenden.
+  const entwurf = db.rechnungen.where((r) => r.auftragId === a.id && r.status === 'entwurf')[0];
+  if (entwurf)
+    return {
+      absicht: 'rechnung-entwurf-da',
+      text: `Für ${kunde} liegt schon ein Rechnungsentwurf. Prüf ihn und versende ihn dann.`,
+      eintraege: [{ titel: `Rechnungsentwurf · ${entwurf.titel}`, untertitel: `${euro(summen(entwurf.positionen, db.betrieb.get('betrieb')?.ustSatz ?? 19).netto)} netto`, pfad: pfadZu({ typ: 'rechnungen', id: entwurf.id }), status: { ton: 'aktiv', text: 'Entwurf' } }],
+      folgefragen: [`Schick die Rechnung an ${kunde}`],
+    };
   const plan: Plan = {
     titel: `Rechnung für ${a.nummer} vorbereiten`,
     schritte: schritte([{ aktion: 'invoice.create_draft', absicht: 'invoice.create_draft', daten: { auftragId: a.id }, label: `Rechnungsentwurf für ${a.nummer} vorbereiten` }]),
   };
-  return planAntwort(
-    'rechnung-entwurf',
-    `${a.titel} bei ${db.kunden.get(a.kundeId)?.name ?? 'Kunde'}: Macher übernimmt Leistungen, Material und Zeiten in einen Entwurf. Versendet wird nichts.`,
-    plan,
-    `Auftrag ${a.nummer} · ${stand(k)}`,
-  );
+  // Vorschau: was in den Entwurf kommt (Positionen, Summe, Hinweise zum Prüfen)
+  const v = rechnungsVorschau(a.id);
+  const netto = summen(v.positionen, db.betrieb.get('betrieb')?.ustSatz ?? 19).netto;
+  return {
+    ...planAntwort(
+      'rechnung-entwurf',
+      `${a.titel} bei ${kunde}: Macher übernimmt Leistungen, Material und Zeiten in einen Entwurf. Versendet wird nichts.`,
+      plan,
+      `Auftrag ${a.nummer} · ${stand(k)}`,
+    ),
+    eintraege: [
+      auftragEintrag(a),
+      { titel: `${anzahl(v.positionen.length, 'Position', 'Positionen')} · ${euro(netto)} netto`, untertitel: v.quellen.join(' · ') || undefined },
+      ...v.hinweise.map((h): AntwortEintrag => ({ titel: h, status: { ton: 'achtung', text: 'Prüfen' } })),
+    ],
+  };
 }
 
 
@@ -608,6 +641,8 @@ export const ABSICHTEN: Def[] = [
     erkenne: (t) => /\baufgabe\b/.test(klein(t)) && /\b(leg|lege|erstell|erstelle|anlegen|neue|mach|notier|notiere)\b/.test(klein(t)),
     beantworte: (t, _e, k) => aufgabeAnlegen(k, t),
   },
+  // Was fehlt, einplanen, Material bestellen, an Rechnungen erinnern – vor „Erinnerung anlegen“ und den Fragen
+  ...MEHR_ABSICHTEN,
   {
     id: 'reminder.create',
     titel: 'Erinnerung anlegen',
