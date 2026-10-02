@@ -2,7 +2,7 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { Icon, type IconName } from "@/components/ui/Icon";
+import { Icon, IconTile, type IconName } from "@/components/ui/Icon";
 
 /**
  * Klickbare Vorschau von Macher OS – nachgebaut nach der echten Oberfläche (Spielwiese, Oktober 2026):
@@ -654,9 +654,7 @@ function Betrieb({ gehe }: { gehe: (a: Ansicht) => void }) {
             onClick={() => k.ziel && gehe(k.ziel)}
             className="flex items-start gap-2.5 rounded-xl border border-line bg-white p-3 text-left transition-colors duration-150 hover:border-line-dark"
           >
-            <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-signal-soft text-signal-dark">
-              <Icon name={k.icon} className="size-4" />
-            </span>
+            <IconTile name={k.icon} className="size-8" />
             <span className="min-w-0">
               <span className="block font-display text-[15px] font-bold text-ink">{k.titel}</span>
               <span className="block text-[11px] text-muted">{k.unter}</span>

@@ -38,7 +38,27 @@ Nur für diesen einen Einstiegsmoment – im Arbeitsalltag bleibt der flache Pri
 
 - Software: `WeiterButton` in `src/os/modules/onboarding/Willkommen.tsx`, Klassen `.ob-weiter*`
 
-### Themen-Icon-Kacheln (abgelöst – helle Grünfläche, dunkelgrünes Icon)
+### Glas-Icons (Themen-Icons, Oktober 2026 – gelten für Website und Software)
+Jedes Themen-Icon ab ca. 32 px ist ein **Glas-Icon**: hinten eine deckende Form mit Verlauf Logogrün `#2f9250` →
+Aktionsgrün `#0d6b45`, davor eine Milchglasform (oben links helle Grünfläche `#e8f2ec` fast deckend, unten rechts
+Logogrün durchscheinend, feine weiße Kante), durch die die hintere Form weich verschwommen leuchtet. Details stehen in
+Aktionsgrün auf dem Glas, weiß auf der hinteren Form. Keine Kachel dahinter. Immer mit Textlabel daneben (dekorativ).
+
+- Bibliothek: `src/os/ui/glas.tsx` (`GlasIcon`, 61 Motive, Raster 48 × 48) – eine Quelle für Website und Software
+- Farben nur über `--glas-hell`, `--glas-dunkel`, `--glas-milch`, `--glas-licht`
+  (Website: `src/app/globals.css`, Software: `src/os/ui/tokens.css`)
+- Website: `IconTile` (`src/components/ui/Icon.tsx`) zeigt zum Strich-Icon automatisch das Glas-Icon (Standard 44 px);
+  Mega-Menü 36 px
+- Software: `ThemenIcon` in Modulkacheln, Auswahl- und Start-Karten, Verzeichnis, Home- und News-Kacheln und
+  Leerzuständen; die Kachelfläche entfällt, sobald ein Glas-Icon darin steht
+- Wo ein Objektbild (`MacherAsset`, `docs/design/visual-assets.md`) vorgesehen ist, bleibt das Foto; das Glas-Icon
+  ist die Form für alle übrigen Themen
+- Mega-Menü: Icons nur an den Einträgen, nicht zusätzlich an den Gruppenüberschriften (keine doppelten Motive)
+- Bedien-Icons (Pfeile, Schließen, Menü, Plus im Button, Haken im Button, Status) und alles unter 32 px bleiben
+  Strich-Icons in Textfarbe – ebenso die Sidebar-Navigation
+- Neue Motive in `glas.tsx` ergänzen und in den Zuordnungen (`IconTile` bzw. `glasFuer`) eintragen
+
+### Themen-Icon-Kacheln (abgelöst durch Glas-Icons – gilt nur noch für Strich-Icons ohne Glas-Motiv)
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.
 Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon allein darf keine Information tragen).
 

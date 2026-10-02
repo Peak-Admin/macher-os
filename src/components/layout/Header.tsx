@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type FocusEvent, type MouseEvent } from "react";
 import { BtnPfeil } from "@/components/ui/Button";
+import { GlasIcon } from "@/os/ui/glas";
 import { Icon } from "@/components/ui/Icon";
 import { cta, mainNav, type Mega, type MegaGewerk, type MegaGruppe, type MegaVorschau, type NavItem } from "@/lib/site";
 import { Logo } from "./Logo";
@@ -290,21 +291,15 @@ function MegaPanel({ item, maxHoehe }: { item: MegaItem; maxHoehe: string }) {
 function Gruppe({ gruppe }: { gruppe: MegaGruppe }) {
   return (
     <div className="min-w-0">
-      <h3 className="mb-3 flex items-center gap-3 text-lg font-semibold leading-snug text-signal-dark">
-        {gruppe.icon && (
-          <span aria-hidden className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-signal-soft text-primary ring-1 ring-primary/15">
-            <Icon name={gruppe.icon} className="size-5" />
-          </span>
-        )}
-        {gruppe.titel}
-      </h3>
+      <h3 className="mb-3 text-lg font-semibold leading-snug text-signal-dark">{gruppe.titel}</h3>
       <ul>
         {gruppe.links.map((l) => (
           <li key={l.href + l.label}>
             <Link
               href={l.href}
-              className="-mx-2 flex min-h-12 items-center rounded-md px-2 py-2.5 text-base font-medium leading-snug text-ink transition-colors duration-150 ease-out hover:bg-signal-soft hover:text-signal-dark hover:underline hover:underline-offset-4 focus-visible:bg-signal-soft"
+              className="-mx-2 flex min-h-12 items-center gap-3 rounded-md px-2 py-1.5 text-base font-medium leading-snug text-ink transition-colors duration-150 ease-out hover:bg-signal-soft hover:text-signal-dark hover:underline hover:underline-offset-4 focus-visible:bg-signal-soft"
             >
+              <GlasIcon name={l.icon} className="size-9 shrink-0" />
               {l.label}
             </Link>
           </li>
@@ -537,18 +532,12 @@ function MobileUnteransicht({ mega }: { mega: Mega }) {
       <div className="grid gap-6">
         {mega.gruppen.map((gr) => (
           <div key={gr.titel}>
-            <h4 className="mb-1 flex items-center gap-2.5 text-base font-bold text-signal-dark">
-              {gr.icon && (
-                <span aria-hidden className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-signal-soft text-primary">
-                  <Icon name={gr.icon} className="size-4" />
-                </span>
-              )}
-              {gr.titel}
-            </h4>
+            <h4 className="mb-1 text-base font-bold text-signal-dark">{gr.titel}</h4>
             <ul>
               {gr.links.map((l) => (
                 <li key={l.href + l.label}>
-                  <Link href={l.href} className="flex min-h-12 items-center border-b border-line py-2.5 text-base font-medium">
+                  <Link href={l.href} className="flex min-h-14 items-center gap-3 border-b border-line py-2 text-base font-medium">
+                    <GlasIcon name={l.icon} className="size-9 shrink-0" />
                     {l.label}
                   </Link>
                 </li>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Container, Icon, type IconName } from "@/components/ui";
+import { Container, Icon, IconTile, type IconName } from "@/components/ui";
 import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import type { BildKey } from "@/content/bilder";
 
@@ -118,9 +118,7 @@ export function BereichsKarte({
         className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,color-mix(in_oklab,var(--color-ink)_35%,transparent)_0%,transparent_30%,color-mix(in_oklab,var(--color-ink)_75%,transparent)_65%,color-mix(in_oklab,var(--color-signal)_85%,var(--color-ink))_100%)]"
       />
       {icon ? (
-        <span className="inline-flex size-10 items-center justify-center rounded-md icon-kachel">
-          <Icon name={icon} className="size-5" />
-        </span>
+        <IconTile name={icon} className="size-10" />
       ) : (
         <span />
       )}

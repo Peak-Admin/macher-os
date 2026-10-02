@@ -2,7 +2,7 @@
 import { useEinstellung } from '@core/einstellungen';
 import { heute } from '@core/format';
 import type { Mitarbeiter } from '@core/objects';
-import { BeispielMarke, Button, Icon, IconButton } from '@ui/index';
+import { BeispielMarke, Button, IconButton, ThemenIcon } from '@ui/index';
 import { homeMessen } from './messen';
 import { aktuelleAnkuendigung } from './quellen/filter';
 import { homeInhalte, useLaden } from './quellen/inhalte';
@@ -21,7 +21,7 @@ export function AnkuendigungBanner({ ich }: { ich: Mitarbeiter }) {
         <img className="mm-home-banner-bild" src={a.bildUrl} alt="" width={48} height={48} />
       ) : (
         <span className="mm-home-kachel" aria-hidden>
-          <Icon name="kalender" />
+          <ThemenIcon name="kalender" size={44} />
         </span>
       )}
       <div className="mm-home-banner-text">
