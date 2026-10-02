@@ -318,9 +318,7 @@ function EntscheidungsKarte({ z, setZ }: { z: HeuteZustand; setZ: (f: (z: HeuteZ
   if (!e) {
     return (
       <div className="vorschau-ein flex items-center gap-3 rounded-2xl border border-line bg-white p-4">
-        <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-signal-soft text-moss">
-          <Icon name="check" className="size-6" />
-        </span>
+        <IconTile name="check" className="size-11" />
         <span className="min-w-0 flex-1">
           <span className="block text-[15px] font-bold text-ink">Nichts wartet mehr auf dich.</span>
           <span className="block text-[12px] text-muted">Neue Entscheidungen landen hier, sobald sie anfallen.</span>

@@ -24,8 +24,8 @@ Server-Funktionen: `src/app/api/cloud/*`, `src/app/api/cron/*` und `src/app/api/
    - `service_role` → wird `SUPABASE_SERVICE_ROLE_KEY` (**geheim**, nur Server)
 3. **SQL Editor → New query**: nacheinander den Inhalt von
    `supabase/migrations/20261002000000_fundament.sql`, `supabase/migrations/20261002100000_aktivierung.sql`
-   (eindeutiges Anfrage-Postfach je Betrieb) und `supabase/migrations/20261002120000_rechte_und_dateien.sql`
-   einfügen → jeweils **Run**. (Alternativ mit der Supabase-CLI: `supabase link --project-ref <ref> && supabase db push`.)
+   (eindeutiges Anfrage-Postfach je Betrieb), `supabase/migrations/20261002120000_rechte_und_dateien.sql` und
+   `supabase/migrations/20261002180000_haertung.sql` (Härtung nach dem Supabase-Sicherheitscheck) einfügen → jeweils **Run**. (Alternativ mit der Supabase-CLI: `supabase link --project-ref <ref> && supabase db push`.)
    Das legt Tabellen, Zugriffsregeln (RLS: nur Mitglieder des eigenen Betriebs), Realtime für `objekte`
    den privaten Speicher `dateien` und die Rechte je Rolle an (Rechnungen, Zahlungen, Belege, Mahnungen und
    `mitarbeiter.kostensatz` lesen nur Chef und Büro – erweiterbar über die Tabellen `sammlung_rechte` und `feld_rechte`).

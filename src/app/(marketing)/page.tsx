@@ -500,7 +500,7 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 12b. Bedenken – die fünf Kernängste als Karten, die übrigen Einwände zum Aufklappen (docs/produkt/einwaende.md) */}
+      {/* 12b. Bedenken – die fünf Kernängste als Karten, die nächsten fünf zum Aufklappen, alle unter /bedenken (docs/produkt/einwaende.md) */}
       <Zone ton="dunkel" id="bedenken">
         <Section tone="transparent">
           <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Bedenken</p>
@@ -535,6 +535,9 @@ export default function HomePage() {
           <div className="mt-6">
             <Faq items={weitereEinwaende} dark />
           </div>
+          <ButtonLink href="/bedenken" variant="light" className="mt-6">
+            Alle Bedenken ansehen und durchsuchen
+          </ButtonLink>
         </Section>
       </Zone>
 
