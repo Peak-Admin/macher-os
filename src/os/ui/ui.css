@@ -220,10 +220,6 @@
 .mm-meldung--achtung { background: var(--mm-warning-surface); border-color: var(--mm-warning-border); color: var(--mm-warning); }
 .mm-meldung--achtung strong { color: var(--mm-warning); }
 .mm-meldung strong { color: var(--mm-black); }
-.mm-meldung { border-left-width: 4px; }
-.mm-meldung--neutral { border-left-color: var(--mm-border-dark); }
-.mm-meldung--achtung { border-left-color: var(--mm-warning); }
-.mm-meldung--erfolg, .mm-meldung--aktiv { border-left-color: var(--mm-brand); }
 .mm-meldung--erfolg { background: var(--mm-soft-green); border-color: var(--mm-success-border); color: var(--mm-brand-deep); }
 .mm-meldung--aktiv { background: var(--mm-soft-green); border-color: var(--mm-success-border); }
 
@@ -268,9 +264,7 @@
 .mm-toast-aktion { margin-left: auto; border: 0; background: none; color: var(--mm-brand-accent); font-weight: 700; cursor: pointer; min-height: 32px; }
 
 /* ---------- Hinweise („Braucht dich“): Ausnahme zuerst, eine klare Aktion */
-.mm-hinweis { display: flex; flex-direction: column; gap: 12px; padding: 16px 16px 16px 20px; box-shadow: inset 4px 0 0 var(--mm-border); }
-.mm-hinweis--achtung { box-shadow: inset 4px 0 0 var(--mm-warning); }
-.mm-hinweis--aktiv { box-shadow: inset 4px 0 0 var(--mm-brand); }
+.mm-hinweis { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
 .mm-hinweis-kopf { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .mm-hinweis-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .mm-hinweis-titel { font-weight: 600; color: var(--mm-black); overflow-wrap: break-word; hyphens: auto; }
