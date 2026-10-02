@@ -5,11 +5,11 @@ import { Dialog, Seite } from '@ui/index';
 import { eigeneTreffer } from './daten';
 import { SuchKern } from './Suche';
 
-/** Overlay „Suche“ – Strg+K oder Suchfeld in der Topbar */
+/** Overlay „Suchen oder fragen“ – Strg+K oder das Feld oben in der Seitenleiste */
 function SucheOverlay() {
   const { offen, schliessen } = useOverlay('suche');
   return (
-    <Dialog offen={offen} onSchliessen={schliessen} titel="Suchen" breit>
+    <Dialog offen={offen} onSchliessen={schliessen} titel="Suchen oder fragen" breit>
       <SuchKern onFertig={schliessen} />
     </Dialog>
   );
