@@ -12,7 +12,7 @@
     "pretest": "node scripts/os-module.mjs",
     "test": "vitest run",
     "typecheck": "node scripts/os-module.mjs && next typegen && tsc --noEmit",
-    "test:ux": "node scripts/ux/menue-test.mjs"
+    "test:ux": "node scripts/ux/menue-test.mjs && node scripts/ux/formular-test.mjs"
   },
   "dependencies": {
     "@fontsource/barlow": "^5.2.0",

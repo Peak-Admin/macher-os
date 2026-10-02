@@ -55,7 +55,7 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - `npm test` – Tests der Software (vitest, `src/os/**/*.test.ts`)
 - `python3 scripts/playbook-sweep.py src` – zieht Klassen idempotent auf das Playbook nach (nach größeren Änderungen ausführen)
 - `node --experimental-strip-types src/content/werkzeuge/rechnen.test.mjs` – Tests der Rechner
-- `npm run test:ux` – Verhaltenstest der Website-Navigation im echten Browser (Playwright; Server muss laufen)
+- `npm run test:ux` – Verhaltenstests im echten Browser: Website-Navigation und „Auftrag anlegen“ (Playwright; Server muss laufen)
 - `node scripts/ux/screenshots.mjs <ordner>` – Vorher-/Nachher-Screenshots der Kernseiten (Spielwiese, 390/1440 px)
 
 ### Struktur
