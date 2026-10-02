@@ -1,6 +1,7 @@
 // Automatisch erzeugt von scripts/os-module.mjs – nicht von Hand bearbeiten.
 import type { ModulDef } from '@core/modul';
 import m_abnahme from '../modules/abnahme';
+import m_abo from '../modules/abo';
 import m_abwesenheiten from '../modules/abwesenheiten';
 import m_anfragen from '../modules/anfragen';
 import m_angebote from '../modules/angebote';
@@ -86,6 +87,7 @@ import m_zusatzleistungen from '../modules/zusatzleistungen';
 
 export const modulListe: [string, ModulDef][] = [
   ['abnahme', m_abnahme],
+  ['abo', m_abo],
   ['abwesenheiten', m_abwesenheiten],
   ['anfragen', m_anfragen],
   ['angebote', m_angebote],

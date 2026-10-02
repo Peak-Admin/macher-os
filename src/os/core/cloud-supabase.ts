@@ -11,7 +11,7 @@ import { useSyncExternalStore } from 'react';
 import type { RealtimeChannel, Session, SupabaseClient } from '@supabase/supabase-js';
 import { cloud, LOKALE_CLOUD, setzeCloud, type Cloud, type Konto, type PushNachricht, type Versand, type VersandErgebnis } from './cloud';
 import { appPfad } from './basis';
-import { db, exportieren, importieren, neueId, sicherungAnlegen } from './db';
+import { db, exportieren, importieren, neueId, sicherungAnlegen, subscribe } from './db';
 import { emit } from './events';
 import { messen, messpunkte, setzeMessziel, type Messpunkt } from './messung';
 import { ichId, setzeIch } from './session';
@@ -226,6 +226,9 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
     setze({ konto: k });
   };
 
+  /** angemeldet und mit einem Betrieb verbunden */
+  const angemeldet = () => !!konto?.betriebId;
+
   async function token(): Promise<string | undefined> {
     try {
       return (await client.auth.getSession()).data.session?.access_token;
@@ -272,7 +275,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
     if (opt.uebernahme) await sync.allesHochladen();
     else await sync.abgleichen();
     // alte Data-URLs (Fotos, PDFs) im Hintergrund in den Speicher umziehen
-    void dataUrlsAuslagern((d, n) => c.dateiAblegen(d, n), { weiter: () => c.aktiv() && (globalThis.navigator?.onLine ?? true) }).catch(() => {});
+    void dataUrlsAuslagern((d, n) => c.dateiAblegen(d, n), { weiter: () => angemeldet() && (globalThis.navigator?.onLine ?? true) }).catch(() => {});
     if (opt.beigetreten && opt.mitarbeiterId) {
       setzeIch(opt.mitarbeiterId);
       messen('team.beigetreten');
@@ -376,7 +379,8 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
   // ---------------------------------------------------------------- Vertrag
 
   const c: SupabaseCloud = {
-    aktiv: () => !!konto?.betriebId,
+    // „aktiv“ = Backend ist verbunden (Schlüssel gesetzt). Ob jemand angemeldet ist, sagt `konto()`.
+    aktiv: () => true,
     konto: () => (konto ? { nutzerId: konto.nutzerId, email: konto.email, telefon: konto.telefon, betriebId: konto.betriebId } : undefined),
 
     async anmelden(ziel) {
@@ -430,7 +434,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
     },
 
     async einladen(mitarbeiterId, ziel) {
-      if (!c.aktiv()) return rueckfall.einladen(mitarbeiterId, ziel);
+      if (!angemeldet()) return rueckfall.einladen(mitarbeiterId, ziel);
       const r = await serverAufruf<VersandErgebnis & { link?: string }>('einladen', { mitarbeiterId, ziel });
       if (r.status === 200 && r.daten?.status === 'gesendet') return { status: 'gesendet', id: r.daten.id };
       if (r.daten?.link) {
@@ -450,7 +454,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
     },
 
     async senden(v: Versand) {
-      if (!c.aktiv()) return rueckfall.senden(v);
+      if (!angemeldet()) return rueckfall.senden(v);
       const r = await serverAufruf<VersandErgebnis & { fehler?: string }>('senden', { versand: v });
       if (r.status === 200 && r.daten) return r.daten;
       // nicht verbunden (z. B. WhatsApp) oder offline → eigenes Mail-/SMS-Programm
@@ -459,7 +463,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
     },
 
     async push(n: PushNachricht) {
-      if (!c.aktiv()) return rueckfall.push(n);
+      if (!angemeldet()) return rueckfall.push(n);
       await serverAufruf('push', { nachricht: n });
     },
 
@@ -500,6 +504,13 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
       if (konto?.betriebId && lesen(K_DATEN_BETRIEB) === konto.betriebId) {
         void verbinden(konto.betriebId).catch((e) => setze({ fehler: fehlerText(e) }));
       }
+      // Angemeldet mitten in der Einrichtung: sobald der Betrieb fertig eingerichtet ist, automatisch sichern
+      let sichertGerade = false;
+      subscribe(() => {
+        if (sichertGerade || zustand.phase !== 'kein-betrieb' || !konto || !db.betrieb.get('betrieb')?.onboardingFertig) return;
+        sichertGerade = true;
+        setTimeout(() => void c.sichern().finally(() => (sichertGerade = false)), 0);
+      });
       client.auth.onAuthStateChange((ereignis, session) => {
         // keine Supabase-Aufrufe direkt im Rückruf (Sperre in supabase-js) → entkoppeln
         setTimeout(() => {

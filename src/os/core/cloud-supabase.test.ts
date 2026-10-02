@@ -138,7 +138,8 @@ describe('Anmeldung ohne Passwort', () => {
     const s = syncAttrappe();
     const sp = speicher();
     const c = erzeugeSupabaseCloud(a.client, KONFIG, { speicher: sp, syncStarten: s.starten });
-    expect(c.aktiv()).toBe(false);
+    expect(c.aktiv()).toBe(true); // Backend verbunden …
+    expect(c.konto()).toBeUndefined(); // … aber noch niemand angemeldet
     expect(await c.codeBestaetigen('0171 1234567', '123 456')).toEqual({ ok: true });
     expect(a.roh.auth.verifyOtp).toHaveBeenCalledWith({ phone: '+491711234567', token: '123456', type: 'sms' });
     expect(a.roh.rpc).toHaveBeenCalledWith('betrieb_anlegen', { p_name: 'Elektro Muster', p_mitarbeiter_id: 'chef1' });
@@ -180,8 +181,21 @@ describe('Anmeldung ohne Passwort', () => {
     const c = erzeugeSupabaseCloud(a.client, KONFIG, { speicher: speicher(), syncStarten: s.starten });
     await c.codeBestaetigen('chef@muster.de', '111111');
     expect(kontoZustand().phase).toBe('kein-betrieb');
-    expect(c.aktiv()).toBe(false);
+    expect(c.konto()?.betriebId).toBeUndefined();
     expect(a.roh.rpc).not.toHaveBeenCalled();
+  });
+
+  test('angemeldet mitten in der Einrichtung → nach dem Abschluss automatisch gesichert', async () => {
+    db.betrieb.create({ id: 'betrieb', name: 'Elektro Muster', onboardingFertig: false } as never);
+    const a = attrappe({ mitglieder: [] }, { betrieb_anlegen: () => ({ data: 'b-neu' }) });
+    const s = syncAttrappe();
+    const c = erzeugeSupabaseCloud(a.client, KONFIG, { speicher: speicher(), syncStarten: s.starten });
+    await c.starten();
+    expect((await c.codeBestaetigen('0171 1234567', '123456')).ok).toBe(true);
+    expect(kontoZustand().phase).toBe('kein-betrieb');
+    db.betrieb.update('betrieb', { onboardingFertig: true } as never);
+    await vi.waitFor(() => expect(c.konto()?.betriebId).toBe('b-neu'));
+    expect(s.steuerung.allesHochladen).toHaveBeenCalled();
   });
 
   test('abmelden stoppt den Abgleich, Daten bleiben', async () => {
@@ -192,7 +206,7 @@ describe('Anmeldung ohne Passwort', () => {
     const c = erzeugeSupabaseCloud(a.client, KONFIG, { speicher: sp, syncStarten: syncAttrappe().starten });
     await c.codeBestaetigen('chef@muster.de', '111111');
     await c.abmelden();
-    expect(c.aktiv()).toBe(false);
+    expect(c.konto()?.betriebId).toBeUndefined();
     expect(db.betrieb.get('betrieb')).toBeDefined();
     expect(kontoZustand().phase).toBe('abgemeldet');
   });

@@ -126,7 +126,11 @@ function NachAnmeldung({ weiter }: { weiter: () => void }) {
   }, [bereit, weiter]);
   if (z.phase === 'verbinde' || (z.phase === 'bereit' && !bereit)) return <Uebernahme />;
   if (z.phase === 'kein-betrieb')
-    return (
+    return betrieb ? (
+      <Meldung ton="erfolg" titel="Du bist angemeldet" aktion={<Button to="/willkommen" klein>Einrichtung fortsetzen</Button>}>
+        Schließ die Einrichtung ab – danach wird dein Betrieb automatisch gesichert.
+      </Meldung>
+    ) : (
       <Meldung titel="Zu diesem Konto gibt es noch keinen Betrieb" aktion={<Button to="/willkommen" klein>Betrieb einrichten</Button>}>
         Richte zuerst deinen Betrieb ein – oder lass dir von deinem Chef eine Einladung schicken.
       </Meldung>
