@@ -19,7 +19,8 @@
   --mm-font: 'Barlow', sans-serif;
   --mm-font-eyebrow: 'Poppins', Arial, sans-serif;
 
-  --mm-action: var(--mm-brand-deep);
+  /* Primärbutton: Markengrün, Schrift 19 px fett (große Schrift → AA mit 3,9:1) */
+  --mm-action: var(--mm-brand);
   --mm-action-hover: var(--mm-brand-text);
   --mm-on-action: #ffffff;
   /* Themen-Icon-Kacheln: helles Akzentgrün, weiße Linien (Festlegung macher-os) */

@@ -20,8 +20,8 @@ Die wichtigsten Festlegungen in Kürze:
 
 - **Schrift:** Barlow (400–900) für alles; Poppins 600 nur für kleine Oberzeilen in Versalien. Kein Ersatz durch Inter/System-Fonts.
 - **Farben:** nur die Palette aus Abschnitt 4 / Tokens aus Abschnitt 14 (`--mm-*`).
-  - Primärbutton: `#06480C` mit weißer Schrift. Hover `#1F6135`.
-  - Markengrün `#2F9250` für Akzente, aktive Rahmen, große Typo – nicht für kleinen weißen Buttontext.
+  - Primärbutton: Markengrün `#2F9250`, weiße Schrift 19 px fett (darunter reicht der Kontrast nicht). Hover `#1F6135`.
+  - Tiefes Grün `#06480C` für kleine weiße Texte auf Grün (Badges, Schrittnummern).
   - Kleine grüne Links/Texte: `#1F6135`.
   - Arbeitsfläche hell: `#F7FAFB`, Karten `#FFFFFF`, Linien `#D9D9D9`, Text `#374040`.
   - Orange `#E69433` nur für Kampagnen, nie als konkurrierende Hauptaktion.
@@ -70,7 +70,7 @@ Next.js (App Router, Turbopack) + TypeScript + Tailwind CSS v4. Alles wird stati
   keine erfundenen Kennzahlen, Zertifikate oder Firmendaten. Preise in `src/content/preise.ts` sind Platzhalter.
 - Dynamische Routen: `generateStaticParams` + `export const dynamicParams = false`; `params` ist ein Promise.
 - Farben/Fonts nur über die Tokens in `src/app/globals.css` – sie bilden das Playbook ab
-  (`signal` = Aktionsgrün `#06480C`, `signal-dark` = Textgrün `#1F6135`, `brand` = Markengrün `#2F9250`,
+  (`primary` = Primärbutton `#2F9250`, `signal` = tiefes Grün `#06480C`, `signal-dark` = Textgrün `#1F6135`, `brand` = Markengrün `#2F9250`,
   `accent` = Akzentgrün `#69AF44` für dunkle Flächen, `ink` = Markendunkel, `paper` = Arbeitsfläche,
   `line`, `muted`; `font-display` = Barlow, `font-tagline` = Poppins für Oberzeilen). Keine festen HEX-Werte in Komponenten.
-- Primäraktion: `bg-signal text-white hover:bg-signal-dark`. Auf dunklen Flächen Akzente mit `text-accent`.
+- Primäraktion: `btn-primaer` (bzw. `ButtonLink` Variante `primary`). Auf dunklen Flächen Akzente mit `text-accent`.
