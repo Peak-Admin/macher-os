@@ -12,7 +12,7 @@ import {
   Section,
   SectionHeading,
   type FaqItem,
-  type IconName,
+  type SkizzenMotiv,
 } from "@/components/ui";
 import { QrPlatzhalter, StoreLink } from "@/components/unternehmen/AppDownload";
 import { pageMeta } from "@/lib/metadata";
@@ -24,11 +24,11 @@ export const metadata = pageMeta({
   path: "/app",
 });
 
-const useCases: { titel: string; text: string; icon: IconName }[] = [
-  { titel: "Morgens", text: "Einsätze des Tages ansehen: wer, wo, was – und ob das Material im Wagen ist.", icon: "calendar" },
-  { titel: "Unterwegs", text: "Mit einem Tipp zur Baustelle navigieren. Kunde anrufen, falls es später wird.", icon: "route" },
-  { titel: "Vor Ort", text: "Auftrag starten, Fotos machen, Notizen einsprechen, Material eintragen.", icon: "camera" },
-  { titel: "Zum Schluss", text: "Unterschrift vom Kunden holen und abschließen. Das Büro sieht es sofort.", icon: "signature" },
+const useCases: { titel: string; text: string; skizze: SkizzenMotiv }[] = [
+  { titel: "Morgens", text: "Einsätze des Tages ansehen: wer, wo, was – und ob das Material im Wagen ist.", skizze: "handy-einsaetze" },
+  { titel: "Unterwegs", text: "Mit einem Tipp zur Baustelle navigieren. Kunde anrufen, falls es später wird.", skizze: "handy-unterwegs" },
+  { titel: "Vor Ort", text: "Auftrag starten, Fotos machen, Notizen einsprechen, Material eintragen.", skizze: "handy-vor-ort" },
+  { titel: "Zum Schluss", text: "Unterschrift vom Kunden holen und abschließen. Das Büro sieht es sofort.", skizze: "handy-abschluss" },
 ];
 
 const offline = [
@@ -115,7 +115,7 @@ export default function AppPage() {
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {useCases.map((u) => (
-            <Card key={u.titel} title={u.titel} icon={u.icon}>
+            <Card key={u.titel} title={u.titel} skizze={u.skizze}>
               {u.text}
             </Card>
           ))}
@@ -155,13 +155,13 @@ export default function AppPage() {
       <Section tone="white">
         <SectionHeading eyebrow="Eingebaut" title="Kamera, Sprache, Navigation." />
         <div className="mt-10 grid gap-4 md:grid-cols-3">
-          <Card title="Kamera" icon="camera">
+          <Card title="Kamera" skizze="handy-kamera">
             Fotos landen direkt am richtigen Auftrag – mit Datum. Nichts mehr im privaten Handyspeicher.
           </Card>
-          <Card title="Sprache" icon="mic" iconTone="sky">
+          <Card title="Sprache" skizze="handy-sprache">
             Notizen einsprechen statt tippen. Praktisch mit Handschuhen oder dreckigen Händen.
           </Card>
-          <Card title="Navigation" icon="map" iconTone="moss">
+          <Card title="Navigation" skizze="handy-navigation">
             Mit einem Tipp zur Baustelle – in der Navigations-App, die du sowieso nutzt.
           </Card>
         </div>

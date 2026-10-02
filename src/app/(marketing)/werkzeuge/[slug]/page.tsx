@@ -197,7 +197,7 @@ export default async function WerkzeugSeite({ params }: Props) {
           {inhalt.funktionen.map((fn) => {
             const titel = funktionen.find((x) => x.slug === fn.slug)?.titel ?? fn.slug;
             return (
-              <Card key={fn.slug} title={titel} href={funktionHref(fn.slug)} eyebrow="Funktion">
+              <Card key={fn.slug} title={titel} href={funktionHref(fn.slug)} eyebrow="Funktion" skizze={fn.slug}>
                 {fn.text}
               </Card>
             );

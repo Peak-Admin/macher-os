@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FinalCta, KundenCard, PageHero } from "@/components/sections";
-import { ArrowLink, Faq, FaqJsonLd, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
+import { ArrowLink, Faq, FaqJsonLd, Icon, IconTile, Section, SectionHeading, Skizze } from "@/components/ui";
 import { funktionInhalte, funktionTitel, gewerkTitel } from "@/content/funktionen";
 import { funktionHref, gewerkHref } from "@/content/registry";
 import { FunktionKarte } from "./FunktionKarte";
@@ -125,9 +125,9 @@ export function AutomatischSeite() {
         />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {f.prinzipien.map((p) => (
-            <li key={p.titel} className="rounded-lg border border-line bg-paper p-6">
-              <IconTile name={p.icon} tone="moss" />
-              <h3 className="mt-4 font-display text-lg font-bold leading-snug">{p.titel}</h3>
+            <li key={p.titel} className="rounded-lg border border-line bg-white p-5">
+              <Skizze motiv={p.skizze} className="-mx-1 -mt-1 mb-5" />
+              <h3 className="font-display text-lg font-bold leading-snug">{p.titel}</h3>
               <p className="mt-2 text-[0.95rem] leading-relaxed text-muted">{p.text}</p>
             </li>
           ))}

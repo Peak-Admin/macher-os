@@ -9,9 +9,31 @@ import { IconPfade, type IconName } from "./Icon";
  *
  * Für Karten, die eine Funktion kurz erklären. Rein dekorativ – die Bedeutung trägt immer der Text daneben.
  * Echte Beispieldaten zeigt stattdessen die `UiEbene`. Regeln: docs/design/festlegungen.md („Skizzen und UI-Ebenen“).
+ *
+ * Motive: eins je Funktion (Slug aus der Registry), dazu Handy-Motive für die App (vorne ein Handy statt Blatt),
+ * Grundsätze von „Macher erledigt“ und Quellen beim Daten übernehmen.
  */
 
-export type SkizzenMotiv = FunktionSlug;
+/** Motive, die keine eigene Funktion sind. Neue Motive hier und in `motive` eintragen. */
+type ZusatzMotiv =
+  | "handy-einsaetze"
+  | "handy-unterwegs"
+  | "handy-vor-ort"
+  | "handy-abschluss"
+  | "handy-kamera"
+  | "handy-sprache"
+  | "handy-navigation"
+  | "handy-kontakte"
+  | "freigabe"
+  | "stufen"
+  | "verlauf"
+  | "ehrlich"
+  | "dokumente"
+  | "tabelle"
+  | "software-export"
+  | "datanorm";
+
+export type SkizzenMotiv = FunktionSlug | ZusatzMotiv;
 
 // Gezeichnet auf 320 × 200, sichtbar ist der Ausschnitt 280 × 210 (4:3). Das vordere Blatt liegt bei x 100–220, y 22–170; Inhalt von x 110 bis 210.
 const L = 110;
@@ -126,7 +148,57 @@ function Foto({ x, y, b, h }: { x: number; y: number; b: number; h: number }) {
   );
 }
 
-type Motiv = { icon: IconName; vorne: ReactNode };
+/** Strich-Icon in einer Skizze, z. B. auf einem Knopf. `groesse` in Zeichenpunkten. */
+function Glyphe({ name, x, y, groesse = 12, ton = "gruen" }: { name: IconName; x: number; y: number; groesse?: number; ton?: "gruen" | "weiss" | "dunkel" }) {
+  const s = groesse / 24;
+  const stroke = { gruen: "stroke-primary", weiss: "stroke-white", dunkel: "stroke-ink/70" }[ton];
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`} fill="none" strokeWidth={1.3 / s} strokeLinecap="round" strokeLinejoin="round" className={stroke}>
+      <IconPfade name={name} />
+    </g>
+  );
+}
+
+/** Knopf mit Beschriftung: gefüllt (Hauptaktion) oder hell mit Rahmen. */
+function Knopf({ x, y, b, text, gefuellt = true }: { x: number; y: number; b: number; text: string; gefuellt?: boolean }) {
+  return (
+    <g>
+      <rect
+        x={x}
+        y={y}
+        width={b}
+        height={16}
+        rx={5}
+        strokeWidth={gefuellt ? 0 : 1}
+        className={gefuellt ? "fill-primary" : "fill-white stroke-line-dark/60"}
+      />
+      <text x={x + b / 2} y={y + 11} textAnchor="middle" fontSize={7.5} fontWeight={700} className={`font-display ${gefuellt ? "fill-white" : "fill-ink"}`}>
+        {text}
+      </text>
+    </g>
+  );
+}
+
+// Handy vorne: Rahmen x 116–204, y 14–178; Bildschirm-Inhalt von x 124 bis 196, ab y 30.
+const HL = 124;
+const HR = 196;
+
+function HandyKopf({ titel, nr }: { titel: string; nr?: string }) {
+  return (
+    <g>
+      <text x={HL} y={39} fontSize={9.5} fontWeight={600} className="font-display fill-ink">
+        {titel}
+      </text>
+      {nr && (
+        <text x={HR} y={39} textAnchor="end" fontSize={9.5} fontWeight={700} className="font-display fill-ink">
+          {nr}
+        </text>
+      )}
+    </g>
+  );
+}
+
+type Motiv = { icon: IconName; vorne: ReactNode; form?: "blatt" | "handy" };
 
 const qr = [
   "1110111",
@@ -579,6 +651,361 @@ const motive: Record<SkizzenMotiv, Motiv> = {
       </>
     ),
   },
+
+  // ---------- App: vorne ein Handy
+  "handy-einsaetze": {
+    icon: "calendar",
+    form: "handy",
+    vorne: (
+      <>
+        <HandyKopf titel="Heute" />
+        {["07:00", "11:30", "14:00"].map((zeit, i) => {
+          const y = 46 + i * 32;
+          return (
+            <g key={zeit}>
+              <rect x={HL} y={y} width={72} height={27} rx={5} strokeWidth={i === 0 ? 1 : 0} className={i === 0 ? "fill-signal-soft stroke-primary" : "fill-sand"} />
+              <text x={HL + 5} y={y + 10.5} fontSize={8} fontWeight={700} className="font-display fill-ink">
+                {zeit}
+              </text>
+              <rect x={HL + 5} y={y + 16} width={46 - i * 6} height={4} rx={2} className="fill-white" />
+              <circle cx={HR - 7} cy={y + 8} r={3} className={i < 2 ? "fill-primary" : "fill-muted/40"} />
+            </g>
+          );
+        })}
+      </>
+    ),
+  },
+  "handy-unterwegs": {
+    icon: "route",
+    form: "handy",
+    vorne: (
+      <>
+        <HandyKopf titel="Einsatz" nr="07:00" />
+        <rect x={HL} y={46} width={72} height={44} rx={6} className="fill-sand" />
+        <path d={`M${HL} 72 H${HR} M150 46 V90`} fill="none" strokeWidth={4} className="stroke-white" />
+        <path d="M132 84 L150 72 V58 H182" fill="none" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="stroke-primary" />
+        <circle cx={132} cy={84} r={3} strokeWidth={1.5} className="fill-white stroke-primary" />
+        <path d="M182 60 c-4 -4 -6 -6.5 -6 -9 a6 6 0 0 1 12 0 c0 2.5 -2 5 -6 9 Z" className="fill-primary" />
+        <circle cx={182} cy={51} r={2.2} className="fill-white" />
+        <Balken x={HL} y={98} b={60} ton="dunkel" />
+        <Balken x={HL} y={108} b={44} />
+        <rect x={HL} y={121} width={34} height={17} rx={5} className="fill-primary" />
+        <Glyphe name="route" x={HL + 11} y={123.5} ton="weiss" />
+        <rect x={HL + 38.5} y={121.5} width={33} height={16} rx={5} strokeWidth={1} className="fill-white stroke-line-dark/60" />
+        <Glyphe name="phone" x={HL + 49} y={123.5} ton="dunkel" />
+      </>
+    ),
+  },
+  "handy-vor-ort": {
+    icon: "camera",
+    form: "handy",
+    vorne: (
+      <>
+        <HandyKopf titel="Auftrag" />
+        <Balken x={HL} y={46} b={64} ton="dunkel" />
+        <Balken x={HL} y={56} b={48} />
+        <Kaestchen x={HL} y={68} an />
+        <Balken x={HL + 14} y={70} b={50} />
+        <Kaestchen x={HL} y={82} an={false} />
+        <Balken x={HL + 14} y={84} b={40} />
+        {(["camera", "mic", "box"] as IconName[]).map((name, i) => (
+          <g key={name}>
+            <rect x={HL + i * 25} y={98} width={22} height={22} rx={5} className="fill-signal-soft" />
+            <Glyphe name={name} x={HL + i * 25 + 4.5} y={102.5} groesse={13} />
+          </g>
+        ))}
+        <Knopf x={HL} y={127} b={72} text="Starten" />
+      </>
+    ),
+  },
+  "handy-abschluss": {
+    icon: "signature",
+    form: "handy",
+    vorne: (
+      <>
+        <HandyKopf titel="Abnahme" />
+        <rect x={HL} y={46} width={72} height={56} rx={6} className="fill-sand" />
+        <path
+          d="M134 86 c5 -2 6 -16 10 -16 s-2 18 4 18 s6 -12 10 -12 s1 10 5 10 s6 -5 9 -5"
+          fill="none"
+          strokeWidth={1.6}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="stroke-ink/80"
+        />
+        <line x1={HL + 6} y1={94} x2={HR - 6} y2={94} strokeWidth={1} strokeDasharray="2 2" className="stroke-muted/50" />
+        <Balken x={HL} y={110} b={56} ton="dunkel" />
+        <Balken x={HL} y={119} b={40} />
+        <Knopf x={HL} y={129} b={72} text="Abschließen" />
+      </>
+    ),
+  },
+  "handy-kamera": {
+    icon: "camera",
+    form: "handy",
+    vorne: (
+      <>
+        <rect x={HL} y={30} width={72} height={96} rx={5} className="fill-sand" />
+        <path d="M128 122 l20 -28 l12 14 l10 -10 l22 24 Z" className="fill-muted/30" />
+        <circle cx={182} cy={50} r={5} className="fill-muted/30" />
+        <path
+          d="M142 64 V56 H150 M170 56 H178 V64 M178 88 V96 H170 M150 96 H142 V88"
+          fill="none"
+          strokeWidth={1.6}
+          strokeLinecap="round"
+          className="stroke-primary"
+        />
+        <rect x={HL + 4} y={34} width={36} height={11} rx={5.5} className="fill-white" />
+        <text x={HL + 22} y={41.8} textAnchor="middle" fontSize={7} fontWeight={700} className="font-display fill-ink">
+          Haus 24
+        </text>
+        {[0, 1, 2].map((i) => (
+          <rect key={i} x={HL + i * 25} y={132} width={22} height={14} rx={3} strokeWidth={i === 0 ? 1 : 0} className={i === 0 ? "fill-signal-soft stroke-primary" : "fill-sand"} />
+        ))}
+      </>
+    ),
+  },
+  "handy-sprache": {
+    icon: "mic",
+    form: "handy",
+    vorne: (
+      <>
+        <HandyKopf titel="Notiz" />
+        <rect x={HL} y={46} width={72} height={16} rx={8} className="fill-signal-soft" />
+        <circle cx={HL + 9} cy={54} r={3} className="fill-primary" />
+        <text x={HL + 17} y={57} fontSize={7.5} fontWeight={700} className="font-display fill-signal">
+          Aufnahme 0:12
+        </text>
+        {[4, 10, 18, 12, 24, 16, 20, 10, 16, 8, 4].map((h, i) => (
+          <rect key={i} x={HL + 3 + i * 6.3} y={84 - h / 2} width={3} height={h} rx={1.5} className={i < 7 ? "fill-primary" : "fill-line"} />
+        ))}
+        <rect x={HL} y={104} width={72} height={36} rx={6} className="fill-sand" />
+        <Balken x={HL + 6} y={111} b={58} ton="weiss" />
+        <Balken x={HL + 6} y={120} b={46} ton="weiss" />
+        <Balken x={HL + 6} y={129} b={52} ton="weiss" />
+      </>
+    ),
+  },
+  "handy-navigation": {
+    icon: "map",
+    form: "handy",
+    vorne: (
+      <>
+        <rect x={HL} y={30} width={72} height={116} rx={5} className="fill-sand" />
+        <path d={`M${HL} 62 H${HR} M${HL} 104 H${HR} M146 30 V146 M180 30 V146 M${HL} 140 L160 104`} fill="none" strokeWidth={5} className="stroke-white" />
+        <path d="M131 135 L160 104 H180 V64" fill="none" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="stroke-primary" />
+        <circle cx={131} cy={135} r={3.5} strokeWidth={2} className="fill-white stroke-primary" />
+        <path d="M180 66 c-5 -5 -7.5 -8 -7.5 -11 a7.5 7.5 0 0 1 15 0 c0 3 -2.5 6 -7.5 11 Z" className="fill-primary" />
+        <circle cx={180} cy={55} r={2.8} className="fill-white" />
+        <rect x={HL + 4} y={34} width={40} height={12} rx={6} className="fill-white" />
+        <text x={HL + 24} y={42.5} textAnchor="middle" fontSize={7.5} fontWeight={700} className="font-display fill-ink">
+          12 Min.
+        </text>
+      </>
+    ),
+  },
+  "handy-kontakte": {
+    icon: "smartphone",
+    form: "handy",
+    vorne: (
+      <>
+        <HandyKopf titel="Kontakte" />
+        {[40, 32, 44, 28].map((b, i) => {
+          const y = 48 + i * 23;
+          return (
+            <g key={i}>
+              <Person cx={HL + 7} cy={y + 8} r={7} />
+              <Balken x={HL + 19} y={y + 2} b={b} ton="dunkel" />
+              <Balken x={HL + 19} y={y + 10} b={b - 10} />
+              {i < 3 && (
+                <g>
+                  <circle cx={HR - 5} cy={y + 8} r={4.5} className="fill-primary" />
+                  <Haken x={HR - 9.5} y={y + 3.5} />
+                </g>
+              )}
+            </g>
+          );
+        })}
+      </>
+    ),
+  },
+
+  // ---------- Grundsätze von „Macher erledigt“
+  freigabe: {
+    icon: "check",
+    vorne: (
+      <>
+        <Kopf titel="Vorschlag" />
+        <rect x={L - 4} y={56} width={108} height={36} rx={6} className="fill-signal-soft" />
+        <Glyphe name="spark" x={L + 1} y={59} groesse={11} />
+        <Balken x={L + 16} y={62} b={70} ton="gruen-hell" />
+        <Balken x={L + 1} y={73} b={84} ton="gruen-hell" />
+        <Balken x={L + 1} y={82} b={56} ton="gruen-hell" />
+        <Knopf x={L} y={102} b={48} text="Freigeben" />
+        <Knopf x={L + 52} y={102} b={48} text="Ändern" gefuellt={false} />
+        <Balken x={L} y={130} b={70} />
+        <Balken x={L} y={140} b={48} />
+      </>
+    ),
+  },
+  stufen: {
+    icon: "layers",
+    vorne: (
+      <>
+        <Kopf titel="Einstellungen" />
+        {[2, 1, 0, 2].map((stufe, i) => {
+          const y = 57 + i * 22;
+          const an = ["fill-white stroke-line-dark/60", "fill-signal-soft stroke-primary", "fill-primary stroke-primary"][stufe];
+          return (
+            <g key={i}>
+              <Balken x={L} y={y + 4} b={[36, 30, 40, 26][i]} ton="dunkel" />
+              <rect x={R - 60} y={y} width={60} height={13} rx={6.5} className="fill-sand" />
+              <rect x={R - 60 + stufe * 20 + 1.5} y={y + 1.5} width={17} height={10} rx={5} strokeWidth={1} className={an} />
+            </g>
+          );
+        })}
+      </>
+    ),
+  },
+  verlauf: {
+    icon: "clipboard",
+    vorne: (
+      <>
+        <Kopf titel="Verlauf" />
+        <line x1={L + 4} y1={60} x2={L + 4} y2={136} strokeWidth={1.5} className="stroke-line" />
+        {["17:00", "15:46", "12:05", "09:30"].map((zeit, i) => {
+          const y = 60 + i * 22;
+          return (
+            <g key={zeit}>
+              <circle cx={L + 4} cy={y} r={4} strokeWidth={1.2} className={i === 0 ? "fill-primary stroke-primary" : "fill-white stroke-primary"} />
+              <text x={L + 14} y={y + 3} fontSize={7.5} fontWeight={700} className="font-display fill-muted">
+                {zeit}
+              </text>
+              <Balken x={L + 40} y={y - 2} b={[56, 48, 52, 40][i]} ton="dunkel" />
+              <Balken x={L + 14} y={y + 8} b={[70, 60, 76, 50][i]} />
+            </g>
+          );
+        })}
+      </>
+    ),
+  },
+  ehrlich: {
+    icon: "shield",
+    vorne: (
+      <>
+        <Kopf titel="Nachricht" />
+        <rect x={L} y={56} width={72} height={28} rx={8} className="fill-sand" />
+        <path d={`M${L + 8} 83 l-2 8 l10 -8 Z`} className="fill-sand" />
+        <Balken x={L + 8} y={63} b={52} ton="weiss" />
+        <Balken x={L + 8} y={73} b={38} ton="weiss" />
+        <rect x={L + 22} y={96} width={78} height={30} rx={8} className="fill-signal-soft" />
+        <path d={`M${R - 10} 125 l4 8 l-12 -8 Z`} className="fill-signal-soft" />
+        <Balken x={L + 30} y={103} b={58} ton="gruen-hell" />
+        <Balken x={L + 30} y={113} b={44} ton="gruen-hell" />
+        <rect x={L} y={112} width={14} height={14} rx={4} className="fill-primary" />
+        <text x={L + 7} y={122.5} textAnchor="middle" fontSize={8.5} fontWeight={900} className="font-display fill-white">
+          M
+        </text>
+        <Pille x={L + 22} y={133} b={78} text="Digitaler Assistent" />
+      </>
+    ),
+  },
+
+  // ---------- Daten übernehmen
+  dokumente: {
+    icon: "file",
+    vorne: (
+      <>
+        <Kopf titel="Dokumente" />
+        {["PDF", "PDF", "JPG", "DWG"].map((art, i) => {
+          const y = 56 + i * 20;
+          return (
+            <g key={i}>
+              <path d={`M${L} ${y} h8 l4 4 v11 h-12 Z`} strokeWidth={0.9} strokeLinejoin="round" className="fill-white stroke-primary" />
+              <path d={`M${L + 8} ${y} v4 h4`} fill="none" strokeWidth={0.9} strokeLinejoin="round" className="stroke-primary" />
+              <Balken x={L + 18} y={y + 5} b={[52, 44, 58, 40][i]} ton="dunkel" />
+              <Pille x={R - 24} y={y + 1.5} b={24} text={art} ton="neutral" />
+            </g>
+          );
+        })}
+      </>
+    ),
+  },
+  tabelle: {
+    icon: "layers",
+    vorne: (
+      <>
+        <Kopf titel="Tabelle" nr="CSV" />
+        {[0, 1, 2, 3, 4, 5].flatMap((z) =>
+          [0, 1, 2, 3].map((sp) => {
+            const x = L + sp * 25.5;
+            const y = 55 + z * 14;
+            return z === 0 ? (
+              <g key={`${z}-${sp}`}>
+                <rect x={x} y={y} width={23} height={11} rx={2.5} strokeWidth={0.8} className="fill-signal-soft stroke-primary" />
+                <rect x={x + 4} y={y + 4} width={15} height={3} rx={1.5} className="fill-primary/50" />
+              </g>
+            ) : (
+              <rect key={`${z}-${sp}`} x={x} y={y} width={23} height={11} rx={2.5} className="fill-sand" />
+            );
+          }),
+        )}
+      </>
+    ),
+  },
+  "software-export": {
+    icon: "monitor",
+    vorne: (
+      <>
+        <Kopf titel="Export" />
+        <rect x={L + 0.5} y={54.5} width={99} height={46} rx={5} strokeWidth={1} className="fill-white stroke-ink/30" />
+        <path d={`M${L + 1} 66 V59 a4 4 0 0 1 4 -4 H${R - 5} a4 4 0 0 1 4 4 V66 Z`} className="fill-muted/25" />
+        {[0, 1, 2].map((i) => (
+          <circle key={i} cx={L + 7 + i * 6} cy={60.5} r={1.8} className="fill-white" />
+        ))}
+        <rect x={L + 4} y={77} width={92} height={10} rx={2} className="fill-sand" />
+        <Balken x={L + 7} y={70.5} b={60} />
+        <Balken x={L + 7} y={79.5} b={74} ton="dunkel" />
+        <Balken x={L + 7} y={89.5} b={50} />
+        <path d="M160 105 V118 M155 113.5 l5 5 l5 -5" fill="none" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="stroke-primary" />
+        {[0, 1].flatMap((z) =>
+          [0, 1, 2, 3].map((sp) => (
+            <rect
+              key={`${z}-${sp}`}
+              x={L + 9 + sp * 21}
+              y={123 + z * 11}
+              width={19}
+              height={9}
+              rx={2}
+              strokeWidth={z === 0 ? 0.7 : 0}
+              className={z === 0 ? "fill-signal-soft stroke-primary" : "fill-sand"}
+            />
+          )),
+        )}
+      </>
+    ),
+  },
+  datanorm: {
+    icon: "warehouse",
+    vorne: (
+      <>
+        <Kopf titel="Preisliste" />
+        <rect x={L - 4} y={80} width={108} height={13} rx={3} className="fill-signal-soft" />
+        {[44, 36, 50, 40, 46].map((b, i) => {
+          const y = 56 + i * 13;
+          return (
+            <g key={i}>
+              <Balken x={L} y={y} b={16} ton="dunkel" />
+              <Balken x={L + 21} y={y} b={b} ton={i === 2 ? "gruen-hell" : "hell"} />
+              <Balken x={R - 20} y={y} b={20} ton={i === 2 ? "gruen" : "dunkel"} />
+            </g>
+          );
+        })}
+        <Glyphe name="truck" x={L} y={121} groesse={16} />
+        <Balken x={L + 22} y={127} b={50} ton="dunkel" />
+      </>
+    ),
+  },
 };
 
 /** Hinteres Blatt: Platzhalterlinien, links mit Person, rechts mit Nummer. */
@@ -629,7 +1056,14 @@ export function Skizze({
           <HinteresBlatt seite="rechts" />
         </g>
         <g className={`${sanft} motion-safe:group-hover:-translate-y-1`}>
-          <rect x={100} y={22} width={120} height={148} rx={9} strokeWidth={1} className="fill-white stroke-line" />
+          {m.form === "handy" ? (
+            <>
+              <rect x={116} y={14} width={88} height={164} rx={15} strokeWidth={3} className="fill-white stroke-ink/70" />
+              <rect x={150} y={20} width={20} height={4} rx={2} className="fill-ink/70" />
+            </>
+          ) : (
+            <rect x={100} y={22} width={120} height={148} rx={9} strokeWidth={1} className="fill-white stroke-line" />
+          )}
           {m.vorne}
         </g>
         <g>

@@ -96,7 +96,7 @@ export default function DatenUebernehmenPage() {
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {uebernehmbareDaten.map((d) => (
-            <Card key={d.titel} title={d.titel} icon={d.icon}>
+            <Card key={d.titel} title={d.titel} skizze={d.skizze}>
               {d.text}
             </Card>
           ))}
@@ -112,7 +112,7 @@ export default function DatenUebernehmenPage() {
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {datenQuellen.map((q) => (
-            <Card key={q.titel} title={q.titel} icon={q.icon} iconTone="sky">
+            <Card key={q.titel} title={q.titel} skizze={q.skizze}>
               {q.text}
             </Card>
           ))}
