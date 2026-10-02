@@ -7,7 +7,8 @@ import { db, type Neu } from '@core/db';
 import { GEWERKE } from '@core/gewerke';
 import type { Gewerk, Kunde } from '@core/objects';
 import { hatGesicherteDaten, istSpielwiese, spielwieseStarten, spielwieseVerlassen } from '@core/seed';
-import { DATEN_VERTRAUEN } from '@core/vertrauen';import { Button, Fortschritt, Icon, Meldung, Meta, Oberzeile, Stapel, useBestaetigen, type IconName } from '@ui/index';
+import { DATEN_VERTRAUEN } from '@core/vertrauen';
+import { Button, Fortschritt, Icon, Meldung, Meta, Oberzeile, Stapel, useBestaetigen, type IconName } from '@ui/index';
 import {
   briefkopfLuecken,
   briefkopfPruefen,
