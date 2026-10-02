@@ -9,6 +9,10 @@ macher-os ist ein Handwerks-OS (siehe `README.md`). Projektsprache ist Deutsch.
 Für **jede** Oberfläche, jedes Mockup und jeden UI-Text gilt das Brand & Software Design Playbook:
 **[`docs/design/brand-playbook.md`](docs/design/brand-playbook.md)** (Mission Mittelstand, v1.0).
 
+Zusätzlich gelten die bestätigten Festlegungen und Orientierungsbeispiele in
+**[`docs/design/festlegungen.md`](docs/design/festlegungen.md)** (Primärbutton, Icon-Kacheln, Wechsler, Referenzmuster) –
+bei Widerspruch haben sie Vorrang vor dem Playbook.
+
 Vor UI-Arbeit lesen: Abschnitte 2–5 (Marke, Farben, Schrift), 6–11 (Layout, Komponenten, Tonalität, Screens),
 14 (Design-Tokens als CSS-Start), 16 (Abnahmecheckliste).
 

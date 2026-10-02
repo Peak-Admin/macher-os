@@ -168,7 +168,7 @@ export default async function WerkzeugSeite({ params }: Props) {
       {/* 6. Ergebnis speichern / senden – Hinweis */}
       <Section tone="sand" tight>
         <div className="grid items-center gap-6 md:grid-cols-[auto_1fr_auto]">
-          <span className="inline-flex size-12 items-center justify-center rounded-lg bg-white text-signal-dark ring-1 ring-line">
+          <span className="inline-flex size-12 items-center justify-center rounded-lg icon-kachel">
             <Icon name="download" className="size-6" />
           </span>
           <div>

@@ -91,10 +91,11 @@
 .mm-checkbox--an .mm-checkbox-label { color: var(--mm-text); }
 .mm-checkbox--aus { opacity: 0.6; cursor: not-allowed; }
 
-.mm-segmente { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--mm-border-dark); border-radius: var(--mm-radius-control); overflow: hidden; }
-.mm-segment { min-height: 42px; padding: 8px 16px; border: 0; border-right: 1px solid var(--mm-border); background: var(--mm-surface); cursor: pointer; font-weight: 500; }
-.mm-segment:last-child { border-right: 0; }
-.mm-segment--an { background: var(--mm-soft-green); color: var(--mm-brand-text); font-weight: 700; box-shadow: inset 0 -3px 0 var(--mm-brand); }
+.mm-segmente { display: inline-flex; flex-wrap: wrap; border-radius: var(--mm-radius-control); background: var(--mm-switch-bg); overflow: hidden; }
+.mm-segment { min-height: 44px; padding: 8px 24px; border: 0; background: transparent; color: var(--mm-on-switch); cursor: pointer; font-weight: 500; transition: background-color var(--mm-motion-fast) ease-out; }
+.mm-segment:hover:not(.mm-segment--an) { background: rgb(255 255 255 / 8%); }
+.mm-segment:focus-visible { outline: 2px solid var(--mm-brand-accent); outline-offset: -4px; }
+.mm-segment--an { background: var(--mm-switch-active); font-weight: 600; }
 
 .mm-auswahlkarten { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); }
 .mm-auswahlkarte {
@@ -104,7 +105,7 @@
 }
 .mm-auswahlkarte:hover { border-color: var(--mm-brand); }
 .mm-auswahlkarte--an { border: 2px solid var(--mm-brand); padding: 15px 19px; background: var(--mm-soft-green); }
-.mm-auswahlkarte-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--mm-radius-card); background: var(--mm-soft-green); color: var(--mm-brand-text); flex-shrink: 0; }
+.mm-auswahlkarte-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--mm-radius-card); background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); flex-shrink: 0; }
 .mm-auswahlkarte-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
 .mm-auswahlkarte-text strong { color: var(--mm-black); font-weight: 600; }
 .mm-auswahlkarte-check { color: var(--mm-brand-text); }
@@ -210,7 +211,7 @@
 /* ---------- Zustände */
 .mm-leer { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 48px 24px; text-align: center; border: 1px dashed var(--mm-border); border-radius: var(--mm-radius-card); background: var(--mm-surface); }
 .mm-leer p { max-width: 48ch; }
-.mm-leer-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--mm-radius-card); background: var(--mm-soft-green); color: var(--mm-brand-text); }
+.mm-leer-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: var(--mm-radius-card); background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); }
 .mm-leer-aktion { margin-top: 8px; }
 .mm-laden { display: flex; align-items: center; gap: 12px; padding: 24px; color: var(--mm-text); }
 .mm-meldung { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: var(--mm-radius-card); border: 1px solid var(--mm-border); background: var(--mm-surface); }
