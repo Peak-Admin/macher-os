@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { KiFragen, MadeInGermany, VertrauensKacheln } from "@/components/sections/FooterVertrauen";
+import { KiFragen, VertrauensKacheln } from "@/components/sections/FooterVertrauen";
 import { ButtonLink } from "@/components/ui";
 import { HerausgeberMarke } from "@/components/sections/MissionMittelstand";
 import { cta, footerNav, herausgeber, legalNav, site } from "@/lib/site";
@@ -21,7 +21,6 @@ export function Footer() {
             <ButtonLink href={cta.primary.href} variant="onDark" className="mt-6">
               {cta.primary.label}
             </ButtonLink>
-            <MadeInGermany className="mt-5" />
             <div className="mt-6 border-t border-white/10 pt-5">
               <p className="text-sm text-white/65">{herausgeber.kurz}</p>
               <a

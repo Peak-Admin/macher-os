@@ -3,18 +3,6 @@ import type { ReactNode } from "react";
 import { datenVertrauen } from "@/content/einwaende";
 import { ausgehend } from "@/lib/link/ausgehend";
 
-/** Glas-Pille „Made in Germany“ mit runder Flagge – für dunkle Markenflächen. */
-export function MadeInGermany({ className = "" }: { className?: string }) {
-  return (
-    <p
-      className={`inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pl-1.5 pr-4 text-sm font-semibold text-white ring-1 ring-inset ring-white/15 ${className}`}
-    >
-      <span aria-hidden className="flagge-de size-6 shrink-0 rounded-full ring-1 ring-white/30" />
-      Made in Germany
-    </p>
-  );
-}
-
 /** Zwölf goldene Sterne im Kreis – das EU-Logo. */
 const EU_STERNE = Array.from({ length: 12 }, (_, i) => {
   const w = (i * Math.PI) / 6;
@@ -41,28 +29,35 @@ function EuLogo({ className = "" }: { className?: string }) {
 /** Welche Aussage ist eine EU-Regel (blau mit EU-Logo), welche ein Standort (deutsche Flagge)? */
 const EU_REGEL = new Set<string>(["DSGVO-konform", "KI nach EU AI Act"]);
 
+/** Reihenfolge: erst die EU-Regeln nebeneinander, dann der Standort Deutschland, zuletzt „Made in Germany“. */
+const AUSSAGEN = [
+  ...datenVertrauen.filter((v) => EU_REGEL.has(v.titel)),
+  ...datenVertrauen.filter((v) => !EU_REGEL.has(v.titel)),
+  { titel: "Made in Germany", text: "Entwickelt in Deutschland" },
+];
+
 /**
- * Vertrauensaussagen als Pillen in der Größe von „Made in Germany“ (dieselbe Quelle wie in der Software).
- * EU-Regeln (DSGVO, EU AI Act) blau mit EU-Logo, der Serverstandort mit deutscher Flagge.
+ * Vertrauensaussagen als flache Plaketten in Buttonform (dieselbe Quelle wie in der Software), mit „Made in Germany“.
+ * EU-Regeln (DSGVO, EU AI Act) blau mit EU-Logo, Deutschland mit Flagge.
  */
 export function VertrauensKacheln({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
       <ul className="flex flex-wrap gap-3">
-        {datenVertrauen.map((v) => {
+        {AUSSAGEN.map((v) => {
           const eu = EU_REGEL.has(v.titel);
           return (
             <li
               key={v.titel}
               title={v.text}
-              className={`inline-flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 text-sm font-semibold text-white ring-1 ring-inset ${
+              className={`inline-flex min-h-10 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ${
                 eu ? "bg-eu ring-white/20" : "bg-white/10 ring-white/15"
               }`}
             >
               {eu ? (
                 <EuLogo className="size-6 shrink-0" />
               ) : (
-                <span aria-hidden className="flagge-de size-6 shrink-0 rounded-full ring-1 ring-white/30" />
+                <span aria-hidden className="flagge-de h-4 w-6 shrink-0 rounded-sm ring-1 ring-white/30" />
               )}
               {v.titel}
               <span className="sr-only">: {v.text}</span>
