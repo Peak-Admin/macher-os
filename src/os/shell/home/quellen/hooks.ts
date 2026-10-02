@@ -10,11 +10,19 @@ import { offeneAnfragen } from '@modules/anfragen/daten';
 import { naechsterEinsatz } from '@modules/naechster-einsatz/logik';
 import { istUeberfaellig, offenePosten } from '@modules/rechnungen/logik';
 import { useStartHaken } from '@modules/start/useStartHaken';
-import type { NextAction, WorkItem } from '../typen';
+import { STANDARD_HOME } from '../layout';
+import type { HomeLayout, NextAction, WorkItem } from '../typen';
 import { arbeitsposten } from './arbeit';
 import { naechsteAktionen } from './naechsterSchritt';
 
 const kundenName = (id: string | undefined) => (id ? db.kunden.get(id)?.name : undefined);
+
+/** Steht „Erste Schritte“ auf dem Home? Dann zeigt der nächste Schritt die Einrichtung nicht doppelt. */
+function ersteSchritteAufHome(ich: Mitarbeiter): boolean {
+  const l = einstellung<HomeLayout | null>(`home.layout.${ich.id}`, null);
+  if (!l || !Array.isArray(l.widgets)) return STANDARD_HOME[ich.rolle].some((w) => w.id === 'erste-schritte');
+  return l.widgets.some((w) => w.widgetId === 'erste-schritte' && w.visible);
+}
 
 export function useNaechsteAktionen(ich: Mitarbeiter): NextAction[] {
   useDatenstand();
@@ -28,7 +36,7 @@ export function useNaechsteAktionen(ich: Mitarbeiter): NextAction[] {
     heute: tag,
     buero,
     darfGeld,
-    einrichtung,
+    einrichtung: ersteSchritteAufHome(ich) ? [] : einrichtung,
     anfragen: buero ? offeneAnfragen() : [],
     angebote: darfGeld ? db.angebote.all() : [],
     abzurechnen: darfGeld ? db.auftraege.where((a) => a.phase === 'abrechnung' && !abgerechnet.has(a.id)) : [],
