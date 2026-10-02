@@ -24,7 +24,7 @@
 }
 .mm-nav-haupt--aktiv { color: var(--mm-black); font-weight: 700; }
 .mm-nav-haupt--aktiv .mm-nav-haupt-icon { background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); }
-.mm-nav-unter { list-style: none; margin: 4px 0 8px; padding: 0 0 0 40px; display: flex; flex-direction: column; }
+.mm-nav-unter { list-style: none; margin: 4px 0 8px; padding: 0 0 0 24px; display: flex; flex-direction: column; }
 .mm-nav-unterlink { display: block; padding: 6px 12px; min-height: 36px; border-radius: var(--mm-radius-control); color: var(--mm-text); text-decoration: none; font-size: 15px; }
 .mm-nav-unterlink:hover { background: var(--mm-hover); }
 .mm-nav-unterlink--aktiv { color: var(--mm-brand-text); font-weight: 700; }
