@@ -283,6 +283,30 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
     ],
   },
   {
+    titel: "Vergleich & Wechsel",
+    links: [
+      { label: "Software-Vergleich", href: "/vergleich" },
+      { label: "Macher OS vs. Word & Excel", href: "/vergleich/word-excel" },
+      { label: "Macher OS vs. HERO", href: "/vergleich/hero" },
+      { label: "Macher OS vs. ToolTime", href: "/vergleich/tooltime" },
+      { label: "Macher OS vs. klassische Software", href: "/vergleich/klassische-handwerkersoftware" },
+      { label: "Wechseln zu Macher OS", href: "/wechseln" },
+      { label: "Wechselbonus", href: "/wechselbonus" },
+    ],
+  },
+  {
+    titel: "Für dich",
+    links: [
+      { label: "Für Neugründer", href: "/fuer/neugruender" },
+      { label: "Für Meisterschüler", href: "/fuer/meisterschueler" },
+      { label: "Für Meisterschulen", href: "/fuer/meisterschulen" },
+      { label: "Handwerker-App", href: "/handwerker-app" },
+      { label: "Bürosoftware fürs Handwerk", href: "/buerosoftware-handwerk" },
+      { label: "Cloud-Handwerkersoftware", href: "/cloud-handwerkersoftware" },
+      { label: "Schnittstellen", href: "/schnittstellen" },
+    ],
+  },
+  {
     titel: "Werkzeuge",
     links: [
       { label: "Stundensatz-Rechner", href: "/werkzeuge/stundensatz-rechner" },
@@ -296,8 +320,12 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
     links: [
       { label: "Über uns", href: "/ueber-uns" },
       { label: "Mission Mittelstand", href: "/ueber-uns#mission-mittelstand" },
+      { label: "Was ist neu?", href: "/neuigkeiten" },
       { label: "Kunden", href: "/kunden" },
-      { label: "Partner", href: "/partner" },
+      { label: "Partner & Kooperationen", href: "/partner" },
+      { label: "Partnerbetriebe", href: "/partnerbetriebe" },
+      { label: "Empfehlungsprogramm", href: "/empfehlen" },
+      { label: "Creator & Botschafter", href: "/botschafter" },
       { label: "Kontakt", href: "/kontakt" },
       { label: "Karriere", href: "/karriere" },
     ],
