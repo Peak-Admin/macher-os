@@ -43,7 +43,9 @@ function Editor({ vorlage }: { vorlage: Vorlage }) {
   const [fehler, setFehler] = useState<string>();
   const cursor = useRef<{ feld: 'text' | 'betreff'; pos: number }>({ feld: 'text', pos: vorlage.text.length });
   const mitBetreff = VORLAGEN_ARTEN.find((a) => a.id === f.art)?.mitBetreff;
-  const { kontext, quelle } = beispielKontext(f.art);
+  // Vorschau mit echten Beträgen nur für Rollen mit „Preise & Geld“
+  const geld = useDarf('geld');
+  const { kontext, quelle } = geld ? beispielKontext(f.art) : { kontext: {}, quelle: undefined };
   const voll = { ...standardKontext(), ...kontext };
   const fehlt = fehlendePlatzhalter(`${mitBetreff ? f.betreff : ''} ${f.text}`, voll);
   const geaendert = f.titel !== vorlage.titel || f.art !== vorlage.art || f.betreff !== (vorlage.betreff ?? '') || f.text !== vorlage.text;

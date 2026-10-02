@@ -71,7 +71,7 @@ export default defineModul({
   seed: () => {
     // Beispiel: eine Bestellung, die gestern hätte kommen sollen (nur mit Beispieldaten)
     if (!db.mitarbeiter.all().some((m) => m.beispiel)) return;
-    const l =db.lieferanten.where((x) => !!x.beispiel)[0];
+    const l = db.lieferanten.all().find((x) => db.artikel.all().some((a) => a.lieferantId === x.id));
     const artikel = db.artikel.where((a) => a.lieferantId === l?.id).slice(3, 5);
     if (!l || !artikel.length) return;
     const b = bestellungAnlegen(l.id, artikel.map((a) => neuePosition({ artikelId: a.id, text: a.name, menge: Math.max(5, a.mindestbestand ?? 10), einheit: a.einheit, ek: a.ek })), { beispiel: true });

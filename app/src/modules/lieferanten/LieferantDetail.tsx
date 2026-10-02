@@ -56,7 +56,7 @@ export function LieferantDetail() {
                 inhalt: (
                   <Liste leer={<Leer titel="Noch keine Bestellungen" text="Bestellungen bei diesem Lieferanten erscheinen hier." icon="paket" />}>
                     {best.map((b) => (
-                      <ListenZeile key={b.id} to={`/betrieb/bestellungen/${b.id}`} titel={b.nummer} untertitel={kurzText(b)} rechts={ueberfaellig(b) ? <Status ton="achtung">Überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>} />
+                      <ListenZeile key={b.id} to={`/betrieb/bestellungen/${b.id}`} titel={b.nummer} untertitel={kurzText(b, geld)} rechts={ueberfaellig(b) ? <Status ton="achtung">Überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>} />
                     ))}
                   </Liste>
                 ),

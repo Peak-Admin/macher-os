@@ -244,7 +244,7 @@ export function mailtoLink(b: Bestellung): string {
   return `mailto:${encodeURIComponent(l?.email ?? '')}?subject=${encodeURIComponent(betreff)}&body=${encodeURIComponent(bestelltext(b))}`;
 }
 
-export function kurzText(b: Bestellung): string {
+export function kurzText(b: Bestellung, geld = true): string {
   const n = b.positionen.length;
-  return `${n} Position${n === 1 ? '' : 'en'} · ${euro(summe(b))} netto`;
+  return `${n} Position${n === 1 ? '' : 'en'}${geld ? ` · ${euro(summe(b))} netto` : ''}`;
 }

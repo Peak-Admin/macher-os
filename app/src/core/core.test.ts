@@ -58,3 +58,24 @@ describe('Speichern über mehrere Tabs', () => {
     expect(neu.kunden.k1).toBeUndefined();
   });
 });
+
+describe('Beispieldaten entfernen', () => {
+  it('nimmt Hinweise und Benachrichtigungen zu Beispielen mit, eigene Daten bleiben', async () => {
+    const { beispieleEntfernen } = await import('./seed');
+    const bsp = db.auftraege.create({ nummer: 'A-B', titel: 'Beispiel', art: 'kundendienst', phase: 'anfrage', kundeId: 'k', beispiel: true });
+    const echt = db.auftraege.create({ nummer: 'A-E', titel: 'Echt', art: 'kundendienst', phase: 'anfrage', kundeId: 'k' });
+    db.hinweise.create({ art: 'problem', titel: 'zum Beispiel', gewicht: 50, status: 'offen', bezug: { typ: 'auftraege', id: bsp.id } });
+    db.hinweise.create({ art: 'problem', titel: 'zum echten', gewicht: 50, status: 'offen', bezug: { typ: 'auftraege', id: echt.id } });
+    db.benachrichtigungen.create({ titel: 'B', gelesen: false, bezug: { typ: 'auftraege', id: bsp.id } });
+    const jonas = db.mitarbeiter.create({ vorname: 'Jonas', nachname: 'B', rolle: 'monteur', wochenstunden: 40, urlaubstageJahr: 30, kostensatz: 0, aktiv: true, beispiel: true });
+    const tBsp = db.termine.create({ art: 'einsatz', titel: 'zum Beispiel', start: '2026-10-06T07:00:00Z', ende: '2026-10-06T09:00:00Z', auftragId: bsp.id, mitarbeiterIds: [], status: 'geplant' });
+    const tEcht = db.termine.create({ art: 'einsatz', titel: 'echt', start: '2026-10-06T07:00:00Z', ende: '2026-10-06T09:00:00Z', auftragId: echt.id, mitarbeiterIds: [jonas.id, 'max'], status: 'geplant' });
+    beispieleEntfernen();
+    expect(db.termine.get(tBsp.id)).toBeUndefined();
+    expect(db.termine.get(tEcht.id)?.mitarbeiterIds).toEqual(['max']);
+    expect(db.auftraege.get(bsp.id)).toBeUndefined();
+    expect(db.hinweise.all().map((h) => h.titel)).toContain('zum echten');
+    expect(db.hinweise.all().map((h) => h.titel)).not.toContain('zum Beispiel');
+    expect(db.benachrichtigungen.where((b) => b.bezug?.id === bsp.id)).toHaveLength(0);
+  });
+});

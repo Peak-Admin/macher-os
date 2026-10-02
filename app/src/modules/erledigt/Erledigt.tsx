@@ -4,7 +4,7 @@ import { useDatenstand } from '@core/db';
 import { relativ, uhrzeit } from '@core/format';
 import { pfadZu } from '@core/modul';
 import type { Erledigung } from '@core/objects';
-import { useIch } from '@core/session';
+import { useDarf, useIch } from '@core/session';
 import { Abschnitt, Button, Filter, Kennzahl, Leer, Liste, ListenZeile, Meta, Raster, Seite, Status, useToast } from '@ui/index';
 import { ZEITRAUM_LABEL, erledigungenIm, kannRueckgaengig, minutenText, rueckgaengigAm, rueckgaengigMachen, zusammenfassen, type Zeitraum } from './logik';
 
@@ -15,7 +15,10 @@ function ErledigtZeile({ e }: { e: Erledigung }) {
   const navigate = useNavigate();
   const pfad = pfadZu(e.bezug);
   const zurueck = rueckgaengigAm(e.id);
-  const unter = [`${relativ(e.erstelltAm)}, ${uhrzeit(e.erstelltAm)}`, e.text, e.minutenGespart ? `${minutenText(e.minutenGespart)} gespart (Schätzung)` : null].filter(Boolean).join(' · ');
+  // Beträge nur mit Recht „Preise & Geld“
+  const geld = useDarf('geld');
+  const text = geld || !e.text?.includes('€') ? e.text : undefined;
+  const unter = [`${relativ(e.erstelltAm)}, ${uhrzeit(e.erstelltAm)}`, text, e.minutenGespart ? `${minutenText(e.minutenGespart)} gespart (Schätzung)` : null].filter(Boolean).join(' · ');
   return (
     <ListenZeile
       links={<Status ton={zurueck ? 'neutral' : 'erfolg'}>{zurueck ? 'Rückgängig' : 'Erledigt'}</Status>}

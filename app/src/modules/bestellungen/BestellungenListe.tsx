@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { datum, relativ } from '@core/format';
+import { useDarf } from '@core/session';
 import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meldung, Seite, Stapel, Status, Zeile } from '@ui/index';
 import { berechneBedarf } from '../bedarf/daten';
 import { bestellungen, istOffen, istUnterwegs, kurzText, STATUS, ueberfaellig, type Bestellung } from './daten';
@@ -9,6 +10,7 @@ type F = 'offen' | 'unterwegs' | 'geliefert' | 'alle';
 
 export function BestellungenListe() {
   useDatenstand();
+  const geld = useDarf('geld');
   const [f, setF] = useState<F>('offen');
   const alle = bestellungen.all().sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm));
   const passt = (b: Bestellung, x: F) => (x === 'offen' ? istOffen(b) : x === 'unterwegs' ? istUnterwegs(b) : x === 'geliefert' ? b.status === 'geliefert' : true);
@@ -63,7 +65,7 @@ export function BestellungenListe() {
                     {l?.name ?? 'Lieferant fehlt'} · {b.nummer} <BeispielMarke zeigen={b.beispiel} />
                   </>
                 }
-                untertitel={[kurzText(b), istUnterwegs(b) && b.erwartetAm ? `erwartet ${relativ(b.erwartetAm)}` : null, b.status === 'geliefert' && b.geliefertAm ? `geliefert am ${datum(b.geliefertAm)}` : null].filter(Boolean).join(' · ')}
+                untertitel={[kurzText(b, geld), istUnterwegs(b) && b.erwartetAm ? `erwartet ${relativ(b.erwartetAm)}` : null, b.status === 'geliefert' && b.geliefertAm ? `geliefert am ${datum(b.geliefertAm)}` : null].filter(Boolean).join(' · ')}
                 rechts={spaet ? <Status ton="achtung">Lieferung überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>}
               />
             );

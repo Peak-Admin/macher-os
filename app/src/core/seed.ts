@@ -63,7 +63,6 @@ export function einrichten(a: OnboardingAntworten) {
       name: 'Großhandel (bitte anpassen)',
       lieferzeitTage: 1,
       konditionen: 'Bitte deine Konditionen eintragen',
-      beispiel: true,
     });
     const artikel = v.artikel.map((x) =>
       db.artikel.create({
@@ -107,10 +106,27 @@ export function einrichten(a: OnboardingAntworten) {
 /** Alle Beispieldaten entfernen – echte Daten bleiben */
 export function beispieleEntfernen() {
   batch(() => {
+    const weg = new Set<ID>();
     for (const col of alleSammlungen()) {
       col.allMitGeloeschten()
         .filter((x) => x.beispiel)
-        .forEach((x) => col.purge(x.id));
+        .forEach((x) => (weg.add(x.id), col.purge(x.id)));
+    }
+    // Termine und Aufgaben zu Beispielaufträgen sind ohne den Auftrag sinnlos; Beispiel-Mitarbeiter aus Terminen austragen
+    db.termine.allMitGeloeschten().forEach((t) => {
+      if (t.auftragId && weg.has(t.auftragId)) return (weg.add(t.id), db.termine.purge(t.id));
+      if (t.mitarbeiterIds.some((m) => weg.has(m))) db.termine.update(t.id, { mitarbeiterIds: t.mitarbeiterIds.filter((m) => !weg.has(m)) }, { leise: true });
+    });
+    db.aufgaben
+      .allMitGeloeschten()
+      .filter((a) => (a.auftragId && weg.has(a.auftragId)) || (a.bezug && weg.has(a.bezug.id)))
+      .forEach((a) => (weg.add(a.id), db.aufgaben.purge(a.id)));
+    // Was Macher zu Beispielen notiert hat (Hinweise, Benachrichtigungen, Erledigt, Verlauf), geht mit
+    for (const name of ['hinweise', 'benachrichtigungen', 'erledigungen', 'ereignisse'] as const) {
+      db[name]
+        .allMitGeloeschten()
+        .filter((x) => x.bezug && weg.has(x.bezug.id))
+        .forEach((x) => db[name].purge(x.id));
     }
   });
 }
