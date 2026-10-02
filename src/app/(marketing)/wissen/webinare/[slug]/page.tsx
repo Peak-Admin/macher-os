@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FinalCta } from "@/components/sections";
-import { Breadcrumbs, CheckList, Container, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
+import { Breadcrumbs, CheckList, Container, Icon, IconTile, Section, SectionHeading, zone } from "@/components/ui";
 import { MailtoFormular } from "@/components/wissen/MailtoFormular";
 import { FunktionLinks } from "@/components/wissen/Teile";
 import { WebinarKarte, WebinarStatusLabel } from "@/components/wissen/WebinarKarte";
@@ -40,7 +40,7 @@ export default async function WebinarPage({ params }: Props) {
   return (
     <>
       {/* 1. Thema + 2. Termin / Status */}
-      <section className="border-b border-line bg-paper">
+      <section {...zone("weiss")}>
         <Container className="py-12 sm:py-16">
           <Breadcrumbs
             items={[{ label: "Wissen", href: "/wissen" }, { label: "Webinare", href: "/wissen/webinare" }, { label: w.titel }]}

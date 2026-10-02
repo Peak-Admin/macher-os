@@ -450,9 +450,7 @@ export default function HomePage() {
       </Zone>
 
       {/* 11. Von Mission Mittelstand */}
-      <Zone ton="dunkel">
-        <MissionMittelstand />
-      </Zone>
+      <MissionMittelstand />
 
       {/* 12. Einrichtung */}
       <Zone ton="beige">

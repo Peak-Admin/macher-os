@@ -1,7 +1,17 @@
 import { cta } from "@/lib/site";
 import { DemoExplorer } from "@/components/demo/DemoExplorer";
 import { PageHero, TrustRow } from "@/components/sections";
-import { ButtonLink, Container, Faq, FaqJsonLd, Icon, Section, SectionHeading, type FaqItem } from "@/components/ui";
+import {
+  ButtonLink,
+  Container,
+  Faq,
+  FaqJsonLd,
+  Icon,
+  Section,
+  SectionHeading,
+  zone,
+  type FaqItem,
+} from "@/components/ui";
 import { pageMeta } from "@/lib/metadata";
 
 export const metadata = pageMeta({
@@ -52,7 +62,7 @@ export default function DemoPage() {
       <DemoExplorer />
 
       {/* CTA */}
-      <section className="bg-ink text-white">
+      <section {...zone("dunkel")}>
         <Container className="grid gap-10 py-16 sm:py-20 lg:grid-cols-[1.4fr_1fr] lg:items-center">
           <div>
             <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl">

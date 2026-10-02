@@ -6,7 +6,7 @@ export { Card, CheckList, Badge } from "./Card";
 export { Faq, FaqJsonLd, type FaqItem } from "./Faq";
 export { Breadcrumbs } from "./Breadcrumbs";
 export { Karte3D } from "./Karte3D";
-export { Zone, type ZonenTon } from "./Zone";
+export { Zone, zone, type ZonenTon } from "./Zone";
 export { Objekt } from "./Objekt";
 export { Skizze, type SkizzenMotiv } from "./Skizze";
 export { UiEbene, UiZeile, UiStatus } from "./UiEbene";

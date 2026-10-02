@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Breadcrumbs, ButtonLink, Container } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, Container, zone } from "@/components/ui";
 import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import type { BildKey } from "@/content/bilder";
 import { cta } from "@/lib/site";
@@ -24,7 +24,7 @@ type HeroProps = {
 };
 
 /**
- * Einheitlicher Seitenkopf für Unterseiten.
+ * Einheitlicher Seitenkopf für Unterseiten – erste Box der Seite, der Glas-Kopf liegt darauf (wie auf der Startseite).
  * `visual` erscheint rechts (Desktop) bzw. unter dem Text (Mobil).
  */
 export function PageHero(props: HeroProps) {
@@ -32,7 +32,7 @@ export function PageHero(props: HeroProps) {
 
   const { eyebrow, title, intro, breadcrumbs, visual, actions = "default", trust = true, children } = props;
   return (
-    <section className="relative overflow-hidden border-b border-line bg-paper">
+    <section {...zone("weiss")}>
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-line)_1px,transparent_1px)] bg-[size:48px_48px] opacity-40 [mask-image:radial-gradient(ellipse_at_top_right,black_20%,transparent_70%)]"
@@ -93,7 +93,7 @@ function BildHero({
   bild,
 }: HeroProps & { bild: BildKey }) {
   return (
-    <section className="relative isolate overflow-hidden bg-ink text-white">
+    <section {...zone("dunkel")}>
       <Container className="relative py-12 sm:py-16 lg:py-24 xl:py-28">
         {breadcrumbs && <Breadcrumbs items={breadcrumbs} dark />}
         <div className={`grid items-center gap-12 ${visual ? "lg:grid-cols-[1.05fr_1fr]" : ""}`}>
@@ -121,7 +121,6 @@ function BildHero({
           />
         </div>
       )}
-      <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-brand" />
     </section>
   );
 }

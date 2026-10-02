@@ -12,13 +12,18 @@ export function FunktionKarte({ slug, mitUnterpunkten = false }: { slug: Funktio
       className="group flex h-full flex-col rounded-lg border border-line bg-white p-5 transition hover:-translate-y-0.5 hover:border-ink/30 hover:shadow-lg hover:shadow-ink/5"
     >
       <Skizze motiv={slug} className="-mx-1 -mt-1 mb-5" />
-      <h3 className="font-display text-lg font-bold leading-snug">
+      <h3 className="min-w-0 font-display text-lg font-bold leading-snug [overflow-wrap:anywhere]">
         {funktionTitel(slug)}
         <Icon
           name="arrow-right"
           className="ml-1.5 inline size-4 -translate-y-px text-signal-dark transition-transform group-hover:translate-x-0.5"
         />
       </h3>
+      {inhalt.bald && (
+        <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-md bg-warning-soft px-2.5 py-0.5 text-xs font-semibold text-warning">
+          <Icon name="clock" className="size-3.5" /> Kommt bald
+        </p>
+      )}
       <p className="mt-2 text-[0.95rem] leading-relaxed text-muted">{inhalt.kurz}</p>
       {mitUnterpunkten && inhalt.enthalten && (
         <ul className="mt-4 flex flex-wrap gap-1.5">

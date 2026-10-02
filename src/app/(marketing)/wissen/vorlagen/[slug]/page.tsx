@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FinalCta } from "@/components/sections";
-import { Breadcrumbs, ButtonLink, CheckList, Container, Section, SectionHeading } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, CheckList, Container, Section, SectionHeading, zone } from "@/components/ui";
 import { DruckenButton, DruckStyles } from "@/components/wissen/Drucken";
 import { FunktionLinks, Rechtshinweis } from "@/components/wissen/Teile";
 import { VorlageVorschau } from "@/components/wissen/VorlageVorschau";
@@ -45,7 +45,7 @@ export default async function VorlagePage({ params }: Props) {
       <DruckStyles />
 
       {/* 1. Was ist die Vorlage? + 2. Wofür? */}
-      <section className="border-b border-line bg-paper print:hidden">
+      <section {...zone("weiss", "print:hidden")}>
         <Container className="py-12 sm:py-16">
           <Breadcrumbs
             items={[
@@ -81,7 +81,7 @@ export default async function VorlagePage({ params }: Props) {
       </section>
 
       {/* 3. Vorschau */}
-      <section className="bg-sand py-12 sm:py-16 print:bg-transparent print:p-0">
+      <section {...zone("beige", "py-12 sm:py-16 print:p-0")}>
         <Container className="print:max-w-none print:px-0">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3 print:hidden">
             <h2 className="font-display text-2xl font-extrabold tracking-tight">Vorschau</h2>

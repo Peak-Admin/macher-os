@@ -6,6 +6,7 @@ import {
   funktionInhalte,
   funktionTitel,
   gewerkTitel,
+  type FunktionInhalt,
   type StandardSlug,
 } from "@/content/funktionen";
 import { funktionGruppen, gewerkHref, werkzeuge } from "@/content/registry";
@@ -26,7 +27,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
       {/* 1. Hero: Problem + Lösung */}
       <PageHero
         breadcrumbs={[{ label: "Funktionen", href: "/funktionen" }, { label: titel }]}
-        eyebrow={`${gruppe.titel} · ${titel}`}
+        eyebrow={`${gruppe.titel} · ${titel}${f.bald ? " · Kommt bald" : ""}`}
         title={f.hero.titel}
         intro={
           <>
@@ -34,7 +35,9 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
           </>
         }
         visual={<FunktionsMock visual={f.visual} label={`Produktansicht Macher OS: ${titel}`} />}
-      />
+      >
+        {f.bald && <BaldHinweis bald={f.bald} />}
+      </PageHero>
 
       {/* 2. Das Problem */}
       <Section tone="white">
@@ -208,5 +211,30 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
       {/* 10. CTA */}
       <FinalCta />
     </>
+  );
+}
+
+/** Hinweis auf angekündigten Funktionsseiten: Status als Text, dazu was heute schon geht. */
+function BaldHinweis({ bald }: { bald: NonNullable<FunktionInhalt["bald"]> }) {
+  return (
+    <div className="mt-8 rounded-xl border border-warning/30 bg-warning-soft p-5 text-warning">
+      <p className="flex items-center gap-2 font-display text-lg font-bold">
+        <Icon name="clock" className="size-5 shrink-0" /> Kommt bald
+      </p>
+      <p className="mt-2 leading-relaxed text-ink">{bald.text}</p>
+      {bald.heute.length > 0 && (
+        <>
+          <p className="mt-4 text-sm font-semibold text-ink">Heute schon in Macher OS:</p>
+          <ul className="mt-2 grid gap-1.5">
+            {bald.heute.map((h) => (
+              <li key={h} className="flex items-start gap-2 text-[0.95rem] text-ink">
+                <Icon name="check" className="mt-1 size-4 shrink-0 text-moss" />
+                <span>{h}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
   );
 }

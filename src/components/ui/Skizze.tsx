@@ -28,10 +28,8 @@ type ZusatzMotiv =
   | "stufen"
   | "verlauf"
   | "ehrlich"
-  | "dokumente"
   | "tabelle"
-  | "software-export"
-  | "datanorm";
+  | "software-export";
 
 export type SkizzenMotiv = FunktionSlug | ZusatzMotiv;
 
@@ -198,7 +196,18 @@ function HandyKopf({ titel, nr }: { titel: string; nr?: string }) {
   );
 }
 
-type Motiv = { icon: IconName; vorne: ReactNode; form?: "blatt" | "handy" };
+/** Pfad eines fünfzackigen Sterns um (cx, cy). */
+function stern(cx: number, cy: number, r: number) {
+  const punkte = Array.from({ length: 10 }, (_, i) => {
+    const w = (Math.PI / 5) * i - Math.PI / 2;
+    const rr = i % 2 === 0 ? r : r * 0.45;
+    return `${(cx + rr * Math.cos(w)).toFixed(2)} ${(cy + rr * Math.sin(w)).toFixed(2)}`;
+  });
+  return `M${punkte.join(" L")} Z`;
+}
+
+type Kopfdaten = { titel: string; nr?: string; person?: boolean };
+type Motiv = { icon: IconName; kopf?: Kopfdaten; vorne: ReactNode; form?: "blatt" | "handy" };
 
 const qr = [
   "1110111",
@@ -210,12 +219,12 @@ const qr = [
   "1011101",
 ];
 
-const motive: Record<SkizzenMotiv, Motiv> = {
+const motive = {
   anfragen: {
     icon: "inbox",
+    kopf: { titel: "Anfrage", person: true },
     vorne: (
       <>
-        <Kopf titel="Anfrage" person />
         <Pille x={R - 24} y={36} b={24} text="Neu" />
         <rect x={L} y={58} width={100} height={32} rx={8} className="fill-sand" />
         <path d={`M${L + 10} 89 v9 l10 -9 Z`} className="fill-sand" />
@@ -230,9 +239,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   telefon: {
     icon: "phone",
+    kopf: { titel: "Anruf", nr: "08:12", person: true },
     vorne: (
       <>
-        <Kopf titel="Anruf" nr="08:12" person />
         {[6, 12, 20, 14, 26, 18, 10, 22, 30, 16, 8, 18, 12, 6, 10, 16].map((h, i) => (
           <rect key={i} x={L + 2 + i * 6.2} y={76 - h / 2} width={3} height={h} rx={1.5} className={i < 10 ? "fill-primary" : "fill-line"} />
         ))}
@@ -245,9 +254,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   kunden: {
     icon: "user",
+    kopf: { titel: "Kunde" },
     vorne: (
       <>
-        <Kopf titel="Kunde" />
         <Person cx={L + 14} cy={72} r={14} />
         <Balken x={L + 36} y={64} b={56} ton="dunkel" />
         <Balken x={L + 36} y={75} b={40} />
@@ -262,9 +271,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   auftraege: {
     icon: "clipboard",
+    kopf: { titel: "Auftrag", nr: "01" },
     vorne: (
       <>
-        <Kopf titel="Auftrag" nr="01" />
         {[70, 58, 76, 64, 50].map((b, i) => (
           <g key={i}>
             <Kaestchen x={L} y={57 + i * 16} an={i < 3} />
@@ -276,9 +285,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   aufmass: {
     icon: "ruler",
+    kopf: { titel: "Aufmaß" },
     vorne: (
       <>
-        <Kopf titel="Aufmaß" />
         <path d={`M${L + 6} 66 H${R - 4} V104 H${L + 62} V136 H${L + 6} Z`} strokeWidth={2} strokeLinejoin="round" className="fill-sand stroke-ink/60" />
         <path d={`M${L + 30} 136 A14 14 0 0 0 ${L + 16} 122`} fill="none" strokeWidth={1} className="stroke-muted/60" />
         <line x1={L + 16} y1={122} x2={L + 16} y2={136} strokeWidth={1} className="stroke-muted/60" />
@@ -299,9 +308,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   kalkulation: {
     icon: "calculator",
+    kopf: { titel: "Kalkulation" },
     vorne: (
       <>
-        <Kopf titel="Kalkulation" />
         {[54, 62, 48].map((b, i) => (
           <g key={i}>
             <Balken x={L} y={60 + i * 14} b={b} />
@@ -319,9 +328,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   angebote: {
     icon: "file",
+    kopf: { titel: "Angebot", nr: "01", person: true },
     vorne: (
       <>
-        <Kopf titel="Angebot" nr="01" person />
         <Balken x={L} y={58} b={96} ton="dunkel" />
         <Balken x={L} y={68} b={84} />
         <Balken x={L} y={78} b={90} />
@@ -337,9 +346,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   dokumentation: {
     icon: "camera",
+    kopf: { titel: "Fotos", nr: "4" },
     vorne: (
       <>
-        <Kopf titel="Fotos" nr="4" />
         <Foto x={L} y={56} b={47} h={34} />
         <Foto x={L + 53} y={56} b={47} h={34} />
         <Foto x={L} y={95} b={47} h={34} />
@@ -352,9 +361,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   rechnungen: {
     icon: "euro",
+    kopf: { titel: "Rechnung", nr: "01", person: true },
     vorne: (
       <>
-        <Kopf titel="Rechnung" nr="01" person />
         <Balken x={L} y={58} b={62} ton="dunkel" />
         <Balken x={L} y={68} b={44} />
         {[58, 46, 54].map((b, i) => (
@@ -371,9 +380,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   zahlungen: {
     icon: "chart",
+    kopf: { titel: "Zahlungen" },
     vorne: (
       <>
-        <Kopf titel="Zahlungen" />
         {[true, true, false].map((bezahlt, i) => (
           <g key={i}>
             <Balken x={L} y={60 + i * 22} b={[52, 60, 46][i]} ton="dunkel" />
@@ -395,9 +404,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   kalender: {
     icon: "calendar",
+    kopf: { titel: "Kalender" },
     vorne: (
       <>
-        <Kopf titel="Kalender" />
         {[0, 1, 2, 3, 4].map((s) => (
           <rect key={s} x={L + s * 21} y={55} width={17} height={4} rx={2} className="fill-muted/30" />
         ))}
@@ -414,9 +423,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   einsatzplanung: {
     icon: "route",
+    kopf: { titel: "Plantafel" },
     vorne: (
       <>
-        <Kopf titel="Plantafel" />
         {[
           [[128, 40, "fill-primary"], [172, 32, "fill-signal-soft"]],
           [[140, 58, "fill-primary"]],
@@ -437,9 +446,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   mitarbeiter: {
     icon: "users",
+    kopf: { titel: "Mitarbeiter", nr: "01", person: true },
     vorne: (
       <>
-        <Kopf titel="Mitarbeiter" nr="01" person />
         <Balken x={L} y={58} b={92} ton="dunkel" />
         <Balken x={L} y={68} b={70} />
         <Balken x={L} y={78} b={84} />
@@ -453,9 +462,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   zeiterfassung: {
     icon: "clock",
+    kopf: { titel: "Zeiten", nr: "8:15" },
     vorne: (
       <>
-        <Kopf titel="Zeiten" nr="8:15" />
         <circle cx={L + 18} cy={78} r={16} className="fill-sand" />
         <path d={`M${L + 18} 62 A16 16 0 1 1 ${L + 4.14} 86`} fill="none" strokeWidth={3} strokeLinecap="round" className="stroke-primary" />
         <path d={`M${L + 18} 70 V78 L${L + 24} 82`} fill="none" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="stroke-ink/70" />
@@ -472,9 +481,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   qualifikationen: {
     icon: "award",
+    kopf: { titel: "Nachweis" },
     vorne: (
       <>
-        <Kopf titel="Nachweis" />
         <Balken x={130} y={57} b={60} ton="dunkel" />
         <Balken x={138} y={67} b={44} />
         <path d="M153 104 l-5 17 l6 -3 l3 5 l3 -15 Z" className="fill-primary" />
@@ -489,9 +498,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   schulungen: {
     icon: "book",
+    kopf: { titel: "Schulung" },
     vorne: (
       <>
-        <Kopf titel="Schulung" />
         <rect x={L} y={55} width={100} height={48} rx={6} className="fill-sand" />
         <circle cx={160} cy={79} r={11} className="fill-primary" />
         <path d="M156.5 73.5 L166 79 L156.5 84.5 Z" className="fill-white" />
@@ -504,9 +513,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   material: {
     icon: "box",
+    kopf: { titel: "Material" },
     vorne: (
       <>
-        <Kopf titel="Material" />
         {[46, 56, 40, 50].map((b, i) => (
           <g key={i}>
             <rect x={L + 0.5} y={57.5 + i * 18} width={12} height={12} rx={2} strokeWidth={0.8} className="fill-signal-soft stroke-primary" />
@@ -520,9 +529,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   lager: {
     icon: "warehouse",
+    kopf: { titel: "Lager" },
     vorne: (
       <>
-        <Kopf titel="Lager" />
         {(
           [
             [80, [[L + 2, 26], [L + 32, 20], [L + 56, 28], [L + 88, 10]]],
@@ -556,9 +565,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   einkauf: {
     icon: "cart",
+    kopf: { titel: "Bestellung", nr: "01" },
     vorne: (
       <>
-        <Kopf titel="Bestellung" nr="01" />
         {[60, 48, 54].map((b, i) => (
           <g key={i}>
             <Kaestchen x={L} y={57 + i * 14} an={i < 2} />
@@ -578,9 +587,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   werkzeuge: {
     icon: "wrench",
+    kopf: { titel: "Werkzeug" },
     vorne: (
       <>
-        <Kopf titel="Werkzeug" />
         {qr.flatMap((zeile, z) =>
           zeile.split("").map((an, s) =>
             an === "1" ? <rect key={`${z}-${s}`} x={L + s * 5} y={56 + z * 5} width={5} height={5} className="fill-ink/80" /> : null,
@@ -601,9 +610,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   fahrzeuge: {
     icon: "truck",
+    kopf: { titel: "Fahrzeug" },
     vorne: (
       <>
-        <Kopf titel="Fahrzeug" />
         <path d={`M${L + 2} 92 V64 Q${L + 2} 58 ${L + 8} 58 H170 L185 72 H${R - 8} Q${R - 2} 72 ${R - 2} 78 V92 Z`} className="fill-line" />
         <path d="M172 62 H175 L185 72 H172 Z" className="fill-white" />
         <rect x={L + 8} y={76} width={48} height={4} rx={2} className="fill-primary" />
@@ -623,9 +632,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   auswertung: {
     icon: "chart",
+    kopf: { titel: "Auswertung" },
     vorne: (
       <>
-        <Kopf titel="Auswertung" />
         {[24, 38, 30, 52, 44, 62].map((h, i) => (
           <rect key={i} x={L + 3 + i * 16.5} y={130 - h} width={11} height={h} rx={2.5} className={i === 5 ? "fill-primary" : "fill-signal-soft"} />
         ))}
@@ -636,9 +645,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   "automatisch-erledigen": {
     icon: "spark",
+    kopf: { titel: "Heute erledigt" },
     vorne: (
       <>
-        <Kopf titel="Heute erledigt" />
         {[70, 56, 64, 48].map((b, i) => (
           <g key={i}>
             <circle cx={L + 5} cy={61 + i * 18} r={5.5} className="fill-primary" />
@@ -655,10 +664,10 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   // ---------- App: vorne ein Handy
   "handy-einsaetze": {
     icon: "calendar",
+    kopf: { titel: "Heute" },
     form: "handy",
     vorne: (
       <>
-        <HandyKopf titel="Heute" />
         {["07:00", "11:30", "14:00"].map((zeit, i) => {
           const y = 46 + i * 32;
           return (
@@ -677,10 +686,10 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   "handy-unterwegs": {
     icon: "route",
+    kopf: { titel: "Einsatz", nr: "07:00" },
     form: "handy",
     vorne: (
       <>
-        <HandyKopf titel="Einsatz" nr="07:00" />
         <rect x={HL} y={46} width={72} height={44} rx={6} className="fill-sand" />
         <path d={`M${HL} 72 H${HR} M150 46 V90`} fill="none" strokeWidth={4} className="stroke-white" />
         <path d="M132 84 L150 72 V58 H182" fill="none" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="stroke-primary" />
@@ -698,10 +707,10 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   "handy-vor-ort": {
     icon: "camera",
+    kopf: { titel: "Auftrag" },
     form: "handy",
     vorne: (
       <>
-        <HandyKopf titel="Auftrag" />
         <Balken x={HL} y={46} b={64} ton="dunkel" />
         <Balken x={HL} y={56} b={48} />
         <Kaestchen x={HL} y={68} an />
@@ -720,10 +729,10 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   "handy-abschluss": {
     icon: "signature",
+    kopf: { titel: "Abnahme" },
     form: "handy",
     vorne: (
       <>
-        <HandyKopf titel="Abnahme" />
         <rect x={HL} y={46} width={72} height={56} rx={6} className="fill-sand" />
         <path
           d="M134 86 c5 -2 6 -16 10 -16 s-2 18 4 18 s6 -12 10 -12 s1 10 5 10 s6 -5 9 -5"
@@ -767,10 +776,10 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   "handy-sprache": {
     icon: "mic",
+    kopf: { titel: "Notiz" },
     form: "handy",
     vorne: (
       <>
-        <HandyKopf titel="Notiz" />
         <rect x={HL} y={46} width={72} height={16} rx={8} className="fill-signal-soft" />
         <circle cx={HL + 9} cy={54} r={3} className="fill-primary" />
         <text x={HL + 17} y={57} fontSize={7.5} fontWeight={700} className="font-display fill-signal">
@@ -806,10 +815,10 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   "handy-kontakte": {
     icon: "smartphone",
+    kopf: { titel: "Kontakte" },
     form: "handy",
     vorne: (
       <>
-        <HandyKopf titel="Kontakte" />
         {[40, 32, 44, 28].map((b, i) => {
           const y = 48 + i * 23;
           return (
@@ -833,9 +842,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   // ---------- Grundsätze von „Macher erledigt“
   freigabe: {
     icon: "check",
+    kopf: { titel: "Vorschlag" },
     vorne: (
       <>
-        <Kopf titel="Vorschlag" />
         <rect x={L - 4} y={56} width={108} height={36} rx={6} className="fill-signal-soft" />
         <Glyphe name="spark" x={L + 1} y={59} groesse={11} />
         <Balken x={L + 16} y={62} b={70} ton="gruen-hell" />
@@ -850,9 +859,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   stufen: {
     icon: "layers",
+    kopf: { titel: "Einstellungen" },
     vorne: (
       <>
-        <Kopf titel="Einstellungen" />
         {[2, 1, 0, 2].map((stufe, i) => {
           const y = 57 + i * 22;
           const an = ["fill-white stroke-line-dark/60", "fill-signal-soft stroke-primary", "fill-primary stroke-primary"][stufe];
@@ -869,9 +878,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   verlauf: {
     icon: "clipboard",
+    kopf: { titel: "Verlauf" },
     vorne: (
       <>
-        <Kopf titel="Verlauf" />
         <line x1={L + 4} y1={60} x2={L + 4} y2={136} strokeWidth={1.5} className="stroke-line" />
         {["17:00", "15:46", "12:05", "09:30"].map((zeit, i) => {
           const y = 60 + i * 22;
@@ -891,9 +900,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   ehrlich: {
     icon: "shield",
+    kopf: { titel: "Nachricht" },
     vorne: (
       <>
-        <Kopf titel="Nachricht" />
         <rect x={L} y={56} width={72} height={28} rx={8} className="fill-sand" />
         <path d={`M${L + 8} 83 l-2 8 l10 -8 Z`} className="fill-sand" />
         <Balken x={L + 8} y={63} b={52} ton="weiss" />
@@ -914,9 +923,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   // ---------- Daten übernehmen
   dokumente: {
     icon: "file",
+    kopf: { titel: "Dokumente" },
     vorne: (
       <>
-        <Kopf titel="Dokumente" />
         {["PDF", "PDF", "JPG", "DWG"].map((art, i) => {
           const y = 56 + i * 20;
           return (
@@ -933,9 +942,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   tabelle: {
     icon: "layers",
+    kopf: { titel: "Tabelle", nr: "CSV" },
     vorne: (
       <>
-        <Kopf titel="Tabelle" nr="CSV" />
         {[0, 1, 2, 3, 4, 5].flatMap((z) =>
           [0, 1, 2, 3].map((sp) => {
             const x = L + sp * 25.5;
@@ -955,9 +964,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   "software-export": {
     icon: "monitor",
+    kopf: { titel: "Export" },
     vorne: (
       <>
-        <Kopf titel="Export" />
         <rect x={L + 0.5} y={54.5} width={99} height={46} rx={5} strokeWidth={1} className="fill-white stroke-ink/30" />
         <path d={`M${L + 1} 66 V59 a4 4 0 0 1 4 -4 H${R - 5} a4 4 0 0 1 4 4 V66 Z`} className="fill-muted/25" />
         {[0, 1, 2].map((i) => (
@@ -987,9 +996,9 @@ const motive: Record<SkizzenMotiv, Motiv> = {
   },
   datanorm: {
     icon: "warehouse",
+    kopf: { titel: "Preisliste" },
     vorne: (
       <>
-        <Kopf titel="Preisliste" />
         <rect x={L - 4} y={80} width={108} height={13} rx={3} className="fill-signal-soft" />
         {[44, 36, 50, 40, 46].map((b, i) => {
           const y = 56 + i * 13;
@@ -1006,7 +1015,237 @@ const motive: Record<SkizzenMotiv, Motiv> = {
       </>
     ),
   },
+
+  // ---------- Weitere Funktionen mit eigenem Motiv
+  orte: {
+    icon: "map",
+    kopf: { titel: "Baustelle" },
+    vorne: (
+      <>
+        <rect x={L} y={55} width={100} height={46} rx={6} className="fill-sand" />
+        <path d={`M${L} 80 H${R} M150 55 V101 M${L + 18} 55 L${L + 64} 101`} fill="none" strokeWidth={4} className="stroke-white" />
+        <path d="M182 78 c-4.5 -4.5 -7 -7.5 -7 -10 a7 7 0 0 1 14 0 c0 2.5 -2.5 5.5 -7 10 Z" className="fill-primary" />
+        <circle cx={182} cy={68} r={2.5} className="fill-white" />
+        <Glyphe name="home" x={L} y={109} groesse={11} />
+        <Balken x={L + 16} y={112} b={62} ton="dunkel" />
+        <Glyphe name="user" x={L} y={124} groesse={11} />
+        <Balken x={L + 16} y={127} b={48} />
+      </>
+    ),
+  },
+  nachrichten: {
+    icon: "chat",
+    kopf: { titel: "Nachrichten", person: true },
+    vorne: (
+      <>
+        <rect x={L} y={56} width={64} height={22} rx={8} className="fill-sand" />
+        <Balken x={L + 7} y={62.5} b={44} ton="weiss" />
+        <Balken x={L + 7} y={70} b={30} ton="weiss" />
+        <rect x={L + 30} y={84} width={70} height={22} rx={8} className="fill-primary" />
+        <Balken x={L + 37} y={90.5} b={48} ton="weiss" />
+        <Balken x={L + 37} y={98} b={34} ton="weiss" />
+        <rect x={L} y={112} width={52} height={16} rx={8} className="fill-sand" />
+        <Balken x={L + 7} y={117.5} b={36} ton="weiss" />
+        <rect x={L + 0.5} y={134.5} width={99} height={12} rx={6} strokeWidth={1} className="fill-white stroke-line" />
+        <Balken x={L + 6} y={138} b={40} />
+      </>
+    ),
+  },
+  kundenbereich: {
+    icon: "link",
+    form: "handy",
+    kopf: { titel: "Dein Auftrag" },
+    vorne: (
+      <>
+        <line x1={HL + 6} y1={54} x2={HL + 66} y2={54} strokeWidth={1.5} className="stroke-line" />
+        {[0, 1, 2, 3].map((i) => (
+          <g key={i}>
+            <circle
+              cx={HL + 6 + i * 20}
+              cy={54}
+              r={5}
+              strokeWidth={1.2}
+              className={i < 2 ? "fill-primary stroke-primary" : i === 2 ? "fill-white stroke-primary" : "fill-white stroke-line-dark/60"}
+            />
+            {i < 2 && <Haken x={HL + 1.5 + i * 20} y={49.5} />}
+          </g>
+        ))}
+        {[44, 36, 40].map((b, i) => {
+          const y = 68 + i * 18;
+          return (
+            <g key={i}>
+              <path d={`M${HL} ${y} h7 l3 3 v10 h-10 Z`} strokeWidth={0.9} strokeLinejoin="round" className="fill-white stroke-primary" />
+              <Balken x={HL + 15} y={y + 4} b={b} ton="dunkel" />
+            </g>
+          );
+        })}
+        <Knopf x={HL} y={126} b={72} text="Unterschreiben" />
+      </>
+    ),
+  },
+  bewertungen: {
+    icon: "award",
+    kopf: { titel: "Bewertung", person: true },
+    vorne: (
+      <>
+        {[0, 1, 2, 3, 4].map((i) => (
+          <path key={i} d={stern(L + 7 + i * 17, 64, 7)} className={i < 4 ? "fill-primary" : "fill-primary/25"} />
+        ))}
+        <rect x={L} y={80} width={100} height={42} rx={8} className="fill-sand" />
+        <Balken x={L + 8} y={88} b={80} ton="weiss" />
+        <Balken x={L + 8} y={98} b={70} ton="weiss" />
+        <Balken x={L + 8} y={108} b={48} ton="weiss" />
+        <Pille x={L} y={130} b={56} text="Empfehlung" />
+      </>
+    ),
+  },
+  schnittstellen: {
+    icon: "link",
+    kopf: { titel: "Schnittstellen" },
+    vorne: (
+      <>
+        <g fill="none" strokeWidth={1.2} strokeDasharray="2.5 2" className="stroke-primary/70">
+          <path d={`M160 96 L${L + 36} 65 M160 96 L${R - 36} 65 M160 96 L${L + 36} 133 M160 96 L${R - 36} 133`} />
+        </g>
+        {(
+          [
+            [L, 58, "DATEV"],
+            [R - 36, 58, "GAEB"],
+            [L, 126, "IDS"],
+            [R - 36, 126, "API"],
+          ] as [number, number, string][]
+        ).map(([x, y, text]) => (
+          <g key={text}>
+            <rect x={x} y={y} width={36} height={14} rx={4} className="fill-sand" />
+            <text x={x + 18} y={y + 9.8} textAnchor="middle" fontSize={7} fontWeight={700} className="font-display fill-ink">
+              {text}
+            </text>
+          </g>
+        ))}
+        <rect x={148} y={84} width={24} height={24} rx={6} className="fill-primary" />
+        <text x={160} y={100.5} textAnchor="middle" fontSize={12} fontWeight={900} className="font-display fill-white">
+          M
+        </text>
+      </>
+    ),
+  },
+  cloud: {
+    icon: "layers",
+    kopf: { titel: "Cloud" },
+    vorne: (
+      <>
+        <path
+          d="M140 90 a10 10 0 0 1 1 -19.9 a14 14 0 0 1 26.5 -3.6 a11 11 0 0 1 15.5 10.5 a8.6 8.6 0 0 1 -1.5 13 Z"
+          strokeWidth={1.2}
+          className="fill-signal-soft stroke-primary"
+        />
+        <path d="M153 79 l4.5 4.5 l9 -9" fill="none" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="stroke-primary" />
+        <path d={`M150 94 L${L + 22} 106 M170 94 L${R - 16} 104`} fill="none" strokeWidth={1.1} strokeDasharray="2 2" className="stroke-primary/60" />
+        <rect x={L + 2.5} y={108.5} width={40} height={24} rx={3} strokeWidth={1.2} className="fill-white stroke-ink/50" />
+        <line x1={L - 2} y1={134} x2={L + 47} y2={134} strokeWidth={2} strokeLinecap="round" className="stroke-ink/50" />
+        <Balken x={L + 8} y={114} b={26} />
+        <Balken x={L + 8} y={122} b={18} />
+        <rect x={R - 26.5} y={104.5} width={20} height={32} rx={4} strokeWidth={1.2} className="fill-white stroke-ink/50" />
+        <rect x={R - 22} y={111} width={11} height={4} rx={2} className="fill-line" />
+        <rect x={R - 22} y={118} width={8} height={4} rx={2} className="fill-line" />
+      </>
+    ),
+  },
+  terminbuchung: {
+    icon: "link",
+    form: "handy",
+    kopf: { titel: "Termin buchen" },
+    vorne: (
+      <>
+        {["12", "13", "14", "15"].map((tag, i) => (
+          <g key={tag}>
+            <rect x={HL + i * 18.7} y={47} width={16} height={20} rx={4} className={i === 1 ? "fill-primary" : "fill-sand"} />
+            <text x={HL + i * 18.7 + 8} y={60} textAnchor="middle" fontSize={7.5} fontWeight={700} className={`font-display ${i === 1 ? "fill-white" : "fill-ink"}`}>
+              {tag}
+            </text>
+          </g>
+        ))}
+        {["08:00", "09:30", "11:00", "13:00", "14:30", "16:00"].map((zeit, i) => {
+          const x = HL + (i % 2) * 37;
+          const y = 75 + Math.floor(i / 2) * 17;
+          const an = i === 2;
+          return (
+            <g key={zeit}>
+              <rect x={x + 0.5} y={y + 0.5} width={34} height={13} rx={4} strokeWidth={1} className={an ? "fill-signal-soft stroke-primary" : "fill-white stroke-line-dark/40"} />
+              <text x={x + 17.5} y={y + 9.6} textAnchor="middle" fontSize={7} fontWeight={700} className={`font-display ${an ? "fill-signal" : "fill-ink"}`}>
+                {zeit}
+              </text>
+            </g>
+          );
+        })}
+        <Knopf x={HL} y={129} b={72} text="Buchen" />
+      </>
+    ),
+  },
+} satisfies Record<string, Motiv>;
+
+type BasisMotiv = keyof typeof motive;
+
+/** Funktion ohne eigenes Motiv: zeigt ein verwandtes Motiv mit eigenem Titel und Icon. */
+type Ableitung = { basis: BasisMotiv; titel?: string; nr?: string | null; icon: IconName };
+
+const ableitungen: Record<Exclude<SkizzenMotiv, BasisMotiv>, Ableitung> = {
+  anlagen: { basis: "werkzeuge", titel: "Anlage", icon: "wrench" },
+  besichtigungen: { basis: "aufmass", titel: "Besichtigung", icon: "camera" },
+  aufgaben: { basis: "automatisch-erledigen", titel: "Aufgaben", icon: "check" },
+  checklisten: { basis: "auftraege", titel: "Checkliste", nr: null, icon: "clipboard" },
+  arbeitsanweisungen: { basis: "schulungen", titel: "Anleitung", icon: "book" },
+  "schnell-erfassen": { basis: "handy-sprache", titel: "Erfassen", icon: "bolt" },
+  berichte: { basis: "angebote", titel: "Bericht", icon: "clipboard" },
+  zusatzleistungen: { basis: "kalkulation", titel: "Zusatzarbeit", icon: "plus" },
+  abnahme: { basis: "handy-abschluss", icon: "signature" },
+  mahnungen: { basis: "zahlungen", titel: "Mahnung", icon: "bell" },
+  finanzen: { basis: "auswertung", titel: "Finanzen", icon: "euro" },
+  wartung: { basis: "kalender", titel: "Wartung", icon: "wrench" },
+  servicevertraege: { basis: "angebote", titel: "Vertrag", icon: "signature" },
+  reklamationen: { basis: "dokumentation", titel: "Mangel", nr: "2", icon: "shield" },
+  "wiederkehrende-termine": { basis: "kalender", titel: "Turnus", icon: "clock" },
+  "automatische-planung": { basis: "einsatzplanung", titel: "Vorschlag", icon: "spark" },
+  auslastung: { basis: "auswertung", titel: "Auslastung", icon: "chart" },
+  "fahrt-route": { basis: "handy-navigation", icon: "map" },
+  "mein-tag": { basis: "handy-einsaetze", titel: "Mein Tag", icon: "smartphone" },
+  "baustellen-app": { basis: "handy-vor-ort", icon: "smartphone" },
+  "urlaub-krankheit": { basis: "kalender", titel: "Urlaub", icon: "calendar" },
+  "rollen-rechte": { basis: "stufen", titel: "Rechte", icon: "shield" },
+  unterweisungen: { basis: "qualifikationen", titel: "Unterweisung", icon: "signature" },
+  einarbeitung: { basis: "auftraege", titel: "Einarbeitung", nr: null, icon: "clipboard" },
+  bewerber: { basis: "mitarbeiter", titel: "Bewerber", icon: "user" },
+  subunternehmer: { basis: "kunden", titel: "Partner", icon: "users" },
+  materialbedarf: { basis: "material", titel: "Bedarf", icon: "cart" },
+  belege: { basis: "rechnungen", titel: "Beleg", icon: "file" },
+  buchhaltung: { basis: "software-export", titel: "Buchhaltung", icon: "book" },
+  maschinen: { basis: "werkzeuge", titel: "Maschine", icon: "bolt" },
+  pruefungen: { basis: "werkzeuge", titel: "Prüfung", icon: "shield" },
+  nachkalkulation: { basis: "kalkulation", titel: "Nachkalkulation", icon: "chart" },
+  auftragsablaeufe: { basis: "verlauf", titel: "Ablauf", icon: "route" },
+  firmenwissen: { basis: "schulungen", titel: "Wissen", icon: "book" },
+  dokumentenmanagement: { basis: "dokumente", titel: "Ablage", icon: "layers" },
+  "digitale-unterschrift": { basis: "angebote", titel: "Unterschrift", icon: "signature" },
+  datev: { basis: "software-export", titel: "DATEV", icon: "download" },
+  "daten-uebernehmen": { basis: "tabelle", icon: "layers" },
+  gaeb: { basis: "tabelle", titel: "LV", nr: "GAEB", icon: "layers" },
+  "ids-connect": { basis: "einkauf", titel: "Bestellung", nr: "IDS", icon: "cart" },
+  "macher-fragen": { basis: "ehrlich", titel: "Frage", icon: "spark" },
+  "ki-buerokraft": { basis: "automatisch-erledigen", titel: "KI-Bürokraft", icon: "spark" },
+  "telefon-ki": { basis: "telefon", titel: "KI-Anruf", icon: "phone" },
 };
+
+function motivFuer(name: SkizzenMotiv): Motiv {
+  if (name in motive) return motive[name as BasisMotiv];
+  const a = ableitungen[name as Exclude<SkizzenMotiv, BasisMotiv>];
+  const basis: Motiv = motive[a.basis];
+  const kopf = basis.kopf ?? (a.titel ? { titel: a.titel } : undefined);
+  return {
+    ...basis,
+    icon: a.icon,
+    kopf: kopf && { ...kopf, titel: a.titel ?? kopf.titel, nr: a.nr === null ? undefined : (a.nr ?? kopf.nr) },
+  };
+}
 
 /** Hinteres Blatt: Platzhalterlinien, links mit Person, rechts mit Nummer. */
 function HinteresBlatt({ seite }: { seite: "links" | "rechts" }) {
@@ -1040,7 +1279,7 @@ export function Skizze({
   className?: string;
   seitenverhaeltnis?: string;
 }) {
-  const m = motive[motiv];
+  const m = motivFuer(motiv);
   const sanft = "transition-[translate] duration-150 ease-out";
   return (
     <span aria-hidden className={`relative block overflow-hidden rounded-xl bg-sand ${seitenverhaeltnis} ${className}`}>
@@ -1064,6 +1303,7 @@ export function Skizze({
           ) : (
             <rect x={100} y={22} width={120} height={148} rx={9} strokeWidth={1} className="fill-white stroke-line" />
           )}
+          {m.kopf && (m.form === "handy" ? <HandyKopf {...m.kopf} /> : <Kopf {...m.kopf} />)}
           {m.vorne}
         </g>
         <g>

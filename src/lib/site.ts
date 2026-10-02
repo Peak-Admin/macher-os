@@ -184,6 +184,7 @@ export const mainNav: NavItem[] = [
             { label: "Blog", href: "/wissen/blog", icon: "blog" },
             { label: "Webinare", href: "/wissen/webinare", icon: "webinar" },
             { label: "Macher Akademie", href: "/wissen/akademie", icon: "akademie" },
+            { label: "Video-Anleitungen", href: "/wissen/videos", icon: "bildschirm" },
           ],
         },
         {
@@ -233,6 +234,7 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
       { label: "Preise", href: "/preise" },
       { label: "Demo", href: "/demo" },
       { label: "App", href: "/app" },
+      { label: "Was ist neu?", href: "/neu" },
       { label: "Kostenlos testen", href: app.einrichten() },
     ],
   },

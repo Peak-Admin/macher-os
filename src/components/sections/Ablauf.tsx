@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import Image from "next/image";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
 type Schritt = {
@@ -20,7 +21,7 @@ function AppKarte({ ort, children }: { ort: string; children: ReactNode }) {
   return (
     <div className="rounded-xl bg-white p-4 text-left text-ink shadow-[0_24px_48px_-28px_rgb(0_0_0/0.6)]">
       <div className="mb-3 flex items-center gap-2 text-[12px] text-muted">
-        <span className="inline-flex size-5 items-center justify-center rounded bg-primary font-display text-[11px] font-black text-white">M</span>
+        <Image src="/marke/zeichen.png" alt="" width={20} height={20} className="size-5 shrink-0" />
         <span className="font-semibold">{ort}</span>
         <span className="ml-auto">
           <Beispiel />
