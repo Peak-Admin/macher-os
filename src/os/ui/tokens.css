@@ -26,13 +26,13 @@
   --mm-text-muted: #626e65;
   --mm-muted-on-white: var(--mm-text-muted);
   /* sanftes Beige statt kühlem Grau (Wunsch des Betreibers, Oktober 2026) */
-  --mm-canvas: #f7f5f0;
+  --mm-canvas: #fbf9f5;
   --mm-surface: #ffffff;
-  --mm-surface-subtle: #f1ede5;
+  --mm-surface-subtle: #f5f2ec;
   --mm-hover: var(--mm-surface-subtle);
   --mm-soft-green: var(--mm-brand-soft);
   /* dekorative Trennlinien */
-  --mm-border: #e4dfd5;
+  --mm-border: #e8e3da;
   /* erkennbare Feldbegrenzung (3,75:1 auf Weiß) */
   --mm-border-dark: #7a8780;
   --mm-control-border: var(--mm-border-dark);
