@@ -1,13 +1,16 @@
 /** Notfall-Einstieg, solange kein Onboarding-Modul registriert ist. */
 import { useNavigate } from 'react-router-dom';
 import { einrichten } from '@core/seed';
-import { Button, Seite } from '@ui/index';
+import { Button, FensterSkizze, Seite } from '@ui/index';
 
 export function Erststart() {
   const navigate = useNavigate();
   return (
     <div style={{ padding: 32 }}>
       <Seite titel="Willkommen bei Macher OS" untertitel="Richte deinen Betrieb mit Beispieldaten ein.">
+        <span className="mm-fenster" aria-hidden style={{ maxWidth: 480 }}>
+          <FensterSkizze icon="start" />
+        </span>
         <div>
           <Button
             onClick={() => {

@@ -56,7 +56,7 @@ export function BenachrichtigungsListe({ onNavigiert }: { onNavigiert?: () => vo
       </Zeile>
       <Liste
         leer={
-          <Leer
+          <Leer skizze
             icon="glocke"
             titel={zeigen === 'neu' ? 'Nichts Neues' : 'Noch keine Benachrichtigungen'}
             text="Macher meldet sich nur, wenn du reagieren solltest: neue Anfrage, Kundennachricht, Urlaubsantrag, angenommenes Angebot, Zahlungseingang oder eine Aufgabe für dich."

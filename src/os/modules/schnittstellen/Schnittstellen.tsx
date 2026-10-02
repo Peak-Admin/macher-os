@@ -4,7 +4,31 @@ import { darf, useIch } from '@core/session';
 import { Abschnitt, Button, Dialog, FensterSkizze, Karte, Leer, Meta, Raster, Seite, Stapel, Status, Zeile, type GlasIconName } from '@ui/index';
 import { connectoren, KATEGORIEN, VERBINDUNGSART, ZUSTAND_LABEL, ZUSTAND_TON, type Connector, type Kategorie } from './connectoren';
 
-/** Glas-Icon je Bereich für die Fenster-Skizze im Dialog. */
+/** Glas-Icon je Verbindung für die Fenster-Skizze; sonst das Icon des Bereichs. */
+const CONNECTOR_ICON: Partial<Record<string, GlasIconName>> = {
+  kontoauszug: 'liste',
+  bankverbindung: 'rechnung',
+  datev: 'rechner',
+  lexware: 'ordner',
+  datanorm: 'lager',
+  'ids-connect': 'einkauf',
+  oci: 'suche',
+  ugl: 'dokument',
+  'shk-connect': 'werkzeug',
+  gaeb: 'vorlagen',
+  kalenderdatei: 'kalender',
+  'google-kalender': 'wiederholen',
+  'microsoft-kalender': 'bildschirm',
+  email: 'mail',
+  telefon: 'telefon',
+  json: 'import',
+  webhooks: 'stecker',
+  api: 'link',
+};
+
+const iconFuer = (c: Connector): GlasIconName => CONNECTOR_ICON[c.id] ?? KATEGORIE_ICON[c.kategorie];
+
+/** Glas-Icon je Bereich (Ausweich für Verbindungen ohne eigenes Icon). */
 const KATEGORIE_ICON: Record<Kategorie, GlasIconName> = {
   banking: 'rechnung',
   buchhaltung: 'rechner',
@@ -51,6 +75,9 @@ function ConnectorKarte({ c, onMehr }: { c: Connector; onMehr: () => void }) {
   return (
     <Karte titel={c.titel} oberzeile={VERBINDUNGSART[c.art].titel}>
       <Stapel abstand={12}>
+        <span className="mm-fenster" aria-hidden>
+          <FensterSkizze icon={iconFuer(c)} />
+        </span>
         <Meta>{c.text}</Meta>
         <div>
           <Status ton={ZUSTAND_TON[s.zustand]}>{ZUSTAND_LABEL[s.zustand]}</Status>
@@ -93,7 +120,7 @@ function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchl
     >
       <Stapel>
         <span className="mm-fenster" aria-hidden>
-          <FensterSkizze icon={KATEGORIE_ICON[c.kategorie]} />
+          <FensterSkizze icon={iconFuer(c)} />
         </span>
         <p>{c.text}</p>
         <div>

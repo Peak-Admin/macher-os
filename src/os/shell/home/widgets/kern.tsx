@@ -4,7 +4,7 @@
  * persönlicher Kontakt + Support, News + Workshops + Produktneuigkeiten.
  */
 import { Link } from 'react-router-dom';
-import { Avatar, BeispielMarke, Button, Icon, Status, ThemenIcon } from '@ui/index';
+import { Avatar, BeispielMarke, Button, FensterSkizze, glasFuer, Icon, Status, ThemenIcon } from '@ui/index';
 import { Skelett, LadeFehler } from '../Rahmen';
 import { homeMessen } from '../messen';
 import { bezugKennung, useArbeit, useNaechsteAktionen } from '../quellen/hooks';
@@ -43,10 +43,18 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
   const p = a.progress;
   return (
     <div className="mm-home-naechster">
-      <div className="mm-home-naechster-kopf">
-        <span className="mm-home-kachel" aria-hidden>
-          <ThemenIcon name={a.icon} size={44} />
+      {/* Einrichtung ist ein Einstieg: Fenster-Skizze statt Kachel. Alle anderen Schritte sind Arbeit und bleiben schlicht. */}
+      {a.type === 'onboarding' && (
+        <span className="mm-fenster" aria-hidden>
+          <FensterSkizze icon={glasFuer[a.icon] ?? 'start'} />
         </span>
+      )}
+      <div className="mm-home-naechster-kopf">
+        {a.type !== 'onboarding' && (
+          <span className="mm-home-kachel" aria-hidden>
+            <ThemenIcon name={a.icon} size={44} />
+          </span>
+        )}
         <div className="mm-home-naechster-text">
           <h3 className="mm-home-naechster-titel">{a.title}</h3>
           <p>{a.description}</p>
@@ -183,6 +191,9 @@ export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
   if (!p) {
     return (
       <div className="mm-home-kontakt">
+        <span className="mm-fenster" aria-hidden>
+          <FensterSkizze icon="kontakt" />
+        </span>
         <p className="mm-home-leer-titel">Wir sind für dich da.</p>
         <p>Unser Team hilft dir bei Fragen weiter.</p>
         <div className="mm-home-kontakt-aktionen">

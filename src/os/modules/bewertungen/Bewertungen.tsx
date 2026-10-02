@@ -127,7 +127,7 @@ function Anfragen({ liste }: { liste: Bewertung[] }) {
       </Abschnitt>
 
       <Abschnitt titel="Gefragt" hinweis="Hat der Kunde sich gemeldet? Trag ein, wie zufrieden er war – nur intern, wird nirgends veröffentlicht.">
-        <Liste leer={<Leer titel="Noch niemand gefragt" text="Gesendete Anfragen erscheinen hier." icon="stern" />}>
+        <Liste leer={<Leer skizze titel="Noch niemand gefragt" text="Gesendete Anfragen erscheinen hier." icon="stern" />}>
           {gesendet.map((b) =>
             zeile(
               b,

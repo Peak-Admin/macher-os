@@ -169,7 +169,7 @@ export function AngeboteTab({ id, kunde }: { id: ID; kunde?: boolean }) {
   };
   return (
     <Stapel abstand={12}>
-      <Liste leer={<Leer titel="Noch kein Angebot" text={kunde ? 'Angebote entstehen am Auftrag.' : 'Schreib das Angebot direkt aus diesem Auftrag.'} aktion={kunde ? undefined : <Button icon="plus" onClick={erstellen}>Angebot erstellen</Button>} icon="dokument" />}>
+      <Liste leer={<Leer skizze="dokument" titel="Noch kein Angebot" text={kunde ? 'Angebote entstehen am Auftrag.' : 'Schreib das Angebot direkt aus diesem Auftrag.'} aktion={kunde ? undefined : <Button icon="plus" onClick={erstellen}>Angebot erstellen</Button>} icon="dokument" />}>
         {liste.map((a) => (
           <AngebotZeile key={a.id} a={a} ohneKunde={!kunde} />
         ))}

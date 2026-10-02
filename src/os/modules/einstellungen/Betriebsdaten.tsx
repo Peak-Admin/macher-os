@@ -17,7 +17,7 @@ export function Betriebsdaten() {
     <Seite titel="Einstellungen" untertitel="Grunddaten deines Betriebs – sie stehen auf Angeboten und Rechnungen.">
       <Stapel abstand={24}>
         <EinstellungenTabs aktiv="" papierkorb={papierkorb} />
-        {b ? <Formular key={b.geaendertAm} betrieb={b} /> : <Leer titel="Noch kein Betrieb eingerichtet" icon="betrieb" />}
+        {b ? <Formular key={b.geaendertAm} betrieb={b} /> : <Leer skizze titel="Noch kein Betrieb eingerichtet" icon="betrieb" />}
       </Stapel>
     </Seite>
   );

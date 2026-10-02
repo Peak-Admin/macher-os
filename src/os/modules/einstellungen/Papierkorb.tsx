@@ -44,7 +44,7 @@ export function Papierkorb() {
             )}
           </Zeile>
         )}
-        <Liste leer={<Leer titel="Der Papierkorb ist leer" text="Was du löschst, landet zuerst hier – du kannst es jederzeit zurückholen." icon="muell" />}>
+        <Liste leer={<Leer skizze titel="Der Papierkorb ist leer" text="Was du löschst, landet zuerst hier – du kannst es jederzeit zurückholen." icon="muell" />}>
           {sichtbar.map((e) => (
             <ListenZeile
               key={`${e.sammlung}:${e.id}`}

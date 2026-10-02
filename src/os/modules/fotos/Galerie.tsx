@@ -205,7 +205,7 @@ export function FotosTab({ id }: { id: ID }) {
       ) : alleFotos.length ? (
         <Leer titel={`Keine Fotos mit „${tag}“`} text="Wähle einen anderen Filter oder markiere Fotos in der Vollbildansicht." icon="kamera" />
       ) : (
-        <Leer titel="Noch keine Fotos" text="Mach Vorher-Fotos, bevor du anfängst – das spart später Diskussionen." icon="kamera" />
+        <Leer skizze titel="Noch keine Fotos" text="Mach Vorher-Fotos, bevor du anfängst – das spart später Diskussionen." icon="kamera" />
       )}
       {notizen.length > 0 && (
         <Stapel abstand={8}>

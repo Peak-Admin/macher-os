@@ -94,7 +94,7 @@ export function SuchKern({ onFertig }: { onFertig?: () => void }) {
             </Liste>
           </div>
         ) : (
-          <Leer icon="suche" titel="Was suchst du?" text="Tippe einen Namen, eine Auftrags- oder Rechnungsnummer, einen Ort oder ein Stichwort. Oder stell Macher eine Frage, zum Beispiel „Welche Rechnungen sind offen?“. Mit den Pfeiltasten wählst du, mit Enter öffnest du." />
+          <Leer skizze icon="suche" titel="Was suchst du?" text="Tippe einen Namen, eine Auftrags- oder Rechnungsnummer, einen Ort oder ein Stichwort. Oder stell Macher eine Frage, zum Beispiel „Welche Rechnungen sind offen?“. Mit den Pfeiltasten wählst du, mit Enter öffnest du." />
         )
       ) : (
         <div ref={liste} className="mm-stapel" style={{ gap: 16 }} aria-label="Suchergebnisse">

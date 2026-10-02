@@ -152,7 +152,7 @@ export function AnmeldenSeite() {
       <Seite titel="Anmelden" untertitel="Mit deinem Konto siehst du die Daten deines Betriebs auf jedem Gerät.">
         <Karte>
           {!z.konfiguriert ? (
-            <Leer titel="Anmelden ist noch nicht verbunden" text="Deine Daten liegen auf diesem Gerät." aktion={<Button to="/">Zurück zur App</Button>} />
+            <Leer skizze="schloss" rahmen="handy" titel="Anmelden ist noch nicht verbunden" text="Deine Daten liegen auf diesem Gerät." aktion={<Button to="/">Zurück zur App</Button>} />
           ) : z.phase === 'abgemeldet' || z.phase === 'lokal' ? (
             <AnmeldeFormular />
           ) : (
@@ -196,7 +196,7 @@ export function BeitretenSeite() {
       <Seite oberzeile="Einladung" titel="Willkommen im Team" untertitel="Melde dich mit deiner Handynummer an. Danach siehst du deine Einsätze und Aufträge.">
         <Karte>
           {!z.konfiguriert ? (
-            <Leer titel="Einladungen sind noch nicht verbunden" text="Frag im Büro nach, wie du mitmachen kannst." />
+            <Leer skizze="schloss" rahmen="handy" titel="Einladungen sind noch nicht verbunden" text="Frag im Büro nach, wie du mitmachen kannst." />
           ) : schonAngemeldet && annehmen !== 'fertig' ? (
             <Stapel>
               <p>

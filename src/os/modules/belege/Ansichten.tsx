@@ -305,7 +305,7 @@ export function AuftragBelegeTab({ id }: { id: ID }) {
   const geld = useDarf('geld');
   const liste = alleBelege().filter((b) => b.auftragId === id);
   if (!liste.length)
-    return <Leer titel="Keine Belege" text="Fotografiere Quittungen und Lieferscheine direkt am Auftrag." aktion={<Button variante="sekundaer" to="/betrieb/belege/neu">Beleg fotografieren</Button>} icon="kamera" />;
+    return <Leer skizze titel="Keine Belege" text="Fotografiere Quittungen und Lieferscheine direkt am Auftrag." aktion={<Button variante="sekundaer" to="/betrieb/belege/neu">Beleg fotografieren</Button>} icon="kamera" />;
   return (
     <Stapel>
       {geld && <Meta>Summe netto: {euro(liste.reduce((s, b) => s + b.netto, 0))}</Meta>}

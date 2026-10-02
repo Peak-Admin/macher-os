@@ -64,7 +64,7 @@ export function TelefonSeite() {
               <AnrufFormular />
             </Karte>
             <Abschnitt titel={`Letzte Anrufe${heuteAnz ? ` · heute ${heuteAnz}` : ''}`}>
-              <Liste leer={<Leer titel="Noch keine Anrufe notiert" text="Notiere den ersten Anruf oben – er landet automatisch beim Kunden und am Auftrag." icon="telefon" />}>
+              <Liste leer={<Leer skizze titel="Noch keine Anrufe notiert" text="Notiere den ersten Anruf oben – er landet automatisch beim Kunden und am Auftrag." icon="telefon" />}>
                 {anrufe.map((n) => {
                   const k = db.kunden.get(n.kundeId);
                   const a = db.auftraege.get(n.auftragId);

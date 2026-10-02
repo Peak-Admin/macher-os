@@ -11,6 +11,7 @@ import {
   Auswahl,
   Button,
   DateiKnopf,
+  FensterSkizze,
   Karte,
   Laden,
   Leer,
@@ -142,6 +143,9 @@ export function Assistent() {
                 <Laden text="Macher liest die Datei …" />
               ) : (
                 <Stapel>
+                  <span className="mm-fenster" aria-hidden>
+                    <FensterSkizze icon="import" />
+                  </span>
                   <Meta>Excel (.xlsx) oder CSV. Die erste Zeile braucht Überschriften, darunter steht je Zeile ein Eintrag. Macher erkennt selbst, was drinsteht.</Meta>
                   <div>
                     <DateiKnopf variante="primaer" accept=".xlsx,.csv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onDateien={([f]) => dateiGewaehlt(f)}>
@@ -389,7 +393,7 @@ function LetzteImporte() {
   const [fragen, bestaetigen] = useBestaetigen();
   const liste = [...importe.use()].sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm)).slice(0, 3);
   if (!liste.length)
-    return <Leer icon="upload" titel="Noch nichts übernommen" text="Hier siehst du später, was du übernommen hast – und kannst es mit einem Klick zurücknehmen." />;
+    return <Leer skizze icon="upload" titel="Noch nichts übernommen" text="Hier siehst du später, was du übernommen hast – und kannst es mit einem Klick zurücknehmen." />;
   const zurueck = async (l: ImportLauf) => {
     if (!(await fragen('Import rückgängig machen?', 'Alles, was dieser Import angelegt hat, kommt in den Papierkorb. Geänderte Einträge bekommen ihren alten Stand zurück.', 'Rückgängig machen'))) return;
     const r = importRueckgaengig(l.id);

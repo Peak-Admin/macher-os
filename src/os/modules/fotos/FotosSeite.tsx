@@ -49,7 +49,7 @@ export function FotosSeite() {
         {fotos.length ? (
           <Galerie fotos={fotos} mitAuftrag />
         ) : (
-          <Leer
+          <Leer skizze
             titel={alle.length ? 'Keine passenden Fotos' : 'Noch keine Fotos'}
             text={alle.length ? 'Ändere den Filter oder wähle einen anderen Auftrag.' : 'Fotografiere direkt aus der App – die Bilder werden automatisch verkleinert und landen am Auftrag.'}
             icon="kamera"

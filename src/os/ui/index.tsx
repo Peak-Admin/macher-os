@@ -17,7 +17,8 @@ import {
   type TextareaHTMLAttributes,
 } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ThemenIcon } from './glas';
+import { FensterSkizze } from './fenster';
+import { glasFuer, ThemenIcon, type GlasIconName } from './glas';
 import { Icon, type IconName } from './icons';
 import type { Ton } from '@core/modul';
 import './ui.css';
@@ -738,11 +739,36 @@ const LEER_OBJEKT: Partial<Record<IconName, ObjektSchluessel>> = {
   start: 'werkzeugkiste',
 };
 
-export function Leer({ titel, text, aktion, icon = 'info', objekt }: { titel: string; text?: string; aktion?: ReactNode; icon?: IconName; objekt?: ObjektSchluessel | null }) {
+/**
+ * Leerzustand. `skizze` zeigt statt Objektfoto bzw. Icon die Fenster-Skizze (Drahtgitter mit Glas-Icon) – für den
+ * ersten Start einer Ansicht („Noch keine Rechnung“), nicht für Suche ohne Treffer, fehlende Rechte oder „gibt es nicht“.
+ * `true` nimmt das Glas-Icon zu `icon`, ein Name wählt ein anderes.
+ */
+export function Leer({
+  titel,
+  text,
+  aktion,
+  icon = 'info',
+  objekt,
+  skizze,
+  rahmen = 'fenster',
+}: {
+  titel: string;
+  text?: string;
+  aktion?: ReactNode;
+  icon?: IconName;
+  objekt?: ObjektSchluessel | null;
+  skizze?: boolean | GlasIconName;
+  rahmen?: 'fenster' | 'handy';
+}) {
   const bild = objekt === null ? undefined : (objekt ?? LEER_OBJEKT[icon]);
   return (
     <div className="mm-leer">
-      {bild ? (
+      {skizze ? (
+        <span className="mm-fenster mm-leer-skizze" aria-hidden>
+          <FensterSkizze icon={typeof skizze === 'string' ? skizze : (glasFuer[icon] ?? 'info')} rahmen={rahmen} />
+        </span>
+      ) : bild ? (
         <MacherAsset asset={bild} groesse="gross" />
       ) : (
         <span className="mm-leer-icon">

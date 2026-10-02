@@ -103,7 +103,7 @@ export function AufmassTab({ id }: { id: ID }) {
   const anlegen = () => navigate(`/auftraege/aufmass/${aufmassAnlegen(id).id}`);
   return (
     <Stapel abstand={12}>
-      <Liste leer={<Leer titel="Noch kein Aufmaß" text="Miss vor Ort – die Mengen landen mit einem Klick im Angebot." aktion={<Button icon="plus" onClick={anlegen}>Aufmaß anlegen</Button>} icon="liste" />}>
+      <Liste leer={<Leer skizze="lineal" titel="Noch kein Aufmaß" text="Miss vor Ort – die Mengen landen mit einem Klick im Angebot." aktion={<Button icon="plus" onClick={anlegen}>Aufmaß anlegen</Button>} icon="liste" />}>
         {liste.map((a) => (
           <AufmassZeile key={a.id} a={a} mitAuftrag={false} />
         ))}

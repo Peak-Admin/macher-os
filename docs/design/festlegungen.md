@@ -95,9 +95,18 @@ mit geringer Deckkraft: hell auf der ruhigen Fläche (`sand` / `--mm-surface-sub
   (`src/components/ui/Fenster.tsx`, Strich-Icon-Name, `ton="hell" | "dunkel"`), `Card` mit `fenster`, Landingseiten
   über `vorteile.bild: "fenster"`. Software: `<span className="mm-fenster"><FensterSkizze … /></span>`
   (`ui.css`), nebeneinander mit Text über `.mm-fenster-teaser`.
-- Im Einsatz: Website `/schnittstellen` (Heute verfügbar), `/hilfe` (vier Einstiege), Akademie (dunkel),
-  Demo „Lieber persönlich?“ (dunkel). Software: Start „Was möchtest du als Erstes erledigen?“, Schnittstellen-Dialog,
-  DATEV „Unternehmen online – Geplant“.
+- **Leerzustände (Software):** `Leer` mit `skizze` (true = Glas-Icon zu `icon`, oder ein Glas-Name; optional
+  `rahmen="handy"`) zeigt die Fenster-Skizze statt Foto/Icon – nur beim ersten Start einer Ansicht („Noch keine
+  Rechnung“, „Noch kein Webhook“). Suche ohne Treffer, fehlende Rechte und „gibt es nicht (mehr)“ bleiben schlicht;
+  Leerzustände mit passendem Objektfoto behalten das Foto.
+- Im Einsatz, Website: `/schnittstellen` (Heute verfügbar), `/hilfe` (vier Einstiege), `/app` (iPhone/Android,
+  Handy-Rahmen), Daten übernehmen (selbst / persönlich), Startseite (Blog-Kachel im Wissen-Bento, dunkel),
+  `/wissen`, Akademie (Lernbereiche, Schulungen dunkel), `/werkzeuge`, Demo „Lieber persönlich?“ (dunkel).
+- Im Einsatz, Software: Start „Was möchtest du als Erstes erledigen?“, Schnittstellen (alle Verbindungen und Dialog),
+  DATEV „Unternehmen online – Geplant“, Macher fragen (erster Start), Konto (nur auf diesem Gerät, „Das passiert
+  dabei“), Einladung, Spielwiese, „schon eingerichtet“, Buchungslink, Daten übernehmen (Datensicherung, Import-Schritt 1,
+  Datanorm beim Artikel-Import), Lesemodus-Dialog, Kundenbereich ohne Link, Home („Dein nächster Schritt“ während der
+  Einrichtung, Ansprechpartner-Ausweich), Notfall-Start und rund 40 Leerzustände beim ersten Start.
 
 ### Themen-Icon-Kacheln (abgelöst durch Glas-Icons – gilt nur noch für Strich-Icons ohne Glas-Motiv)
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.

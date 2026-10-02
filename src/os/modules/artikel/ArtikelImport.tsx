@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { db } from '@core/db';
 import { euro } from '@core/format';
-import { Auswahl, Button, Eingabe, FormRaster, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, Zeile, useToast, zahlAus, DateiFeld } from '@ui/index';
+import { Auswahl, Button, Eingabe, FensterSkizze, FormRaster, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, Zeile, useToast, zahlAus, DateiFeld } from '@ui/index';
 import { artikelImportieren, csvParsen, findeArtikel, IMPORT_FELDER, spaltenRaten, zeilenUmwandeln, type ImportZeile, type Zuordnung } from './daten';
 
 const BEISPIEL = 'Artikelnummer;Bezeichnung;Einheit;EK;VK;Kategorie;EAN\nK-100;NYM-J 3x1,5 mm²;m;0,48;0,95;Kabel;4012345000017';
@@ -140,12 +140,19 @@ export function ArtikelImport() {
         {roh.length > 0 && zuordnung.name == null && <Leer titel="Welche Spalte ist die Bezeichnung?" text="Ordne oben mindestens die Bezeichnung zu, dann siehst du die Vorschau." icon="liste" />}
 
         <Karte titel="Datanorm" kompakt>
-          <Zeile zwischen>
-            <Meta>Datanorm-Datei vom Großhändler direkt einlesen, inklusive Preisupdates.</Meta>
-            <Button variante="sekundaer" icon="upload" to="/betrieb/schnittstellen/datanorm">
-              Datanorm einlesen
-            </Button>
-          </Zeile>
+          <div className="mm-fenster-teaser">
+            <span className="mm-fenster" aria-hidden>
+              <FensterSkizze icon="lager" />
+            </span>
+            <Stapel abstand={12}>
+              <Meta>Datanorm-Datei vom Großhändler direkt einlesen, inklusive Preisupdates.</Meta>
+              <div>
+                <Button variante="sekundaer" icon="upload" to="/betrieb/schnittstellen/datanorm">
+                  Datanorm einlesen
+                </Button>
+              </div>
+            </Stapel>
+          </div>
         </Karte>
       </Stapel>
     </Seite>

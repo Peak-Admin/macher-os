@@ -115,7 +115,7 @@ export function ErledigtSeite() {
       </Raster>
       <Liste
         leer={
-          <Leer
+          <Leer skizze
             icon="macher"
             titel={z === 'heute' ? 'Heute noch nichts erledigt' : 'In diesem Zeitraum nichts erledigt'}
             text="Sobald Macher etwas automatisch erledigt, steht es hier. Welche Automationen laufen, stellst du unter „Automatisch erledigen“ ein."
