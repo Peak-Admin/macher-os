@@ -14,15 +14,15 @@ import type { HomeLayout, Spalte, WidgetDefinition, WidgetEintrag, WidgetGroesse
 export const STANDARD_HOME: Record<Rolle, { id: string; spalte: Spalte; size?: WidgetGroesse }[]> = {
   chef: [
     { id: 'naechster-schritt', spalte: 'links' },
-    { id: 'erste-schritte', spalte: 'rechts' },
-    { id: 'arbeit', spalte: 'links' },
     { id: 'ansprechpartner', spalte: 'rechts' },
+    { id: 'arbeit', spalte: 'links' },
+    { id: 'neu', spalte: 'rechts' },
   ],
   buero: [
     { id: 'naechster-schritt', spalte: 'links' },
-    { id: 'erste-schritte', spalte: 'rechts' },
-    { id: 'arbeit', spalte: 'links' },
     { id: 'ansprechpartner', spalte: 'rechts' },
+    { id: 'arbeit', spalte: 'links' },
+    { id: 'neu', spalte: 'rechts' },
   ],
   // Monteur: später „Mein Tag“ – heute schon der nächste Einsatz als nächster Schritt
   monteur: [

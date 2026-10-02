@@ -91,15 +91,16 @@
 .ak-zeile:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: -3px; }
 .ak-zeile-titel { grid-area: titel; display: flex; flex-direction: column; gap: 2px; }
 .ak-zeile-titel strong { font-weight: 600; color: var(--mm-black); overflow-wrap: anywhere; }
+.ak-zeile-ort { color: var(--mm-text); overflow-wrap: anywhere; }
 .ak-zeile-schritt { grid-area: schritt; color: var(--mm-text); }
 .ak-zeile-termin { grid-area: termin; color: var(--mm-text-secondary); font-size: 14px; }
-.ak-zeile-status { grid-area: status; justify-self: end; align-self: start; }
+.ak-zeile-status { grid-area: status; justify-self: end; align-self: start; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; text-align: right; }
 .ak-zeile-schritt:empty, .ak-zeile-termin:empty { display: none; }
 @media (hover: hover) { .ak-zeile:hover { background: var(--mm-surface-subtle); } }
 /* sehr schmal oder lange Statusbegriffe: eine Spalte – Titel, Schritt, Termin, Status */
 @media (max-width: 479px) {
   .ak-zeile { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'titel' 'schritt' 'termin' 'status'; }
-  .ak-zeile-status { justify-self: start; margin-top: 4px; }
+  .ak-zeile-status { justify-self: start; align-items: flex-start; text-align: left; margin-top: 4px; }
 }
 @media (min-width: 1200px) {
   .ak-spalten, .ak-zeile { grid-template-columns: minmax(240px, 2fr) minmax(160px, 1fr) minmax(140px, 0.8fr) minmax(120px, max-content); }
@@ -111,3 +112,5 @@
   .ak-zeile-schritt:empty, .ak-zeile-termin:empty { display: block; }
   .ak-zeile-status { align-self: center; }
 }
+/* „Zuletzt bearbeitet“ unter dem Status: bricht um, statt die Statusspalte zu verbreitern (auf dem Handy ausgeblendet) */
+.ak-zeile-status .mm-zuletzt { max-width: 15em; }

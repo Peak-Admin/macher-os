@@ -20,8 +20,8 @@ export function ArtikelDetail() {
   const [buchen, setBuchen] = useState(false);
   if (!a || a.geloeschtAm)
     return (
-      <Seite titel="Nicht gefunden" zurueck={{ to: '/betrieb/artikel', label: 'Artikel' }}>
-        <Leer titel="Diesen Artikel gibt es nicht (mehr)." icon="paket" aktion={<Button to="/betrieb/artikel">Zur Artikelliste</Button>} />
+      <Seite titel="Nicht gefunden" zurueck={{ to: '/betrieb/katalog/material', label: 'Artikel' }}>
+        <Leer titel="Diesen Artikel gibt es nicht (mehr)." icon="paket" aktion={<Button to="/betrieb/katalog/material">Zur Artikelliste</Button>} />
       </Seite>
     );
 
@@ -42,8 +42,8 @@ export function ArtikelDetail() {
           {!a.aktiv && <Status>Inaktiv</Status>} {unterMindestbestand(a) && <Status ton="achtung">Unter Mindestbestand</Status>} <BeispielMarke zeigen={a.beispiel} />
         </>
       }
-      zurueck={{ to: '/betrieb/artikel', label: 'Artikel' }}
-      aktion={<Button variante="sekundaer" icon="stift" to={`/betrieb/artikel/${a.id}/bearbeiten`}>Bearbeiten</Button>}
+      zurueck={{ to: '/betrieb/katalog/material', label: 'Artikel' }}
+      aktion={<Button variante="sekundaer" icon="stift" to={`/betrieb/katalog/material/${a.id}/bearbeiten`}>Bearbeiten</Button>}
     >
       <BuchenDialog offen={buchen} onSchliessen={() => setBuchen(false)} artikelId={a.id} />
       <ZweiSpalten

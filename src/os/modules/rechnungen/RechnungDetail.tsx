@@ -56,6 +56,7 @@ import { MaengelListe, RechnungStatus, SummenListe } from './teile';
 import { xrechnungHerunterladen } from './xrechnung';
 import { KeinZugriff } from './RechnungenListe';
 import { ZahlungDialog } from '../zahlungen/ZahlungDialog';
+import { MitMacherVorbereiten } from '@modules/macher-fragen/MitMacher';
 import { statusAbgleichen, zahlungLoeschen } from '../zahlungen/logik';
 
 const EINHEITEN: Einheit[] = ['Stk', 'h', 'm', 'm²', 'm³', 'Psch', 'kg', 'l', 'Pkt', 'km'];
@@ -160,6 +161,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
         }
         seite={
           <>
+            <MitMacherVorbereiten bezug={{ typ: 'rechnungen', id: r.id }} breit />
             <Karte titel="Betrag" kompakt>
               <Stapel abstand={8}>
                 <SummenListe s={s} kleinunternehmer={b?.kleinunternehmer} />

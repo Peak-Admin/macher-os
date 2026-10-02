@@ -6,6 +6,8 @@ import { datumKurz, heute, personName, uhrzeit } from '@core/format';
 import { nummerAnzeige } from '@core/nummern';
 import type { Auftrag, ID, Phase } from '@core/objects';
 import { Auswahl, BeispielMarke, Button, Eingabe, Feld, Filter, Leer, Liste, Meta, Seite, Segmente, Stapel, Status, Suchfeld } from '@ui/index';
+import { ZuletztBearbeitet, useZuletztBearbeitet } from '@ui/listen';
+import { auftragsAdresse } from '@ui/listen-logik';
 import { Pipeline, meineAuftraege } from './Pipeline';
 import { istOffen, kommendeEinsaetze, phaseLabel, phaseTon } from './logik';
 import { auftragPfad, schrittFuer } from './daten';
@@ -38,7 +40,8 @@ export function AuftragNeuRoute() {
 
 /**
  * Übersicht: eine einfache, durchsuchbare Liste mit drei Schnellfiltern und genau einer Hauptaktion.
- * Desktop: Suche und Schnellfilter in einer Zeile, darunter kompakt Phase, Mitarbeiter, Zeitraum und Sortierung.
+ * Desktop: Suche und Schnellfilter in einer Zeile, darunter kompakt Phase, Mitarbeiter, Zeitraum und Sortierung;
+ * Zeilen mit erkennbaren Spalten (Auftrag mit Ort und Kunde · nächster Schritt · Termin · Status mit „Zuletzt bearbeitet“).
  * Handy: die Zusatzfilter liegen hinter „Filter“ mit Zähler. Alles steht in der URL, damit „Zurück“ dorthin führt,
  * wo man war. „Auftrag anlegen“ öffnet einen Dialog über der Liste.
  */
@@ -98,12 +101,16 @@ export function AuftraegeSeite({ neu }: { neu?: boolean } = {}) {
   };
 
   const alle = db.auftraege.all();
+  const zuletzt = useZuletztBearbeitet('auftraege');
   const meine = meineAuftraege(ich?.id);
   const treffer = auftraegeFiltern(alle, f, {
     heute: heute(),
     meine,
     kunde: (id) => db.kunden.get(id),
-    ortText: (id) => db.orte.get(id)?.adresse.ort,
+    ortText: (id) => {
+      const ad = db.orte.get(id)?.adresse;
+      return ad ? [ad.strasse, ad.ort].filter(Boolean).join(' ') : undefined;
+    },
     termine: (id: ID) => db.termine.where((t) => t.auftragId === id),
   });
   const zaehler = (s: Sicht) => alle.filter((a) => passtZurSicht(a, s, meine)).length;
@@ -214,7 +221,7 @@ export function AuftraegeSeite({ neu }: { neu?: boolean } = {}) {
           )}
           {treffer.length > 0 && (
             <div className="ak-spalten" aria-hidden>
-              <span>Auftrag und Kunde</span>
+              <span>Auftrag, Ort und Kunde</span>
               <span>Nächster Schritt</span>
               <span>Termin</span>
               <span>Status</span>
@@ -239,7 +246,7 @@ export function AuftraegeSeite({ neu }: { neu?: boolean } = {}) {
             }
           >
             {treffer.slice(0, anzahl).map((a) => (
-              <AuftragZeile key={a.id} a={a} />
+              <AuftragZeile key={a.id} a={a} zuletzt={zuletzt(a)} />
             ))}
           </Liste>
           {treffer.length > anzahl && (
@@ -263,10 +270,14 @@ export function AuftraegeSeite({ neu }: { neu?: boolean } = {}) {
 
 /**
  * Eine Zeile ist ein Link zum Auftrag (keine Buttons darin). Nur vorhandene Daten erscheinen:
- * Titel, darunter dezent `#2610-001 · Kunde`, nächster Schritt, nächster Termin, ein Status. Lange Namen brechen um.
+ * Titel, direkt darunter der Ort (Einsatzort, sonst Kundenadresse: „Straße, Ort“), dann dezent `#2610-001 · Kunde`;
+ * nächster Schritt, nächster Termin, ein Status und – ab Tablet – „Zuletzt bearbeitet“.
+ * Lange Namen brechen um, nichts wird abgeschnitten.
  */
-function AuftragZeile({ a }: { a: Auftrag }) {
-  const kunde = db.kunden.get(a.kundeId)?.name;
+function AuftragZeile({ a, zuletzt }: { a: Auftrag; zuletzt: string }) {
+  const k = db.kunden.get(a.kundeId);
+  const kunde = k?.name;
+  const ort = auftragsAdresse(a.ortId ? db.orte.get(a.ortId)?.adresse : undefined, k?.adresse);
   const offen = istOffen(a);
   const termin = offen ? kommendeEinsaetze(db.termine.where((t) => t.auftragId === a.id))[0] : undefined;
   const schritt = offen ? schrittFuer(a)?.label : undefined;
@@ -277,6 +288,12 @@ function AuftragZeile({ a }: { a: Auftrag }) {
           <strong>
             {a.titel} <BeispielMarke zeigen={a.beispiel} />
           </strong>
+          {ort && (
+            <span className="ak-zeile-ort">
+              <span className="sr-only">Ort: </span>
+              {ort}
+            </span>
+          )}
           <span className="mm-meta">{[nummerAnzeige(a.nummer), kunde].filter(Boolean).join(' · ')}</span>
         </span>
         <span className="ak-zeile-schritt">
@@ -297,6 +314,7 @@ function AuftragZeile({ a }: { a: Auftrag }) {
         </span>
         <span className="ak-zeile-status">
           {a.dringend && offen ? <Status ton="achtung">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{offen ? schrittLabel(a) : phaseLabel(a.phase)}</Status>}
+          <ZuletztBearbeitet text={zuletzt} />
         </span>
       </Link>
     </li>

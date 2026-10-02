@@ -1,8 +1,8 @@
 /**
- * Rechnungsliste: Filter nach Art und Auftrag, CSV zum Herunterladen. Reine Logik, ohne Oberfläche.
+ * Rechnungsliste: Filter nach Art, CSV zum Herunterladen (Zeitraum, Auftrag, Brutto/Netto: `@ui/listen`). Reine Logik, ohne Oberfläche.
  */
 import { db } from '@core/db';
-import type { Cent, ID } from '@core/objects';
+import type { Cent } from '@core/objects';
 import { ART_LABEL, offenerBetrag, rechnungsSummen, statusText } from './logik';
 import type { RechnungX } from './typen';
 
@@ -12,27 +12,6 @@ export type ListenArt = RechnungX['art'] | 'storno';
 export const LISTEN_ART_LABEL: Record<ListenArt, string> = { ...ART_LABEL, storno: 'Storno' };
 
 export const listenArt = (r: Pick<RechnungX, 'art' | 'stornoFuerId'>): ListenArt => (r.stornoFuerId ? 'storno' : r.art);
-
-/** Auftragsfilter: `''` = alle, `'ohne'` = ohne Auftrag, sonst Auftrags-ID */
-export type AuftragFilter = '' | 'ohne' | ID;
-
-export function passtZuAuftrag(r: Pick<RechnungX, 'auftragId'>, f: AuftragFilter): boolean {
-  if (!f) return true;
-  if (f === 'ohne') return !r.auftragId;
-  return r.auftragId === f;
-}
-
-/** Aufträge, zu denen es Rechnungen gibt – für die Auswahl, nach Nummer sortiert */
-export function auftraegeMitRechnungen(rs: RechnungX[]): { id: ID; label: string }[] {
-  const ids = [...new Set(rs.map((r) => r.auftragId).filter((x): x is ID => !!x))];
-  return ids
-    .map((id) => {
-      const a = db.auftraege.get(id);
-      return { id, label: a ? `${a.nummer} · ${a.titel}` : 'Gelöschter Auftrag', nummer: a?.nummer ?? '' };
-    })
-    .sort((x, y) => x.nummer.localeCompare(y.nummer))
-    .map(({ id, label }) => ({ id, label }));
-}
 
 /** Was diese Rechnung selbst berechnet (bei Schlussrechnungen ohne die abgezogenen Abschläge) */
 export function berechnet(r: RechnungX): { netto: Cent; ust: Cent; brutto: Cent } {

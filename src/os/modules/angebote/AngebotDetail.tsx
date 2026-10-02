@@ -13,6 +13,7 @@ import { ABLEHN_GRUENDE, alsNachgefasstMarkieren, STATUS_TEXT, STATUS_TON, ableh
 import { cloudAktiv } from '@core/cloud';
 import { useEmailUeberServer } from '@core/cloud-versand';
 import { kontaktArt, versandText } from '@modules/start/daten';
+import { MitMacherVorbereiten } from '@modules/macher-fragen/MitMacher';
 import { angebotSenden } from './erstwert';
 
 export function KeinGeldRecht() {
@@ -171,6 +172,7 @@ export function AngebotDetail() {
               </Karte>
               <Karte titel="Aktionen" kompakt>
                 <Stapel abstand={8}>
+                  {aktuell && <MitMacherVorbereiten bezug={{ typ: 'angebote', id: a.id }} breit />}
                   <Button variante="sekundaer" icon="download" breit onClick={() => window.open(appPfad(`/druck/angebot/${a.id}`), '_blank')}>
                     Druckansicht / PDF
                   </Button>

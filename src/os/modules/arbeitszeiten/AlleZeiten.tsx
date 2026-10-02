@@ -4,13 +4,15 @@ import { db, useDatenstand } from '@core/db';
 import { datum, datumKurz, heute, personName } from '@core/format';
 import type { ID, Zeiteintrag } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
-import { Auswahl, Button, Dialog, Eingabe, Filter, FormRaster, IconButton, Leer, Meldung, Meta, Seite, Stapel, Status, Tabelle, Zeile, useToast } from '@ui/index';
+import { Auswahl, Button, Dialog, Eingabe, Filter, FormRaster, IconButton, Leer, Meta, Seite, Stapel, Status, Tabelle, Zeile, useToast } from '@ui/index';
 import { useSchmal } from '@modules/kalender/hooks';
+import { offeneAntraege } from '@modules/abwesenheiten/logik';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
 import { dateiname, filterAnzahl, filterAus, filterZu, istAktuell, summeMinuten, verschieben, zeitenFiltern, zeitraumText, zeitraumWechseln, type ZeitArt, type ZeitenFilter, type ZeitraumArt } from './alle';
 import { ART_LABEL, csvExport, dauer, herunterladen, stunden } from './daten';
 import { ZeitDialog } from './ZeitDialog';
 import { ZeitenNav } from './ZeitenNav';
+import { OffeneAntraege } from './OffeneAntraege';
 
 const auftragText = (id: ID | undefined) => {
   const a = db.auftraege.get(id);
@@ -19,7 +21,8 @@ const auftragText = (id: ID | undefined) => {
 
 /**
  * Alle Zeiten (Chef/Büro): jede erfasste Zeit im gewählten Zeitraum mit Summe, Filter in der URL,
- * Download als CSV für Excel. Offene Urlaubsanträge stehen oben als ruhiger Hinweis (Exception-First).
+ * Download als CSV für Excel. Offene Urlaubsanträge: heller Umschalter „Zeiten | Offene Urlaubsanträge“ wie in der Woche
+ * (derselbe Baustein `OffeneAntraege`, Exception-First).
  */
 export function AlleZeiten() {
   useDatenstand();
@@ -47,7 +50,14 @@ export function AlleZeiten() {
   const liste = zeitenFiltern(imZeitraum, f);
   const summe = summeMinuten(liste);
   const laufen = liste.filter((z) => !z.ende).length;
-  const antraege = personal ? db.abwesenheiten.where((a) => a.status === 'beantragt' && a.bis >= t).length : 0;
+  const antraege = personal ? offeneAntraege(db.abwesenheiten.all(), t) : [];
+  const ansicht = personal && params.get('ansicht') === 'antraege' ? 'antraege' : 'zeiten';
+  const setzeAnsicht = (v: string) => {
+    const n = new URLSearchParams(params);
+    if (v === 'antraege') n.set('ansicht', v);
+    else n.delete('ansicht');
+    setParams(n, { replace: true });
+  };
   const gleichesJahr = f.von.slice(0, 4) === f.bis.slice(0, 4);
 
   const leute = sortiert(db.mitarbeiter.where((m) => istAktiv(m) || m.id === f.ma || imZeitraum.some((z) => z.mitarbeiterId === m.id)));
@@ -81,87 +91,92 @@ export function AlleZeiten() {
     <Seite titel="Alle Zeiten" untertitel={zeitraumText(f)} aktion={<Button icon="plus" onClick={zeitEintragen}>Zeit eintragen</Button>}>
       <ZeitenNav aktiv="alle" />
 
-      {antraege > 0 && (
-        <Meldung titel={antraege === 1 ? '1 offener Urlaubsantrag' : `${antraege} offene Urlaubsanträge`}>
-          <Stapel abstand={8}>
-            <span>Genehmigen oder ablehnen geht mit einem Tap.</span>
-            <div>
-              <Button klein variante="sekundaer" to="/betrieb/abwesenheiten">
-                Anträge ansehen
-              </Button>
-            </div>
-          </Stapel>
-        </Meldung>
-      )}
-
-      <Stapel abstand={12}>
-        <Zeile zwischen>
-          <Zeile abstand={12}>
-            {!schmal && <ZeitraumWahl f={f} setze={setze} />}
-            {f.zeitraum !== 'frei' && (
-              <Zeile abstand={4} umbruch={false}>
-                <IconButton icon="zurueck" label={f.zeitraum === 'woche' ? 'Woche davor' : 'Monat davor'} onClick={() => setze(verschieben(f, -1))} />
-                <Button klein variante="tertiaer" disabled={istAktuell(f, t)} onClick={() => setze(zeitraumWechseln({ ...f, von: t, bis: t }, f.zeitraum, t))}>
-                  {f.zeitraum === 'woche' ? 'Diese Woche' : 'Dieser Monat'}
-                </Button>
-                <IconButton icon="weiter" label={f.zeitraum === 'woche' ? 'Woche danach' : 'Monat danach'} onClick={() => setze(verschieben(f, 1))} />
-              </Zeile>
-            )}
-          </Zeile>
-          <Zeile abstand={8}>
-            {schmal && (
-              <Button variante="sekundaer" klein icon="filter" onClick={() => setFilterOffen(true)}>
-                {anzahl ? `Filter (${anzahl})` : 'Filter'}
-              </Button>
-            )}
-            {herunterladenKnopf}
-          </Zeile>
-        </Zeile>
-        {!schmal && felder}
-      </Stapel>
-
-      <Stapel abstand={8}>
-        <Zeile zwischen>
-          <strong>{liste.length === 1 ? '1 Eintrag' : `${liste.length} Einträge`}</strong>
-          <strong>Summe {stunden(summe)}</strong>
-        </Zeile>
-        <Tabelle
-          zeilen={liste}
-          schluessel={(z) => z.id}
-          onZeile={(z) => setDialog({ eintrag: z })}
-          leer={
-            <Leer
-              titel="Keine Zeiten für diese Auswahl"
-              text={anzahl ? 'Nimm einen Filter heraus oder wähle einen anderen Zeitraum.' : 'In diesem Zeitraum hat noch niemand Zeit erfasst.'}
-              icon="uhr"
-              aktion={
-                anzahl ? (
-                  <Button variante="sekundaer" onClick={() => setze({ ...f, ma: '', auftrag: '', art: '' })}>
-                    Filter zurücksetzen
-                  </Button>
-                ) : undefined
-              }
-            />
-          }
-          spalten={[
-            { titel: 'Datum', wert: (z) => (gleichesJahr ? datumKurz(z.datum) : datum(z.datum)), sortierWert: (z) => z.datum + z.start },
-            { titel: 'Mitarbeiter', wert: (z) => personName(db.mitarbeiter.get(z.mitarbeiterId)), sortierWert: (z) => personName(db.mitarbeiter.get(z.mitarbeiterId)) },
-            { titel: 'Auftrag', wert: (z) => auftragText(z.auftragId) || '–', nebensaechlich: true, sortierWert: (z) => auftragText(z.auftragId) },
-            { titel: 'Art', wert: (z) => ART_LABEL[z.art], nebensaechlich: true, sortierWert: (z) => ART_LABEL[z.art] },
-            {
-              titel: 'Dauer',
-              wert: (z) => (z.ende ? stunden(dauer(z)) : <Status ton="aktiv">Läuft</Status>),
-              zahl: true,
-              sortierWert: (z) => dauer(z),
-            },
+      {personal && (
+        <Filter
+          label="Ansicht"
+          wert={ansicht}
+          onChange={setzeAnsicht}
+          optionen={[
+            { wert: 'zeiten', label: 'Zeiten' },
+            { wert: 'antraege', label: 'Offene Urlaubsanträge', zaehler: antraege.length },
           ]}
         />
-        {liste.length > 0 && (
-          <Meta>
-            Dauer ohne eingetragene Pausen.{laufen ? ' Laufende Zeiten zählen erst nach dem Stoppen.' : ''} Den automatischen Pausenabzug nach Arbeitszeitgesetz findest du in Monat & Lohn.
-          </Meta>
-        )}
-      </Stapel>
+      )}
+
+      {ansicht === 'antraege' ? (
+        <OffeneAntraege offen={antraege} />
+      ) : (
+        <>
+          <Stapel abstand={12}>
+            <Zeile zwischen>
+              <Zeile abstand={12}>
+                {!schmal && <ZeitraumWahl f={f} setze={setze} />}
+                {f.zeitraum !== 'frei' && (
+                  <Zeile abstand={4} umbruch={false}>
+                    <IconButton icon="zurueck" label={f.zeitraum === 'woche' ? 'Woche davor' : 'Monat davor'} onClick={() => setze(verschieben(f, -1))} />
+                    <Button klein variante="tertiaer" disabled={istAktuell(f, t)} onClick={() => setze(zeitraumWechseln({ ...f, von: t, bis: t }, f.zeitraum, t))}>
+                      {f.zeitraum === 'woche' ? 'Diese Woche' : 'Dieser Monat'}
+                    </Button>
+                    <IconButton icon="weiter" label={f.zeitraum === 'woche' ? 'Woche danach' : 'Monat danach'} onClick={() => setze(verschieben(f, 1))} />
+                  </Zeile>
+                )}
+              </Zeile>
+              <Zeile abstand={8}>
+                {schmal && (
+                  <Button variante="sekundaer" klein icon="filter" onClick={() => setFilterOffen(true)}>
+                    {anzahl ? `Filter (${anzahl})` : 'Filter'}
+                  </Button>
+                )}
+                {herunterladenKnopf}
+              </Zeile>
+            </Zeile>
+            {!schmal && felder}
+          </Stapel>
+
+          <Stapel abstand={8}>
+            <Zeile zwischen>
+              <strong>{liste.length === 1 ? '1 Eintrag' : `${liste.length} Einträge`}</strong>
+              <strong>Summe {stunden(summe)}</strong>
+            </Zeile>
+            <Tabelle
+              zeilen={liste}
+              schluessel={(z) => z.id}
+              onZeile={(z) => setDialog({ eintrag: z })}
+              leer={
+                <Leer
+                  titel="Keine Zeiten für diese Auswahl"
+                  text={anzahl ? 'Nimm einen Filter heraus oder wähle einen anderen Zeitraum.' : 'In diesem Zeitraum hat noch niemand Zeit erfasst.'}
+                  icon="uhr"
+                  aktion={
+                    anzahl ? (
+                      <Button variante="sekundaer" onClick={() => setze({ ...f, ma: '', auftrag: '', art: '' })}>
+                        Filter zurücksetzen
+                      </Button>
+                    ) : undefined
+                  }
+                />
+              }
+              spalten={[
+                { titel: 'Datum', wert: (z) => (gleichesJahr ? datumKurz(z.datum) : datum(z.datum)), sortierWert: (z) => z.datum + z.start },
+                { titel: 'Mitarbeiter', wert: (z) => personName(db.mitarbeiter.get(z.mitarbeiterId)), sortierWert: (z) => personName(db.mitarbeiter.get(z.mitarbeiterId)) },
+                { titel: 'Auftrag', wert: (z) => auftragText(z.auftragId) || '–', nebensaechlich: true, sortierWert: (z) => auftragText(z.auftragId) },
+                { titel: 'Art', wert: (z) => ART_LABEL[z.art], nebensaechlich: true, sortierWert: (z) => ART_LABEL[z.art] },
+                {
+                  titel: 'Dauer',
+                  wert: (z) => (z.ende ? stunden(dauer(z)) : <Status ton="aktiv">Läuft</Status>),
+                  zahl: true,
+                  sortierWert: (z) => dauer(z),
+                },
+              ]}
+            />
+            {liste.length > 0 && (
+              <Meta>
+                Dauer ohne eingetragene Pausen.{laufen ? ' Laufende Zeiten zählen erst nach dem Stoppen.' : ''} Den automatischen Pausenabzug nach Arbeitszeitgesetz findest du in Monat & Lohn.
+              </Meta>
+            )}
+          </Stapel>
+        </>
+      )}
 
       <Dialog
         offen={schmal && filterOffen}

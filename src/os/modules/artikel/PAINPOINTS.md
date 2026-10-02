@@ -29,6 +29,8 @@ Score = Frequenz (1–10) × Intensität (1–10). Betroffen: C = Chef, B = Bür
 | 23 | Mehrere Lieferanten je Artikel mit Preisvergleich | 3 | 4 | 12 | C |
 | 24 | Löschen eines Artikels zerstört alte Aufträge | 2 | 6 | 12 | B |
 | 25 | Staffelpreise/Mengenrabatte | 2 | 4 | 8 | C |
+| 26 | Material und Leistungen liegen an zwei Orten – „Was kann ich aufs Angebot ziehen?“ heißt zweimal suchen (Plancraft-Vergleich, Relevanz 95) | 9 | 6 | 54 | B, C |
+| 27 | Preise pflegen heißt: Artikel öffnen, bearbeiten, speichern – für jeden Artikel einzeln; EK, Zuschlag und VK nicht nebeneinander sichtbar (Plancraft-Vergleich, Relevanz 94) | 8 | 7 | 56 | C, B |
 
 ## Muss rein
 - Suche über Name, Artikelnummer, EAN, Hersteller-Nr. (1) – auch global über die Suche, exakte Nummer zuerst.
@@ -37,6 +39,16 @@ Score = Frequenz (1–10) × Intensität (1–10). Betroffen: C = Chef, B = Bür
 - Preise nur mit Recht „Preise & Geld“ sichtbar (6). Lieferant und Kategorie am Artikel (7, 10).
 - Detail mit Verwendung an Aufträgen, Bestand je Lagerort, Lagerbewegungen, offenen Bestellungen (9, 17).
 - Inaktiv-Schalter und Papierkorb statt hartem Löschen (15, 24).
+
+- Gemeinsamer **Katalog** unter Betrieb › Unternehmen › Katalog mit den Ansichten **Material · Leistungen** (26).
+  Zwei Sammlungen (`artikel`, `leistungen`), keine Kopien – nur ein gemeinsamer Ort. Neue Adresse
+  `/betrieb/katalog/material/…`; `/betrieb/artikel/…` leitet weiter (Lesezeichen, alte Links).
+- Desktop-Liste mit Spalten **EK · Zuschlag · VK** und schneller Bearbeitung in der Zelle (27): Klick oder Enter auf
+  einen Preis öffnet ein Feld, Enter/Verlassen speichert, Escape bricht ab. EK ändern hält den Zuschlag, VK zieht mit;
+  Zuschlag ändern berechnet den VK. Gespeichert werden nur EK und VK – der Zuschlag bleibt abgeleitet, damit
+  CSV/DATANORM-Import und Formular dieselbe Quelle nutzen. Rückgängig über die Meldung, Eintrag im Zeitstrahl.
+  Warnung „VK unter EK“ direkt in der Zeile (12). Nur mit „Preise & Geld“ (Monteur sieht keine EK), Bearbeiten
+  zusätzlich nur mit „Schreiben“. Mobil bleibt die einfache Liste (Name + VK).
 
 ## Macher erledigt automatisch
 - Doppelte Artikel beim Import erkennen und aktualisieren statt neu anlegen.

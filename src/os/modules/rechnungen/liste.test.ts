@@ -3,7 +3,7 @@ import { db } from '@core/db';
 import { heute } from '@core/format';
 import { festschreiben, korrigieren, rechnungsSummen } from './logik';
 import { alleRechnungen, rechnungX, type RechnungX } from './typen';
-import { auftraegeMitRechnungen, berechnet, betragCsv, csvText, listenArt, passtZuAuftrag, rechnungenCsv, RECHNUNG_CSV_SPALTEN } from './liste';
+import { berechnet, betragCsv, csvText, listenArt, rechnungenCsv, RECHNUNG_CSV_SPALTEN } from './liste';
 import { testBetrieb } from './testdaten';
 
 let t: ReturnType<typeof testBetrieb>;
@@ -27,28 +27,11 @@ const rechnung = (x: Partial<RechnungX> = {}) =>
     ...x,
   });
 
-describe('Rechnungsliste: Art und Auftrag', () => {
+describe('Rechnungsliste: Art', () => {
   it('zeigt Storno als eigene Art, obwohl es technisch eine Gutschrift ist', () => {
     expect(listenArt({ art: 'gutschrift', stornoFuerId: 'r1' })).toBe('storno');
     expect(listenArt({ art: 'gutschrift' })).toBe('gutschrift');
     expect(listenArt({ art: 'abschlag' })).toBe('abschlag');
-  });
-
-  it('filtert nach Auftrag und „ohne Auftrag“', () => {
-    expect(passtZuAuftrag({ auftragId: 'a1' }, '')).toBe(true);
-    expect(passtZuAuftrag({ auftragId: 'a1' }, 'a1')).toBe(true);
-    expect(passtZuAuftrag({ auftragId: 'a1' }, 'a2')).toBe(false);
-    expect(passtZuAuftrag({}, 'ohne')).toBe(true);
-    expect(passtZuAuftrag({ auftragId: 'a1' }, 'ohne')).toBe(false);
-  });
-
-  it('bietet nur Aufträge mit Rechnungen an, nach Nummer sortiert', () => {
-    const b = db.auftraege.create({ nummer: 'A-2026-0000', titel: 'Küche', art: 'projekt', phase: 'in_arbeit', kundeId: t.kunde.id });
-    db.auftraege.create({ nummer: 'A-2026-0009', titel: 'Ohne Rechnung', art: 'projekt', phase: 'in_arbeit', kundeId: t.kunde.id });
-    rechnung();
-    rechnung({ auftragId: b.id });
-    rechnung({ auftragId: undefined });
-    expect(auftraegeMitRechnungen(alleRechnungen()).map((a) => a.label)).toEqual(['A-2026-0000 · Küche', 'A-2026-0001 · Bad sanieren']);
   });
 });
 

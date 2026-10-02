@@ -509,6 +509,21 @@ details > summary::-webkit-details-marker {
     }
   }
 
+  /* Kernelemente im Hero: Füllung der aktiven Pille wie bei Stories (Dauer setzt die Komponente) */
+  .kern-fuellung {
+    animation-name: kern-fuellung;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  @keyframes kern-fuellung {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
   /* Deutschlandflagge im runden Punkt der Made-in-Germany-Pille (Footer) */
   .flagge-de {
     background: linear-gradient(#000 0 33.4%, #dd0000 33.4% 66.7%, #ffce00 66.7%);

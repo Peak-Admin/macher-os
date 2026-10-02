@@ -63,7 +63,18 @@ export function ZuordnungVorschlag({ beleg, onAuftrag, onBereich }: { beleg: Zuo
 }
 
 /** Wohin gehört der Beleg? Auftrag oder Betriebsbereich – wer eins wählt, leert das andere. */
-export function ZuordnungFelder({ beleg, onAuftrag, onBereich }: { beleg: ZuordnungsDaten; onAuftrag: (id: ID | undefined) => void; onBereich: (bereich: string | undefined) => void }) {
+export function ZuordnungFelder({
+  beleg,
+  onAuftrag,
+  onBereich,
+  ohneVorschlag,
+}: {
+  beleg: ZuordnungsDaten;
+  onAuftrag: (id: ID | undefined) => void;
+  onBereich: (bereich: string | undefined) => void;
+  /** Vorschlag nicht zeigen (z. B. wenn ihn schon die Hauptaktion anbietet) */
+  ohneVorschlag?: boolean;
+}) {
   const bereiche = betriebsbereiche();
   // ein Bereich, den es in der Liste nicht mehr gibt, bleibt sichtbar
   const optionen = [...bereiche, ...(beleg.bereich && !bereiche.includes(beleg.bereich) ? [beleg.bereich] : [])];
@@ -80,7 +91,7 @@ export function ZuordnungFelder({ beleg, onAuftrag, onBereich }: { beleg: Zuordn
           optionen={optionen.map((b) => ({ wert: b, label: b }))}
         />
       </FormRaster>
-      <ZuordnungVorschlag beleg={beleg} onAuftrag={onAuftrag} onBereich={onBereich} />
+      {!ohneVorschlag && <ZuordnungVorschlag beleg={beleg} onAuftrag={onAuftrag} onBereich={onBereich} />}
     </Stapel>
   );
 }

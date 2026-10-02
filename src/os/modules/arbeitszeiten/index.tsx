@@ -35,7 +35,7 @@ export default defineModul({
     const laeuft = db.zeiten.where((z) => !z.ende && z.datum === heute()).length;
     // Freigabe wochenweise: offen ist, was aus abgeschlossenen Wochen noch nicht freigegeben ist
     const offen = db.zeiten.where((z) => !!z.ende && !z.freigegeben && z.datum < wochenStart(heute())).length;
-    if (offen) return { text: offen === 1 ? '1 Zeit zur Freigabe' : `${offen} Zeiten zur Freigabe`, ton: 'achtung' };
+    if (offen) return { text: offen === 1 ? '1 Zeit zu prüfen' : `${offen} Zeiten zu prüfen`, ton: 'achtung' };
     if (laeuft) return { text: laeuft === 1 ? '1 Person stempelt gerade' : `${laeuft} Personen stempeln gerade`, ton: 'aktiv' };
     return undefined;
   },

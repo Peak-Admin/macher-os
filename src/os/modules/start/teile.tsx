@@ -291,7 +291,7 @@ export function PositionenSchnell({ positionen, onChange, vorschlag: alsVorschla
             {sprache.an ? 'Fertig' : 'Sprechen'}
           </Button>
         )}
-        <Button variante="sekundaer" icon={ki === 'aus' ? 'plus' : 'macher'} onClick={() => void uebernehmen()} laedt={laedt} laedtText="Macher erkennt …" disabled={!text.trim()}>
+        <Button variante="sekundaer" icon={ki === 'aus' ? 'plus' : 'macher'} onClick={() => void uebernehmen()} laedt={laedt} laedtText="Macher erkennt …" ki={ki === 'aus' ? undefined : 'formt'} disabled={!text.trim()}>
           {alsVorschlag ? 'Vorschlagen' : ki === 'aus' ? 'Übernehmen' : 'Erkennen'}
         </Button>
       </div>

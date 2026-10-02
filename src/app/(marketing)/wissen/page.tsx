@@ -46,6 +46,7 @@ const bereiche: Bereich[] = [
       { label: "Webinare", href: "/wissen/webinare", text: "Live und als Aufzeichnung" },
       { label: "Macher Akademie", href: "/wissen/akademie", text: "Kurse für Chef und Team" },
       { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen", text: "Direkt nutzbar" },
+      { label: "Video-Anleitungen", href: "/wissen/videos", text: "Kommt bald" },
     ],
   },
   {

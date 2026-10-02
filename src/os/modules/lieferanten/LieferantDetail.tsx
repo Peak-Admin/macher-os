@@ -66,9 +66,9 @@ export function LieferantDetail() {
                 titel: 'Artikel',
                 zaehler: artikel.length,
                 inhalt: (
-                  <Liste leer={<Leer titel="Keine Artikel zugeordnet" text="Ordne Artikeln diesen Lieferanten zu – beim Anlegen oder per CSV-Import." icon="paket" aktion={<Button variante="sekundaer" to="/betrieb/artikel/import">CSV importieren</Button>} />}>
+                  <Liste leer={<Leer titel="Keine Artikel zugeordnet" text="Ordne Artikeln diesen Lieferanten zu – beim Anlegen oder per CSV-Import." icon="paket" aktion={<Button variante="sekundaer" to="/betrieb/katalog/material/import">CSV importieren</Button>} />}>
                     {artikel.slice(0, 100).map((a) => (
-                      <ListenZeile key={a.id} to={`/betrieb/artikel/${a.id}`} titel={a.name} untertitel={a.nummer} rechts={geld ? <span className="mm-number">EK {euro(a.ek)}</span> : undefined} />
+                      <ListenZeile key={a.id} to={`/betrieb/katalog/material/${a.id}`} titel={a.name} untertitel={a.nummer} rechts={geld ? <span className="mm-number">EK {euro(a.ek)}</span> : undefined} />
                     ))}
                   </Liste>
                 ),

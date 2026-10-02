@@ -6,7 +6,7 @@ Branch: `claude/fervent-pascal-joztaz-material`
 
 | Modul | Gruppe | Ansichten (Routen) | Einhängepunkte |
 |---|---|---|---|
-| `artikel` Artikel & Material | material | Liste mit Suche (Name/Nr./EAN/Hersteller-Nr.) + Kategorie-Filter · Detail `/betrieb/artikel/:id` · Anlegen/Bearbeiten mit Aufschlag-Rechner · CSV-Import `/betrieb/artikel/import` | `detail: artikel`, Suche (exakte Nr./EAN zuerst), „Neu“-Eintrag, Kurzinfo |
+| `artikel` Artikel & Material | material | Liste mit Suche (Name/Nr./EAN/Hersteller-Nr.) + Kategorie-Filter · Detail `/betrieb/katalog/material/:id` · Anlegen/Bearbeiten mit Aufschlag-Rechner · CSV-Import `/betrieb/katalog/material/import` | `detail: artikel`, Suche (exakte Nr./EAN zuerst), „Neu“-Eintrag, Kurzinfo |
 | `lager` Lager | material | Bestand je Lagerort (Hauptlager + jedes Fahrzeug) mit Buchen-Dialog · Inventur mobil `/betrieb/lager/inventur` · Bewegungsprotokoll `/betrieb/lager/bewegungen` | Automation, Kurzinfo, Seed |
 | `bedarf` Bedarf | material | Fehlmengen je Lieferant mit betroffenen Aufträgen, „Bestellvorschlag erstellen“ (alle oder je Lieferant) | Automation + gespeicherter Hinweis, Aktionen, Kurzinfo |
 | `bestellungen` Bestellungen | material | Liste (Offen/Unterwegs/Geliefert/Alle) · Anlegen · Detail mit Positionen, Bestelltext, `mailto:`-Versand, Wareneingang (Teilmengen), Storno | Hinweise, Aktionen, Suche, „Neu“, Seed |

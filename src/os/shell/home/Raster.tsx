@@ -34,8 +34,7 @@ export function HomeRaster({ layout, defs, ich, bearbeiten, umhuellen, leer }: R
       </div>
     );
   };
-  const ausgeblendet = (e: WidgetEintrag) => !bearbeiten && !!defVon.get(e.widgetId)?.verbergen?.(ich);
-  const liste = baender(layout.widgets.some(ausgeblendet) ? { ...layout, widgets: layout.widgets.filter((e) => !ausgeblendet(e)) } : layout);
+  const liste = baender(layout);
   if (!liste.length) return <>{leer}</>;
   return (
     <div className={`mm-home-raster${bearbeiten ? ' mm-home-raster--bearbeiten' : ''}`}>

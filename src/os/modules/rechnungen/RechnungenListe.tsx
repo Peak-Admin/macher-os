@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { datum, euro, heute, passt, tageZwischen } from '@core/format';
 import { useDarf } from '@core/session';
-import { Auswahl, BeispielMarke, Button, Filter, FormRaster, Kennzahl, Leer, Meta, Raster, Seite, Stapel, Suchfeld, Tabelle, Zeile, useToast } from '@ui/index';
-import { istUeberfaellig, nummerText, offenerBetrag, rechnungsSummen, ENTWURF_TAGE } from './logik';
+import { Auswahl, BeispielMarke, Button, Filter, Kennzahl, Leer, Raster, Seite, Suchfeld, Tabelle, Zeile, useToast } from '@ui/index';
+import { istUeberfaellig, listenBetrag, nummerText, offenerBetrag, ENTWURF_TAGE } from './logik';
 import { alleRechnungen, type RechnungX } from './typen';
 import { RechnungStatus } from './teile';
-import { LISTEN_ART_LABEL, auftraegeMitRechnungen, listenArt, passtZuAuftrag, rechnungenCsv, type AuftragFilter, type ListenArt } from './liste';
+import { FinanzFilter, ListenSumme, auftragOptionen, useFinanzAnsicht, useZuletztBearbeitet } from '@ui/listen';
+import { summeNach } from '@ui/listen-logik';
+import { LISTEN_ART_LABEL, listenArt, rechnungenCsv, type ListenArt } from './liste';
 import { herunterladen } from './xrechnung';
 
 type F = 'offen' | 'entwurf' | 'ueberfaellig' | 'bezahlt' | 'alle';
@@ -14,10 +16,11 @@ type F = 'offen' | 'entwurf' | 'ueberfaellig' | 'bezahlt' | 'alle';
 export function RechnungenListe() {
   useDatenstand();
   const darf = useDarf('geld');
+  const ansicht = useFinanzAnsicht('rechnungen');
+  const zuletzt = useZuletztBearbeitet('rechnungen');
   const [filter, setFilter] = useState<F>('offen');
   const [q, setQ] = useState('');
   const [art, setArt] = useState<ListenArt | ''>('');
-  const [auftrag, setAuftrag] = useState<AuftragFilter>('');
   const toast = useToast();
   if (!darf) return <KeinZugriff />;
 
@@ -38,7 +41,7 @@ export function RechnungenListe() {
   };
   const zeilen = alle
     .filter(passtFilter)
-    .filter((r) => (!art || listenArt(r) === art) && passtZuAuftrag(r, auftrag))
+    .filter((r) => ansicht.passt(r) && (!art || listenArt(r) === art))
     .filter((r) => !q || passt(q, r.nummer, r.titel, db.kunden.get(r.kundeId)?.name, db.auftraege.get(r.auftragId)?.nummer))
     .sort((a, b) => (a.status === 'entwurf' ? -1 : 0) - (b.status === 'entwurf' ? -1 : 0) || b.datum.localeCompare(a.datum) || b.nummer.localeCompare(a.nummer));
 
@@ -46,8 +49,6 @@ export function RechnungenListe() {
   const offenSumme = offen.reduce((s, r) => s + offenerBetrag(r), 0);
   const ueber = alle.filter((r) => istUeberfaellig(r));
   const entwuerfe = alle.filter((r) => r.status === 'entwurf');
-  const auftraege = auftraegeMitRechnungen(alle);
-  const gefiltert = !!(q || art || auftrag || filter !== 'offen');
   const csv = () => {
     herunterladen(`rechnungen-${heute()}.csv`, rechnungenCsv(zeilen), 'text/csv');
     toast(zeilen.length === 1 ? '1 Rechnung als CSV heruntergeladen.' : `${zeilen.length} Rechnungen als CSV heruntergeladen.`);
@@ -67,20 +68,11 @@ export function RechnungenListe() {
         />
         <Kennzahl label="Entwürfe" wert={entwuerfe.length} hinweis={alteEntwuerfe.length ? `${alteEntwuerfe.length} älter als ${ENTWURF_TAGE} Tage` : 'warten auf Versand'} ton={alteEntwuerfe.length ? 'achtung' : undefined} />
       </Raster>
-      <Stapel abstand={12}>
-        <Filter
-          label="Rechnungen filtern"
-          wert={filter}
-          onChange={setFilter}
-          optionen={[
-            { wert: 'offen', label: 'Offen & Entwürfe', zaehler: offen.length + entwuerfe.length },
-            { wert: 'entwurf', label: 'Entwürfe', zaehler: entwuerfe.length },
-            { wert: 'ueberfaellig', label: 'Überfällig', zaehler: ueber.length },
-            { wert: 'bezahlt', label: 'Bezahlt' },
-            { wert: 'alle', label: 'Alle' },
-          ]}
-        />
-        <FormRaster spalten={2}>
+      <FinanzFilter
+        ansicht={ansicht}
+        auftraege={auftragOptionen(alle.map((r) => r.auftragId))}
+        ohneAuftrag
+        zusatz={
           <Auswahl
             label="Art"
             value={art}
@@ -88,22 +80,29 @@ export function RechnungenListe() {
             onChange={(e) => setArt(e.target.value as ListenArt | '')}
             optionen={(Object.keys(LISTEN_ART_LABEL) as ListenArt[]).map((a) => ({ wert: a, label: LISTEN_ART_LABEL[a] }))}
           />
-          <Auswahl
-            label="Auftrag"
-            value={auftrag}
-            leer="Alle Aufträge"
-            onChange={(e) => setAuftrag(e.target.value)}
-            optionen={[...auftraege.map((a) => ({ wert: a.id, label: a.label })), { wert: 'ohne', label: 'Ohne Auftrag' }]}
+        }
+        suche={<Suchfeld wert={q} onChange={setQ} platzhalter="Nummer, Kunde, Auftrag …" />}
+        status={
+          <Filter
+            label="Status"
+            wert={filter}
+            onChange={setFilter}
+            optionen={[
+              { wert: 'offen', label: 'Offen & Entwürfe', zaehler: offen.length + entwuerfe.length },
+              { wert: 'entwurf', label: 'Entwürfe', zaehler: entwuerfe.length },
+              { wert: 'ueberfaellig', label: 'Überfällig', zaehler: ueber.length },
+              { wert: 'bezahlt', label: 'Bezahlt' },
+              { wert: 'alle', label: 'Alle' },
+            ]}
           />
-        </FormRaster>
-        <Suchfeld wert={q} onChange={setQ} platzhalter="Nummer, Kunde, Auftrag …" />
-      </Stapel>
+        }
+      />
       <Tabelle
         zeilen={zeilen}
         schluessel={(r) => r.id}
         zeilenLink={(r) => `/betrieb/rechnungen/${r.id}`}
         leer={
-          gefiltert ? (
+          q || art || filter !== 'offen' || ansicht.zeitraum !== 'alle' || ansicht.auftragId ? (
             <Leer titel="Keine Rechnungen gefunden" text="Ändere den Filter oder die Suche." icon="suche" />
           ) : (
             <Leer
@@ -142,15 +141,27 @@ export function RechnungenListe() {
           },
           { titel: 'Datum', wert: (r) => (r.status === 'entwurf' ? '–' : datum(r.datum)), sortierWert: (r) => r.datum, nebensaechlich: true },
           { titel: 'Fällig', wert: (r) => (r.status === 'entwurf' ? '–' : datum(r.faelligAm)), sortierWert: (r) => r.faelligAm, nebensaechlich: true },
-          { titel: 'Betrag', wert: (r) => euro(rechnungsSummen(r).zahlbetrag), zahl: true, sortierWert: (r) => rechnungsSummen(r).zahlbetrag },
+          {
+            titel: ansicht.betragsart === 'netto' ? 'Betrag netto' : 'Betrag brutto',
+            wert: (r) => euro(listenBetrag(r, ansicht.betragsart)),
+            zahl: true,
+            sortierWert: (r) => listenBetrag(r, ansicht.betragsart),
+          },
           { titel: 'Status', wert: (r) => <RechnungStatus r={r} /> },
+          { titel: 'Zuletzt bearbeitet', wert: (r) => <span className="mm-meta">{zuletzt(r)}</span>, sortierWert: (r) => r.geaendertAm, nebensaechlich: true },
         ]}
       />
+      <ListenSumme
+        anzahl={zeilen.length}
+        einzahl="Rechnung"
+        mehrzahl="Rechnungen"
+        betragsart={ansicht.betragsart}
+        summe={euro(summeNach(ansicht.betragsart, zeilen.map((r) => ({ netto: listenBetrag(r, 'netto'), brutto: listenBetrag(r, 'brutto') }))))}
+      />
       {zeilen.length > 0 && (
-        <Zeile zwischen>
-          <Meta>{zeilen.length === 1 ? '1 Rechnung in dieser Ansicht' : `${zeilen.length} Rechnungen in dieser Ansicht`}</Meta>
+        <Zeile>
           <Button variante="sekundaer" icon="download" onClick={csv}>
-            Herunterladen
+            Als CSV herunterladen
           </Button>
         </Zeile>
       )}

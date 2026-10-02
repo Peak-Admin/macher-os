@@ -4,13 +4,17 @@ import { Dialog, Seite } from '@ui/index';
 import { ABSICHTEN, AKTIONEN } from './assistent';
 import { verbindeModelle } from '@core/ki-modelle';
 import { MacherChat } from './Chat';
+import type { MacherStart } from './vorbereiten';
 
-/** Overlay „Macher fragen“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`). */
+/**
+ * Overlay „Macher fragen“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`) oder aus
+ * „Mit Macher vorbereiten“ am Objekt (`oeffne('macher', { frage, absicht, bezug })`, siehe `vorbereiten.ts`).
+ */
 function MacherOverlay() {
   const { offen, schliessen, payload } = useOverlay('macher');
   return (
     <Dialog offen={offen} onSchliessen={schliessen} titel="Macher fragen" breit>
-      <MacherChat onNavigiert={schliessen} startFrage={(payload as { frage?: string } | undefined)?.frage} />
+      <MacherChat onNavigiert={schliessen} start={payload as MacherStart | undefined} />
     </Dialog>
   );
 }

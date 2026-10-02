@@ -132,6 +132,7 @@ Hat ein Mitarbeiter kein Gerät mit Push, geht die Nachricht als E-Mail raus (we
 | `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | `web-push generate-vapid-keys` | nein |
 | `WHATSAPP_TOKEN`, `WHATSAPP_NUMMER_ID`, `WHATSAPP_VORLAGE` | Meta (Schritt 4b) | nein |
 | `EINGANG_WEBHOOK_SECRET` | selbst erzeugt (optional, sichert `/api/eingang/email` ab) | nein |
+| `NEXT_PUBLIC_BELEGE_EMAIL_AKTIV` | `1`, sobald der E-Mail-Eingang für Belege eingerichtet ist (`docs/os/BELEGE-EMAIL.md`) | ja |
 | `CRON_SECRET` | selbst erzeugt | nein |
 | `DATEI_GEHEIMNIS` | selbst erzeugt (optional) | nein |
 | `TAKTE_GEHEIMNIS` | selbst erzeugt (optional, sonst `CRON_SECRET`) – signiert die Knöpfe in Takt-Mitteilungen | nein |

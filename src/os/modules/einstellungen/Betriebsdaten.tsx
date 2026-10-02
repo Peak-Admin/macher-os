@@ -178,7 +178,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
               </FormRaster>
               {geld && (
                 <Zeile>
-                  <Button variante="tertiaer" klein icon="uhr" to="/betrieb/leistungen/stundensatz">
+                  <Button variante="tertiaer" klein icon="uhr" to="/betrieb/katalog/leistungen/stundensatz">
                     Stundensatz berechnen
                   </Button>
                   <Meta>Aktuell {euro(b.stundensatz)}</Meta>

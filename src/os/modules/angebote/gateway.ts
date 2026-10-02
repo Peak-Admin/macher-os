@@ -1,9 +1,10 @@
 /** Aktionen der Angebote für den Macher AI Gateway (`@core/gateway`). */
 import { db } from '@core/db';
 import { AktionsFehler, type AbsichtDef, type AktionDef } from '@core/gateway';
-import type { ID } from '@core/objects';
+import type { ID, Position } from '@core/objects';
 import { kontaktArt } from '@modules/start/daten';
 import { angebotSenden } from './erstwert';
+import { neuesAngebot } from './daten';
 import { modellKontext, POSITIONEN_VORSCHLAGEN, vorschlagAusModell, vorschlagAusRegeln, type PositionsVorschlag } from './vorschlag';
 
 export interface AngebotSendenDaten {
@@ -67,6 +68,33 @@ export const ANGEBOT_ABSICHTEN: AbsichtDef<PositionsVorschlag>[] = [
       const { leistungen, artikel } = katalog();
       const ki = modellText ? vorschlagAusModell(modellText, text, leistungen, artikel) : undefined;
       return ki ? { positionen: ki, quelle: 'ki' } : { positionen: vorschlagAusRegeln(text, leistungen, artikel), quelle: 'regeln' };
+    },
+  },
+];
+
+export interface AngebotEntwurfDaten {
+  /** die Anfrage (Auftrag in Phase Anfrage/Besichtigung) */
+  auftragId: ID;
+  /** in der Vorschau erkannte Positionen – leer: Leistungen des Auftrags */
+  positionen: Position[];
+}
+
+/** „Angebot aus Anfrage vorbereiten“ – nur ein Entwurf, versendet wird im Angebot selbst. */
+export const ANGEBOT_ENTWURF: AktionDef<AngebotEntwurfDaten>[] = [
+  {
+    id: 'offer.create_draft',
+    titel: 'Angebotsentwurf vorbereitet',
+    risiko: 'schreiben',
+    rechte: ['schreiben', 'geld'],
+    pruefe: (d) => {
+      const a = db.auftraege.get(d.auftragId);
+      if (!a || a.geloeschtAm) return 'Die Anfrage gibt es nicht mehr.';
+      if (a.phase === 'verloren') return 'Die Anfrage ist abgesagt.';
+      return undefined;
+    },
+    fuehreAus: (d) => {
+      const a = neuesAngebot(d.auftragId, d.positionen.length ? d.positionen : undefined);
+      return { bezug: { typ: 'angebote', id: a.id }, text: `Entwurf ${a.nummer}` };
     },
   },
 ];

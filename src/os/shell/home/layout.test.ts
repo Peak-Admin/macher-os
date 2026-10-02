@@ -14,32 +14,32 @@ const def = (id: string, extra: Partial<WidgetDefinition> = {}): WidgetDefinitio
   ...extra,
 });
 
-const DEFS = [def('naechster-schritt'), def('arbeit'), def('erste-schritte', { defaultSpalte: 'rechts' }), def('ansprechpartner', { defaultSpalte: 'rechts' }), def('notiz', { availableSizes: ['klein'] }), def('zahlen')];
+const DEFS = [def('naechster-schritt'), def('arbeit'), def('ansprechpartner', { defaultSpalte: 'rechts' }), def('neu', { defaultSpalte: 'rechts' }), def('notiz', { availableSizes: ['klein'] }), def('zahlen')];
 const ids = (l: HomeLayout) => sichtbare(l).map((w) => w.widgetId);
 
 describe('Standard-Home', () => {
   it('zeigt für den Chef genau die vier Kern-Widgets in der vorgegebenen Reihenfolge', () => {
     const l = standardLayout('chef', DEFS, 'm1');
-    expect(ids(l)).toEqual(['naechster-schritt', 'erste-schritte', 'arbeit', 'ansprechpartner']);
+    expect(ids(l)).toEqual(['naechster-schritt', 'ansprechpartner', 'arbeit', 'neu']);
     expect(l.widgets).toHaveLength(DEFS.length);
     expect(l.widgets.filter((w) => !w.visible).map((w) => w.widgetId)).toEqual(['notiz', 'zahlen']);
   });
 
-  it('teilt sich zwei Spalten: links nächster Schritt + Arbeit, rechts Erste Schritte + Hilfe', () => {
+  it('teilt sich zwei Spalten: links nächster Schritt + Arbeit, rechts Ansprechpartner + News', () => {
     const [band] = baender(standardLayout('chef', DEFS));
     expect(band.typ).toBe('spalten');
     if (band.typ !== 'spalten') return;
     expect(band.links.map((w) => w.widgetId)).toEqual(['naechster-schritt', 'arbeit']);
-    expect(band.rechts.map((w) => w.widgetId)).toEqual(['erste-schritte', 'ansprechpartner']);
+    expect(band.rechts.map((w) => w.widgetId)).toEqual(['ansprechpartner', 'neu']);
   });
 
-  it('liest sich auf dem Handy: nächster Schritt, Arbeit, Erste Schritte, Hilfe', () => {
-    expect(mobileReihenfolge(standardLayout('chef', DEFS))).toEqual(['naechster-schritt', 'arbeit', 'erste-schritte', 'ansprechpartner']);
+  it('liest sich auf dem Handy: nächster Schritt, Arbeit, Ansprechpartner, News', () => {
+    expect(mobileReihenfolge(standardLayout('chef', DEFS))).toEqual(['naechster-schritt', 'arbeit', 'ansprechpartner', 'neu']);
   });
 
   it('lässt nicht erlaubte Widgets weg', () => {
-    const l = standardLayout('chef', DEFS.filter((d) => d.id !== 'erste-schritte'));
-    expect(ids(l)).toEqual(['naechster-schritt', 'arbeit', 'ansprechpartner']);
+    const l = standardLayout('chef', DEFS.filter((d) => d.id !== 'ansprechpartner'));
+    expect(ids(l)).toEqual(['naechster-schritt', 'arbeit', 'neu']);
   });
 });
 
@@ -69,22 +69,22 @@ describe('verschieben', () => {
   const start = standardLayout('chef', DEFS);
 
   it('setzt ein Widget vor ein anderes und übernimmt dessen Spalte', () => {
-    const l = verschieben(start, 'ansprechpartner', { vor: 'naechster-schritt', spalte: 'links' });
-    expect(ids(l)[0]).toBe('ansprechpartner');
-    expect(l.widgets.find((w) => w.widgetId === 'ansprechpartner')!.spalte).toBe('links');
+    const l = verschieben(start, 'neu', { vor: 'naechster-schritt', spalte: 'links' });
+    expect(ids(l)[0]).toBe('neu');
+    expect(l.widgets.find((w) => w.widgetId === 'neu')!.spalte).toBe('links');
     expect(l.angepasst).toBe(true);
   });
 
   it('holt ein verborgenes Widget aus der Bibliothek an die Ablagestelle', () => {
-    const l = verschieben(start, 'zahlen', { nach: 'erste-schritte', spalte: 'rechts' });
-    expect(ids(l)).toEqual(['naechster-schritt', 'erste-schritte', 'zahlen', 'arbeit', 'ansprechpartner']);
+    const l = verschieben(start, 'zahlen', { nach: 'ansprechpartner', spalte: 'rechts' });
+    expect(ids(l)).toEqual(['naechster-schritt', 'ansprechpartner', 'zahlen', 'arbeit', 'neu']);
     const band = baender(l)[0];
-    expect(band.typ === 'spalten' && band.rechts.map((w) => w.widgetId)).toEqual(['erste-schritte', 'zahlen', 'ansprechpartner']);
+    expect(band.typ === 'spalten' && band.rechts.map((w) => w.widgetId)).toEqual(['ansprechpartner', 'zahlen', 'neu']);
   });
 
   it('hängt ohne Ziel hinter das letzte sichtbare Widget, nicht hinter die verborgenen', () => {
     const l = sichtbarSetzen(start, 'zahlen', true);
-    expect(ids(l)).toEqual(['naechster-schritt', 'erste-schritte', 'arbeit', 'ansprechpartner', 'zahlen']);
+    expect(ids(l)).toEqual(['naechster-schritt', 'ansprechpartner', 'arbeit', 'neu', 'zahlen']);
     expect(sichtbare(l).at(-1)!.order).toBe(4);
   });
 
@@ -97,7 +97,7 @@ describe('Größe und Bänder', () => {
   it('ein großes Widget geht über die volle Breite und teilt die Spalten in zwei Bänder', () => {
     const l = groesseSetzen(standardLayout('chef', DEFS), 'arbeit', 'gross', DEFS);
     expect(baender(l).map((b) => b.typ)).toEqual(['spalten', 'breit', 'spalten']);
-    expect(mobileReihenfolge(l)).toEqual(['naechster-schritt', 'erste-schritte', 'arbeit', 'ansprechpartner']);
+    expect(mobileReihenfolge(l)).toEqual(['naechster-schritt', 'ansprechpartner', 'arbeit', 'neu']);
   });
 
   it('erlaubt keine Größe, die das Widget nicht kann', () => {
@@ -120,22 +120,22 @@ describe('schritt (Tastatur/Menü)', () => {
     const l = schritt(start, 'arbeit', -1);
     const band = baender(l)[0];
     expect(band.typ === 'spalten' && band.links.map((w) => w.widgetId)).toEqual(['arbeit', 'naechster-schritt']);
-    expect(band.typ === 'spalten' && band.rechts.map((w) => w.widgetId)).toEqual(['erste-schritte', 'ansprechpartner']);
+    expect(band.typ === 'spalten' && band.rechts.map((w) => w.widgetId)).toEqual(['ansprechpartner', 'neu']);
   });
 
   it('kennt die Ränder', () => {
     expect(kannSchritt(start, 'naechster-schritt', -1)).toBe(false);
-    expect(kannSchritt(start, 'ansprechpartner', 1)).toBe(false);
+    expect(kannSchritt(start, 'neu', 1)).toBe(false);
     expect(kannSchritt(start, 'arbeit', -1)).toBe(true);
     expect(schritt(start, 'naechster-schritt', -1)).toBe(start);
   });
 
   it('springt über ein großes Widget ins nächste Band und bleibt in seiner Spalte', () => {
-    let l = groesseSetzen(start, 'arbeit', 'gross', DEFS); // Band 1: nächster Schritt | Erste Schritte · breit: Arbeit · Band 3: – | Hilfe
-    l = schritt(l, 'erste-schritte', 1);
+    let l = groesseSetzen(start, 'arbeit', 'gross', DEFS); // Band 1: nächster Schritt | Ansprechpartner · breit: Arbeit · Band 3: – | News
+    l = schritt(l, 'ansprechpartner', 1);
     const b = baender(l);
     expect(b.map((x) => x.typ)).toEqual(['spalten', 'breit', 'spalten']);
-    expect(b[2].typ === 'spalten' && b[2].rechts.map((w) => w.widgetId)).toEqual(['erste-schritte', 'ansprechpartner']);
+    expect(b[2].typ === 'spalten' && b[2].rechts.map((w) => w.widgetId)).toEqual(['ansprechpartner', 'neu']);
   });
 
   it('ein großes Widget springt um ein ganzes Band', () => {

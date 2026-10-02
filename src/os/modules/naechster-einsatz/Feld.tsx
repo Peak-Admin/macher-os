@@ -13,7 +13,7 @@ import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { useSyncStatus } from '@core/sync';
 import type { ID, Termin } from '@core/objects';
 import { erfassen, erfassenAktion } from '@ui/objekt';
-import { AktionsMenue, Button, Dialog, Icon, Meldung, Segmente, Stapel, Textfeld, useToast, type IconName, type MenueAktion } from '@ui/index';
+import { AktionsMenue, Button, Dialog, Icon, MacherArbeitet, Meldung, Segmente, Stapel, Textfeld, useToast, type IconName, type MenueAktion } from '@ui/index';
 import { checklisteAnlegen, checklistePfad, checklistenAm, checklistenVorlagen, passendeVorlagen, stand } from '@modules/checklisten/daten';
 import { problemMelden } from './abschluss';
 import './feld.css';
@@ -302,6 +302,7 @@ export function ProblemDialog({ terminId, offen, onSchliessen }: { terminId: ID;
             <Button variante="sekundaer" icon={diktat.hoert ? 'stop' : 'mikro'} onClick={diktat.hoert ? diktat.stopp : diktat.start}>
               {diktat.hoert ? 'Fertig gesprochen' : 'Sprechen'}
             </Button>
+            {diktat.hoert && <MacherArbeitet zustand="hoert" text="Macher hört zu …" />}
           </div>
         )}
         {diktat.fehler && <Meldung ton="achtung">{diktat.fehler}</Meldung>}

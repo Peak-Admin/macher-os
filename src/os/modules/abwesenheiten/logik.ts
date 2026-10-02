@@ -53,6 +53,11 @@ export function abwesendBeobachten(): () => void {
   };
 }
 
+/** Offene Anträge (Urlaub, Frei), über die der Chef noch entscheiden muss – nach Beginn sortiert */
+export function offeneAntraege(alle: Abwesenheit[], t: Datum = heuteDatum()): Abwesenheit[] {
+  return alle.filter((a) => !a.geloeschtAm && a.status === 'beantragt' && a.bis >= t).sort((a, b) => a.von.localeCompare(b.von));
+}
+
 export function entscheiden(id: ID, genehmigt: boolean): Abwesenheit | undefined {
   const a = db.abwesenheiten.get(id);
   if (!a || a.status !== 'beantragt') return a;
