@@ -116,7 +116,7 @@ export function KiFragen({ className = "" }: { className?: string }) {
   const q = encodeURIComponent(FRAGE);
   return (
     <div className={className}>
-      <p className="text-sm font-semibold text-white">KI fragen</p>
+      <p className="text-sm font-bold text-accent">KI fragen</p>
       <p className="mt-1 text-sm text-white/65">Lass dir Macher OS von deiner KI erklären.</p>
       <ul className="mt-3 flex gap-3">
         {KIS.map((k) => (
