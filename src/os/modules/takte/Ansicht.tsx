@@ -155,7 +155,7 @@ function Tagesbrief({ i, ausfuehren }: { i: TagesbriefInhalt; ausfuehren: Return
         <Abschnitt titel="Geld">
           <Raster min={180}>
             <Kennzahl label={`Eingänge ${i.geld.seitText}`} wert={i.geld.eingaenge.anzahl ? euro(i.geld.eingaenge.summe) : 'Keine'} hinweis={i.geld.eingaenge.anzahl ? (i.geld.eingaenge.anzahl === 1 ? '1 Zahlung' : `${i.geld.eingaenge.anzahl} Zahlungen`) : undefined} to="/betrieb/zahlungen" />
-            <Kennzahl label="Überfällig" wert={i.geld.ueberfaellig.anzahl ? euro(i.geld.ueberfaellig.summe) : 'Nichts'} ton={i.geld.ueberfaellig.anzahl ? 'achtung' : 'erfolg'} hinweis={i.geld.ueberfaellig.anzahl ? (i.geld.ueberfaellig.anzahl === 1 ? '1 Rechnung' : `${i.geld.ueberfaellig.anzahl} Rechnungen`) : undefined} to="/plan/offen" />
+            <Kennzahl label="Überfällig" wert={i.geld.ueberfaellig.anzahl ? euro(i.geld.ueberfaellig.summe) : 'Nichts'} ton={i.geld.ueberfaellig.anzahl ? 'gefahr' : 'erfolg'} hinweis={i.geld.ueberfaellig.anzahl ? (i.geld.ueberfaellig.anzahl === 1 ? '1 Rechnung' : `${i.geld.ueberfaellig.anzahl} Rechnungen`) : undefined} to="/plan/offen" />
           </Raster>
           {i.geld.ueberfaellig.liste.length > 0 && (
             <Liste>

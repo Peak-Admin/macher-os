@@ -46,7 +46,7 @@ export function BetriebsmittelDetail() {
       oberzeile={[ART_LABEL[b.art], istFahrzeug ? b.kennzeichen : b.inventarnummer].filter(Boolean).join(' · ')}
       status={
         <>
-          {f.stufe === 'ueberfaellig' && b.status !== 'defekt' ? <Status ton="achtung">Gesperrt: Prüfung überfällig</Status> : <Status ton={st.ton}>{st.text}</Status>} <BeispielMarke zeigen={b.beispiel} />
+          {f.stufe === 'ueberfaellig' && b.status !== 'defekt' ? <Status ton="gefahr">Gesperrt: Prüfung überfällig</Status> : <Status ton={st.ton}>{st.text}</Status>} <BeispielMarke zeigen={b.beispiel} />
         </>
       }
       zurueck={{ to: ART_MODUL[b.art], label: istFahrzeug ? 'Fahrzeuge' : b.art === 'maschine' ? 'Maschinen & Geräte' : 'Werkzeuge' }}

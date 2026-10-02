@@ -39,7 +39,7 @@ export interface Faelligkeit {
 export function faelligkeit(b: Betriebsmittel, t: Datum = heute()): Faelligkeit {
   if (!b.naechstePruefung) return { stufe: 'keine', text: 'Keine Frist hinterlegt', ton: 'neutral' };
   const tage = tageZwischen(t, b.naechstePruefung);
-  if (tage < 0) return { stufe: 'ueberfaellig', tage, text: `Seit ${-tage} ${-tage === 1 ? 'Tag' : 'Tagen'} überfällig – nicht verwenden`, ton: 'achtung' };
+  if (tage < 0) return { stufe: 'ueberfaellig', tage, text: `Seit ${-tage} ${-tage === 1 ? 'Tag' : 'Tagen'} überfällig – nicht verwenden`, ton: 'gefahr' };
   if (tage === 0) return { stufe: 'tage14', tage, text: 'Heute fällig', ton: 'achtung' };
   if (tage <= 14) return { stufe: 'tage14', tage, text: `Fällig in ${tage} ${tage === 1 ? 'Tag' : 'Tagen'}`, ton: 'achtung' };
   if (tage <= 30) return { stufe: 'tage30', tage, text: `Fällig in ${tage} Tagen`, ton: 'aktiv' };

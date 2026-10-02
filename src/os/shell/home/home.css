@@ -169,6 +169,7 @@
 .mm-home-wert dd { margin: 0; }
 .mm-home-wert dd.mm-number { font: 700 24px/30px var(--mm-font); color: var(--mm-black); }
 .mm-home-wert--achtung dd.mm-number { color: var(--mm-warning); }
+.mm-home-wert--gefahr dd.mm-number { color: var(--mm-danger); }
 .mm-home-betrag { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .mm-home-woche { list-style: none; margin: 0; padding: 0; }
 .mm-home-woche li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--mm-border); }

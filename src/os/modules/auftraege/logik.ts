@@ -20,6 +20,22 @@ export const ART_LABEL: Record<Auftragsart, string> = {
   werkstatt: 'Werkstatt',
 };
 
+/** Strich-Icon, Gruppe und Ton je Phase – für Auswahlfelder (Icon + Text, nie nur Farbe) */
+export const PHASE_DARSTELLUNG: Record<Phase, { icon: string; gruppe: string; ton: Ton }> = {
+  anfrage: { icon: 'chat', gruppe: 'Vorbereiten', ton: 'neutral' },
+  besichtigung: { icon: 'ort', gruppe: 'Vorbereiten', ton: 'neutral' },
+  angebot: { icon: 'dokument', gruppe: 'Vorbereiten', ton: 'neutral' },
+  beauftragt: { icon: 'unterschrift', gruppe: 'Ausführen', ton: 'aktiv' },
+  in_arbeit: { icon: 'werkzeug', gruppe: 'Ausführen', ton: 'aktiv' },
+  abnahme: { icon: 'check', gruppe: 'Abschließen', ton: 'erfolg' },
+  abrechnung: { icon: 'euro', gruppe: 'Abschließen', ton: 'erfolg' },
+  erledigt: { icon: 'check', gruppe: 'Abschließen', ton: 'erfolg' },
+  verloren: { icon: 'x', gruppe: 'Abschließen', ton: 'neutral' },
+};
+
+/** Optionen für ein Phasen-Auswahlfeld: gruppiert, mit Icon */
+export const phaseOptionen = (phasen: Phase[]) => phasen.map((p) => ({ wert: p, label: phaseLabel(p), ...PHASE_DARSTELLUNG[p] }));
+
 export const phaseLabel = (p: Phase) => PHASEN.find((x) => x.id === p)?.label ?? p;
 export const phaseIndex = (p: Phase) => PHASEN_REIHE.indexOf(p);
 export const istOffen = (a: Pick<Auftrag, 'phase'>) => a.phase !== 'erledigt' && a.phase !== 'verloren';

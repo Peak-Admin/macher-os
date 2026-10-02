@@ -66,7 +66,7 @@ export function BestellungDetail() {
       oberzeile={l?.name}
       status={
         <>
-          {spaet ? <Status ton="achtung">Lieferung überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>} <BeispielMarke zeigen={b.beispiel} />
+          {spaet ? <Status ton="gefahr">Lieferung überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>} <BeispielMarke zeigen={b.beispiel} />
         </>
       }
       zurueck={{ to: '/betrieb/bestellungen', label: 'Bestellungen' }}

@@ -47,7 +47,7 @@ export function WartungUebersicht() {
       aktion={anlegbar.length ? <Button icon="plus" onClick={alleAnlegen}>{anlegbar.length === 1 ? 'Fällige Wartung anlegen' : `${anlegbar.length} fällige Wartungen anlegen`}</Button> : undefined}
     >
       <Raster min={160}>
-        <Kennzahl label="Überfällig" wert={gruppen.ueberfaellig.length} ton={gruppen.ueberfaellig.length ? 'achtung' : undefined} />
+        <Kennzahl label="Überfällig" wert={gruppen.ueberfaellig.length} ton={gruppen.ueberfaellig.length ? 'gefahr' : undefined} />
         <Kennzahl label="Diese Woche" wert={gruppen.woche.length} />
         <Kennzahl label="Diesen Monat" wert={gruppen.monat.length} hinweis="nach dieser Woche" />
         <Kennzahl label="Offene Wartungsaufträge" wert={offeneAuftraege.length} />

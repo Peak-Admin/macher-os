@@ -34,7 +34,7 @@ function RueckrufZeile({ a }: { a: Aufgabe }) {
         ))}
       rechts={
         <>
-          {ueber ? <Status ton="achtung">Überfällig</Status> : a.prioritaet === 'hoch' ? <Status ton="achtung">Dringend</Status> : null}
+          {ueber ? <Status ton="gefahr">Überfällig</Status> : a.prioritaet === 'hoch' ? <Status ton="achtung">Dringend</Status> : null}
           {nummer && (
             <Button klein variante="sekundaer" icon="telefon" onClick={() => (window.location.href = telLink(nummer)!)}>
               Anrufen

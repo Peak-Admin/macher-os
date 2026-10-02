@@ -66,7 +66,7 @@ export function BestellungenListe() {
                   </>
                 }
                 untertitel={[kurzText(b, geld), istUnterwegs(b) && b.erwartetAm ? `erwartet ${relativ(b.erwartetAm)}` : null, b.status === 'geliefert' && b.geliefertAm ? `geliefert am ${datum(b.geliefertAm)}` : null].filter(Boolean).join(' · ')}
-                rechts={spaet ? <Status ton="achtung">Lieferung überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>}
+                rechts={spaet ? <Status ton="gefahr">Lieferung überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>}
               />
             );
           })}

@@ -75,6 +75,17 @@
 .mm-app--eingeklappt .mm-nav-haupt { position: relative; }
 .mm-app--eingeklappt .mm-nav-zahl { position: absolute; top: 2px; right: 6px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
 .mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 88px; bottom: 16px; }
+/* Schmale Leiste: eine ruhige 48-px-Spalte, gleichmäßige Abstände; oben der Ausklapp-Knopf statt Logo */
+.mm-app--eingeklappt .mm-sidebar { gap: 12px; padding-top: 12px; }
+.mm-app--eingeklappt .mm-leiste-kopf .mm-logo { display: none; }
+.mm-app--eingeklappt .mm-leiste-kopf { align-items: center; }
+.mm-app--eingeklappt .mm-leiste-umschalter { width: 48px; height: 48px; }
+.mm-app--eingeklappt .mm-leiste-werkzeuge { align-items: center; gap: 4px; }
+.mm-app--eingeklappt .mm-leiste-suche { width: 48px; min-height: 48px; padding: 0; border-color: transparent; background: none; }
+.mm-app--eingeklappt .mm-leiste-suche:hover { border-color: transparent; background: var(--mm-hover); }
+.mm-app--eingeklappt :is(.mm-nav-haupt, .mm-leiste-zeile, .mm-nav-favorit, .mm-profil-knopf) { width: 48px; min-height: 48px; margin-inline: auto; }
+.mm-app--eingeklappt .mm-nav { align-items: center; }
+.mm-app--eingeklappt .mm-leiste-eigene { padding-top: 12px; }
 
 /* Deine Seitenleiste: Module, Smart Views, Seiten und Ordner (Seitenleiste.tsx) */
 .mm-leiste-eigene { flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 0; padding-top: 16px; border-top: 1px solid var(--mm-border); }
@@ -339,4 +350,6 @@
 .mm-wechsler--kompakt { margin: 0; }
 .mm-wechsler--kompakt .mm-wechsler-knopf { gap: 4px; min-height: 44px; padding: 4px 6px; }
 /* Wechsler in der eingeklappten Leiste */
-.mm-app--eingeklappt .mm-sidebar .mm-wechsler-knopf { justify-content: center; }
+.mm-app--eingeklappt .mm-sidebar .mm-wechsler-knopf { justify-content: center; width: 48px; min-height: 48px; margin-inline: auto; padding: 0; border-color: transparent; background: none; }
+.mm-app--eingeklappt .mm-sidebar .mm-wechsler-knopf:hover { background: var(--mm-hover); }
+.mm-app--eingeklappt .mm-sidebar .mm-wechsler-pfeil { display: none; }

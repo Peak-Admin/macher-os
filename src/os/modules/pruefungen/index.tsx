@@ -39,7 +39,7 @@ export default defineModul({
     const l = pruefliste();
     if (!l.length) return undefined;
     const ueber = l.filter((x) => x.f.stufe === 'ueberfaellig').length;
-    if (ueber) return { text: `${ueber} überfällig`, ton: 'achtung' };
+    if (ueber) return { text: `${ueber} überfällig`, ton: 'gefahr' };
     const bald = l.filter((x) => x.f.stufe === 'tage14' || x.f.stufe === 'tage30').length;
     return bald ? { text: `${bald} in den nächsten 30 Tagen`, ton: 'aktiv' } : { text: 'Alle Fristen im grünen Bereich', ton: 'erfolg' };
   },

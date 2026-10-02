@@ -23,7 +23,7 @@ export default defineModul({
     const unterwegs = bestellungen.where(istUnterwegs);
     const spaet = unterwegs.filter((b) => ueberfaellig(b)).length;
     const entwuerfe = bestellungen.where((b) => b.status === 'entwurf' && b.positionen.length > 0).length;
-    if (spaet) return { text: `${spaet} Lieferung${spaet === 1 ? '' : 'en'} überfällig`, ton: 'achtung' };
+    if (spaet) return { text: `${spaet} Lieferung${spaet === 1 ? '' : 'en'} überfällig`, ton: 'gefahr' };
     if (entwuerfe) return { text: `${entwuerfe} Entwurf${entwuerfe === 1 ? '' : 'e'} zum Abschicken`, ton: 'aktiv' };
     if (unterwegs.length) return { text: `${unterwegs.length} unterwegs`, ton: 'aktiv' };
     return undefined;

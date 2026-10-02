@@ -48,7 +48,7 @@ export function OffenePosten() {
       )}
       <Raster min={180}>
         <Kennzahl label="Offene Posten" wert={euro(summe)} hinweis={posten.length === 1 ? '1 Rechnung' : `${posten.length} Rechnungen`} />
-        <Kennzahl label="Davon überfällig" wert={euro(ueberSumme)} hinweis={ueber.length === 1 ? '1 Rechnung' : `${ueber.length} Rechnungen`} ton={ueber.length ? 'achtung' : undefined} to="/betrieb/mahnungen" />
+        <Kennzahl label="Davon überfällig" wert={euro(ueberSumme)} hinweis={ueber.length === 1 ? '1 Rechnung' : `${ueber.length} Rechnungen`} ton={ueber.length ? 'gefahr' : undefined} to="/betrieb/mahnungen" />
         <Kennzahl label="Eingänge (30 Tage)" wert={euro(letzte30.reduce((s, z) => s + z.betrag, 0))} hinweis={letzte30.length === 1 ? '1 Zahlung' : `${letzte30.length} Zahlungen`} />
       </Raster>
       <Filter
@@ -126,7 +126,7 @@ export function GeldWidget() {
     <Raster min={200}>
       <Kennzahl label="Offene Posten" wert={euro(posten.reduce((s, r) => s + offenerBetrag(r), 0))} hinweis={posten.length === 1 ? '1 Rechnung' : `${posten.length} Rechnungen`} to="/betrieb/zahlungen" />
       {ueber.length > 0 && (
-        <Kennzahl label="Überfällig" wert={euro(ueber.reduce((s, r) => s + offenerBetrag(r), 0))} hinweis={ueber.length === 1 ? '1 Rechnung' : `${ueber.length} Rechnungen`} ton="achtung" to="/betrieb/mahnungen" />
+        <Kennzahl label="Überfällig" wert={euro(ueber.reduce((s, r) => s + offenerBetrag(r), 0))} hinweis={ueber.length === 1 ? '1 Rechnung' : `${ueber.length} Rechnungen`} ton="gefahr" to="/betrieb/mahnungen" />
       )}
     </Raster>
   );

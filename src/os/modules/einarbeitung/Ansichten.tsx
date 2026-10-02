@@ -81,7 +81,7 @@ export function EinarbeitungenSeite() {
                 </>
               }
               untertitel={`seit ${datum(e.start)} · ${f.fertig} von ${f.gesamt} Schritten`}
-              rechts={e.abgeschlossenAm ? <Status ton="erfolg">Abgeschlossen</Status> : ueber ? <Status ton="achtung">{`${ueber} überfällig`}</Status> : <Status ton="aktiv">{`${Math.round((f.fertig / Math.max(1, f.gesamt)) * 100)} %`}</Status>}
+              rechts={e.abgeschlossenAm ? <Status ton="erfolg">Abgeschlossen</Status> : ueber ? <Status ton="gefahr">{`${ueber} überfällig`}</Status> : <Status ton="aktiv">{`${Math.round((f.fertig / Math.max(1, f.gesamt)) * 100)} %`}</Status>}
             />
           );
         })}
