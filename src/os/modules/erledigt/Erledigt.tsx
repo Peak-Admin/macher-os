@@ -10,7 +10,7 @@ import { ZEITRAUM_LABEL, erledigungenIm, kannRueckgaengig, minutenText, rueckgae
 
 const WIDGET_MAX = 3;
 
-function ErledigtZeile({ e }: { e: Erledigung }) {
+export function ErledigtZeile({ e }: { e: Erledigung }) {
   const toast = useToast();
   const navigate = useNavigate();
   const pfad = pfadZu(e.bezug);

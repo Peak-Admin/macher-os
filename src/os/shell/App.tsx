@@ -4,7 +4,7 @@ import { alleModule, modulPfad } from '@core/modul';
 import { db } from '@core/db';
 import { ToastProvider } from '@ui/index';
 import { Shell } from './Shell';
-import { HeuteSeite } from './Heute';
+import { HomeSeite } from './home/HomeSeite';
 import { BetriebSeite, KategorieWeiter } from './Betrieb';
 import { BereichWeiter } from './BereichWeiter';
 import { Erststart } from './Erststart';
@@ -34,7 +34,7 @@ export function App() {
                 <Shell>
                   <Routes>
                     <Route path="/" element={<Navigate to="/heute" replace />} />
-                    <Route path="/heute" element={<HeuteSeite />} />
+                    <Route path="/heute" element={<HomeSeite />} />
                     {/* Aufträge und Planen öffnen direkt ihre Standardansicht – keine Auswahlseite davor */}
                     <Route path="/auftraege" element={<BereichWeiter bereich="auftraege" />} />
                     <Route path="/plan" element={<BereichWeiter bereich="plan" />} />

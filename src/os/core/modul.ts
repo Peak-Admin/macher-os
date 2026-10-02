@@ -126,7 +126,7 @@ export interface ModulDef {
   routen?: { pfad: string; element: ComponentType }[];
   /** Routen ohne App-Rahmen (Onboarding, Kundenbereich, Terminbuchung für Kunden). Absolute Pfade. */
   vollbildRouten?: { pfad: string; element: ComponentType }[];
-  /** Altfeld: Bereichsseiten zeigen keine Modul-Widgets mehr (Heute und Betrieb sind fest gestaltet) */
+  /** Altfeld: wird nicht angezeigt. Widgets fürs Home: `registriereWidget()` (src/os/shell/home/registry.ts, docs/os/HOME.md) */
   hubWidget?: ComponentType;
   /** Kurzer Status, z. B. „3 Prüfungen fällig“; mit `ton: 'achtung'` ggf. als Hinweis auf der Betrieb-Kachel */
   kurzinfo?: () => { text: string; ton?: Ton } | undefined;

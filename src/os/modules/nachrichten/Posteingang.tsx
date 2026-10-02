@@ -19,7 +19,7 @@ export function threadTitel(t: Thread): { titel: string; untertitel?: string } {
   return { titel: 'Team intern', untertitel: 'Ohne Auftrag' };
 }
 
-function ThreadZeile({ t }: { t: Thread }) {
+export function ThreadZeile({ t }: { t: Thread }) {
   const { titel, untertitel } = threadTitel(t);
   const l = t.letzte;
   const vorschau = `${l.kanal === 'intern' ? 'Intern' : KANAL_LABEL[l.kanal]}: ${l.text.length > 70 ? l.text.slice(0, 69) + '…' : l.text}`;
