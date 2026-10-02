@@ -214,10 +214,12 @@ export function annehmen(id: ID, herkunft?: { name: string; quelle: 'portal'; te
   const neu = db.angebote.update(a.id, { status: 'angenommen', entschiedenAm: zeit }, { text: herkunft?.text ?? 'Vom Kunden angenommen' });
   const auftrag = db.auftraege.get(a.auftragId);
   if (auftrag && phaseVor(auftrag.phase, 'beauftragt')) {
-    // Planung braucht Stunden: aus dem Angebot übernehmen, wenn noch keine geschätzt sind
-    const stunden = auftrag.geplanteStunden ? undefined : angebotStunden(a) || undefined;
-    db.auftraege.update(auftrag.id, { phase: 'beauftragt', verlorenGrund: undefined, abgeschlossenAm: undefined, ...(stunden ? { geplanteStunden: stunden } : {}) }, { text: `Beauftragt (Angebot ${a.nummer} angenommen)` });
+    db.auftraege.update(auftrag.id, { phase: 'beauftragt', verlorenGrund: undefined, abgeschlossenAm: undefined }, { text: `Beauftragt (Angebot ${a.nummer} angenommen)` });
   }
+  // Planung braucht Stunden: aus dem Angebot übernehmen, wenn noch keine geschätzt sind
+  // (unabhängig von der Phase – die kann eine Automation beim Statuswechsel schon gesetzt haben)
+  const stunden = auftrag && !db.auftraege.get(auftrag.id)?.geplanteStunden ? angebotStunden(a) : 0;
+  if (auftrag && stunden) db.auftraege.update(auftrag.id, { geplanteStunden: stunden }, { text: `Geplante Stunden aus Angebot ${a.nummer}: ${String(stunden).replace('.', ',')} Std.` });
   // ältere offene Versionen sind damit erledigt
   versionen(a)
     .filter((v) => v.id !== a.id && (v.status === 'versendet' || v.status === 'entwurf'))
