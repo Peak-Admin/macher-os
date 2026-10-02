@@ -17,6 +17,8 @@ Bildsprache: **[`docs/design/visual-assets.md`](docs/design/visual-assets.md)** 
 Handwerksobjekten (Register `src/lib/objekte.ts`; Website `<Objekt>`, Card-Prop `objekt`; Software `<MacherAsset>`, `Leer` zeigt
 automatisch ein passendes Objekt) als ruhige Ebene – ein starkes Objekt pro Karte, nie in Listen, Tabellen, Formularen.
 Fotos von Mission Mittelstand / Matthias Aumann nur mit Freigabe des Betreibers (siehe `missionMittelstandBilder`).
+Karten, die eine Funktion kurz erklären, zeigen statt Foto oder Icon eine abstrakte **Skizze** (`<Skizze motiv="angebote" />`,
+Card-Prop `skizze`) oder eine **UI-Ebene** mit Beispieldaten (`<UiEbene>`). Regeln: `docs/design/festlegungen.md`.
 
 Reihenfolge bei Zielkonflikten: 1. Aufgabe verstehen und erledigen · 2. Orientierung, Lesbarkeit, Fehlertoleranz ·
 3. konsistente, ruhige Gestaltung · 4. Markenwirkung und Dekoration.

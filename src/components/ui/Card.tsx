@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { ObjektSchluessel } from "@/lib/objekte";
 import { Icon, IconTile, type IconName } from "./Icon";
 import { Objekt } from "./Objekt";
+import { Skizze, type SkizzenMotiv } from "./Skizze";
 
 /** Einfache Karte. Mit `href` wird die ganze Karte klickbar. */
 export function Card({
@@ -13,11 +14,14 @@ export function Card({
   iconTone,
   eyebrow,
   objekt,
+  skizze,
   className = "",
 }: {
   title: ReactNode;
   /** Objektbild oben in der Karte (statt Icon) – ein starkes Objekt pro Karte */
   objekt?: ObjektSchluessel;
+  /** Abstrakte Skizze einer Funktion oben in der Karte (statt Icon) – wenn die Karte eine Funktion kurz erklärt */
+  skizze?: SkizzenMotiv;
   children?: ReactNode;
   href?: string;
   icon?: IconName;
@@ -29,6 +33,8 @@ export function Card({
     <>
       {objekt ? (
         <Objekt objekt={objekt} className="-mx-2 -mt-2 mb-5" />
+      ) : skizze ? (
+        <Skizze motiv={skizze} className="-mx-2 -mt-2 mb-5" />
       ) : (
         icon && <IconTile name={icon} tone={iconTone} className="mb-4" />
       )}

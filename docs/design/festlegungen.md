@@ -58,6 +58,25 @@ Aktionsgrün auf dem Glas, weiß auf der hinteren Form. Keine Kachel dahinter. I
   Strich-Icons in Textfarbe – ebenso die Sidebar-Navigation
 - Neue Motive in `glas.tsx` ergänzen und in den Zuordnungen (`IconTile` bzw. `glasFuer`) eintragen
 
+### Skizzen und UI-Ebenen für Funktionen (Oktober 2026)
+Wo eine Karte eine **Funktion kurz erklärt**, steht oben eine abstrakte Zeichnung statt Icon oder Foto – nach den kleinen
+Prozess-Illustrationen von Mission Mittelstand (ruhiger Grüngrauton). Zwei Formen, je Raster nur eine davon:
+
+- **Skizze** (`Skizze`, `src/components/ui/Skizze.tsx`): Fläche `sand`, drei aufgefächerte weiße Blätter mit grauen
+  Platzhalterlinien, vorne ein Blatt, das die Funktion andeutet (Angebot mit Unterschrift, Kalender, Plantafel, Lager …),
+  unten mittig eine grüne Plakette (Aktionsgrün, weißes Strich-Icon). Ein Motiv je Funktion (Schlüssel = Slug aus
+  `src/content/registry.ts`); neue Funktion → neues Motiv in `Skizze.tsx`. Für Übersichten mit vielen Funktionen
+  (`FunktionKarte`, `Card` mit `skizze`).
+- **UI-Ebene** (`UiEbene`, `UiZeile`, `UiStatus`, `src/components/ui/UiEbene.tsx`): ein kleiner Ausschnitt aus Macher OS
+  mit echten Beschriftungen und Beispieldaten, auf derselben Fläche, unten angeschnitten, dahinter eine zweite Ebene.
+  Für zwei bis vier Ergebnisse, die ein konkreter Stand besser belegt als eine Zeichnung (Startseite „Feierabend statt
+  Papierkram“). Immer mit „Beispiel“ markiert, Status immer als Text.
+
+Gemeinsam: 4:3 (Skizze) bzw. Höhe nach Inhalt (UI-Ebene), 12 px Radius, rein dekorativ (`aria-hidden`) – die Aussage
+steht im Kartentitel und Text. Nur Tokens (`sand`, `line`, `muted`, `primary`, `signal-soft`), keine Fotos, kein Glas.
+Beim Hover der Karte fächern die Blätter leicht auf bzw. hebt sich die Ebene (150 ms, nur ohne `prefers-reduced-motion`).
+Objektfotos (`Objekt`) bleiben für Bereiche und Einstiege, Glas-Icons für Themen in Listen.
+
 ### Themen-Icon-Kacheln (abgelöst durch Glas-Icons – gilt nur noch für Strich-Icons ohne Glas-Motiv)
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.
 Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon allein darf keine Information tragen).
