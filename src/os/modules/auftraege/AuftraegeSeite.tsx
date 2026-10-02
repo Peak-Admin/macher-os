@@ -8,6 +8,7 @@ import { Pipeline, meineAuftraege } from './Pipeline';
 import { istOffen, kommendeEinsaetze, phaseLabel, phaseTon } from './logik';
 import { auftragPfad, schrittFuer } from './daten';
 import { useAbBreite } from './hooks';
+import { schrittLabel } from '@modules/ablauf/daten';
 import './auftraege.css';
 
 type Sicht = 'aktiv' | 'meine' | 'abgeschlossen';
@@ -121,7 +122,7 @@ function AuftragZeile({ a }: { a: Auftrag }) {
         </>
       }
       untertitel={[kunde, naechstes ?? a.nummer].filter(Boolean).join(' · ')}
-      rechts={a.dringend && istOffen(a) ? <Status ton="achtung">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{phaseLabel(a.phase)}</Status>}
+      rechts={a.dringend && istOffen(a) ? <Status ton="achtung">Dringend</Status> : <Status ton={phaseTon(a.phase)}>{istOffen(a) ? schrittLabel(a) : phaseLabel(a.phase)}</Status>}
     />
   );
 }

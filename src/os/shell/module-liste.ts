@@ -1,5 +1,6 @@
 // Automatisch erzeugt von scripts/os-module.mjs – nicht von Hand bearbeiten.
 import type { ModulDef } from '@core/modul';
+import m_ablauf from '../modules/ablauf';
 import m_abnahme from '../modules/abnahme';
 import m_abo from '../modules/abo';
 import m_abwesenheiten from '../modules/abwesenheiten';
@@ -36,8 +37,10 @@ import m_erledigt from '../modules/erledigt';
 import m_ertrag from '../modules/ertrag';
 import m_fahrt from '../modules/fahrt';
 import m_fahrzeuge from '../modules/fahrzeuge';
+import m_felder from '../modules/felder';
 import m_fotos from '../modules/fotos';
 import m_hinweise from '../modules/hinweise';
+import m_import from '../modules/import';
 import m_kalender from '../modules/kalender';
 import m_kalkulation from '../modules/kalkulation';
 import m_konto from '../modules/konto';
@@ -87,6 +90,7 @@ import m_zahlungen from '../modules/zahlungen';
 import m_zusatzleistungen from '../modules/zusatzleistungen';
 
 export const modulListe: [string, ModulDef][] = [
+  ['ablauf', m_ablauf],
   ['abnahme', m_abnahme],
   ['abo', m_abo],
   ['abwesenheiten', m_abwesenheiten],
@@ -123,8 +127,10 @@ export const modulListe: [string, ModulDef][] = [
   ['ertrag', m_ertrag],
   ['fahrt', m_fahrt],
   ['fahrzeuge', m_fahrzeuge],
+  ['felder', m_felder],
   ['fotos', m_fotos],
   ['hinweise', m_hinweise],
+  ['import', m_import],
   ['kalender', m_kalender],
   ['kalkulation', m_kalkulation],
   ['konto', m_konto],
