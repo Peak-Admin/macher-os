@@ -53,7 +53,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-paper/90 backdrop-blur-md supports-[backdrop-filter]:bg-paper/80">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 lg:gap-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:gap-6 sm:px-6 lg:px-8">
         <Logo />
 
         <nav aria-label="Hauptnavigation" className="hidden flex-1 lg:block" onMouseLeave={scheduleClose}>
@@ -117,8 +117,8 @@ export function Header() {
         </div>
 
         {/* Mobil: primärer CTA bleibt sichtbar */}
-        <div className="ml-auto flex items-center gap-1 lg:hidden">
-          <Link href={cta.primary.href} className="inline-flex h-10 items-center whitespace-nowrap btn-primaer px-2.5">
+        <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-2 lg:hidden">
+          <Link href={cta.primary.href} className="inline-flex h-10 items-center whitespace-nowrap btn-primaer px-2.5 sm:px-3">
             {cta.primary.label}
           </Link>
           <button
@@ -126,7 +126,7 @@ export function Header() {
             aria-label={mobileOpen ? "Menü schließen" : "Menü öffnen"}
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="rounded-lg p-1.5 hover:bg-sand"
+            className="rounded-lg p-1.5 hover:bg-sand sm:p-2"
           >
             <Icon name={mobileOpen ? "x" : "menu"} className="size-6" />
           </button>

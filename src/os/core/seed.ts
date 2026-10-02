@@ -2,12 +2,14 @@
  * Einrichtung nach dem Onboarding: Betrieb, Leistungen, Material, Qualifikationen
  * aus der Gewerk-Vorlage – plus gekennzeichnete Beispieldaten für den direkten Start.
  */
-import { alleSammlungen, batch, db, zuruecksetzen } from './db';
-import { gewerkVorlage } from './gewerke';
+import { alleSammlungen, batch, db, exportieren, importieren, zuruecksetzen } from './db';
+import { einstellung, setzeEinstellung } from './einstellungen';
+import { gewerkVorlage, type LeistungVorlage } from './gewerke';
 import { alleModule } from './modul';
 import { heute, plusTage, summen, zeitpunkt } from './format';
-import type { Arbeitsweise, Gewerk, ID, Mitarbeiter, Position } from './objects';
+import type { Arbeitsweise, Betrieb, Gewerk, ID, Mitarbeiter, Position, Rolle } from './objects';
 import { setzeIch } from './session';
+import { betriebsSchluessel } from './betriebe';
 
 export interface OnboardingAntworten {
   betriebName: string;
@@ -19,9 +21,26 @@ export interface OnboardingAntworten {
   chefNachname: string;
   /** ausgewählte Leistungen aus der Vorlage (Namen); leer = alle */
   leistungen?: string[];
-  /** Beispieldaten anlegen? */
+  /** Beispieldaten anlegen? Nur noch für die getrennte Spielwiese (`spielwieseStarten`). */
   beispiele: boolean;
+  /** Briefkopf und Stammdaten aus dem Setup (Foto/Website/von Hand) */
+  betrieb?: Partial<Pick<Betrieb, 'adresse' | 'telefon' | 'email' | 'steuernummer' | 'ustId' | 'iban' | 'bic' | 'stundensatz' | 'zahlungszielTage'>>;
+  /** Preise der Gewerk-Vorlage anpassen, z. B. 1.1 = +10 % (Region) */
+  preisFaktor?: number;
+  /** eigene Preisliste (bestätigt) – ersetzt die Leistungen der Vorlage */
+  eigeneLeistungen?: LeistungVorlage[];
+  /** eingeladene Mitarbeiter; `id` vorab vergeben, damit Einladungslinks schon vor dem Anlegen stimmen */
+  team?: { id?: ID; vorname: string; nachname: string; telefon?: string; rolle: Rolle }[];
 }
+
+/** Euro-Preis mit Faktor anpassen; ab 20 € auf 50 Cent, darunter auf 10 Cent gerundet (sonst wirken Preise krumm) */
+export function preisAnpassen(euro: number, faktor = 1): number {
+  if (!faktor || faktor === 1) return euro;
+  const p = euro * faktor;
+  return p >= 20 ? Math.round(p * 2) / 2 : Math.max(0.1, Math.round(p * 10) / 10);
+}
+
+const TEAM_FARBEN = ['#2F9250', '#69AF44', '#1F6135', '#767676', '#06480C'];
 
 const c = (euro: number) => Math.round(euro * 100);
 
@@ -38,8 +57,9 @@ export function einrichten(a: OnboardingAntworten) {
       adresse: { strasse: '', plz: '', ort: '' },
       telefon: '',
       email: '',
-      stundensatz: c(v.stundensatz),
+      stundensatz: c(preisAnpassen(v.stundensatz, a.preisFaktor)),
       zahlungszielTage: 14,
+      ...a.betrieb,
       ustSatz: 19,
       arbeitsbeginn: '07:00',
       arbeitsende: '16:00',
@@ -57,6 +77,20 @@ export function einrichten(a: OnboardingAntworten) {
       farbe: '#06480C',
     });
     setzeIch(chef.id);
+    (a.team ?? []).forEach((m, i) =>
+      db.mitarbeiter.create({
+        id: m.id,
+        vorname: m.vorname,
+        nachname: m.nachname,
+        telefon: m.telefon,
+        rolle: m.rolle,
+        wochenstunden: m.rolle === 'azubi' ? 40 : 39,
+        urlaubstageJahr: 30,
+        kostensatz: c(m.rolle === 'azubi' ? 14 : 36),
+        aktiv: true,
+        farbe: TEAM_FARBEN[i % TEAM_FARBEN.length],
+      }),
+    );
 
     const quali = v.qualifikationen.map((q) => db.qualifikationen.create({ ...q }));
     const lieferant = db.lieferanten.create({
@@ -78,12 +112,17 @@ export function einrichten(a: OnboardingAntworten) {
         aktiv: true,
       }),
     );
-    const auswahl = a.leistungen?.length ? v.leistungen.filter((l) => a.leistungen!.includes(l.name)) : v.leistungen;
+    const auswahl = a.eigeneLeistungen?.length
+      ? a.eigeneLeistungen
+      : a.leistungen?.length
+        ? v.leistungen.filter((l) => a.leistungen!.includes(l.name))
+        : v.leistungen;
+    const faktor = a.eigeneLeistungen?.length ? 1 : a.preisFaktor;
     auswahl.forEach((l) =>
       db.leistungen.create({
         name: l.name,
         einheit: l.einheit,
-        preis: c(l.preis),
+        preis: c(preisAnpassen(l.preis, faktor)),
         minuten: l.minuten,
         kategorie: l.kategorie,
         aktiv: true,
@@ -129,6 +168,119 @@ export function beispieleEntfernen() {
         .forEach((x) => db[name].purge(x.id));
     }
   });
+}
+
+// ------------------------------------------------------------------ Spielwiese
+
+/**
+ * Spielwiese: Beispieldaten nur als getrennter Modus, nie gemischt mit echten Daten.
+ * Beim Betreten wird ein vorhandener echter Betrieb vollständig zur Seite gelegt (eigene IndexedDB,
+ * Rückfall localStorage), beim Verlassen genau so zurückgeholt – die Beispieldaten verschwinden ohne Reste.
+ */
+export const SPIELWIESE_KEY = 'modus.spielwiese';
+const SICHERUNG_DB = 'macher-os-spielwiese';
+const SICHERUNG_KEY = betriebsSchluessel('macher-os:echte-daten');
+/** Schlüssel in der Sicherungs-Datenbank – je Betrieb */
+const SICHERUNG_EINTRAG = betriebsSchluessel('daten');
+
+type Stand = ReturnType<typeof exportieren>;
+
+export interface SicherungsSpeicher {
+  lesen(): Promise<Stand | undefined>;
+  schreiben(s: Stand): Promise<void>;
+  loeschen(): Promise<void>;
+}
+
+function idbOeffnen(): Promise<IDBDatabase> {
+  return new Promise((ok, fehler) => {
+    const r = indexedDB.open(SICHERUNG_DB, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('stand');
+    r.onsuccess = () => ok(r.result);
+    r.onerror = () => fehler(r.error);
+  });
+}
+
+async function idbSchritt<T>(modus: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest): Promise<T> {
+  const d = await idbOeffnen();
+  try {
+    return await new Promise<T>((ok, fehler) => {
+      const tx = d.transaction('stand', modus);
+      const r = fn(tx.objectStore('stand'));
+      tx.oncomplete = () => ok(r.result as T);
+      tx.onerror = () => fehler(tx.error);
+      tx.onabort = () => fehler(tx.error);
+    });
+  } finally {
+    d.close();
+  }
+}
+
+/** Standard: eigene IndexedDB; ohne IndexedDB localStorage (wirft bei Platzmangel → Spielwiese startet dann nicht) */
+const browserSpeicher: SicherungsSpeicher = {
+  async lesen() {
+    if (globalThis.indexedDB) return (await idbSchritt<Stand | undefined>('readonly', (s) => s.get(SICHERUNG_EINTRAG))) ?? undefined;
+    const t = globalThis.localStorage?.getItem(SICHERUNG_KEY);
+    return t ? (JSON.parse(t) as Stand) : undefined;
+  },
+  async schreiben(stand) {
+    if (globalThis.indexedDB) return void (await idbSchritt('readwrite', (s) => s.put(stand, SICHERUNG_EINTRAG)));
+    if (!globalThis.localStorage) throw new Error('Kein Speicher für die Sicherung.');
+    globalThis.localStorage.setItem(SICHERUNG_KEY, JSON.stringify(stand));
+  },
+  async loeschen() {
+    if (globalThis.indexedDB) return void (await idbSchritt('readwrite', (s) => s.delete(SICHERUNG_EINTRAG)));
+    globalThis.localStorage?.removeItem(SICHERUNG_KEY);
+  },
+};
+
+let speicher: SicherungsSpeicher = browserSpeicher;
+/** Für Tests: Speicher austauschen */
+export function setzeSicherungsSpeicher(s: SicherungsSpeicher | undefined) {
+  speicher = s ?? browserSpeicher;
+}
+
+export function istSpielwiese(): boolean {
+  return einstellung<boolean>(SPIELWIESE_KEY, false) === true;
+}
+
+/** Gibt es einen echten (selbst eingerichteten) Betrieb in diesem Browser? */
+export function hatEchtenBetrieb(): boolean {
+  return !!db.betrieb.get('betrieb')?.onboardingFertig && !istSpielwiese();
+}
+
+/** Spielwiese öffnen: echte Daten zur Seite legen, Beispielbetrieb des Gewerks einrichten */
+export async function spielwieseStarten(gewerk: Gewerk = 'elektro'): Promise<void> {
+  if (istSpielwiese()) return;
+  if (hatEchtenBetrieb()) {
+    const stand = exportieren();
+    await speicher.schreiben(stand);
+    // nur weiter, wenn die Sicherung wirklich lesbar ist – sonst ginge beim Zurückwechseln etwas verloren
+    const zurueck = await speicher.lesen();
+    if (!zurueck?.betrieb) throw new Error('Deine Daten konnten nicht sicher zur Seite gelegt werden.');
+  } else await speicher.loeschen().catch(() => {});
+  einrichten({ betriebName: 'Musterbetrieb', gewerk, arbeitsweisen: [], teamgroesse: 5, chefVorname: 'Max', chefNachname: 'Macher', beispiele: true });
+  setzeEinstellung(SPIELWIESE_KEY, true);
+}
+
+/**
+ * Spielwiese verlassen. Rückgabe `'zurueck'`: der echte Betrieb ist wiederhergestellt.
+ * `'leer'`: es gab noch keinen echten Betrieb – alles ist leer, das Setup beginnt.
+ */
+export async function spielwieseVerlassen(): Promise<'zurueck' | 'leer'> {
+  const gesichert = await speicher.lesen().catch(() => undefined);
+  if (gesichert?.betrieb) {
+    importieren(gesichert);
+    await speicher.loeschen().catch(() => {});
+    return 'zurueck';
+  }
+  zuruecksetzen();
+  await speicher.loeschen().catch(() => {});
+  return 'leer';
+}
+
+/** Gibt es zur Seite gelegte echte Daten (z. B. nach einem Neuladen auf der Spielwiese)? */
+export async function hatGesicherteDaten(): Promise<boolean> {
+  return !!(await speicher.lesen().catch(() => undefined))?.betrieb;
 }
 
 function beispielDaten(chef: Mitarbeiter, qualiIds: ID[], artikelIds: ID[]) {
@@ -313,4 +465,9 @@ function beispielDaten(chef: Mitarbeiter, qualiIds: ID[], artikelIds: ID[]) {
   // ---- Nachrichten
   db.nachrichten.create({ kanal: 'email', richtung: 'ein', kundeId: baeckerei.id, auftragId: a3.id, text: 'Können wir den Termin um eine Woche schieben? Wir haben vorher noch Inventur.', gelesen: false, betreff: 'Termin Modernisierung', ...B });
   db.nachrichten.create({ kanal: 'intern', richtung: 'intern', auftragId: a4.id, vonMitarbeiterId: jonas.id, text: 'Im Keller Haus 24 ist die alte Verteilung feucht. Bitte mit Hausverwaltung klären.', gelesen: false, ...B });
+}
+
+/** Zur Seite gelegte Daten verwerfen (der Nutzer richtet bewusst neu ein) */
+export async function sicherungVerwerfen(): Promise<void> {
+  await speicher.loeschen().catch(() => {});
 }

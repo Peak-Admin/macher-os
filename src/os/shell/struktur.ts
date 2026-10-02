@@ -66,7 +66,7 @@ export const STRUKTUR: Hauptbereich[] = [
     titel: 'Heute',
     pfad: '/heute',
     icon: 'heute',
-    kontext: ['braucht-dich', 'naechster-einsatz', 'mein-tag', 'schnell-erfassen', 'hinweise', 'suche', 'macher-fragen', 'benachrichtigungen', 'onboarding'],
+    kontext: ['braucht-dich', 'naechster-einsatz', 'mein-tag', 'schnell-erfassen', 'hinweise', 'suche', 'macher-fragen', 'benachrichtigungen', 'takte', 'onboarding', 'start', 'konto'],
   },
   {
     id: 'auftraege',
@@ -89,11 +89,12 @@ export const STRUKTUR: Hauptbereich[] = [
         id: 'eingang',
         titel: 'Eingang',
         ansichten: [
+          { titel: 'Alles', module: ['eingang'] },
           { titel: 'Anfragen', module: ['anfragen'] },
           { titel: 'Nachrichten', module: ['nachrichten'] },
           { titel: 'Rückrufe', module: ['telefon'] },
         ],
-        stichworte: ['Anfrage', 'Anruf', 'Telefon', 'Rückruf', 'Nachricht', 'E-Mail', 'Posteingang'],
+        stichworte: ['Anfrage', 'Anruf', 'Telefon', 'Rückruf', 'Nachricht', 'E-Mail', 'Posteingang', 'Eingang', 'Freigabe', 'Anfrage-Postfach'],
       },
       {
         id: 'kunden',
@@ -286,12 +287,12 @@ export const STRUKTUR: Hauptbereich[] = [
             titel: 'Einstellungen',
             kurz: 'Einstellung',
             ansichten: [
-              { titel: 'Betrieb', module: ['einstellungen'] },
+              { titel: 'Betrieb', module: ['einstellungen', 'abo'] },
               { titel: 'Zugriffe', module: ['rollen'] },
               { titel: 'Verbindungen', module: ['schnittstellen', 'terminbuchung'] },
               { titel: 'Automationen', module: ['automatisch', 'erledigt'] },
             ],
-            stichworte: ['Einstellungen', 'Rollen', 'Rechte', 'Zugriff', 'Schnittstelle', 'Terminbuchung', 'Online buchen', 'Automation', 'Erledigt', 'Datensicherung', 'Papierkorb'],
+            stichworte: ['Einstellungen', 'Rollen', 'Rechte', 'Zugriff', 'Schnittstelle', 'Terminbuchung', 'Online buchen', 'Automation', 'Erledigt', 'Datensicherung', 'Papierkorb', 'Dein Plan', 'Abo', 'Bezahlen', 'Kündigen', 'Testphase'],
           },
         ],
       },

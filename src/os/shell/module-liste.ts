@@ -1,6 +1,7 @@
 // Automatisch erzeugt von scripts/os-module.mjs – nicht von Hand bearbeiten.
 import type { ModulDef } from '@core/modul';
 import m_abnahme from '../modules/abnahme';
+import m_abo from '../modules/abo';
 import m_abwesenheiten from '../modules/abwesenheiten';
 import m_anfragen from '../modules/anfragen';
 import m_angebote from '../modules/angebote';
@@ -28,6 +29,7 @@ import m_checklisten from '../modules/checklisten';
 import m_dateien from '../modules/dateien';
 import m_datev from '../modules/datev';
 import m_einarbeitung from '../modules/einarbeitung';
+import m_eingang from '../modules/eingang';
 import m_einsatzplanung from '../modules/einsatzplanung';
 import m_einstellungen from '../modules/einstellungen';
 import m_erledigt from '../modules/erledigt';
@@ -38,6 +40,7 @@ import m_fotos from '../modules/fotos';
 import m_hinweise from '../modules/hinweise';
 import m_kalender from '../modules/kalender';
 import m_kalkulation from '../modules/kalkulation';
+import m_konto from '../modules/konto';
 import m_kosten from '../modules/kosten';
 import m_kunden from '../modules/kunden';
 import m_kundenbereich from '../modules/kundenbereich';
@@ -67,8 +70,10 @@ import m_schnell_erfassen from '../modules/schnell-erfassen';
 import m_schnittstellen from '../modules/schnittstellen';
 import m_schulungen from '../modules/schulungen';
 import m_servicevertraege from '../modules/servicevertraege';
+import m_start from '../modules/start';
 import m_subunternehmer from '../modules/subunternehmer';
 import m_suche from '../modules/suche';
+import m_takte from '../modules/takte';
 import m_telefon from '../modules/telefon';
 import m_terminbuchung from '../modules/terminbuchung';
 import m_unterweisungen from '../modules/unterweisungen';
@@ -84,6 +89,7 @@ import m_zusatzleistungen from '../modules/zusatzleistungen';
 
 export const modulListe: [string, ModulDef][] = [
   ['abnahme', m_abnahme],
+  ['abo', m_abo],
   ['abwesenheiten', m_abwesenheiten],
   ['anfragen', m_anfragen],
   ['angebote', m_angebote],
@@ -111,6 +117,7 @@ export const modulListe: [string, ModulDef][] = [
   ['dateien', m_dateien],
   ['datev', m_datev],
   ['einarbeitung', m_einarbeitung],
+  ['eingang', m_eingang],
   ['einsatzplanung', m_einsatzplanung],
   ['einstellungen', m_einstellungen],
   ['erledigt', m_erledigt],
@@ -121,6 +128,7 @@ export const modulListe: [string, ModulDef][] = [
   ['hinweise', m_hinweise],
   ['kalender', m_kalender],
   ['kalkulation', m_kalkulation],
+  ['konto', m_konto],
   ['kosten', m_kosten],
   ['kunden', m_kunden],
   ['kundenbereich', m_kundenbereich],
@@ -150,8 +158,10 @@ export const modulListe: [string, ModulDef][] = [
   ['schnittstellen', m_schnittstellen],
   ['schulungen', m_schulungen],
   ['servicevertraege', m_servicevertraege],
+  ['start', m_start],
   ['subunternehmer', m_subunternehmer],
   ['suche', m_suche],
+  ['takte', m_takte],
   ['telefon', m_telefon],
   ['terminbuchung', m_terminbuchung],
   ['unterweisungen', m_unterweisungen],

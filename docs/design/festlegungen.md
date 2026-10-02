@@ -24,6 +24,13 @@ Helle Karten 12 px Radius (`rounded-2xl`), 1-px-Linie `#D9D9D9`, sehr feiner Sch
 Auf Markendunkel: Utility `karte-dunkel` – leicht aufgehellte Fläche (Weiß 6 % → 2,5 %), feiner heller Rahmen (Weiß 11 %), 12 px Radius.
 Radien Website: Controls 4 px (`rounded-lg`), kleine Flächen 8 px (`rounded-xl`), Karten 12 px (`rounded-2xl`), große Flächen 16 px (`rounded-3xl`).
 
+**Einstiegs-CTA (Einrichtung):** Der „Weiter“-Button im Onboarding folgt dem CTA von matthias-aumann.de:
+grüne Fläche mit hellem Innenrand und feinem 8-px-Würfelraster, 12 px Radius, 56 px hoch, weißer Kreis mit grünem Pfeil links.
+Beim Hover verschwindet der Kreis links und erscheint rechts. Schrift bleibt Barlow 700 in 19 px (Kontrast).
+Nur für diesen einen Einstiegsmoment – im Arbeitsalltag bleibt der flache Primärbutton.
+
+- Software: `WeiterButton` in `src/os/modules/onboarding/Willkommen.tsx`, Klassen `.ob-weiter*`
+
 ### Themen-Icon-Kacheln
 Helles Akzentgrün `#69AF44` als Fläche, Icon in **weißen Linien** (1,75 px), quadratisch, 4–6 px Radius, 36–48 px.
 Immer mit Textlabel daneben (Weiß auf `#69AF44` hat nur ca. 2,7:1 – das Icon allein darf keine Information tragen).

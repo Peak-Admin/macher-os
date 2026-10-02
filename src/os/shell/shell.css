@@ -1,4 +1,10 @@
-.mm-app { display: flex; min-height: 100vh; background: var(--mm-canvas); }
+.mm-app { display: flex; gap: 12px; min-height: 100vh; padding: 12px; background: var(--mm-dark); isolation: isolate; }
+/* Hintergrund: Werkstattfoto über die ganze Fläche; Sidebar, Topbar und Inhalt liegen als Glas darüber */
+.mm-app::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url('/bilder/os/werkstatt.webp') center / cover no-repeat;
+}
+@media print { .mm-app::before { display: none; } .mm-app { padding: 0; background: #fff; } }
 .mm-skip { position: absolute; left: -9999px; top: 8px; z-index: 200; padding: 8px 16px; background: var(--mm-action); color: #fff; border-radius: var(--mm-radius-control); }
 .mm-skip:focus { left: 8px; }
 
@@ -47,21 +53,52 @@
 .mm-nav-leer a { color: var(--mm-link); }
 .mm-menue--oben { top: auto; bottom: calc(100% + 8px); left: 0; right: auto; }
 
+/* Ein- und ausklappbar: eingeklappt bleibt eine schmale Leiste nur mit Icons */
+.mm-sidebar { transition: width var(--mm-motion-fast) ease-out; }
+.mm-leiste-kopf { display: flex; align-items: center; gap: 4px; }
+.mm-leiste-kopf .mm-logo { flex: 1; min-width: 0; }
+.mm-leiste-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-leiste-umschalter {
+  display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border: 0; border-radius: var(--mm-radius-control);
+  background: none; color: var(--mm-text); cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-leiste-umschalter:hover { background: var(--mm-hover); }
+.mm-app--eingeklappt .mm-sidebar { width: 72px; padding-left: 8px; padding-right: 8px; overflow-x: hidden; }
+.mm-app--eingeklappt .mm-leiste-text,
+.mm-app--eingeklappt .mm-nav-leer { display: none; }
+.mm-app--eingeklappt .mm-leiste-kopf { flex-direction: column; gap: 8px; }
+.mm-app--eingeklappt .mm-logo { justify-content: center; padding: 0; }
+.mm-app--eingeklappt .mm-leiste-suche { justify-content: center; padding: 8px; }
+.mm-app--eingeklappt .mm-nav-haupt,
+.mm-app--eingeklappt .mm-leiste-zeile,
+.mm-app--eingeklappt .mm-profil-knopf { justify-content: center; padding-left: 0; padding-right: 0; }
+.mm-app--eingeklappt .mm-nav-favorit { justify-content: center; padding: 6px 0; }
+.mm-app--eingeklappt .mm-nav-favoriten { margin: 0; padding-top: 16px; }
+/* Profilmenü neben die schmale Leiste legen, sonst schneidet die Leiste es ab */
+.mm-app--eingeklappt .mm-nav-haupt { position: relative; }
+.mm-app--eingeklappt .mm-nav-zahl { position: absolute; top: 2px; right: 6px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
+.mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 80px; bottom: 16px; }
+
 /* Hauptbereich */
 .mm-hauptbereich { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.mm-topbar {
-  position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px;
-  height: var(--mm-topbar-height); padding: 0 32px; background: var(--mm-surface); border-bottom: 1px solid var(--mm-border);
+/* Seitenleiste: Suchen oder fragen + Benachrichtigungen (ersetzt die Topbar) */
+.mm-leiste-werkzeuge { display: flex; flex-direction: column; gap: 4px; }
+.mm-leiste-suche {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 8px 14px;
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-canvas);
+  color: var(--mm-text); font: inherit; cursor: pointer; text-align: left; transition: border-color var(--mm-motion-fast) ease-out;
 }
-.mm-topbar-suche {
-  display: flex; align-items: center; gap: 8px; flex: 1; max-width: 480px; min-height: 44px; padding: 8px 12px;
-  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-canvas); color: var(--mm-text); cursor: pointer; text-align: left;
+.mm-leiste-suche:hover { border-color: var(--mm-brand); }
+.mm-leiste-suche-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-leiste-zeile {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 6px 8px; border: 0;
+  border-radius: var(--mm-radius-control); background: none; color: var(--mm-text); font: inherit; font-weight: 500; cursor: pointer; text-align: left;
+  transition: background-color var(--mm-motion-fast) ease-out;
 }
-.mm-topbar-suche span { flex: 1; }
-.mm-topbar-suche kbd { font: 500 12px var(--mm-font); padding: 2px 6px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); }
-.mm-topbar-titel { font: 700 20px/24px var(--mm-font); color: var(--mm-black); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.mm-topbar-aktionen { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.mm-leiste-zeile:hover { background: var(--mm-hover); }
+.mm-leiste-zeile-text { flex: 1; min-width: 0; }
 .mm-glocke { position: relative; }
+.mm-leiste-zeile .mm-glocke-zahl { top: -4px; right: -6px; }
 .mm-glocke-zahl { position: absolute; top: 6px; right: 4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--mm-brand-deep); color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; }
 .mm-neu { position: relative; }
 .mm-menue { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; min-width: 240px; margin: 0; padding: 8px; list-style: none; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-shadow-overlay); }
@@ -71,15 +108,17 @@
 .mm-inhalt { flex: 1; padding: 32px; outline: none; }
 
 /* Mobil: untere Navigation mit genau vier Bereichen, kein Plus, kein Hamburger */
-.mm-bottomnav { display: none; }
+.mm-bottomnav, .mm-kopf-mobil { display: none; }
 .mm-nur-mobil { display: none; }
 @media (max-width: 1023px) {
   .mm-sidebar { display: none; }
   .mm-nur-mobil { display: inline-flex; }
   .mm-nur-desktop { display: none; }
-  .mm-topbar { padding: 0 16px; gap: 8px; }
-  .mm-topbar-suche { flex: 0 0 auto; width: 44px; padding: 0; justify-content: center; }
-  .mm-topbar-aktionen { margin-left: 0; }
+  .mm-kopf-mobil {
+    position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 8px;
+    height: var(--mm-topbar-height); padding: 0 16px; background: var(--mm-surface); border-bottom: 1px solid var(--mm-border);
+  }
+  .mm-kopf-mobil-titel { flex: 1; min-width: 0; font: 700 20px/24px var(--mm-font); color: var(--mm-black); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mm-inhalt { padding: 24px 16px calc(96px + env(safe-area-inset-bottom)); }
   .mm-bottomnav {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-template-columns: repeat(4, 1fr); align-items: stretch;
@@ -89,9 +128,31 @@
   .mm-bottomnav-link--aktiv { color: var(--mm-brand-text); font-weight: 700; }
   .mm-bottomnav-link--aktiv svg { color: var(--mm-brand); }
 }
-@media (max-width: 767px) {
-  .mm-topbar .mm-btn { padding: 8px 12px; }
+
+/* Monteur-App: genau drei Tabs */
+@media (max-width: 1023px) {
+  .mm-bottomnav--monteur { grid-template-columns: repeat(3, 1fr); }
+  .mm-bottomnav--monteur .mm-bottomnav-link { font-size: 14px; }
 }
+
+/* Zahl neuer Einträge im Eingang (Text + Zahl, nicht nur Farbe) */
+.mm-nav-zahl { margin-left: auto; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--mm-brand-deep); color: #fff; font: 700 12px/22px var(--mm-font); text-align: center; }
+.mm-lokalnav-zahl { margin-left: 6px; display: inline-block; vertical-align: middle; }
+.mm-bottomnav-icon { position: relative; display: inline-flex; }
+.mm-nav-zahl--klein { position: absolute; top: -6px; right: -12px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
+
+/* Offline und Installieren */
+.mm-offline, .mm-installieren { max-width: var(--mm-content-max); margin: 0 auto 16px; }
+.mm-installieren {
+  display: flex; flex-direction: column; gap: 8px; padding: 12px 12px 16px 16px;
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-left: 4px solid var(--mm-brand); border-radius: var(--mm-radius-card);
+}
+.mm-installieren-kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--mm-black); font-size: 17px; }
+.mm-installieren p { margin: 0; color: var(--mm-text); font-size: 15px; line-height: 22px; }
+@media (prefers-reduced-motion: no-preference) {
+  .mm-offline, .mm-installieren { animation: mm-einblenden 160ms ease-out; }
+}
+@keyframes mm-einblenden { from { opacity: 0; } to { opacity: 1; } }
 
 /* Lokale Navigation im Inhalt: höchstens vier Ziele, umbrechend statt waagerecht scrollend */
 .mm-lokal { width: 100%; max-width: var(--mm-content-max); margin: 0 auto 24px; display: flex; flex-direction: column; gap: 12px; }
@@ -163,3 +224,92 @@
   .mm-einsatz-kunde { font-size: 24px; line-height: 30px; }
   .mm-einsatz .mm-btn--primaer { flex: 1 1 100%; }
 }
+
+/* ---------- Glas: Seitenleiste, Inhalt, Kopf und untere Leiste (mobil) schweben über dem Foto.
+   Die Unschärfe sitzt auf ::before, damit fest positionierte Kinder (Schleier, Toasts) am Fenster bleiben. */
+.mm-sidebar, .mm-kopf-mobil, .mm-inhalt, .mm-bottomnav { isolation: isolate; border: 1px solid var(--mm-glass-rand); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-glass-schatten); background: none; }
+.mm-sidebar::before, .mm-kopf-mobil::before, .mm-inhalt::before, .mm-bottomnav::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: var(--mm-glass); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur);
+}
+.mm-inhalt { position: relative; }
+.mm-inhalt::before { background: var(--mm-glass-inhalt); }
+.mm-sidebar { top: 12px; height: calc(100vh - 24px); border-right: 1px solid var(--mm-glass-rand); }
+.mm-leiste-suche { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
+.mm-nav-haupt:hover, .mm-nav-favorit:hover, .mm-profil-knopf:hover, .mm-leiste-zeile:hover { background: var(--mm-glass-karte); }
+.mm-nav-favoriten, .mm-profil--leiste { border-top-color: rgb(55 64 64 / 18%); }
+/* Karten und Listen im Inhalt: leicht durchscheinend */
+.mm-inhalt .mm-karte, .mm-inhalt .mm-liste, .mm-inhalt .mm-tabelle-rahmen, .mm-inhalt .mm-leer { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
+.mm-menue, .mm-aktionsmenue-liste { background: var(--mm-glass-inhalt); -webkit-backdrop-filter: var(--mm-glass-blur); backdrop-filter: var(--mm-glass-blur); border-color: var(--mm-glass-rand); }
+@media (max-width: 1023px) {
+  .mm-app { padding: 8px; gap: 8px; }
+  /* Kopf klebt beim Scrollen ganz oben, damit kein Inhalt über ihm durchscheint */
+  .mm-kopf-mobil { top: 0; border-bottom: 1px solid var(--mm-glass-rand); }
+  .mm-inhalt { margin-top: 8px; }
+  /* Kopf und untere Leiste liegen über scrollendem Text: deckender, damit nichts durchscheint */
+  .mm-kopf-mobil::before, .mm-bottomnav::before { background: var(--mm-glass-leiste); }
+  .mm-bottomnav { left: 8px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); padding-bottom: 0; border-top: 1px solid var(--mm-glass-rand); }
+}
+@media print {
+  .mm-inhalt, .mm-inhalt .mm-karte, .mm-inhalt .mm-liste, .mm-inhalt .mm-tabelle-rahmen { border: 0; box-shadow: none; background: #fff; }
+  .mm-inhalt::before { display: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .mm-sidebar::before, .mm-kopf-mobil::before, .mm-inhalt::before, .mm-bottomnav::before { background: var(--mm-surface); }
+}
+
+/* ---------- Betriebs-Wechsler (oben in der Seitenleiste, mobil im Kopf) */
+.mm-wechsler { position: relative; margin-top: -8px; }
+.mm-wechsler-knopf {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px; border: 1px solid var(--mm-border);
+  border-radius: var(--mm-radius-card); background: var(--mm-surface); color: var(--mm-text); font: inherit; cursor: pointer; text-align: left;
+  transition: border-color var(--mm-motion-fast) ease-out, background-color var(--mm-motion-fast) ease-out;
+}
+.mm-wechsler-knopf:hover { border-color: var(--mm-brand); }
+.mm-wechsler-knopf[aria-expanded='true'] { background: var(--mm-hover); }
+.mm-wechsler-pfeil { flex-shrink: 0; color: var(--mm-muted-on-white); }
+.mm-wechsler-kachel {
+  display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--mm-radius-control);
+  background: var(--mm-brand-deep); color: #fff; font: 800 16px/1 var(--mm-font);
+}
+.mm-wechsler-kachel--gross { width: 40px; height: 40px; font-size: 18px; }
+.mm-wechsler-text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.mm-wechsler-text strong, .mm-wechsler-text span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-wechsler-text strong { font: 700 16px/20px var(--mm-font); color: var(--mm-black); }
+.mm-wechsler-text span { font-size: 13px; line-height: 18px; color: var(--mm-muted-on-white); }
+.mm-wechsler-panel {
+  position: fixed; top: 128px; left: 12px; z-index: 30; width: 320px; max-width: calc(100vw - 32px);
+  max-height: min(560px, calc(100vh - 96px)); overflow-y: auto; display: flex; flex-direction: column;
+  background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); box-shadow: var(--mm-shadow-overlay);
+  animation: mm-wechsler-auf var(--mm-motion-fast) ease-out;
+}
+@keyframes mm-wechsler-auf { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .mm-wechsler-panel { animation: none; } }
+.mm-wechsler-kopf { display: flex; align-items: center; gap: 12px; padding: 16px; }
+.mm-wechsler-aktionen { display: flex; flex-direction: column; gap: 4px; padding: 0 8px 12px; border-bottom: 1px solid var(--mm-border); }
+.mm-wechsler-aktion, .mm-wechsler-eintrag {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 6px 8px; border: 0;
+  border-radius: var(--mm-radius-control); background: none; color: var(--mm-text); font: inherit; font-weight: 500;
+  text-decoration: none; text-align: left; cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-wechsler-aktion { border: 1px solid var(--mm-border); padding: 6px 12px; }
+.mm-wechsler-aktion:hover, .mm-wechsler-eintrag:hover:not(:disabled) { background: var(--mm-hover); }
+.mm-wechsler-eintrag:disabled { cursor: progress; }
+.mm-wechsler-eintrag--an { color: var(--mm-black); font-weight: 700; background: var(--mm-hover); }
+.mm-wechsler-eintrag--an svg { color: var(--mm-brand-text); }
+.mm-wechsler-eintrag-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-wechsler-liste-bereich { display: flex; flex-direction: column; gap: 4px; padding: 12px 8px 8px; }
+.mm-wechsler-liste-bereich > .mm-nav-titel { padding: 4px 8px; }
+.mm-wechsler-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.mm-wechsler-plus { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; color: var(--mm-text); }
+.mm-wechsler-suche {
+  display: flex; align-items: center; gap: 8px; min-height: 44px; margin-bottom: 4px; padding: 0 12px;
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); color: var(--mm-muted-on-white);
+}
+.mm-wechsler-suche:focus-within { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
+.mm-wechsler-suche input { flex: 1; min-width: 0; min-height: 42px; border: 0; background: none; font: inherit; color: var(--mm-text); outline: none; }
+.mm-wechsler--kompakt { margin: 0; }
+.mm-wechsler--kompakt .mm-wechsler-knopf { gap: 4px; min-height: 44px; padding: 4px 6px; }
+/* Wechsler im Glas-Look und in der eingeklappten Leiste */
+.mm-wechsler-knopf { background: var(--mm-glass-karte); border-color: var(--mm-glass-rand); }
+.mm-app--eingeklappt .mm-sidebar .mm-wechsler-knopf { justify-content: center; }

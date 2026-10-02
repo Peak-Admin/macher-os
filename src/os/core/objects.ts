@@ -74,6 +74,7 @@ export interface Betrieb extends Basis {
   steuernummer?: string;
   ustId?: string;
   iban?: string;
+  bic?: string;
   /** Verrechnungssatz netto je Stunde */
   stundensatz: Cent;
   /** Standard-Zahlungsziel in Tagen */
@@ -371,6 +372,8 @@ export interface Angebot extends Basis {
   datum: Datum;
   gueltigBis: Datum;
   versendetAm?: Zeitpunkt;
+  /** Kunde hat das Angebot zuerst im Kundenbereich geöffnet */
+  geoeffnetAm?: Zeitpunkt;
   entschiedenAm?: Zeitpunkt;
   version: number;
 }

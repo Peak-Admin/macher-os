@@ -32,7 +32,7 @@ code, kbd, pre, samp { font-family: var(--mm-font); }
 @media print {
   @page { size: A4; margin: 16mm 14mm; }
   body { background: #fff; }
-  .mm-sidebar, .mm-topbar, .mm-bottomnav, .mm-toasts, .mm-skip, .mm-nicht-drucken { display: none !important; }
+  .mm-sidebar, .mm-kopf-mobil, .mm-bottomnav, .mm-toasts, .mm-skip, .mm-nicht-drucken { display: none !important; }
   .mm-inhalt { padding: 0 !important; }
   .mm-karte { box-shadow: none !important; }
   a { color: inherit; text-decoration: none; }

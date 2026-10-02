@@ -7,6 +7,8 @@ import { EinsatzSeite, NaechsterEinsatzSeite, NaechsterEinsatzWidget } from './E
 import { einsatzBeenden, einsatzStarten, laeuft, naechsterEinsatz, setzeTerminStatus, type StatusPayload } from './logik';
 import { einsatzHinweise } from './hinweise';
 import { STATUS_ID, terminstatusAutomation, terminstatusNachziehen } from './automationen';
+import { UNTERWEGS_AKTION, unterwegsAutomation, unterwegsSenden } from './unterwegs';
+import { ErfassenSeite } from './Erfassen';
 
 const terminId = (p: unknown) => (p as { terminId?: ID } | undefined)?.terminId;
 
@@ -20,6 +22,8 @@ export default defineModul({
   routen: [
     { pfad: '', element: NaechsterEinsatzSeite },
     { pfad: ':id', element: EinsatzSeite },
+    // Monteur-App: Tab „Erfassen“
+    { pfad: '/erfassen', element: ErfassenSeite },
   ],
   hubWidget: NaechsterEinsatzWidget,
   kurzinfo: () => {
@@ -37,13 +41,18 @@ export default defineModul({
       const id = terminId(p);
       if (id) return einsatzBeenden(id);
     },
+    /** Vorschlag „Wir sind unterwegs“ (ohne verbundenen Versand) */
+    [UNTERWEGS_AKTION]: (p) => {
+      const id = terminId(p);
+      if (id) void unterwegsSenden(id);
+    },
     /** Rückgängig für „Termin abgeschlossen“ */
     'heute.termin.status': (p) => {
       const x = p as StatusPayload | undefined;
       if (x?.terminId && x.status) setzeTerminStatus(x.terminId, x.status, 'Automatischen Abschluss rückgängig gemacht');
     },
   },
-  automationen: [terminstatusAutomation],
+  automationen: [terminstatusAutomation, unterwegsAutomation],
   seed: () => {
     if (automationAn(STATUS_ID)) terminstatusNachziehen();
   },

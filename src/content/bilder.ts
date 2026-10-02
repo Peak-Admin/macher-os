@@ -181,21 +181,21 @@ const topMotive: Record<TopGewerkSlug, { hero: string; alltag: string; detail: s
 
 /** Motiv je Gewerk-Cluster. */
 const clusterMotive: Record<(typeof gewerkCluster)[number]["slug"], { motiv: string; icon: IconName }> = {
-  "elektro-energie": { motiv: "Monteur installiert Solarmodule auf einem Dach", icon: "bolt" },
-  "shk-gebaeudetechnik": { motiv: "Techniker an einer Wärmepumpe im Garten", icon: "wrench" },
-  "maler-boden-oberflaechen": { motiv: "Bodenleger verlegt Parkett", icon: "pen" },
-  "holz-innenausbau": { motiv: "Trockenbauer montiert Gipskartonplatten", icon: "ruler" },
-  "dach-gebaeudehuelle": { motiv: "Zimmerer auf einem Dachstuhl", icon: "home" },
-  "bau-rohbau": { motiv: "Betonbauer an der Schalung", icon: "warehouse" },
+  "elektro-energie": { motiv: "Montage einer Photovoltaikanlage auf dem Dach", icon: "bolt" },
+  "shk-gebaeudetechnik": { motiv: "Heizungsraum mit Rohren, Pumpen und Ventilen", icon: "wrench" },
+  "maler-boden-oberflaechen": { motiv: "Bodenleger verlegt einen neuen Bodenbelag", icon: "pen" },
+  "holz-innenausbau": { motiv: "Holzoberfläche wird mit einem Schleifer bearbeitet", icon: "ruler" },
+  "dach-gebaeudehuelle": { motiv: "Dachdecker trägt Schindeln über ein Dach", icon: "home" },
+  "bau-rohbau": { motiv: "Bauarbeiter auf einer Rohbaudecke mit Bewehrung", icon: "warehouse" },
   "metall-maschinen": { motiv: "Metallbauer schweißt ein Geländer", icon: "wrench" },
-  "fahrzeug-werkstatt": { motiv: "Kfz-Mechaniker unter einem Fahrzeug auf der Hebebühne", icon: "truck" },
-  "garten-aussenanlagen": { motiv: "Gärtner schneidet eine Hecke", icon: "map" },
-  "gebaeude-service": { motiv: "Gebäudereiniger reinigt eine Glasfassade", icon: "shield" },
-  "glas-fenster-sonnenschutz": { motiv: "Glaser setzt eine Fensterscheibe ein", icon: "monitor" },
-  "friseur-dienstleistungen": { motiv: "Friseurin schneidet Haare im Salon", icon: "user" },
-  lebensmittelhandwerk: { motiv: "Bäcker formt Brote in der Backstube", icon: "heart" },
-  gesundheitshandwerk: { motiv: "Orthopädietechniker in der Werkstatt", icon: "heart" },
-  "textil-gestaltung-werbetechnik": { motiv: "Werbetechniker klebt Folie auf ein Fahrzeug", icon: "spark" },
+  "fahrzeug-werkstatt": { motiv: "Mechaniker wechselt einen Reifen in der Werkstatt", icon: "truck" },
+  "garten-aussenanlagen": { motiv: "Pflastersteine werden verlegt", icon: "map" },
+  "gebaeude-service": { motiv: "Reinigungskraft wischt einen Flur", icon: "shield" },
+  "glas-fenster-sonnenschutz": { motiv: "Neu eingebautes Fenster auf einer Baustelle", icon: "monitor" },
+  "friseur-dienstleistungen": { motiv: "Friseurin föhnt einer Kundin die Haare", icon: "user" },
+  lebensmittelhandwerk: { motiv: "Bäcker formt Teiglinge auf der Arbeitsfläche", icon: "heart" },
+  gesundheitshandwerk: { motiv: "Brillenfassungen in einem Optikergeschäft", icon: "heart" },
+  "textil-gestaltung-werbetechnik": { motiv: "Siebdruckrahmen in einer Werkstatt", icon: "spark" },
   "weitere-gewerke": { motiv: "Werkbank mit verschiedenem Werkzeug", icon: "layers" },
 };
 
@@ -290,8 +290,155 @@ export const missionMittelstandBilder: Bildnachweis[] = [
   },
 ];
 
+/** Unsplash-Foto (Unsplash-Lizenz: kommerziell nutzbar, Namensnennung freiwillig). */
+function unsplashNachweis(slug: GewerkClusterSlug, alt: string, fotograf: string): Bildnachweis {
+  return {
+    src: `/bilder/gewerke/${slug}.jpg`,
+    alt,
+    fotograf,
+    quelle: "Unsplash",
+    quelleUrl: "https://unsplash.com",
+    lizenz: "Unsplash License",
+    lizenzUrl: "https://unsplash.com/license",
+  };
+}
+
 /**
  * Ein Foto pro Gewerk (Querformat, mind. 1600 px breit), abgelegt unter
  * `public/bilder/gewerke/…` (siehe Bildregister oben), mit Nachweis.
  */
-export const gewerkBildnachweise: Partial<Record<TopGewerkSlug | GewerkClusterSlug, Bildnachweis>> = {};
+export const gewerkBildnachweise: Partial<Record<TopGewerkSlug | GewerkClusterSlug, Bildnachweis>> = {
+  elektriker: {
+    src: "/bilder/gewerke/elektriker.jpg",
+    alt: "Elektriker arbeitet an einem Verteilerschrank",
+    fotograf: "ranjeet .",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/a-man-is-working-on-an-electrical-panel-27928761/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  shk: {
+    src: "/bilder/gewerke/shk.jpg",
+    alt: "Anlagenmechaniker arbeitet an einer Heizungsanlage",
+    fotograf: "МОБО Модульные Котельные",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/technician-repairing-heating-system-in-workshop-34938439/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  maler: {
+    src: "/bilder/gewerke/maler.jpg",
+    alt: "Maler streicht eine Außenwand vom Gerüst aus",
+    fotograf: "Ebubekir TOĞACI",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/senior-man-painting-exterior-wall-on-scaffolding-31544574/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  dachdecker: {
+    src: "/bilder/gewerke/dachdecker.jpg",
+    alt: "Dachdecker verlegt Bahnen auf einem Flachdach",
+    fotograf: "Bulat843",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/young-construction-worker-laying-roof-tiles-39238326/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  tischler: {
+    src: "/bilder/gewerke/tischler.jpg",
+    alt: "Tischler arbeitet an einer Maschine in der Werkstatt",
+    fotograf: "cottonbro studio",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/carpenter-using-a-machine-in-a-factory-7480448/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  fliesenleger: {
+    src: "/bilder/gewerke/fliesenleger.jpg",
+    alt: "Fliesenleger bringt Mörtel auf dem Boden auf",
+    fotograf: "Sergei Starostin",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/construction-worker-laying-tile-in-renovation-project-29181494/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  galabau: {
+    src: "/bilder/gewerke/galabau.jpg",
+    alt: "Gärtner pflegt Pflanzen mit der Gartenschere",
+    fotograf: "Anna Shvets",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/side-view-of-a-man-gardening-5028005/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  "metall-maschinen": {
+    src: "/bilder/gewerke/metall-maschinen.jpg",
+    alt: "Metallhandwerker bearbeitet eine Schale vor der Esse",
+    fotograf: "Emrah Yazıcıoğlu",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/a-man-in-blue-long-sleeves-engaged-in-metalcraft-12917473/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  bau: {
+    src: "/bilder/gewerke/bau.jpg",
+    alt: "Trockenbauer mit Helm richtet eine Wandplatte aus",
+    fotograf: "Antoni Shkraba",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/a-man-fixing-the-wall-4981812/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  "weitere-gewerke": {
+    src: "/bilder/gewerke/weitere-gewerke.jpg",
+    alt: "Handwerker schlägt einen Nagel in die Wand",
+    fotograf: "Anete Lusina",
+    quelle: "Pexels",
+    quelleUrl: "https://www.pexels.com/photo/man-hammering-nail-into-wall-during-housework-4792525/",
+    lizenz: "Pexels-Lizenz",
+    lizenzUrl: "https://www.pexels.com/license/",
+  },
+  "elektro-energie": unsplashNachweis("elektro-energie", "Montage einer Photovoltaikanlage auf dem Dach", "Markus Spiske"),
+  "shk-gebaeudetechnik": unsplashNachweis("shk-gebaeudetechnik", "Heizungsraum mit Rohren, Pumpen und Ventilen", "Immo Wegmann"),
+  "maler-boden-oberflaechen": unsplashNachweis("maler-boden-oberflaechen", "Bodenleger verlegt einen neuen Bodenbelag", "Ernys"),
+  "holz-innenausbau": unsplashNachweis("holz-innenausbau", "Holzoberfläche wird mit einem Schleifer bearbeitet", "Paul Trienekens"),
+  "dach-gebaeudehuelle": unsplashNachweis("dach-gebaeudehuelle", "Dachdecker trägt Schindeln über ein Dach", "Zohair Mirza"),
+  "bau-rohbau": unsplashNachweis("bau-rohbau", "Bauarbeiter auf einer Rohbaudecke mit Bewehrung", "Guilherme Cunha"),
+  "fahrzeug-werkstatt": unsplashNachweis("fahrzeug-werkstatt", "Mechaniker wechselt einen Reifen in der Werkstatt", "Jimmy Nilsson Masth"),
+  "garten-aussenanlagen": unsplashNachweis("garten-aussenanlagen", "Pflastersteine werden verlegt", "FRAEM GmbH"),
+  "gebaeude-service": unsplashNachweis("gebaeude-service", "Reinigungskraft wischt einen Flur", "Toon Lambrechts"),
+  "glas-fenster-sonnenschutz": unsplashNachweis("glas-fenster-sonnenschutz", "Neu eingebautes Fenster auf einer Baustelle", "Fabian Kleiser"),
+  "friseur-dienstleistungen": unsplashNachweis("friseur-dienstleistungen", "Friseurin föhnt einer Kundin die Haare", "Adam Winger"),
+  lebensmittelhandwerk: unsplashNachweis("lebensmittelhandwerk", "Bäcker formt Teiglinge auf der Arbeitsfläche", "Victor Rodríguez Iglesias"),
+  gesundheitshandwerk: unsplashNachweis("gesundheitshandwerk", "Brillenfassungen in einem Optikergeschäft", "Scott Van Daalen"),
+  "textil-gestaltung-werbetechnik": unsplashNachweis("textil-gestaltung-werbetechnik", "Siebdruckrahmen in einer Werkstatt", "emarts emarts"),
+};
+
+/** Bilder des Markenauftakts (Preloader beim ersten Besuch, `src/components/auftakt/`). */
+export const auftaktBilder: Bildnachweis[] = [
+  {
+    src: "/auftakt/wald.webp",
+    alt: "Nebliger Nadelwald (Hintergrund des Markenauftakts)",
+    fotograf: "Daniel Rauber",
+    quelle: "Unsplash",
+    quelleUrl: "https://unsplash.com/photos/forest-with-thick-fog-wOWEyyoFEyU",
+    lizenz: "Unsplash License",
+    lizenzUrl: "https://unsplash.com/license",
+  },
+  {
+    src: "/auftakt/unterschrift.webp",
+    alt: "Unterschrift von Matthias Aumann",
+    fotograf: "Matthias Aumann",
+    quelle: "matthias-aumann.de",
+    quelleUrl: "https://www.matthias-aumann.de",
+    lizenz: "© Matthias Aumann",
+  },
+  {
+    src: "/auftakt/logo-mm-ma.webp",
+    alt: "Logo Mission Mittelstand und Matthias Aumann",
+    fotograf: "Mission Mittelstand",
+    quelle: "mission-mittelstand.de",
+    quelleUrl: "https://www.mission-mittelstand.de",
+    lizenz: "© Mission Mittelstand GmbH",
+  },
+];

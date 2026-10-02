@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import {
   allesVorplanen,
   einzuplanen,
@@ -12,6 +12,14 @@ import { naechsteArbeitstage } from '@core/kalender';
 import { planKontext } from './basis';
 import { auftragStunden, freieFenster, verfuegbar } from '../verfuegbarkeit/daten';
 import { auftrag, ctx, ma, MO, nachweis, ort, termin } from './testhilfe';
+
+// „heute“ im Testkontext ist MO; für heute plant die Autoplanung erst ab der echten Uhrzeit.
+// Uhr auf MO früh morgens festhalten, sonst hängen die Ergebnisse von der Tageszeit ab.
+beforeAll(() => {
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date(`${MO}T06:00:00`));
+});
+afterAll(() => vi.useRealTimers());
 
 const DI = '2026-10-06';
 const MI = '2026-10-07';
@@ -140,7 +148,8 @@ describe('Automatische Planung', () => {
     c.orte.push(ort('nachbar', '34119'));
     c.auftraege.push(auftrag('a', { geplanteStunden: 3, ortId: 'nah' }), auftrag('vor', { ortId: 'nachbar' }));
     c.termine.push(termin('t', MO, '07:00', '10:00', { auftragId: 'vor', mitarbeiterIds: ['jonas'] }));
-    const r = vorschlaege(c, 'a', { ab: MO });
+    // feste Uhrzeit: ist MO „heute“, plant die Logik sonst erst ab der echten Uhrzeit + 30 min
+    const r = vorschlaege(c, 'a', { ab: MO, jetzt: 7 * 60 });
     const v = r.vorschlaege.find((x) => x.bloecke[0].datum === MO)!;
     expect(v).toBeDefined();
     expect(v.bloecke[0].von).toBeGreaterThan(10 * 60 + 10);
