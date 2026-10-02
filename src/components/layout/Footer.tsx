@@ -51,7 +51,7 @@ export function Footer() {
             ))}
           </div>
         </div>
-        <div className="mt-12 grid gap-8 border-t border-white/10 pt-8 lg:grid-cols-[3fr_1fr] lg:items-start">
+        <div className="mt-12 flex flex-wrap items-start justify-between gap-8 border-t border-white/10 pt-8">
           <VertrauensKacheln />
           <KiFragen />
         </div>

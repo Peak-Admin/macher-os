@@ -43,14 +43,14 @@ const AUSSAGEN = [
 export function VertrauensKacheln({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
-      <ul className="flex flex-wrap gap-3">
+      <ul className="grid w-full max-w-md gap-2 sm:grid-cols-2">
         {AUSSAGEN.map((v) => {
           const eu = EU_REGEL.has(v.titel);
           return (
             <li
               key={v.titel}
               title={v.text}
-              className={`inline-flex min-h-10 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ${
+              className={`flex min-h-10 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ${
                 eu ? "bg-eu ring-white/20" : "bg-white/10 ring-white/15"
               }`}
             >
