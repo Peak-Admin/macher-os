@@ -35,7 +35,7 @@ Gestaltung und Tonalität folgen dem [Brand & Software Design Playbook](docs/des
 ```bash
 cd os
 npm install
-npm run dev        # http://localhost:5173 → Onboarding unter /willkommen
+npm run dev        # http://localhost:5173/os/ → Onboarding unter /os/willkommen
 npx tsc -b && npx vitest run && npx vite build
 ```
 
@@ -44,6 +44,13 @@ Architektur und Regeln: [`os/MODULE.md`](os/MODULE.md) (Modul bauen, Kern-APIs),
 Module sind nur Sichten darauf und hängen sich über `defineModul` automatisch ein. Daten liegen derzeit lokal im
 Browser (IndexedDB); die Datenschicht ist für ein späteres Backend (z. B. Supabase) geschnitten. Je Modul liegt eine
 Pain-Point-Analyse in `os/src/modules/<modul>/PAINPOINTS.md`.
+
+## Ein Projekt, ein Deployment
+
+Website und Software laufen zusammen als **ein** Vercel-Projekt (`macher-os`). `npm run build` im Hauptordner baut
+zuerst die Software aus `os/` (Vite, `base: '/os/'`), kopiert sie nach `public/os/` und baut dann die Website.
+Die Software ist danach unter **`/os`** erreichbar (z. B. `/os/willkommen`); `next.config.ts` leitet alle Pfade unter
+`/os/` für das Client-Routing auf `os/index.html`. `public/os/` ist ein Build-Ergebnis und nicht eingecheckt.
 
 ## Marketing-Website entwickeln
 

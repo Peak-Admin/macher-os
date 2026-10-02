@@ -15,7 +15,7 @@ export function App() {
   const hatOnboarding = vollbild.some((r) => r.pfad === '/willkommen');
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}>
       <ToastProvider>
         <Routes>
           {vollbild.map((r) => (

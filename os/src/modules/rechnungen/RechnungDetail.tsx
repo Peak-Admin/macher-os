@@ -88,7 +88,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
   const stornoDoc = r.stornoDurchId ? rechnungX(r.stornoDurchId) : undefined;
   const titelArt = r.stornoFuerId ? 'Stornorechnung' : ART_LABEL[r.art];
 
-  const druck = () => window.open(`/druck/rechnung/${r.id}`, '_blank');
+  const druck = () => window.open(`${import.meta.env.BASE_URL}druck/rechnung/${r.id}`, '_blank');
 
   const aktion = entwurf ? (
     <Button icon="check" onClick={() => setSenden(true)}>
@@ -388,11 +388,11 @@ function SendenDialog({ r, offen, onSchliessen }: { r: RechnungX; offen: boolean
     const neu = e.rechnung!;
     if (weg === 'email') {
       xrechnungHerunterladen(neu);
-      window.open(`/druck/rechnung/${neu.id}`, '_blank');
+      window.open(`${import.meta.env.BASE_URL}druck/rechnung/${neu.id}`, '_blank');
       window.location.href = mailtoLink(neu)!;
       toast(`${neu.nummer} festgeschrieben. Hänge PDF und XRechnung an die E-Mail an.`);
     } else {
-      window.open(`/druck/rechnung/${neu.id}`, '_blank');
+      window.open(`${import.meta.env.BASE_URL}druck/rechnung/${neu.id}`, '_blank');
       toast(`${neu.nummer} festgeschrieben und als versendet markiert.`);
     }
     setMaengel([]);

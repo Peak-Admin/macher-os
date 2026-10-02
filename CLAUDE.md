@@ -42,7 +42,7 @@ Next.js (App Router, Turbopack) + TypeScript + Tailwind CSS v4. Alles wird stati
 ### Befehle
 
 - `npm run dev` – Entwicklungsserver
-- `npm run build` – Produktions-Build (prüft auch TypeScript)
+- `npm run build` – Produktions-Build (prüft auch TypeScript); baut vorher die Software aus `os/` nach `public/os/` (erreichbar unter `/os`)
 - `npm run lint` – ESLint
 - `python3 scripts/playbook-sweep.py src` – zieht Klassen idempotent auf das Playbook nach (nach größeren Änderungen ausführen)
 - `node --experimental-strip-types src/content/werkzeuge/rechnen.test.mjs` – Tests der Rechner

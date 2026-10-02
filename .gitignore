@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Agent-Worktrees
 /.claude/worktrees/
+
+# Macher OS (Build aus os/, wird bei npm run build kopiert)
+/public/os/

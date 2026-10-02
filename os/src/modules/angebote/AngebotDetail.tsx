@@ -164,7 +164,7 @@ export function AngebotDetail() {
               </Karte>
               <Karte titel="Aktionen" kompakt>
                 <Stapel abstand={8}>
-                  <Button variante="sekundaer" icon="download" breit onClick={() => window.open(`/druck/angebot/${a.id}`, '_blank')}>
+                  <Button variante="sekundaer" icon="download" breit onClick={() => window.open(`${import.meta.env.BASE_URL}druck/angebot/${a.id}`, '_blank')}>
                     Druckansicht / PDF
                   </Button>
                   {aktuell && a.status !== 'angenommen' && (
@@ -291,7 +291,7 @@ export function VersandDialog({ angebot, onSchliessen }: { angebot?: Angebot; on
         <p>So geht's:</p>
         <ol style={{ margin: 0, paddingLeft: 20, display: 'grid', gap: 8 }}>
           <li>
-            <Button klein variante="sekundaer" icon="download" onClick={() => angebot && window.open(`/druck/angebot/${angebot.id}`, '_blank')}>
+            <Button klein variante="sekundaer" icon="download" onClick={() => angebot && window.open(`${import.meta.env.BASE_URL}druck/angebot/${angebot.id}`, '_blank')}>
               Druckansicht öffnen
             </Button>{' '}
             und als PDF speichern.

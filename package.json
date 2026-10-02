@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run build:os && next build",
+    "build:os": "npm install --prefix os --no-audit --no-fund && npm run build --prefix os && rm -rf public/os && mkdir -p public && cp -r os/dist public/os",
     "start": "next start",
     "lint": "eslint"
   },

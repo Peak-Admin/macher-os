@@ -12,8 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Macher-OS-App (eigenes Vite-Projekt mit eigener Konfiguration)
+    // Macher OS (eigenes Vite-Projekt mit eigener Konfiguration, Build landet in public/os)
     "os/**",
+    "public/os/**",
   ]),
 ]);
 

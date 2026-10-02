@@ -12,12 +12,12 @@ export const cta = {
   login: { label: "Anmelden", href: "/login" },
 };
 
-/** Die Software selbst (eigenes Vercel-Projekt aus `os/`) */
+/** Die Software selbst (aus `os/`, läuft im selben Projekt unter `/os`) */
 export const app = {
-  url: "https://macher-os-app.vercel.app",
+  url: "/os",
   /** Einrichtung, optional mit vorausgewähltem Gewerk der Software (`elektro`, `shk`, …) */
   einrichten: (gewerk?: string) =>
-    `https://macher-os-app.vercel.app/willkommen${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
+    `/os/willkommen${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
 };
 
 /** Gewerk-Slugs der Website → Gewerk der Software */

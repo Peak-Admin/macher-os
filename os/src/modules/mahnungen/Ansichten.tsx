@@ -219,7 +219,7 @@ export function MahnungDetail() {
             )}
             <Karte kompakt>
               <Stapel abstand={8}>
-                <Button variante="sekundaer" icon="dokument" onClick={() => window.open(`/druck/mahnung/${m.id}`, '_blank')}>
+                <Button variante="sekundaer" icon="dokument" onClick={() => window.open(`${import.meta.env.BASE_URL}druck/mahnung/${m.id}`, '_blank')}>
                   Drucken / PDF
                 </Button>
                 {offen && (
