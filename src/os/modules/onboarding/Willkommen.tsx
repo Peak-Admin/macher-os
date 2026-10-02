@@ -5,7 +5,7 @@ import { ARBEITSWEISEN, GEWERKE, gewerkVorlage } from '@core/gewerke';
 import { euro } from '@core/format';
 import type { Arbeitsweise, Gewerk } from '@core/objects';
 import { einrichten } from '@core/seed';
-import { AuswahlKarten, Button, Eingabe, FormRaster, Fortschritt, Kennzahl, Liste, ListenZeile, Meldung, Meta, Oberzeile, Raster, Stapel, Zeile, useBestaetigen, type IconName, DateiFeld } from '@ui/index';
+import { AuswahlKarten, Button, Icon, Eingabe, FormRaster, Fortschritt, Kennzahl, Liste, ListenZeile, Meldung, Meta, Oberzeile, Raster, Stapel, Zeile, useBestaetigen, type IconName, DateiFeld } from '@ui/index';
 import { betriebEinrichten, gewerkLabel, kundenAusCsv, TEAM, vorbereitet, type Antworten, type CsvErgebnis, type Startdaten, type Teamgroesse } from './daten';
 import './onboarding.css';
 
@@ -147,12 +147,7 @@ function Ablauf({ onFertig }: { onFertig: () => void }) {
 
       {schritt === 0 && (
         <Frage titel="Was macht ihr?" text="Dein Gewerk bestimmt Leistungen, Material, Qualifikationen und Begriffe. Alles lässt sich später ändern.">
-          <AuswahlKarten
-            label="Gewerk"
-            wert={a.gewerk ?? ('' as Gewerk)}
-            onChange={(v) => gewerkWaehlen(v as Gewerk)}
-            optionen={GEWERKE.map((g) => ({ wert: g.id, label: g.label, text: g.leistungen.slice(1, 4).map((l) => l.name).join(', ') }))}
-          />
+          <GewerkKarten wert={a.gewerk} onChange={gewerkWaehlen} />
         </Frage>
       )}
 
@@ -265,9 +260,9 @@ function Ablauf({ onFertig }: { onFertig: () => void }) {
         ) : (
           <span />
         )}
-        <Button icon={schritt === SCHRITTE.length - 1 ? 'check' : 'weiter'} onClick={weiter} laedt={laedt} laedtText="Dein Betrieb wird eingerichtet …">
+        <WeiterButton icon={schritt === SCHRITTE.length - 1 ? 'check' : 'pfeil'} onClick={weiter} laedt={laedt} laedtText="Dein Betrieb wird eingerichtet …">
           {schritt === SCHRITTE.length - 1 ? 'Betrieb einrichten' : 'Weiter'}
-        </Button>
+        </WeiterButton>
       </div>
 
       {schritt === 0 && (
@@ -279,6 +274,96 @@ function Ablauf({ onFertig }: { onFertig: () => void }) {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Fotos aus dem Bildregister der Website (`public/bilder/gewerke/…`, Nachweise in `src/content/bilder.ts`).
+ * Fehlt ein Foto, bleibt eine Markenfläche mit Pfeilmotiv stehen.
+ */
+const GEWERK_BILD: Record<Gewerk, { datei: string; position?: string }> = {
+  elektro: { datei: 'elektriker' },
+  shk: { datei: 'shk', position: 'center 40%' },
+  maler: { datei: 'maler', position: 'center 70%' },
+  dach: { datei: 'dachdecker' },
+  tischler: { datei: 'tischler' },
+  fliesen: { datei: 'fliesenleger', position: 'center 35%' },
+  garten: { datei: 'galabau', position: 'center 30%' },
+  metall: { datei: 'metall-maschinen' },
+  bau: { datei: 'bau', position: 'center 25%' },
+  sonstiges: { datei: 'weitere-gewerke' },
+};
+
+function GewerkKarten({ wert, onChange }: { wert?: Gewerk; onChange: (g: Gewerk) => void }) {
+  return (
+    <div className="ob-gewerke" role="radiogroup" aria-label="Gewerk">
+      {GEWERKE.map((g) => {
+        const an = wert === g.id;
+        return (
+          <button key={g.id} type="button" role="radio" aria-checked={an} className={`ob-gewerk${an ? ' ob-gewerk--an' : ''}`} onClick={() => onChange(g.id)}>
+            <GewerkFoto gewerk={g.id} />
+            {an && (
+              <span className="ob-gewerk-haken" aria-hidden="true">
+                <Icon name="check" size={16} />
+              </span>
+            )}
+            <span className="ob-gewerk-text">
+              <strong>{g.label}</strong>
+              <span className="mm-meta">{g.leistungen.slice(1, 4).map((l) => l.name).join(', ')}</span>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Verkleinerte Fassung über die Bildoptimierung von Next.js – die Originale sind für die Website (1920 px). */
+const klein = (datei: string, breite: number) => `/_next/image?url=${encodeURIComponent(`/bilder/gewerke/${datei}.jpg`)}&w=${breite}&q=75`;
+
+function GewerkFoto({ gewerk }: { gewerk: Gewerk }) {
+  const { datei, position } = GEWERK_BILD[gewerk];
+  const [fehlt, setFehlt] = useState(false);
+  return (
+    <span className={`ob-gewerk-bild${fehlt ? ' ob-gewerk-bild--ersatz' : ''}`} aria-hidden="true">
+      {fehlt ? (
+        <svg viewBox="0 0 220 200" className="ob-gewerk-pfeile" fill="currentColor">
+          <path d="M0 0h52l70 100-70 100H0l70-100Z" />
+          <path d="M90 0h52l70 100-70 100H90l70-100Z" opacity=".55" />
+        </svg>
+      ) : (
+        <img
+          src={klein(datei, 640)}
+          srcSet={`${klein(datei, 640)} 640w, ${klein(datei, 1080)} 1080w`}
+          sizes="(max-width: 600px) 50vw, 380px"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          style={position ? { objectPosition: position } : undefined}
+          onError={() => setFehlt(true)}
+        />
+      )}
+    </span>
+  );
+}
+
+/**
+ * Hauptaktion der Einrichtung im Stil des Mission-Mittelstand-CTAs: grüne Fläche mit feinem Würfelraster,
+ * weißer Kreis mit Pfeil links. Beim Hover wandert der Kreis nach rechts.
+ */
+function WeiterButton({ icon, onClick, laedt, laedtText, children }: { icon: IconName; onClick: () => void; laedt?: boolean; laedtText: string; children: ReactNode }) {
+  return (
+    <button type="button" className="ob-weiter" onClick={onClick} disabled={laedt} aria-busy={laedt || undefined}>
+      <span className="ob-weiter-innen">
+        <span className="ob-weiter-kreis" aria-hidden="true">
+          {laedt ? <span className="mm-spinner" /> : <Icon name={icon} size={16} strokeWidth={2.25} />}
+        </span>
+        <span>{laedt ? laedtText : children}</span>
+        <span className="ob-weiter-kreis ob-weiter-kreis--hover" aria-hidden="true">
+          <Icon name={icon} size={16} strokeWidth={2.25} />
+        </span>
+      </span>
+    </button>
   );
 }
 

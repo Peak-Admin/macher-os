@@ -13,6 +13,8 @@ interface Versand {
   betreff?: string;
   text: string;
   link?: string;
+  html?: string;
+  absender?: { name?: string; antwortAn?: string };
   anhaenge?: Anhang[];
   bezug?: { typ: string; id: string };
 }
@@ -51,8 +53,10 @@ export async function POST(req: Request): Promise<Response> {
         betreff: v.betreff ?? `Nachricht von ${betrieb?.name ?? 'deinem Handwerksbetrieb'}`,
         text: v.text,
         link,
-        absenderName: betrieb?.name ?? 'Macher OS',
-        antwortAn: betrieb?.email && istEmail(betrieb.email) ? betrieb.email : undefined,
+        absenderName: betrieb?.name ?? v.absender?.name ?? 'Macher OS',
+        antwortAn: [betrieb?.email, v.absender?.antwortAn].find((x): x is string => !!x && istEmail(x)),
+        // gestaltete Fassung aus der App; der Link darin zeigt ebenfalls auf den Öffnen-Link
+        html: v.html && v.html.length < 500_000 ? (v.link && link ? v.html.split(v.link).join(link) : v.html) : undefined,
         anhaenge: v.anhaenge,
       });
       anbieterId = r.id;

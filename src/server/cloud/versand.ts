@@ -19,6 +19,8 @@ export interface EmailAuftrag {
   linkText?: string;
   absenderName: string;
   antwortAn?: string;
+  /** fertig gestaltete Fassung (sonst schlichte Vorlage aus `text`) */
+  html?: string;
   anhaenge?: Anhang[];
 }
 
@@ -61,7 +63,7 @@ export async function emailSenden(e: EmailAuftrag): Promise<{ id?: string }> {
       to: [e.an],
       subject: e.betreff,
       text,
-      html: emailHtml(e),
+      html: e.html ?? emailHtml(e),
       ...(e.antwortAn ? { reply_to: e.antwortAn } : {}),
       ...(e.anhaenge?.length ? { attachments: e.anhaenge.map(anhangFuerResend).filter(Boolean) } : {}),
     }),

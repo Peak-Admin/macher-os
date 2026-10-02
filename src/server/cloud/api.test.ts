@@ -115,6 +115,15 @@ describe('senden', () => {
     expect(b.text).toContain(`/api/cloud/oeffnen?v=${ergebnis.id}`);
     expect(b.text).not.toContain('/k/abc');
     expect(b.html).toContain('#2F9250');
+    // gestaltete Fassung aus der App: Link wird ebenfalls ersetzt
+    const r2 = await senden(
+      anfrage('/api/cloud/senden', {
+        versand: { an: 'kunde@beispiel.de', kanal: 'email', text: 'x', html: '<p><a href="https://app.macher-os.de/k/abc">Ansehen</a></p>', link: 'https://app.macher-os.de/k/abc' },
+      }),
+    );
+    const id2 = ((await r2.json()) as { id: string }).id;
+    const mail2 = aufrufe.filter((a) => a.url.host === 'api.resend.com')[1].body as { html: string };
+    expect(mail2.html).toBe(`<p><a href="https://app.macher-os.de/api/cloud/oeffnen?v=${id2}">Ansehen</a></p>`);
     const protokoll = aufrufe.find((a) => a.url.pathname === '/rest/v1/versand' && a.init.method === 'POST')!;
     expect(protokoll.body).toEqual([expect.objectContaining({ id: ergebnis.id, betrieb_id: 'b1', ziel_link: 'https://app.macher-os.de/k/abc', bezug: { typ: 'angebote', id: 'a1' } })]);
   });

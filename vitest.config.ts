@@ -15,5 +15,5 @@ export default defineConfig({
       "@": r("./src"),
     },
   },
-  test: { environment: "jsdom", globals: false, include: ["src/os/**/*.test.{ts,tsx}", "src/server/**/*.test.ts"] },
+  test: { environment: "jsdom", globals: false, include: ["src/os/**/*.test.{ts,tsx}", "src/app/api/**/*.test.ts", "src/server/**/*.test.ts"] },
 });

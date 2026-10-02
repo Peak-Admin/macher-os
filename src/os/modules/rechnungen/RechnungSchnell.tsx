@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import { appPfad } from '@core/basis';
 import { cloudAktiv } from '@core/cloud';
+import { useEmailUeberServer } from '@core/cloud-versand';
 import { db } from '@core/db';
 import { datum, euro, heute } from '@core/format';
 import type { ID, Kunde, Position } from '@core/objects';
@@ -25,6 +26,7 @@ const ABRECHENBAR = ['beauftragt', 'in_arbeit', 'abnahme', 'abrechnung'];
 export function RechnungSchnell() {
   const darf = useDarf('geld');
   const darfSenden = useDarf('veroeffentlichen');
+  const emailServer = useEmailUeberServer();
   const [beginn] = useState(() => Date.now());
   const auftraege = db.auftraege.use((a) => ABRECHENBAR.includes(a.phase) && !a.beispiel, []);
   db.rechnungen.use();
@@ -71,7 +73,7 @@ export function RechnungSchnell() {
   const betriebFehlt: Mangel[] = pruefung.pflicht.filter((m) => m.wo === 'betrieb');
   const summen = rechnungsSummen(entwurf);
   const kanal = kontaktArt(kunde.kontakt);
-  const lokal = !cloudAktiv();
+  const lokal = kanal === 'email' ? !emailServer : !cloudAktiv();
 
   const senden = async () => {
     const f: string[] = [];
@@ -159,7 +161,9 @@ export function RechnungSchnell() {
             <Meta>
               {kanal ? `Geht ${kanal === 'email' ? 'per E-Mail' : 'per SMS'} an ${kunde.kontakt.trim()} – ` : 'Geht '}mit Link zum Kundenbereich. Macher vergibt die Rechnungsnummer und legt die E-Rechnung (XRechnung) automatisch dazu.
             </Meta>
-            {lokal && <Meta>Dein Konto ist noch nicht verbunden: Macher öffnet dein {kanal === 'sms' ? 'SMS-Programm' : 'Mailprogramm'} mit fertigem Text und Link. PDF und E-Rechnung kannst du danach herunterladen und anhängen.</Meta>}
+            {lokal && kanal === 'sms' && <Meta>SMS verschickt Macher noch nicht selbst: Deine SMS-App öffnet sich mit fertigem Text und Link. Du drückst dort auf Senden.</Meta>}
+            {lokal && kanal !== 'sms' && <Meta>E-Mail-Versand ist noch nicht eingerichtet: Macher öffnet dein Mailprogramm mit fertigem Text und Link. Du drückst dort auf Senden. PDF und E-Rechnung kannst du danach herunterladen und anhängen.</Meta>}
+            {!lokal && kanal === 'email' && <Meta>{db.betrieb.get('betrieb')?.email ? `Absender ist dein Betrieb, Antworten gehen an ${db.betrieb.get('betrieb')?.email}.` : 'Absender ist dein Betrieb. Trag unter Betrieb deine E-Mail ein, damit Antworten bei dir landen.'}</Meta>}
             {!darfSenden && <Meldung ton="neutral">Deine Rolle darf nichts an Kunden senden. Frag im Büro nach.</Meldung>}
             <div>
               <Button icon={kanal === 'sms' ? 'chat' : 'mail'} onClick={senden} laedt={sendet} laedtText="Wird gesendet …" disabled={!darfSenden}>

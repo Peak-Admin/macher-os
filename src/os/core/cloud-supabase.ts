@@ -9,7 +9,7 @@
  */
 import { useSyncExternalStore } from 'react';
 import type { RealtimeChannel, Session, SupabaseClient } from '@supabase/supabase-js';
-import { LOKALE_CLOUD, setzeCloud, type Cloud, type Konto, type PushNachricht, type Versand, type VersandErgebnis } from './cloud';
+import { cloud, LOKALE_CLOUD, setzeCloud, type Cloud, type Konto, type PushNachricht, type Versand, type VersandErgebnis } from './cloud';
 import { appPfad } from './basis';
 import { db, exportieren, importieren, neueId, sicherungAnlegen } from './db';
 import { emit } from './events';
@@ -185,6 +185,8 @@ export interface Abhaengigkeiten {
   /** Abgleich starten (Tests ersetzen ihn) */
   syncStarten?: typeof starteSync;
   ursprung?: string;
+  /** Cloud ohne Konto (z. B. E-Mail über `/api/senden`, sonst lokale Programme) */
+  rueckfall?: Cloud;
 }
 
 export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig, abh: Abhaengigkeiten = {}): SupabaseCloud {
@@ -192,6 +194,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
   const speicher: Speicher | undefined = abh.speicher ?? globalThis.localStorage;
   const syncStarten = abh.syncStarten ?? starteSync;
   const ursprung = abh.ursprung ?? globalThis.location?.origin ?? '';
+  const rueckfall = abh.rueckfall ?? LOKALE_CLOUD;
   const api = (pfad: string) => `${konfig.apiBasis ?? ''}/api/cloud/${pfad}`;
 
   const lesen = (k: string) => {
@@ -427,13 +430,13 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
     },
 
     async einladen(mitarbeiterId, ziel) {
-      if (!c.aktiv()) return LOKALE_CLOUD.einladen(mitarbeiterId, ziel);
+      if (!c.aktiv()) return rueckfall.einladen(mitarbeiterId, ziel);
       const r = await serverAufruf<VersandErgebnis & { link?: string }>('einladen', { mitarbeiterId, ziel });
       if (r.status === 200 && r.daten?.status === 'gesendet') return { status: 'gesendet', id: r.daten.id };
       if (r.daten?.link) {
         // Kanal nicht verbunden: Einladung gibt es trotzdem – Link über das eigene Handy teilen
         const an = ziel.telefon ?? ziel.email ?? '';
-        const lokal = await LOKALE_CLOUD.senden({
+        const lokal = await rueckfall.senden({
           an,
           kanal: ziel.telefon ? 'sms' : 'email',
           betreff: 'Einladung zu Macher OS',
@@ -442,21 +445,21 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
         });
         return { ...lokal, id: r.daten.id };
       }
-      if (r.status === 501 || r.status === 0) return LOKALE_CLOUD.einladen(mitarbeiterId, ziel);
+      if (r.status === 501 || r.status === 0) return rueckfall.einladen(mitarbeiterId, ziel);
       return { status: 'fehler', fehler: (r.daten as { fehler?: string } | undefined)?.fehler ?? 'Einladen hat nicht geklappt.' };
     },
 
     async senden(v: Versand) {
-      if (!c.aktiv()) return LOKALE_CLOUD.senden(v);
+      if (!c.aktiv()) return rueckfall.senden(v);
       const r = await serverAufruf<VersandErgebnis & { fehler?: string }>('senden', { versand: v });
       if (r.status === 200 && r.daten) return r.daten;
       // nicht verbunden (z. B. WhatsApp) oder offline → eigenes Mail-/SMS-Programm
-      if (r.status === 501 || r.status === 0) return LOKALE_CLOUD.senden(v);
+      if (r.status === 501 || r.status === 0) return rueckfall.senden(v);
       return { status: 'fehler', fehler: r.daten?.fehler ?? 'Versand hat nicht geklappt.' };
     },
 
     async push(n: PushNachricht) {
-      if (!c.aktiv()) return LOKALE_CLOUD.push(n);
+      if (!c.aktiv()) return rueckfall.push(n);
       await serverAufruf('push', { nachricht: n });
     },
 
@@ -471,7 +474,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
     },
 
     async dateiAblegen(datei, name) {
-      if (!konto?.betriebId) return LOKALE_CLOUD.dateiAblegen(datei, name);
+      if (!konto?.betriebId) return rueckfall.dateiAblegen(datei, name);
       const sauber = name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^\w.-]+/g, '-').replace(/-+/g, '-').slice(-80) || 'datei';
       const pfad = `${konto.betriebId}/${neueId().replace(/[^\w-]/g, '')}-${sauber}`;
       try {
@@ -483,7 +486,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
         return r.daten.url;
       } catch {
         // offline o. Ä.: im Gerät behalten, damit nichts verloren geht
-        return LOKALE_CLOUD.dateiAblegen(datei, name);
+        return rueckfall.dateiAblegen(datei, name);
       }
     },
 
@@ -620,7 +623,8 @@ export async function starteCloud(konfig: CloudKonfig | undefined = konfigAusUmg
     const client = createClient(konfig.url, konfig.anonKey, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: 'macher-os:anmeldung' },
     });
-    aktuelle = erzeugeSupabaseCloud(client, konfig);
+    // Was bisher galt (z. B. E-Mail über /api/senden), bleibt der Rückfall ohne Konto
+    aktuelle = erzeugeSupabaseCloud(client, konfig, { rueckfall: cloud() });
     setzeCloud(aktuelle);
     await aktuelle.starten();
     return true;

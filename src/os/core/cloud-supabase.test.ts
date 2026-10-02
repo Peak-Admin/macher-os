@@ -235,6 +235,12 @@ describe('Dienste', () => {
     expect(await c.senden(versand)).toEqual({ status: 'fehler', fehler: 'Resend kaputt' });
   });
 
+  test('ohne Konto: vorheriger Weg (z. B. E-Mail über /api/senden) bleibt', async () => {
+    const vorher = { ...LOKALE_CLOUD, senden: vi.fn(async () => ({ status: 'gesendet' as const, id: 'resend-1' })) };
+    const c = erzeugeSupabaseCloud(attrappe().client, KONFIG, { speicher: speicher(), rueckfall: vorher });
+    expect(await c.senden(versand)).toEqual({ status: 'gesendet', id: 'resend-1' });
+  });
+
   test('ohne Konto: lokaler Rückfall, kein Server-Aufruf', async () => {
     const f = vi.fn();
     const c = erzeugeSupabaseCloud(attrappe().client, KONFIG, { speicher: speicher(), fetch: f as unknown as typeof fetch });

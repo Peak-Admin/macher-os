@@ -6,6 +6,7 @@
 import { defineModul } from '@core/modul';
 import { on } from '@core/events';
 import { setzeEinstellung } from '@core/einstellungen';
+import { serverVersandEinrichten } from '@core/cloud-versand';
 import { AngebotSchnell } from '@modules/angebote/AngebotSchnell';
 import { RechnungSchnell } from '@modules/rechnungen/RechnungSchnell';
 import { StartSeite } from './StartSeite';
@@ -29,6 +30,8 @@ export default defineModul({
     { label: 'Rechnung in 1 Minute', pfad: '/start/rechnung', gewicht: 60 },
   ],
   init: () => {
+    // E-Mails über Resend (/api/senden), solange kein vollständiges Backend verbunden ist
+    serverVersandEinrichten();
     // „Team eingeladen“-Haken: Einladen meldet das Paket Setup/Fundament über dieses Event
     on('team.eingeladen', () => setzeEinstellung(TEAM_EINGELADEN, true));
   },
