@@ -6,3 +6,6 @@ export { KundenCard } from "./KundenCard";
 export { PlanCards } from "./PlanCards";
 export { BildKarten, BildText, BereichsKarte, DunkleHeadline, DunklerAbschnitt, FotoBuehne } from "./Bild";
 export { MissionMittelstand, MissionMittelstandFoto, MissionMittelstandStreifen, PersonenKarte, HerausgeberMarke } from "./MissionMittelstand";
+export { Ablauf } from "./Ablauf";
+export { Alltag } from "./Alltag";
+export { DatenVertrauen } from "./DatenVertrauen";

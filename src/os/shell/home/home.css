@@ -88,7 +88,7 @@
 .mm-home-schritte li.erledigt { color: var(--mm-text); }
 .mm-home-haken { display: grid; place-items: center; width: 20px; height: 20px; flex-shrink: 0; border: 2px solid var(--mm-border); border-radius: var(--mm-radius-control); }
 .mm-home-haken--an { border-color: var(--mm-brand-deep); background: var(--mm-brand-deep); color: #fff; }
-.mm-home-naechster-aktion { display: flex; }
+.mm-home-naechster-aktion { display: flex; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 479px) { .mm-home-naechster-aktion > .mm-btn { flex: 1; } .mm-home-naechster-titel { font-size: 21px; line-height: 27px; } }
 .mm-home-danach { border-top: 1px solid var(--mm-border); padding-top: 12px; }
 .mm-home-danach ul { list-style: none; margin: 4px 0 0; padding: 0; }

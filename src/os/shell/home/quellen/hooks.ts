@@ -9,7 +9,7 @@ import { darf, istBuero } from '@core/session';
 import { offeneAnfragen } from '@modules/anfragen/daten';
 import { naechsterEinsatz } from '@modules/naechster-einsatz/logik';
 import { istUeberfaellig, offenePosten } from '@modules/rechnungen/logik';
-import { useStartHaken } from '@modules/start/StartKarte';
+import { useStartHaken } from '@modules/start/useStartHaken';
 import type { NextAction, WorkItem } from '../typen';
 import { arbeitsposten } from './arbeit';
 import { naechsteAktionen } from './naechsterSchritt';

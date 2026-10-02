@@ -4,7 +4,7 @@
  * (nach Abschlägen automatisch die Schlussrechnung). Fortgeschrittenes steht hinter „Weitere Optionen“.
  * Senden: Vorbereiten → Vorschau → Bestätigen. Erst dann wird festgeschrieben (Nummer, GoBD) und verschickt.
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { appPfad } from '@core/basis';
 import { cloudAktiv } from '@core/cloud';
@@ -17,6 +17,7 @@ import { useDarf } from '@core/session';
 import { Auswahl, Button, Dialog, Eingabe, Karte, Meldung, Meta, Schalter, Segmente, Seite, Stapel, Zeile, useToast } from '@ui/index';
 import { kundeSichern } from '@modules/angebote/erstwert';
 import { kontaktArt, versandText, type SendeErgebnis } from '@modules/start/daten';
+import { useBriefkopfVorSenden } from '@modules/start/BriefkopfPruefen';
 import { KundeBlock, kundeAusDb, LEERER_KUNDE, PositionenSchnell, SchrittKopf, type KundeWahl } from '@modules/start/teile';
 import { kuerzelGueltig } from '@modules/dokumente/nummern';
 import { abschlussRechnung, ART_LABEL, betrieb, passendeArt, pflichtangabenPruefen, rechnungsNummer, rechnungsSummen, rechnungsVorschau, type Mangel, type Vorschau } from './logik';
@@ -76,12 +77,19 @@ export function RechnungSchnell() {
   const [positionen, setPositionen] = useState<Position[]>(start.v?.positionen ?? []);
   const [vorschau, setVorschau] = useState<Vorschau | undefined>(start.v);
   const [leistung, setLeistung] = useState(start.v?.leistungBis ?? heute());
+  const [briefkopfPruefen, briefkopfDialog] = useBriefkopfVorSenden('Rechnung');
+  const [nachBriefkopf, setNachBriefkopf] = useState(0);
   const [mehr, setMehr] = useState(start.art !== 'rechnung' && start.art !== 'schluss');
   const [o, setO] = useState<Optionen>(() => ({ art: start.art, prozent: start.prozent, einbehalt: '', zielTage: '', reverseCharge: false, kuerzel: '' }));
   const [fehler, setFehler] = useState<string[]>([]);
   const [pruefen, setPruefen] = useState(false);
   const [sendet, setSendet] = useState(false);
   const [ergebnis, setErgebnis] = useState<{ rechnung: RechnungX; r: SendeErgebnis; kanal: 'email' | 'sms' }>();
+  // Nach dem Briefkopf-Dialog weiter zur Vorschau – im nächsten Render, mit frischen Betriebsdaten
+  const zeigen = useRef<() => void>(undefined);
+  useEffect(() => {
+    if (nachBriefkopf) zeigen.current?.();
+  }, [nachBriefkopf]);
 
   if (!darf) return <KeinZugriff />;
   if (ergebnis) return <Raus {...ergebnis} />;
@@ -139,8 +147,9 @@ export function RechnungSchnell() {
   const lokal = kanal === 'email' ? !emailServer : !cloudAktiv();
   const firma = kundeJetzt.art !== 'privat' && !!kunde.name.trim();
 
-  /** Schritt „Vorbereiten“: prüfen, ob alles da ist – dann die Vorschau zeigen */
-  const vorschauZeigen = () => {
+  /** Schritt „Vorbereiten“: erst – falls nötig – den Briefkopf ergänzen (just in time), dann prüfen und die Vorschau zeigen */
+  const vorschauZeigen = () => briefkopfPruefen(() => setNachBriefkopf((n) => n + 1));
+  const pruefenUndZeigen = () => {
     const f: string[] = [];
     if (modus === 'auftrag' && !auftragId) f.push('Wähle den Auftrag, den du abrechnen willst.');
     if (!kunde.kundeId && kunde.name.trim().length < 2) f.push('Wie heißt dein Kunde?');
@@ -152,6 +161,9 @@ export function RechnungSchnell() {
     setFehler(f);
     if (!f.length) setPruefen(true);
   };
+  // Neueste Fassung für den Effekt nach dem Briefkopf-Dialog (sie liest frische Betriebsdaten)
+  // eslint-disable-next-line react-hooks/refs
+  zeigen.current = pruefenUndZeigen;
 
   /** Schritt „Bestätigen“: anlegen, festschreiben, senden */
   const senden = async () => {
@@ -366,6 +378,7 @@ export function RechnungSchnell() {
           </ul>
         </Stapel>
       </Dialog>
+      {briefkopfDialog}
     </Seite>
   );
 }

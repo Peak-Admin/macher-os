@@ -1,14 +1,12 @@
 import Link from "next/link";
-import { PhoneMock, PlanBoardMock, ProductMock } from "@/components/mocks";
+import { AppVorschau, PhoneMock, PlanBoardMock } from "@/components/mocks";
 import {
+  Ablauf,
+  Alltag,
   BereichsKarte,
-  BildKarten,
-  BildText,
   DunkleHeadline,
-  DunklerAbschnitt,
   FinalCta,
   FotoBuehne,
-  Flow,
   KundenCard,
   PlanCards,
   MissionMittelstand,
@@ -16,20 +14,22 @@ import {
 } from "@/components/sections";
 import {
   ArrowLink,
+  Zone,
   ButtonLink,
-  Card,
   CheckList,
-  Container,
   Faq,
   FaqJsonLd,
   Icon,
+  Karte3D,
+  Objekt,
   Section,
   SectionHeading,
   type FaqItem,
   type IconName,
 } from "@/components/ui";
-import { Foto, fotoVorhanden } from "@/components/ui/Foto";
 import { gewerkBild } from "@/content/bilder";
+import { kernaengste, weitereEinwaende } from "@/content/einwaende";
+import { testTage } from "@/content/preise";
 import { kunden, topGewerke } from "@/content/registry";
 import type { ObjektSchluessel } from "@/lib/objekte";
 import { cta, herausgeber, site } from "@/lib/site";
@@ -52,11 +52,40 @@ const machtMacher: { text: string; icon: IconName }[] = [
   { text: "verfolgt offene Zahlungen", icon: "chart" },
 ];
 
-const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSchluessel; href: string }[] = [
-  { titel: "Heute", text: "Was jetzt wichtig ist.", icon: "home", objekt: "werkzeugwand", href: "/funktionen" },
-  { titel: "Aufträge", text: "Alles rund um Kunden und Arbeit.", icon: "clipboard", objekt: "klemmbrett", href: "/funktionen/auftraege" },
-  { titel: "Planen", text: "Was als Nächstes passiert.", icon: "calendar", objekt: "zollstock", href: "/funktionen/einsatzplanung" },
-  { titel: "Betrieb", text: "Mitarbeiter, Material, Geld und Unternehmen.", icon: "layers", objekt: "werkbank", href: "/funktionen/mitarbeiter" },
+/** Die vier Bereiche der Software – mit den Ansichten, die dort wirklich stehen. */
+const bereiche: { titel: string; text: string; icon: IconName; objekt: ObjektSchluessel; href: string; inhalt: string[] }[] = [
+  {
+    titel: "Heute",
+    text: "Was jetzt wichtig ist.",
+    icon: "spark",
+    objekt: "werkzeugwand",
+    href: "/funktionen",
+    inhalt: ["Dein nächster Schritt", "Braucht deine Entscheidung", "Heute im Betrieb"],
+  },
+  {
+    titel: "Aufträge",
+    text: "Alles rund um Kunden und Arbeit.",
+    icon: "clipboard",
+    objekt: "klemmbrett",
+    href: "/funktionen/auftraege",
+    inhalt: ["Aufträge und Angebote", "Eingang mit neuen Anfragen", "Kunden und Service"],
+  },
+  {
+    titel: "Planen",
+    text: "Was als Nächstes passiert.",
+    icon: "calendar",
+    objekt: "zollstock",
+    href: "/funktionen/einsatzplanung",
+    inhalt: ["Kalender und Plantafel", "Einplanen mit Vorschlag", "Kapazität im Team"],
+  },
+  {
+    titel: "Betrieb",
+    text: "Mitarbeiter, Material, Geld und Unternehmen.",
+    icon: "home",
+    objekt: "werkbank",
+    href: "/funktionen/mitarbeiter",
+    inhalt: ["Geld: Rechnungen und Belege", "Team: Menschen und Zeiten", "Ausstattung und Unternehmen"],
+  },
 ];
 
 const gewerkIcons: Record<string, IconName> = {
@@ -69,6 +98,12 @@ const gewerkIcons: Record<string, IconName> = {
   bau: "warehouse",
   galabau: "map",
 };
+
+const feierabend: { text: string; icon: IconName }[] = [
+  { text: "Stundenzettel kommen vom Handy", icon: "smartphone" },
+  { text: "Rechnungen sind vorbereitet", icon: "euro" },
+  { text: "Offene Zahlungen im Blick", icon: "chart" },
+];
 
 const mobil = [
   "nächster Einsatz",
@@ -95,7 +130,7 @@ const wissen: { titel: string; text: string; href: string; icon: IconName }[] = 
 const faq: FaqItem[] = [
   {
     frage: "Wer steckt hinter Macher OS?",
-    antwort: `Macher OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. ${herausgeber.name} berät Handwerksbetriebe und Mittelständler – diese Erfahrung steckt in Macher OS.`,
+    antwort: `Macher OS ist ein Projekt von ${herausgeber.name} – von Handwerkern für Handwerker. Gebaut aus dem Alltag echter Betriebe, nicht am Schreibtisch.`,
   },
   {
     frage: "Für welche Gewerke ist Macher OS geeignet?",
@@ -141,25 +176,24 @@ const faq: FaqItem[] = [
 export default function HomePage() {
   return (
     <>
-      {/* 1. Hero – kräftige Markenfläche, Aussage → Nutzen → Aktion; das Foto nur, wenn es vorhanden ist (rechts, ab lg) */}
-      <section className="relative isolate overflow-hidden bg-ink text-white">
-        {fotoVorhanden("start/hero") && (
-          <div className="absolute inset-y-0 right-0 -z-10 hidden w-[60%] lg:block">
-            <Foto bild="start/hero" preload sizes="60vw" />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-ink via-ink/50 to-ink/0" />
-          </div>
-        )}
-        <Container className="relative pb-36 pt-12 sm:pt-16 lg:pb-52 lg:pt-28">
-          <div className="max-w-2xl">
+      {/* Alle Abschnitte sind Boxen im Wechsel dunkelgrün · beige · weiß (nach Peak One). Der Glas-Kopf liegt auf dem Hero. */}
+
+      {/* 1. Hero – volle Höhe, rechts die klickbare Vorschau der Software */}
+      <Zone ton="dunkel" label="hero-titel" className="zone-hero">
+        <div className="mx-auto grid h-full max-w-[90rem] items-center gap-10 px-5 pb-10 pt-28 sm:px-10 sm:pb-14 sm:pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-12 lg:pb-10 lg:pt-28 xl:px-14">
+          <div className="max-w-xl">
             <p className="mb-5 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">
               Von {herausgeber.name} · Das Betriebssystem für Handwerker
             </p>
-            <h1 className="font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-balance sm:text-6xl lg:text-7xl">
+            <h1
+              id="hero-titel"
+              className="font-display text-5xl font-black uppercase leading-[0.95] tracking-tight text-balance sm:text-6xl xl:text-7xl"
+            >
               Dein Betrieb.
               <br />
               <span className="text-accent">Eine Software.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-on-dark sm:text-xl">
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-on-dark sm:text-xl">
               Aufträge, Termine und Rechnungen an einem Ort. Für dich und dein Team.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -172,83 +206,63 @@ export default function HomePage() {
             </div>
             <TrustRow dark className="mt-6" />
           </div>
-        </Container>
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-1 bg-brand" />
-      </section>
-
-      {/* 2. Produktbeweis ragt aus dem Hero + kompletter Ablauf */}
-      <section className="bg-white pb-16 sm:pb-24">
-        <Container>
-          <div className="relative z-10 -mt-28 lg:-mt-40">
-            <div className="mx-auto max-w-5xl">
-              <ProductMock />
-            </div>
+          <div className="min-w-0">
+            <AppVorschau className="lg:h-[min(34rem,calc(100svh-15rem))]" />
+            <p className="mt-3 text-center text-sm text-white/65">Klick dich durch – alles Beispieldaten.</p>
           </div>
-          <div className="mt-16 grid gap-8">
-            <SectionHeading
-              title="Vom ersten Anruf bis zur bezahlten Rechnung."
-              intro="Macher OS hält alle Informationen zusammen und übernimmt möglichst viel Organisation dazwischen."
-            />
-            <Flow items={["Anfrage", "Angebot", "Termin", "Arbeit", "Rechnung", "Bezahlt"]} />
-          </div>
-        </Container>
-      </section>
+        </div>
+      </Zone>
 
-      {/* 2b. So läuft's – Bildkarten-Reihe */}
-      <BildKarten
-        eyebrow="Dein Alltag"
-        gruen="So läuft's"
-        rest="mit Macher OS"
-        intro="Vier Momente aus jedem Handwerksbetrieb – und was Macher OS dabei für dich übernimmt."
-        karten={[
-          {
-            bild: "alltag/anfrage",
-            titel: "Anfrage",
-            text: "Der Kunde ruft an. Macher legt die Anfrage an und schlägt einen Termin vor.",
-            href: "/funktionen/anfragen",
-          },
-          {
-            bild: "alltag/planung",
-            titel: "Planung",
-            text: "Jeder weiß morgens, wo er hinfährt und was er mitnehmen muss.",
-            href: "/funktionen/einsatzplanung",
-          },
-          {
-            bild: "alltag/baustelle",
-            titel: "Baustelle",
-            text: "Fotos, Zeiten und Material landen direkt im Auftrag – vom Handy.",
-            href: "/funktionen/dokumentation",
-          },
-          {
-            bild: "alltag/abnahme",
-            titel: "Abnahme",
-            text: "Unterschrift vor Ort. Die Rechnung ist vorbereitet, bevor du wieder im Auto sitzt.",
-            href: "/funktionen/rechnungen",
-          },
-        ]}
-      />
+      {/* 2. Dein Alltag – 3D-Karten mit Blick in die App */}
+      <Alltag />
+
+      {/* 3. Ablauf – vier klickbare Schritte */}
+      <Ablauf />
 
       {/* 4. Vier Bereiche */}
-      <Section>
-        <SectionHeading
-          eyebrow="Vier Bereiche"
-          title="Alles da. Trotzdem einfach."
-          intro="Macher OS ist in vier Bereiche aufgeteilt. Mehr musst du dir nicht merken."
-        />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {bereiche.map((b) => (
-            <Card key={b.titel} title={b.titel} icon={b.icon} objekt={b.objekt} href={b.href}>
-              {b.text}
-            </Card>
-          ))}
-        </div>
-        <ArrowLink href="/funktionen" className="mt-8">
-          Alle Funktionen ansehen
-        </ArrowLink>
-      </Section>
+      <Zone ton="weiss">
+        <Section tone="transparent">
+          <SectionHeading
+            eyebrow="Vier Bereiche"
+            title="Alles da. Trotzdem einfach."
+            intro="Macher OS ist in vier Bereiche aufgeteilt. Mehr musst du dir nicht merken."
+          />
+          <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {bereiche.map((b, n) => (
+              <li key={b.titel}>
+                <Karte3D href={b.href} innen="flex flex-col rounded-2xl border border-line bg-white p-6">
+                  <Objekt objekt={b.objekt} className="-mx-2 -mt-2 mb-5" sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw" />
+                  <div className="flex items-center justify-between">
+                    <span className="karte-3d-tief inline-flex size-12 items-center justify-center rounded-xl bg-primary text-white shadow-[0_12px_24px_-12px_rgb(13_107_69/0.8)]">
+                      <Icon name={b.icon} className="size-6" />
+                    </span>
+                    <span className="font-display text-sm font-bold tabular-nums text-muted">0{n + 1}</span>
+                  </div>
+                  <h3 className="mt-6 font-display text-2xl font-bold text-ink">{b.titel}</h3>
+                  <p className="mt-1 text-muted">{b.text}</p>
+                  <ul className="mt-5 flex-1 space-y-2 border-t border-line pt-4 text-[0.95rem]">
+                    {b.inhalt.map((x) => (
+                      <li key={x} className="flex items-center gap-2">
+                        <Icon name="check" className="size-4 shrink-0 text-primary" /> {x}
+                      </li>
+                    ))}
+                  </ul>
+                  <span className="mt-5 inline-flex items-center gap-1.5 font-semibold text-signal-dark">
+                    Ansehen <Icon name="arrow-right" className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+                  </span>
+                </Karte3D>
+              </li>
+            ))}
+          </ul>
+          <ArrowLink href="/funktionen" className="mt-8">
+            Alle Funktionen ansehen
+          </ArrowLink>
+        </Section>
+      </Zone>
 
-      {/* 5. Gewerke – Hochkant-Karten mit Fotos */}
-      <DunklerAbschnitt>
+      {/* 5. Gewerke */}
+      <Zone ton="dunkel">
+        <Section tone="transparent">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <DunkleHeadline
             eyebrow="Gewerke"
@@ -275,194 +289,298 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
-      </DunklerAbschnitt>
+        </Section>
+      </Zone>
 
-      {/* 6. Mobiles Arbeiten – Handy vor Baustellenfoto */}
-      <Section tone="white">
-        <div className="grid items-center gap-14 lg:grid-cols-2">
-          <div className="order-2 min-w-0 lg:order-1">
-            <FotoBuehne bild="alltag/handy">
-              <PhoneMock />
-            </FotoBuehne>
+      {/* 6. Büro und Baustelle */}
+      <Zone ton="beige">
+        <Section tone="transparent">
+          <div className="grid items-center gap-14 lg:grid-cols-2">
+            <div className="order-2 min-w-0 lg:order-1">
+              <FotoBuehne bild="alltag/handy">
+                <PhoneMock />
+              </FotoBuehne>
+            </div>
+            <div className="order-1 lg:order-2">
+              <SectionHeading
+                eyebrow="Büro und Baustelle"
+                title="Gemacht für Büro und Baustelle."
+                intro="Der Mitarbeiter sieht nur, was er für seinen nächsten Einsatz braucht."
+              />
+              <CheckList items={mobil} columns={2} className="mt-8" />
+              <ArrowLink href="/app" className="mt-8">
+                Zur App
+              </ArrowLink>
+            </div>
           </div>
-          <div className="order-1 lg:order-2">
+        </Section>
+      </Zone>
+
+      {/* 7. Feierabend statt Papierkram – alles in Boxen */}
+      <Zone ton="weiss">
+        <Section tone="transparent">
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]">
             <SectionHeading
-              eyebrow="Büro und Baustelle"
-              title="Gemacht für Büro und Baustelle."
-              intro="Der Mitarbeiter sieht nur, was er für seinen nächsten Einsatz braucht."
+              eyebrow="Feierabend statt Papierkram"
+              title="Kein Küchentisch-Büro mehr am Abend."
+              intro="Angebote, Stundenzettel, Rechnungen: Was früher abends liegen blieb, bereitet Macher OS tagsüber vor. Du prüfst und schickst ab."
             />
-            <CheckList items={mobil} columns={2} className="mt-8" />
-            <ArrowLink href="/app" className="mt-8">
-              Zur App
-            </ArrowLink>
+            <ul className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              {feierabend.map((p) => (
+                <li key={p.text}>
+                  <Karte3D innen="flex h-full flex-col gap-4 rounded-2xl bg-beige p-5 ring-1 ring-beige-line">
+                    <span className="karte-3d-tief inline-flex size-11 items-center justify-center rounded-xl bg-white text-signal-dark ring-1 ring-beige-line">
+                      <Icon name={p.icon} className="size-5" />
+                    </span>
+                    <span className="font-display text-lg font-bold leading-snug text-ink">{p.text}</span>
+                  </Karte3D>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      </Section>
+          <ArrowLink href="/funktionen/automatisch-erledigen" className="mt-8">
+            So arbeitet Macher
+          </ArrowLink>
+        </Section>
+      </Zone>
 
-      {/* 6b. Alltagssituation */}
-      <BildText bild="alltag/buero" seite="rechts" tone="paper">
-        <SectionHeading
-          eyebrow="Feierabend statt Papierkram"
-          title="Kein Küchentisch-Büro mehr am Abend."
-          intro="Angebote, Stundenzettel, Rechnungen: Was früher abends liegen blieb, bereitet Macher OS tagsüber vor. Du prüfst und schickst ab."
-        />
-        <CheckList
-          items={["Stundenzettel kommen vom Handy", "Rechnungen sind vorbereitet", "Offene Zahlungen im Blick"]}
-          className="mt-8"
-        />
-        <ArrowLink href="/funktionen/automatisch-erledigen" className="mt-8">
-          So arbeitet Macher
-        </ArrowLink>
-      </BildText>
-
-      {/* 3. Macher erledigt die Büroarbeit */}
-      <Section tone="ink">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">
-          <div>
-            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Macher erledigt</p>
-            <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
-              Weniger organisieren. Mehr machen.
-            </h2>
-            <p className="mt-5 max-w-md text-lg text-white/70">
-              Macher OS übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
-            </p>
-            <Link
-              href="/funktionen/automatisch-erledigen"
-              className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
-            >
-              So arbeitet Macher <Icon name="arrow-right" className="size-4" />
-            </Link>
+      {/* 8. Macher erledigt */}
+      <Zone ton="dunkel">
+        <Section tone="transparent">
+          <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">
+            <div>
+              <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Macher erledigt</p>
+              <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
+                Weniger organisieren. Mehr machen.
+              </h2>
+              <p className="mt-5 max-w-md text-lg text-white/70">
+                Macher OS übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
+              </p>
+              <Link
+                href="/funktionen/automatisch-erledigen"
+                className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
+              >
+                So arbeitet Macher <Icon name="arrow-right" className="size-4" />
+              </Link>
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {machtMacher.map((m) => (
+                <li key={m.text}>
+                  <Karte3D innen="flex items-center gap-3 karte-dunkel p-4" stark={8}>
+                    <span className="karte-3d-tief inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-ink">
+                      <Icon name={m.icon} className="size-5" />
+                    </span>
+                    <span className="font-semibold leading-snug">{m.text}</span>
+                  </Karte3D>
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {machtMacher.map((m) => (
-              <li key={m.text} className="flex items-center gap-3 karte-dunkel p-4">
-                <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg icon-kachel">
-                  <Icon name={m.icon} className="size-5" />
-                </span>
-                <span className="font-semibold leading-snug">{m.text}</span>
+        </Section>
+      </Zone>
+
+      {/* 9. Planung */}
+      <Zone ton="beige">
+        <Section tone="transparent">
+          <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.3fr]">
+            <div>
+              <SectionHeading
+                eyebrow="Planung"
+                title="Macher plant mit."
+                intro="Macher schlägt dir vor, wer wann wohin fährt – und denkt dabei an alles, was du sonst im Kopf haben musst."
+              />
+              <ul className="mt-8 flex flex-wrap gap-2">
+                {planung.map((p) => (
+                  <li key={p} className="rounded bg-white px-3.5 py-1.5 text-sm font-semibold ring-1 ring-line">
+                    {p}
+                  </li>
+                ))}
+              </ul>
+              <ArrowLink href="/funktionen/einsatzplanung" className="mt-8">
+                Einsatzplanung ansehen
+              </ArrowLink>
+            </div>
+            <PlanBoardMock />
+          </div>
+        </Section>
+      </Zone>
+
+      {/* 10. Kunden */}
+      <Zone ton="weiss">
+        <Section tone="transparent">
+          <SectionHeading eyebrow="Kunden" title="Von Machern für Macher." />
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {kunden.slice(0, 3).map((k) => (
+              <KundenCard key={k.slug} slug={k.slug} />
+            ))}
+          </div>
+          <ArrowLink href="/kunden" className="mt-8">
+            Alle Kunden ansehen
+          </ArrowLink>
+        </Section>
+      </Zone>
+
+      {/* 11. Von Mission Mittelstand */}
+      <Zone ton="dunkel">
+        <MissionMittelstand />
+      </Zone>
+
+      {/* 12. Einrichtung */}
+      <Zone ton="beige">
+        <Section tone="transparent">
+          <div className="grid gap-12 lg:grid-cols-2">
+            <div className="min-w-0">
+              <SectionHeading
+                eyebrow="Einrichtung"
+                title="Dein Betrieb ist schon vorbereitet."
+                intro="Beim Start beantwortest du vier kurze Fragen. Den Rest richtet Macher OS für dich ein."
+              />
+              <ol className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
+                {["Gewerk", "Leistungen", "Arbeitsweise", "Teamgröße"].map((s, i) => (
+                  <li key={s} className="flex items-center gap-3 rounded-xl bg-white p-4 ring-1 ring-line">
+                    <span className="font-display text-sm font-extrabold text-signal-dark">{i + 1}</span>
+                    <span className="font-semibold">{s}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className="min-w-0 rounded-2xl bg-ink p-6 text-white sm:p-8">
+              <p className="font-display text-xl font-bold">Macher OS richtet automatisch ein:</p>
+              <ul className="mt-5 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
+                {["passende Funktionen", "Begriffe", "Vorlagen", "Abläufe", "Checklisten", "Schulungen"].map((x) => (
+                  <li key={x} className="flex items-center gap-2">
+                    <Icon name="check" className="size-4 text-accent" /> {x}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 border-t border-white/15 pt-5 text-white/75">
+                Bestehende Kunden, Mitarbeiter und Artikel einfach übernehmen.
+              </p>
+              <ButtonLink href={cta.primary.href} size="lg" className="mt-7 w-full sm:w-auto sm:min-w-72">
+                Kostenlos starten
+              </ButtonLink>
+            </div>
+          </div>
+        </Section>
+      </Zone>
+
+      {/* 12b. Bedenken – die fünf Kernängste als Karten, die übrigen Einwände zum Aufklappen (docs/produkt/einwaende.md) */}
+      <Zone ton="dunkel" id="bedenken">
+        <Section tone="transparent">
+          <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Bedenken</p>
+          <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
+            Ehrliche Antworten auf deine Bedenken.
+          </h2>
+          <p className="mt-5 max-w-xl text-lg text-white/70">Das hören wir von Handwerkern am häufigsten, bevor sie anfangen.</p>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {kernaengste.map((k) => (
+              <li key={k.angst} className="rounded-2xl bg-white p-6 text-ink">
+                <p className="text-muted">„{k.angst}“</p>
+                <p className="mt-3 flex items-start gap-3 font-display text-xl font-bold leading-snug">
+                  <Icon name={k.icon} className="mt-0.5 size-6 shrink-0 text-primary" />
+                  {k.antwort}
+                </p>
+                <p className="mt-2 leading-relaxed text-muted">{k.text}</p>
               </li>
             ))}
+            <li className="flex flex-col justify-between rounded-2xl bg-ink-soft p-6 ring-1 ring-white/15">
+              <div>
+                <p className="font-display text-xl font-bold leading-snug">Überzeug dich selbst.</p>
+                <p className="mt-2 leading-relaxed text-on-dark">
+                  Mit deinem echten Betrieb. {testTage} Tage kostenlos, ohne Kreditkarte.
+                </p>
+              </div>
+              <ButtonLink href={cta.primary.href} className="mt-6 self-start">
+                {cta.primary.label}
+              </ButtonLink>
+            </li>
           </ul>
-        </div>
-      </Section>
-
-      {/* 7. Planung */}
-      <Section>
-        <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.3fr]">
-          <div>
-            <SectionHeading
-              eyebrow="Planung"
-              title="Macher plant mit."
-              intro="Macher schlägt dir vor, wer wann wohin fährt – und denkt dabei an alles, was du sonst im Kopf haben musst."
-            />
-            <ul className="mt-8 flex flex-wrap gap-2">
-              {planung.map((p) => (
-                <li key={p} className="rounded bg-white px-3.5 py-1.5 text-sm font-semibold ring-1 ring-line">
-                  {p}
-                </li>
-              ))}
-            </ul>
-            <ArrowLink href="/funktionen/einsatzplanung" className="mt-8">
-              Einsatzplanung ansehen
-            </ArrowLink>
+          <h3 className="mt-14 font-display text-2xl font-bold">Weitere Bedenken</h3>
+          <div className="mt-6">
+            <Faq items={weitereEinwaende} dark />
           </div>
-          <PlanBoardMock />
-        </div>
-      </Section>
+        </Section>
+      </Zone>
 
-      {/* 8. Kundenbeweise */}
-      <Section tone="white">
-        <SectionHeading eyebrow="Kunden" title="Von Machern für Macher." />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {kunden.slice(0, 3).map((k) => (
-            <KundenCard key={k.slug} slug={k.slug} />
-          ))}
-        </div>
-        <ArrowLink href="/kunden" className="mt-8">
-          Alle Kunden ansehen
-        </ArrowLink>
-      </Section>
-
-      {/* 9a. Von Mission Mittelstand */}
-      <MissionMittelstand />
-
-      {/* 9. Einrichtung */}
-      <Section>
-        <div className="grid gap-12 lg:grid-cols-2">
-          <div className="min-w-0">
-            <SectionHeading
-              eyebrow="Einrichtung"
-              title="Dein Betrieb ist schon vorbereitet."
-              intro="Beim Start beantwortest du vier kurze Fragen. Den Rest richtet Macher OS für dich ein."
-            />
-            <ol className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
-              {["Gewerk", "Leistungen", "Arbeitsweise", "Teamgröße"].map((s, i) => (
-                <li key={s} className="flex items-center gap-3 rounded-xl bg-white p-4 ring-1 ring-line">
-                  <span className="font-display text-sm font-extrabold text-signal-dark">{i + 1}</span>
-                  <span className="font-semibold">{s}</span>
+      {/* 13. Wissen – Bento */}
+      <Zone ton="weiss">
+        <Section tone="transparent">
+          <SectionHeading eyebrow="Wissen" title="Wissen für deinen Betrieb." />
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-2">
+            {wissen.map((w, n) => {
+              const gross = n === 0;
+              const ton = gross
+                ? "bg-ink text-white lg:col-span-6 lg:row-span-2"
+                : n === 1
+                  ? "bg-beige text-ink lg:col-span-3"
+                  : n === 2
+                    ? "bg-white text-ink lg:col-span-3"
+                    : n === 3
+                      ? "bg-white text-ink lg:col-span-2"
+                      : n === 4
+                        ? "bg-beige text-ink lg:col-span-2"
+                        : "bg-white text-ink lg:col-span-2";
+              const dunkel = gross;
+              return (
+                <li key={w.titel} className={`${ton} ${gross ? "sm:col-span-2" : ""} rounded-2xl ${dunkel ? "" : "ring-1 ring-beige-line"}`}>
+                  <Link
+                    href={w.href}
+                    className={`group flex h-full flex-col rounded-2xl p-6 transition-transform duration-150 ease-out hover:-translate-y-0.5 ${gross ? "min-h-64 lg:p-8" : "min-h-44"}`}
+                  >
+                    <span
+                      className={`inline-flex size-11 items-center justify-center rounded-xl ${
+                        dunkel ? "bg-white/10 text-accent" : "bg-white text-signal-dark ring-1 ring-line"
+                      }`}
+                    >
+                      <Icon name={w.icon} className="size-5" />
+                    </span>
+                    <span className={`mt-auto pt-6 font-display font-bold leading-tight ${gross ? "text-4xl" : "text-xl"}`}>{w.titel}</span>
+                    <span className={`mt-1 ${dunkel ? "text-white/75" : "text-muted"} ${gross ? "text-lg" : ""}`}>{w.text}</span>
+                    {gross && (
+                      <span className="mt-6 inline-flex items-center gap-1.5 font-semibold text-accent">
+                        Zum Blog <Icon name="arrow-right" className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+                      </span>
+                    )}
+                  </Link>
                 </li>
-              ))}
-            </ol>
+              );
+            })}
+          </ul>
+          <ArrowLink href="/wissen" className="mt-8">
+            Wissen entdecken
+          </ArrowLink>
+        </Section>
+      </Zone>
+
+      {/* 14. Preise */}
+      <Zone ton="beige">
+        <Section tone="transparent">
+          <SectionHeading
+            eyebrow="Preise"
+            title="Einfacher Preis. Keine Überraschungen."
+            intro="Ein Preis für deinen ganzen Betrieb. Monatlich kündbar."
+          />
+          <div className="mt-12">
+            <PlanCards />
           </div>
-          <div className="min-w-0 rounded-2xl bg-ink p-6 text-white sm:p-8">
-            <p className="font-display text-xl font-bold">Macher OS richtet automatisch ein:</p>
-            <ul className="mt-5 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
-              {["passende Funktionen", "Begriffe", "Vorlagen", "Abläufe", "Checklisten", "Schulungen"].map((x) => (
-                <li key={x} className="flex items-center gap-2">
-                  <Icon name="check" className="size-4 text-accent" /> {x}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 border-t border-white/15 pt-5 text-white/75">
-              Bestehende Kunden, Mitarbeiter und Artikel einfach übernehmen.
-            </p>
-            <ButtonLink href={cta.primary.href} className="mt-6">
-              Kostenlos starten <Icon name="arrow-right" className="size-4" />
-            </ButtonLink>
+          <ArrowLink href="/preise" className="mt-8">
+            Alle Preise ansehen
+          </ArrowLink>
+        </Section>
+      </Zone>
+
+      {/* 15. Häufige Fragen – dunkelgrüne Box */}
+      <Zone ton="dunkel">
+        <Section tone="transparent" containerSize="narrow">
+          <DunkleHeadline gruen="Häufige" rest="Fragen" />
+          <div className="mt-10">
+            <Faq items={faq} dark />
           </div>
-        </div>
-      </Section>
+          <FaqJsonLd items={faq} />
+        </Section>
+      </Zone>
 
-      {/* 10. Wissen & Werkzeuge */}
-      <Section tone="sand">
-        <SectionHeading eyebrow="Wissen" title="Wissen, das deinen Betrieb besser macht." />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {wissen.map((w) => (
-            <Card key={w.titel} title={w.titel} icon={w.icon} iconTone="sky" href={w.href}>
-              {w.text}
-            </Card>
-          ))}
-        </div>
-        <ArrowLink href="/wissen" className="mt-8">
-          Wissen entdecken
-        </ArrowLink>
-      </Section>
-
-      {/* 11. Preise */}
-      <Section tone="white">
-        <SectionHeading
-          eyebrow="Preise"
-          title="Einfacher Preis. Keine Überraschungen."
-          intro="Ein Preis für deinen ganzen Betrieb. Monatlich kündbar."
-        />
-        <div className="mt-12">
-          <PlanCards />
-        </div>
-        <ArrowLink href="/preise" className="mt-8">
-          Alle Preise ansehen
-        </ArrowLink>
-      </Section>
-
-      {/* 12. FAQ – dunkel */}
-      <Section tone="ink" containerSize="narrow">
-        <DunkleHeadline gruen="Häufige" rest="Fragen" />
-        <div className="mt-10">
-          <Faq items={faq} dark />
-        </div>
-        <FaqJsonLd items={faq} />
-      </Section>
-
-      {/* 13. Final CTA */}
+      {/* 16. Jetzt starten – weiße Box; danach die grüne Footer-Box */}
       <FinalCta />
     </>
   );

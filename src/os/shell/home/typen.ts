@@ -27,6 +27,8 @@ export interface NextAction {
   actionUrl: string;
   completed: boolean;
   bezug?: Bezug;
+  /** optional: Einstellung, mit der sich diese Aktion dauerhaft ausblenden lässt */
+  ausblenden?: string;
 }
 
 // ------------------------------------------------------------------ Deine Arbeit

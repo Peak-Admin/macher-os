@@ -25,6 +25,11 @@ import {
   setupFertig,
   setupGestartet,
   setupSchritt,
+  vorlageErkennen,
+  fachrichtungAusText,
+  gewerkAusText,
+  websiteAnzeige,
+  PLATZHALTER_NAME,
   teamEinladen,
   vorbereitet,
   type BriefkopfErkannt,
@@ -270,16 +275,41 @@ describe('Einrichten mit eigenen Daten', () => {
   });
 });
 
+describe('Magic Setup: Gewerk aus der Website', () => {
+  it('nimmt das Gewerk der Erkennung, sonst Stichworte aus Name und Leistungen', () => {
+    expect(vorlageErkennen({ name: 'Müller GmbH', gewerk: 'maler' })).toEqual({ gewerk: 'maler', fachrichtung: undefined });
+    expect(vorlageErkennen({ name: 'Maler Müller GmbH', gewerk: '' }).gewerk).toBe('maler');
+    expect(vorlageErkennen({ name: 'Schmidt & Söhne', leistungen: ['Badsanierung', 'Heizungswartung'] }).gewerk).toBe('shk');
+    expect(vorlageErkennen({ name: 'Garten Grün', leistungen: ['Pflasterarbeiten'] }).gewerk).toBe('garten');
+    expect(vorlageErkennen({ name: 'Meier GmbH', leistungen: [] }).gewerk).toBeUndefined();
+  });
+  it('erkennt feinere Vorlagen nur im passenden Gewerk', () => {
+    expect(vorlageErkennen({ name: 'Elektro Sonne', leistungen: ['Photovoltaik', 'Wallbox'] })).toEqual({ gewerk: 'elektro', fachrichtung: 'solar' });
+    expect(fachrichtungAusText('tischler', 'Fensterbau Klein')).toBe('fensterbau');
+    expect(fachrichtungAusText('maler', 'Fensterbau')).toBeUndefined();
+    expect(gewerkAusText('Metallbau Koch')).toBe('metall');
+  });
+  it('zeigt die Website ohne Protokoll und www', () => {
+    expect(websiteAnzeige(' https://www.maler-mueller.de/ ')).toBe('maler-mueller.de');
+  });
+  it('richtet einen Betrieb ohne Website nur aus dem Gewerk ein – Kunden und Team bleiben für später', () => {
+    const e = setupEinrichten({ gewerk: 'maler', briefkopf: { ...LEERER_BRIEFKOPF, name: PLATZHALTER_NAME }, kunden: [], preise: { art: 'vorlage', prozent: 0 }, team: [] });
+    expect(db.betrieb.get('betrieb')).toMatchObject({ name: 'Mein Betrieb', gewerk: 'maler', onboardingFertig: true });
+    expect(e.leistungen).toBeGreaterThan(5);
+    expect(e).toMatchObject({ kunden: 0, team: 0 });
+  });
+});
+
 describe('Messung', () => {
   it('misst Start, Schritte und Ende mit Dauer', () => {
     sessionStorage.clear();
     const start = setupGestartet('direkt');
     expect(setupGestartet('direkt')).toBe(start); // Neuladen startet nicht neu
-    setupSchritt(start, 1);
+    setupSchritt(start, 'website');
     setupFertig(start, { kunden: 3, leistungen: 12, team: 1, briefkopfVollstaendig: false, konto: 'lokal', briefkopfQuelle: 'foto', preise: 'vorlage' });
     const p = messpunkte().slice(-3);
     expect(p.map((x) => x.ereignis)).toEqual(['setup.gestartet', 'setup.schritt', 'setup.fertig']);
-    expect(p[1].daten).toMatchObject({ schritt: 2, id: 'betrieb' });
+    expect(p[1].daten).toMatchObject({ schritt: 2, id: 'website' });
     expect(p[2].daten).toMatchObject({ kunden: 3, team: 1, briefkopfQuelle: 'foto' });
     expect(typeof p[2].daten?.sekunden).toBe('number');
     expect(sessionStorage.getItem('macher-os:setup-start')).toBeNull();

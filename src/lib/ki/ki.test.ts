@@ -103,6 +103,12 @@ describe('Server: Briefkopf erkennen (gemockter fetch)', () => {
     expect(b).toMatchObject({ plz: '', zahlungszielTage: 0, logo: { gefunden: false } });
     expect(htmlText('a<br>b &amp; c')).toBe('a\nb & c');
   });
+
+  it('übernimmt nur bekannte Gewerke und eindeutige, kurze Leistungen', () => {
+    expect(briefkopfBereinigen({ gewerk: 'maler', leistungen: [' Fassadenanstrich ', 'Fassadenanstrich', '', 'Tapezieren'] })).toMatchObject({ gewerk: 'maler', leistungen: ['Fassadenanstrich', 'Tapezieren'] });
+    expect(briefkopfBereinigen({ gewerk: 'zauberei' }).gewerk).toBe('');
+    expect(briefkopfBereinigen({}).leistungen).toEqual([]);
+  });
 });
 
 describe('Server: Preisliste erkennen (gemockter fetch)', () => {

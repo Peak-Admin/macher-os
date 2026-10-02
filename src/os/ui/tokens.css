@@ -96,6 +96,9 @@
   --mm-on-dark: #ffffff;
   --mm-on-dark-muted: #e0e9e3;
   --mm-focus-on-dark: #c3e8cf;
+
+  /* EU-Blau: nur für den Vertrauenskasten (DSGVO, Server in Frankfurt, EU AI Act) – sonst nirgends */
+  --mm-eu: #003399;
 }
 
 @media (prefers-reduced-motion: reduce) {
