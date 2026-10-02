@@ -31,7 +31,7 @@ const faq: FaqItem[] = [
   {
     frage: "Mein Gewerk steht nicht auf der Liste. Kann ich Macher OS trotzdem nutzen?",
     antwort:
-      "Ja. Beim Start wählst du neben dem Gewerk auch deine Arbeitsweise – Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Danach passt du Begriffe, Abläufe und Vorlagen an deinen Betrieb an.",
+      "Ja. Beim Start tippst du das Gewerk an, das am besten passt. Macher OS richtet sich nach deiner Arbeitsweise – Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Danach passt du Begriffe, Abläufe und Vorlagen an deinen Betrieb an.",
   },
   {
     frage: "Was passiert, wenn mein Betrieb mehrere Gewerke hat?",

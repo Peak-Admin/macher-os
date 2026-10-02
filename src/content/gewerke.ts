@@ -2248,7 +2248,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Ist Macher OS nicht eigentlich für Baustellen?",
         antwort:
-          "Macher OS kommt vom Bau. Termine, Team, Schulungen und Büro brauchen aber alle Handwerksbetriebe. Beim Einrichten wählst du deine Arbeitsweise, und Macher zeigt nur, was du brauchst.",
+          "Macher OS kommt vom Bau. Termine, Team, Schulungen und Büro brauchen aber alle Handwerksbetriebe. Die Arbeitsweise kommt aus der Vorlage deines Gewerks, und Macher zeigt nur, was du brauchst.",
       },
     ],
   },
@@ -2479,7 +2479,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Mein Gewerk ist nicht aufgeführt. Passt Macher OS trotzdem?",
         antwort:
-          "Sehr wahrscheinlich. Beim Einrichten wählst du deine Arbeitsweise – Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Begriffe, Schritte und Vorlagen passt du danach an deinen Betrieb an.",
+          "Sehr wahrscheinlich. Macher OS richtet sich nach deiner Arbeitsweise – Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Begriffe, Abläufe und Vorlagen passt du danach an deinen Betrieb an.",
       },
       {
         frage: "Wie lange dauert das Einrichten?",

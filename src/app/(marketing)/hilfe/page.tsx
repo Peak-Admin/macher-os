@@ -48,7 +48,7 @@ export default function HilfePage() {
       <Section tone="white" tight>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Card title="Schnellstart" icon="bolt" href="/hilfe/schnellstart">
-            In 7 Schritten startklar.
+            Mit einer Frage startklar.
           </Card>
           <Card title="Hilfe-Center" icon="book" iconTone="sky" href="/hilfe-center">
             Anleitungen zu allen Bereichen.

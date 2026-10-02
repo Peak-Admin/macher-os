@@ -72,7 +72,7 @@ export default function HilfeCenterPage() {
           ))}
         </div>
         <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3">
-          <ArrowLink href="/hilfe/schnellstart">Schnellstart in 7 Schritten</ArrowLink>
+          <ArrowLink href="/hilfe/schnellstart">Zum Schnellstart</ArrowLink>
           <ArrowLink href="/hilfe/kontakt">Frage nicht beantwortet? Schreib uns</ArrowLink>
         </div>
       </Section>

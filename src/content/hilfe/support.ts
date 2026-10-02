@@ -58,7 +58,7 @@ export const hilfeFaq: FaqItem[] = [
   {
     frage: "Wie schnell bin ich startklar?",
     antwort:
-      "Die Grundeinrichtung dauert meist nur wenige Minuten: Konto anlegen, Gewerk und Leistungen wählen, fertig. Mitarbeiter und den ersten Auftrag kannst du direkt danach anlegen.",
+      "In wenigen Minuten. Du beantwortest eine Frage: Welcher Betrieb bist du? Website angeben oder Gewerk antippen – fertig. Danach schreibst du direkt dein erstes Angebot oder legst einen Auftrag an.",
   },
   {
     frage: "Kann ich meine Daten aus Excel oder einer anderen Software mitnehmen?",

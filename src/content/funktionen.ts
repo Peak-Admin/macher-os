@@ -3984,7 +3984,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Wie lernt Macher meinen Betrieb kennen?",
         antwort:
-          "Beim Start wählst du Gewerk, Leistungen und Arbeitsweise. Dazu kommen deine Vorlagen, Preise und Regeln. Daraus weiß Macher, wie bei dir gearbeitet wird.",
+          "Beim Start sagst du, welcher Betrieb du bist. Macher liest Gewerk und Leistungen von deiner Website oder nimmt die Vorlage deines Gewerks. Dazu kommen deine Vorlagen, Preise und Regeln. Daraus weiß Macher, wie bei dir gearbeitet wird.",
       },
     ],
     verwandt: ["telefon", "einsatzplanung", "rechnungen"],
