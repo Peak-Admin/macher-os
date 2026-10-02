@@ -54,8 +54,11 @@ Aktionsgrün auf dem Glas, weiß auf der hinteren Form. Keine Kachel dahinter. I
 - In der Software stehen statt Objektfotos seit Oktober 2026 Fenster-Skizzen (siehe „Fenster-Skizze“); auf der Website
   bleiben Objektfotos (`Objekt`). Das Glas-Icon ist die Form für alle übrigen Themen
 - Mega-Menü: Icons nur an den Einträgen, nicht zusätzlich an den Gruppenüberschriften (keine doppelten Motive)
-- Bedien-Icons (Pfeile, Schließen, Menü, Plus im Button, Haken im Button, Status) und alles unter 32 px bleiben
-  Strich-Icons in Textfarbe – ebenso die Sidebar-Navigation
+- Bedien-Icons (Pfeile, Schließen, Menü, Plus im Button, Haken im Button, Status) und alles unter 24 px bleiben
+  Strich-Icons in Textfarbe
+- **Navigation (Software, Oktober 2026):** Seitenleiste, Benachrichtigungen, untere Leiste am Handy und Monteur-Tabs
+  zeigen Glas-Icons (28 px), die Favoriten 24 px – immer mit Text daneben. Suchen, Leiste einklappen und Menüs bleiben
+  Strich-Icons
 - Neue Motive in `glas.tsx` ergänzen und in den Zuordnungen (`IconTile` bzw. `glasFuer`) eintragen
 
 ### Skizzen und UI-Ebenen für Funktionen (Oktober 2026)
@@ -83,7 +86,8 @@ Objektfotos (`Objekt`) bleiben für Bereiche und Einstiege, Glas-Icons für Them
 
 ### Fenster-Skizze (Oktober 2026 – Website und Software)
 Feines Drahtgitter eines App-Fensters (Titelleiste, Seitenspalte; alternativ ein Handy-Umriss), das nach unten weich
-ausläuft, in der Mitte eine App-Kachel mit Glas-Icon und leichtem grünem Schein. Linien und Kachel in `currentColor`
+ausläuft, in der Mitte eine App-Kachel mit Glas-Icon. **Ohne Farbe:** Auch das Glas-Icon ist grau (aus der Textfarbe
+gemischt, auf Dunkel hellgrau), damit sich die Zeichnung klar von den grünen Themen- und Navigations-Icons abhebt. Linien und Kachel in `currentColor`
 mit geringer Deckkraft: hell auf der ruhigen Fläche (`sand` / `--mm-surface-subtle`), dunkel direkt auf dunklen Karten
 (`karte-dunkel`). Keine Daten, kein Text in der Skizze – Titel und Text der Karte tragen die Bedeutung.
 

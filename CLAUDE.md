@@ -20,7 +20,7 @@ Widget-Köpfe `<SkizzenKachel>`, `Leer` zeigt automatisch die Fenster-Skizze (`M
 Fotos von Mission Mittelstand / Matthias Aumann nur mit Freigabe des Betreibers (siehe `missionMittelstandBilder`).
 Karten, die eine Funktion kurz erklären, zeigen statt Foto oder Icon eine abstrakte **Skizze** (`<Skizze motiv="angebote" />`,
 Card-Prop `skizze`) oder eine **UI-Ebene** mit Beispieldaten (`<UiEbene>`). Einstiegs- und Teaserkarten (erste Schritte,
-Schnittstellen, „Kommt bald“) zeigen die **Fenster-Skizze**: Drahtgitter-Fenster mit Glas-Icon (`src/os/ui/fenster.tsx`,
+Schnittstellen, „Kommt bald“) zeigen die **Fenster-Skizze**: Drahtgitter-Fenster mit grauem Glas-Icon (`src/os/ui/fenster.tsx`,
 Website `<Fenster>` bzw. Card-Prop `fenster`). Regeln: `docs/design/festlegungen.md`.
 
 Reihenfolge bei Zielkonflikten: 1. Aufgabe verstehen und erledigen · 2. Orientierung, Lesbarkeit, Fehlertoleranz ·
@@ -46,6 +46,7 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
 - **App-Flächen:** deckend und ruhig – kein Foto und kein Glas (`backdrop-filter`) hinter Daten, Formularen, Listen.
 - **Icons:** Themen-Icons ab ca. 32 px sind Glas-Icons (`src/os/ui/glas.tsx`, eine Quelle für Website und Software;
   Website über `IconTile`, Software über `ThemenIcon`). Bedien-Icons und alles Kleinere bleiben Strich-Icons.
+  Die Navigation der Software (Seitenleiste, untere Leiste, Favoriten) zeigt ebenfalls Glas-Icons.
   Neue Motive in `glas.tsx` ergänzen. Details: `docs/design/festlegungen.md`.
 - **Status:** immer Text + optional Icon, nie nur Farbe. Neutral als Standard; Rot nur für echte Sperre/Gefahr („Nicht verwenden“).
 - **Tonalität:** direkte Du-Ansprache („du“, „dein“ klein), konkrete Verben („Auftrag anlegen“), kurze Sätze, keine erfundenen Zahlen.

@@ -6,9 +6,17 @@
  * Listen oder Formularen. Rein dekorativ (`aria-hidden`): Titel und Text der Karte tragen die Bedeutung.
  *
  * Linien und Kachel nehmen `currentColor` – die Fläche setzt die Farbe (hell: Textfarbe, dunkel: Weiß).
- * Der Schein hinter der Kachel nutzt `--glas-hell`. Regeln: docs/design/festlegungen.md („Fenster-Skizze“).
+ * Ohne Farbe: Auch das Glas-Icon ist grau (aus `currentColor` gemischt), damit sich die Zeichnung klar von den grünen
+ * Themen- und Navigations-Icons unterscheidet. Regeln: docs/design/festlegungen.md („Fenster-Skizze“).
  */
 import { useId, type CSSProperties } from 'react';
+
+/** Graue Glas-Farben für die Zeichnung – überschreiben die grünen `--glas-*` nur innerhalb der Skizze. */
+const GRAU = {
+  '--glas-hell': 'color-mix(in srgb, currentColor 30%, transparent)',
+  '--glas-dunkel': 'color-mix(in srgb, currentColor 68%, transparent)',
+  '--glas-milch': 'color-mix(in srgb, currentColor 8%, transparent)',
+} as CSSProperties;
 import { GlasIcon, glasFuer, type GlasIconName } from './glas';
 
 export function FensterSkizze({
@@ -40,7 +48,7 @@ export function FensterSkizze({
       aria-hidden="true"
       focusable="false"
       className={className}
-      style={{ display: 'block', width: '100%', height: 'auto', ...style }}
+      style={{ display: 'block', width: '100%', height: 'auto', ...GRAU, ...style }}
     >
       <defs>
         {/* Rahmen läuft nach unten weich aus */}
