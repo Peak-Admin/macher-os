@@ -12,7 +12,7 @@ import { hinweisErledigen, meinPosteingang, offeneHinweise } from '@core/macher'
 import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { useIch } from '@core/session';
 import type { Mitarbeiter } from '@core/objects';
-import { Button, Icon, Leer, Meta, Stapel, Status, useToast, type IconName } from '@ui/index';
+import { Button, DatumEingabe, Icon, Leer, Meta, Stapel, Status, useToast, type IconName } from '@ui/index';
 import './inbox.css';
 
 /** Neu berechnen, sobald sich Daten ändern – und jede Minute (Später und Lebensdauer laufen ab, auch ohne Änderung) */
@@ -134,10 +134,7 @@ function SpaeterMenue({ e, h }: { e: InboxEintrag; h: Handlungen }) {
                 h.spaeter(e, spaeterAm(datum), `am ${new Date(datum + 'T12:00:00').toLocaleDateString('de-DE')}`);
               }}
             >
-              <label>
-                <span className="mm-meta">Datum wählen</span>
-                <input type="date" className="mm-input" min={morgen} value={datum} onChange={(ev) => setDatum(ev.target.value)} />
-              </label>
+              <DatumEingabe label="Datum wählen" min={morgen} value={datum} onChange={(ev) => setDatum(ev.target.value)} />
               <Button variante="sekundaer" klein type="submit" disabled={!datum}>
                 Übernehmen
               </Button>
