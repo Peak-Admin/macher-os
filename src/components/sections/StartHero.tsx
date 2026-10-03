@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Zone } from "@/components/ui";
+import { Icon, Zone } from "@/components/ui";
 import { bildVorhanden } from "@/components/ui/Foto";
 import { app, herausgeber } from "@/lib/site";
 import { HeroEmail } from "./HeroEmail";
@@ -73,6 +73,14 @@ export function StartHero() {
             Die Software für Handwerker, die Büro, Baustelle und Team
             zusammenbringt.
           </p>
+          <a
+            href="#lotte"
+            className="mx-auto mt-4 inline-flex min-h-10 items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold text-white ring-1 ring-inset ring-white/20 transition-colors duration-150 ease-out hover:bg-white/15"
+          >
+            <Icon name="spark" className="size-4 text-accent" />
+            Mit KI-Agent Lotte von Hey Lotte – sie erledigt Büroarbeit selbst
+            <Icon name="arrow-right" className="size-4" />
+          </a>
 
           <div className="mx-auto mt-7 w-full max-w-md text-left">
             <a
