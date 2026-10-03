@@ -286,6 +286,10 @@ a.pt2-balken:hover, span.pt2-balken:hover { box-shadow: inset 0 0 0 1px color-mi
 .pt2-heute { min-height: 32px; padding: 0 14px; border: 1px solid var(--mm-border); border-radius: 16px; background: var(--mm-surface); color: var(--mm-brand-text); font: 600 14px/18px var(--mm-font); cursor: pointer; }
 .pt2-heute:hover { background: var(--mm-brand-soft); border-color: var(--mm-success-border); }
 .pt2-heute:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }
+/* Ansicht wählen: Drei-Punkte-Menü rechts neben dem Zoom */
+.pt2-ansicht-knopf { width: 48px; height: 48px; border: 1px solid var(--mm-border-dark); border-radius: var(--mm-radius-control); background: var(--mm-surface); }
+.pt2-ansicht .mm-aktionsmenue-liste { left: auto; right: 0; }
+.pt2-ansicht-haken { display: inline-grid; place-items: center; width: 16px; color: var(--mm-brand-text); }
 .pt2-tag.pt2-tag--frei:not(.pt2-frei-start)::after { left: -1px; }
 
 /* ---------- Aus main: Auftragsgruppe der älteren Wochen-Plantafel (PlanAuftraege.tsx) */

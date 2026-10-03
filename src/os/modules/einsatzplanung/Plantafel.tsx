@@ -156,6 +156,44 @@ function Balken({
 }
 
 /** Griff zum Ziehen einer Spaltenbreite (Maus/Touch ziehen, Tastatur ← →) */
+type Ansicht = 'beide' | 'projekte' | 'team';
+const ANSICHTEN: { wert: Ansicht; label: string }[] = [
+  { wert: 'beide', label: 'Projekte und Mitarbeiter' },
+  { wert: 'projekte', label: 'Nur Projekte' },
+  { wert: 'team', label: 'Nur Mitarbeiter' },
+];
+
+/** Drei-Punkte-Menü: welche Bereiche die Tafel zeigt */
+function AnsichtMenue({ wert, onWert }: { wert: Ansicht; onWert: (w: Ansicht) => void }) {
+  const [offen, setOffen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!offen) return;
+    const weg = (e: globalThis.KeyboardEvent) => e.key === 'Escape' && setOffen(false);
+    window.addEventListener('keydown', weg);
+    ref.current?.querySelector<HTMLButtonElement>('[aria-checked="true"]')?.focus();
+    return () => window.removeEventListener('keydown', weg);
+  }, [offen]);
+  return (
+    <div className="mm-aktionsmenue pt2-ansicht" ref={ref}>
+      <IconButton icon="mehr" label="Ansicht wählen" className="pt2-ansicht-knopf" aria-expanded={offen} aria-haspopup="menu" onClick={() => setOffen(!offen)} />
+      {offen && (
+        <>
+          <div className="mm-aktionsmenue-schleier" onClick={() => setOffen(false)} />
+          <div className="mm-aktionsmenue-liste" role="menu" aria-label="Was die Plantafel zeigt">
+            {ANSICHTEN.map((a) => (
+              <button key={a.wert} type="button" role="menuitemradio" aria-checked={wert === a.wert} onClick={() => (setOffen(false), onWert(a.wert))}>
+                <span className="pt2-ansicht-haken">{wert === a.wert && <Icon name="check" size={16} />}</span>
+                {a.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function BreitenGriff({
   label,
   wert,
@@ -233,6 +271,8 @@ export function Plantafel() {
   const zoom = ZOOM[zoomStufe];
   const ab = wochenStart(sp.get('ab') ?? sp.get('woche') ?? heute());
   const tag = sp.get('tag') ?? heute();
+  const zeigen = sp.get('zeigen');
+  const ansicht: Ansicht = zeigen === 'projekte' || zeigen === 'team' ? zeigen : 'beide';
   const [sortieren, setSortieren] = useState(false);
   const [zu, setZu] = useState<{
     offen?: boolean;
@@ -1004,6 +1044,7 @@ export function Plantafel() {
           className="pt2-problem pt2-problem--gefahr"
           onClick={() => {
             setZu({ ...zu, team: false });
+            if (ansicht === 'projekte') setze({ zeigen: undefined });
             window.setTimeout(() => {
               const el = rahmen.current?.querySelector<HTMLElement>('.pt2-balken--konflikt[data-schluessel]');
               if (el?.dataset.schluessel) hinspringen(`[data-schluessel="${el.dataset.schluessel}"]`, el.dataset.schluessel);
@@ -1019,7 +1060,7 @@ export function Plantafel() {
         </button>
       )}
       {ueberlastet.map((m) => (
-        <button key={m.id} type="button" className="pt2-problem pt2-problem--achtung" onClick={() => (setZu({ ...zu, team: false }), hinspringen(`[data-person="${m.id}"] .pt2-name`, `m-${m.id}`))}>
+        <button key={m.id} type="button" className="pt2-problem pt2-problem--achtung" onClick={() => (setZu({ ...zu, team: false }), ansicht === 'projekte' && setze({ zeigen: undefined }), hinspringen(`[data-person="${m.id}"] .pt2-name`, `m-${m.id}`))}>
           <Personenbild m={m} groesse={20} /> {personName(m)} überlastet
         </button>
       ))}
@@ -1037,6 +1078,7 @@ export function Plantafel() {
         <IconButton icon="minus" label="Mehr Tage zeigen" disabled={zoomStufe === 0} onClick={() => (setEigeneBreite(undefined), setze({ zoom: String(zoomStufe - 1) }))} />
         <IconButton icon="plus" label="Weniger Tage, größer zeigen" disabled={zoomStufe === ZOOM.length - 1} onClick={() => (setEigeneBreite(undefined), setze({ zoom: String(zoomStufe + 1) }))} />
       </span>
+      <AnsichtMenue wert={ansicht} onWert={(w) => setze({ zeigen: w === 'beide' ? undefined : w })} />
     </div>
   );
 
@@ -1166,8 +1208,9 @@ export function Plantafel() {
               {kopf}
               {offen.length > 0 && abschnitt('offen', 'Noch einzuplanen', offen.length)}
               {offen.length > 0 && !zu.offen && offenZeile()}
-              {abschnitt('projekte', 'Projekte', projekte.length, <IconButton icon="plus" label="Auftrag anlegen" className="pt2-mini" onClick={() => navigate('/auftraege/auftraege/neu')} />)}
-              {!zu.projekte &&
+              {ansicht !== 'team' && abschnitt('projekte', 'Projekte', projekte.length, <IconButton icon="plus" label="Auftrag anlegen" className="pt2-mini" onClick={() => navigate('/auftraege/auftraege/neu')} />)}
+              {ansicht !== 'team' &&
+                !zu.projekte &&
                 (projekte.length ? (
                   projekte.map(projektZeile)
                 ) : (
@@ -1178,13 +1221,14 @@ export function Plantafel() {
                     </div>
                   </div>
                 ))}
-              {abschnitt(
-                'team',
-                'Mitarbeiter',
-                mitarbeiter.length,
-                darfOrdnen ? <IconButton icon="mehr" label="Reihenfolge ändern" className="pt2-mini" aria-pressed={sortieren} onClick={() => setSortieren(!sortieren)} /> : undefined,
-              )}
-              {!zu.team && mitarbeiter.map(mitarbeiterZeile)}
+              {ansicht !== 'projekte' &&
+                abschnitt(
+                  'team',
+                  'Mitarbeiter',
+                  mitarbeiter.length,
+                  darfOrdnen ? <IconButton icon="mehr" label="Reihenfolge ändern" className="pt2-mini" aria-pressed={sortieren} onClick={() => setSortieren(!sortieren)} /> : undefined,
+                )}
+              {ansicht !== 'projekte' && !zu.team && mitarbeiter.map(mitarbeiterZeile)}
             </div>
           </div>
         </Stapel>
