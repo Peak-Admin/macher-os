@@ -76,7 +76,7 @@ export function BetriebsmittelDetail() {
                 </div>
               </Stapel>
             )}
-            <Karte titel={istFahrzeug ? 'Fahrer' : 'Wo ist es?'}>
+            <Karte titel={istFahrzeug ? 'Fahrer' : 'Wo ist es?'} icon={istFahrzeug ? 'person' : 'ort'}>
               <Stapel abstand={12}>
                 <p style={{ fontSize: 'var(--mm-text-xl, 1.5rem)', fontWeight: 700, margin: 0 }}>
                   {b.mitarbeiterId ? (
@@ -156,7 +156,7 @@ export function BetriebsmittelDetail() {
         }
         seite={
           <>
-            <Karte titel="Prüfung" kompakt aktion={<Button klein variante="sekundaer" onClick={() => setPruefung(true)}>Dokumentieren</Button>}>
+            <Karte titel="Prüfung" icon="schild" kompakt aktion={<Button klein variante="sekundaer" onClick={() => setPruefung(true)}>Dokumentieren</Button>}>
               {b.naechstePruefung ? (
                 <Stapel abstand={8}>
                   <Status ton={f.ton}>{f.text}</Status>
@@ -168,7 +168,7 @@ export function BetriebsmittelDetail() {
                 <Meta>Keine Prüffrist hinterlegt. Trag eine ein, wenn das Gerät prüfpflichtig ist (z. B. DGUV V3).</Meta>
               )}
             </Karte>
-            <Karte titel="Angaben" kompakt>
+            <Karte titel="Angaben" icon="info" kompakt>
               <Stapel abstand={8}>
                 {b.hersteller && <Meta>Hersteller: {b.hersteller}</Meta>}
                 {b.seriennummer && <Meta>{istFahrzeug ? 'FIN' : 'Seriennr.'}: {b.seriennummer}</Meta>}
@@ -250,6 +250,7 @@ function FahrzeugAusstattung({ fahrzeugId }: { fahrzeugId: string }) {
     <>
       <Karte
         titel="Ausstattung"
+        icon="werkzeug"
         aktion={
           <Button klein variante="sekundaer" icon="plus" onClick={() => setEinladen(!einladen)}>
             {einladen ? 'Fertig' : 'Einladen'}
@@ -288,7 +289,7 @@ function FahrzeugAusstattung({ fahrzeugId }: { fahrzeugId: string }) {
           )}
         </Stapel>
       </Karte>
-      <Karte titel="Material im Fahrzeug" aktion={<Button klein variante="tertiaer" to={`/betrieb/lager?ort=${encodeURIComponent(ort)}`}>Im Lager öffnen</Button>}>
+      <Karte titel="Material im Fahrzeug" icon="paket" aktion={<Button klein variante="tertiaer" to={`/betrieb/lager?ort=${encodeURIComponent(ort)}`}>Im Lager öffnen</Button>}>
         <Liste leer={<Meta>Kein Material im Fahrzeuglager gebucht. Buche es im Lager per Umbuchung ins Fahrzeug.</Meta>}>
           {material.map(({ a, menge }) => (
             <ListenZeile key={a.id} titel={<ObjektLink bezug={{ typ: 'artikel', id: a.id }}>{a.name}</ObjektLink>} rechts={<span className="mm-number">{zahl(menge)} {a.einheit}</span>} />

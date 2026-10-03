@@ -9,6 +9,8 @@
 import { batch, db, defineCollection } from '@core/db';
 import { heute } from '@core/format';
 import type { Artikel, Basis, Datum, ID } from '@core/objects';
+import type { TypTon } from '@core/zeichen';
+import type { IconName } from '@ui/index';
 import { fahrzeuge, fahrzeugText, fahrzeugVon } from '../werkzeuge/daten';
 
 export type LagerortId = string;
@@ -38,6 +40,22 @@ export const ART_LABEL: Record<Lagerbewegung['art'], string> = {
   entnahme: 'Entnahme',
   umbuchung: 'Umbuchung',
   inventur: 'Inventur',
+};
+
+/** Strich-Icon je Buchungsart (Umschalter im Buchen-Dialog, Typ-Kachel in den Bewegungen) */
+export const ART_ICON: Record<Lagerbewegung['art'], IconName> = {
+  zugang: 'plus',
+  entnahme: 'minus',
+  umbuchung: 'pfeil',
+  inventur: 'liste',
+};
+
+/** Farbton der Typ-Kachel je Buchungsart – unterscheidet Arten, kein Status */
+export const ART_TON: Record<Lagerbewegung['art'], TypTon> = {
+  zugang: 'gruen',
+  entnahme: 'sand',
+  umbuchung: 'blau',
+  inventur: 'lila',
 };
 
 export interface Lagerort {

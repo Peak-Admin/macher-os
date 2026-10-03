@@ -70,7 +70,7 @@ export function TerminCheck({ id }: { id: ID }) {
   if (!t || !terminZaehlt(t) || t.status === 'erledigt' || ['intern', 'schulung'].includes(t.art)) return null;
   const stufe = schlimmste(allePruefungen(pruefeEinsatz(ctx, t)));
   return (
-    <Karte titel="Einsatz-Check" kompakt aktion={<StufeStatus stufe={stufe} text={stufe === 'ok' ? 'Alles bereit' : undefined} />}>
+    <Karte titel="Einsatz-Check" icon="check" kompakt aktion={<StufeStatus stufe={stufe} text={stufe === 'ok' ? 'Alles bereit' : undefined} />}>
       <CheckInhalt ctx={ctx} t={t} />
     </Karte>
   );
@@ -86,7 +86,7 @@ export function AuftragCheck({ id }: { id: ID }) {
   if (!t) return null;
   const stufe = schlimmste(allePruefungen(pruefeEinsatz(ctx, t)));
   return (
-    <Karte titel="Einsatz-Check" oberzeile={`Nächster Einsatz ${datumKurz(t.start)}, ${uhrzeit(t.start)} Uhr`} kompakt aktion={<StufeStatus stufe={stufe} text={stufe === 'ok' ? 'Alles bereit' : undefined} />}>
+    <Karte titel="Einsatz-Check" icon="check" oberzeile={`Nächster Einsatz ${datumKurz(t.start)}, ${uhrzeit(t.start)} Uhr`} kompakt aktion={<StufeStatus stufe={stufe} text={stufe === 'ok' ? 'Alles bereit' : undefined} />}>
       <CheckInhalt ctx={ctx} t={t} />
     </Karte>
   );

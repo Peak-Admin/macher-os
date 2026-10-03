@@ -5,7 +5,9 @@ import { pfadZu } from '@core/modul';
 import { adresseText, datum, mapsLink, telLink } from '@core/format';
 import { useDarf } from '@core/session';
 import { PHASEN, type Ansprechpartner, type Kunde } from '@core/objects';
-import { BeispielMarke, Button, Dialog, Eingabe, FormRaster, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
+import { BeispielMarke, Button, Dialog, Eingabe, FormRaster, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, TypIcon, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
+import { AUFTRAGSART_TON } from '@core/zeichen';
+import { ART_ICON, ART_LABEL } from '@modules/auftraege/logik';
 import { ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import { verweiseAufKunde } from './daten';
 import { KundeFelder, entwurfAus, kundenDatenAus, pruefeEntwurf, type KundeEntwurf } from './KundeFelder';
@@ -101,7 +103,7 @@ export function KundeDetail() {
         }
         seite={
           <>
-            <Karte titel="Kontakt" kompakt>
+            <Karte titel="Kontakt" icon="telefon" kompakt>
               <Stapel abstand={8}>
                 {k.telefon && <a href={telLink(k.telefon)}>{k.telefon}</a>}
                 {k.email && <a href={`mailto:${k.email}`}>{k.email}</a>}
@@ -162,6 +164,7 @@ function KundeBearbeiten({ kunde, onSchliessen }: { kunde: Kunde; onSchliessen: 
       offen
       breit
       titel="Kunde bearbeiten"
+      icon="stift"
       onSchliessen={onSchliessen}
       aktionen={
         <>
@@ -197,6 +200,7 @@ function KundenAuftraege({ kundeId }: { kundeId: string }) {
           <ListenZeile
             key={a.id}
             to={pfadZu({ typ: 'auftraege', id: a.id })}
+            links={<TypIcon name={ART_ICON[a.art] ?? 'auftraege'} label={ART_LABEL[a.art] ?? 'Auftrag'} ton={AUFTRAGSART_TON[a.art]} />}
             titel={a.titel || a.nummer}
             untertitel={[a.nummer, ort?.bezeichnung, `seit ${datum(a.erstelltAm)}`].filter(Boolean).join(' · ')}
             rechts={<Status ton={ton}>{PHASEN.find((p) => p.id === a.phase)?.label}</Status>}
@@ -286,6 +290,7 @@ function AnsprechpartnerDialog({ kunde, ap, onSchliessen }: { kunde: Kunde; ap: 
     <Dialog
       offen
       titel={istNeu ? 'Ansprechpartner hinzufügen' : 'Ansprechpartner ändern'}
+      icon="person"
       onSchliessen={onSchliessen}
       aktionen={
         <>

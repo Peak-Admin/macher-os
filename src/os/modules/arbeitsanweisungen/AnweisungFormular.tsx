@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { neueId } from '@core/db';
-import { Button, Eingabe, IconButton, Karte, Meldung, Stapel, Textfeld, Zeile, useToast } from '@ui/index';
+import { Button, Eingabe, FormAbschnitt, IconButton, Karte, Meldung, Stapel, Textfeld, Zeile, useToast } from '@ui/index';
 import { FotoKnopf } from '@modules/fotos/FotoKnopf';
 import { arbeitsanweisungen, zeilen, type AnweisungsSchritt, type Arbeitsanweisung } from './daten';
 
@@ -41,8 +41,7 @@ export function AnweisungFormular({ x, onFertig }: { x: Arbeitsanweisung; onFert
         <Eingabe label="Titel" value={titel} onChange={(e) => setTitel(e.target.value)} />
         <Textfeld label="Ziel – was soll am Ende fertig sein?" optional value={ziel} onChange={(e) => setZiel(e.target.value)} />
         <Textfeld label="Sicherheit" optional hilfe="Ein Hinweis pro Zeile, z. B. „Spannungsfrei schalten und sichern“." value={sicherheit} onChange={(e) => setSicherheit(e.target.value)} />
-        <Stapel abstand={12}>
-          <h3>Schritte</h3>
+        <FormAbschnitt titel="Schritte" icon="liste">
           {schritte.map((s, i) => (
             <Karte key={s.id} kompakt>
               <Stapel abstand={8}>
@@ -66,7 +65,7 @@ export function AnweisungFormular({ x, onFertig }: { x: Arbeitsanweisung; onFert
               Schritt hinzufügen
             </Button>
           </div>
-        </Stapel>
+        </FormAbschnitt>
         <Zeile abstand={8}>
           <Button type="submit">Speichern</Button>
           <Button variante="tertiaer" onClick={onFertig}>

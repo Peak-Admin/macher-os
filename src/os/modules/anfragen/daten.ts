@@ -8,6 +8,7 @@ import { heute, plusTage } from '@core/format';
 import { naechsteNummer } from '@core/nummern';
 import { aktionAusfuehren, pfadZu } from '@core/modul';
 import type { Adresse, Auftrag, ID, Kanal, Kunde } from '@core/objects';
+import type { TypTon } from '@core/zeichen';
 
 // ------------------------------------------------------------------ Kunden wiedererkennen
 
@@ -145,6 +146,41 @@ export const KANAL_TEXT: Record<Kanal, string> = {
   portal: 'Portal',
   vor_ort: 'Vor Ort',
   sonstiges: 'Sonstiges',
+};
+
+/** Kanal als Emoji vor dem Wert (Auswahlfelder) – überall gleich, wo ein Kunde sich meldet */
+export const KANAL_EMOJI: Record<Kanal, string> = {
+  telefon: '📞',
+  email: '✉️',
+  website: '🌐',
+  whatsapp: '💬',
+  empfehlung: '🤝',
+  portal: '💻',
+  vor_ort: '📍',
+  sonstiges: '📌',
+};
+
+/** Kanal als Typ-Kachel in Listen: Strich-Icon und Farbton */
+export const KANAL_ICON: Record<Kanal, string> = {
+  telefon: 'telefon',
+  email: 'mail',
+  website: 'suche',
+  whatsapp: 'chat',
+  empfehlung: 'team',
+  portal: 'link',
+  vor_ort: 'ort',
+  sonstiges: 'notiz',
+};
+
+export const KANAL_TON: Record<Kanal, TypTon> = {
+  telefon: 'sand',
+  email: 'blau',
+  website: 'petrol',
+  whatsapp: 'gruen',
+  empfehlung: 'rose',
+  portal: 'lila',
+  vor_ort: 'neutral',
+  sonstiges: 'neutral',
 };
 
 /** Stunden seit Eingang */

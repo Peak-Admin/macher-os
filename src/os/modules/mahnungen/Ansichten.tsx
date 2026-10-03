@@ -10,6 +10,7 @@ import {
   Button,
   Dialog,
   Eingabe,
+  FormAbschnitt,
   FormRaster,
   Karte,
   Leer,
@@ -101,11 +102,11 @@ export function MahnungenListe() {
         </Button>
       }
     >
-      <Karte titel="Wartet auf deine Freigabe" aktion={<Button klein variante="tertiaer" icon="wiederholen" onClick={() => { const e = pruefen(); toast(e.neu.length ? `${e.neu.length === 1 ? '1 Schreiben' : `${e.neu.length} Schreiben`} vorbereitet.` : 'Alles geprüft – nichts Neues.'); }}>Jetzt prüfen</Button>}>
+      <Karte titel="Wartet auf deine Freigabe" icon="glocke" aktion={<Button klein variante="tertiaer" icon="wiederholen" onClick={() => { const e = pruefen(); toast(e.neu.length ? `${e.neu.length === 1 ? '1 Schreiben' : `${e.neu.length} Schreiben`} vorbereitet.` : 'Alles geprüft – nichts Neues.'); }}>Jetzt prüfen</Button>}>
         <Liste leer={<Leer titel="Nichts freizugeben" text="Sobald eine Rechnung lange genug überfällig ist, liegt hier das fertige Schreiben." icon="check" />}>{freigabe.map(zeile)}</Liste>
       </Karte>
       {ueberfaellig.length > 0 && (
-        <Karte titel="Überfällig – noch in der Frist">
+        <Karte titel="Überfällig – noch in der Frist" icon="uhr">
           <Liste>
             {ueberfaellig.map((r) => {
               const am = naechsteStufeAm(r);
@@ -123,7 +124,7 @@ export function MahnungenListe() {
           </Liste>
         </Karte>
       )}
-      <Karte titel="Zuletzt versendet">
+      <Karte titel="Zuletzt versendet" icon="mail">
         <Liste leer={<Meta>Noch keine Mahnung versendet.</Meta>}>{versendet.map(zeile)}</Liste>
       </Karte>
       <RegelnDialog offen={regelnOffen} onSchliessen={() => setRegelnOffen(false)} />
@@ -206,7 +207,7 @@ export function MahnungDetail() {
         }
         seite={
           <>
-            <Karte titel="Rechnung" kompakt>
+            <Karte titel="Rechnung" icon="dokument" kompakt>
               <Stapel abstand={8}>
                 {r && <ObjektLink bezug={{ typ: 'rechnungen', id: r.id }}>{r.nummer} · {r.titel}</ObjektLink>}
                 {r && <Meta>fällig seit {datum(r.faelligAm)}</Meta>}
@@ -235,7 +236,7 @@ export function MahnungDetail() {
                 )}
               </Stapel>
             </Karte>
-            <Karte titel="Verlauf" kompakt>
+            <Karte titel="Verlauf" icon="uhr" kompakt>
               <Zeitstrahl bezug={{ typ: 'mahnungen', id: m.id }} max={8} />
             </Karte>
           </>
@@ -311,6 +312,7 @@ function RegelnDialog({ offen, onSchliessen }: { offen: boolean; onSchliessen: (
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Regeln fürs Mahnen"
+      icon="einstellungen"
       breit
       aktionen={
         <>
@@ -322,23 +324,29 @@ function RegelnDialog({ offen, onSchliessen }: { offen: boolean; onSchliessen: (
       }
     >
       <Stapel>
-        <FormRaster>
-          <Eingabe label="Zahlungserinnerung … Tage nach Fälligkeit" {...zahl('erinnerungTage')} />
-          <Eingabe label="1. Mahnung … Tage nach der Erinnerung" {...zahl('mahnung1Tage')} />
-          <Eingabe label="2. Mahnung … Tage nach der 1. Mahnung" {...zahl('mahnung2Tage')} />
-          <Eingabe label="Neue Zahlungsfrist im Schreiben (Tage)" {...zahl('fristTage')} />
-          <GeldEingabe label="Mahngebühr 1. Mahnung (€)" wert={f.gebuehr1} onWert={(c) => setF({ ...f, gebuehr1: c })} />
-          <GeldEingabe label="Mahngebühr 2. Mahnung (€)" wert={f.gebuehr2} onWert={(c) => setF({ ...f, gebuehr2: c })} />
-          <Eingabe
-            label="Basiszinssatz (%)"
-            inputMode="decimal"
-            value={String(f.basiszins).replace('.', ',')}
-            onChange={(e) => setF({ ...f, basiszins: Number(e.target.value.replace(',', '.')) || 0 })}
-            hilfe="Ändert sich zum 1. Januar und 1. Juli (Deutsche Bundesbank). Verzugszinsen: Verbraucher +5, Unternehmen +9 Prozentpunkte."
-          />
-        </FormRaster>
-        <Schalter label="40-€-Pauschale bei Unternehmen" beschreibung="§ 288 Abs. 5 BGB – wird bei der 1. Mahnung an Firmenkunden aufgeschlagen." checked={f.pauschale40} onChange={(v) => setF({ ...f, pauschale40: v })} />
-        <Meta>Die Zahlungserinnerung ist immer kostenlos. Gebühren und Zinsen kommen ab der 1. Mahnung dazu.</Meta>
+        <FormAbschnitt titel="Fristen" icon="uhr">
+          <FormRaster>
+            <Eingabe label="Zahlungserinnerung … Tage nach Fälligkeit" {...zahl('erinnerungTage')} />
+            <Eingabe label="1. Mahnung … Tage nach der Erinnerung" {...zahl('mahnung1Tage')} />
+            <Eingabe label="2. Mahnung … Tage nach der 1. Mahnung" {...zahl('mahnung2Tage')} />
+            <Eingabe label="Neue Zahlungsfrist im Schreiben (Tage)" {...zahl('fristTage')} />
+          </FormRaster>
+        </FormAbschnitt>
+        <FormAbschnitt titel="Gebühren und Zinsen" icon="euro">
+          <FormRaster>
+            <GeldEingabe label="Mahngebühr 1. Mahnung (€)" wert={f.gebuehr1} onWert={(c) => setF({ ...f, gebuehr1: c })} />
+            <GeldEingabe label="Mahngebühr 2. Mahnung (€)" wert={f.gebuehr2} onWert={(c) => setF({ ...f, gebuehr2: c })} />
+            <Eingabe
+              label="Basiszinssatz (%)"
+              inputMode="decimal"
+              value={String(f.basiszins).replace('.', ',')}
+              onChange={(e) => setF({ ...f, basiszins: Number(e.target.value.replace(',', '.')) || 0 })}
+              hilfe="Ändert sich zum 1. Januar und 1. Juli (Deutsche Bundesbank). Verzugszinsen: Verbraucher +5, Unternehmen +9 Prozentpunkte."
+            />
+          </FormRaster>
+          <Schalter label="40-€-Pauschale bei Unternehmen" beschreibung="§ 288 Abs. 5 BGB – wird bei der 1. Mahnung an Firmenkunden aufgeschlagen." checked={f.pauschale40} onChange={(v) => setF({ ...f, pauschale40: v })} />
+          <Meta>Die Zahlungserinnerung ist immer kostenlos. Gebühren und Zinsen kommen ab der 1. Mahnung dazu.</Meta>
+        </FormAbschnitt>
       </Stapel>
     </Dialog>
   );
@@ -353,7 +361,7 @@ export function KundeOffenPanel({ id }: { id: ID }) {
   if (!o.liste.length) return null;
   const stufe = Math.max(0, ...o.liste.map((r) => r.mahnstufe ?? 0));
   return (
-    <Karte titel="Offene Posten" kompakt>
+    <Karte titel="Offene Posten" icon="euro" kompakt>
       <Stapel abstand={8}>
         {o.ueberfaellig.length ? <Status ton="gefahr">{`${euro(o.ueberfaelligSumme)} überfällig`}</Status> : <Status ton="aktiv">{`${euro(o.summe)} offen`}</Status>}
         {stufe > 0 && <Meta>Zuletzt: {STUFE_LABEL[stufe as 1 | 2 | 3]}</Meta>}

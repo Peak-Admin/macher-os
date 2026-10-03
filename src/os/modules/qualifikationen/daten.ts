@@ -2,12 +2,29 @@
 import { tageZwischen, datum as datumFmt, plusMonate } from '@core/format';
 import type { Datum, ID, Nachweis, Qualifikation } from '@core/objects';
 import type { Ton } from '@core/modul';
+import type { TypTon } from '@core/zeichen';
+import type { IconName } from '@ui/index';
 
 export const KATEGORIE_LABEL: Record<Qualifikation['kategorie'], string> = {
   fachlich: 'Fachlich',
   pflicht: 'Pflicht',
   fuehrerschein: 'Führerschein',
   zertifikat: 'Zertifikat',
+};
+
+/** Typ-Kachel je Art der Qualifikation (Listen) */
+export const KATEGORIE_ICON: Record<Qualifikation['kategorie'], IconName> = {
+  fachlich: 'werkzeug',
+  pflicht: 'schild',
+  fuehrerschein: 'auto',
+  zertifikat: 'dokument',
+};
+
+export const KATEGORIE_TON: Record<Qualifikation['kategorie'], TypTon> = {
+  fachlich: 'blau',
+  pflicht: 'petrol',
+  fuehrerschein: 'sand',
+  zertifikat: 'lila',
 };
 
 export type NachweisStatus = 'unbefristet' | 'gueltig' | 'laeuft_ab' | 'abgelaufen';

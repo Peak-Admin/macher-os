@@ -131,7 +131,7 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
           </Stapel>
         </Karte>
 
-        <Karte titel="Fotos">
+        <Karte titel="Fotos" icon="kamera">
           <Stapel>
             {f.fotoIds.length > 0 && (
               <Raster min={140}>
@@ -157,7 +157,7 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
           </Stapel>
         </Karte>
 
-        <Karte titel="Verknüpfen" oberzeile="Damit Macher die Anleitung am passenden Auftrag vorschlägt">
+        <Karte titel="Verknüpfen" icon="link" oberzeile="Damit Macher die Anleitung am passenden Auftrag vorschlägt">
           <Stapel abstand={24}>
             <Auswahl
               label="Gewerk"
@@ -196,7 +196,7 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
           </Stapel>
         </Karte>
 
-        <Karte titel="Herstellerlinks">
+        <Karte titel="Herstellerlinks" icon="link">
           <Stapel>
             {f.links.length > 0 && (
               <Liste>

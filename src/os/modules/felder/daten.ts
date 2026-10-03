@@ -10,6 +10,8 @@
  * Reine Logik und Datenzugriff; die Oberfläche steht in `Felder.tsx` und `EigeneAngaben.tsx`.
  */
 import { batch, db, defineCollection, vermerken } from '@core/db';
+import type { TypTon } from '@core/zeichen';
+import type { IconName } from '@ui/icons';
 import { emit } from '@core/events';
 import { datum as datumText, personName, zahl } from '@core/format';
 import type { Auftrag, Basis, Bezug, ID, SammlungsName } from '@core/objects';
@@ -82,6 +84,31 @@ export const FELD_TYPEN: { id: FeldTyp; label: string; text: string }[] = [
   { id: 'datei', label: 'Datei', text: 'PDF oder anderes Dokument' },
   { id: 'unterschrift', label: 'Unterschrift', text: 'Per Finger unterschreiben' },
 ];
+
+/** Feldtyp: Strich-Icon und Farbton der Typ-Kachel in der Feldliste */
+export const FELD_TYP_ICON: Record<FeldTyp, IconName> = {
+  text: 'stift',
+  zahl: 'nummer',
+  masseinheit: 'diagramm',
+  auswahl: 'auswahl',
+  janein: 'check',
+  datum: 'kalender',
+  foto: 'kamera',
+  datei: 'dokument',
+  unterschrift: 'unterschrift',
+};
+
+export const FELD_TYP_TON: Record<FeldTyp, TypTon> = {
+  text: 'neutral',
+  zahl: 'blau',
+  masseinheit: 'blau',
+  auswahl: 'lila',
+  janein: 'gruen',
+  datum: 'sand',
+  foto: 'petrol',
+  datei: 'petrol',
+  unterschrift: 'rose',
+};
 
 export const feldTypLabel = (t: FeldTyp) => FELD_TYPEN.find((x) => x.id === t)?.label ?? t;
 

@@ -4,6 +4,7 @@
  */
 import type { Auftrag, ID, Kunde, Nachricht } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
+import type { TypTon } from '@core/zeichen';
 
 export type KundenKanal = 'email' | 'sms' | 'whatsapp';
 
@@ -14,6 +15,26 @@ export const KANAL_LABEL: Record<Nachricht['kanal'], string> = {
   whatsapp: 'WhatsApp',
   telefon: 'Telefon',
   portal: 'Kundenbereich',
+};
+
+/** Kanal als Strich-Icon (Umschalter, Typ-Kachel in Listen) */
+export const KANAL_ICON: Record<Nachricht['kanal'], string> = {
+  intern: 'team',
+  email: 'mail',
+  sms: 'chat',
+  whatsapp: 'chat',
+  telefon: 'telefon',
+  portal: 'link',
+};
+
+/** Kanal: Farbton der Typ-Kachel */
+export const KANAL_TON: Record<Nachricht['kanal'], TypTon> = {
+  intern: 'neutral',
+  email: 'blau',
+  sms: 'petrol',
+  whatsapp: 'gruen',
+  telefon: 'sand',
+  portal: 'lila',
 };
 
 export const SCHNELLANTWORTEN_KUNDE = [

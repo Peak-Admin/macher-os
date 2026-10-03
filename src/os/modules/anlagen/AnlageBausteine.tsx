@@ -97,6 +97,7 @@ export function AnlageDialog({ anlage, kundeId, ortId, onSchliessen, onGespeiche
       offen
       breit
       titel={anlage ? 'Anlage bearbeiten' : 'Anlage anlegen'}
+      icon="werkzeug"
       onSchliessen={onSchliessen}
       aktionen={
         <>

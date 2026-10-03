@@ -130,6 +130,7 @@ export function OrtDialog({ ort, kundeId, onSchliessen, onGespeichert }: { ort?:
       offen
       breit
       titel={ort ? 'Ort bearbeiten' : 'Ort anlegen'}
+      icon="ort"
       onSchliessen={onSchliessen}
       aktionen={
         <>

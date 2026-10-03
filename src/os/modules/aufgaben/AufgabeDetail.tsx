@@ -98,14 +98,14 @@ function AufgabeBearbeiten({ a }: { a: Aufgabe }) {
         seite={
           <>
             {a.auftragId && (
-              <Karte titel="Auftrag" kompakt>
+              <Karte titel="Auftrag" icon="auftraege" kompakt>
                 <Stapel abstand={4}>
                   <ObjektLink bezug={{ typ: 'auftraege', id: a.auftragId }}>{db.auftraege.get(a.auftragId)?.titel ?? 'Auftrag öffnen'}</ObjektLink>
                   <AuftragKurz id={a.auftragId} />
                 </Stapel>
               </Karte>
             )}
-            <Karte titel="Verlauf" kompakt>
+            <Karte titel="Verlauf" icon="uhr" kompakt>
               <Stapel abstand={8}>
                 <Meta>Angelegt am {datum(a.erstelltAm)}{a.quelle && a.quelle !== 'manuell' ? ` · automatisch (${a.quelle})` : ''}</Meta>
                 <Zeitstrahl bezug={{ typ: 'aufgaben', id: a.id }} max={10} />

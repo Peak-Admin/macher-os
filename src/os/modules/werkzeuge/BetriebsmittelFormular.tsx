@@ -3,10 +3,10 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { db } from '@core/db';
 import { centAlsEingabe, centAus } from '@core/format';
 import type { Betriebsmittel, BetriebsmittelArt } from '@core/objects';
-import { Auswahl, Button, Eingabe, FormRaster, Karte, Leer, Segmente, Seite, Stapel, Textfeld, useBestaetigen, useToast } from '@ui/index';
+import { Auswahl, Button, Eingabe, FormAbschnitt, FormRaster, Karte, Leer, Segmente, Seite, Stapel, Textfeld, useBestaetigen, useToast } from '@ui/index';
 import { MitarbeiterAuswahl } from '@ui/objekt';
 import { PRUEFARTEN } from '../pruefungen/daten';
-import { ART_LABEL, ART_MODUL, bmx, fahrzeuge, fahrzeugStandort, type BetriebsmittelX } from './daten';
+import { ART_ICON, ART_LABEL, ART_MODUL, bmx, fahrzeuge, fahrzeugStandort, type BetriebsmittelX } from './daten';
 
 const ARTEN: BetriebsmittelArt[] = ['werkzeug', 'maschine', 'fahrzeug'];
 
@@ -99,24 +99,34 @@ export function BetriebsmittelFormular() {
           }}
         >
           <Stapel abstand={24}>
-            {!vorhanden && <Segmente label="Art" wert={art} onChange={setArt} optionen={ARTEN.map((a) => ({ wert: a, label: ART_LABEL[a] }))} />}
-            <FormRaster>
-              <Eingabe label="Bezeichnung" value={f.name} onChange={set('name')} fehler={fehler} autoFocus={!vorhanden} placeholder={art === 'fahrzeug' ? 'z. B. VW Crafter' : art === 'maschine' ? 'z. B. Bohrhammer SDS-max' : 'z. B. Installationstester'} />
-              <Eingabe label={art === 'fahrzeug' ? 'Kennzeichen' : 'Inventarnummer'} value={f.nummer} onChange={set('nummer')} optional placeholder={art === 'fahrzeug' ? 'KS-MO 101' : 'W-014'} />
-              <Eingabe label="Hersteller" value={f.hersteller} onChange={set('hersteller')} optional />
-              <Eingabe label={art === 'fahrzeug' ? 'Fahrgestellnummer' : 'Seriennummer'} value={f.seriennummer} onChange={set('seriennummer')} optional />
-              <Auswahl label="Prüfung" value={f.pruefungArt} onChange={set('pruefungArt')} leer="Keine Prüfpflicht" optional optionen={[...new Set([...PRUEFARTEN.map((p) => p.art), ...(f.pruefungArt ? [f.pruefungArt] : [])])].map((p) => ({ wert: p, label: p }))} />
-              <Eingabe label="Nächste Prüfung" type="date" value={f.naechstePruefung} onChange={set('naechstePruefung')} optional hilfe="Steht auf der Prüfplakette" />
-              <MitarbeiterAuswahl label={art === 'fahrzeug' ? 'Fahrer' : 'Ausgegeben an'} wert={f.mitarbeiterId} onChange={(m) => setF({ ...f, mitarbeiterId: m })} optional />
-              {art === 'fahrzeug' ? (
-                <Eingabe label="Kilometerstand" inputMode="numeric" value={f.kilometerstand} onChange={set('kilometerstand')} optional />
-              ) : (
-                <Eingabe label="Standort" vorschlaege={orte} value={f.standort} onChange={set('standort')} optional hilfe="Lager, Werkstatt oder Kennzeichen eines Fahrzeugs" />
-              )}
-              <Eingabe label="Angeschafft am" type="date" value={f.anschaffungAm} onChange={set('anschaffungAm')} optional />
-              <Eingabe label="Anschaffungspreis netto (€)" inputMode="decimal" value={f.anschaffungspreis} onChange={set('anschaffungspreis')} optional />
-            </FormRaster>
-            <Textfeld label="Notiz" value={f.notiz} onChange={set('notiz')} optional />
+            {!vorhanden && <Segmente label="Art" wert={art} onChange={setArt} optionen={ARTEN.map((a) => ({ wert: a, label: ART_LABEL[a], icon: ART_ICON[a] }))} />}
+            <FormAbschnitt titel={ART_LABEL[art]} icon={ART_ICON[art]}>
+              <FormRaster>
+                <Eingabe label="Bezeichnung" value={f.name} onChange={set('name')} fehler={fehler} autoFocus={!vorhanden} placeholder={art === 'fahrzeug' ? 'z. B. VW Crafter' : art === 'maschine' ? 'z. B. Bohrhammer SDS-max' : 'z. B. Installationstester'} />
+                <Eingabe label={art === 'fahrzeug' ? 'Kennzeichen' : 'Inventarnummer'} value={f.nummer} onChange={set('nummer')} optional placeholder={art === 'fahrzeug' ? 'KS-MO 101' : 'W-014'} />
+                <Eingabe label="Hersteller" value={f.hersteller} onChange={set('hersteller')} optional />
+                <Eingabe label={art === 'fahrzeug' ? 'Fahrgestellnummer' : 'Seriennummer'} value={f.seriennummer} onChange={set('seriennummer')} optional />
+              </FormRaster>
+            </FormAbschnitt>
+            <FormAbschnitt titel="Prüfung und Einsatz" icon="schild">
+              <FormRaster>
+                <Auswahl label="Prüfung" value={f.pruefungArt} onChange={set('pruefungArt')} leer="Keine Prüfpflicht" optional optionen={[...new Set([...PRUEFARTEN.map((p) => p.art), ...(f.pruefungArt ? [f.pruefungArt] : [])])].map((p) => ({ wert: p, label: p }))} />
+                <Eingabe label="Nächste Prüfung" type="date" value={f.naechstePruefung} onChange={set('naechstePruefung')} optional hilfe="Steht auf der Prüfplakette" />
+                <MitarbeiterAuswahl label={art === 'fahrzeug' ? 'Fahrer' : 'Ausgegeben an'} wert={f.mitarbeiterId} onChange={(m) => setF({ ...f, mitarbeiterId: m })} optional />
+                {art === 'fahrzeug' ? (
+                  <Eingabe label="Kilometerstand" inputMode="numeric" value={f.kilometerstand} onChange={set('kilometerstand')} optional />
+                ) : (
+                  <Eingabe label="Standort" vorschlaege={orte} value={f.standort} onChange={set('standort')} optional hilfe="Lager, Werkstatt oder Kennzeichen eines Fahrzeugs" />
+                )}
+              </FormRaster>
+            </FormAbschnitt>
+            <FormAbschnitt titel="Anschaffung" icon="euro">
+              <FormRaster>
+                <Eingabe label="Angeschafft am" type="date" value={f.anschaffungAm} onChange={set('anschaffungAm')} optional />
+                <Eingabe label="Anschaffungspreis netto (€)" inputMode="decimal" value={f.anschaffungspreis} onChange={set('anschaffungspreis')} optional />
+              </FormRaster>
+              <Textfeld label="Notiz" value={f.notiz} onChange={set('notiz')} optional />
+            </FormAbschnitt>
             <div className="mm-zeile" style={{ gap: 8, flexWrap: 'wrap', justifyContent: 'space-between' }}>
               <Button type="submit">{vorhanden ? 'Änderungen speichern' : `${ART_LABEL[art]} speichern`}</Button>
               {vorhanden && (

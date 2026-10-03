@@ -152,7 +152,7 @@ export function ArtikelFormular() {
         }}
       >
         <Stapel>
-          <Karte titel="Artikel">
+          <Karte titel="Artikel" icon="paket">
             <FormRaster>
               <Eingabe label="Bezeichnung" value={f.name} onChange={set('name')} fehler={ff('name')} autoFocus={!a} placeholder="z. B. NYM-J 3x1,5 mm²" />
               <Eingabe label="Artikelnummer" value={f.nummer} onChange={set('nummer')} fehler={ff('nummer')} optional />
@@ -164,11 +164,11 @@ export function ArtikelFormular() {
             </FormRaster>
           </Karte>
           {geld && (
-            <Karte titel="Preise">
+            <Karte titel="Preise" icon="euro">
               <PreisRechner ek={f.ek} vk={f.vk} onChange={(p) => setF({ ...f, ...p })} />
             </Karte>
           )}
-          <Karte titel="Lager">
+          <Karte titel="Lager" icon="lager">
             <Stapel>
               <Schalter label="Lagerartikel" beschreibung="Bestand wird geführt und bei Unterschreitung des Mindestbestands nachbestellt." checked={f.lagerartikel} onChange={(v) => setF({ ...f, lagerartikel: v })} />
               {f.lagerartikel && (

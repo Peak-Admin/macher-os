@@ -62,7 +62,7 @@ export function AufgabenSeite() {
           aktion={<Button variante="sekundaer" onClick={() => setNeu(true)}>Aufgabe anlegen</Button>}
         />
       )}
-      <Dialog offen={neu} onSchliessen={() => setNeu(false)} titel="Aufgabe anlegen">
+      <Dialog offen={neu} onSchliessen={() => setNeu(false)} titel="Aufgabe anlegen" icon="plus">
         <AufgabeFormular onFertig={() => setNeu(false)} />
       </Dialog>
     </Seite>

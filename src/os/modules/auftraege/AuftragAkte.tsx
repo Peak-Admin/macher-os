@@ -370,7 +370,7 @@ function Ueberblick({
   const ust = db.betrieb.get("betrieb")?.ustSatz ?? 19;
   return (
     <Stapel abstand={24}>
-      <Karte titel="Worum es geht" kompakt>
+      <Karte titel="Worum es geht" icon="notiz" kompakt>
         {a.beschreibung ? (
           <p style={{ whiteSpace: "pre-wrap" }}>{a.beschreibung}</p>
         ) : (

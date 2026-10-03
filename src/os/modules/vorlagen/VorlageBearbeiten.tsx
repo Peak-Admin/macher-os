@@ -125,7 +125,7 @@ function Editor({ vorlage }: { vorlage: Vorlage }) {
                 )}
               </form>
             </Karte>
-            <Karte titel="Vorschau" oberzeile={quelle ? `Mit Daten aus ${quelle}` : 'Ohne Beispieldaten'}>
+            <Karte titel="Vorschau" icon="dokument" oberzeile={quelle ? `Mit Daten aus ${quelle}` : 'Ohne Beispieldaten'}>
               <Stapel abstand={12}>
                 {mitBetreff && f.betreff && <strong>{platzhalterErsetzen(f.betreff, voll)}</strong>}
                 <p style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{platzhalterErsetzen(f.text, voll) || '–'}</p>
@@ -139,7 +139,7 @@ function Editor({ vorlage }: { vorlage: Vorlage }) {
           </Stapel>
         }
         seite={
-          <Karte titel="Platzhalter" kompakt>
+          <Karte titel="Platzhalter" icon="liste" kompakt>
             <Stapel abstand={8}>
               <Meta>Tippe, um an der Cursorposition einzufügen.</Meta>
               <Zeile abstand={4}>

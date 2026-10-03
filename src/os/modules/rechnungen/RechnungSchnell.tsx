@@ -21,6 +21,7 @@ import { useBriefkopfVorSenden } from '@modules/start/BriefkopfPruefen';
 import { KundeBlock, kundeAusDb, LEERER_KUNDE, PositionenSchnell, SchrittKopf, type KundeWahl } from '@modules/start/teile';
 import { kuerzelGueltig } from '@modules/dokumente/nummern';
 import { abschlussRechnung, ART_LABEL, betrieb, passendeArt, pflichtangabenPruefen, rechnungsNummer, rechnungsSummen, rechnungsVorschau, type Mangel, type Vorschau } from './logik';
+import { LISTEN_ART_ICON } from './liste';
 import { KeinZugriff } from './RechnungenListe';
 import { rechnungNachricht, rechnungSenden, schnellEntwurf } from './RechnungSchnellVersand';
 import { MaengelListe, SummenListe } from './teile';
@@ -231,8 +232,8 @@ export function RechnungSchnell() {
                 setFehler([]);
               }}
               optionen={[
-                { wert: 'auftrag', label: 'Aus einem Auftrag' },
-                { wert: 'frei', label: 'Frei' },
+                { wert: 'auftrag', label: 'Aus einem Auftrag', icon: 'auftraege' },
+                { wert: 'frei', label: 'Frei', icon: 'stift' },
               ]}
             />
             {modus === 'auftrag' ? (
@@ -283,10 +284,10 @@ export function RechnungSchnell() {
                     wert={o.art}
                     onChange={setzeArt}
                     optionen={[
-                      { wert: 'rechnung', label: 'Rechnung' },
-                      { wert: 'abschlag', label: 'Abschlag' },
-                      { wert: 'teil', label: 'Teil' },
-                      { wert: 'schluss', label: 'Schluss' },
+                      { wert: 'rechnung', label: 'Rechnung', icon: LISTEN_ART_ICON.rechnung },
+                      { wert: 'abschlag', label: 'Abschlag', icon: LISTEN_ART_ICON.abschlag },
+                      { wert: 'teil', label: 'Teil', icon: LISTEN_ART_ICON.teil },
+                      { wert: 'schluss', label: 'Schluss', icon: LISTEN_ART_ICON.schluss },
                     ]}
                   />
                 )}
@@ -350,6 +351,7 @@ export function RechnungSchnell() {
         offen={pruefen}
         onSchliessen={() => setPruefen(false)}
         titel={`${artLabel} prüfen und senden`}
+        icon="dokument"
         breit
         aktionen={
           <>

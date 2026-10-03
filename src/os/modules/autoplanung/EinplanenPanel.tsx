@@ -17,7 +17,7 @@ export function EinplanenPanel({ id }: { id: ID }) {
   if (!auftrag || !ergebnis) return null;
   const vs = ergebnis.vorschlaege[0];
   return (
-    <Karte titel="Einplanen" oberzeile={`Noch ${zahl(offeneStunden(ctx, auftrag))} h offen`} kompakt>
+    <Karte titel="Einplanen" icon="plan" oberzeile={`Noch ${zahl(offeneStunden(ctx, auftrag))} h offen`} kompakt>
       <Stapel abstand={8}>
         {vs ? (
           <>

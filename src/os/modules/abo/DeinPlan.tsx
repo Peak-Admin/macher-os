@@ -254,6 +254,7 @@ export function DeinPlan() {
         <Karte
           oberzeile="Zahlung"
           titel="Zahlungsart & Rechnungen"
+          icon="euro"
           aktion={
             serverAbo && admin && z.status !== 'zahlung_offen' ? (
               <Button variante="tertiaer" klein onClick={() => void portal()} laedt={laedt === 'portal'}>

@@ -137,7 +137,7 @@ export function KalkulationEditor() {
               <ZeileKarte key={z.id} z={z} k={k} onChange={(nz) => aendern({ zeilen: k.zeilen.map((x, j) => (j === i ? nz : x)) })} onWeg={() => aendern({ zeilen: k.zeilen.filter((_, j) => j !== i) })} />
             ))}
             {!k.zeilen.length && <Leer titel="Noch keine Positionen" text="Nimm eine Leistung aus deinem Katalog oder leg eine leere Zeile an." icon="liste" />}
-            <Karte titel="Position hinzufügen" kompakt>
+            <Karte titel="Position hinzufügen" icon="plus" kompakt>
               <div style={raster}>
                 <Auswahl
                   label="Aus Leistungen"
@@ -170,7 +170,7 @@ export function KalkulationEditor() {
         }
         seite={
           <>
-            <Karte titel="Ergebnis" kompakt>
+            <Karte titel="Ergebnis" icon="diagramm" kompakt>
               <Stapel abstand={8}>
                 <Zeile label={`Lohn (${zahl(e.summe.stunden)} Std.)`} wert={euro(e.summe.lohn)} />
                 <Zeile label={`+ Gemeinkosten ${zahl(k.gemeinkostenProzent)} %`} wert={euro(e.summe.gemeinkosten)} />
@@ -187,7 +187,7 @@ export function KalkulationEditor() {
                 <Meta>Katalogpreise gelten, die Kalkulation zeigt, was dir davon bleibt. Marge = Preis minus Selbstkosten (inkl. Gemeinkosten). Deckungsbeitrag = Preis minus Lohn, Material und Fremdleistung.</Meta>
               </Stapel>
             </Karte>
-            <Karte titel="Sätze & Zuschläge" kompakt>
+            <Karte titel="Sätze & Zuschläge" icon="prozent" kompakt>
               <Stapel abstand={12}>
                 <ZahlEingabe label="Lohnkosten je Stunde (€)" wert={k.lohnkosten} cent onWert={(n) => aendern({ lohnkosten: n ?? 0 })} hilfe="Mittellohn inkl. Nebenkosten – vorbelegt aus deinem Team." />
                 <ZahlEingabe label="Gemeinkosten auf Lohn (%)" wert={k.gemeinkostenProzent} onWert={(n) => aendern({ gemeinkostenProzent: n ?? 0 })} />

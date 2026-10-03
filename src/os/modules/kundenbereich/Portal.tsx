@@ -280,6 +280,7 @@ function EntscheidungDialog({ angebot, entscheidung, aktionen, onSchliessen }: {
     <Dialog
       offen
       titel={annehmen ? 'Angebot verbindlich annehmen' : 'Angebot ablehnen'}
+      icon={annehmen ? 'unterschrift' : 'x'}
       onSchliessen={onSchliessen}
       aktionen={
         <>

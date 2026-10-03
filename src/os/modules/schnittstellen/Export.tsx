@@ -43,7 +43,7 @@ export function Export() {
   return (
     <Seite titel="Exportieren" untertitel="Termine für deinen Kalender und alle Daten für andere Programme." zurueck={{ to: '/betrieb/schnittstellen', label: 'Schnittstellen' }}>
       <Raster min={300}>
-        <Karte titel="Termine in deinen Kalender">
+        <Karte titel="Termine in deinen Kalender" icon="kalender">
           <Stapel>
             {planen ? (
               <Auswahl
@@ -70,7 +70,7 @@ export function Export() {
             )}
           </Stapel>
         </Karte>
-        <Karte titel="Alle Daten als JSON">
+        <Karte titel="Alle Daten als JSON" icon="download">
           <Stapel>
             <Meta>Kunden, Aufträge, Termine, Rechnungen und alles Weitere in einer lesbaren Datei – für ein anderes Programm oder deinen IT-Dienstleister. Ohne Papierkorb und interne Protokolle.</Meta>
             {admin ? (

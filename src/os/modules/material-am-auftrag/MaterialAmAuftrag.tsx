@@ -29,7 +29,7 @@ export function MaterialAmAuftrag({ id }: { id: ID }) {
         </Raster>
       )}
       {neu ? (
-        <Karte titel="Material buchen" kompakt aktion={<Button variante="tertiaer" klein onClick={() => setNeu(false)}>Schließen</Button>}>
+        <Karte titel="Material buchen" icon="paket" kompakt aktion={<Button variante="tertiaer" klein onClick={() => setNeu(false)}>Schließen</Button>}>
           <MaterialFormular auftragId={id} onFertig={() => setNeu(false)} />
         </Karte>
       ) : liste.length ? (

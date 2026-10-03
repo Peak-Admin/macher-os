@@ -110,7 +110,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
       )}
       <fieldset disabled={!admin} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }} className="mm-stapel">
         <Stapel abstand={24}>
-          <Karte titel="Betrieb">
+          <Karte titel="Betrieb" icon="betrieb">
             <Stapel>
               <FormRaster>
                 <Eingabe label="Name des Betriebs" value={f.name} onChange={set('name')} fehler={fehler.name} autoComplete="organization" />
@@ -131,7 +131,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
             </Stapel>
           </Karte>
 
-          <Karte titel="Adresse und Kontakt">
+          <Karte titel="Adresse und Kontakt" icon="ort">
             <FormRaster>
               <Eingabe label="Straße und Hausnummer" value={f.strasse} onChange={set('strasse')} autoComplete="street-address" />
               <Eingabe label="PLZ" inputMode="numeric" value={f.plz} onChange={set('plz')} fehler={fehler.plz} autoComplete="postal-code" />
@@ -141,7 +141,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
             </FormRaster>
           </Karte>
 
-          <Karte titel="Steuer und Bank">
+          <Karte titel="Steuer und Bank" icon="prozent">
             <Stapel>
               <FormRaster>
                 <Eingabe label="Steuernummer" optional value={f.steuernummer} onChange={set('steuernummer')} hilfe="Steuernummer oder USt-IdNr. muss auf jede Rechnung" />
@@ -166,7 +166,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
             </Stapel>
           </Karte>
 
-          <Karte titel="Preise und Zahlung">
+          <Karte titel="Preise und Zahlung" icon="euro">
             <Stapel>
               <FormRaster>
                 {geld ? (
@@ -187,7 +187,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
             </Stapel>
           </Karte>
 
-          <Karte titel="Arbeitszeiten">
+          <Karte titel="Arbeitszeiten" icon="uhr">
             <FormRaster>
               <Eingabe label="Arbeitsbeginn" type="time" value={f.arbeitsbeginn} onChange={set('arbeitsbeginn')} />
               <Eingabe label="Arbeitsende" type="time" value={f.arbeitsende} onChange={set('arbeitsende')} fehler={fehler.arbeitsende} />

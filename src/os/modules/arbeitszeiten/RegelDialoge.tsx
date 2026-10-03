@@ -20,6 +20,7 @@ export function RegelnDialog({ offen, onSchliessen }: { offen: boolean; onSchlie
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Regeln für Arbeitszeiten"
+      icon="einstellungen"
       aktionen={
         <Button
           onClick={() => {
@@ -72,6 +73,7 @@ export function ModellDialog({ maId, offen, onSchliessen }: { maId: ID; offen: b
       offen={offen}
       onSchliessen={onSchliessen}
       titel={`Arbeitszeit von ${m.vorname}`}
+      icon="uhr"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>
@@ -131,6 +133,7 @@ export function BuchungDialog({ offen, onSchliessen, maId }: { offen: boolean; o
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Stundenkonto korrigieren"
+      icon="stift"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>
@@ -144,7 +147,7 @@ export function BuchungDialog({ offen, onSchliessen, maId }: { offen: boolean; o
         {!maId && <MitarbeiterAuswahl label="Für" wert={f.maId} onChange={(v) => setF({ ...f, maId: v })} />}
         <Segmente label="Was buchst du?" wert={f.art} onChange={(v) => setF({ ...f, art: v })} optionen={(Object.keys(BUCHUNG_LABEL) as BuchungsArt[]).map((a) => ({ wert: a, label: a === 'startsaldo' ? 'Übertrag' : a === 'auszahlung' ? 'Auszahlung' : 'Korrektur' }))} />
         {f.art !== 'auszahlung' && (
-          <Segmente label="Richtung" wert={f.richtung} onChange={(v) => setF({ ...f, richtung: v })} optionen={[{ wert: 'plus', label: 'Plusstunden' }, { wert: 'minus', label: 'Minusstunden' }]} />
+          <Segmente label="Richtung" wert={f.richtung} onChange={(v) => setF({ ...f, richtung: v })} optionen={[{ wert: 'plus', label: 'Plusstunden', icon: 'plus' }, { wert: 'minus', label: 'Minusstunden', icon: 'minus' }]} />
         )}
         <FormRaster>
           <ZahlEingabe label="Stunden" wert={f.std} onWert={(n) => setF({ ...f, std: n })} />

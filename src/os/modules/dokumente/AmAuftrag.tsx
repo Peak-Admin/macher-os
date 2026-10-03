@@ -8,21 +8,8 @@ import { db, useDatenstand } from '@core/db';
 import { datum } from '@core/format';
 import type { ID } from '@core/objects';
 import { useDarf } from '@core/session';
-import { Abschnitt, AuswahlKarten, BeispielMarke, Button, Dialog, Liste, ListenZeile, Meta, Stapel, Status, useToast } from '@ui/index';
-import { dokumenteZumAuftrag, erstellbareArten, type DokumentArtId } from './arten';
-
-const ICON: Partial<Record<DokumentArtId, 'dokument' | 'euro' | 'paket' | 'notiz' | 'unterschrift' | 'check'>> = {
-  angebot: 'dokument',
-  auftragsbestaetigung: 'check',
-  lieferschein: 'paket',
-  rapport: 'notiz',
-  arbeitsbericht: 'notiz',
-  baustellenbericht: 'notiz',
-  pruefprotokoll: 'check',
-  abnahme: 'unterschrift',
-  rechnung: 'euro',
-  abschlagsrechnung: 'euro',
-};
+import { Abschnitt, AuswahlKarten, BeispielMarke, Button, Dialog, Liste, ListenZeile, Meta, Stapel, Status, TypIcon, useToast } from '@ui/index';
+import { DOKUMENTART_ICON, DOKUMENTGRUPPE_TON, dokumenteZumAuftrag, erstellbareArten, type DokumentArtId } from './arten';
 
 export function DokumentErstellenDialog({ auftragId, offen, onSchliessen }: { auftragId: ID; offen: boolean; onSchliessen: () => void }) {
   const navigate = useNavigate();
@@ -46,6 +33,7 @@ export function DokumentErstellenDialog({ auftragId, offen, onSchliessen }: { au
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Dokument erstellen"
+      icon="dokument"
       breit
       aktionen={
         <>
@@ -64,7 +52,7 @@ export function DokumentErstellenDialog({ auftragId, offen, onSchliessen }: { au
           label="Welches Dokument?"
           wert={gewaehlt?.id ?? ''}
           onChange={(v) => setWahl(v as DokumentArtId)}
-          optionen={arten.map(({ art, vorschlag }) => ({ wert: art.id, label: art.label, text: vorschlag ? `Passt jetzt. ${art.text}` : art.text, icon: ICON[art.id] ?? 'dokument' }))}
+          optionen={arten.map(({ art, vorschlag }) => ({ wert: art.id, label: art.label, text: vorschlag ? `Passt jetzt. ${art.text}` : art.text, icon: DOKUMENTART_ICON[art.id] }))}
         />
       </Stapel>
     </Dialog>
@@ -96,6 +84,7 @@ export function DokumenteAmAuftrag({ auftragId }: { auftragId: ID }) {
             <ListenZeile
               key={`${d.bezug.typ}:${d.bezug.id}`}
               to={d.pfad}
+              links={<TypIcon name={DOKUMENTART_ICON[d.art.id]} label={d.art.label} ton={DOKUMENTGRUPPE_TON[d.art.gruppe]} />}
               titel={
                 <>
                   {d.label}

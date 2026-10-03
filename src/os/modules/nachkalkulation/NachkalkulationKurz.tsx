@@ -20,6 +20,7 @@ export function NachkalkulationKurz({ id }: { id: ID }) {
   return (
     <Karte
       titel="Soll und Ist"
+      icon="diagramm"
       aktion={<Status ton={n.bewertung.ton}>{n.bewertung.text}</Status>}
     >
       <Stapel abstand={8}>

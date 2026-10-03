@@ -95,7 +95,7 @@ export function SerieDetail() {
                 {k.beantragt ? 'Abwesenheit ist beantragt.' : 'Abwesenheit ist genehmigt.'} Verschieb den Termin oder teile in der Serie jemand anderen ein.
               </Meldung>
             ))}
-            <Karte titel="Nächste Termine">
+            <Karte titel="Nächste Termine" icon="kalender">
               <Liste
                 leer={
                   <Leer
@@ -140,7 +140,7 @@ export function SerieDetail() {
               </Liste>
             </Karte>
             {vergangene.length > 0 && (
-              <Karte titel="Zuletzt">
+              <Karte titel="Zuletzt" icon="uhr">
                 <Liste>
                   {vergangene.map((t) => (
                     <ListenZeile
@@ -157,7 +157,7 @@ export function SerieDetail() {
         }
         seite={
           <>
-            <Karte titel="Details" kompakt>
+            <Karte titel="Details" icon="info" kompakt>
               <Stapel abstand={8}>
                 <Meta>Erster Termin: {datum(s.start)}</Meta>
                 <Meta>Dauer: {s.dauerMinuten} Minuten</Meta>
@@ -186,7 +186,7 @@ export function SerieDetail() {
               </Stapel>
             </Karte>
             {s.ausnahmen.filter((d) => d >= heute()).length > 0 && (
-              <Karte titel="Ausgelassen" kompakt>
+              <Karte titel="Ausgelassen" icon="x" kompakt>
                 <Liste>
                   {s.ausnahmen
                     .filter((d) => d >= heute())
@@ -230,6 +230,7 @@ function VerschiebenDialog({ termin, onSchliessen }: { termin: Termin | null; on
       offen={offen}
       onSchliessen={schliessen}
       titel="Termin verschieben"
+      icon="kalender"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={schliessen}>Abbrechen</Button>

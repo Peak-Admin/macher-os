@@ -6,7 +6,7 @@ import type { ID } from '@core/objects';
 import { Auswahl, Button, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, Zeile, GeldEingabe, DateiKnopf } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
 import type { BelegX } from '../rechnungen/typen';
-import { ART_LABEL, KATEGORIEN, auftragVorschlaege, ausBrutto, dateiAblegen, fristenAusKonditionen } from './logik';
+import { ART_ICON, ART_LABEL, KATEGORIEN, auftragVorschlaege, ausBrutto, dateiAblegen, fristenAusKonditionen } from './logik';
 import { bereichVorschlag, betriebsbereiche } from './bereiche';
 
 /** Namen der bekannten Lieferanten als Vorschläge für das Lieferantenfeld */
@@ -191,7 +191,7 @@ export function BelegFormular({
           label="Art"
           wert={werte.art}
           onChange={(v) => set('art', v)}
-          optionen={(Object.keys(ART_LABEL) as BelegX['art'][]).map((a) => ({ wert: a, label: ART_LABEL[a] }))}
+          optionen={(Object.keys(ART_LABEL) as BelegX['art'][]).map((a) => ({ wert: a, label: ART_LABEL[a], icon: ART_ICON[a] }))}
         />
       )}
       <FormRaster>

@@ -149,6 +149,7 @@ function NeuDialog({ offen, onSchliessen }: { offen: boolean; onSchliessen: () =
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Angebot erstellen"
+      icon="dokument"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

@@ -83,7 +83,7 @@ export function BestellungDetail() {
                 Frag beim Lieferanten nach. Ist die Ware schon da, buche den Wareneingang.
               </Meldung>
             )}
-            <Karte titel="Positionen">
+            <Karte titel="Positionen" icon="liste">
               {entwurf ? <PositionenBearbeiten id={b.id} setPos={setPos} /> : (
                 <Tabelle
                   zeilen={b.positionen}
@@ -103,7 +103,7 @@ export function BestellungDetail() {
               )}
             </Karte>
             {entwurf && (
-              <Karte titel="Bestelltext" kompakt>
+              <Karte titel="Bestelltext" icon="notiz" kompakt>
                 <Stapel abstand={8}>
                   <Textfeld label="So geht die E-Mail raus" readOnly rows={8} value={bestelltext(b)} />
                   <Zeile>
@@ -124,7 +124,7 @@ export function BestellungDetail() {
         }
         seite={
           <>
-            <Karte titel="Lieferung" kompakt>
+            <Karte titel="Lieferung" icon="paket" kompakt>
               <Stapel abstand={12}>
                 {entwurf ? (
                   <Auswahl label="Lieferant" value={b.lieferantId ?? ''} leer="Lieferant wählen" onChange={(e) => bestellungen.update(b.id, { lieferantId: e.target.value || undefined })} optionen={db.lieferanten.all().map((x) => ({ wert: x.id, label: x.name }))} />
@@ -249,7 +249,7 @@ function PositionenBearbeiten({ id, setPos }: { id: string; setPos: (p: Bestellp
 function WareneingangDialog({ id, offen, onSchliessen, mitarbeiterId }: { id: string; offen: boolean; onSchliessen: () => void; mitarbeiterId?: string }) {
   const b = bestellungen.useOne(id);
   return (
-    <Dialog offen={offen && !!b && istUnterwegs(b)} onSchliessen={onSchliessen} titel="Wareneingang buchen" breit>
+    <Dialog offen={offen && !!b && istUnterwegs(b)} onSchliessen={onSchliessen} titel="Wareneingang buchen" icon="lager" breit>
       {b && offen && <WareneingangFormular id={id} fertig={onSchliessen} mitarbeiterId={mitarbeiterId} />}
     </Dialog>
   );

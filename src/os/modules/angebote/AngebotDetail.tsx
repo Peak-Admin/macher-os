@@ -131,7 +131,7 @@ export function AngebotDetail() {
           haupt={
             <Stapel abstand={24}>
               {entwurf && aktuell ? (
-                <Karte titel="Kopf">
+                <Karte titel="Kopf" icon="dokument">
                   <Stapel>
                     <Eingabe label="Titel" value={a.titel} onChange={(e) => aendern({ titel: e.target.value })} />
                     <Textfeld label="Einleitung" value={a.einleitung ?? ''} onChange={(e) => aendern({ einleitung: e.target.value })} optional />
@@ -144,8 +144,8 @@ export function AngebotDetail() {
               ) : (
                 a.einleitung && <Meta>{a.einleitung}</Meta>
               )}
-              <Karte titel="Positionen">{entwurf && aktuell ? <PositionenEditor positionen={a.positionen} onChange={(p) => aendern({ positionen: p })} /> : <PositionenTabelle positionen={a.positionen} />}</Karte>
-              <Karte titel="Summe" kompakt>
+              <Karte titel="Positionen" icon="liste">{entwurf && aktuell ? <PositionenEditor positionen={a.positionen} onChange={(p) => aendern({ positionen: p })} /> : <PositionenTabelle positionen={a.positionen} />}</Karte>
+              <Karte titel="Summe" icon="euro" kompakt>
                 <Stapel abstand={8}>
                   {s.rabatt > 0 && <SummenZeile label={`Rabatt ${a.rabattProzent} %`} wert={`− ${euro(s.rabatt)}`} />}
                   <SummenZeile label="Netto" wert={euro(s.netto)} />
@@ -158,7 +158,7 @@ export function AngebotDetail() {
           }
           seite={
             <>
-              <Karte titel="Kunde & Auftrag" kompakt>
+              <Karte titel="Kunde & Auftrag" icon="person" kompakt>
                 <Stapel abstand={8}>
                   {kunde ? <ObjektLink bezug={{ typ: 'kunden', id: kunde.id }}>{kunde.name}</ObjektLink> : <Meta>Kein Kunde</Meta>}
                   {kunde?.email ? <Meta>{kunde.email}</Meta> : <Meta>Keine E-Mail hinterlegt</Meta>}
@@ -215,7 +215,7 @@ export function AngebotDetail() {
                 </Stapel>
               </Karte>
               {versionen(a, alle).length > 1 && (
-                <Karte titel="Versionen" kompakt>
+                <Karte titel="Versionen" icon="ordner" kompakt>
                   <Liste>
                     {versionen(a, alle).map((v) => (
                       <ListenZeile key={v.id} to={`/auftraege/angebote/${v.id}`} aktiv={v.id === a.id} titel={`Version ${v.version}`} untertitel={`${datum(v.datum)} · ${euro(angebotSummen(v).brutto)}`} rechts={<Status ton={STATUS_TON[v.status]}>{STATUS_TEXT[v.status]}</Status>} />
@@ -223,7 +223,7 @@ export function AngebotDetail() {
                   </Liste>
                 </Karte>
               )}
-              <Karte titel="Verlauf" kompakt>
+              <Karte titel="Verlauf" icon="uhr" kompakt>
                 <Zeitstrahl bezug={{ typ: 'angebote', id: a.id }} max={8} />
               </Karte>
             </>
@@ -235,6 +235,7 @@ export function AngebotDetail() {
         offen={ablehnOffen}
         onSchliessen={() => setAblehnOffen(false)}
         titel="Angebot abgelehnt"
+        icon="x"
         aktionen={
           <>
             <Button variante="tertiaer" onClick={() => setAblehnOffen(false)}>
@@ -301,6 +302,7 @@ export function VersandDialog({ angebot, onSchliessen }: { angebot?: Angebot; on
       offen={!!angebot}
       onSchliessen={onSchliessen}
       titel="Angebot versenden"
+      icon="mail"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={anders}>

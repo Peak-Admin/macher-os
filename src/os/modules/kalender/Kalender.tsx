@@ -6,7 +6,8 @@ import { db, useDatenstand } from '@core/db';
 import { datumKurz, heute, isoDatum, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart } from '@core/format';
 import { useDarf, useIch, istBuero } from '@core/session';
 import type { Datum, Termin } from '@core/objects';
-import { Auswahl, Button, Dialog, IconButton, Leer, Liste, ListenZeile, Meldung, Meta, Segmente, Seite, Stapel, Status, useToast } from '@ui/index';
+import { TERMINART_ICON, TERMINART_TON } from '@core/zeichen';
+import { Auswahl, Button, Dialog, IconButton, Leer, Liste, ListenZeile, Meldung, Meta, Segmente, Seite, Stapel, Status, TypIcon, useToast, type IconName } from '@ui/index';
 import { Person, Personen } from '@ui/person';
 import { kontextAusDb, terminKonflikte, anwesenheit } from '../verfuegbarkeit/daten';
 import { monatsAnfang, terminAmTag, termineIm, TERMINART_LABEL, TERMINSTATUS, verschoben } from './daten';
@@ -232,7 +233,12 @@ function TerminZeile({ t, konflikt }: { t: Termin; konflikt?: boolean }) {
   return (
     <ListenZeile
       to={terminPfad(t.id)}
-      links={<strong className="mm-number">{t.ganztags ? 'Ganzer Tag' : uhrzeit(t.start)}</strong>}
+      links={
+        <span className="mm-zeile" style={{ gap: 12, flexWrap: 'nowrap' }}>
+          <TypIcon name={TERMINART_ICON[t.art] as IconName} label={TERMINART_LABEL[t.art]} ton={TERMINART_TON[t.art]} />
+          <strong className="mm-number">{t.ganztags ? 'Ganzer Tag' : uhrzeit(t.start)}</strong>
+        </span>
+      }
       titel={t.titel}
       untertitel={terminUntertitel(t)}
       rechts={

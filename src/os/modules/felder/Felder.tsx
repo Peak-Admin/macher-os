@@ -7,9 +7,11 @@ import { db, useDatenstand } from '@core/db';
 import { einstellung } from '@core/einstellungen';
 import { VORLAGE_KEY, vorlageFuer } from '@core/gewerke';
 import { useDarf } from '@core/session';
-import { AktionsMenue, Auswahl, Button, Checkbox, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Textfeld, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { AktionsMenue, Auswahl, Button, Checkbox, Dialog, Eingabe, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Textfeld, TypIcon, Zeile, useBestaetigen, useToast } from '@ui/index';
 import {
   FELD_OBJEKTE,
+  FELD_TYP_ICON,
+  FELD_TYP_TON,
   FELD_TYPEN,
   definitionPruefen,
   eigeneFelder,
@@ -88,6 +90,7 @@ export function Felder() {
   const zeile = (f: FeldDefinition) => (
     <ListenZeile
       key={f.id}
+      links={<TypIcon klein name={FELD_TYP_ICON[f.typ]} label={feldTypLabel(f.typ)} ton={FELD_TYP_TON[f.typ]} />}
       titel={f.label}
       untertitel={beschreibung(f)}
       rechts={
@@ -162,6 +165,7 @@ export function Felder() {
 
         <Karte
           titel="Formulare"
+          icon="dokument"
           aktion={
             <Button klein variante="sekundaer" onClick={() => setFormularDialog(true)}>
               Formular anlegen
@@ -252,6 +256,7 @@ function FeldDialog({ vorgabe, formulare, onSchliessen }: { vorgabe: { objekt?: 
     <Dialog
       offen
       titel="Eigenes Feld hinzufügen"
+      icon="liste"
       onSchliessen={onSchliessen}
       aktionen={
         <>
@@ -302,6 +307,7 @@ function FormularDialog({ onSchliessen, onAngelegt }: { onSchliessen: () => void
     <Dialog
       offen
       titel="Formular anlegen"
+      icon="dokument"
       onSchliessen={onSchliessen}
       aktionen={
         <>

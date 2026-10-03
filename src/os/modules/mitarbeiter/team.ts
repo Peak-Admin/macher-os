@@ -3,8 +3,12 @@ import { db } from '@core/db';
 import { heute as heuteDatum } from '@core/format';
 import type { ID, Mitarbeiter, Rolle } from '@core/objects';
 import { ROLLEN, darf, ich, istBuero } from '@core/session';
+import type { IconName } from '@ui/index';
 
 export const ROLLE_LABEL = Object.fromEntries(ROLLEN.map((r) => [r.id, r.label])) as Record<Rolle, string>;
+
+/** Strich-Icon je Rolle (Umschalter Rolle) */
+export const ROLLEN_ICON: Record<Rolle, IconName> = { chef: 'stern', buero: 'notiz', monteur: 'werkzeug', azubi: 'wissen' };
 
 /** Kennfarben aus der Markenpalette */
 export const FARBEN = ['#2F9250', '#1F6135', '#69AF44', '#06480C', '#767676', '#374040'];

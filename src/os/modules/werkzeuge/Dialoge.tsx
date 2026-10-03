@@ -31,7 +31,7 @@ export function AusgabeDialog({ id, offen, onSchliessen }: { id: ID; offen: bool
   const sortiert = [...mitarbeiter].sort((a, z) => (a.id === ich?.id ? -1 : z.id === ich?.id ? 1 : a.vorname.localeCompare(z.vorname, 'de')));
 
   return (
-    <Dialog offen={offen} onSchliessen={onSchliessen} titel={istFahrzeug ? `Fahrer für ${b.name}` : `${b.name} ausgeben`}>
+    <Dialog offen={offen} onSchliessen={onSchliessen} titel={istFahrzeug ? `Fahrer für ${b.name}` : `${b.name} ausgeben`} icon={istFahrzeug ? 'auto' : 'werkzeug'}>
       <Stapel>
         <Abschnitt titel={istFahrzeug ? 'Wer fährt?' : 'An wen?'}>
           <Liste leer={<Meta>Noch keine Mitarbeiter angelegt.</Meta>}>
@@ -103,6 +103,7 @@ export function DefektDialog({ id, offen, onSchliessen }: { id: ID; offen: boole
       offen={offen}
       onSchliessen={onSchliessen}
       titel={`Defekt melden: ${b.name}`}
+      icon="achtung"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

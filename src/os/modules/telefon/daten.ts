@@ -22,6 +22,13 @@ export const SCHRITT_TEXT: Record<AnrufSchritt, string> = {
   notiz: 'Nur notieren',
 };
 
+/** Nächster Schritt als Strich-Icon im Umschalter */
+export const SCHRITT_ICON: Record<AnrufSchritt, string> = {
+  anfrage: 'plus',
+  rueckruf: 'telefon',
+  notiz: 'notiz',
+};
+
 const offen = (a: Auftrag) => !['erledigt', 'verloren'].includes(a.phase);
 
 /** Anrufer per Nummer erkennen – nur sichere Treffer (gleiche Nummer) */

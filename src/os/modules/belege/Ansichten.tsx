@@ -20,6 +20,7 @@ import {
   Stapel,
   Status,
   Suchfeld,
+  TypIcon,
   Zeile,
   ZweiSpalten,
   useBestaetigen,
@@ -32,7 +33,9 @@ import { Person } from '@ui/person';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
 import {
   ANSICHTEN,
+  ART_ICON,
   ART_LABEL,
+  ART_TON,
   BELEG_DATEITYPEN,
   KATEGORIEN,
   SCHRITTE,
@@ -165,6 +168,7 @@ export function BelegeListe() {
               <ListenZeile
                 key={b.id}
                 to={`/betrieb/belege/${b.id}`}
+                links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} />}
                 titel={
                   <>
                     {lieferantName(b)}
@@ -383,7 +387,7 @@ export function BelegDetail() {
       zurueck={{ to: '/betrieb/belege', label: 'Belege' }}
       aktion={aktion}
     >
-      <Karte titel="Ablauf" kompakt>
+      <Karte titel="Ablauf" icon="liste" kompakt>
         <Stapel abstand={12}>
           <Schrittanzeige schritt={schritt} />
           <p className="mm-meta" style={{ margin: 0 }}>
@@ -508,7 +512,7 @@ export function BelegDetail() {
         }
         seite={
           <>
-            <Karte titel="Beleg" kompakt>
+            <Karte titel="Beleg" icon="kamera" kompakt>
               <Stapel abstand={8}>
                 {dok?.url ? <Vorschau url={dok.url} mime={dok.mime} /> : <Meta>Noch kein Foto und kein PDF.</Meta>}
                 <DateiKnopf
@@ -532,13 +536,13 @@ export function BelegDetail() {
               </Stapel>
             </Karte>
             {b.auftragId && (
-              <Karte titel="Auftrag" kompakt>
+              <Karte titel="Auftrag" icon="auftraege" kompakt>
                 <ObjektLink bezug={{ typ: 'auftraege', id: b.auftragId }}>
                   {db.auftraege.get(b.auftragId)?.nummer} · {db.auftraege.get(b.auftragId)?.titel}
                 </ObjektLink>
               </Karte>
             )}
-            <Karte titel="Verlauf" kompakt>
+            <Karte titel="Verlauf" icon="uhr" kompakt>
               <Zeitstrahl bezug={{ typ: 'belege', id: b.id }} max={8} />
             </Karte>
             {b.status !== 'neu' && (
@@ -579,7 +583,7 @@ export function AuftragBelegeTab({ id }: { id: ID }) {
       {geld && <Meta>Summe netto: {euro(liste.reduce((s, b) => s + b.netto, 0))}</Meta>}
       <Liste>
         {liste.map((b) => (
-          <ListenZeile key={b.id} to={`/betrieb/belege/${b.id}`} titel={`${lieferantName(b)}${geld ? ` · ${euro(brutto(b))}` : ''}`} untertitel={`${ART_LABEL[b.art]} · ${datum(b.datum)}`} rechts={<BelegStatus b={b} />} />
+          <ListenZeile key={b.id} to={`/betrieb/belege/${b.id}`} links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} klein />} titel={`${lieferantName(b)}${geld ? ` · ${euro(brutto(b))}` : ''}`} untertitel={`${ART_LABEL[b.art]} · ${datum(b.datum)}`} rechts={<BelegStatus b={b} />} />
         ))}
       </Liste>
     </Stapel>

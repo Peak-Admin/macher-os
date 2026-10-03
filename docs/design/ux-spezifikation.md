@@ -1496,4 +1496,10 @@ Ergänzt und ändert die Abschnitte oben, wo sie widersprechen:
   Lupe, „Suchen“ und Kürzel – keine Kugel. Ein Klick öffnet die KI-Leiste (Eingabe mit Verlaufsrand und Kugel).
 - **Dringend ist rot** (Gefahr-Ton), nie gelb. Überfällig ist ebenfalls rot (hellrote Fläche, dunkelrote Schrift) und färbt die ganze Kennzahl-Karte.
 - **Typ-Icons in Listen:** einfache Strich-Icons, keine Glas-Icons; **Kunden** mit Logo von ihrer Website oder Initialen.
+- **Farbtöne je Art:** Typ-Kacheln bekommen je Art einen eigenen Ton – heller Grund, dunklere Linie im selben Ton
+  (`TypIcon ton`, Tokens `--mm-ton-*`: grün, blau, petrol, gelb, lila, sand, rose). Gelb nur für Arten, die Aufmerksamkeit
+  brauchen (Reklamation). Töne unterscheiden Arten, nie Status.
+- **Emojis für Werte:** vor Werten, die eine Art beschreiben (Abwesenheit, Terminart, Zeitart), immer zusammen mit Text –
+  in Auswahlen, Listen und Meldungen gleich (`src/os/core/zeichen.ts`). Nie für Status, Geld, Zahlen oder Aktionen.
+- **Titel-Icons:** Karten und Dialoge, die eine Aufgabe überschreiben, tragen ein kleines Strich-Icon vor dem Titel (`icon`).
 - **Kalender:** links Datum und Blättern, rechts Ansicht und Filter.

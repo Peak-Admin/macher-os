@@ -25,7 +25,7 @@ function Regeln({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Partial
   const zeiten = betriebsZeiten();
   const mitKlingeln = k.annahme === 'keiner' || k.annahme === 'ausserhalb_keiner';
   return (
-    <Karte titel="Wann Macher rangeht">
+    <Karte titel="Wann Macher rangeht" icon="uhr">
       <Stapel abstand={16}>
         <Schalter label="Telefonassistent einschalten" beschreibung="Gilt, sobald deine Telefonnummer verbunden ist." checked={k.an} onChange={(an) => setze({ an })} disabled={gesperrt} />
         <AuswahlKarten label="Wann Macher rangeht" wert={k.annahme} optionen={ANNAHME} onChange={(v) => !gesperrt && setze({ annahme: v as AssistentKonfig['annahme'] })} />
@@ -57,7 +57,7 @@ function Notfaelle({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Part
   const [stichworte, setStichworte] = useState(k.notfallStichworte.join('\n'));
   const [nummer, setNummer] = useState(k.bereitschaft.nummer ?? '');
   return (
-    <Karte titel="Notfälle und Bereitschaft">
+    <Karte titel="Notfälle und Bereitschaft" icon="achtung">
       <Stapel abstand={16}>
         <Textfeld
           label="Was gilt als Notfall?"
@@ -98,7 +98,7 @@ function Notfaelle({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Part
 
 function Fragen({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Partial<AssistentKonfig>) => void; gesperrt: boolean }) {
   return (
-    <Karte titel="Was Macher fragt">
+    <Karte titel="Was Macher fragt" icon="chat">
       <Stapel abstand={8}>
         <Meta>In dieser Reihenfolge. Was der Anrufer schon gesagt hat, fragt Macher nicht noch einmal.</Meta>
         <Liste>
@@ -154,7 +154,7 @@ function Probeanruf({ k }: { k: AssistentKonfig }) {
   const u = ergebnis?.u;
   return (
     <Stapel abstand={24}>
-      <Karte titel="Probeanruf">
+      <Karte titel="Probeanruf" icon="telefon">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -177,7 +177,7 @@ function Probeanruf({ k }: { k: AssistentKonfig }) {
         </form>
       </Karte>
       {ergebnis && u && (
-        <Karte titel="Das würde im Eingang landen">
+        <Karte titel="Das würde im Eingang landen" icon="liste">
           <Stapel abstand={16}>
             <Zeile>
               <Status icon={false}>Von Macher angenommen</Status>

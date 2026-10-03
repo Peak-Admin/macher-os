@@ -4,7 +4,8 @@ import { db, useDatenstand } from '@core/db';
 import { datum, datumKurz, heute, personName } from '@core/format';
 import type { ID, Zeiteintrag } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
-import { Auswahl, Button, Dialog, Eingabe, Filter, FormRaster, IconButton, Leer, Meta, Seite, Stapel, Status, Tabelle, Zeile, useToast } from '@ui/index';
+import { ZEITART_EMOJI } from '@core/zeichen';
+import { Auswahl, Button, Dialog, Emoji, Eingabe, Filter, FormRaster, IconButton, Leer, Meta, Seite, Stapel, Status, Tabelle, Zeile, useToast } from '@ui/index';
 import { useSchmal } from '@modules/kalender/hooks';
 import { offeneAntraege } from '@modules/abwesenheiten/logik';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
@@ -160,7 +161,15 @@ export function AlleZeiten() {
                 { titel: 'Datum', wert: (z) => (gleichesJahr ? datumKurz(z.datum) : datum(z.datum)), sortierWert: (z) => z.datum + z.start },
                 { titel: 'Mitarbeiter', wert: (z) => personName(db.mitarbeiter.get(z.mitarbeiterId)), sortierWert: (z) => personName(db.mitarbeiter.get(z.mitarbeiterId)) },
                 { titel: 'Auftrag', wert: (z) => auftragText(z.auftragId) || '–', nebensaechlich: true, sortierWert: (z) => auftragText(z.auftragId) },
-                { titel: 'Art', wert: (z) => ART_LABEL[z.art], nebensaechlich: true, sortierWert: (z) => ART_LABEL[z.art] },
+                {
+                  titel: 'Art',
+                  wert: (z) => (
+                    <>
+                      <Emoji zeichen={ZEITART_EMOJI[z.art]} />
+                      {ART_LABEL[z.art]}
+                    </>
+                  ),
+                  nebensaechlich: true, sortierWert: (z) => ART_LABEL[z.art] },
                 {
                   titel: 'Dauer',
                   wert: (z) => (z.ende ? stunden(dauer(z)) : <Status ton="aktiv">Läuft</Status>),
@@ -182,6 +191,7 @@ export function AlleZeiten() {
         offen={schmal && filterOffen}
         onSchliessen={() => setFilterOffen(false)}
         titel="Filter"
+        icon="filter"
         aktionen={
           <>
             {anzahl > 0 && (
@@ -246,7 +256,7 @@ function FilterFelder({
           leer="Alle"
           value={f.art}
           onChange={(e) => setze({ ...f, art: e.target.value as ZeitArt | '' })}
-          optionen={(Object.keys(ART_LABEL) as ZeitArt[]).map((a) => ({ wert: a, label: ART_LABEL[a] }))}
+          optionen={(Object.keys(ART_LABEL) as ZeitArt[]).map((a) => ({ wert: a, label: ART_LABEL[a], emoji: ZEITART_EMOJI[a] }))}
         />
       </FormRaster>
     </Stapel>

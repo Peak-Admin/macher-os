@@ -67,7 +67,7 @@ export function AbnahmeDetail() {
 
 function AbnahmeSeite({ a }: { a: Abnahme }) {
   return (
-    <Karte titel="Auftrag" kompakt>
+    <Karte titel="Auftrag" icon="auftraege" kompakt>
       <Stapel abstand={8}>
         <ObjektLink bezug={{ typ: 'auftraege', id: a.auftragId }}>{db.auftraege.get(a.auftragId)?.titel ?? 'Auftrag'}</ObjektLink>
         <AuftragKurz id={a.auftragId} />
@@ -149,7 +149,7 @@ function AbnahmeBearbeiten({ a }: { a: Abnahme }) {
 
   return (
     <Stapel abstand={24}>
-      <Karte titel="1. Angaben">
+      <Karte titel="1. Angaben" icon="notiz">
         <FormRaster>
           <Eingabe label="Datum" type="date" value={a.datum} onChange={(e) => e.target.value && abnahmen.update(a.id, { datum: e.target.value }, { leise: true })} />
           <Eingabe label="Ort" value={a.ort ?? ''} onChange={(e) => abnahmen.update(a.id, { ort: e.target.value }, { leise: true })} />
@@ -157,7 +157,7 @@ function AbnahmeBearbeiten({ a }: { a: Abnahme }) {
         </FormRaster>
       </Karte>
 
-      <Karte titel="2. Mängel" aktion={<Status ton={a.mangelAufgabeIds.length ? 'achtung' : 'erfolg'}>{a.mangelAufgabeIds.length ? `${a.mangelAufgabeIds.length} Mängel` : 'Keine Mängel'}</Status>}>
+      <Karte titel="2. Mängel" icon="achtung" aktion={<Status ton={a.mangelAufgabeIds.length ? 'achtung' : 'erfolg'}>{a.mangelAufgabeIds.length ? `${a.mangelAufgabeIds.length} Mängel` : 'Keine Mängel'}</Status>}>
         <Stapel abstand={12}>
           <MaengelListe a={a} bearbeitbar />
           <form
@@ -179,15 +179,15 @@ function AbnahmeBearbeiten({ a }: { a: Abnahme }) {
         </Stapel>
       </Karte>
 
-      <Karte titel="3. Fotos fürs Protokoll">
+      <Karte titel="3. Fotos fürs Protokoll" icon="kamera">
         <FotoAuswahl a={a} />
       </Karte>
 
-      <Karte titel="4. Bemerkungen">
+      <Karte titel="4. Bemerkungen" icon="chat">
         <Textfeld label="Vorbehalte oder Vereinbarungen" optional value={a.bemerkung ?? ''} onChange={(e) => abnahmen.update(a.id, { bemerkung: e.target.value }, { leise: true })} placeholder="z. B. Restarbeiten Außenbereich nach Frostende" />
       </Karte>
 
-      <Karte titel="5. Unterschrift Kunde">
+      <Karte titel="5. Unterschrift Kunde" icon="unterschrift">
         <Stapel abstand={16}>
           <Meldung ton={a.mangelAufgabeIds.length ? 'achtung' : 'erfolg'} titel={ERGEBNIS_TEXT[ergebnis(a.mangelAufgabeIds)]}>
             {a.mangelAufgabeIds.length
@@ -217,6 +217,7 @@ function AbnahmeBearbeiten({ a }: { a: Abnahme }) {
         offen={verweigern}
         onSchliessen={() => setVerweigern(false)}
         titel="Abnahme verweigert"
+        icon="x"
         aktionen={
           <>
             <Button variante="tertiaer" onClick={() => setVerweigern(false)}>
@@ -261,7 +262,7 @@ function AbnahmeErgebnis({ a }: { a: Abnahme }) {
           {a.mangelAufgabeIds.length ? (offen.length ? `${offen.length} von ${a.mangelAufgabeIds.length} Mängeln noch offen.` : 'Alle Mängel sind beseitigt.') : `Abgenommen ${relativ(a.abgeschlossenAm)}.`}
         </Meldung>
       )}
-      <Karte titel="Angaben">
+      <Karte titel="Angaben" icon="notiz">
         <Stapel abstand={4}>
           <Meta>Datum: {datum(a.datum)}</Meta>
           {a.ort && <Meta>Ort: {a.ort}</Meta>}
@@ -269,11 +270,11 @@ function AbnahmeErgebnis({ a }: { a: Abnahme }) {
           {a.bemerkung && <Meta>Bemerkung: {a.bemerkung}</Meta>}
         </Stapel>
       </Karte>
-      <Karte titel="Mängel">
+      <Karte titel="Mängel" icon="achtung">
         <MaengelListe a={a} bearbeitbar={false} />
       </Karte>
       {fotos.length > 0 && (
-        <Karte titel="Fotos">
+        <Karte titel="Fotos" icon="kamera">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(120px, 45%), 1fr))', gap: 8 }}>
             {fotos.map((f) => (
               <Vorschaubild key={f.id} d={f} />
@@ -282,7 +283,7 @@ function AbnahmeErgebnis({ a }: { a: Abnahme }) {
         </Karte>
       )}
       {a.unterschriftKunde && (
-        <Karte titel="Unterschrift">
+        <Karte titel="Unterschrift" icon="unterschrift">
           <UnterschriftAnzeige daten={a.unterschriftKunde} rolle="Kunde" />
         </Karte>
       )}

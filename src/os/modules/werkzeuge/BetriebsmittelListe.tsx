@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { db } from '@core/db';
 import { passt } from '@core/format';
 import type { Betriebsmittel, BetriebsmittelArt } from '@core/objects';
-import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, Suchfeld } from '@ui/index';
+import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, Suchfeld, TypIcon } from '@ui/index';
 import { faelligkeit } from '../pruefungen/daten';
-import { ART_LABEL, STATUS_LABEL, woIst } from './daten';
+import { ART_ICON, ART_LABEL, ART_TON, STATUS_LABEL, woIst } from './daten';
 
 const TITEL: Record<BetriebsmittelArt, string> = { werkzeug: 'Werkzeuge', maschine: 'Maschinen & Geräte', fahrzeug: 'Fahrzeuge' };
 const NEU: Record<BetriebsmittelArt, string> = { werkzeug: 'Werkzeug anlegen', maschine: 'Gerät anlegen', fahrzeug: 'Fahrzeug anlegen' };
@@ -79,6 +79,7 @@ export function BetriebsmittelZeile({ b, zeigeArt }: { b: Betriebsmittel; zeigeA
   return (
     <ListenZeile
       to={`/betrieb/werkzeuge/${b.id}`}
+      links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} />}
       titel={
         <>
           {b.name} <BeispielMarke zeigen={b.beispiel} />

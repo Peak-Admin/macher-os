@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { heute, passt, personName } from '@core/format';
 import { istBuero, useDarf, useIch } from '@core/session';
-import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Seite, Stapel, Status, Suchfeld } from '@ui/index';
+import { ABWESENHEIT_EMOJI } from '@core/zeichen';
+import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Seite, Stapel, Status, Suchfeld, mitEmoji } from '@ui/index';
 import { abwesenheitAm, ART_LABEL } from '@modules/abwesenheiten/daten';
 import { Personenbild } from './profilbild';
 import { ROLLE_LABEL, istAktiv, sortiert } from './team';
@@ -71,7 +72,7 @@ export function MitarbeiterListe() {
                 ansicht === 'ausgetreten' ? (
                   <Status>Ausgetreten</Status>
                 ) : a ? (
-                  <Status ton="aktiv">{darfArt ? ART_LABEL[a.art] : 'Abwesend'}</Status>
+                  <Status ton="aktiv">{darfArt ? mitEmoji(ABWESENHEIT_EMOJI[a.art], ART_LABEL[a.art]) : 'Abwesend'}</Status>
                 ) : m.austritt ? (
                   <Status ton="achtung">Austritt geplant</Status>
                 ) : null

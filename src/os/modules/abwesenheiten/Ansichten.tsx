@@ -5,7 +5,8 @@ import { aktionAusfuehren } from '@core/modul';
 import { datum, heute, personName, uhrzeit } from '@core/format';
 import type { Abwesenheit, AbwesenheitsArt, ID } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
-import { BeispielMarke, Button, Filter, Karte, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Tabs, Zeile, ZweiSpalten, useToast } from '@ui/index';
+import { ABWESENHEIT_EMOJI } from '@core/zeichen';
+import { BeispielMarke, Button, Emoji, Filter, Karte, Kennzahl, Leer, Liste, ListenZeile, Meldung, Meta, Raster, Seite, Stapel, Status, Tabelle, Tabs, Zeile, ZweiSpalten, mitEmoji, useToast } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { Person, Personenbild } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
@@ -45,7 +46,14 @@ export function AbwesenheitZeile({ a, mitName = true }: { a: Abwesenheit; mitNam
       titel={
         <>
           {mitName ? `${personName(m)} · ` : ''}
-          {artSichtbar ? ART_LABEL[a.art] : 'Abwesend'} <BeispielMarke zeigen={a.beispiel} />
+          {artSichtbar ? (
+            <>
+              <Emoji zeichen={ABWESENHEIT_EMOJI[a.art]} />
+              {ART_LABEL[a.art]}
+            </>
+          ) : (
+            'Abwesend'
+          )} <BeispielMarke zeigen={a.beispiel} />
         </>
       }
       untertitel={`${zeitraumText(a)} · ${tageText(arbeitstage(a.von, a.bis, a.halbtags))}`}
@@ -70,7 +78,7 @@ export function AntragKarte({ a }: { a: Abwesenheit }) {
     toast(ja ? `${ART_LABEL[a.art]} genehmigt. ${m?.vorname} bekommt Bescheid.` : 'Abgelehnt. Der Mitarbeiter bekommt Bescheid.');
   };
   return (
-    <Karte kompakt titel={<Person m={m} groesse={32}>{`${personName(m)} · ${ART_LABEL[a.art]}`}</Person>} oberzeile={zeitraumText(a)}>
+    <Karte kompakt titel={<Person m={m} groesse={32}>{`${personName(m)} · ${mitEmoji(ABWESENHEIT_EMOJI[a.art], ART_LABEL[a.art])}`}</Person>} oberzeile={zeitraumText(a)}>
       <Stapel abstand={8}>
         <Meta>
           {tageText(tage)}
@@ -163,7 +171,7 @@ export function AbwesenheitenSeite() {
           </Stapel>
         }
         seite={
-          <Karte titel="Abwesenheit eintragen">
+          <Karte titel="Abwesenheit eintragen" icon="kalender">
             <AbwesenheitForm key={`${vorgabeArt}:${vorgabeMa ?? ''}`} vorgabeArt={vorgabeArt} vorgabeMa={vorgabeMa} />
           </Karte>
         }
@@ -341,7 +349,7 @@ export function AbwesenheitDetail() {
         }
         seite={
           <>
-            <Karte titel="Details" kompakt>
+            <Karte titel="Details" icon="info" kompakt>
               <Stapel abstand={4}>
                 <Meta>
                   {datum(a.von)} bis {datum(a.bis)}

@@ -16,6 +16,7 @@ function GlockenOverlay() {
       offen={offen}
       onSchliessen={schliessen}
       titel="Benachrichtigungen"
+      icon="glocke"
       breit
       aktionen={
         <>

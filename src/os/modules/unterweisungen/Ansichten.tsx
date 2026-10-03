@@ -110,6 +110,7 @@ export function UnterweisungDialog({ offen, onSchliessen, u }: { offen: boolean;
       offen={offen}
       onSchliessen={onSchliessen}
       titel={u ? 'Unterweisung bearbeiten' : 'Unterweisung anlegen'}
+      icon="schild"
       breit
       aktionen={
         <>
@@ -195,11 +196,11 @@ export function UnterweisungDetail() {
       <ZweiSpalten
         haupt={
           <Stapel abstand={24}>
-            <Karte titel="Inhalt">
+            <Karte titel="Inhalt" icon="liste">
               <Inhalt text={u.inhalt} />
             </Karte>
             {fuerMich && meinStand && (
-              <Karte titel={brauchtBestaetigung(meinStand) ? 'Bestätigen' : 'Deine Bestätigung'}>
+              <Karte titel={brauchtBestaetigung(meinStand) ? 'Bestätigen' : 'Deine Bestätigung'} icon="unterschrift">
                 {brauchtBestaetigung(meinStand) ? (
                   <Stapel abstand={16}>
                     <Checkbox label="Ich habe die Unterweisung gelesen und verstanden. Fragen habe ich mit dem Chef geklärt." checked={gelesen} onChange={setGelesen} />
@@ -270,7 +271,7 @@ export function UnterweisungDetail() {
           </Stapel>
         }
         seite={
-          <Karte titel="Details" kompakt>
+          <Karte titel="Details" icon="info" kompakt>
             <Stapel abstand={4}>
               <Meta>Gilt für: {u.rollen.map((r) => ROLLEN.find((x) => x.id === r)?.label).join(', ')}</Meta>
               <Meta>{q ? `Schreibt den Nachweis „${q.name}“ fort.` : 'Keine Qualifikation verknüpft.'}</Meta>

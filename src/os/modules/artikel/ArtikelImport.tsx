@@ -62,7 +62,7 @@ export function ArtikelImport() {
             {ergebnis.neu} neu angelegt, {ergebnis.aktualisiert} aktualisiert{ergebnis.uebersprungen ? `, ${ergebnis.uebersprungen} ohne Bezeichnung übersprungen` : ''}.
           </Meldung>
         )}
-        <Karte titel="1. Datei wählen">
+        <Karte titel="1. Datei wählen" icon="upload">
           <Stapel>
             <DateiFeld label="CSV-Datei" accept=".csv,.txt,text/csv" onDateien={([f]) => datei(f)} knopf="CSV-Datei wählen" hilfe="Vorhandene Artikel (gleiche Artikelnummer oder EAN) werden aktualisiert, nicht doppelt angelegt." />
             <Textfeld label="… oder Inhalt einfügen" optional rows={4} value={text} onChange={(e) => laden(e.target.value)} placeholder={BEISPIEL} />
@@ -86,7 +86,7 @@ export function ArtikelImport() {
         </Karte>
 
         {roh.length > 0 && (
-          <Karte titel="2. Spalten zuordnen">
+          <Karte titel="2. Spalten zuordnen" icon="liste">
             <Stapel>
               <FormRaster spalten={3}>
                 {IMPORT_FELDER.map((f) => (
@@ -110,7 +110,7 @@ export function ArtikelImport() {
         )}
 
         {zeilen.length > 0 && (
-          <Karte titel="3. Prüfen und importieren">
+          <Karte titel="3. Prüfen und importieren" icon="check">
             <Stapel>
               <Zeile>
                 <Status ton="erfolg">{neu} neu</Status>

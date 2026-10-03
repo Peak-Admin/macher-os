@@ -73,9 +73,9 @@ export function ZusatzErfassen({ fertig, auftragId }: { fertig: () => void; auft
         wert={berechnung}
         onChange={setBerechnung}
         optionen={[
-          ...(leistungen.length ? [{ wert: 'leistung' as const, label: 'Leistungskatalog' }] : []),
-          { wert: 'stunden' as const, label: 'Stunden' },
-          { wert: 'pauschal' as const, label: 'Festpreis' },
+          ...(leistungen.length ? [{ wert: 'leistung' as const, label: 'Leistungskatalog', icon: 'liste' }] : []),
+          { wert: 'stunden' as const, label: 'Stunden', icon: 'uhr' },
+          { wert: 'pauschal' as const, label: 'Festpreis', icon: 'euro' },
         ]}
       />
       {berechnung === 'leistung' && (

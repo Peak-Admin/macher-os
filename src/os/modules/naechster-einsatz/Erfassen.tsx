@@ -7,9 +7,16 @@ import { db, useDatenstand } from '@core/db';
 import { heute, relativ } from '@core/format';
 import { useIch } from '@core/session';
 import { ERFASSEN_TITEL, erfassen, erfassenAktion } from '@ui/objekt';
-import { Button, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel } from '@ui/index';
+import { Button, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, TypIcon, type IconName, type TypTon } from '@ui/index';
 import { aktuellerAuftrag, naechsterEinsatz } from './logik';
 import { abschlussPfad, SyncStand } from './Feld';
+
+/** Typ-Kachel je Art des Erfassten (Liste „Heute von dir erfasst“) */
+const ERFASST_ZEICHEN: Record<string, { icon: IconName; ton: TypTon }> = {
+  Foto: { icon: 'kamera', ton: 'blau' },
+  Notiz: { icon: 'notiz', ton: 'sand' },
+  Zeit: { icon: 'uhr', ton: 'petrol' },
+};
 
 export function ErfassenSeite() {
   useDatenstand();
@@ -72,7 +79,7 @@ export function ErfassenSeite() {
           <h2 className="mm-heute-blocktitel">Heute von dir erfasst</h2>
           <Liste leer={<Leer skizze titel="Heute noch nichts erfasst" text="Ein Foto vom Zählerschrank oder deine Arbeitszeit – ein Tipp reicht." icon="kamera" />}>
             {zuletzt.map((x) => (
-              <ListenZeile key={x.id} titel={x.titel} untertitel={[x.art, x.auftrag, relativ(x.zeit)].filter(Boolean).join(' · ')} />
+              <ListenZeile key={x.id} links={<TypIcon name={ERFASST_ZEICHEN[x.art].icon} label={x.art} ton={ERFASST_ZEICHEN[x.art].ton} />} titel={x.titel} untertitel={[x.art, x.auftrag, relativ(x.zeit)].filter(Boolean).join(' · ')} />
             ))}
           </Liste>
         </section>

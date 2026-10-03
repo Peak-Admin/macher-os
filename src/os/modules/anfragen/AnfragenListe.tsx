@@ -4,8 +4,8 @@ import { db, useDatenstand } from '@core/db';
 import { pfadZu } from '@core/modul';
 import { passt, relativ } from '@core/format';
 import type { Auftrag, ID } from '@core/objects';
-import { Abschnitt, BeispielMarke, Button, Filter, Karte, Leer, Liste, ListenZeile, Seite, Stapel, Status, Suchfeld } from '@ui/index';
-import { KANAL_TEXT, alterText, hatNaechstenSchritt, istUnbearbeitet, offeneAnfragen } from './daten';
+import { Abschnitt, BeispielMarke, Button, Filter, Karte, Leer, Liste, ListenZeile, Seite, Stapel, Status, Suchfeld, TypIcon } from '@ui/index';
+import { KANAL_ICON, KANAL_TEXT, KANAL_TON, alterText, hatNaechstenSchritt, istUnbearbeitet, offeneAnfragen } from './daten';
 import { QualiDialog } from './Qualifizieren';
 
 type Sicht = 'offen' | 'erledigt';
@@ -23,6 +23,7 @@ export function AnfrageZeile({ a, onWahl }: { a: Auftrag; onWahl: (id: ID) => vo
   return (
     <ListenZeile
       onClick={() => onWahl(a.id)}
+      links={a.quelle ? <TypIcon name={KANAL_ICON[a.quelle]} label={KANAL_TEXT[a.quelle]} ton={KANAL_TON[a.quelle]} /> : <TypIcon name="chat" label="Anfrage" />}
       titel={
         <>
           {a.titel} <BeispielMarke zeigen={a.beispiel} />

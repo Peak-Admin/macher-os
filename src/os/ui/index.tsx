@@ -27,6 +27,7 @@ import { feldIcon } from './feld-icon';
 import { Icon, type IconName } from './icons';
 import { kartenIcon } from './karten-icon';
 import type { Ton } from '@core/modul';
+import type { TypTon } from '@core/zeichen';
 import './ui.css';
 
 export { GlasIcon, ThemenIcon, glasFuer, type GlasIconName } from './glas';
@@ -280,7 +281,8 @@ export function Eingabe({ label, hilfe, fehler, optional, className, icon, vorsc
 }
 
 /** `icon` (Strich-Icon) und `ton` färben die Option leicht ein, `gruppe` setzt eine Zwischenüberschrift (Optionen gruppiert übergeben) */
-type AuswahlOption = { wert: string; label: string; icon?: IconName; ton?: Ton; gruppe?: string };
+/** `emoji`: kleines Zeichen vor dem Wert (z. B. 🏖️ Urlaub) – nur für Arten, nie für Status oder Geld */
+type AuswahlOption = { wert: string; label: string; icon?: IconName; ton?: Ton; gruppe?: string; emoji?: string };
 
 function OptionInhalt({ o }: { o: AuswahlOption }) {
   return (
@@ -290,7 +292,10 @@ function OptionInhalt({ o }: { o: AuswahlOption }) {
           <Icon name={o.icon} size={16} />
         </span>
       )}
-      <span className="mm-auswahl-option-text">{o.label}</span>
+      <span className="mm-auswahl-option-text">
+        {o.emoji && <Emoji zeichen={o.emoji} />}
+        {o.label}
+      </span>
     </span>
   );
 }
@@ -496,7 +501,7 @@ export function Auswahl({
           >
             {/* Option mit eigenem Icon zeigt dieses statt des Feld-Icons */}
             {zeichen && !gewaehlt?.icon && <Icon name={zeichen} size={20} className="mm-auswahl-icon" aria-hidden />}
-            <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>{gewaehlt?.icon ? <OptionInhalt o={gewaehlt} /> : (gewaehlt?.label ?? leer ?? 'Bitte wählen')}</span>
+            <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>{gewaehlt?.icon || gewaehlt?.emoji ? <OptionInhalt o={gewaehlt} /> : (gewaehlt?.label ?? leer ?? 'Bitte wählen')}</span>
             <Icon name="runter" size={20} />
           </button>
           {name && <input type="hidden" name={name} value={aktuell} />}
@@ -603,7 +608,7 @@ export function Checkbox({ label, checked, onChange, disabled }: { label: ReactN
 }
 
 /** Auswahl als Segmente (2–5 Optionen) */
-export function Segmente<T extends string>({ label, wert, optionen, onChange }: { label: string; wert: T; optionen: { wert: T; label: string; icon?: IconName }[]; onChange: (v: T) => void }) {
+export function Segmente<T extends string>({ label, wert, optionen, onChange }: { label: string; wert: T; optionen: { wert: T; label: string; icon?: IconName; emoji?: string }[]; onChange: (v: T) => void }) {
   return (
     <div className="mm-feld">
       <span className="mm-label">{label}</span>
@@ -618,6 +623,7 @@ export function Segmente<T extends string>({ label, wert, optionen, onChange }: 
             onClick={() => onChange(o.wert)}
           >
             {o.icon && <Icon name={o.icon} size={18} aria-hidden />}
+            {o.emoji && <Emoji zeichen={o.emoji} />}
             {o.label}
           </button>
         ))}
@@ -699,15 +705,44 @@ export function AuswahlKarten<T extends string>({
   );
 }
 
+/** Farbton einer Typ-Kachel: heller Grund, dunklere Linie im selben Ton (Tokens `--mm-ton-*`) */
+export type { TypTon };
+
 /**
  * Typ-Icon in Listen: ein einfaches Strich-Icon auf ruhiger Kachel (36 px). Zeigt die Art eines Objekts
- * (z. B. Auftragsart) – nie Glas-Icons in Listen. `label` wird für Screenreader vorgelesen.
+ * (z. B. Auftragsart) – nie Glas-Icons in Listen. `ton` färbt Kachel und Linie je Art. `label` wird für Screenreader vorgelesen.
  */
-export function TypIcon({ name, label }: { name: IconName; label: string }) {
+export function TypIcon({ name, label, ton = 'neutral', klein }: { name: IconName; label: string; ton?: TypTon; klein?: boolean }) {
   return (
-    <span className="mm-typicon" data-tipp={label}>
-      <Icon name={name} size={18} />
+    <span className={cx('mm-typicon', `mm-ton--${ton}`, klein && 'mm-typicon--klein')} data-tipp={label}>
+      <Icon name={name} size={klein ? 16 : 18} />
       <span className="sr-only">{label}: </span>
+    </span>
+  );
+}
+
+/**
+ * Emoji vor einem Wert (z. B. 🏖️ Urlaub, 🔧 Einsatz). Nur für Arten von Dingen, immer zusammen mit Text –
+ * nie für Status, Geld oder Aktionen. Für Screenreader ausgeblendet, der Text daneben trägt die Bedeutung.
+ */
+export function Emoji({ zeichen }: { zeichen?: string }) {
+  if (!zeichen) return null;
+  return (
+    <span className="mm-emoji" aria-hidden>
+      {zeichen}
+    </span>
+  );
+}
+
+/** Text mit Emoji davor – für Stellen, die nur einen String annehmen (Meldungstitel, Toasts) */
+export const mitEmoji = (zeichen: string | undefined, text: string) => (zeichen ? `${zeichen} ${text}` : text);
+
+/** Kleines Strich-Icon vor einer Überschrift (Karten, Dialoge) */
+function TitelIcon({ name }: { name?: IconName }) {
+  if (!name) return null;
+  return (
+    <span className="mm-karten-icon" aria-hidden>
+      <Icon name={name} size={18} />
     </span>
   );
 }
@@ -1280,7 +1315,7 @@ export function Filter<T extends string>({ optionen, wert, onChange, label }: { 
 
 // ------------------------------------------------------------------ Dialog & Blatt
 
-export function Dialog({ offen, onSchliessen, titel, children, aktionen, breit }: { offen: boolean; onSchliessen: () => void; titel: string; children: ReactNode; aktionen?: ReactNode; breit?: boolean }) {
+export function Dialog({ offen, onSchliessen, titel, icon, children, aktionen, breit }: { offen: boolean; onSchliessen: () => void; titel: string; icon?: IconName; children: ReactNode; aktionen?: ReactNode; breit?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   const vorher = useRef<Element | null>(null);
   // Inhalt erst nach showModal einhängen: sonst greift autoFocus ins Leere (Dialog noch zu)
@@ -1307,7 +1342,10 @@ export function Dialog({ offen, onSchliessen, titel, children, aktionen, breit }
       {offen && bereit && (
         <>
           <div className="mm-dialog-kopf">
-            <h2>{titel}</h2>
+            <h2 className={cx(icon && 'mm-mit-titelicon')}>
+              <TitelIcon name={icon} />
+              {titel}
+            </h2>
             <IconButton icon="x" label="Schließen" onClick={onSchliessen} />
           </div>
           <div className="mm-dialog-inhalt">{children}</div>

@@ -172,8 +172,8 @@ export function EinstellungenSeite() {
               wert={e.kanal}
               onChange={(k) => speichern({ ...e, kanal: k })}
               optionen={[
-                { wert: 'push', label: 'Mitteilung aufs Handy' },
-                { wert: 'email', label: 'E-Mail' },
+                { wert: 'push', label: 'Mitteilung aufs Handy', icon: 'glocke' },
+                { wert: 'email', label: 'E-Mail', icon: 'mail' },
               ]}
             />
             <Kanalhinweis kanal={e.kanal} email={ich.email} />

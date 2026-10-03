@@ -47,7 +47,7 @@ export function WissenArtikel() {
               {a.text.trim() ? <ArtikelText text={a.text} /> : <Leer titel="Noch kein Text" text="Schreib die wichtigsten Schritte auf." icon="notiz" />}
             </Karte>
             {fotos.length > 0 && (
-              <Karte titel="Fotos">
+              <Karte titel="Fotos" icon="kamera">
                 <Raster min={160}>
                   {fotos.map((f) => (
                     <a key={f.id} href={f.url} target="_blank" rel="noreferrer">
@@ -62,7 +62,7 @@ export function WissenArtikel() {
         }
         seite={
           <>
-            <Karte titel="Passt zu" kompakt>
+            <Karte titel="Passt zu" icon="werkzeug" kompakt>
               <Stapel abstand={8}>
                 {a.gewerk ? <Meta>Gewerk: {gewerkVorlage(a.gewerk).label}</Meta> : <Meta>Alle Gewerke</Meta>}
                 {a.anlagentypen?.length ? (
@@ -83,7 +83,7 @@ export function WissenArtikel() {
               </Stapel>
             </Karte>
             {a.links?.length ? (
-              <Karte titel="Herstellerlinks" kompakt>
+              <Karte titel="Herstellerlinks" icon="link" kompakt>
                 <Stapel abstand={8}>
                   {a.links.filter((l) => istSichererLink(l.url)).map((l) => (
                     <a key={l.url} href={ausgehend(l.url)} target="_blank" rel="noreferrer noopener">

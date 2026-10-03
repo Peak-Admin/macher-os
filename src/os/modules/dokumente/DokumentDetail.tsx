@@ -125,7 +125,7 @@ function Ansicht({ d }: { d: Geschaeftsdokument }) {
         ))}
       {d.unterschrift && <UnterschriftAnzeige daten={d.unterschrift} rolle="Empfang bestätigt" />}
       {unterschreiben && (
-        <Karte titel="Empfang bestätigen">
+        <Karte titel="Empfang bestätigen" icon="unterschrift">
           <UnterschriftFeld
             titel="Unterschrift Kunde"
             hinweis="Mit der Unterschrift bestätigt der Kunde, dass er das aufgeführte Material erhalten hat."
@@ -169,7 +169,7 @@ function Ansicht({ d }: { d: Geschaeftsdokument }) {
         }
         seite={
           <>
-            <Karte titel="Kunde & Auftrag" kompakt>
+            <Karte titel="Kunde & Auftrag" icon="auftraege" kompakt>
               <Stapel abstand={8}>
                 <ObjektLink bezug={{ typ: 'kunden', id: d.kundeId }}>{k?.name ?? 'Kunde fehlt'}</ObjektLink>
                 <ObjektLink bezug={{ typ: 'auftraege', id: d.auftragId }}>
@@ -177,7 +177,7 @@ function Ansicht({ d }: { d: Geschaeftsdokument }) {
                 </ObjektLink>
               </Stapel>
             </Karte>
-            <Karte titel="Dokument" kompakt>
+            <Karte titel="Dokument" icon="dokument" kompakt>
               <Stapel abstand={8}>
                 <Button variante="sekundaer" icon="dokument" onClick={() => window.open(appPfad(`/druck/dokument/${d.id}`), '_blank')}>
                   Drucken / PDF

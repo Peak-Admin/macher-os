@@ -10,6 +10,7 @@ import {
   Button,
   Checkbox,
   Eingabe,
+  FormAbschnitt,
   FormRaster,
   IconButton,
   Karte,
@@ -159,22 +160,22 @@ function Formular({ leistung }: { leistung?: Leistung }) {
               speichern();
             }}
           >
-            <FormRaster>
-              <Eingabe label="Name" value={f.name} onChange={(e) => set('name', e.target.value)} fehler={fehler.name} autoFocus={!leistung} />
-              <Eingabe label="Kategorie" value={f.kategorie} onChange={(e) => set('kategorie', e.target.value)} optional vorschlaege={kategorienVon(alle).filter((k) => k !== 'Ohne Kategorie')} hilfe="z. B. Installation, Wartung, Lohn" />
-              <Auswahl label="Einheit" value={f.einheit} onChange={(e) => set('einheit', e.target.value as Einheit)} optionen={EINHEITEN.map((x) => ({ wert: x, label: x }))} />
-              {geld ? (
-                <Eingabe label={`Preis netto je ${f.einheit} (€)`} inputMode="decimal" value={f.preis} onChange={(e) => set('preis', e.target.value)} fehler={fehler.preis} placeholder="0,00" />
-              ) : (
-                <Meldung>Preise siehst du nur mit dem Recht „Preise & Geld“.</Meldung>
-              )}
-              <Eingabe label={`Arbeitszeit je ${f.einheit} (Minuten)`} inputMode="numeric" value={f.minuten} onChange={(e) => set('minuten', e.target.value)} fehler={fehler.minuten} optional hilfe="Grundlage für Planung und Kalkulation" />
-            </FormRaster>
-            <Textfeld label="Beschreibung" value={f.beschreibung} onChange={(e) => set('beschreibung', e.target.value)} optional hilfe="Erscheint als Langtext in Angeboten." />
+            <FormAbschnitt titel="Leistung" icon="liste">
+              <FormRaster>
+                <Eingabe label="Name" value={f.name} onChange={(e) => set('name', e.target.value)} fehler={fehler.name} autoFocus={!leistung} />
+                <Eingabe label="Kategorie" value={f.kategorie} onChange={(e) => set('kategorie', e.target.value)} optional vorschlaege={kategorienVon(alle).filter((k) => k !== 'Ohne Kategorie')} hilfe="z. B. Installation, Wartung, Lohn" />
+                <Auswahl label="Einheit" value={f.einheit} onChange={(e) => set('einheit', e.target.value as Einheit)} optionen={EINHEITEN.map((x) => ({ wert: x, label: x }))} />
+                {geld ? (
+                  <Eingabe label={`Preis netto je ${f.einheit} (€)`} inputMode="decimal" value={f.preis} onChange={(e) => set('preis', e.target.value)} fehler={fehler.preis} placeholder="0,00" />
+                ) : (
+                  <Meldung>Preise siehst du nur mit dem Recht „Preise & Geld“.</Meldung>
+                )}
+                <Eingabe label={`Arbeitszeit je ${f.einheit} (Minuten)`} inputMode="numeric" value={f.minuten} onChange={(e) => set('minuten', e.target.value)} fehler={fehler.minuten} optional hilfe="Grundlage für Planung und Kalkulation" />
+              </FormRaster>
+              <Textfeld label="Beschreibung" value={f.beschreibung} onChange={(e) => set('beschreibung', e.target.value)} optional hilfe="Erscheint als Langtext in Angeboten." />
+            </FormAbschnitt>
 
-            <Stapel abstand={8}>
-              <strong>Typisches Material</strong>
-              <Meta>Wird beim Kalkulieren mit vorgeschlagen.</Meta>
+            <FormAbschnitt titel="Typisches Material" text="Wird beim Kalkulieren mit vorgeschlagen." icon="paket">
               {f.material.length > 0 && (
                 <Liste>
                   {f.material.map((m, i) => {
@@ -221,11 +222,9 @@ function Formular({ leistung }: { leistung?: Leistung }) {
                 <Meta>Noch keine Artikel angelegt.</Meta>
               )}
               {geld && ek > 0 && <Meta>Material-EK je {f.einheit}: {euro(ek)}</Meta>}
-            </Stapel>
+            </FormAbschnitt>
 
-            <Stapel abstand={8}>
-              <strong>Nötige Qualifikation</strong>
-              <Meta>Die Planung schlägt dann nur passende Leute vor.</Meta>
+            <FormAbschnitt titel="Nötige Qualifikation" text="Die Planung schlägt dann nur passende Leute vor." icon="stern">
               {qualis.length ? (
                 qualis.map((q) => (
                   <Checkbox
@@ -238,7 +237,7 @@ function Formular({ leistung }: { leistung?: Leistung }) {
               ) : (
                 <Meta>Noch keine Qualifikationen angelegt.</Meta>
               )}
-            </Stapel>
+            </FormAbschnitt>
 
             <Schalter label="Aktiv" beschreibung="Inaktive Leistungen werden in Angeboten nicht mehr vorgeschlagen." checked={f.aktiv} onChange={(v) => set('aktiv', v)} />
 
@@ -253,7 +252,7 @@ function Formular({ leistung }: { leistung?: Leistung }) {
           </form>
         </Karte>
         {leistung && (
-          <Karte titel="Verlauf">
+          <Karte titel="Verlauf" icon="uhr">
             <Zeitstrahl bezug={{ typ: 'leistungen', id: leistung.id }} max={8} />
           </Karte>
         )}

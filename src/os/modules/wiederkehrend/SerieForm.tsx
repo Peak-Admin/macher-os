@@ -6,15 +6,16 @@ import type { ID, TerminArt } from '@core/objects';
 import { Auswahl, Button, Checkbox, Eingabe, FormRaster, Karte, Leer, Meta, Seite, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
 import { KundeAuswahl, OrtAuswahl } from '@ui/objekt';
 import { Person } from '@ui/person';
+import { TERMINART_EMOJI } from '@core/zeichen';
 import { REGEL_ARTEN, regelText, vorkommen, werktag, type RegelArt } from './regel';
 import { serien, serienTermine, termineErzeugen, terminDatum, type Serie } from './daten';
 import { servicevertraege } from '../servicevertraege/daten';
 
 const DAUER = [30, 60, 90, 120, 180, 240, 480].map((m) => ({ wert: String(m), label: m < 60 ? `${m} Minuten` : `${m / 60} ${m === 60 ? 'Stunde' : 'Stunden'}`.replace('.', ',') }));
-const TERMINARTEN: { wert: TerminArt; label: string }[] = [
-  { wert: 'wartung', label: 'Wartung / Prüfung' },
-  { wert: 'einsatz', label: 'Einsatz beim Kunden' },
-  { wert: 'intern', label: 'Intern' },
+const TERMINARTEN: { wert: TerminArt; label: string; emoji: string }[] = [
+  { wert: 'wartung', label: 'Wartung / Prüfung', emoji: TERMINART_EMOJI.wartung },
+  { wert: 'einsatz', label: 'Einsatz beim Kunden', emoji: TERMINART_EMOJI.einsatz },
+  { wert: 'intern', label: 'Intern', emoji: TERMINART_EMOJI.intern },
 ];
 
 export function SerieForm() {
@@ -133,7 +134,7 @@ export function SerieForm() {
         className="mm-stapel"
         style={{ gap: 24 }}
       >
-        <Karte titel="Was und wann">
+        <Karte titel="Was und wann" icon="kalender">
           <Stapel abstand={24}>
             <Eingabe label="Name der Serie" value={f.titel} onChange={(e) => set('titel', e.target.value)} fehler={fehler.titel} placeholder="z. B. Wartung Heizung" autoFocus={!vorhanden} />
             <Segmente label="Wiederholung" wert={f.art} optionen={REGEL_ARTEN} onChange={(v) => set('art', v)} />
@@ -156,7 +157,7 @@ export function SerieForm() {
           </Stapel>
         </Karte>
 
-        <Karte titel="Wo und wer">
+        <Karte titel="Wo und wer" icon="ort">
           <Stapel abstand={24}>
             <FormRaster>
               <KundeAuswahl optional wert={f.kundeId} onChange={(v) => setF((x) => ({ ...x, kundeId: v || undefined, ortId: undefined, anlageIds: [] }))} />

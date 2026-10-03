@@ -30,7 +30,7 @@ export function KundenbereichPanel({ id }: { id: ID }) {
 
   if (!z)
     return (
-      <Karte titel="Kundenbereich" kompakt>
+      <Karte titel="Kundenbereich" icon="link" kompakt>
         <div className="mm-einstieg" style={{ gap: 8 }}>
           <span className="mm-fenster" aria-hidden>
             <FensterSkizze icon="link" rahmen="handy" />
@@ -59,7 +59,7 @@ export function KundenbereichPanel({ id }: { id: ID }) {
 
   const link = portalLink(z.token);
   return (
-    <Karte titel="Kundenbereich" kompakt aktion={<Status ton="erfolg">Aktiv</Status>}>
+    <Karte titel="Kundenbereich" icon="link" kompakt aktion={<Status ton="erfolg">Aktiv</Status>}>
       <Stapel abstand={8}>
         <input className="mm-input" readOnly value={link} aria-label="Link zum Kundenbereich" onFocus={(e) => e.target.select()} />
         <Meta>

@@ -8,7 +8,7 @@ import type { ID } from '@core/objects';
 import { useIch } from '@core/session';
 import { Button, Icon, IconButton, Meldung, Meta, Segmente, Stapel, Textfeld, Zeile, useToast, DateiKnopf, bildVerkleinern, dateiAlsDataUrl, type Bild } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
-import { FOTO_TAGS, MAX_SPRACHE_SEKUNDEN, groesseText, laufenderAuftrag, standardTitel, titelAusText } from './daten';
+import { FOTO_TAG_ICON, FOTO_TAGS, MAX_SPRACHE_SEKUNDEN, groesseText, laufenderAuftrag, standardTitel, titelAusText } from './daten';
 import { SPEICHER_VOLL_TEXT, platzFrei } from './speicher';
 
 export interface ErfassenProps {
@@ -102,7 +102,7 @@ export function FotoErfassen({ fertig, auftragId }: ErfassenProps) {
         </div>
       )}
       {bilder.length > 0 && <Meta>{bilder.length === 1 ? '1 Foto' : `${bilder.length} Fotos`} · zusammen {groesseText(bilder.reduce((s, b) => s + b.bytes, 0))} nach dem Verkleinern</Meta>}
-      <Segmente label="Art des Fotos" wert={tag} onChange={setTag} optionen={[{ wert: '', label: 'Ohne' }, ...FOTO_TAGS.map((t) => ({ wert: t, label: t }))]} />
+      <Segmente label="Art des Fotos" wert={tag} onChange={setTag} optionen={[{ wert: '', label: 'Ohne', icon: FOTO_TAG_ICON[''] }, ...FOTO_TAGS.map((t) => ({ wert: t, label: t, icon: FOTO_TAG_ICON[t] }))]} />
       <Textfeld label="Notiz" optional value={notiz} onChange={(e) => setNotiz(e.target.value)} placeholder="z. B. Wasserschaden hinter der Verkleidung" />
       {/* Der Auftrag ist aus dem Kontext bekannt – nicht noch einmal fragen */}
       {!auftragId && <AuftragAuswahl label="Auftrag" optional wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />}

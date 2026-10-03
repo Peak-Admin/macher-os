@@ -4,7 +4,7 @@ import { db, useDatenstand, vermerken } from '@core/db';
 import { datum, heute, personName, relativ, telLink, uhrzeit, zeitpunkt } from '@core/format';
 import type { Rolle } from '@core/objects';
 import { ROLLEN, istBuero, useDarf, useIch } from '@core/session';
-import { Auswahl, BeispielMarke, Button, Eingabe, Filter, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
+import { Auswahl, BeispielMarke, Button, Eingabe, Filter, FormAbschnitt, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
 import { ObjektLink, Zeitstrahl } from '@ui/objekt';
 import { Person } from '@ui/person';
 import { naechsteFarbe } from '@modules/mitarbeiter/team';
@@ -128,16 +128,22 @@ export function BewerberNeu() {
             speichern();
           }}
         >
-          <FormRaster>
-            <Eingabe label="Vorname" value={f.vorname} onChange={set('vorname')} fehler={fehler.vorname} autoFocus autoComplete="off" />
-            <Eingabe label="Nachname" value={f.nachname} onChange={set('nachname')} optional autoComplete="off" />
-            <Eingabe label="Telefon" type="tel" value={f.telefon} onChange={set('telefon')} fehler={fehler.telefon} />
-            <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} optional />
-            <Auswahl label="Stelle" value={stelle} onChange={(e) => setStelle(e.target.value as Rolle)} optionen={ROLLEN.map((r) => ({ wert: r.id, label: STELLE_LABEL[r.id] }))} />
-            <Auswahl label="Wie kam die Bewerbung?" optional value={f.quelle} leer="Weiß nicht" onChange={set('quelle')} optionen={Object.entries(QUELLE_LABEL).map(([wert, label]) => ({ wert, label }))} />
-            <Eingabe label="Eingegangen am" type="date" max={heute()} value={f.eingegangenAm} onChange={set('eingegangenAm')} />
-          </FormRaster>
-          <Textfeld label="Notiz" optional value={f.notiz} onChange={set('notiz')} placeholder="z. B. Geselle SHK, 5 Jahre Erfahrung, Führerschein B" />
+          <FormAbschnitt titel="Person und Kontakt" icon="person">
+            <FormRaster>
+              <Eingabe label="Vorname" value={f.vorname} onChange={set('vorname')} fehler={fehler.vorname} autoFocus autoComplete="off" />
+              <Eingabe label="Nachname" value={f.nachname} onChange={set('nachname')} optional autoComplete="off" />
+              <Eingabe label="Telefon" type="tel" value={f.telefon} onChange={set('telefon')} fehler={fehler.telefon} />
+              <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} optional />
+            </FormRaster>
+          </FormAbschnitt>
+          <FormAbschnitt titel="Stelle und Eingang" icon="dokument">
+            <FormRaster>
+              <Auswahl label="Stelle" value={stelle} onChange={(e) => setStelle(e.target.value as Rolle)} optionen={ROLLEN.map((r) => ({ wert: r.id, label: STELLE_LABEL[r.id] }))} />
+              <Auswahl label="Wie kam die Bewerbung?" optional value={f.quelle} leer="Weiß nicht" onChange={set('quelle')} optionen={Object.entries(QUELLE_LABEL).map(([wert, label]) => ({ wert, label }))} />
+              <Eingabe label="Eingegangen am" type="date" max={heute()} value={f.eingegangenAm} onChange={set('eingegangenAm')} />
+            </FormRaster>
+            <Textfeld label="Notiz" optional value={f.notiz} onChange={set('notiz')} placeholder="z. B. Geselle SHK, 5 Jahre Erfahrung, Führerschein B" />
+          </FormAbschnitt>
           <div>
             <Button type="submit">Bewerbung speichern</Button>
           </div>
@@ -302,7 +308,7 @@ export function BewerberDetail() {
         }
         seite={
           <>
-            <Karte titel="Kontakt" kompakt>
+            <Karte titel="Kontakt" icon="telefon" kompakt>
               <Stapel abstand={8}>
                 {b.telefon && <a href={telLink(b.telefon)}>{b.telefon}</a>}
                 {b.email && <a href={`mailto:${b.email}`}>{b.email}</a>}
@@ -311,7 +317,7 @@ export function BewerberDetail() {
               </Stapel>
             </Karte>
             {offen(b) && (
-              <Karte titel={b.status === 'probearbeiten' ? 'Probearbeiten' : 'Gespräch'} kompakt>
+              <Karte titel={b.status === 'probearbeiten' ? 'Probearbeiten' : 'Gespräch'} icon="kalender" kompakt>
                 {termine ? (
                   <Meta>
                     <ObjektLink bezug={{ typ: 'termine', id: termine.id }}>
@@ -333,7 +339,7 @@ export function BewerberDetail() {
                 )}
               </Karte>
             )}
-            <Karte titel="Notiz" kompakt>
+            <Karte titel="Notiz" icon="notiz" kompakt>
               <Stapel abstand={8}>
                 <Textfeld label="Notiz" value={notiz ?? b.notiz ?? ''} onChange={(e) => setNotiz(e.target.value)} placeholder="Eindruck, Erfahrung, Gehaltswunsch …" />
                 {notiz != null && notiz !== (b.notiz ?? '') && (

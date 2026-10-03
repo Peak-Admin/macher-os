@@ -4,12 +4,10 @@ import { db } from '@core/db';
 import { centAlsEingabe, centAus, heute } from '@core/format';
 import type { Mitarbeiter, Rolle } from '@core/objects';
 import { ROLLEN, istBuero, useDarf, useIch } from '@core/session';
-import { Button, Eingabe, FormAbschnitt, FormFuss, FormRaster, Karte, Leer, Meldung, Segmente, Seite, useToast, type IconName } from '@ui/index';
+import { Button, Eingabe, FormAbschnitt, FormFuss, FormRaster, Karte, Leer, Meldung, Segmente, Seite, useToast } from '@ui/index';
 import { einarbeitungen } from '@modules/einarbeitung/daten';
 import { wochenstundenGeaendert } from '@modules/arbeitszeiten/modell';
-import { naechsteFarbe } from './team';
-
-const ROLLEN_ICON: Record<Rolle, IconName> = { chef: 'stern', buero: 'notiz', monteur: 'werkzeug', azubi: 'wissen' };
+import { ROLLEN_ICON, naechsteFarbe } from './team';
 
 /** Anlegen (`/betrieb/mitarbeiter/neu`) und Bearbeiten (`/betrieb/mitarbeiter/:id/bearbeiten`) */
 export function MitarbeiterForm() {

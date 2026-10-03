@@ -14,7 +14,7 @@ function EinsatzortKarte({ ortId, kundeId, onOrtGewaehlt }: { ortId?: ID; kundeI
 
   if (ort && !ort.geloeschtAm)
     return (
-      <Karte titel="Einsatzort" oberzeile={ort.bezeichnung} kompakt aktion={<Button klein variante="tertiaer" to={`/auftraege/orte/${ort.id}`}>Öffnen</Button>}>
+      <Karte titel="Einsatzort" icon="ort" oberzeile={ort.bezeichnung} kompakt aktion={<Button klein variante="tertiaer" to={`/auftraege/orte/${ort.id}`}>Öffnen</Button>}>
         <VorOrtInfos ort={ort} onBearbeiten={() => setBearbeiten(true)} />
         {bearbeiten && <OrtDialog ort={ort} onSchliessen={() => setBearbeiten(false)} />}
       </Karte>
@@ -23,7 +23,7 @@ function EinsatzortKarte({ ortId, kundeId, onOrtGewaehlt }: { ortId?: ID; kundeI
   if (!kundeId || !onOrtGewaehlt) return null;
   const vorschlag = passenderOrt({ kundeId, ortId: undefined }, orte);
   return (
-    <Karte titel="Einsatzort" kompakt>
+    <Karte titel="Einsatzort" icon="ort" kompakt>
       <Stapel abstand={8}>
         <Meta>Noch kein Einsatzort gewählt. Ohne Ort fehlt dem Monteur die Adresse.</Meta>
         {orte.map((o) => (

@@ -85,7 +85,7 @@ export function LieferantFormular() {
         }}
       >
         <Stapel>
-          <Karte titel="Lieferant">
+          <Karte titel="Lieferant" icon="betrieb">
             <FormRaster>
               <Eingabe label="Name" value={f.name} onChange={set('name')} fehler={ff('name')} autoFocus={!l} placeholder="z. B. Elektro-Großhandel Nord" />
               <Eingabe label="Deine Kundennummer" value={f.kundennummer} onChange={set('kundennummer')} optional />
@@ -98,10 +98,10 @@ export function LieferantFormular() {
               <Eingabe label="Ort" value={f.ort} onChange={set('ort')} optional />
             </FormRaster>
           </Karte>
-          <Karte titel="Konditionen">
+          <Karte titel="Konditionen" icon="euro">
             <Textfeld label="Konditionen" value={f.konditionen} onChange={set('konditionen')} optional placeholder="z. B. 3 % Skonto bei Zahlung in 10 Tagen, frei Haus ab 250 €" />
           </Karte>
-          <Karte titel="Ansprechpartner">
+          <Karte titel="Ansprechpartner" icon="person">
             <FormRaster spalten={3}>
               <Eingabe label="Name" value={f.apName} onChange={set('apName')} optional placeholder="z. B. Herr Schmidt, Innendienst" />
               <Eingabe label="Telefon direkt" type="tel" value={f.apTelefon} onChange={set('apTelefon')} optional />

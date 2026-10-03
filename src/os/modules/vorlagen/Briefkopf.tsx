@@ -38,7 +38,7 @@ export function Briefkopf() {
             {fehlt.join(', ')}
           </Meldung>
         )}
-        <Karte titel="Logo">
+        <Karte titel="Logo" icon="kamera">
           <Stapel>
             {e.logo ? <img src={e.logo} alt="Dein Logo" style={{ maxWidth: 240, maxHeight: 96, objectFit: 'contain', alignSelf: 'flex-start' }} /> : <Leer skizze titel="Noch kein Logo" text="Lade dein Logo als PNG oder JPG hoch. Macher verkleinert es automatisch." icon="kamera" />}
             {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
@@ -56,7 +56,7 @@ export function Briefkopf() {
             )}
           </Stapel>
         </Karte>
-        <Karte titel="Fußzeile">
+        <Karte titel="Fußzeile" icon="liste">
           <Stapel>
             <Schalter label="Bankverbindung zeigen" checked={e.zeigeBank} onChange={(v) => setE({ ...e, zeigeBank: v })} disabled={!admin} />
             <Schalter label="Steuernummer und USt-IdNr. zeigen" checked={e.zeigeSteuer} onChange={(v) => setE({ ...e, zeigeSteuer: v })} disabled={!admin} />
@@ -69,7 +69,7 @@ export function Briefkopf() {
             <Meta>Name, Adresse, Bank und Steuer kommen aus deinen Betriebsdaten – ändern unter Einstellungen.</Meta>
           </Stapel>
         </Karte>
-        <Karte titel="Vorschau" oberzeile="So sieht ein Dokument aus">
+        <Karte titel="Vorschau" icon="dokument" oberzeile="So sieht ein Dokument aus">
           <div style={{ border: '1px solid var(--mm-border)', borderRadius: 'var(--mm-radius-card)', padding: 'var(--mm-space-6)', display: 'grid', gap: 'var(--mm-space-6)', background: 'var(--mm-surface)' }}>
             <Zeile zwischen>
               <Meta>{kopf.absenderzeile || 'Dein Betrieb · Adresse'}</Meta>

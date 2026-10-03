@@ -1,5 +1,5 @@
 import type { Kunde } from '@core/objects';
-import { Auswahl, Eingabe, FormRaster, Segmente, Textfeld } from '@ui/index';
+import { Auswahl, Eingabe, FormAbschnitt, FormRaster, Segmente, Textfeld } from '@ui/index';
 import { KUNDEN_ARTEN, QUELLEN } from './daten';
 
 export interface KundeEntwurf {
@@ -92,24 +92,36 @@ export function KundeFelder({
   const set = (k: keyof KundeEntwurf) => (e: { target: { value: string } }) => onChange({ ...wert, [k]: e.target.value });
   return (
     <>
-      <Segmente label="Art" wert={wert.art} onChange={(art) => onChange({ ...wert, art })} optionen={KUNDEN_ARTEN} />
-      <FormRaster>
-        <Eingabe label={wert.art === 'privat' ? 'Name' : 'Firmenname'} value={wert.name} onChange={set('name')} fehler={fehler.name} autoComplete="name" />
-        <Eingabe label="Telefon" type="tel" value={wert.telefon} onChange={set('telefon')} optional autoComplete="tel" />
-        <Eingabe label="E-Mail" type="email" value={wert.email} onChange={set('email')} fehler={fehler.email} optional autoComplete="email" />
-        <Eingabe label="Website" value={wert.website} onChange={set('website')} optional autoComplete="url" hilfe="Daraus kommt das Logo in deinen Listen." />
-        <Eingabe label="Straße und Hausnummer" value={wert.strasse} onChange={set('strasse')} optional autoComplete="street-address" />
-        <Eingabe label="PLZ" value={wert.plz} onChange={set('plz')} fehler={fehler.plz} optional inputMode="numeric" autoComplete="postal-code" />
-        <Eingabe label="Ort" value={wert.ort} onChange={set('ort')} optional autoComplete="address-level2" />
-        <Auswahl label="Wie ist der Kunde auf euch gekommen?" value={wert.quelle ?? ''} onChange={set('quelle')} optional leer="Weiß ich nicht" optionen={QUELLEN} />
-        {erweitert && (
-          <>
+      <FormAbschnitt titel="Kunde" text="Wer ist der Kunde und wie ist er auf euch gekommen?" icon="person">
+        <Segmente label="Art" wert={wert.art} onChange={(art) => onChange({ ...wert, art })} optionen={KUNDEN_ARTEN} />
+        <FormRaster>
+          <Eingabe label={wert.art === 'privat' ? 'Name' : 'Firmenname'} value={wert.name} onChange={set('name')} fehler={fehler.name} autoComplete="name" />
+          <Auswahl label="Wie ist der Kunde auf euch gekommen?" value={wert.quelle ?? ''} onChange={set('quelle')} optional leer="Weiß ich nicht" optionen={QUELLEN} />
+        </FormRaster>
+      </FormAbschnitt>
+      <FormAbschnitt titel="Kontakt" text="So erreichst du den Kunden." icon="telefon">
+        <FormRaster>
+          <Eingabe label="Telefon" type="tel" value={wert.telefon} onChange={set('telefon')} optional autoComplete="tel" />
+          <Eingabe label="E-Mail" type="email" value={wert.email} onChange={set('email')} fehler={fehler.email} optional autoComplete="email" />
+          <Eingabe label="Website" value={wert.website} onChange={set('website')} optional autoComplete="url" hilfe="Daraus kommt das Logo in deinen Listen." />
+        </FormRaster>
+      </FormAbschnitt>
+      <FormAbschnitt titel="Adresse" icon="ort">
+        <FormRaster>
+          <Eingabe label="Straße und Hausnummer" value={wert.strasse} onChange={set('strasse')} optional autoComplete="street-address" />
+          <Eingabe label="PLZ" value={wert.plz} onChange={set('plz')} fehler={fehler.plz} optional inputMode="numeric" autoComplete="postal-code" />
+          <Eingabe label="Ort" value={wert.ort} onChange={set('ort')} optional autoComplete="address-level2" />
+        </FormRaster>
+      </FormAbschnitt>
+      {erweitert && (
+        <FormAbschnitt titel="Rechnung und Notiz" icon="dokument">
+          <FormRaster>
             <Eingabe label="Kundennummer" value={wert.nummer} onChange={set('nummer')} optional />
             <Eingabe label="Zahlungsziel in Tagen" value={wert.zahlungszielTage} onChange={set('zahlungszielTage')} fehler={fehler.zahlungszielTage} optional inputMode="numeric" hilfe="Leer = Standard aus deinem Betrieb." />
-          </>
-        )}
-      </FormRaster>
-      {erweitert && <Textfeld label="Notiz" value={wert.notiz} onChange={set('notiz')} optional hilfe="Nur intern sichtbar, z. B. „Zahlt immer pünktlich“." />}
+          </FormRaster>
+          <Textfeld label="Notiz" value={wert.notiz} onChange={set('notiz')} optional hilfe="Nur intern sichtbar, z. B. „Zahlt immer pünktlich“." />
+        </FormAbschnitt>
+      )}
     </>
   );
 }

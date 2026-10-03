@@ -103,13 +103,13 @@ export function passenderOrt(auftrag: Pick<Auftrag, 'kundeId' | 'ortId'>, orte: 
   return beimKunden.length === 1 ? beimKunden[0] : undefined;
 }
 
-export const ORT_ARTEN: { wert: Ort['art']; label: string }[] = [
-  { wert: 'haus', label: 'Haus' },
-  { wert: 'wohnung', label: 'Wohnung' },
-  { wert: 'gewerbe', label: 'Gewerbe / Wohnanlage' },
-  { wert: 'baustelle', label: 'Baustelle' },
-  { wert: 'filiale', label: 'Filiale' },
-  { wert: 'sonstiges', label: 'Sonstiges' },
+export const ORT_ARTEN: { wert: Ort['art']; label: string; emoji: string }[] = [
+  { wert: 'haus', label: 'Haus', emoji: '🏠' },
+  { wert: 'wohnung', label: 'Wohnung', emoji: '🚪' },
+  { wert: 'gewerbe', label: 'Gewerbe / Wohnanlage', emoji: '🏬' },
+  { wert: 'baustelle', label: 'Baustelle', emoji: '🚧' },
+  { wert: 'filiale', label: 'Filiale', emoji: '🏪' },
+  { wert: 'sonstiges', label: 'Sonstiges', emoji: '📌' },
 ];
 
 export const ortArtLabel = (a: Ort['art']) => ORT_ARTEN.find((x) => x.wert === a)?.label ?? a;

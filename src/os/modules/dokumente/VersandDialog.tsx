@@ -59,6 +59,7 @@ function Inhalt({ bezug, offen, onSchliessen, onGesendet, nebenaktion }: Props) 
       offen={offen}
       onSchliessen={onSchliessen}
       titel={`${e.label} senden`}
+      icon="mail"
       breit
       aktionen={
         <>

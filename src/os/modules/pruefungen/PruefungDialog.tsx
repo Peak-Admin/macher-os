@@ -4,14 +4,14 @@ import { useEinstellung } from '@core/einstellungen';
 import { datum, heute, plusMonate } from '@core/format';
 import type { ID } from '@core/objects';
 import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meldung, Segmente, Stapel, Textfeld, useToast, DateiFeld, dateiLesen } from '@ui/index';
-import { ERGEBNIS_LABEL, intervall, PRUEFARTEN, pruefungDokumentieren, standardIntervall, type Ergebnis } from './daten';
+import { ERGEBNIS_ICON, ERGEBNIS_LABEL, intervall, PRUEFARTEN, pruefungDokumentieren, standardIntervall, type Ergebnis } from './daten';
 
 const MAX_BYTES = 2_000_000;
 
 export function PruefungDialog({ id, offen, onSchliessen }: { id: ID; offen: boolean; onSchliessen: () => void }) {
   const b = db.betriebsmittel.useOne(id);
   return (
-    <Dialog offen={offen && !!b} onSchliessen={onSchliessen} titel={b ? `Prüfung dokumentieren: ${b.name}` : 'Prüfung dokumentieren'}>
+    <Dialog offen={offen && !!b} onSchliessen={onSchliessen} titel={b ? `Prüfung dokumentieren: ${b.name}` : 'Prüfung dokumentieren'} icon="schild">
       {b && offen && <PruefungFormular id={id} fertig={onSchliessen} />}
     </Dialog>
   );
@@ -96,7 +96,7 @@ function PruefungFormular({ id, fertig }: { id: ID; fertig: () => void }) {
           label="Ergebnis"
           wert={ergebnis}
           onChange={setErgebnis}
-          optionen={(Object.keys(ERGEBNIS_LABEL) as Ergebnis[]).map((e) => ({ wert: e, label: e === 'maengel' ? 'Mit Mängeln' : ERGEBNIS_LABEL[e] }))}
+          optionen={(Object.keys(ERGEBNIS_LABEL) as Ergebnis[]).map((e) => ({ wert: e, label: e === 'maengel' ? 'Mit Mängeln' : ERGEBNIS_LABEL[e], icon: ERGEBNIS_ICON[e] }))}
         />
         <FormRaster>
           <Eingabe label="Prüfer" value={pruefer} onChange={(e) => setPruefer(e.target.value)} fehler={f('pruefer')} placeholder="z. B. Elektro Meier oder TÜV Nord" />
