@@ -33,6 +33,8 @@ export { Icon } from './icons';
 export { MacherAsset, type ObjektSchluessel } from './asset';
 export type { IconName } from './icons';
 export * from './eingaben';
+export { DatumEingabe, type DatumEingabeProps } from './datum';
+import { DatumEingabe } from './datum';
 export * from './druck';
 export * from './kunde';
 export { MacherOrb, MacherArbeitet, KiKugel, kiGlow, orbFuer, orbText, ORB_ZUSTAENDE, type OrbZustand } from './orb';
@@ -211,6 +213,8 @@ function MitFeldIcon({ icon, oben, children }: { icon?: IconName; oben?: boolean
 type EingabeProps = InputHTMLAttributes<HTMLInputElement> & { label: string; hilfe?: string; fehler?: string; optional?: boolean; icon?: FeldIconWahl };
 
 export function Eingabe({ label, hilfe, fehler, optional, className, icon, ...rest }: EingabeProps) {
+  // Datumsfelder bekommen die Macher-Datumswahl statt des Browser-Kalenders
+  if (rest.type === 'date') return <DatumEingabe label={label} hilfe={hilfe} fehler={fehler} optional={optional} className={className} icon={icon} {...rest} />;
   const zeichen = icon === false ? undefined : (icon ?? feldIcon({ label, type: rest.type, inputMode: rest.inputMode }));
   return (
     <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>

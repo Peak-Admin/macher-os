@@ -1,0 +1,107 @@
+/* ---------- Datumswahl (DatumEingabe, src/os/ui/datum.tsx) – ersetzt den Browser-Kalender */
+.mm-datum { position: relative; min-width: 0; }
+.mm-datum-feld { position: relative; }
+.mm-datum-eingabe { padding-right: 48px; font-variant-numeric: tabular-nums; }
+.mm-datum-oeffner {
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 40px; height: 40px;
+  border: 0; border-radius: 6px; background: transparent; color: var(--mm-text-secondary); cursor: pointer;
+  transition: background-color var(--mm-motion-fast) ease-out, color var(--mm-motion-fast) ease-out;
+}
+.mm-datum-oeffner > svg { transition: transform var(--mm-motion-fast) ease-out; }
+.mm-datum-oeffner:hover:not(:disabled) { background: var(--mm-surface-subtle); color: var(--mm-text); }
+.mm-datum-oeffner:disabled { cursor: not-allowed; opacity: 0.5; }
+.mm-datum--offen .mm-datum-oeffner { color: var(--mm-brand); }
+.mm-datum--offen .mm-datum-oeffner > svg { transform: rotate(180deg); }
+.mm-datum--offen .mm-feldrahmen-icon { color: var(--mm-brand); }
+
+.mm-datum-kalender {
+  position: fixed; z-index: 1000; width: min(344px, calc(100vw - 16px)); display: flex; flex-direction: column; gap: 8px; padding: 12px 12px 8px;
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); background: var(--mm-surface); box-shadow: var(--mm-shadow-overlay);
+  color: var(--mm-text); animation: mm-datum-auf var(--mm-motion-fast) ease-out;
+}
+@keyframes mm-datum-auf { from { opacity: 0; transform: translateY(-4px); } }
+.mm-datum-schleier { position: fixed; inset: 0; z-index: 999; background: rgb(16 44 33 / 32%); }
+.mm-datum-kalender--blatt {
+  left: 0; right: 0; bottom: 0; width: auto; max-height: 92vh; overflow-y: auto;
+  border-radius: var(--mm-radius-panel) var(--mm-radius-panel) 0 0; padding: 8px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  animation: mm-datum-hoch var(--mm-motion-panel) ease-out;
+}
+@keyframes mm-datum-hoch { from { opacity: 0.6; transform: translateY(24px); } }
+.mm-datum-blattkopf { display: flex; flex-direction: column; gap: 4px; }
+.mm-datum-blattkopf > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.mm-datum-blattkopf h2 { font-size: 20px; line-height: 26px; font-weight: 600; }
+.mm-datum-griff { width: 40px; height: 4px; margin: 0 auto 4px; border-radius: 2px; background: var(--mm-border); }
+
+.mm-datum-kopf { display: flex; align-items: center; gap: 4px; }
+.mm-datum-titel {
+  flex: 1; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 10px; border: 0; border-radius: var(--mm-radius-control);
+  background: transparent; font: 600 17px/24px var(--mm-font); color: var(--mm-text); cursor: pointer; text-align: left;
+}
+.mm-datum-titel:hover { background: var(--mm-surface-subtle); }
+.mm-datum-titel > svg { color: var(--mm-text-secondary); transition: transform var(--mm-motion-fast) ease-out; }
+.mm-datum-titel[aria-expanded='true'] > svg { transform: rotate(180deg); }
+.mm-datum-pfeil {
+  display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control);
+  background: var(--mm-surface); color: var(--mm-text); cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out, border-color var(--mm-motion-fast) ease-out;
+}
+.mm-datum-pfeil:hover { background: var(--mm-surface-subtle); border-color: var(--mm-border-dark); }
+.mm-datum-kalender button:focus-visible, .mm-datum-oeffner:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px; }
+
+.mm-datum-schnell { display: flex; flex-wrap: wrap; gap: 6px; }
+.mm-datum-chip {
+  min-height: 32px; padding: 0 12px; border: 1px solid var(--mm-border); border-radius: 999px; background: var(--mm-surface);
+  font: 500 14px/20px var(--mm-font); color: var(--mm-brand-ink); cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-datum-chip:hover:not(:disabled) { background: var(--mm-brand-soft); border-color: var(--mm-success-border); }
+.mm-datum-chip:disabled { background: var(--mm-surface-subtle); color: var(--mm-text-secondary); cursor: not-allowed; }
+
+.mm-datum-raster { width: 100%; border-collapse: separate; border-spacing: 0 2px; table-layout: fixed; }
+.mm-datum-raster th { height: 28px; padding: 0; font: 600 13px/16px var(--mm-font); color: var(--mm-text-secondary); text-align: center; }
+.mm-datum-raster abbr { text-decoration: none; }
+.mm-datum-raster td { padding: 0; text-align: center; }
+.mm-datum-raster .mm-datum-kw { width: 34px; font-size: 12px; color: var(--mm-text-secondary); font-variant-numeric: tabular-nums; }
+.mm-datum-tag {
+  position: relative; width: 40px; height: 40px; max-width: 100%; padding: 0; border: 0; border-radius: var(--mm-radius-control); background: transparent;
+  font: 500 16px/1 var(--mm-font); color: var(--mm-text); cursor: pointer; font-variant-numeric: tabular-nums;
+  transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-datum-kalender--blatt .mm-datum-tag { width: 44px; height: 44px; }
+.mm-datum-tag:hover:not(:disabled):not(.mm-datum-tag--gewaehlt) { background: var(--mm-surface-subtle); }
+.mm-datum-tag--we { color: var(--mm-text-secondary); }
+.mm-datum-tag--aussen { color: var(--mm-text-muted); opacity: 0.6; }
+.mm-datum-tag--heute { box-shadow: inset 0 0 0 2px var(--mm-brand); font-weight: 700; color: var(--mm-brand-ink); opacity: 1; }
+.mm-datum-tag--gewaehlt { background: var(--mm-action); color: var(--mm-on-action); font-weight: 600; box-shadow: none; opacity: 1; }
+.mm-datum-tag--gewaehlt:hover { background: var(--mm-action-hover); }
+.mm-datum-tag:disabled { color: var(--mm-text-muted); opacity: 0.45; cursor: not-allowed; text-decoration: line-through; }
+.mm-datum-tag--frei::after {
+  content: ''; position: absolute; left: 50%; bottom: 5px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: var(--mm-warning);
+}
+.mm-datum-tag--gewaehlt.mm-datum-tag--frei::after { background: var(--mm-on-action); }
+
+.mm-datum-monate { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px 0; }
+.mm-datum-monat {
+  min-height: 48px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface);
+  font: 500 16px/1 var(--mm-font); color: var(--mm-text); cursor: pointer;
+}
+.mm-datum-monat:hover { background: var(--mm-surface-subtle); }
+.mm-datum-monat[aria-current='true'] { background: var(--mm-action); border-color: var(--mm-action); color: var(--mm-on-action); font-weight: 600; }
+
+.mm-datum-info {
+  display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 6px 10px; border-radius: var(--mm-radius-control);
+  background: var(--mm-surface-subtle); font-size: 14px; line-height: 20px; color: var(--mm-text-secondary);
+}
+.mm-datum-info > svg { flex-shrink: 0; }
+.mm-datum-info--frei { background: var(--mm-warning-surface); color: var(--mm-warning); }
+.mm-datum-fuss { display: flex; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid var(--mm-border); }
+.mm-datum-leise {
+  min-height: 40px; padding: 0 12px; border: 0; border-radius: var(--mm-radius-control); background: transparent;
+  font: 600 16px/1 var(--mm-font); color: var(--mm-brand-ink); cursor: pointer;
+}
+.mm-datum-leise:hover:not(:disabled) { background: var(--mm-surface-subtle); }
+.mm-datum-leise:disabled { color: var(--mm-text-muted); cursor: not-allowed; }
+.mm-datum-leise--grau { color: var(--mm-text-secondary); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-datum-kalender, .mm-datum-kalender--blatt { animation: none; }
+  .mm-datum-oeffner > svg, .mm-datum-titel > svg, .mm-datum-tag { transition: none; }
+}
