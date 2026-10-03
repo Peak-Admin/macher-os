@@ -27,6 +27,9 @@
   --mm-muted-on-white: var(--mm-text-muted);
   /* sanftes Beige statt kühlem Grau (Wunsch des Betreibers, Oktober 2026) */
   --mm-canvas: #fbf9f5;
+  /* Grund der App hinter allen Karten: Weiß, die Navigation liegt dunkelgrün daneben (Wunsch des Betreibers, Oktober 2026).
+     --mm-canvas bleibt für vertiefte Flächen in Karten (Werte, Tafelköpfe, Leerplätze). */
+  --mm-grund: #ffffff;
   --mm-surface: #ffffff;
   --mm-surface-subtle: #f5f2ec;
   --mm-hover: var(--mm-surface-subtle);
@@ -135,6 +138,11 @@
   --mm-on-dark: #ffffff;
   --mm-on-dark-muted: #e0e9e3;
   --mm-focus-on-dark: #c3e8cf;
+  /* Navigation (Seitenleiste, untere Leiste): Waldgrün mit weißer Schrift */
+  --mm-nav-grund: var(--mm-forest);
+  --mm-nav-hover: rgb(255 255 255 / 8%);
+  --mm-nav-aktiv: rgb(255 255 255 / 14%);
+  --mm-nav-linie: rgb(255 255 255 / 14%);
 
   /* KI: die Kugel (Pink → Orange) kennzeichnet nur, was Lotte, die KI, tut – Suchen-und-Fragen, Orb, Antworten.
      Nie für Aktionen, Status oder Daten. */

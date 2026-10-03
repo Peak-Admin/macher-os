@@ -1,4 +1,4 @@
-.mm-app { display: flex; min-height: 100vh; background: var(--mm-canvas); }
+.mm-app { display: flex; min-height: 100vh; background: var(--mm-grund); }
 /* Ruhige, deckende Arbeitsflächen: kein Foto und kein Glas hinter Daten, Formularen und Listen */
 @media print { .mm-app { background: #fff; } }
 .mm-skip { position: absolute; left: -9999px; top: 8px; z-index: 200; padding: 8px 16px; background: var(--mm-action); color: #fff; border-radius: var(--mm-radius-control); }
@@ -162,7 +162,7 @@
 .mm-menue > button, .mm-menue > a { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px; border: 0; background: none; border-radius: var(--mm-radius-control); cursor: pointer; text-align: left; font-weight: 500; color: inherit; text-decoration: none; }
 .mm-menue > button:hover, .mm-menue > a:hover { background: var(--mm-hover); }
 .mm-schleier-unsichtbar { position: fixed; inset: 0; z-index: 25; }
-.mm-inhalt { flex: 1; min-width: 0; padding: 40px 32px 32px; outline: none; background: var(--mm-canvas); }
+.mm-inhalt { flex: 1; min-width: 0; padding: 40px 32px 32px; outline: none; background: var(--mm-grund); }
 
 /* Mobil: untere Navigation mit genau vier Bereichen, kein Plus, kein Hamburger */
 .mm-bottomnav, .mm-kopf-mobil { display: none; }
@@ -373,3 +373,67 @@
 .mm-app[data-zieht] { cursor: col-resize; user-select: none; }
 .mm-app[data-zieht] .mm-sidebar { transition: none; }
 @media (max-width: 1023px) { .mm-leiste-griff { display: none; } }
+
+/* ---------- Dunkelgrüne Navigation (Oktober 2026): Seitenleiste, Ausklapp-Knopf und untere Leiste in Waldgrün,
+   weiße Schrift, der Arbeitsbereich daneben weiß. Die Leiste stellt ihre Tokens um, damit alle Bausteine darin
+   (Suche, Wechsler, Favoriten, Ordner) ohne eigene Regeln mitziehen. Menüs und Dialoge darin bleiben hell. */
+:is(.mm-sidebar, .mm-bottomnav, .mm-leiste-ausklappen) {
+  --mm-text: var(--mm-on-dark);
+  --mm-black: var(--mm-on-dark);
+  --mm-text-secondary: var(--mm-on-dark-muted);
+  --mm-muted-on-white: var(--mm-on-dark-muted);
+  --mm-surface: rgb(255 255 255 / 6%);
+  --mm-surface-subtle: var(--mm-nav-hover);
+  --mm-hover: var(--mm-nav-hover);
+  --mm-border: var(--mm-nav-linie);
+  --mm-control-border: rgb(255 255 255 / 28%);
+  --mm-brand: var(--mm-brand-accent);
+  --mm-brand-soft: var(--mm-nav-aktiv);
+  --mm-brand-ink: var(--mm-on-dark);
+  --mm-brand-text: var(--mm-on-dark);
+  --mm-brand-deep: var(--mm-brand-accent);
+  --mm-link: var(--mm-on-dark);
+  --mm-focus: var(--mm-focus-on-dark);
+  --mm-shadow-lift: none;
+  color: var(--mm-on-dark);
+}
+.mm-sidebar, .mm-app--eingeklappt .mm-leiste-ausklappen {
+  background: var(--mm-nav-grund); border-color: var(--mm-nav-grund);
+  box-shadow: 0 1px 2px rgb(16 44 33 / 10%), 0 16px 36px -18px rgb(16 44 33 / 45%);
+}
+.mm-app--eingeklappt .mm-leiste-ausklappen:hover { background: var(--mm-brand-active); }
+.mm-sidebar { scrollbar-color: rgb(255 255 255 / 24%) transparent; }
+.mm-sidebar .mm-logo-zeichen { border-radius: 8px; }
+/* Aktiver Bereich: helle Fläche auf Grün, weiße Schrift, fetter */
+.mm-sidebar .mm-nav-haupt--aktiv, .mm-sidebar .mm-nav-favorit--an { color: var(--mm-on-dark); }
+/* Zahlen auf Grün: Akzentgrün mit Waldgrün-Schrift (Kontrast 5,9:1) */
+:is(.mm-sidebar, .mm-bottomnav) :is(.mm-nav-zahl, .mm-glocke-zahl) { color: var(--mm-forest); }
+.mm-sidebar .mm-wechsler-kachel { background: var(--mm-on-dark); color: var(--mm-forest); }
+.mm-sidebar .mm-leiste-kbd { background: none; }
+.mm-sidebar .mm-leiste-suche:hover { border-color: rgb(255 255 255 / 40%); }
+.mm-sidebar .mm-leiste-eingabe { background: rgb(255 255 255 / 10%); }
+@media (max-width: 1023px) {
+  .mm-bottomnav { background: var(--mm-nav-grund); border-top-color: var(--mm-nav-grund); }
+  .mm-bottomnav-link:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: -3px; }
+}
+/* Menüs und Dialoge, die aus der Leiste aufgehen, liegen hell auf dem Arbeitsbereich: Tokens zurück auf hell */
+:is(.mm-sidebar, .mm-bottomnav) :is(.mm-menue, .mm-dialog) {
+  --mm-text: #222c26;
+  --mm-black: #222c26;
+  --mm-text-secondary: #536057;
+  --mm-muted-on-white: #626e65;
+  --mm-surface: #ffffff;
+  --mm-surface-subtle: #f5f2ec;
+  --mm-hover: #f5f2ec;
+  --mm-border: #e8e3da;
+  --mm-control-border: #7a8780;
+  --mm-brand: #0d6b45;
+  --mm-brand-soft: #e8f2ec;
+  --mm-brand-ink: #164c34;
+  --mm-brand-text: #164c34;
+  --mm-brand-deep: #164c34;
+  --mm-link: #164c34;
+  --mm-focus: #0d6b45;
+  --mm-shadow-lift: inset 0 1px 0 rgb(255 255 255 / 90%), 0 1px 2px rgb(16 44 33 / 6%), 0 10px 28px -14px rgb(16 44 33 / 22%);
+  color: var(--mm-text);
+}
