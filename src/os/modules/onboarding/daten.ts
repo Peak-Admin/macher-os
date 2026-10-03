@@ -629,7 +629,7 @@ export function einladungsLink(id: ID, betrieb: string, basis = globalThis.locat
 
 export function einladungsText(name: string, betrieb: string, link: string): string {
   const vorname = name.trim().split(/\s+/)[0] ?? '';
-  return `Hallo ${vorname}, ich habe dich bei ${betrieb.trim() || 'uns'} in Macher OS eingeladen. Darüber bekommst du deine Einsätze aufs Handy: ${link}`;
+  return `Hallo ${vorname}, ich habe dich bei ${betrieb.trim() || 'uns'} in Handwerk OS eingeladen. Darüber bekommst du deine Einsätze aufs Handy: ${link}`;
 }
 
 // ------------------------------------------------------------------ Einrichten

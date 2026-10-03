@@ -12,8 +12,8 @@ Code: `src/components/auftakt/` (`Markenauftakt.tsx`, `auftakt.css`, `skript.ts`
   (`unterschrift-striche.ts`, aus `unterschrift.webp` gewonnen) werden als SVG-Maske nachgezogen und decken das Original auf;
   zum Schluss blendet das vollständige Original darüber.
 - 4,2–5,7 s: Das gemeinsame Logo Mission Mittelstand | Matthias Aumann erscheint.
-- 6,1 s: Ausblenden in die Seite. In der Software bleibt das Schlussbild stehen, bis Macher OS bereit ist
-  (Ereignis `macher-os:bereit` aus `src/os/MacherOs.tsx`), höchstens 8 s länger.
+- 6,1 s: Ausblenden in die Seite. In der Software bleibt das Schlussbild stehen, bis Handwerk OS bereit ist
+  (Ereignis `macher-os:bereit` aus `src/os/HandwerkOs.tsx`), höchstens 8 s länger.
 
 „Intro überspringen“ und Escape funktionieren jederzeit. Während des Auftakts ist die Seite dahinter `inert`.
 

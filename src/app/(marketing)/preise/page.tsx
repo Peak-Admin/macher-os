@@ -18,7 +18,7 @@ import { PreisRechner } from "./PreisRechner";
 
 export const metadata = pageMeta({
   title: "Preise – Ein Preis für deinen Betrieb, alles drin",
-  description: `Die Preise von Macher OS: ein Preis je Betrieb nach Teamgröße, alle Funktionen drin. ${testTage} Tage kostenlos testen ohne Zahlungsdaten, monatlich kündbar, SEPA-Lastschrift.`,
+  description: `Die Preise von Handwerk OS: ein Preis je Betrieb nach Teamgröße, alle Funktionen drin. ${testTage} Tage kostenlos testen ohne Zahlungsdaten, monatlich kündbar, SEPA-Lastschrift.`,
   path: "/preise",
 });
 
@@ -70,14 +70,14 @@ export default function PreisePage() {
         <SectionHeading
           eyebrow="Ablauf"
           title="Bezahlen ist eine Formalität."
-          intro="Du entscheidest erst, wenn Macher OS bei dir läuft. Und deine Daten gehören immer dir."
+          intro="Du entscheidest erst, wenn Handwerk OS bei dir läuft. Und deine Daten gehören immer dir."
         />
         <Steps
           className="mt-10"
           steps={[
             { titel: `${testTage} Tage testen`, text: "Ohne Kreditkarte, ohne Bankverbindung. Mit deinen echten Daten und deinem ganzen Team." },
             { titel: "Plan in einem Schritt buchen", text: "Der Plan ist aus deiner Teamgröße vorgewählt. SEPA-Lastschrift oder Karte – fertig." },
-            { titel: "Monatlich kündbar", text: "In zwei Klicks in Macher OS. Danach bleibt alles lesbar, und der Export ist immer kostenlos." },
+            { titel: "Monatlich kündbar", text: "In zwei Klicks in Handwerk OS. Danach bleibt alles lesbar, und der Export ist immer kostenlos." },
           ]}
         />
       </Section>
@@ -117,8 +117,8 @@ export default function PreisePage() {
       <Section tone="white">
         <SectionHeading
           eyebrow="Kunden"
-          title="So arbeiten Betriebe mit Macher OS."
-          intro="Beispielgeschichten, die zeigen, wie typische Betriebe Macher OS nutzen."
+          title="So arbeiten Betriebe mit Handwerk OS."
+          intro="Beispielgeschichten, die zeigen, wie typische Betriebe Handwerk OS nutzen."
         />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {kunden.slice(0, 3).map((k) => (
@@ -154,7 +154,7 @@ export default function PreisePage() {
 
       <FinalCta
         title="Starte heute. Zahl erst, wenn es passt."
-        intro={`Teste Macher OS ${testTage} Tage kostenlos – ohne Zahlungsdaten – und richte es in wenigen Minuten für deinen Betrieb ein.`}
+        intro={`Teste Handwerk OS ${testTage} Tage kostenlos – ohne Zahlungsdaten – und richte es in wenigen Minuten für deinen Betrieb ein.`}
       />
     </>
   );

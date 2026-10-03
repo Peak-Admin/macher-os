@@ -1,5 +1,5 @@
 /**
- * Glas-Icons: die Themen-Icons von Macher OS – gemeinsam für Website und Software (48 × 48).
+ * Glas-Icons: die Themen-Icons von Handwerk OS – gemeinsam für Website und Software (48 × 48).
  *
  * Hinten eine deckende Form mit Verlauf (hell → dunkel), davor eine Milchglasform: oben links fast deckend hell,
  * nach unten rechts getönt und durchscheinend, mit feiner heller Kante. Die hintere Form leuchtet weich verschwommen

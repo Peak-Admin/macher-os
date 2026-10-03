@@ -1,7 +1,7 @@
 /**
  * Schnittstelle für Bank-Anbieter (Kontoumsätze automatisch holen).
  *
- * Macher OS baut keine eigene Bankanbindung (FinTS/PSD2) und kein eigenes OAuth. Ein externer
+ * Handwerk OS baut keine eigene Bankanbindung (FinTS/PSD2) und kein eigenes OAuth. Ein externer
  * Integrationsanbieter (Kontoinformationsdienst) liefert die Umsätze auf zwei Wegen:
  *
  * 1. **Push (empfohlen):** Der Anbieter ruft den Webhook `/api/eingang/bank` auf. Der Server

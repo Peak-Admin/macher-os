@@ -10,7 +10,7 @@ export const teil4 = {
     meta: {
       title: "Automatische Planung für Handwerker – Termin und Team per Vorschlag",
       description:
-        "Macher OS schlägt für jeden offenen Auftrag Termin und Team vor – nach Verfügbarkeit, Qualifikation, Fahrweg, Auslastung und Kundenwunsch. Mit Begründung, du entscheidest.",
+        "Handwerk OS schlägt für jeden offenen Auftrag Termin und Team vor – nach Verfügbarkeit, Qualifikation, Fahrweg, Auslastung und Kundenwunsch. Mit Begründung, du entscheidest.",
     },
     hero: {
       titel: "Die Woche ist vorgeplant, bevor du den Kaffee ausgetrunken hast.",
@@ -182,14 +182,14 @@ export const teil4 = {
     meta: {
       title: "Auslastung im Handwerksbetrieb – wer hat noch Luft?",
       description:
-        "Geplante Stunden gegen Wochenstunden – mit Urlaub, Krankheit und Feiertagen. Macher OS zeigt dir, wer frei ist, wer überlastet ist und welche Aufträge noch keinen Termin haben.",
+        "Geplante Stunden gegen Wochenstunden – mit Urlaub, Krankheit und Feiertagen. Handwerk OS zeigt dir, wer frei ist, wer überlastet ist und welche Aufträge noch keinen Termin haben.",
     },
     hero: {
       titel: "Wer hat noch Luft? Du siehst es sofort.",
       problem:
         "Einer schiebt Überstunden, der andere wartet aufs nächste Material. Und wenn ein Kunde fragt, wann es losgeht, weißt du es nicht genau.",
       loesung:
-        "Macher OS rechnet geplante Stunden gegen die Wochenstunden – Urlaub, Krankheit und Feiertage sind schon abgezogen. Du siehst, wer frei ist und was noch keinen Termin hat.",
+        "Handwerk OS rechnet geplante Stunden gegen die Wochenstunden – Urlaub, Krankheit und Feiertage sind schon abgezogen. Du siehst, wer frei ist und was noch keinen Termin hat.",
     },
     visual: {
       bereich: "Planen",
@@ -354,7 +354,7 @@ export const teil4 = {
     meta: {
       title: "Tagesroute und Fahrzeiten für Handwerker – Fahrt & Route",
       description:
-        "Macher OS prüft, ob die Fahrzeit zwischen zwei Einsätzen reicht, schlägt eine kürzere Reihenfolge vor und schickt jedem Monteur morgens seine Route mit Google-Maps-Link.",
+        "Handwerk OS prüft, ob die Fahrzeit zwischen zwei Einsätzen reicht, schlägt eine kürzere Reihenfolge vor und schickt jedem Monteur morgens seine Route mit Google-Maps-Link.",
     },
     hero: {
       titel: "Die Route steht. Die Zeit dazwischen reicht.",
@@ -679,7 +679,7 @@ export const teil4 = {
       {
         frage: "Muss ich eine App installieren?",
         antwort:
-          "Nein. Macher OS läuft im Browser. Du kannst es mit einem Tipp auf den Startbildschirm legen – dann sieht es aus wie eine App.",
+          "Nein. Handwerk OS läuft im Browser. Du kannst es mit einem Tipp auf den Startbildschirm legen – dann sieht es aus wie eine App.",
       },
       {
         frage: "Sieht der Chef, wo ich gerade bin?",
@@ -699,7 +699,7 @@ export const teil4 = {
     meta: {
       title: "Urlaubsplanung und Krankmeldung im Handwerk – per Handy",
       description:
-        "Urlaub beantragen und genehmigen, krank melden mit Foto der AU, Resturlaub und Jahresübersicht. Macher OS zeigt sofort, welche Termine umgeplant werden müssen.",
+        "Urlaub beantragen und genehmigen, krank melden mit Foto der AU, Resturlaub und Jahresübersicht. Handwerk OS zeigt sofort, welche Termine umgeplant werden müssen.",
     },
     hero: {
       titel: "Urlaub beantragt. Genehmigt. Eingeplant.",
@@ -856,7 +856,7 @@ export const teil4 = {
       {
         frage: "Wird Resturlaub ins nächste Jahr übertragen?",
         antwort:
-          "Das rechnet Macher OS heute noch nicht automatisch. Den Urlaubsanspruch im Jahr trägst du beim Mitarbeiter ein.",
+          "Das rechnet Handwerk OS heute noch nicht automatisch. Den Urlaubsanspruch im Jahr trägst du beim Mitarbeiter ein.",
       },
     ],
     verwandt: ["einsatzplanung", "mitarbeiter", "auslastung"],
@@ -878,7 +878,7 @@ export const teil4 = {
       problem:
         "Der Monteur soll Fotos hochladen, aber nicht die Preise sehen. Der Azubi soll Zeiten erfassen, aber keine Rechnung verschicken. Bei vielen Programmen heißt das: alles oder nichts.",
       loesung:
-        "In Macher OS hat jeder eine Rolle – Chef, Büro, Monteur oder Azubi. Für jede Rolle legst du mit einem Schalter fest, was sie darf. Eine Vorschau zeigt dir, was die Rolle dann sieht.",
+        "In Handwerk OS hat jeder eine Rolle – Chef, Büro, Monteur oder Azubi. Für jede Rolle legst du mit einem Schalter fest, was sie darf. Eine Vorschau zeigt dir, was die Rolle dann sieht.",
     },
     visual: {
       bereich: "Betrieb",
@@ -962,7 +962,7 @@ export const teil4 = {
       },
       {
         titel: "Gegenprüfen",
-        text: "„Als … ansehen“ zeigt dir Macher OS so, wie dein Mitarbeiter es sieht.",
+        text: "„Als … ansehen“ zeigt dir Handwerk OS so, wie dein Mitarbeiter es sieht.",
       },
     ],
     automatisch: [
@@ -1185,7 +1185,7 @@ export const teil4 = {
       {
         frage: "Reicht eine Bestätigung am Handy als Nachweis?",
         antwort:
-          "Macher OS speichert, wer wann bestätigt hat. Ob das für deine Berufsgenossenschaft reicht, klär bitte mit ihr. Unterweist du persönlich, trägst du das zusätzlich als „Unterwiesen“ ein.",
+          "Handwerk OS speichert, wer wann bestätigt hat. Ob das für deine Berufsgenossenschaft reicht, klär bitte mit ihr. Unterweist du persönlich, trägst du das zusätzlich als „Unterwiesen“ ein.",
       },
       {
         frage: "Kann ich eigene Unterweisungen anlegen?",

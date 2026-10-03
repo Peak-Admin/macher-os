@@ -7,7 +7,7 @@ import { Wahl } from "@/components/ui/Wahl";
 import { AppSeitenleiste, type VorschauBereich } from "./AppFenster";
 
 /**
- * Klickbare Vorschau von Macher OS – nachgebaut nach der echten Oberfläche (Spielwiese, Oktober 2026):
+ * Klickbare Vorschau von Handwerk OS – nachgebaut nach der echten Oberfläche (Spielwiese, Oktober 2026):
  * Seitenleiste aus `AppFenster` (Betrieb, „Suchen“, Benachrichtigungen, vier Bereiche, Favoriten – mit Glas-Icons); Bereichsnavigation als unterstrichene
  * Reihe, Unteransichten als heller Umschalter. Alle Daten sind Beispieldaten aus der Spielwiese und so gekennzeichnet.
  * Nichts wird gespeichert; jede Aktion ändert nur diese Vorschau.
@@ -1004,7 +1004,7 @@ export function AppVorschau({ className = "", start = "heute" }: { className?: s
 
   return (
     <section
-      aria-label="Klickbare Vorschau von Macher OS mit Beispieldaten"
+      aria-label="Klickbare Vorschau von Handwerk OS mit Beispieldaten"
       className={`vorschau-fenster overflow-hidden border border-line bg-app-canvas text-ink ${className}`}
     >
       <div className="grid h-full gap-0 sm:grid-cols-[12.5rem_1fr] sm:gap-2 sm:p-2">

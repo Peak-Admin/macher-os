@@ -39,7 +39,7 @@ export const MAHNUNG_AKTIONEN: AktionDef<{ rechnungId: ID }>[] = [
       const gesendet = m && senden(m.id);
       if (!gesendet) throw new AktionsFehler(`Für ${r.nummer} konnte kein Schreiben freigegeben werden.`);
       const kunde = db.kunden.get(r.kundeId);
-      // Macher OS verschickt das Schreiben nicht selbst: Die E-Mail öffnet der Mensch in seinem Mailprogramm
+      // Handwerk OS verschickt das Schreiben nicht selbst: Die E-Mail öffnet der Mensch in seinem Mailprogramm
       return {
         bezug: { typ: 'rechnungen', id: r.id },
         text: kunde?.email ? `E-Mail an ${kunde.name} bereit` : `${kunde?.name ?? 'Kunde'} hat keine E-Mail – druck das Schreiben aus der Mahnung.`,

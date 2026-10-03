@@ -32,7 +32,7 @@ export type TagEintrag = {
 };
 
 export type TopGewerkInhalt = {
-  /** Name für „Macher OS für [Name]“. */
+  /** Name für „Handwerk OS für [Name]“. */
   name: string;
   seoTitel: string;
   beschreibung: string;
@@ -107,7 +107,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     name: "Elektriker",
     seoTitel: "Handwerkersoftware für Elektriker",
     beschreibung:
-      "Macher OS für Elektrobetriebe: Kundendienst, E-Check, DGUV V3, Messprotokolle, Baustellen und Rechnungen in einer Software – für Büro und Baustelle.",
+      "Handwerk OS für Elektrobetriebe: Kundendienst, E-Check, DGUV V3, Messprotokolle, Baustellen und Rechnungen in einer Software – für Büro und Baustelle.",
     icon: "bolt",
     teaser: "Kundendienst, E-Check, Messprotokolle und Baustellen in einem Plan.",
     suchbegriffe: [
@@ -124,7 +124,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     hero: {
       intro:
-        "Vom Störungsanruf bis zum Messprotokoll: Macher OS plant deine Monteure, hält Prüffristen im Blick und macht aus Regieberichten schnell eine Rechnung.",
+        "Vom Störungsanruf bis zum Messprotokoll: Handwerk OS plant deine Monteure, hält Prüffristen im Blick und macht aus Regieberichten schnell eine Rechnung.",
       betrieb: "Elektro Muster",
       tag: [
         { zeit: "07:30", titel: "Rohinstallation Neubau Becker", detail: "Lukas, Mia · 2. OG", farbe: "sky" },
@@ -220,7 +220,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { titel: "Gebäudesteuerung", text: "Planung, Programmierung und Einweisung als eigene Schritte." },
     ],
     planung: {
-      intro: "Baustelle, Kundendienst und Prüfungen laufen gleichzeitig. Macher OS hält die Fäden zusammen.",
+      intro: "Baustelle, Kundendienst und Prüfungen laufen gleichzeitig. Handwerk OS hält die Fäden zusammen.",
       mitarbeiter: "Wer ist Elektrofachkraft, wer Azubi, wer darf prüfen? Macher plant nach Qualifikation und Urlaub.",
       material: "Leitungen, Schutzschalter, Zählerplätze: Macher prüft vor dem Termin, ob alles im Lager oder im Wagen ist.",
       termine: "Netzbetreiber-Termine, Prüffristen und Kundendienst stehen in einem Kalender – nicht in drei.",
@@ -261,14 +261,14 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     },
     faq: [
       {
-        frage: "Kann ich Messprotokolle in Macher OS erstellen?",
+        frage: "Kann ich Messprotokolle in Handwerk OS erstellen?",
         antwort:
           "Ja. Dein Monteur trägt die Messwerte auf dem Handy ein. Daraus entsteht ein Protokoll nach deiner Vorlage, das am Auftrag hängt und direkt an den Kunden gehen kann.",
       },
       {
         frage: "Wie behalte ich Prüffristen für E-Check und DGUV V3 im Blick?",
         antwort:
-          "Jede Prüfung bekommt eine Frist. Macher OS erinnert dich rechtzeitig, schlägt Termine vor und schreibt auf Wunsch den Kunden an.",
+          "Jede Prüfung bekommt eine Frist. Handwerk OS erinnert dich rechtzeitig, schlägt Termine vor und schreibt auf Wunsch den Kunden an.",
       },
       {
         frage: "Berücksichtigt die Planung, wer welche Arbeiten machen darf?",
@@ -276,7 +276,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
           "Ja. Du hinterlegst Qualifikationen wie Elektrofachkraft oder befähigte Person. Macher plant dann nur passende Mitarbeiter ein und warnt, wenn eine Unterweisung abläuft.",
       },
       {
-        frage: "Passt Macher OS zu Kundendienst und Baustelle gleichzeitig?",
+        frage: "Passt Handwerk OS zu Kundendienst und Baustelle gleichzeitig?",
         antwort:
           "Genau dafür ist es gemacht. Lange Baustellen stehen im Plan, Störungen kommen dazwischen. Macher zeigt dir, wer in der Nähe ist und das Material dabei hat.",
       },
@@ -292,7 +292,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     name: "SHK-Betriebe",
     seoTitel: "Software für SHK-Betriebe – Sanitär & Heizung",
     beschreibung:
-      "Macher OS für Sanitär, Heizung und Klima: Notdienst, Wartungsverträge, Badsanierung, Trinkwasser und Abgasmessung – einfach geplant und abgerechnet.",
+      "Handwerk OS für Sanitär, Heizung und Klima: Notdienst, Wartungsverträge, Badsanierung, Trinkwasser und Abgasmessung – einfach geplant und abgerechnet.",
     icon: "wrench",
     teaser: "Notdienst, Wartungsverträge und Badsanierung ohne Zettelwirtschaft.",
     suchbegriffe: [
@@ -312,7 +312,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     hero: {
       intro:
-        "Heizung aus am Sonntag, 300 Wartungen im Herbst, ein Bad mit drei Gewerken: Macher OS plant deine Monteure, merkt sich jeden Wartungsvertrag und hält Ersatzteile im Blick.",
+        "Heizung aus am Sonntag, 300 Wartungen im Herbst, ein Bad mit drei Gewerken: Handwerk OS plant deine Monteure, merkt sich jeden Wartungsvertrag und hält Ersatzteile im Blick.",
       betrieb: "Haustechnik Muster",
       tag: [
         { zeit: "07:30", titel: "Wartung Gas-Brennwert", detail: "Kevin · Fam. Petersen", farbe: "moss" },
@@ -408,7 +408,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { titel: "Kleine Reparaturen", text: "Tropfender Hahn, Spülkasten, Thermostat – schnell eingeplant und abgerechnet." },
     ],
     planung: {
-      intro: "Herbst ist Wartungszeit, Winter ist Notdienstzeit. Macher OS sorgt dafür, dass beides gleichzeitig klappt.",
+      intro: "Herbst ist Wartungszeit, Winter ist Notdienstzeit. Handwerk OS sorgt dafür, dass beides gleichzeitig klappt.",
       mitarbeiter: "Bereitschaft, Urlaub, Kältemittel-Sachkunde: Macher plant nur ein, wer frei ist und die Arbeit machen darf.",
       material: "Ersatzteile, Thermen, Sanitärobjekte mit Lieferzeit: Macher meldet sich, bevor etwas fehlt.",
       termine: "Wartungen kommen als Vorschlag nach Region. Du bestätigst – der Kunde bekommt den Termin.",
@@ -449,12 +449,12 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     },
     faq: [
       {
-        frage: "Kann ich Wartungsverträge in Macher OS verwalten?",
+        frage: "Kann ich Wartungsverträge in Handwerk OS verwalten?",
         antwort:
-          "Ja. Jeder Vertrag hat Anlage, Intervall und Preis. Macher OS erinnert dich, wenn eine Wartung fällig ist, und schlägt Termine nach Region vor.",
+          "Ja. Jeder Vertrag hat Anlage, Intervall und Preis. Handwerk OS erinnert dich, wenn eine Wartung fällig ist, und schlägt Termine nach Region vor.",
       },
       {
-        frage: "Wie läuft der Notdienst mit Macher OS?",
+        frage: "Wie läuft der Notdienst mit Handwerk OS?",
         antwort:
           "Du legst fest, wer wann Bereitschaft hat. Anrufe werden mit Adresse und Fehlerbild aufgenommen und an die Bereitschaft weitergegeben. Der Bericht geht danach direkt in die Rechnung.",
       },
@@ -464,12 +464,12 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
           "Ja. Druckprobe, Spülprotokoll, Wartungs- und Messprotokolle füllst du auf dem Handy aus. Sie hängen am Auftrag und an der Anlage – auch Jahre später noch auffindbar.",
       },
       {
-        frage: "Hilft Macher OS bei der Badsanierung mit anderen Gewerken?",
+        frage: "Hilft Handwerk OS bei der Badsanierung mit anderen Gewerken?",
         antwort:
           "Ja. Du planst die Bauabschnitte nacheinander. Verschiebt sich ein Schritt, siehst du sofort, welche Termine danach betroffen sind.",
       },
       {
-        frage: "Weiß Macher OS, wer an Wärmepumpen arbeiten darf?",
+        frage: "Weiß Handwerk OS, wer an Wärmepumpen arbeiten darf?",
         antwort:
           "Du hinterlegst Qualifikationen wie die Kältemittel-Sachkunde. Macher plant passende Monteure ein und erinnert dich, bevor ein Nachweis abläuft.",
       },
@@ -480,7 +480,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     name: "Maler & Lackierer",
     seoTitel: "Software für Maler und Lackierer",
     beschreibung:
-      "Macher OS für Malerbetriebe: Aufmaß, Angebot am selben Tag, Fassaden mit Wetterplanung, Fotos für Hausverwaltungen und schnelle Rechnungen.",
+      "Handwerk OS für Malerbetriebe: Aufmaß, Angebot am selben Tag, Fassaden mit Wetterplanung, Fotos für Hausverwaltungen und schnelle Rechnungen.",
     icon: "pen",
     teaser: "Aufmaß, schnelle Angebote und Fassaden, die nach dem Wetter geplant werden.",
     suchbegriffe: [
@@ -496,7 +496,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     hero: {
       intro:
-        "Aufmaß vor Ort, Angebot noch am Abend, Kolonnen auf mehreren Baustellen: Macher OS rechnet Flächen, plant nach dem Wetter und schickt der Hausverwaltung die Fotos.",
+        "Aufmaß vor Ort, Angebot noch am Abend, Kolonnen auf mehreren Baustellen: Handwerk OS rechnet Flächen, plant nach dem Wetter und schickt der Hausverwaltung die Fotos.",
       betrieb: "Malerei Muster",
       tag: [
         { zeit: "07:00", titel: "Fassade Mehrfamilienhaus", detail: "Kolonne Jan · Gerüst steht", farbe: "sky" },
@@ -592,7 +592,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { titel: "Wärmedämmung", text: "Wärmedämmverbundsystem als eigener Ablauf mit Bauabschnitten." },
     ],
     planung: {
-      intro: "Mehrere Kolonnen, viele Baustellen, wechselndes Wetter. Macher OS behält den Überblick.",
+      intro: "Mehrere Kolonnen, viele Baustellen, wechselndes Wetter. Handwerk OS behält den Überblick.",
       mitarbeiter: "Wer ist mit wem unterwegs? Wer darf auf die Hubarbeitsbühne? Macher plant Kolonnen nach Können und Urlaub.",
       material: "Macher rechnet aus der Fläche, wie viel Farbe gebraucht wird, und erinnert an die Bestellung.",
       termine: "Fassaden nach Wetter, Wohnungen nach Frist der Verwaltung, Aufmaße dazwischen.",
@@ -633,12 +633,12 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     },
     faq: [
       {
-        frage: "Kann ich mit Macher OS ein Aufmaß machen?",
+        frage: "Kann ich mit Handwerk OS ein Aufmaß machen?",
         antwort:
           "Ja. Du erfasst Räume und Flächen auf dem Handy oder Tablet. Fenster und Türen ziehst du ab. Die Mengen gehen direkt ins Angebot.",
       },
       {
-        frage: "Wie hilft Macher OS bei der Wetterplanung?",
+        frage: "Wie hilft Handwerk OS bei der Wetterplanung?",
         antwort:
           "Außenarbeiten markierst du als wetterabhängig. Ist Regen oder Frost gemeldet, schlägt Macher vor, welche Innenarbeiten die Kolonne vorziehen kann.",
       },
@@ -648,7 +648,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
           "Ja. Vorher-nachher-Fotos und das Abnahmeprotokoll hängen am Auftrag. Du schickst sie mit der Rechnung oder als eigenen Bericht.",
       },
       {
-        frage: "Merkt sich Macher OS Farbtöne pro Raum?",
+        frage: "Merkt sich Handwerk OS Farbtöne pro Raum?",
         antwort:
           "Ja. Im Raumbuch steht pro Raum Farbton, Material und Besonderheit. Auch beim nächsten Auftrag in ein paar Jahren.",
       },
@@ -659,7 +659,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     name: "Fliesenleger",
     seoTitel: "Software für Fliesenleger",
     beschreibung:
-      "Macher OS für Fliesenleger: Aufmaß mit Verschnitt, Fliesen mit Lieferzeit, Abdichtung mit Fotos dokumentiert und Termine mit Installateur und Estrichleger abgestimmt.",
+      "Handwerk OS für Fliesenleger: Aufmaß mit Verschnitt, Fliesen mit Lieferzeit, Abdichtung mit Fotos dokumentiert und Termine mit Installateur und Estrichleger abgestimmt.",
     icon: "layers",
     teaser: "Aufmaß mit Verschnitt, Abdichtung mit Fotos, Termine mit den anderen Gewerken.",
     suchbegriffe: [
@@ -673,7 +673,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     hero: {
       intro:
-        "Fliesen mit Lieferzeit, Estrich, der noch nicht belegreif ist, ein Installateur, der sich verspätet: Macher OS hält deine Baustellen zusammen – und dokumentiert die Abdichtung, bevor sie unter der Fliese verschwindet.",
+        "Fliesen mit Lieferzeit, Estrich, der noch nicht belegreif ist, ein Installateur, der sich verspätet: Handwerk OS hält deine Baustellen zusammen – und dokumentiert die Abdichtung, bevor sie unter der Fliese verschwindet.",
       betrieb: "Fliesen Muster",
       tag: [
         { zeit: "07:30", titel: "Bad: Abdichtung", detail: "Marco · Fam. Yıldız", farbe: "sky" },
@@ -769,7 +769,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { titel: "Reparatur & Silikonfugen", text: "Kleine Aufträge, schnell geplant und abgerechnet." },
     ],
     planung: {
-      intro: "Fliesenleger kommen selten zuerst. Macher OS zeigt dir, wann du wirklich loslegen kannst.",
+      intro: "Fliesenleger kommen selten zuerst. Handwerk OS zeigt dir, wann du wirklich loslegen kannst.",
       mitarbeiter: "Wer kann Großformat, wer Naturstein? Macher plant nach Können – und Großformat immer zu zweit.",
       material: "Fliesen, Kleber, Abdichtung: Macher prüft Liefertermine gegen den Baustellenstart.",
       termine: "Vorarbeiten von Installateur und Estrich stehen im Plan. Verschiebt sich etwas, rutscht deine Planung mit.",
@@ -810,7 +810,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     },
     faq: [
       {
-        frage: "Rechnet Macher OS den Verschnitt mit ein?",
+        frage: "Rechnet Handwerk OS den Verschnitt mit ein?",
         antwort:
           "Ja. Du legst pro Fliese und Verlegeart einen Zuschlag fest. Macher rechnet ihn aus dem Aufmaß mit in Menge und Angebot.",
       },
@@ -825,7 +825,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
           "Du trägst die Vorarbeiten als Schritte im Auftrag ein. Verschieben sie sich, siehst du sofort, welche deiner Termine betroffen sind, und kannst sie mit einem Klick verschieben.",
       },
       {
-        frage: "Lohnt sich Macher OS auch für kleine Betriebe?",
+        frage: "Lohnt sich Handwerk OS auch für kleine Betriebe?",
         antwort:
           "Ja. Gerade wenn der Chef selbst auf der Baustelle steht, spart es Abende am Schreibtisch: Angebot vom Handy, Rechnung nach der Abnahme.",
       },
@@ -836,7 +836,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     name: "Tischler & Schreiner",
     seoTitel: "Software für Tischler und Schreiner",
     beschreibung:
-      "Macher OS für Tischlereien und Schreinereien: Werkstatt und Montage planen, Zuschnittlisten, Beschläge bestellen und Nachkalkulation für jeden Auftrag.",
+      "Handwerk OS für Tischlereien und Schreinereien: Werkstatt und Montage planen, Zuschnittlisten, Beschläge bestellen und Nachkalkulation für jeden Auftrag.",
     icon: "ruler",
     teaser: "Werkstatt und Montage in einem Plan – mit Nachkalkulation für jeden Auftrag.",
     suchbegriffe: [
@@ -853,7 +853,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     hero: {
       intro:
-        "Entwurf, Werkstatt, Montage: Bei dir läuft jeder Auftrag durch drei Welten. Macher OS plant Maschinen und Monteure, bestellt Beschläge rechtzeitig und zeigt dir am Ende, was der Auftrag wirklich gebracht hat.",
+        "Entwurf, Werkstatt, Montage: Bei dir läuft jeder Auftrag durch drei Welten. Handwerk OS plant Maschinen und Monteure, bestellt Beschläge rechtzeitig und zeigt dir am Ende, was der Auftrag wirklich gebracht hat.",
       betrieb: "Tischlerei Muster",
       tag: [
         { zeit: "07:00", titel: "Zuschnitt Einbauschrank Krause", detail: "Werkstatt · Formatkreissäge", farbe: "sky" },
@@ -949,7 +949,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { titel: "Reparatur & Service", text: "Kleine Aufträge, schnell geplant und abgerechnet." },
     ],
     planung: {
-      intro: "Bei dir gibt es zwei Pläne: Werkstatt und Montage. Macher OS macht einen daraus.",
+      intro: "Bei dir gibt es zwei Pläne: Werkstatt und Montage. Handwerk OS macht einen daraus.",
       mitarbeiter: "Wer kann an die CNC, wer montiert Fenster? Macher plant nach Können und Urlaub.",
       material: "Platten, Kanten, Beschläge: Macher prüft Liefertermine gegen den Fertigungs- und Montagetag.",
       termine: "Montage erst, wenn die Baustelle bereit ist. Macher fragt vorher beim Kunden nach.",
@@ -996,10 +996,10 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Wie funktioniert die Nachkalkulation?",
         antwort:
-          "Mitarbeiter erfassen ihre Zeiten pro Arbeitsschritt. Macher OS stellt sie dem Angebot gegenüber. So siehst du, wo du richtig lagst und wo nicht.",
+          "Mitarbeiter erfassen ihre Zeiten pro Arbeitsschritt. Handwerk OS stellt sie dem Angebot gegenüber. So siehst du, wo du richtig lagst und wo nicht.",
       },
       {
-        frage: "Ist Macher OS ein Zeichenprogramm?",
+        frage: "Ist Handwerk OS ein Zeichenprogramm?",
         antwort:
           "Nein. Entwürfe machst du weiter mit deinem Zeichenprogramm. Zeichnungen und Stücklisten hängst du an den Auftrag – dann hat sie jeder in Werkstatt und Montage dabei.",
       },
@@ -1015,7 +1015,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     name: "Dachdecker",
     seoTitel: "Software für Dachdecker",
     beschreibung:
-      "Macher OS für Dachdeckerbetriebe: Planung nach Wetter, Absturzsicherung und Unterweisungen, Sturmschäden mit Fotos für die Versicherung und Kolonnen im Griff.",
+      "Handwerk OS für Dachdeckerbetriebe: Planung nach Wetter, Absturzsicherung und Unterweisungen, Sturmschäden mit Fotos für die Versicherung und Kolonnen im Griff.",
     icon: "home",
     teaser: "Planung nach Wetter, Absturzsicherung und Sturmschäden mit Fotos.",
     suchbegriffe: [
@@ -1030,7 +1030,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     hero: {
       intro:
-        "Wetter, Gerüst, Absturzsicherung und nach jedem Sturm das Telefon im Dauerbetrieb: Macher OS plant deine Kolonnen, nimmt Schäden mit Fotos auf und denkt an jede Unterweisung.",
+        "Wetter, Gerüst, Absturzsicherung und nach jedem Sturm das Telefon im Dauerbetrieb: Handwerk OS plant deine Kolonnen, nimmt Schäden mit Fotos auf und denkt an jede Unterweisung.",
       betrieb: "Bedachungen Muster",
       tag: [
         { zeit: "07:00", titel: "Neueindeckung EFH", detail: "Kolonne Sven · Gerüst steht", farbe: "sky" },
@@ -1168,7 +1168,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     },
     faq: [
       {
-        frage: "Wie hilft Macher OS bei Wetter und Sturm?",
+        frage: "Wie hilft Handwerk OS bei Wetter und Sturm?",
         antwort:
           "Außenarbeiten markierst du als wetterabhängig. Ist Regen, Sturm oder Frost gemeldet, schlägt Macher vor, welche Arbeiten sich vorziehen lassen. Du entscheidest.",
       },
@@ -1178,14 +1178,14 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
           "Ja. Fotos, Maße und Beschreibung landen am Auftrag. Daraus entsteht ein Schadensbericht, den du an Kunde oder Versicherung schickst.",
       },
       {
-        frage: "Behält Macher OS die Unterweisungen im Blick?",
+        frage: "Behält Handwerk OS die Unterweisungen im Blick?",
         antwort:
           "Ja. Du hinterlegst Unterweisungen und Prüfungen mit Datum. Macher erinnert rechtzeitig und plant niemanden ein, dessen Nachweis abgelaufen ist.",
       },
       {
         frage: "Was passiert, wenn nach einem Sturm viele Anrufe kommen?",
         antwort:
-          "Macher OS nimmt Meldungen mit Adresse und Fotos auf und sortiert sie nach Dringlichkeit. So siehst du auf einen Blick, wo zuerst gesichert werden muss.",
+          "Handwerk OS nimmt Meldungen mit Adresse und Fotos auf und sortiert sie nach Dringlichkeit. So siehst du auf einen Blick, wo zuerst gesichert werden muss.",
       },
     ],
   },
@@ -1194,7 +1194,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     name: "Maurer & Bau",
     seoTitel: "Software für Maurer und Bauunternehmen",
     beschreibung:
-      "Macher OS für Maurer und Bauunternehmen: Leistungsverzeichnis, Bautagebuch, Abschlagsrechnungen, Nachträge, Geräte und Kolonnen in einer Software.",
+      "Handwerk OS für Maurer und Bauunternehmen: Leistungsverzeichnis, Bautagebuch, Abschlagsrechnungen, Nachträge, Geräte und Kolonnen in einer Software.",
     icon: "warehouse",
     teaser: "Bautagebuch, Abschläge, Nachträge und Geräte – ohne Ordner im Bauwagen.",
     suchbegriffe: [
@@ -1210,7 +1210,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     hero: {
       intro:
-        "Leistungsverzeichnis, Bautagebuch, Abschläge und Nachträge: Auf dem Bau entscheidet Papierkram über dein Geld. Macher OS sammelt alles auf der Baustelle – und das Büro rechnet ab.",
+        "Leistungsverzeichnis, Bautagebuch, Abschläge und Nachträge: Auf dem Bau entscheidet Papierkram über dein Geld. Handwerk OS sammelt alles auf der Baustelle – und das Büro rechnet ab.",
       betrieb: "Bau Muster",
       tag: [
         { zeit: "06:45", titel: "Rohbau EFH Schmidt", detail: "Kolonne Murat · Decke schalen", farbe: "sky" },
@@ -1306,7 +1306,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { titel: "Arbeiten nach VOB", text: "Öffentliche und gewerbliche Aufträge mit klaren Fristen." },
     ],
     planung: {
-      intro: "Mehrere Baustellen, Kolonnen, Geräte und Lieferungen: Macher OS zeigt, was wo gebraucht wird.",
+      intro: "Mehrere Baustellen, Kolonnen, Geräte und Lieferungen: Handwerk OS zeigt, was wo gebraucht wird.",
       mitarbeiter: "Wer fährt den Kran, wer den Bagger? Macher plant Kolonnen nach Können und Urlaub.",
       material: "Beton, Steine, Stahl: Macher erinnert an Bestellungen und bestätigt Liefertermine.",
       termine: "Bauabschnitte nacheinander geplant. Verschiebt sich einer, rutschen die anderen mit.",
@@ -1354,7 +1354,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Wie funktionieren Abschlagsrechnungen?",
         antwort:
-          "Du legst im Auftrag fest, nach welchem Baufortschritt abgerechnet wird. Ist ein Abschnitt fertig, bereitet Macher OS die Abschlagsrechnung vor.",
+          "Du legst im Auftrag fest, nach welchem Baufortschritt abgerechnet wird. Ist ein Abschnitt fertig, bereitet Handwerk OS die Abschlagsrechnung vor.",
       },
       {
         frage: "Kann ich Nachträge festhalten?",
@@ -1362,7 +1362,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
           "Ja. Mehrarbeit wird auf der Baustelle mit Foto und Beschreibung aufgenommen. Daraus machst du ein Nachtragsangebot – bevor die Arbeit vergessen ist.",
       },
       {
-        frage: "Verwaltet Macher OS auch Geräte und Maschinen?",
+        frage: "Verwaltet Handwerk OS auch Geräte und Maschinen?",
         antwort:
           "Ja. Bagger, Rüttelplatte oder Kran bekommen Standort und Prüffristen. Macher erinnert rechtzeitig und zeigt, wo welches Gerät gerade ist.",
       },
@@ -1373,7 +1373,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     name: "Garten- & Landschaftsbau",
     seoTitel: "Software für Garten- und Landschaftsbau",
     beschreibung:
-      "Macher OS für GaLaBau-Betriebe: Pflegeverträge, Saisonplanung, Maschinen, Pflanzenlieferungen und Winterdienst mit Nachweis – in einer einfachen Software.",
+      "Handwerk OS für GaLaBau-Betriebe: Pflegeverträge, Saisonplanung, Maschinen, Pflanzenlieferungen und Winterdienst mit Nachweis – in einer einfachen Software.",
     icon: "map",
     teaser: "Pflegeverträge, Saison, Maschinen und Winterdienst mit Nachweis.",
     suchbegriffe: [
@@ -1389,7 +1389,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     hero: {
       intro:
-        "Im Frühjahr läuft alles gleichzeitig, im Winter klingelt nachts der Wecker für den Winterdienst. Macher OS plant Pflegegänge, Kolonnen und Maschinen – über die ganze Saison.",
+        "Im Frühjahr läuft alles gleichzeitig, im Winter klingelt nachts der Wecker für den Winterdienst. Handwerk OS plant Pflegegänge, Kolonnen und Maschinen – über die ganze Saison.",
       betrieb: "Garten Muster",
       tag: [
         { zeit: "07:00", titel: "Neuanlage Garten Krämer", detail: "Kolonne Tim · Minibagger", farbe: "sky" },
@@ -1485,7 +1485,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { titel: "Winterdienst", text: "Touren nach Wetterwarnung, mit Nachweis pro Objekt." },
     ],
     planung: {
-      intro: "Saisonbetrieb heißt: im Frühjahr alles auf einmal. Macher OS verteilt die Arbeit, bevor sie dich erschlägt.",
+      intro: "Saisonbetrieb heißt: im Frühjahr alles auf einmal. Handwerk OS verteilt die Arbeit, bevor sie dich erschlägt.",
       mitarbeiter: "Wer darf mit der Motorsäge arbeiten, wer Pflanzenschutz ausbringen? Macher plant nach Nachweis.",
       material: "Pflanzen, Splitt, Pflaster: Lieferungen werden auf den Tag der Pflanzung oder des Einbaus gelegt.",
       termine: "Pflegegänge stehen nach Vertrag im Plan. Bei Regen schlägt Macher Ausweichtermine vor.",
@@ -1526,7 +1526,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     },
     faq: [
       {
-        frage: "Kann ich Pflegeverträge in Macher OS abbilden?",
+        frage: "Kann ich Pflegeverträge in Handwerk OS abbilden?",
         antwort:
           "Ja. Du legst Leistungen und Intervalle fest – zum Beispiel Rasen alle zwei Wochen, Hecke zweimal im Jahr. Macher plant die Pflegegänge ein und stellt die Rechnung.",
       },
@@ -1536,7 +1536,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
           "Dein Mitarbeiter hakt jedes Objekt auf dem Handy ab. Uhrzeit, Standort und Foto werden gespeichert. So hast du einen Nachweis, wann wo geräumt wurde.",
       },
       {
-        frage: "Behält Macher OS die Wartung meiner Maschinen im Blick?",
+        frage: "Behält Handwerk OS die Wartung meiner Maschinen im Blick?",
         antwort:
           "Ja. Du trägst Betriebsstunden oder Wartungsintervalle ein. Macher erinnert dich rechtzeitig und plant die Wartung in eine ruhige Lücke.",
       },
@@ -1557,12 +1557,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "elektro-energie": {
     seoTitel: "Software für Elektro- und Energiebetriebe",
     beschreibung:
-      "Macher OS für Elektro & Energie: Elektroinstallation, Photovoltaik, Speicher, Wallbox, Informationstechnik und Blitzschutz einfach planen und abrechnen.",
+      "Handwerk OS für Elektro & Energie: Elektroinstallation, Photovoltaik, Speicher, Wallbox, Informationstechnik und Blitzschutz einfach planen und abrechnen.",
     icon: "bolt",
     teaser: "Elektroinstallation, Photovoltaik, Informationstechnik, Blitzschutz.",
-    heroTitel: "Macher OS für Elektro & Energie.",
+    heroTitel: "Handwerk OS für Elektro & Energie.",
     intro:
-      "Ob Photovoltaik auf dem Dach, Netzwerk im Büro oder Blitzschutz am Gewerbebau: Macher OS plant Monteure nach Qualifikation, hält Prüfungen im Blick und macht aus dem Einsatzbericht die Rechnung.",
+      "Ob Photovoltaik auf dem Dach, Netzwerk im Büro oder Blitzschutz am Gewerbebau: Handwerk OS plant Monteure nach Qualifikation, hält Prüfungen im Blick und macht aus dem Einsatzbericht die Rechnung.",
     berufe: [
       "Elektroniker für Gebäudesystemintegration",
       "Informationselektroniker",
@@ -1598,7 +1598,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     faq: [
       {
-        frage: "Passt Macher OS auch, wenn wir hauptsächlich Photovoltaik machen?",
+        frage: "Passt Handwerk OS auch, wenn wir hauptsächlich Photovoltaik machen?",
         antwort:
           "Ja. Du planst Montage, Elektroanschluss und Netzbetreiber-Termin als Schritte eines Auftrags. Material wie Module, Wechselrichter und Speicher hängt direkt dran.",
       },
@@ -1617,12 +1617,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "shk-gebaeudetechnik": {
     seoTitel: "Software für SHK und Gebäudetechnik",
     beschreibung:
-      "Macher OS für SHK & Gebäudetechnik: Kälte- und Klimatechnik, Lüftung, Ofenbau und Klempnerei – Wartungen, Notdienst und Protokolle in einer Software.",
+      "Handwerk OS für SHK & Gebäudetechnik: Kälte- und Klimatechnik, Lüftung, Ofenbau und Klempnerei – Wartungen, Notdienst und Protokolle in einer Software.",
     icon: "wrench",
     teaser: "Kälte, Klima, Lüftung, Ofenbau und Klempnerei.",
-    heroTitel: "Macher OS für SHK & Gebäudetechnik.",
+    heroTitel: "Handwerk OS für SHK & Gebäudetechnik.",
     intro:
-      "Kälteanlagen, Lüftung, Kachelöfen oder Bauklempnerei: Bei dir dreht sich vieles um Anlagen, die regelmäßig gewartet werden wollen. Macher OS merkt sich jede Anlage, jede Frist und jeden Nachweis.",
+      "Kälteanlagen, Lüftung, Kachelöfen oder Bauklempnerei: Bei dir dreht sich vieles um Anlagen, die regelmäßig gewartet werden wollen. Handwerk OS merkt sich jede Anlage, jede Frist und jeden Nachweis.",
     berufe: [
       "Kälteanlagenbauer",
       "Mechatroniker für Kältetechnik",
@@ -1663,9 +1663,9 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
           "Ja. Zu jeder Anlage speicherst du Kältemittel, Füllmenge und die Prüfungen. So hast du bei jeder Wartung alles parat.",
       },
       {
-        frage: "Erinnert Macher OS an Dichtheitsprüfungen?",
+        frage: "Erinnert Handwerk OS an Dichtheitsprüfungen?",
         antwort:
-          "Du legst das Prüfintervall pro Anlage fest. Macher OS erinnert rechtzeitig und schlägt einen Termin vor.",
+          "Du legst das Prüfintervall pro Anlage fest. Handwerk OS erinnert rechtzeitig und schlägt einen Termin vor.",
       },
       {
         frage: "Gehören Klempner hierher oder zu den Dachdeckern?",
@@ -1678,12 +1678,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "maler-boden-oberflaechen": {
     seoTitel: "Software für Maler, Bodenleger und Stuckateure",
     beschreibung:
-      "Macher OS für Maler, Boden & Oberflächen: Parkett, Bodenbeläge, Estrich, Stuck und Raumausstattung mit Aufmaß, Angebot und Planung in einer Software.",
+      "Handwerk OS für Maler, Boden & Oberflächen: Parkett, Bodenbeläge, Estrich, Stuck und Raumausstattung mit Aufmaß, Angebot und Planung in einer Software.",
     icon: "pen",
     teaser: "Parkett, Bodenbeläge, Estrich, Stuck und Raumausstattung.",
-    heroTitel: "Macher OS für Maler, Boden & Oberflächen.",
+    heroTitel: "Handwerk OS für Maler, Boden & Oberflächen.",
     intro:
-      "Du arbeitest mit Flächen: Wände, Böden, Decken. Macher OS macht aus dem Aufmaß ein Angebot, plant nach Trocknungszeiten und hält jede Fläche mit Fotos fest.",
+      "Du arbeitest mit Flächen: Wände, Böden, Decken. Handwerk OS macht aus dem Aufmaß ein Angebot, plant nach Trocknungszeiten und hält jede Fläche mit Fotos fest.",
     berufe: [
       "Parkettleger",
       "Bodenleger",
@@ -1720,7 +1720,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Berücksichtigt die Planung Trocknungszeiten?",
         antwort:
-          "Ja. Du hinterlegst Wartezeiten als eigenen Schritt. Macher OS plant den nächsten Arbeitsgang erst danach ein und warnt, wenn sich etwas überschneidet.",
+          "Ja. Du hinterlegst Wartezeiten als eigenen Schritt. Handwerk OS plant den nächsten Arbeitsgang erst danach ein und warnt, wenn sich etwas überschneidet.",
       },
       {
         frage: "Kann ich das Material pro Raum speichern?",
@@ -1736,12 +1736,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "holz-innenausbau": {
     seoTitel: "Software für Zimmerer, Holzbau und Innenausbau",
     beschreibung:
-      "Macher OS für Holz & Innenausbau: Zimmerei, Holzbau, Trockenbau, Treppenbau und Innenausbau – Werkstatt, Abbund und Montage in einem Plan.",
+      "Handwerk OS für Holz & Innenausbau: Zimmerei, Holzbau, Trockenbau, Treppenbau und Innenausbau – Werkstatt, Abbund und Montage in einem Plan.",
     icon: "ruler",
     teaser: "Zimmerei, Holzbau, Trockenbau, Treppen und Innenausbau.",
-    heroTitel: "Macher OS für Holz & Innenausbau.",
+    heroTitel: "Handwerk OS für Holz & Innenausbau.",
     intro:
-      "Abbund in der Halle, Richtfest auf der Baustelle, Trockenbau im dritten Stock: Macher OS bringt Werkstatt und Montage in einen Plan und zeigt dir, was jeder Auftrag gebracht hat.",
+      "Abbund in der Halle, Richtfest auf der Baustelle, Trockenbau im dritten Stock: Handwerk OS bringt Werkstatt und Montage in einen Plan und zeigt dir, was jeder Auftrag gebracht hat.",
     berufe: [
       "Zimmerer",
       "Holzbauer",
@@ -1782,12 +1782,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
           "Ja. Fertigung in der Halle und Montage auf der Baustelle sind Schritte eines Auftrags. Du siehst sofort, ob Maschine, Kolonne und Kran zusammenpassen.",
       },
       {
-        frage: "Ist Macher OS ein Abbundprogramm?",
+        frage: "Ist Handwerk OS ein Abbundprogramm?",
         antwort:
           "Nein. Planung und Abbunddaten machst du weiter mit deinem Fachprogramm. Pläne und Listen hängst du an den Auftrag, damit jeder sie dabeihat.",
       },
       {
-        frage: "Passt Macher OS auch für reinen Trockenbau?",
+        frage: "Passt Handwerk OS auch für reinen Trockenbau?",
         antwort: "Ja. Aufmaß, Angebot, Kolonnen und Abschläge sind genau das, was Trockenbauer jeden Tag brauchen.",
       },
     ],
@@ -1796,12 +1796,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "dach-gebaeudehuelle": {
     seoTitel: "Software für Dach, Fassade und Gebäudehülle",
     beschreibung:
-      "Macher OS für Dach & Gebäudehülle: Bauklempnerei, Fassadenbau, Abdichtung, Dämmung und Gerüstbau – nach Wetter geplant, mit Fotos dokumentiert.",
+      "Handwerk OS für Dach & Gebäudehülle: Bauklempnerei, Fassadenbau, Abdichtung, Dämmung und Gerüstbau – nach Wetter geplant, mit Fotos dokumentiert.",
     icon: "home",
     teaser: "Bauklempnerei, Fassade, Abdichtung, Dämmung und Gerüstbau.",
-    heroTitel: "Macher OS für Dach & Gebäudehülle.",
+    heroTitel: "Handwerk OS für Dach & Gebäudehülle.",
     intro:
-      "Fassade, Abdichtung, Gerüst oder Bauklempnerei: Du arbeitest draußen, in der Höhe und nach dem Wetter. Macher OS plant entsprechend und hält jede Unterweisung im Blick.",
+      "Fassade, Abdichtung, Gerüst oder Bauklempnerei: Du arbeitest draußen, in der Höhe und nach dem Wetter. Handwerk OS plant entsprechend und hält jede Unterweisung im Blick.",
     berufe: [
       "Bauklempner",
       "Fassadenbauer",
@@ -1837,10 +1837,10 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Kann ich Gerüst-Standzeiten abrechnen?",
         antwort:
-          "Ja. Aufbau, Standzeit und Abbau sind eigene Schritte. Macher OS zählt die Standzeit mit und bereitet die Rechnung vor.",
+          "Ja. Aufbau, Standzeit und Abbau sind eigene Schritte. Handwerk OS zählt die Standzeit mit und bereitet die Rechnung vor.",
       },
       {
-        frage: "Wie hilft Macher OS bei der Sicherheit in der Höhe?",
+        frage: "Wie hilft Handwerk OS bei der Sicherheit in der Höhe?",
         antwort:
           "Unterweisungen und Prüfungen bekommen ein Ablaufdatum. Macher erinnert rechtzeitig und plant niemanden für Arbeiten in der Höhe ein, dessen Nachweis abgelaufen ist.",
       },
@@ -1854,12 +1854,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "bau-rohbau": {
     seoTitel: "Software für Bau, Rohbau und Tiefbau",
     beschreibung:
-      "Macher OS für Bau & Rohbau: Tiefbau, Straßenbau, Brunnenbau, Betonbau und Steinmetz – Bautagebuch, Geräte, Kolonnen und Abschläge in einer Software.",
+      "Handwerk OS für Bau & Rohbau: Tiefbau, Straßenbau, Brunnenbau, Betonbau und Steinmetz – Bautagebuch, Geräte, Kolonnen und Abschläge in einer Software.",
     icon: "warehouse",
     teaser: "Tiefbau, Straßenbau, Brunnenbau, Betonbau und Steinmetz.",
-    heroTitel: "Macher OS für Bau & Rohbau.",
+    heroTitel: "Handwerk OS für Bau & Rohbau.",
     intro:
-      "Bagger, Kolonnen, Lieferungen und Bautagebuch: Auf dem Bau hängt viel an Geräten und Nachweisen. Macher OS plant beides und sorgt dafür, dass Abschläge rechtzeitig rausgehen.",
+      "Bagger, Kolonnen, Lieferungen und Bautagebuch: Auf dem Bau hängt viel an Geräten und Nachweisen. Handwerk OS plant beides und sorgt dafür, dass Abschläge rechtzeitig rausgehen.",
     berufe: [
       "Straßenbauer",
       "Tiefbauer",
@@ -1900,7 +1900,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
           "Ja. Bagger, Walzen oder Bohrgeräte planst du wie Mitarbeiter ein. Macher zeigt, wo jedes Gerät steht und wann die nächste Prüfung fällig ist.",
       },
       {
-        frage: "Passt Macher OS auch für Steinmetze?",
+        frage: "Passt Handwerk OS auch für Steinmetze?",
         antwort:
           "Ja. Werkstattfertigung und Versetzen beim Kunden sind Schritte eines Auftrags. Maße, Stein und Inschrift stehen am Auftrag, Fotos zur Freigabe auch.",
       },
@@ -1914,12 +1914,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "metall-maschinen": {
     seoTitel: "Software für Metallbau und Maschinenbau-Betriebe",
     beschreibung:
-      "Macher OS für Metall & Maschinen: Metallbauer, Schlosser, Feinwerkmechaniker und Schmiede – Fertigung, Montage und Wartung in einer Software.",
+      "Handwerk OS für Metall & Maschinen: Metallbauer, Schlosser, Feinwerkmechaniker und Schmiede – Fertigung, Montage und Wartung in einer Software.",
     icon: "wrench",
     teaser: "Metallbau, Schlosserei, Feinwerkmechanik und Schmiede.",
-    heroTitel: "Macher OS für Metall & Maschinen.",
+    heroTitel: "Handwerk OS für Metall & Maschinen.",
     intro:
-      "Geländer in der Werkstatt schweißen, Tor beim Kunden montieren, Wartung an der Maschine: Macher OS plant Fertigung und Montage zusammen und behält Schweißnachweise und Wartungsfristen im Blick.",
+      "Geländer in der Werkstatt schweißen, Tor beim Kunden montieren, Wartung an der Maschine: Handwerk OS plant Fertigung und Montage zusammen und behält Schweißnachweise und Wartungsfristen im Blick.",
     berufe: [
       "Metallbauer",
       "Schlosser",
@@ -1955,18 +1955,18 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     faq: [
       {
-        frage: "Behält Macher OS Schweißerprüfungen im Blick?",
+        frage: "Behält Handwerk OS Schweißerprüfungen im Blick?",
         antwort:
           "Ja. Du hinterlegst Prüfungen mit Ablaufdatum. Macher erinnert rechtzeitig und plant nur Mitarbeiter mit gültigem Nachweis für die Arbeit ein.",
       },
       {
         frage: "Kann ich Tor- und Türwartungen planen?",
-        antwort: "Ja. Jedes Tor bekommt ein Prüfintervall. Macher OS schlägt Termine vor und erstellt das Protokoll vom Handy.",
+        antwort: "Ja. Jedes Tor bekommt ein Prüfintervall. Handwerk OS schlägt Termine vor und erstellt das Protokoll vom Handy.",
       },
       {
-        frage: "Ist Macher OS eine Fertigungssteuerung für die Industrie?",
+        frage: "Ist Handwerk OS eine Fertigungssteuerung für die Industrie?",
         antwort:
-          "Nein. Macher OS ist für Handwerksbetriebe gemacht: Aufträge, Werkstatt, Montage, Mitarbeiter und Rechnungen – einfach und ohne Industrie-Ballast.",
+          "Nein. Handwerk OS ist für Handwerksbetriebe gemacht: Aufträge, Werkstatt, Montage, Mitarbeiter und Rechnungen – einfach und ohne Industrie-Ballast.",
       },
     ],
   },
@@ -1974,12 +1974,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "fahrzeug-werkstatt": {
     seoTitel: "Software für Kfz-Werkstätten und Fahrzeugbau",
     beschreibung:
-      "Macher OS für Fahrzeug & Werkstatt: Kfz-Mechatroniker, Karosseriebauer, Zweirad- und Landmaschinenwerkstätten – Termine, Hebebühnen und Rechnungen einfach geplant.",
+      "Handwerk OS für Fahrzeug & Werkstatt: Kfz-Mechatroniker, Karosseriebauer, Zweirad- und Landmaschinenwerkstätten – Termine, Hebebühnen und Rechnungen einfach geplant.",
     icon: "truck",
     teaser: "Kfz, Karosserie, Zweirad und Landmaschinen.",
-    heroTitel: "Macher OS für Fahrzeug & Werkstatt.",
+    heroTitel: "Handwerk OS für Fahrzeug & Werkstatt.",
     intro:
-      "Hebebühnen, Ersatzteile und Kunden, die ihr Auto heute Abend zurückwollen: Macher OS plant deine Werkstatt, sagt dem Kunden Bescheid und macht aus dem Auftrag die Rechnung.",
+      "Hebebühnen, Ersatzteile und Kunden, die ihr Auto heute Abend zurückwollen: Handwerk OS plant deine Werkstatt, sagt dem Kunden Bescheid und macht aus dem Auftrag die Rechnung.",
     berufe: [
       "Kfz-Mechatroniker",
       "Karosserie- und Fahrzeugbauer",
@@ -2014,16 +2014,16 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     faq: [
       {
-        frage: "Ersetzt Macher OS mein Diagnosegerät oder meinen Teilekatalog?",
+        frage: "Ersetzt Handwerk OS mein Diagnosegerät oder meinen Teilekatalog?",
         antwort:
-          "Nein. Diagnose und Teilesuche machst du weiter mit deinen Fachprogrammen. Macher OS kümmert sich um Termine, Werkstattplanung, Mitarbeiter und Rechnungen.",
+          "Nein. Diagnose und Teilesuche machst du weiter mit deinen Fachprogrammen. Handwerk OS kümmert sich um Termine, Werkstattplanung, Mitarbeiter und Rechnungen.",
       },
       {
         frage: "Können Kunden selbst Termine buchen?",
         antwort: "Ja. Du gibst Zeiten für Inspektion oder Reifenwechsel frei. Kunden buchen online, Macher plant Bühne und Mechaniker ein.",
       },
       {
-        frage: "Passt Macher OS auch für Landmaschinen-Werkstätten?",
+        frage: "Passt Handwerk OS auch für Landmaschinen-Werkstätten?",
         antwort: "Ja. Werkstatt und Einsätze auf dem Hof stehen in einem Plan – mit Fahrzeug, Teilen und Zeiten pro Auftrag.",
       },
     ],
@@ -2032,12 +2032,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "garten-aussenanlagen": {
     seoTitel: "Software für Garten und Außenanlagen",
     beschreibung:
-      "Macher OS für Garten & Außenanlagen: Baumpflege, Zaunbau, Pool- und Teichbau, Friedhofsgärtner und Winterdienst – Saison, Maschinen und Pflege in einem Plan.",
+      "Handwerk OS für Garten & Außenanlagen: Baumpflege, Zaunbau, Pool- und Teichbau, Friedhofsgärtner und Winterdienst – Saison, Maschinen und Pflege in einem Plan.",
     icon: "map",
     teaser: "Baumpflege, Zaunbau, Teich- und Poolbau, Winterdienst.",
-    heroTitel: "Macher OS für Garten & Außenanlagen.",
+    heroTitel: "Handwerk OS für Garten & Außenanlagen.",
     intro:
-      "Baumpflege, Zaunbau, Pool oder Grabpflege: Du arbeitest draußen und nach der Saison. Macher OS plant wiederkehrende Pflege, Maschinen und Wetter – und hält Nachweise fest.",
+      "Baumpflege, Zaunbau, Pool oder Grabpflege: Du arbeitest draußen und nach der Saison. Handwerk OS plant wiederkehrende Pflege, Maschinen und Wetter – und hält Nachweise fest.",
     berufe: [
       "Baumpfleger",
       "Zaunbauer",
@@ -2075,7 +2075,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       },
       {
         frage: "Wie plane ich Arbeiten, die vom Wetter abhängen?",
-        antwort: "Du markierst sie als wetterabhängig. Bei Regen, Sturm oder Frost schlägt Macher OS vor, was verschoben werden kann.",
+        antwort: "Du markierst sie als wetterabhängig. Bei Regen, Sturm oder Frost schlägt Handwerk OS vor, was verschoben werden kann.",
       },
       {
         frage: "Gibt es eine eigene Seite für Garten- und Landschaftsbau?",
@@ -2087,12 +2087,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "gebaeude-service": {
     seoTitel: "Software für Gebäudereinigung und Gebäudeservice",
     beschreibung:
-      "Macher OS für Gebäude & Service: Gebäudereiniger, Hausmeisterdienste, Schornsteinfeger und Schädlingsbekämpfer – wiederkehrende Einsätze, Nachweise und Rechnungen.",
+      "Handwerk OS für Gebäude & Service: Gebäudereiniger, Hausmeisterdienste, Schornsteinfeger und Schädlingsbekämpfer – wiederkehrende Einsätze, Nachweise und Rechnungen.",
     icon: "shield",
     teaser: "Gebäudereinigung, Hausmeisterdienst, Schornsteinfeger.",
-    heroTitel: "Macher OS für Gebäude & Service.",
+    heroTitel: "Handwerk OS für Gebäude & Service.",
     intro:
-      "Viele Objekte, feste Intervalle, Nachweise für jeden Einsatz: Macher OS plant wiederkehrende Arbeit, verteilt sie auf dein Team und schreibt am Monatsende die Rechnung.",
+      "Viele Objekte, feste Intervalle, Nachweise für jeden Einsatz: Handwerk OS plant wiederkehrende Arbeit, verteilt sie auf dein Team und schreibt am Monatsende die Rechnung.",
     berufe: [
       "Gebäudereiniger",
       "Glas- und Fassadenreiniger",
@@ -2126,14 +2126,14 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Kann ich viele Objekte mit festen Intervallen planen?",
         antwort:
-          "Ja. Jedes Objekt bekommt Leistungen und Intervalle. Macher OS plant daraus Touren und verteilt sie auf dein Team – mit Blick auf Urlaub und Krankheit.",
+          "Ja. Jedes Objekt bekommt Leistungen und Intervalle. Handwerk OS plant daraus Touren und verteilt sie auf dein Team – mit Blick auf Urlaub und Krankheit.",
       },
       {
         frage: "Wie weise ich nach, dass gereinigt wurde?",
         antwort: "Dein Team hakt Leistungen auf dem Handy ab. Uhrzeit und Fotos werden gespeichert und können dem Kunden geschickt werden.",
       },
       {
-        frage: "Passt Macher OS für Schornsteinfeger?",
+        frage: "Passt Handwerk OS für Schornsteinfeger?",
         antwort:
           "Für Terminplanung, Touren, Mitarbeiter und Rechnungen ja. Kehrbuch und Bescheide nach den gesetzlichen Vorgaben führst du weiter mit deinem Fachprogramm.",
       },
@@ -2143,12 +2143,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "glas-fenster-sonnenschutz": {
     seoTitel: "Software für Glaser, Fensterbauer und Rollladenbauer",
     beschreibung:
-      "Macher OS für Glas, Fenster & Sonnenschutz: Glaser, Fensterbauer, Rollladen- und Sonnenschutzmechatroniker – Aufmaß, Bestellung mit Lieferzeit und Montage.",
+      "Handwerk OS für Glas, Fenster & Sonnenschutz: Glaser, Fensterbauer, Rollladen- und Sonnenschutzmechatroniker – Aufmaß, Bestellung mit Lieferzeit und Montage.",
     icon: "monitor",
     teaser: "Glaserei, Fensterbau, Rollladen und Sonnenschutz.",
-    heroTitel: "Macher OS für Glas, Fenster & Sonnenschutz.",
+    heroTitel: "Handwerk OS für Glas, Fenster & Sonnenschutz.",
     intro:
-      "Aufmaß, Bestellung beim Hersteller, Wochen Lieferzeit, dann Montage an einem Tag: Macher OS verbindet die Schritte, damit der Montagetermin hält – und der Notdienst bei Glasbruch trotzdem reinpasst.",
+      "Aufmaß, Bestellung beim Hersteller, Wochen Lieferzeit, dann Montage an einem Tag: Handwerk OS verbindet die Schritte, damit der Montagetermin hält – und der Notdienst bei Glasbruch trotzdem reinpasst.",
     berufe: [
       "Glaser",
       "Fensterbauer",
@@ -2190,7 +2190,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
           "Notfälle werden aufgenommen und an den nächsten freien Monteur gegeben. Die endgültige Scheibe wird direkt als Folgeauftrag mit Bestellung angelegt.",
       },
       {
-        frage: "Hilft Macher OS bei langen Lieferzeiten?",
+        frage: "Hilft Handwerk OS bei langen Lieferzeiten?",
         antwort: "Ja. Der Liefertermin steht am Auftrag. Verschiebt er sich, siehst du sofort, welcher Montagetermin betroffen ist.",
       },
     ],
@@ -2199,12 +2199,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "friseur-dienstleistungen": {
     seoTitel: "Software für Friseure und persönliche Dienstleistungen",
     beschreibung:
-      "Macher OS für Friseure, Kosmetiker und persönliche Dienstleistungen: Terminbuchung, Dienstplan, Schulungen und Material – einfach und ohne Papierkalender.",
+      "Handwerk OS für Friseure, Kosmetiker und persönliche Dienstleistungen: Terminbuchung, Dienstplan, Schulungen und Material – einfach und ohne Papierkalender.",
     icon: "user",
     teaser: "Friseur, Kosmetik, Maßschneiderei und Fotografie.",
-    heroTitel: "Macher OS für Friseure & persönliche Dienstleistungen.",
+    heroTitel: "Handwerk OS für Friseure & persönliche Dienstleistungen.",
     intro:
-      "Bei dir kommen die Kunden in den Laden. Macher OS füllt den Terminkalender, plant dein Team nach Können und Arbeitszeiten und erinnert Kunden an ihren Termin.",
+      "Bei dir kommen die Kunden in den Laden. Handwerk OS füllt den Terminkalender, plant dein Team nach Können und Arbeitszeiten und erinnert Kunden an ihren Termin.",
     berufe: [
       "Friseur",
       "Kosmetiker",
@@ -2237,18 +2237,18 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     faq: [
       {
-        frage: "Ersetzt Macher OS meine Kasse?",
+        frage: "Ersetzt Handwerk OS meine Kasse?",
         antwort:
-          "Nein. Macher OS ist kein Kassensystem. Deine Kasse nutzt du weiter. Macher OS kümmert sich um Termine, Team, Material und Büro.",
+          "Nein. Handwerk OS ist kein Kassensystem. Deine Kasse nutzt du weiter. Handwerk OS kümmert sich um Termine, Team, Material und Büro.",
       },
       {
         frage: "Können Kunden online Termine buchen?",
         antwort: "Ja. Du legst fest, welche Leistungen wie lange dauern und wer sie macht. Kunden buchen dann nur passende, freie Zeiten.",
       },
       {
-        frage: "Ist Macher OS nicht eigentlich für Baustellen?",
+        frage: "Ist Handwerk OS nicht eigentlich für Baustellen?",
         antwort:
-          "Macher OS kommt vom Bau. Termine, Team, Schulungen und Büro brauchen aber alle Handwerksbetriebe. Die Arbeitsweise kommt aus der Vorlage deines Gewerks, und Macher zeigt nur, was du brauchst.",
+          "Handwerk OS kommt vom Bau. Termine, Team, Schulungen und Büro brauchen aber alle Handwerksbetriebe. Die Arbeitsweise kommt aus der Vorlage deines Gewerks, und Macher zeigt nur, was du brauchst.",
       },
     ],
   },
@@ -2256,12 +2256,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   lebensmittelhandwerk: {
     seoTitel: "Software für Bäcker, Konditoren und Fleischer",
     beschreibung:
-      "Macher OS für das Lebensmittelhandwerk: Bäcker, Konditoren, Fleischer und Brauer – Bestellungen, Schichtplan, Hygieneschulungen und Checklisten in einer Software.",
+      "Handwerk OS für das Lebensmittelhandwerk: Bäcker, Konditoren, Fleischer und Brauer – Bestellungen, Schichtplan, Hygieneschulungen und Checklisten in einer Software.",
     icon: "heart",
     teaser: "Bäcker, Konditor, Fleischer, Brauer.",
-    heroTitel: "Macher OS für das Lebensmittelhandwerk.",
+    heroTitel: "Handwerk OS für das Lebensmittelhandwerk.",
     intro:
-      "Backstube um 3 Uhr, Filialen ab 6, Torten auf Bestellung und Partyservice am Wochenende: Macher OS plant Schichten, sammelt Bestellungen und hält Hygieneschulungen und Kontrollen im Blick.",
+      "Backstube um 3 Uhr, Filialen ab 6, Torten auf Bestellung und Partyservice am Wochenende: Handwerk OS plant Schichten, sammelt Bestellungen und hält Hygieneschulungen und Kontrollen im Blick.",
     berufe: [
       "Bäcker",
       "Konditor",
@@ -2296,9 +2296,9 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     faq: [
       {
-        frage: "Ist Macher OS eine Kasse oder Warenwirtschaft für die Theke?",
+        frage: "Ist Handwerk OS eine Kasse oder Warenwirtschaft für die Theke?",
         antwort:
-          "Nein. Kasse und Warenwirtschaft an der Theke bleiben, wie sie sind. Macher OS hilft bei Schichtplan, Bestellungen, Schulungen, Checklisten und Büro.",
+          "Nein. Kasse und Warenwirtschaft an der Theke bleiben, wie sie sind. Handwerk OS hilft bei Schichtplan, Bestellungen, Schulungen, Checklisten und Büro.",
       },
       {
         frage: "Kann ich Hygieneschulungen im Blick behalten?",
@@ -2315,12 +2315,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   gesundheitshandwerk: {
     seoTitel: "Software für Gesundheitshandwerke",
     beschreibung:
-      "Macher OS für Augenoptiker, Hörakustiker, Orthopädietechniker und Zahntechniker: Termine, Werkstatt, Fertigstellung und Team in einer einfachen Software.",
+      "Handwerk OS für Augenoptiker, Hörakustiker, Orthopädietechniker und Zahntechniker: Termine, Werkstatt, Fertigstellung und Team in einer einfachen Software.",
     icon: "heart",
     teaser: "Augenoptik, Hörakustik, Orthopädietechnik, Zahntechnik.",
-    heroTitel: "Macher OS für Gesundheitshandwerke.",
+    heroTitel: "Handwerk OS für Gesundheitshandwerke.",
     intro:
-      "Anpassung im Laden, Fertigung in der Werkstatt, Termin zur Abholung: Macher OS verbindet die Schritte, plant dein Team und sagt dem Kunden Bescheid, wenn alles fertig ist.",
+      "Anpassung im Laden, Fertigung in der Werkstatt, Termin zur Abholung: Handwerk OS verbindet die Schritte, plant dein Team und sagt dem Kunden Bescheid, wenn alles fertig ist.",
     berufe: [
       "Augenoptiker",
       "Hörakustiker",
@@ -2353,9 +2353,9 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     faq: [
       {
-        frage: "Ersetzt Macher OS meine Branchensoftware für die Abrechnung mit den Kassen?",
+        frage: "Ersetzt Handwerk OS meine Branchensoftware für die Abrechnung mit den Kassen?",
         antwort:
-          "Nein. Abrechnung mit Kostenträgern und deine Branchenprogramme bleiben. Macher OS hilft bei Terminen, Werkstattplanung, Team, Schulungen und Hausbesuchen.",
+          "Nein. Abrechnung mit Kostenträgern und deine Branchenprogramme bleiben. Handwerk OS hilft bei Terminen, Werkstattplanung, Team, Schulungen und Hausbesuchen.",
       },
       {
         frage: "Kann ich Kunden informieren, wenn ihre Arbeit fertig ist?",
@@ -2364,7 +2364,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Was ist mit Gesundheitsdaten?",
         antwort:
-          "Speichere in Macher OS nur, was du für Termin und Auftrag brauchst. Medizinische Unterlagen bleiben in deinem Fachprogramm.",
+          "Speichere in Handwerk OS nur, was du für Termin und Auftrag brauchst. Medizinische Unterlagen bleiben in deinem Fachprogramm.",
       },
     ],
   },
@@ -2372,12 +2372,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "textil-gestaltung-werbetechnik": {
     seoTitel: "Software für Werbetechnik, Textil und Gestaltung",
     beschreibung:
-      "Macher OS für Textil, Gestaltung & Werbetechnik: Schilder- und Lichtreklamehersteller, Polsterer, Sattler und Siebdrucker – Entwurf, Fertigung und Montage in einem Plan.",
+      "Handwerk OS für Textil, Gestaltung & Werbetechnik: Schilder- und Lichtreklamehersteller, Polsterer, Sattler und Siebdrucker – Entwurf, Fertigung und Montage in einem Plan.",
     icon: "spark",
     teaser: "Werbetechnik, Polsterei, Sattlerei, Druck und Gestaltung.",
-    heroTitel: "Macher OS für Textil, Gestaltung & Werbetechnik.",
+    heroTitel: "Handwerk OS für Textil, Gestaltung & Werbetechnik.",
     intro:
-      "Entwurf freigeben lassen, in der Werkstatt fertigen, beim Kunden montieren: Macher OS hält Korrekturen, Fertigung und Montagetermine zusammen.",
+      "Entwurf freigeben lassen, in der Werkstatt fertigen, beim Kunden montieren: Handwerk OS hält Korrekturen, Fertigung und Montagetermine zusammen.",
     berufe: [
       "Schilder- und Lichtreklamehersteller",
       "Werbetechniker",
@@ -2418,11 +2418,11 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
           "Ja. Der Entwurf hängt am Auftrag. Erst nach der Freigabe geht es in die Fertigung. So ist klar, was der Kunde bestätigt hat.",
       },
       {
-        frage: "Ist Macher OS ein Grafik- oder Plotterprogramm?",
-        antwort: "Nein. Gestaltung und Ausgabe machst du weiter mit deinen Programmen. Macher OS organisiert Auftrag, Team, Termine und Rechnung.",
+        frage: "Ist Handwerk OS ein Grafik- oder Plotterprogramm?",
+        antwort: "Nein. Gestaltung und Ausgabe machst du weiter mit deinen Programmen. Handwerk OS organisiert Auftrag, Team, Termine und Rechnung.",
       },
       {
-        frage: "Passt Macher OS auch für Polsterer und Sattler?",
+        frage: "Passt Handwerk OS auch für Polsterer und Sattler?",
         antwort: "Ja. Abholung, Werkstatt, Stoffbestellung und Lieferung sind Schritte eines Auftrags – mit Zeiten und Material.",
       },
     ],
@@ -2431,12 +2431,12 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
   "weitere-gewerke": {
     seoTitel: "Handwerkersoftware für weitere Gewerke",
     beschreibung:
-      "Dein Gewerk ist nicht dabei? Macher OS passt sich an deine Arbeitsweise an – ob Goldschmied, Uhrmacher, Instrumentenbauer oder Schuhmacher.",
+      "Dein Gewerk ist nicht dabei? Handwerk OS passt sich an deine Arbeitsweise an – ob Goldschmied, Uhrmacher, Instrumentenbauer oder Schuhmacher.",
     icon: "layers",
     teaser: "Goldschmied, Uhrmacher, Instrumentenbau und viele mehr.",
-    heroTitel: "Macher OS für dein Gewerk.",
+    heroTitel: "Handwerk OS für dein Gewerk.",
     intro:
-      "Es gibt weit über hundert Handwerksberufe. Nicht jeder hat eine eigene Seite – aber jeder Betrieb arbeitet nach einem Muster: Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Danach richtet Macher OS sich ein.",
+      "Es gibt weit über hundert Handwerksberufe. Nicht jeder hat eine eigene Seite – aber jeder Betrieb arbeitet nach einem Muster: Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Danach richtet Handwerk OS sich ein.",
     berufe: [
       "Goldschmied",
       "Uhrmacher",
@@ -2477,9 +2477,9 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     faq: [
       {
-        frage: "Mein Gewerk ist nicht aufgeführt. Passt Macher OS trotzdem?",
+        frage: "Mein Gewerk ist nicht aufgeführt. Passt Handwerk OS trotzdem?",
         antwort:
-          "Sehr wahrscheinlich. Macher OS richtet sich nach deiner Arbeitsweise – Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Begriffe, Abläufe und Vorlagen passt du danach an deinen Betrieb an.",
+          "Sehr wahrscheinlich. Handwerk OS richtet sich nach deiner Arbeitsweise – Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Begriffe, Abläufe und Vorlagen passt du danach an deinen Betrieb an.",
       },
       {
         frage: "Wie lange dauert das Einrichten?",
@@ -2512,7 +2512,7 @@ export const anpassungen: Anpassung[] = [
   {
     bereich: "Begriffe",
     icon: "chat",
-    text: "Macher OS spricht deine Sprache.",
+    text: "Handwerk OS spricht deine Sprache.",
     gewerk: "SHK",
     vorher: "Kunde · Objekt · Termin",
     nachher: "Kunde · Anlage · Wartung",

@@ -31,7 +31,7 @@ function GoogleLogo() {
 }
 
 /**
- * Hero der Startseite (Aufbau nach dem Vorbild von Personio, Farben und Marke von Macher OS): Text in der Mitte,
+ * Hero der Startseite (Aufbau nach dem Vorbild von Personio, Farben und Marke von Handwerk OS): Text in der Mitte,
  * darunter der Einstieg – Google oder E-Mail –, danach gleich die fünf Kernelemente als Pillen und die Software,
  * die schon im unteren Drittel des ersten Bildschirms beginnt und
  * unten über die grüne Box hinaus in die beige Box darunter ragt (Box ist dafür `z-10` und `overflow-visible`). Rechts steht Matthias Aumann (freigegebenes Porträt,

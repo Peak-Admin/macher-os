@@ -163,7 +163,7 @@ export function Verlauf({ filter, kundeId: kundeIdProp }: { filter: VerlaufFilte
           rows={3}
         />
         {modus === 'kunde' && (
-          <Meta>Macher OS verschickt nichts selbst: Dein {KANAL_LABEL[kanal]}-Programm öffnet sich mit dem Text, du schickst ab. Hier im Verlauf bleibt die Nachricht gespeichert.</Meta>
+          <Meta>Handwerk OS verschickt nichts selbst: Dein {KANAL_LABEL[kanal]}-Programm öffnet sich mit dem Text, du schickst ab. Hier im Verlauf bleibt die Nachricht gespeichert.</Meta>
         )}
         <div>
           <Button type="submit" icon={modus === 'kunde' ? 'mail' : 'chat'} disabled={modus === 'kunde' && !kanaele.length}>

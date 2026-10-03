@@ -16,7 +16,7 @@ function Beispiel() {
   return <span className="rounded-sm border border-dashed border-line-dark px-1 text-[10px] font-semibold text-muted">Beispiel</span>;
 }
 
-/** Kleine App-Karte: so sieht der Schritt in Macher OS aus (Beispieldaten). */
+/** Kleine App-Karte: so sieht der Schritt in Handwerk OS aus (Beispieldaten). */
 function AppKarte({ ort, children }: { ort: string; children: ReactNode }) {
   return (
     <div className="rounded-xl bg-white p-4 text-left text-ink shadow-[0_24px_48px_-28px_rgb(0_0_0/0.6)]">
@@ -157,7 +157,7 @@ export function Ablauf() {
             Vom ersten Anruf <span className="text-accent">bis zur bezahlten Rechnung.</span>
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-on-dark">
-            Macher OS hält alles zusammen und übernimmt möglichst viel Organisation dazwischen.
+            Handwerk OS hält alles zusammen und übernimmt möglichst viel Organisation dazwischen.
           </p>
 
           <div className="relative mt-12">
@@ -203,7 +203,7 @@ export function Ablauf() {
             <div>
               <p className="font-display text-2xl font-bold text-accent">{s.titel}</p>
               <p className="mt-2 text-lg text-white">{s.satz}</p>
-              <p className="mt-5 text-sm font-semibold text-white/70">Macher OS …</p>
+              <p className="mt-5 text-sm font-semibold text-white/70">Handwerk OS …</p>
               <ul className="mt-2 space-y-2">
                 {s.macher.map((m) => (
                   <li key={m} className="flex items-start gap-2.5">

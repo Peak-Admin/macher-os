@@ -6,9 +6,9 @@ import { funktionen, funktionHref } from "@/content/registry";
 import { pageMeta } from "@/lib/metadata";
 
 export const metadata = pageMeta({
-  title: "Was ist neu? – Änderungen in Macher OS",
+  title: "Was ist neu? – Änderungen in Handwerk OS",
   description:
-    "Was sich in Macher OS geändert hat: neue Funktionen und Verbesserungen, neueste zuerst.",
+    "Was sich in Handwerk OS geändert hat: neue Funktionen und Verbesserungen, neueste zuerst.",
   path: "/neu",
 });
 
@@ -24,7 +24,7 @@ export default function NeuPage() {
       {/* 1. Hero */}
       <PageHero
         eyebrow="Was ist neu?"
-        title="Was sich in Macher OS geändert hat."
+        title="Was sich in Handwerk OS geändert hat."
         intro="Neue Funktionen und Verbesserungen – das Neueste steht oben."
         actions="none"
       />
@@ -68,7 +68,7 @@ export default function NeuPage() {
       {/* 3. CTA */}
       <FinalCta
         title="Probier das Neue gleich aus."
-        intro="Teste Macher OS kostenlos mit deinen eigenen Aufträgen – oder schau dir zuerst die Demo an."
+        intro="Teste Handwerk OS kostenlos mit deinen eigenen Aufträgen – oder schau dir zuerst die Demo an."
       />
     </>
   );

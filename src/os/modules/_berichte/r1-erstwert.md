@@ -18,7 +18,7 @@ Dokument an einen echten Kunden, und der Handwerker erlebt „Der Kunde hat dein
 
 ## Prüfung
 
-- Stand nach Zusammenführung mit `main` (Macher OS als `src/os/` im Next.js-Projekt unter `/os`):
+- Stand nach Zusammenführung mit `main` (Handwerk OS als `src/os/` im Next.js-Projekt unter `/os`):
   `npm run typecheck` grün · `npm test` **617/617** grün · `npm run build` grün · ESLint ohne Befund in den Dateien dieses Pakets.
 - Playwright (Chromium) gegen `next start`, App unter `/os`, bei **1440 px und 390 px**: frisches Onboarding „Ohne Daten starten“ →
   Heute zeigt „Dein Start · noch 3 von 3“ → `/os/start` → „Angebot schreiben“ → Kunde neu → „Zwei Steckdosen setzen, zehn Meter

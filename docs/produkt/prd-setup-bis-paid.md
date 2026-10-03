@@ -1,6 +1,6 @@
 # PRD: Setup → First Value → Activation → Habit → Paid
 
-**Ziel:** Jede dieser fünf Phasen erreicht 100/100. Ein Handwerksbetrieb richtet Macher OS in wenigen Minuten ein, hat am ersten Tag ein echtes Ergebnis beim Kunden, arbeitet ab der ersten Woche mit dem ganzen Team darin, öffnet es jeden Tag – und zahlt, weil es selbstverständlich geworden ist.
+**Ziel:** Jede dieser fünf Phasen erreicht 100/100. Ein Handwerksbetrieb richtet Handwerk OS in wenigen Minuten ein, hat am ersten Tag ein echtes Ergebnis beim Kunden, arbeitet ab der ersten Woche mit dem ganzen Team darin, öffnet es jeden Tag – und zahlt, weil es selbstverständlich geworden ist.
 
 **Stand heute (Bewertung 02.10.2026):** Setup 70 · First Value 50 · Activation 28 · Habit 28 · Paid 5.
 **Ursache in einem Satz:** Die Oberfläche und die Abläufe sind da, aber ohne Backend gibt es kein Konto, kein Team auf mehreren Geräten, keinen echten Versand, keine Erinnerung außerhalb der App und keine Bezahlung.
@@ -91,7 +91,7 @@ Unverändert das geführte Muster (eine Frage je Bildschirm, Auswahlkarten). **H
 
 ## 2. First Value — Ziel 100
 
-**Definition 100:** Innerhalb von **10 Minuten nach dem Setup** geht ein **echtes Dokument an einen echten Kunden** (Angebot oder Rechnung) – professionell, mit Briefkopf, aus Macher OS versendet. Der Handwerker erlebt den Aha-Moment: **„Der Kunde hat dein Angebot geöffnet.“**
+**Definition 100:** Innerhalb von **10 Minuten nach dem Setup** geht ein **echtes Dokument an einen echten Kunden** (Angebot oder Rechnung) – professionell, mit Briefkopf, aus Handwerk OS versendet. Der Handwerker erlebt den Aha-Moment: **„Der Kunde hat dein Angebot geöffnet.“**
 
 ### Pains
 
@@ -186,7 +186,7 @@ Rollen-Oberflächen schärfen: Monteur sieht **nie** Geld, Planung anderer oder 
 
 ## 4. Habit — Ziel 100
 
-**Definition 100:** Macher OS ist **morgens die erste und abends die letzte App** im Betrieb. Büro/Chef an ≥ 5 von 5 Werktagen, Monteure an jedem Einsatztag. Der Betrieb merkt, dass Macher Arbeit abnimmt.
+**Definition 100:** Handwerk OS ist **morgens die erste und abends die letzte App** im Betrieb. Büro/Chef an ≥ 5 von 5 Werktagen, Monteure an jedem Einsatztag. Der Betrieb merkt, dass Macher Arbeit abnimmt.
 
 ### Pains
 
@@ -255,9 +255,9 @@ Keine neue Fläche. Habit entsteht über Takte und Benachrichtigungen, nicht üb
 1. **Ein einfaches Modell:** Preis **je Betrieb nach Teamgröße, alles drin** (alle Module, alle Funktionen). Keine Funktions-Pakete, keine Zusatzmodule zum Freischalten – das widerspricht „ein OS“ und kostet Vertrauen. Preise auf der Website = Preise in der App.
 2. **30 Tage Testphase ohne Zahlungsdaten**, danach monatlich kündbar; Jahrespreis mit Rabatt optional.
 3. **SEPA-Lastschrift zuerst**, Karte als Alternative. Rechnung kommt automatisch als E-Rechnung und optional direkt an die Steuerberater-Adresse (DATEV-Modul vorhanden).
-4. **Bezahlen an einer Stelle, in einem Schritt:** Betrieb › Einstellungen › „Macher OS bezahlen“ – Plan ist aus der Teamgröße vorgewählt.
+4. **Bezahlen an einer Stelle, in einem Schritt:** Betrieb › Einstellungen › „Handwerk OS bezahlen“ – Plan ist aus der Teamgröße vorgewählt.
 5. **Der richtige Moment:** Hinweise nur an Wertspitzen und mit echten Zahlen aus den eigenen Daten: „Seit dem Start: 14 Angebote, 9 Rechnungen, 23.400 € bezahlt.“ (Tag 21, 27, 30). Kein Countdown-Banner auf jedem Screen.
-6. **Weiche Grenze statt Sperre:** Nach Ablauf ist Macher OS **lesbar**, Export immer möglich, Kundenbereich und offene Rechnungen funktionieren weiter. Neues Anlegen ist gesperrt. Nie Datenverlust.
+6. **Weiche Grenze statt Sperre:** Nach Ablauf ist Handwerk OS **lesbar**, Export immer möglich, Kundenbereich und offene Rechnungen funktionieren weiter. Neues Anlegen ist gesperrt. Nie Datenverlust.
 7. **Selbstbedienung:** Teamgröße ändern (anteilig), Zahlungsart ändern, Rechnungen herunterladen, kündigen in 2 Klicks (mit ehrlicher Frage nach dem Grund).
 8. **Zahlungsausfall:** freundliche Erinnerungen (3 Stufen), 14 Tage Kulanz, dann lesbar.
 

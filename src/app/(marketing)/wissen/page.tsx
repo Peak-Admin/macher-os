@@ -221,7 +221,7 @@ export default function WissenHubPage() {
       {/* 7. Final CTA */}
       <FinalCta
         title="Vom Wissen ins Machen."
-        intro="Probier Macher OS mit deinen echten Aufträgen aus – kostenlos und ohne Kreditkarte."
+        intro="Probier Handwerk OS mit deinen echten Aufträgen aus – kostenlos und ohne Kreditkarte."
       />
     </>
   );

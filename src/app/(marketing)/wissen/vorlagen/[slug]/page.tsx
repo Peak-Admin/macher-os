@@ -61,11 +61,11 @@ export default async function VorlagePage({ params }: Props) {
                 {v.titel}
               </h1>
               <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">{v.wasIst}</p>
-              {/* 4. Kostenlos nutzen + 5. In Macher OS */}
+              {/* 4. Kostenlos nutzen + 5. In Handwerk OS */}
               <div className="mt-8 flex flex-wrap gap-3">
                 <DruckenButton />
                 <ButtonLink href={cta.primary.href} variant="secondary" size="lg">
-                  Direkt in Macher OS verwenden
+                  Direkt in Handwerk OS verwenden
                 </ButtonLink>
               </div>
               <p className="mt-3 text-sm text-muted">
@@ -122,17 +122,17 @@ export default async function VorlagePage({ params }: Props) {
           </div>
         </Section>
 
-        {/* Digital in Macher OS */}
+        {/* Digital in Handwerk OS */}
         <Section>
           <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr] lg:items-start">
             <div>
               <SectionHeading
-                eyebrow="In Macher OS"
+                eyebrow="In Handwerk OS"
                 title="Ohne Zettel geht's schneller."
-                intro="In Macher OS füllst du das auf dem Handy aus, hängst Fotos an und lässt direkt unterschreiben. Alles landet automatisch am richtigen Auftrag."
+                intro="In Handwerk OS füllst du das auf dem Handy aus, hängst Fotos an und lässt direkt unterschreiben. Alles landet automatisch am richtigen Auftrag."
               />
               <ButtonLink href={cta.primary.href} size="lg" className="mt-8">
-                Direkt in Macher OS verwenden
+                Direkt in Handwerk OS verwenden
               </ButtonLink>
             </div>
             <FunktionLinks slugs={v.funktionen} />

@@ -1,5 +1,5 @@
 /**
- * Rechnung für Macher OS zustellen: nach jeder bezahlten Stripe-Rechnung eine E-Mail an den Betrieb,
+ * Rechnung für Handwerk OS zustellen: nach jeder bezahlten Stripe-Rechnung eine E-Mail an den Betrieb,
  * in Kopie an die Steuerberater-Adresse aus dem DATEV-Modul (`datev.steuerberater` in `objekte`).
  * Im Anhang die E-Rechnung (XRechnung 3.0, UBL) – gebaut mit demselben Baustein wie in der App
  * (`xrechnungAus`). Rechnungssteller kommt aus `ABO_RECHNUNGSSTELLER` (JSON) – ohne ihn keine XRechnung,
@@ -57,7 +57,7 @@ export function xrechnungAusStripe(inv: StripeRechnung, steller: Rechnungsstelle
   const netto = inv.total_excluding_tax ?? inv.subtotal;
   const ust = inv.total - netto;
   const ustSatz = netto ? Math.round((ust / netto) * 100) : 0;
-  const zeilen = inv.lines?.data.length ? inv.lines.data : [{ description: 'Macher OS', amount: netto }];
+  const zeilen = inv.lines?.data.length ? inv.lines.data : [{ description: 'Handwerk OS', amount: netto }];
   const r = {
     id: inv.id,
     nummer: inv.number ?? inv.id,
@@ -66,7 +66,7 @@ export function xrechnungAusStripe(inv: StripeRechnung, steller: Rechnungsstelle
     faelligAm: tag(inv.due_date ?? inv.created),
     leistungVon: inv.period_start ? tag(inv.period_start) : undefined,
     leistungBis: inv.period_end ? tag(inv.period_end) : undefined,
-    positionen: zeilen.map((z, i) => ({ id: String(i + 1), art: 'leistung', text: z.description || 'Macher OS', menge: 1, einheit: 'Pkt', einzelpreis: z.amount })),
+    positionen: zeilen.map((z, i) => ({ id: String(i + 1), art: 'leistung', text: z.description || 'Handwerk OS', menge: 1, einheit: 'Pkt', einzelpreis: z.amount })),
   } as unknown as RechnungX;
   const betrieb = {
     name: steller.name,
@@ -116,12 +116,12 @@ export async function rechnungZustellen(betriebId: string, inv: StripeRechnung):
   const text = [
     'Hallo,',
     '',
-    `danke für deine Zahlung. Hier ist deine Rechnung ${nummer} über ${euro(inv.total)} für Macher OS.`,
+    `danke für deine Zahlung. Hier ist deine Rechnung ${nummer} über ${euro(inv.total)} für Handwerk OS.`,
     inv.invoice_pdf ? `PDF: ${inv.invoice_pdf}` : '',
     steller ? 'Im Anhang liegt die E-Rechnung (XRechnung) für die Buchhaltung.' : '',
     steuerberater ? `Eine Kopie geht an deinen Steuerberater (${steuerberater}).` : '',
     '',
-    'Alle Rechnungen findest du auch in Macher OS unter Betrieb › Einstellungen › Dein Plan.',
+    'Alle Rechnungen findest du auch in Handwerk OS unter Betrieb › Einstellungen › Dein Plan.',
   ]
     .filter((z, i, a) => z !== '' || a[i - 1] !== '')
     .join('\n');
@@ -132,7 +132,7 @@ export async function rechnungZustellen(betriebId: string, inv: StripeRechnung):
       from: von,
       to: [inv.customer_email],
       cc: steuerberater ? [steuerberater] : undefined,
-      subject: `Deine Rechnung ${nummer} für Macher OS`,
+      subject: `Deine Rechnung ${nummer} für Handwerk OS`,
       text,
       attachments: steller ? [{ filename: `xrechnung-${nummer}.xml`, content: Buffer.from(xrechnungAusStripe(inv, steller)).toString('base64') }] : undefined,
     }),

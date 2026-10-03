@@ -21,7 +21,7 @@ import { cta } from "@/lib/site";
 export const metadata = pageMeta({
   title: "Handwerkersoftware für dein Gewerk",
   description:
-    "Macher OS für Elektriker, SHK, Maler, Fliesenleger, Tischler, Dachdecker, Bau, GaLaBau und viele weitere Gewerke. Wähle dein Gewerk – Macher OS passt Abläufe, Begriffe und Vorlagen an.",
+    "Handwerk OS für Elektriker, SHK, Maler, Fliesenleger, Tischler, Dachdecker, Bau, GaLaBau und viele weitere Gewerke. Wähle dein Gewerk – Handwerk OS passt Abläufe, Begriffe und Vorlagen an.",
   path: "/gewerke",
 });
 
@@ -29,9 +29,9 @@ const sucheBeispiele = ["Kälteanlagenbauer", "Parkettleger", "Zimmerer", "Glase
 
 const faq: FaqItem[] = [
   {
-    frage: "Mein Gewerk steht nicht auf der Liste. Kann ich Macher OS trotzdem nutzen?",
+    frage: "Mein Gewerk steht nicht auf der Liste. Kann ich Handwerk OS trotzdem nutzen?",
     antwort:
-      "Ja. Beim Start tippst du das Gewerk an, das am besten passt. Macher OS richtet sich nach deiner Arbeitsweise – Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Danach passt du Begriffe, Abläufe und Vorlagen an deinen Betrieb an.",
+      "Ja. Beim Start tippst du das Gewerk an, das am besten passt. Handwerk OS richtet sich nach deiner Arbeitsweise – Kundendienst, Baustelle, Werkstatt, Fertigung oder Laden. Danach passt du Begriffe, Abläufe und Vorlagen an deinen Betrieb an.",
   },
   {
     frage: "Was passiert, wenn mein Betrieb mehrere Gewerke hat?",
@@ -44,7 +44,7 @@ const faq: FaqItem[] = [
       "Ja. Begriffe, Abläufe, Vorlagen und Checklisten sind nur ein Startpunkt. Du kannst alles jederzeit ändern, ergänzen oder löschen.",
   },
   {
-    frage: "Ist Macher OS für jedes Gewerk gleich teuer?",
+    frage: "Ist Handwerk OS für jedes Gewerk gleich teuer?",
     antwort: "Ja. Die Preise richten sich nach der Größe deines Betriebs, nicht nach dem Gewerk. Alle Pläne findest du auf der Preisseite.",
   },
 ];
@@ -60,10 +60,10 @@ export default function GewerkeHubPage() {
         eyebrow="Gewerke"
         title={
           <>
-            Macher OS für <span>dein Handwerk</span>.
+            Handwerk OS für <span>dein Handwerk</span>.
           </>
         }
-        intro="Wähle dein Gewerk. Macher OS passt Abläufe, Begriffe und Funktionen an deinen Betrieb an."
+        intro="Wähle dein Gewerk. Handwerk OS passt Abläufe, Begriffe und Funktionen an deinen Betrieb an."
         actions={
           <>
             <ButtonLink href="#beliebte-gewerke" size="lg">
@@ -157,9 +157,9 @@ export default function GewerkeHubPage() {
       <Section tone="white">
         <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
           <SectionHeading
-            eyebrow="So passt sich Macher OS an"
+            eyebrow="So passt sich Handwerk OS an"
             title="Eine Software. Für jedes Gewerk eingerichtet."
-            intro="Du wählst dein Gewerk – Macher OS verändert, was du jeden Tag siehst. Hier ein Beispiel pro Bereich."
+            intro="Du wählst dein Gewerk – Handwerk OS verändert, was du jeden Tag siehst. Hier ein Beispiel pro Bereich."
           />
           <FotoBuehne bild="alltag/werkstatt">
             <EinrichtungMock />
@@ -205,8 +205,8 @@ export default function GewerkeHubPage() {
 
       <FinalCta
         title="Dein Gewerk. Deine Abläufe. Eine Software."
-        intro="Wähle beim Start dein Gewerk – Macher OS richtet Begriffe, Vorlagen und Abläufe für dich ein."
-        primaryLabel="Macher OS für meinen Betrieb einrichten"
+        intro="Wähle beim Start dein Gewerk – Handwerk OS richtet Begriffe, Vorlagen und Abläufe für dich ein."
+        primaryLabel="Handwerk OS für meinen Betrieb einrichten"
         bild="alltag/team"
       />
     </>

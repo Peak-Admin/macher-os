@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const meta = pageMeta({ title: a.titel, description: a.beschreibung, path: blogHref(a.slug) });
   return {
     ...meta,
-    openGraph: { ...meta.openGraph, type: "article", publishedTime: a.datum, authors: ["Macher OS Redaktion"] },
+    openGraph: { ...meta.openGraph, type: "article", publishedTime: a.datum, authors: ["Handwerk OS Redaktion"] },
   };
 }
 
@@ -49,7 +49,7 @@ export default async function BlogArtikelPage({ params }: Props) {
     datePublished: a.datum,
     dateModified: a.datum,
     inLanguage: "de-DE",
-    author: { "@type": "Organization", name: "Macher OS Redaktion", url: `${site.url}/wissen` },
+    author: { "@type": "Organization", name: "Handwerk OS Redaktion", url: `${site.url}/wissen` },
     publisher: { "@type": "Organization", name: site.name, url: site.url },
     mainEntityOfPage: { "@type": "WebPage", "@id": `${site.url}${blogHref(a.slug)}` },
     articleSection: a.themen.map(themaTitel),
@@ -73,7 +73,7 @@ export default async function BlogArtikelPage({ params }: Props) {
             {a.titel}
           </h1>
           <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
-            <span>Macher OS Redaktion</span>
+            <span>Handwerk OS Redaktion</span>
             <span aria-hidden>·</span>
             <time dateTime={a.datum}>{formatDatum(a.datum)}</time>
             <span aria-hidden>·</span>
@@ -178,10 +178,10 @@ export default async function BlogArtikelPage({ params }: Props) {
                 </p>
               )}
 
-              {/* 8. Passende Macher-OS-Funktion */}
+              {/* 8. Passende Handwerk-OS-Funktion */}
               <section className="mt-14 rounded-lg border border-line bg-white p-6 sm:p-8">
-                <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">In Macher OS</p>
-                <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">So hilft dir Macher OS dabei</h2>
+                <p className="text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">In Handwerk OS</p>
+                <h2 className="mt-2 font-display text-2xl font-extrabold tracking-tight">So hilft dir Handwerk OS dabei</h2>
                 <p className="mt-2 text-muted">
                   Wenn du das nicht mehr von Hand machen willst: Diese Funktionen nehmen dir die Arbeit ab.
                 </p>

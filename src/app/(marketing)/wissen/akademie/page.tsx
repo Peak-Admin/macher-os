@@ -11,7 +11,7 @@ import { cta } from "@/lib/site";
 export const metadata = pageMeta({
   title: "Macher Akademie – Kurse für Chef und Team",
   description:
-    "Kurse für Handwerksbetriebe: Stundensatz, Angebote, Rechnungen, Einsatzplanung, Einarbeitung und Macher OS – für Chef, Büro, Monteure und Azubis.",
+    "Kurse für Handwerksbetriebe: Stundensatz, Angebote, Rechnungen, Einsatzplanung, Einarbeitung und Handwerk OS – für Chef, Büro, Monteure und Azubis.",
   path: "/wissen/akademie",
 });
 
@@ -93,7 +93,7 @@ export default function AkademiePage() {
         <SectionHeading
           eyebrow="Kurse"
           title="Alle Kurse."
-          intro="Die Kurse findest du in deinem Macher-OS-Konto. Lernzeiten sind ungefähre Angaben."
+          intro="Die Kurse findest du in deinem Handwerk-OS-Konto. Lernzeiten sind ungefähre Angaben."
         />
         <ul className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {kurse.map((k) => (
@@ -135,7 +135,7 @@ export default function AkademiePage() {
         <SectionHeading
           eyebrow="Nach Gewerk"
           title="Passend zu deinem Gewerk."
-          intro="Die Grundlagen-Kurse gelten für alle. In Macher OS siehst du zusätzlich Beispiele, Begriffe und Vorlagen aus deinem Gewerk."
+          intro="Die Grundlagen-Kurse gelten für alle. In Handwerk OS siehst du zusätzlich Beispiele, Begriffe und Vorlagen aus deinem Gewerk."
         />
         <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {topGewerke.map((g) => {
@@ -168,7 +168,7 @@ export default function AkademiePage() {
               Dein Team lernt. Du behältst den Überblick.
             </h2>
             <p className="mt-5 max-w-md text-lg text-white/70">
-              Mit Macher OS weist du Mitarbeitern Kurse und eigene Schulungen zu – etwa die jährliche Unterweisung. Wer
+              Mit Handwerk OS weist du Mitarbeitern Kurse und eigene Schulungen zu – etwa die jährliche Unterweisung. Wer
               was abgeschlossen hat, siehst du auf einen Blick.
             </p>
             <Link
@@ -199,7 +199,7 @@ export default function AkademiePage() {
       </Section>
 
       <Section tone="white" tight>
-        <SectionHeading eyebrow="In Macher OS" title="Passende Funktionen." />
+        <SectionHeading eyebrow="In Handwerk OS" title="Passende Funktionen." />
         <div className="mt-8 max-w-3xl">
           <FunktionLinks slugs={["schulungen", "qualifikationen", "mitarbeiter"]} />
         </div>
@@ -211,7 +211,7 @@ export default function AkademiePage() {
       {/* 8. CTA */}
       <FinalCta
         title="Lernen, wo gearbeitet wird."
-        intro="Starte Macher OS kostenlos – die Akademie-Kurse sind für dich und dein Team gleich mit dabei."
+        intro="Starte Handwerk OS kostenlos – die Akademie-Kurse sind für dich und dein Team gleich mit dabei."
       />
     </>
   );

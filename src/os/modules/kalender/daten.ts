@@ -87,7 +87,7 @@ export function terminAlsIcs(
   const zeilen = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Macher OS//Kalender//DE',
+    'PRODID:-//Handwerk OS//Kalender//DE',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     'BEGIN:VEVENT',

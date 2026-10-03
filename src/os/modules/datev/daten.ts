@@ -397,7 +397,7 @@ export function kopfzeile(k: DateiKopf): string {
     zeitstempel(k.erzeugtAm), // 6 erzeugt am
     '', // 7 importiert
     '"RE"', // 8 Herkunft
-    '"Macher OS"', // 9 exportiert von
+    '"Handwerk OS"', // 9 exportiert von
     '""', // 10 importiert von
     k.beraterNr, // 11 Beraternummer
     k.mandantNr, // 12 Mandantennummer
@@ -405,7 +405,7 @@ export function kopfzeile(k: DateiKopf): string {
     '4', // 14 Sachkontenlänge
     ymd(k.von), // 15 Datum vom
     ymd(k.bis), // 16 Datum bis
-    txt(k.bezeichnung ?? `Macher OS ${k.von.slice(0, 7)}`, 30), // 17 Bezeichnung
+    txt(k.bezeichnung ?? `Handwerk OS ${k.von.slice(0, 7)}`, 30), // 17 Bezeichnung
     txt((k.kuerzel ?? 'MO').slice(0, 2)), // 18 Diktatkürzel
     '1', // 19 Buchungstyp: Finanzbuchführung
     '0', // 20 Rechnungslegungszweck

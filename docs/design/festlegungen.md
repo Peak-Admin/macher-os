@@ -74,7 +74,7 @@ Prozess-Illustrationen von Mission Mittelstand (ruhiger Grüngrauton). Zwei Form
   Ehrlich) und die Quellen beim Daten übernehmen (Dokumente, Tabelle, Software-Export, Datanorm).
   Im Einsatz: `FunktionKarte` (Übersicht, Verwandte Funktionen), Funktionskarten der Rechner, App-Seite,
   „Automatisch heißt nicht: ohne dich“, Daten übernehmen. In Karten über `Card` mit `skizze`.
-- **UI-Ebene** (`UiEbene`, `UiZeile`, `UiStatus`, `src/components/ui/UiEbene.tsx`): ein kleiner Ausschnitt aus Macher OS
+- **UI-Ebene** (`UiEbene`, `UiZeile`, `UiStatus`, `src/components/ui/UiEbene.tsx`): ein kleiner Ausschnitt aus Handwerk OS
   mit echten Beschriftungen und Beispieldaten, auf derselben Fläche, unten angeschnitten, dahinter eine zweite Ebene.
   Für zwei bis vier Ergebnisse, die ein konkreter Stand besser belegt als eine Zeichnung (Startseite „Feierabend statt
   Papierkram“). Immer mit „Beispiel“ markiert, Status immer als Text.
@@ -84,7 +84,7 @@ steht im Kartentitel und Text. Nur Tokens (`sand`, `line`, `muted`, `primary`, `
 Beim Hover der Karte fächern die Blätter leicht auf bzw. hebt sich die Ebene (150 ms, nur ohne `prefers-reduced-motion`).
 Objektfotos (`Objekt`) bleiben für Bereiche und Einstiege, Glas-Icons für Themen in Listen.
 
-**Nachtrag Oktober 2026 – UI-Ebenen zum Ausprobieren.** Jeder Ausschnitt aus Macher OS auf der Website ist interaktiv:
+**Nachtrag Oktober 2026 – UI-Ebenen zum Ausprobieren.** Jeder Ausschnitt aus Handwerk OS auf der Website ist interaktiv:
 Ein Klick tut, was er in der Software tut (freigeben, senden, Vorschlag übernehmen, Konflikt lösen, abhaken, Zeit
 starten), danach eine kurze Bestätigung und „Von vorn“. Aussehen nach dem aktuellen Stand der Software: beiges Canvas
 (`app-canvas`, `app-ruhig`, `app-linie`), aufgelegte Flächen (`.app-lift`), Dringend rot, Überfällig gelb, Typ-Icons,

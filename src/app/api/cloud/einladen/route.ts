@@ -39,7 +39,7 @@ export async function POST(req: Request): Promise<Response> {
   const link = `${appUrl(req)}/os/beitreten/${token}`;
   const betriebName = betrieb?.name ?? 'Dein Betrieb';
   const vorname = mitarbeiter?.vorname ?? mitarbeiter?.name?.split(' ')[0];
-  const text = `${vorname ? `Hallo ${vorname}, ` : ''}${betriebName} arbeitet mit Macher OS. Tippe auf den Link, melde dich mit deiner Handynummer an und du siehst deine Einsätze:`;
+  const text = `${vorname ? `Hallo ${vorname}, ` : ''}${betriebName} arbeitet mit Handwerk OS. Tippe auf den Link, melde dich mit deiner Handynummer an und du siehst deine Einsätze:`;
 
   try {
     if (telefon) {

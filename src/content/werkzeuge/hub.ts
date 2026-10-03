@@ -30,9 +30,9 @@ export const hub = {
       antwort: "Ja. Alle Rechner funktionieren auf dem Handy, dem Tablet und am Rechner im Büro.",
     },
     {
-      frage: "Was ist der Unterschied zu Macher OS?",
+      frage: "Was ist der Unterschied zu Handwerk OS?",
       antwort:
-        "Die Rechner beantworten eine einzelne Frage. In Macher OS hinterlegst du deine Zahlen einmal – danach rechnen Angebote, Aufträge und Auswertungen automatisch damit.",
+        "Die Rechner beantworten eine einzelne Frage. In Handwerk OS hinterlegst du deine Zahlen einmal – danach rechnen Angebote, Aufträge und Auswertungen automatisch damit.",
     },
   ] satisfies FaqItem[],
 };

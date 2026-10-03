@@ -153,7 +153,7 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
       <Section>
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
-            <SectionHeading eyebrow="Warum Macher OS?" title="Einfach starten, ohne Berater." />
+            <SectionHeading eyebrow="Warum Handwerk OS?" title="Einfach starten, ohne Berater." />
             <p className="mt-5 text-lg leading-relaxed text-ink-soft">{story.warum}</p>
           </div>
           <div>
@@ -260,7 +260,7 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
               ))}
             </ul>
             <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
-              <ArrowLink href={gewerkHref(gewerk.slug)}>Macher OS für {gewerk.kurz}</ArrowLink>
+              <ArrowLink href={gewerkHref(gewerk.slug)}>Handwerk OS für {gewerk.kurz}</ArrowLink>
               <ArrowLink href="/funktionen">Alle Funktionen</ArrowLink>
             </div>
           </div>
@@ -285,7 +285,7 @@ export default async function KundenStoryPage({ params }: PageProps<"/kunden/[sl
       {/* 11. CTA */}
       <FinalCta
         title="So kann es in deinem Betrieb auch laufen."
-        intro="Starte kostenlos und richte Macher OS in wenigen Minuten für dein Gewerk ein."
+        intro="Starte kostenlos und richte Handwerk OS in wenigen Minuten für dein Gewerk ein."
       />
     </>
   );

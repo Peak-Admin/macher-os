@@ -1,6 +1,6 @@
 /**
  * Inhalte der Anwendungsfall-Seiten (`/funktionen/[slug]`), die je einem Modul
- * von Macher OS (`src/os/modules`) entsprechen. Gleicher Aufbau wie die
+ * von Handwerk OS (`src/os/modules`) entsprechen. Gleicher Aufbau wie die
  * Funktionsseiten in `../funktionen.ts`; nach Bereichen auf Dateien verteilt.
  */
 import { teil1 } from "./teil1";

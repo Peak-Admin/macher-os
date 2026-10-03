@@ -73,7 +73,7 @@ export function icsErzeugen(termine: IcsTermin[], opts: { kalendername: string; 
   const z: string[] = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Macher OS//Termine//DE',
+    'PRODID:-//Handwerk OS//Termine//DE',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     `X-WR-CALNAME:${icsText(opts.kalendername)}`,

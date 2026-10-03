@@ -143,7 +143,7 @@ export function GewerkSuche({ begriffe, beispiele }: { begriffe: Suchbegriff[]; 
         )}
         {ohneTreffer && (
           <p className="rounded-lg bg-white p-4 ring-1 ring-line">
-            Dafür haben wir noch keine eigene Seite. Kein Problem: Macher OS richtet sich nach deiner Arbeitsweise.{" "}
+            Dafür haben wir noch keine eigene Seite. Kein Problem: Handwerk OS richtet sich nach deiner Arbeitsweise.{" "}
             <Link href={FALLBACK} className="font-semibold underline decoration-signal decoration-2 underline-offset-4">
               Weitere Gewerke ansehen
             </Link>

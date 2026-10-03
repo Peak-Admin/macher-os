@@ -28,7 +28,7 @@ Leer-/Fehler-/Erfolgszustände, 390 px geprüft. Monteure sehen nie Geld (Tagesb
 - Ohne Backend: Automation `macher.takte` (Modul Benachrichtigungen, Standard an) prüft jede Minute für die Person am Gerät →
   Eintrag in der Glocke (Bezug `{ typ: 'takte', id }` → Takt-Ansicht) und – mit Erlaubnis – Systemmeldung über die
   Notification-API (über den Service Worker mit Aktionsknöpfen, sonst direkt). In den Einstellungen ehrlich beschriftet:
-  „nur solange Macher OS geöffnet ist“.
+  „nur solange Handwerk OS geöffnet ist“.
 
 **Server-Takt** `os/api/takte/cron.ts` (+ `planen.ts`, `webpush.ts`)
 - Liest `betriebe`, `mitglieder`, `objekte` (nur benötigte Sammlungen, seitenweise) mit Service-Key, plant mit denselben Funktionen.
@@ -59,7 +59,7 @@ die Ansicht führt die Aktion einmal aus, zeigt das Ergebnis und bereinigt den L
 ## Nur mit Schlüsseln
 
 `SUPABASE_SERVICE_ROLE_KEY`, `VITE_SUPABASE_URL` (oder `SUPABASE_URL`), `CRON_SECRET`; Push: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`;
-E-Mail: `RESEND_API_KEY`. Optional neu: `RESEND_ABSENDER` (Standard `Macher OS <takte@macher-os.de>`), `APP_URL` (Links in E-Mails,
+E-Mail: `RESEND_API_KEY`. Optional neu: `RESEND_ABSENDER` (Standard `Handwerk OS <takte@macher-os.de>`), `APP_URL` (Links in E-Mails,
 sonst `VERCEL_URL`), `VAPID_KONTAKT` (Standard `mailto:hallo@macher-os.de`).
 
 ## Prüfung
@@ -97,7 +97,7 @@ Auf Wunsch die offenen Punkte geschlossen – dabei wurden Dateien anderer Paket
 
 ## Dritte Runde: Umzug auf `main` und Entscheiden ohne App
 
-**Neue Struktur (wie `main` und Paket Erstwert):** App-Code unter `src/os/`, Macher OS läuft unter `/os` im Next.js-Projekt.
+**Neue Struktur (wie `main` und Paket Erstwert):** App-Code unter `src/os/`, Handwerk OS läuft unter `/os` im Next.js-Projekt.
 - `src/os/modules/takte/**` (Modul), `src/os/modules/takte/server/**` (nur Server: Planung, Web-Push, Supabase-REST, Server-Aktionen)
 - Route Handler `src/app/api/takte/cron/route.ts` (Server-Takt) und `src/app/api/takte/aktion/route.ts` (Entscheidung aus der Mitteilung)
 - `public/sw.js` (Service Worker), Wurzel-`vercel.json`: Cron `/api/takte/cron` alle 15 Minuten, `sw.js` ohne Cache

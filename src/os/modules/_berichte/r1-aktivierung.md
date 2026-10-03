@@ -1,12 +1,12 @@
 # R1 · Paket `aktivierung` (PRD Abschnitt 3)
 
-Ziel: Ein Betrieb arbeitet in der ersten Woche gemeinsam in Macher OS; der Monteur nutzt das Handy wie eine App.
+Ziel: Ein Betrieb arbeitet in der ersten Woche gemeinsam in Handwerk OS; der Monteur nutzt das Handy wie eine App.
 
 ## Was gebaut ist
 
 | # | Baustein | Dateien |
 |---|---|---|
-| 1 | **PWA**: Manifest „Macher OS“ (Farben aus den Tokens: `theme_color` #06480C, `background_color` #F7FAFB), Icons 192/512/maskable + Apple-Touch-Icon aus dem Favicon-Motiv, Service Worker ohne neue Abhängigkeit | `public/os/manifest.webmanifest`, `public/os/icons/*`, `src/os/sw.ts` → `public/os/sw.js` (`scripts/os-sw.mjs`, vor `dev`/`build`), `src/app/(os)/os/layout.tsx` (Manifest, Apple-Icons) |
+| 1 | **PWA**: Manifest „Handwerk OS“ (Farben aus den Tokens: `theme_color` #06480C, `background_color` #F7FAFB), Icons 192/512/maskable + Apple-Touch-Icon aus dem Favicon-Motiv, Service Worker ohne neue Abhängigkeit | `public/os/manifest.webmanifest`, `public/os/icons/*`, `src/os/sw.ts` → `public/os/sw.js` (`scripts/os-sw.mjs`, vor `dev`/`build`), `src/app/(os)/os/layout.tsx` (Manifest, Apple-Icons) |
 | | Service Worker (Scope `/os/`): Seitenaufrufe zuerst aus dem Netz, ohne Netz die zuletzt geladene App-Seite (SPA-Rückfall für jeden Pfad unter `/os`); `/_next/static/*`, Schriften, Icons aus dem Cache; `/api/*` nie im Cache. Beim ersten Besuch meldet die App die schon geladenen Dateien an den Worker → **offline neu laden klappt nach dem ersten Besuch**. | |
 | | Push: Nachricht mit bis zu zwei Aktionen; Tipp öffnet `pfad`, Tipp auf eine Aktion öffnet `/os/macher/hinweise?aktion=<id>&payload=<json>` (fokussiert ein offenes Fenster, sonst neues). | `src/os/sw.ts` |
 | | Installieren-Hinweis (nur am Handy, nicht installiert, einmal; schließen oder installieren blendet ihn dauerhaft aus; iOS: Anleitung „Teilen › Zum Home-Bildschirm“). Offline-Banner „Kein Netz – du kannst weiterarbeiten“. | `src/os/shell/Shell.tsx`, `shell.css` |
@@ -18,7 +18,7 @@ Ziel: Ein Betrieb arbeitet in der ersten Woche gemeinsam in Macher OS; der Monte
 | 6 | **„Wir sind unterwegs“**: bei Losfahren (Status `unterwegs`) bzw. `einsatz.gestartet`, je Termin genau einmal. Mit Backend automatisch über `cloud().senden` (SMS bevorzugt, sonst E-Mail; Link zum Kundenbereich, falls vorhanden), Vermerk an Termin und Auftrag, ausgehende Nachricht. Ohne Backend nur **Vorschlag** für den Monteur („SMS senden“ öffnet das SMS-Programm). Abschaltbar unter Automationen. Beispielkunden bekommen mit Backend nie eine echte Nachricht. Text ohne erfundene Ankunftszeit. | `src/os/modules/naechster-einsatz/unterwegs.ts` |
 | 7 | **Messpunkt `aktivierung.erreicht`** als reine, getestete Funktion `aktivierung()`: innerhalb von 14 Tagen ab Einrichtung ≥ 3 Aufträge · ≥ 1 Auftrag mit versendeter Rechnung (jeder Auftrag startet als Anfrage) · ≥ 1 Zeit oder Foto/Notiz eines Monteurs/Azubis **am Auftrag** · ≥ 1 Rechnung versendet. Beispieldaten und Papierkorb zählen nie. Wird einmal gemessen (`messen('aktivierung.erreicht', { tage, auftraege })`). | `src/os/modules/eingang/aktivierung.ts` |
 
-## Nach R1: `main` zusammengeführt (Macher OS unter `/os` im Next.js-Projekt)
+## Nach R1: `main` zusammengeführt (Handwerk OS unter `/os` im Next.js-Projekt)
 
 `main` hat die Software in das Next.js-Projekt verlegt (`src/os`, Route `/os`). Dieses Paket ist darauf portiert:
 Server-Funktionen sind Next.js Route Handler unter `src/app/api/…`, reine Server-Logik liegt in `src/os/server/` (mit Tests),

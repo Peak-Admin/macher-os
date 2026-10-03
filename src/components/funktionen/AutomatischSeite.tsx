@@ -21,7 +21,7 @@ export function AutomatischSeite() {
             {f.hero.problem} <span className="font-semibold text-ink">{f.hero.loesung}</span>
           </>
         }
-        visual={<FunktionsMock visual={f.visual} label="Startseite in Macher OS: Was Macher heute erledigt hat" />}
+        visual={<FunktionsMock visual={f.visual} label="Startseite in Handwerk OS: Was Macher heute erledigt hat" />}
       />
 
       {/* Übersicht: zehn Aufgaben als Sprungmarken */}

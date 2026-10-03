@@ -1,7 +1,7 @@
 import type { IconName } from "@/components/ui";
 
 /**
- * „Was ist neu?“ (`/neuigkeiten`). Nur Funktionen, die es in Macher OS wirklich gibt (Code unter `src/os/modules/`).
+ * „Was ist neu?“ (`/neuigkeiten`). Nur Funktionen, die es in Handwerk OS wirklich gibt (Code unter `src/os/modules/`).
  * Neue Einträge oben anfügen. Geplantes steht getrennt in `demnaechst` und nie als fertig.
  */
 
@@ -13,7 +13,7 @@ export const neuigkeiten: { monat: string; eintraege: Neuigkeit[] }[] = [
     eintraege: [
       {
         titel: "Startklar mit einer Frage",
-        text: "Du wählst dein Gewerk – Macher OS richtet Leistungen, Vorlagen und Abläufe passend ein. Danach geht es direkt zum ersten Angebot.",
+        text: "Du wählst dein Gewerk – Handwerk OS richtet Leistungen, Vorlagen und Abläufe passend ein. Danach geht es direkt zum ersten Angebot.",
         icon: "spark",
         bereich: "Einrichtung",
         link: { label: "Schnellstart", href: "/hilfe/schnellstart" },
@@ -48,7 +48,7 @@ export const neuigkeiten: { monat: string; eintraege: Neuigkeit[] }[] = [
       },
       {
         titel: "Daten übernehmen per Datei",
-        text: "Kunden, Artikel und Mitarbeiter aus Excel oder CSV. Macher OS erkennt die Spalten, findet Doppelte und lässt sich rückgängig machen.",
+        text: "Kunden, Artikel und Mitarbeiter aus Excel oder CSV. Handwerk OS erkennt die Spalten, findet Doppelte und lässt sich rückgängig machen.",
         icon: "download",
         bereich: "Start",
         link: { label: "Daten übernehmen", href: "/hilfe/daten-uebernehmen" },

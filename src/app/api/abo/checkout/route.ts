@@ -20,7 +20,7 @@ async function preisId(plan: Plan, intervall: Intervall): Promise<string> {
     tax_behavior: 'exclusive',
     lookup_key: schluessel,
     recurring: { interval: intervall === 'jahr' ? 'year' : 'month' },
-    product_data: { name: `Macher OS ${plan.name}`, metadata: { plan: plan.id } },
+    product_data: { name: `Handwerk OS ${plan.name}`, metadata: { plan: plan.id } },
     metadata: { plan: plan.id },
   });
   return neu.id;

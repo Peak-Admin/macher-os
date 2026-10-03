@@ -10,14 +10,14 @@ export const teil6 = {
     meta: {
       title: "Nachkalkulation für Handwerker – was hat der Auftrag wirklich gebracht?",
       description:
-        "Stunden, Material und Belege gegen Angebot und Kalkulation – für jeden Auftrag, ohne Excel. Macher OS zeigt Abweichungen in klaren Sätzen und schlägt bessere Kalkulationszeiten vor.",
+        "Stunden, Material und Belege gegen Angebot und Kalkulation – für jeden Auftrag, ohne Excel. Handwerk OS zeigt Abweichungen in klaren Sätzen und schlägt bessere Kalkulationszeiten vor.",
     },
     hero: {
       titel: "Du weißt bei jedem Auftrag, ob er sich gelohnt hat.",
       problem:
         "Die Nachkalkulation kostet einen Abend mit Stundenzetteln und Lieferscheinen. Also macht sie keiner – und dieselbe Leistung wird immer wieder zu knapp kalkuliert.",
       loesung:
-        "Macher OS legt Stunden, Material und Belege neben dein Angebot. Du liest in zwei Sätzen, was passiert ist, und passt deine Zeiten mit einem Klick an.",
+        "Handwerk OS legt Stunden, Material und Belege neben dein Angebot. Du liest in zwei Sätzen, was passiert ist, und passt deine Zeiten mit einem Klick an.",
     },
     visual: {
       bereich: "Betrieb",
@@ -183,14 +183,14 @@ export const teil6 = {
     meta: {
       title: "Auftragsabläufe im Handwerk – jeder weiß, was als Nächstes dran ist",
       description:
-        "Von der Anfrage bis zur Zahlung: Macher OS führt jeden Auftrag durch feste Schritte, erinnert den Zuständigen an Fristen und geht von selbst weiter, wenn ein Schritt erledigt ist.",
+        "Von der Anfrage bis zur Zahlung: Handwerk OS führt jeden Auftrag durch feste Schritte, erinnert den Zuständigen an Fristen und geht von selbst weiter, wenn ein Schritt erledigt ist.",
     },
     hero: {
       titel: "Kein Auftrag bleibt mehr irgendwo hängen.",
       problem:
         "Nach der Zusage passiert tagelang nichts. Das Material ist zu spät bestellt, die Rechnung wird nach der Abnahme vergessen. Wo was steht, weiß nur der Chef.",
       loesung:
-        "Macher OS führt jeden Auftrag Schritt für Schritt. Jeder Schritt hat einen Zuständigen und eine Frist. Ist etwas erledigt, geht es von selbst weiter.",
+        "Handwerk OS führt jeden Auftrag Schritt für Schritt. Jeder Schritt hat einen Zuständigen und eine Frist. Ist etwas erledigt, geht es von selbst weiter.",
     },
     visual: {
       bereich: "Betrieb",
@@ -355,14 +355,14 @@ export const teil6 = {
     meta: {
       title: "Firmenwissen & Anleitungen für Handwerksbetriebe – griffbereit auf der Baustelle",
       description:
-        "Wartungsabläufe, Sicherheitsregeln und Herstellerinfos an einem Ort. Macher OS zeigt die passende Anleitung am Auftrag und an der Anlage – auch auf dem Handy.",
+        "Wartungsabläufe, Sicherheitsregeln und Herstellerinfos an einem Ort. Handwerk OS zeigt die passende Anleitung am Auftrag und an der Anlage – auch auf dem Handy.",
     },
     hero: {
       titel: "Das Wissen deines Betriebs – für alle griffbereit.",
       problem:
         "Wie die Wartung richtig läuft, weiß der Meister. Neue Leute fragen immer dasselbe, und die Herstellerunterlagen liegen irgendwo im Büro.",
       loesung:
-        "Schreib es einmal auf. Macher OS zeigt die passende Anleitung am Auftrag und an der Anlage – auf dem Handy, direkt vor Ort.",
+        "Schreib es einmal auf. Handwerk OS zeigt die passende Anleitung am Auftrag und an der Anlage – auf dem Handy, direkt vor Ort.",
     },
     visual: {
       bereich: "Betrieb",
@@ -496,7 +496,7 @@ export const teil6 = {
       {
         frage: "Muss ich alles selbst schreiben?",
         antwort:
-          "Nein. Zum Start legt Macher OS Anleitungen für dein Gewerk an, zum Beispiel zur Abnahme beim Kunden oder zum Verhalten bei einem Arbeitsunfall. Du passt sie an deinen Betrieb an.",
+          "Nein. Zum Start legt Handwerk OS Anleitungen für dein Gewerk an, zum Beispiel zur Abnahme beim Kunden oder zum Verhalten bei einem Arbeitsunfall. Du passt sie an deinen Betrieb an.",
       },
       {
         frage: "Können meine Monteure die Anleitungen auf dem Handy lesen?",
@@ -533,7 +533,7 @@ export const teil6 = {
       problem:
         "Am Monatsende suchst du Belege zusammen und bringst sie in die Kanzlei. Wochen später fragt der Steuerberater nach, was fehlt.",
       loesung:
-        "Macher OS erstellt aus Rechnungen und Belegen einen DATEV-Buchungsstapel. Eine Checkliste zeigt, ob der Monat vollständig ist.",
+        "Handwerk OS erstellt aus Rechnungen und Belegen einen DATEV-Buchungsstapel. Eine Checkliste zeigt, ob der Monat vollständig ist.",
     },
     visual: {
       bereich: "Betrieb",
@@ -580,7 +580,7 @@ export const teil6 = {
     ],
     loesung: {
       titel: "Ein Export, eine Checkliste, ein fester Ablauf.",
-      text: "Du wählst den Monat, Macher OS zeigt Rechnungen und Belege mit Buchungen. Konten, Debitoren- und Kreditorennummern vergibt Macher selbst. Du lädst den Buchungsstapel herunter und schickst ihn deinem Steuerberater oder lädst ihn in DATEV hoch.",
+      text: "Du wählst den Monat, Handwerk OS zeigt Rechnungen und Belege mit Buchungen. Konten, Debitoren- und Kreditorennummern vergibt Macher selbst. Du lädst den Buchungsstapel herunter und schickst ihn deinem Steuerberater oder lädst ihn in DATEV hoch.",
       punkte: [
         "Buchungsstapel im DATEV-Format, SKR03 oder SKR04",
         "Schon exportierte Belege werden erkannt und nicht doppelt übergeben",
@@ -668,7 +668,7 @@ export const teil6 = {
       {
         frage: "Kann mein Steuerberater die Datei einlesen?",
         antwort:
-          "Ja. Macher OS erstellt einen Buchungsstapel im DATEV-Format (EXTF) für den Kontenrahmen SKR03 oder SKR04. Den kann dein Steuerberater in DATEV einlesen.",
+          "Ja. Handwerk OS erstellt einen Buchungsstapel im DATEV-Format (EXTF) für den Kontenrahmen SKR03 oder SKR04. Den kann dein Steuerberater in DATEV einlesen.",
       },
       {
         frage: "Gibt es eine direkte Verbindung zu DATEV Unternehmen online?",
@@ -698,14 +698,14 @@ export const teil6 = {
     meta: {
       title: "Schnittstellen für Handwerker – DATANORM, GAEB, DATEV, Bank und Kalender",
       description:
-        "Großhandelspreise per DATANORM, Leistungsverzeichnisse per GAEB, Kontoauszüge als CAMT oder CSV, DATEV-Export und Termine als Kalenderdatei. Macher OS zeigt offen, was heute geht und was geplant ist.",
+        "Großhandelspreise per DATANORM, Leistungsverzeichnisse per GAEB, Kontoauszüge als CAMT oder CSV, DATEV-Export und Termine als Kalenderdatei. Handwerk OS zeigt offen, was heute geht und was geplant ist.",
     },
     hero: {
-      titel: "Macher OS spricht mit deinen anderen Programmen.",
+      titel: "Handwerk OS spricht mit deinen anderen Programmen.",
       problem:
         "Preise vom Großhändler tippst du ab, Zahlungen gleichst du von Hand ab, Termine stehen nicht im Handykalender. Und welche Schnittstelle wirklich geht, weiß keiner.",
       loesung:
-        "Macher OS liest Großhandelsdaten, Leistungsverzeichnisse und Kontoauszüge ein und gibt Termine und Buchungen weiter. Bei jeder Verbindung steht dabei, ob sie heute geht oder geplant ist.",
+        "Handwerk OS liest Großhandelsdaten, Leistungsverzeichnisse und Kontoauszüge ein und gibt Termine und Buchungen weiter. Bei jeder Verbindung steht dabei, ob sie heute geht oder geplant ist.",
     },
     visual: {
       bereich: "Betrieb",
@@ -772,7 +772,7 @@ export const teil6 = {
         { label: "Vorhandene Artikel", wert: "aktualisiert, nicht verdoppelt" },
         { label: "Nächster Schritt", wert: "Neue Preisdatei einlesen", hervor: true },
       ],
-      fuss: { icon: "shield", text: "Bei Verbindungen über Anbieter siehst und speicherst du in Macher OS kein fremdes Passwort." },
+      fuss: { icon: "shield", text: "Bei Verbindungen über Anbieter siehst und speicherst du in Handwerk OS kein fremdes Passwort." },
     },
     schritte: [
       {
@@ -840,15 +840,15 @@ export const teil6 = {
       {
         frage: "Gibt es IDS Connect?",
         antwort:
-          "Noch nicht. IDS Connect ist geplant und in der Übersicht so gekennzeichnet. Bis dahin legst du Bestellungen in Macher OS an und schickst sie per E-Mail. Preise holst du heute per DATANORM.",
+          "Noch nicht. IDS Connect ist geplant und in der Übersicht so gekennzeichnet. Bis dahin legst du Bestellungen in Handwerk OS an und schickst sie per E-Mail. Preise holst du heute per DATANORM.",
       },
       {
         frage: "Kann ich GAEB-Dateien auch wieder ausgeben?",
         antwort:
-          "Heute liest Macher OS GAEB DA XML ein, zum Beispiel X83 und X84, und übernimmt die Positionen ins Angebot. Die Ausgabe als X84-Datei ist geplant.",
+          "Heute liest Handwerk OS GAEB DA XML ein, zum Beispiel X83 und X84, und übernimmt die Positionen ins Angebot. Die Ausgabe als X84-Datei ist geplant.",
       },
       {
-        frage: "Verbindet sich Macher OS direkt mit meiner Bank?",
+        frage: "Verbindet sich Handwerk OS direkt mit meiner Bank?",
         antwort:
           "Noch nicht. Die direkte Bankverbindung ist geplant. Heute lädst du den Kontoauszug als CAMT- oder CSV-Datei aus dem Online-Banking herunter und liest ihn ein.",
       },
@@ -868,16 +868,16 @@ export const teil6 = {
     kurz: "Kunden, Artikel, Preise und offene Rechnungen aus Excel oder dem alten Programm übernehmen – mit Vorschau und Rückgängig.",
     enthalten: ["Kunden und Ansprechpartner", "Artikel, Leistungen und Preise", "Offene Angebote, Aufträge und Rechnungen", "Import rückgängig machen"],
     meta: {
-      title: "Daten übernehmen – Wechsel zu Macher OS ohne Abtippen",
+      title: "Daten übernehmen – Wechsel zu Handwerk OS ohne Abtippen",
       description:
-        "Kunden, Artikel, Preise und offene Rechnungen aus Excel oder CSV übernehmen. Macher OS erkennt die Spalten, findet doppelte Einträge und macht jeden Import auf Wunsch rückgängig.",
+        "Kunden, Artikel, Preise und offene Rechnungen aus Excel oder CSV übernehmen. Handwerk OS erkennt die Spalten, findet doppelte Einträge und macht jeden Import auf Wunsch rückgängig.",
     },
     hero: {
       titel: "Wechseln, ohne alles abzutippen.",
       problem:
         "Deine Kunden, Preise und offenen Rechnungen stecken im alten Programm. Alles neu eintippen? Dafür hat keiner Zeit – also bleibt alles beim Alten.",
       loesung:
-        "Du lädst eine Excel- oder CSV-Datei hoch. Macher OS erkennt, was drinsteht, zeigt dir eine Vorschau und übernimmt die Daten. Passt etwas nicht, machst du den Import rückgängig.",
+        "Du lädst eine Excel- oder CSV-Datei hoch. Handwerk OS erkennt, was drinsteht, zeigt dir eine Vorschau und übernimmt die Daten. Passt etwas nicht, machst du den Import rückgängig.",
     },
     visual: {
       bereich: "Betrieb",
@@ -892,7 +892,7 @@ export const teil6 = {
         ueberschrift: "Vorschau",
         zeilen: [
           { titel: "Bäckerei Hoffmann GmbH", sub: "Kd-Nr. 10233 · 79098 Freiburg", tag: "neu", ton: "moss" },
-          { titel: "Sabine Krüger", sub: "steht schon in Macher OS", tag: "doppelt", ton: "sky" },
+          { titel: "Sabine Krüger", sub: "steht schon in Handwerk OS", tag: "doppelt", ton: "sky" },
           { titel: "Zeile 14", sub: "E-Mail fehlt das @", tag: "Fehler", ton: "signal" },
         ],
       },
@@ -924,7 +924,7 @@ export const teil6 = {
     ],
     loesung: {
       titel: "Datei hochladen, prüfen, übernehmen.",
-      text: "Macher OS liest Excel-Dateien (.xlsx) und CSV. Es erkennt am Inhalt, ob die Datei Kunden, Artikel, Preise oder Rechnungen enthält, und ordnet die Spalten zu. In der Vorschau siehst du jede Zeile: neu, wird aktualisiert, doppelt oder mit Fehler. Erst dann übernimmst du.",
+      text: "Handwerk OS liest Excel-Dateien (.xlsx) und CSV. Es erkennt am Inhalt, ob die Datei Kunden, Artikel, Preise oder Rechnungen enthält, und ordnet die Spalten zu. In der Vorschau siehst du jede Zeile: neu, wird aktualisiert, doppelt oder mit Fehler. Erst dann übernimmst du.",
       punkte: [
         "Kunden, Ansprechpartner, Mitarbeiter, Artikel, Leistungen und Preise",
         "Offene Angebote, Aufträge und Rechnungen mit Verweis auf den Kunden",
@@ -1012,7 +1012,7 @@ export const teil6 = {
       {
         frage: "Aus welchen Programmen kann ich Daten übernehmen?",
         antwort:
-          "Aus jedem Programm, das Excel (.xlsx) oder CSV ausgeben kann. Kundenlisten aus Lexware und sevDesk erkennt Macher OS direkt an den Spaltennamen. Alte .xls-Dateien speicherst du vorher als .xlsx oder CSV.",
+          "Aus jedem Programm, das Excel (.xlsx) oder CSV ausgeben kann. Kundenlisten aus Lexware und sevDesk erkennt Handwerk OS direkt an den Spaltennamen. Alte .xls-Dateien speicherst du vorher als .xlsx oder CSV.",
       },
       {
         frage: "Was passiert mit Kunden, die schon drin sind?",

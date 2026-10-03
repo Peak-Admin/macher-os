@@ -4,7 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
 /**
- * Kleine Ausschnitte aus Macher OS für „So läuft's“ – jeder reagiert auf einen Klick (Beispieldaten, nichts wird
+ * Kleine Ausschnitte aus Handwerk OS für „So läuft's“ – jeder reagiert auf einen Klick (Beispieldaten, nichts wird
  * gespeichert). Aussehen wie die Software: Status immer mit Text, Dringend rot, Warnungen gelb.
  */
 

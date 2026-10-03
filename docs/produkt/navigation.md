@@ -1,4 +1,4 @@
-# Macher OS – Navigation und Zielstruktur
+# Handwerk OS – Navigation und Zielstruktur
 
 Stand: 02.10.2026 · Umsetzung der Spezifikation „Zielstruktur einer einfachen Super-App für Handwerker“.
 
@@ -11,7 +11,7 @@ Ebene höchstens vier Ziele hat und **jedes der 81 Module genau einen Ort** besi
 ## 1. Zielstruktur
 
 ```text
-Macher OS
+Handwerk OS
 ├── Heute                 eine Zeile Begrüßung + höchstens 3 Blöcke, je nach Rolle
 ├── Aufträge              öffnet direkt die Übersicht
 │   ├── Übersicht         Aufträge · Angebote · Aufgaben

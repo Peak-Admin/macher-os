@@ -5,7 +5,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = {
   ...pageMeta({
     title: "AGB",
-    description: "Allgemeine Geschäftsbedingungen für die Nutzung von Macher OS.",
+    description: "Allgemeine Geschäftsbedingungen für die Nutzung von Handwerk OS.",
     path: "/agb",
   }),
   robots: { index: false },
@@ -15,7 +15,7 @@ export default function AgbPage() {
   return (
     <RechtsSeite
       titel="Allgemeine Geschäftsbedingungen"
-      intro="Die Regeln für die Nutzung von Macher OS."
+      intro="Die Regeln für die Nutzung von Handwerk OS."
       abschnitte={agbAbschnitte}
     />
   );

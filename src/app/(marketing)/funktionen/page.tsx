@@ -31,7 +31,7 @@ import { cta } from "@/lib/site";
 export const metadata = pageMeta({
   title: "Funktionen – alles, was dein Handwerksbetrieb braucht",
   description:
-    "Von der Anfrage bis zur Rechnung, von Mitarbeitern bis Material: Alle Funktionen von Macher OS im Überblick – nach Arbeitsablauf sortiert und miteinander verbunden.",
+    "Von der Anfrage bis zur Rechnung, von Mitarbeitern bis Material: Alle Funktionen von Handwerk OS im Überblick – nach Arbeitsablauf sortiert und miteinander verbunden.",
   path: "/funktionen",
 });
 
@@ -100,7 +100,7 @@ const faq: FaqItem[] = [
   {
     frage: "Brauche ich für Lager, Planung und Zeiterfassung extra Programme?",
     antwort:
-      "Nein. Alles steckt in Macher OS und greift ineinander. Ein Auftrag kennt seinen Kunden, seine Termine, sein Material und seine Stunden.",
+      "Nein. Alles steckt in Handwerk OS und greift ineinander. Ein Auftrag kennt seinen Kunden, seine Termine, sein Material und seine Stunden.",
   },
   {
     frage: "Was heißt „Macher erledigt“?",
@@ -108,9 +108,9 @@ const faq: FaqItem[] = [
       "Macher übernimmt wiederkehrende Büroarbeit: Anrufe annehmen, Termine abstimmen, Angebote und Rechnungen vorbereiten, an Zahlungen erinnern. Was nach außen geht oder Geld kostet, gibst du frei.",
   },
   {
-    frage: "Passt Macher OS zu meinem Gewerk?",
+    frage: "Passt Handwerk OS zu meinem Gewerk?",
     antwort:
-      "Beim Start wählst du dein Gewerk. Macher OS richtet dann Begriffe, Vorlagen, Checklisten und Abläufe passend ein – vom Elektriker bis zum Gartenbauer.",
+      "Beim Start wählst du dein Gewerk. Handwerk OS richtet dann Begriffe, Vorlagen, Checklisten und Abläufe passend ein – vom Elektriker bis zum Gartenbauer.",
   },
 ];
 
@@ -153,7 +153,7 @@ export default function FunktionenPage() {
         <SectionHeading
           eyebrow="Nach Arbeitsablauf"
           title="Vier Bereiche. Mehr musst du dir nicht merken."
-          intro="Macher OS ist so aufgebaut, wie dein Betrieb arbeitet – nicht wie eine Liste von Programmteilen."
+          intro="Handwerk OS ist so aufgebaut, wie dein Betrieb arbeitet – nicht wie eine Liste von Programmteilen."
         />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {ablauf.map((b) => (
@@ -300,7 +300,7 @@ export default function FunktionenPage() {
             <SectionHeading
               eyebrow="Für dein Gewerk"
               title="Passend zu deinem Gewerk eingerichtet."
-              intro="Macher OS richtet Funktionen und Abläufe passend zu deinem Gewerk ein – mit den Begriffen, Vorlagen und Checklisten, die du kennst."
+              intro="Handwerk OS richtet Funktionen und Abläufe passend zu deinem Gewerk ein – mit den Begriffen, Vorlagen und Checklisten, die du kennst."
             />
             <ButtonLink href="/gewerke" variant="secondary" className="mt-8">
               Mein Gewerk ansehen <Icon name="arrow-right" className="size-4" />

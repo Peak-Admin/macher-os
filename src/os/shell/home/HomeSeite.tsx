@@ -1,5 +1,5 @@
 /**
- * Heute – das Home von Macher OS. Ruhig und persönlich statt Kennzahlen-Wand:
+ * Heute – das Home von Handwerk OS. Ruhig und persönlich statt Kennzahlen-Wand:
  * Begrüßung, höchstens eine Ankündigung, standardmäßig vier Widgets in zwei Spalten
  * (Dein nächster Schritt · Dein Ansprechpartner · Deine Arbeit · Neu für dich).
  * Über „Home anpassen“ stellt sich jeder sein Home aus der Widget-Bibliothek selbst zusammen.

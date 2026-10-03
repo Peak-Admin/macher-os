@@ -85,7 +85,7 @@ function Notfaelle({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Part
           type="tel"
           inputMode="tel"
           optional
-          hilfe="Hierhin stellt Macher Notfälle durch. Ohne Nummer bekommt die Bereitschaft eine Mitteilung in Macher OS."
+          hilfe="Hierhin stellt Macher Notfälle durch. Ohne Nummer bekommt die Bereitschaft eine Mitteilung in Handwerk OS."
           value={nummer}
           disabled={gesperrt}
           onChange={(e) => setNummer(e.target.value)}

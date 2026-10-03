@@ -85,7 +85,7 @@ export interface GatewayKontext {
   heute: Datum;
   jetzt: Date;
   ich?: Mitarbeiter;
-  /** dieselbe Rechteprüfung wie für den Menschen – KI-Recht = Macher-OS-Recht */
+  /** dieselbe Rechteprüfung wie für den Menschen – KI-Recht = Handwerk-OS-Recht */
   darf: (r: Recht) => boolean;
   kanal?: Kanal;
   /** Anteil der KI-Kosten am Monatsbeitrag (0–1); fehlt er, misst der Gateway selbst (`kostenAnteilMonat`) */
@@ -203,7 +203,7 @@ const modelle = new Map<Lane, ModellAdapter>();
 // ------------------------------------------------------------------ Kostenmessung
 
 /**
- * Bezugsgröße für den Kostenanteil: was der Betrieb im Monat für Macher OS zahlt (Cent, netto).
+ * Bezugsgröße für den Kostenanteil: was der Betrieb im Monat für Handwerk OS zahlt (Cent, netto).
  * Platzhalter wie `src/content/preise.ts` – Einstellung `ki.abo.monatCent`.
  */
 export const ABO_MONAT_CENT = 8900;
@@ -538,7 +538,7 @@ export interface SchrittPruefung {
 export function pruefePlan(plan: Plan, k: GatewayKontext): SchrittPruefung[] {
   return plan.schritte.map((s) => {
     const def = aktionDef(s.aktion);
-    if (!def) return { id: s.id, risiko: 'kritisch', erlaubt: false, grund: 'Diese Aktion gibt es in deinem Macher OS noch nicht.' };
+    if (!def) return { id: s.id, risiko: 'kritisch', erlaubt: false, grund: 'Diese Aktion gibt es in deinem Handwerk OS noch nicht.' };
     const risiko = risikoVon(def.risiko, def.rechte);
     if ((def.rechte ?? []).some((r) => !k.darf(r))) return { id: s.id, risiko, erlaubt: false, grund: 'Dafür fehlt dir die Berechtigung.' };
     const fehler = def.pruefe?.(s.daten as never, k);

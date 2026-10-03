@@ -15,7 +15,7 @@ export const handwerkerApp: Landing = {
   meta: {
     title: "Handwerker-App – Aufträge, Zeiten und Fotos auf dem Handy",
     description:
-      "Die Handwerker-App von Macher OS: Einsätze, Navigation, Fotos, Zeiterfassung, Material und Unterschrift auf dem Handy – auch ohne Netz. Für Chef, Büro und Monteure.",
+      "Die Handwerker-App von Handwerk OS: Einsätze, Navigation, Fotos, Zeiterfassung, Material und Unterschrift auf dem Handy – auch ohne Netz. Für Chef, Büro und Monteure.",
   },
   breadcrumbs: [{ label: "Handwerker-App" }],
   hero: {
@@ -55,12 +55,12 @@ export const handwerkerApp: Landing = {
   faq: [
     {
       frage: "Was kostet die Handwerker-App?",
-      antwort: "Die App gehört zu Macher OS und ist in jedem Plan drin. Du zahlst einen Preis je Betrieb nach Teamgröße.",
+      antwort: "Die App gehört zu Handwerk OS und ist in jedem Plan drin. Du zahlst einen Preis je Betrieb nach Teamgröße.",
     },
     {
       frage: "Läuft die App auf iPhone und Android?",
       antwort:
-        "Macher OS läuft heute im Browser auf jedem aktuellen Handy und lässt sich auf den Startbildschirm legen. Die Store-Apps für iPhone und Android folgen.",
+        "Handwerk OS läuft heute im Browser auf jedem aktuellen Handy und lässt sich auf den Startbildschirm legen. Die Store-Apps für iPhone und Android folgen.",
     },
     {
       frage: "Sehen meine Mitarbeiter Preise?",
@@ -73,7 +73,7 @@ export const handwerkerApp: Landing = {
   ],
   weiter: {
     links: [
-      { label: "Die App im Detail", href: "/app", text: "Ein Tag auf der Baustelle mit Macher OS." },
+      { label: "Die App im Detail", href: "/app", text: "Ein Tag auf der Baustelle mit Handwerk OS." },
       { label: "Zeiterfassung", href: "/funktionen/zeiterfassung", text: "Arbeitszeiten ohne Stundenzettel." },
       { label: "Fotos & Dokumentation", href: "/funktionen/dokumentation", text: "Alles am Auftrag statt im privaten Handy." },
     ],
@@ -93,7 +93,7 @@ export const buerosoftware: Landing = {
     eyebrow: "Bürosoftware fürs Handwerk",
     title: "Weniger Büro. Mehr Handwerk.",
     intro:
-      "Macher OS ist die Bürosoftware, die dir Büroarbeit abnimmt, statt neue zu machen. Von der Anfrage bis zur bezahlten Rechnung – an einem Ort.",
+      "Handwerk OS ist die Bürosoftware, die dir Büroarbeit abnimmt, statt neue zu machen. Von der Anfrage bis zur bezahlten Rechnung – an einem Ort.",
     bild: "alltag/buero",
   },
   schmerz: {
@@ -104,7 +104,7 @@ export const buerosoftware: Landing = {
       "Hinterhertelefonieren, weil keiner weiß, was offen ist",
       "Drei Programme, die nicht miteinander reden",
     ],
-    antwort: "Macher OS hält alles zusammen und erinnert dich, bevor etwas liegen bleibt.",
+    antwort: "Handwerk OS hält alles zusammen und erinnert dich, bevor etwas liegen bleibt.",
   },
   vorteile: {
     eyebrow: "Alles drin",
@@ -130,9 +130,9 @@ export const buerosoftware: Landing = {
   },
   faq: [
     {
-      frage: "Ist Macher OS eine Buchhaltungssoftware?",
+      frage: "Ist Handwerk OS eine Buchhaltungssoftware?",
       antwort:
-        "Nein. Macher OS schreibt Angebote und Rechnungen und ordnet Zahlungen zu. Die Buchhaltung macht dein Steuerberater – du übergibst die Daten im DATEV-Format.",
+        "Nein. Handwerk OS schreibt Angebote und Rechnungen und ordnet Zahlungen zu. Die Buchhaltung macht dein Steuerberater – du übergibst die Daten im DATEV-Format.",
     },
     {
       frage: "Kann ich E-Rechnungen schreiben?",
@@ -140,13 +140,13 @@ export const buerosoftware: Landing = {
     },
     {
       frage: "Brauche ich eine Bürokraft, um das zu bedienen?",
-      antwort: "Nein. Macher OS spricht Handwerkersprache und startet mit einer Frage. Viele Chefs machen ihr Büro damit selbst – auch vom Handy.",
+      antwort: "Nein. Handwerk OS spricht Handwerkersprache und startet mit einer Frage. Viele Chefs machen ihr Büro damit selbst – auch vom Handy.",
     },
   ],
   weiter: {
     links: [
       { label: "Macher erledigt automatisch", href: "/funktionen/automatisch-erledigen", text: "Büroarbeit, die von selbst passiert." },
-      { label: "Macher OS vs. Word & Excel", href: "/vergleich/word-excel", text: "Raus aus den Vorlagen." },
+      { label: "Handwerk OS vs. Word & Excel", href: "/vergleich/word-excel", text: "Raus aus den Vorlagen." },
       { label: "Schnittstellen", href: "/schnittstellen", text: "DATEV, GAEB, Datanorm und mehr." },
     ],
   },
@@ -157,14 +157,14 @@ export const cloudSoftware: Landing = {
   meta: {
     title: "Cloud-Handwerkersoftware – überall arbeiten, Server in Frankfurt",
     description:
-      "Handwerkersoftware aus der Cloud: im Browser und auf dem Handy, ohne Installation und ohne eigenen Server. Macher OS speichert deine Daten in Frankfurt.",
+      "Handwerkersoftware aus der Cloud: im Browser und auf dem Handy, ohne Installation und ohne eigenen Server. Handwerk OS speichert deine Daten in Frankfurt.",
   },
   breadcrumbs: [{ label: "Cloud-Handwerkersoftware" }],
   hero: {
     eyebrow: "Cloud-Handwerkersoftware",
     title: "Dein Betrieb. Überall dabei.",
     intro:
-      "Macher OS läuft im Browser und auf dem Handy. Kein Programm installieren, kein Server im Keller, keine Updates von Hand. Deine Daten liegen auf Servern in Frankfurt.",
+      "Handwerk OS läuft im Browser und auf dem Handy. Kein Programm installieren, kein Server im Keller, keine Updates von Hand. Deine Daten liegen auf Servern in Frankfurt.",
     bild: "start/hero",
   },
   vorteile: {
@@ -204,8 +204,8 @@ export const cloudSoftware: Landing = {
   ],
   weiter: {
     links: [
-      { label: "Macher OS vs. klassische Software", href: "/vergleich/klassische-handwerkersoftware", text: "Installiert oder Cloud?" },
-      { label: "Handwerker-App", href: "/handwerker-app", text: "Macher OS auf dem Handy." },
+      { label: "Handwerk OS vs. klassische Software", href: "/vergleich/klassische-handwerkersoftware", text: "Installiert oder Cloud?" },
+      { label: "Handwerker-App", href: "/handwerker-app", text: "Handwerk OS auf dem Handy." },
       { label: "Auftragsverarbeitung", href: "/auftragsverarbeitung", text: "Der Vertrag zum Nachlesen." },
     ],
   },
@@ -216,14 +216,14 @@ export const schnittstellen: Landing = {
   meta: {
     title: "Schnittstellen – DATEV, GAEB, Datanorm, XRechnung und mehr",
     description:
-      "Macher OS arbeitet mit DATEV, GAEB, Datanorm, XRechnung, Kontoauszügen und Kalendern. Was heute geht und was als Nächstes kommt.",
+      "Handwerk OS arbeitet mit DATEV, GAEB, Datanorm, XRechnung, Kontoauszügen und Kalendern. Was heute geht und was als Nächstes kommt.",
   },
   breadcrumbs: [{ label: "Schnittstellen" }],
   hero: {
     eyebrow: "Schnittstellen",
     title: "Passt zu Steuerberater, Großhändler und Ausschreibung.",
     intro:
-      "Macher OS spricht die Formate, die im Handwerk zählen. Hier siehst du ehrlich, was heute schon geht – und was als Nächstes kommt.",
+      "Handwerk OS spricht die Formate, die im Handwerk zählen. Hier siehst du ehrlich, was heute schon geht – und was als Nächstes kommt.",
     aktionen: { primaer: { label: "Kostenlos testen", href: cta.primary.href }, sekundaer: { label: "Schnittstelle anfragen", href: "#anfrage" } },
   },
   vorteile: {
@@ -249,7 +249,7 @@ export const schnittstellen: Landing = {
     zeilen: [
       { merkmal: "Lexware Office", links: "Export im DATEV-Format", rechts: "Rechnungen und Belege automatisch übertragen" },
       { merkmal: "Bankkonto verbinden", links: "Kontoauszug als Datei einlesen", rechts: "Umsätze kommen jeden Tag von selbst" },
-      { merkmal: "IDS Connect / OCI", links: "Bestellung in Macher OS anlegen und per E-Mail senden", rechts: "Im Shop des Großhändlers bestellen, Warenkorb kommt zurück" },
+      { merkmal: "IDS Connect / OCI", links: "Bestellung in Handwerk OS anlegen und per E-Mail senden", rechts: "Im Shop des Großhändlers bestellen, Warenkorb kommt zurück" },
       { merkmal: "UGL", links: "Bestellung per E-Mail", rechts: "Anfragen, Bestellungen und Lieferscheine als Datei" },
       { merkmal: "SHK Connect", links: "Artikel per Datanorm", rechts: "Herstellerdaten, Bilder und Ersatzteile" },
       { merkmal: "Google Kalender & Outlook", links: "Kalenderdatei herunterladen", rechts: "Termine laufend abgleichen" },
@@ -260,7 +260,7 @@ export const schnittstellen: Landing = {
   },
   anfrage: {
     titel: "Schnittstelle fehlt?",
-    intro: "Sag uns, womit Macher OS sprechen soll. Was viele Betriebe brauchen, kommt zuerst.",
+    intro: "Sag uns, womit Handwerk OS sprechen soll. Was viele Betriebe brauchen, kommt zuerst.",
     frage: "Wer fragt?",
     betreff: "Schnittstelle",
     email: PARTNER_EMAIL,
@@ -276,7 +276,7 @@ export const schnittstellen: Landing = {
       {
         id: "anbieter",
         label: "Software-Anbieter",
-        beschreibung: "Ihr wollt eure Software mit Macher OS verbinden.",
+        beschreibung: "Ihr wollt eure Software mit Handwerk OS verbinden.",
         icon: "link",
         email: PARTNER_EMAIL,
         platzhalter: "Wer seid ihr, welche Daten wollt ihr austauschen, gibt es eine Schnittstellenbeschreibung?",
@@ -294,7 +294,7 @@ export const schnittstellen: Landing = {
     },
     {
       frage: "Kostet eine Schnittstelle extra?",
-      antwort: "Die Verbindungen in Macher OS sind in jedem Plan drin. Spezielle Anbindungen nur für deinen Betrieb gibt es ab dem Plan Betrieb auf Anfrage.",
+      antwort: "Die Verbindungen in Handwerk OS sind in jedem Plan drin. Spezielle Anbindungen nur für deinen Betrieb gibt es ab dem Plan Betrieb auf Anfrage.",
     },
   ],
   weiter: {

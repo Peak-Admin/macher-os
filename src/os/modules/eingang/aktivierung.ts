@@ -4,7 +4,7 @@
  * durch einen Monteur am Auftrag · ≥ 1 Rechnung versendet.
  *
  * Reine Funktion – Beispieldaten (Spielwiese) und Papierkorb zählen nie.
- * „Anfrage bis Rechnung“: Jeder Auftrag beginnt in Macher OS als Anfrage (Phase `anfrage`); durchgelaufen ist er,
+ * „Anfrage bis Rechnung“: Jeder Auftrag beginnt in Handwerk OS als Anfrage (Phase `anfrage`); durchgelaufen ist er,
  * sobald eine Rechnung zu ihm versendet ist.
  */
 import type { Auftrag, Dokument, Mitarbeiter, Rechnung, Zeiteintrag } from '@core/objects';

@@ -1,5 +1,5 @@
 /**
- * Integrations-Anfragen: Will jemand etwas verbinden, das Macher OS noch nicht kann, wird daraus eine Anfrage.
+ * Integrations-Anfragen: Will jemand etwas verbinden, das Handwerk OS noch nicht kann, wird daraus eine Anfrage.
  * Es gibt keine „Kommt“-Phase – wir prüfen die Anfrage intern und bauen die Verbindung dann direkt
  * (Bauplan: `docs/os/INTEGRATIONEN.md`).
  *
@@ -41,7 +41,7 @@ export function anfrageMailto(titel: string, notiz?: string): string {
   const text = [
     `Hallo Macher-Team,`,
     ``,
-    `wir möchten ${titel} mit Macher OS verbinden.`,
+    `wir möchten ${titel} mit Handwerk OS verbinden.`,
     notiz?.trim() ? `\nWofür: ${notiz.trim()}` : '',
     ``,
     `Betrieb: ${b?.name ?? '–'}`,

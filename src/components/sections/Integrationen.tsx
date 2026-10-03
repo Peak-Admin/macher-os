@@ -38,7 +38,7 @@ export function IntegrationenHighlight() {
               Passt zu dem, was du schon nutzt.
             </h2>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-on-dark">
-              E-Mail, Kalender, Steuerberater, Großhändler und Ausschreibung. Macher OS verbindet sich in vier Säulen.
+              E-Mail, Kalender, Steuerberater, Großhändler und Ausschreibung. Handwerk OS verbindet sich in vier Säulen.
             </p>
             <ul className="mt-8 grid gap-3 sm:grid-cols-2">
               {saeulen.map((s) => (
@@ -58,7 +58,7 @@ export function IntegrationenHighlight() {
             </ul>
           </div>
           <div className="min-w-0 rounded-2xl bg-white p-5 text-ink sm:p-6">
-            <p className="mb-4 font-display text-xl font-bold">Womit Macher OS arbeitet</p>
+            <p className="mb-4 font-display text-xl font-bold">Womit Handwerk OS arbeitet</p>
             <LogoWand />
             <p className="mt-4 text-sm text-muted">
               {integrationenZahl} Integrationen in vier Säulen. Die Marken gehören ihren Inhabern.

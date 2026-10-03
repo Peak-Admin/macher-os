@@ -35,12 +35,12 @@ export type Webinar = {
 
 export const sprecherRollen = [
   {
-    rolle: "Macher OS Team",
+    rolle: "Handwerk OS Team",
     text: "Leute aus Beratung und Einrichtung, die jeden Tag mit Handwerksbetrieben sprechen und wissen, wo es im Alltag hakt.",
   },
   {
     rolle: "Produktteam",
-    text: "Die Leute, die Macher OS bauen. Sie zeigen Funktionen live und nehmen eure Fragen und Wünsche direkt mit.",
+    text: "Die Leute, die Handwerk OS bauen. Sie zeigen Funktionen live und nehmen eure Fragen und Wünsche direkt mit.",
   },
 ] as const;
 
@@ -51,7 +51,7 @@ export const webinare: Webinar[] = [
     kurz: "Empfangspflicht, Übergangsfristen, Formate – verständlich erklärt, mit Zeit für Fragen.",
     status: "demnaechst",
     dauer: 45,
-    sprecher: "Macher OS Team",
+    sprecher: "Handwerk OS Team",
     fuerWen: "Inhaber und Büro in Betrieben mit Geschäftskunden, Hausverwaltungen oder öffentlichen Auftraggebern.",
     nutzen: [
       "Du weißt, welche Fristen für deinen Betrieb gelten.",
@@ -62,7 +62,7 @@ export const webinare: Webinar[] = [
       { titel: "Was ist eine E-Rechnung – und was nicht?", text: "PDF, ZUGFeRD, XRechnung im Vergleich." },
       { titel: "Fristen 2025 bis 2028", text: "Empfangspflicht, 800.000-€-Grenze und Ausnahmen." },
       { titel: "Was sich im Büro ändert", text: "Eingang, Prüfung, Aufbewahrung, Versand." },
-      { titel: "Live gezeigt", text: "Eine E-Rechnung in Macher OS erstellen und empfangen." },
+      { titel: "Live gezeigt", text: "Eine E-Rechnung in Handwerk OS erstellen und empfangen." },
       { titel: "Fragen und Antworten", text: "Keine Rechts- oder Steuerberatung, aber viele Praxistipps." },
     ],
     themen: ["auftraege-geld", "digital-arbeiten"],
@@ -74,12 +74,12 @@ export const webinare: Webinar[] = [
   },
   {
     slug: "macher-os-in-30-minuten",
-    titel: "Macher OS in 30 Minuten",
+    titel: "Handwerk OS in 30 Minuten",
     kurz: "Ein kompletter Auftrag live: von der Anfrage bis zur bezahlten Rechnung.",
     status: "demnaechst",
     dauer: 30,
     sprecher: "Produktteam",
-    fuerWen: "Alle, die Macher OS kennenlernen wollen, bevor sie es selbst testen.",
+    fuerWen: "Alle, die Handwerk OS kennenlernen wollen, bevor sie es selbst testen.",
     nutzen: [
       "Du siehst den ganzen Ablauf an einem echten Beispielauftrag.",
       "Du weißt, was Büro und Monteur jeweils sehen.",
@@ -105,7 +105,7 @@ export const webinare: Webinar[] = [
     kurz: "Wie du deinen Stundensatz berechnest und Angebote kalkulierst, die sich lohnen.",
     status: "demnaechst",
     dauer: 60,
-    sprecher: "Macher OS Team",
+    sprecher: "Handwerk OS Team",
     fuerWen: "Inhaber, Meister und alle, die Angebote kalkulieren.",
     nutzen: [
       "Du rechnest deinen Stundensatz mit echten Zahlen aus.",
@@ -142,7 +142,7 @@ export const webinare: Webinar[] = [
       { titel: "Was zur Planung gehört", text: "Termin, Dauer, Qualifikation, Material, Fahrzeug." },
       { titel: "Planungsrhythmus", text: "Langfristig, wöchentlich, täglich." },
       { titel: "Notfälle und Ausfälle", text: "Puffer und schnelles Umplanen." },
-      { titel: "Live gezeigt", text: "Einsatzplanung in Macher OS." },
+      { titel: "Live gezeigt", text: "Einsatzplanung in Handwerk OS." },
     ],
     themen: ["planung", "mitarbeiter"],
     gewerke: ["elektriker", "shk"],
@@ -156,7 +156,7 @@ export const webinare: Webinar[] = [
     kurz: "Was KI heute im Büro abnimmt, wo die Grenzen liegen und worauf du beim Datenschutz achtest.",
     status: "demnaechst",
     dauer: 45,
-    sprecher: "Macher OS Team",
+    sprecher: "Handwerk OS Team",
     fuerWen: "Alle, die wissen wollen, was KI im eigenen Betrieb bringen kann – ohne Hype.",
     nutzen: [
       "Du kennst sinnvolle Einsatzbereiche für KI im Handwerk.",

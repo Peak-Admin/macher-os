@@ -3,7 +3,7 @@
  *
  * Zustellung:
  * - Backend verbunden (`cloudAktiv()`): Der Browser-Planer stellt die feinen Zeiten (6:30 · 7:00 · 16:30 · Fr 15:00)
- *   über `cloud().push` zu, solange Macher OS offen ist. Der Server-Takt (`src/app/api/takte/cron`) läuft auf Vercel Hobby
+ *   über `cloud().push` zu, solange Handwerk OS offen ist. Der Server-Takt (`src/app/api/takte/cron`) läuft auf Vercel Hobby
  *   nur einmal am Morgen; beide merken „zuletzt zugestellt“ in derselben Einstellung (`takte.zuletzt.<id>`, synchron über
  *   `objekte`), damit kein Takt doppelt kommt. Mit Vercel Pro (Cron alle 15 Minuten) deckt der Server alles ab.
  * - Ohne Backend: Takt als In-App-Benachrichtigung (Glocke) und – mit Erlaubnis – als Systemmeldung

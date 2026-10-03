@@ -187,12 +187,12 @@ export default async function WerkzeugSeite({ params }: Props) {
         </div>
       </Section>
 
-      {/* 7. Passende Macher-OS-Funktion */}
+      {/* 7. Passende Handwerk-OS-Funktion */}
       <Section tone="white">
         <SectionHeading
-          eyebrow="In Macher OS"
+          eyebrow="In Handwerk OS"
           title="Nie wieder neu rechnen."
-          intro="In Macher OS hinterlegst du deine Zahlen einmal. Danach rechnet jedes Angebot und jeder Auftrag automatisch damit."
+          intro="In Handwerk OS hinterlegst du deine Zahlen einmal. Danach rechnet jedes Angebot und jeder Auftrag automatisch damit."
         />
         <div className="mt-10 grid gap-4 md:grid-cols-3">
           {inhalt.funktionen.map((fn) => {
@@ -260,8 +260,8 @@ export default async function WerkzeugSeite({ params }: Props) {
       {/* 9. CTA */}
       <FinalCta
         title="Rechnen ist gut. Automatisch rechnen ist besser."
-        intro="Mit Macher OS fließen deine Stundensätze, Aufschläge und Kosten direkt in Angebote, Aufträge und Auswertungen."
-        primaryLabel="Macher OS kostenlos testen"
+        intro="Mit Handwerk OS fließen deine Stundensätze, Aufschläge und Kosten direkt in Angebote, Aufträge und Auswertungen."
+        primaryLabel="Handwerk OS kostenlos testen"
       />
     </>
   );

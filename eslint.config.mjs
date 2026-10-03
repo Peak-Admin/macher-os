@@ -16,7 +16,7 @@ const eslintConfig = defineConfig([
     ".claude/**",
   ]),
   {
-    // Macher OS (src/os) wurde bis zur Zusammenführung nicht mit diesen Regeln geprüft.
+    // Handwerk OS (src/os) wurde bis zur Zusammenführung nicht mit diesen Regeln geprüft.
     // Bestehende Funde erst als Warnung zeigen und schrittweise abbauen.
     files: ["src/os/**"],
     rules: {

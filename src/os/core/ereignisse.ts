@@ -81,7 +81,7 @@ export const EREIGNISSE: EreignisArt[] = [
   art('lieferschein.versendet', 'Lieferschein versendet', 'geschaeftsdokumente', 'delivery_note.sent', 'modul', 'Ein Lieferschein ging an den Kunden.'),
   art('lieferschein.unterschrieben', 'Lieferschein unterschrieben', 'geschaeftsdokumente', 'delivery_note.signed', 'modul', 'Der Kunde hat den Empfang auf dem Lieferschein bestätigt.'),
   art('portal.geoeffnet', 'Kundenbereich geöffnet', 'kunden', 'portal.opened', 'modul', 'Ein Kunde hat seinen Kundenbereich geöffnet.'),
-  art('team.eingeladen', 'Team eingeladen', 'mitarbeiter', 'team.invited', 'modul', 'Mitarbeiter wurden zu Macher OS eingeladen.'),
+  art('team.eingeladen', 'Team eingeladen', 'mitarbeiter', 'team.invited', 'modul', 'Mitarbeiter wurden zu Handwerk OS eingeladen.'),
   art('team.beigetreten', 'Mitarbeiter beigetreten', 'mitarbeiter', 'team.joined', 'modul', 'Ein Mitarbeiter hat sich angemeldet.'),
   art('import.abgeschlossen', 'Import abgeschlossen', 'importe', 'import.completed', 'modul', 'Ein Datenimport ist fertig (Excel/CSV, DATANORM, GAEB).'),
   art('import.rueckgaengig', 'Import rückgängig gemacht', 'importe', 'import.reverted', 'modul', 'Ein Datenimport wurde zurückgenommen.'),

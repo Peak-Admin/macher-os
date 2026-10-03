@@ -1,5 +1,5 @@
 /**
- * Die Zielstruktur von Macher OS – an genau einer Stelle.
+ * Die Zielstruktur von Handwerk OS – an genau einer Stelle.
  *
  *   Heute · Aufträge · Planen · Betrieb
  *

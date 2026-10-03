@@ -8,7 +8,7 @@ export const teil2 = {
     kurz: "Nach dem Einsatz liegt der Bericht schon bereit – mit Zeiten, Material, Fotos und erledigten Aufgaben.",
     enthalten: ["Baustellenbericht", "Arbeitsbericht (Regie)", "Rapport", "Prüfprotokoll"],
     meta: {
-      title: "Baustellenbericht & Arbeitsbericht per App – Macher OS",
+      title: "Baustellenbericht & Arbeitsbericht per App – Handwerk OS",
       description:
         "Baustellenbericht, Regiebericht, Rapport und Prüfprotokoll: Macher bereitet den Bericht nach dem Einsatz vor. Der Kunde unterschreibt auf dem Handy.",
     },
@@ -361,7 +361,7 @@ export const teil2 = {
       problem:
         "Die Arbeit ist fertig, der Kunde nickt – aber eine förmliche Abnahme gibt es nicht. Bei der Schlussrechnung tauchen dann plötzlich Mängel auf.",
       loesung:
-        "Mit Macher OS machst du die Abnahme in fünf Schritten am Handy. Mängel werden Aufgaben mit Frist, der Kunde unterschreibt auf dem Display, das Büro bekommt Bescheid.",
+        "Mit Handwerk OS machst du die Abnahme in fünf Schritten am Handy. Mängel werden Aufgaben mit Frist, der Kunde unterschreibt auf dem Display, das Büro bekommt Bescheid.",
     },
     visual: {
       bereich: "Aufträge",
@@ -534,7 +534,7 @@ export const teil2 = {
       problem:
         "Der Kunde schreibt dem Chef, ruft das Büro an und schickt dem Monteur ein Foto. Keiner weiß, was der andere schon geantwortet hat.",
       loesung:
-        "In Macher OS hat jeder Auftrag seinen eigenen Verlauf – mit Kunde und Team getrennt. Macher zeigt dir, wer auf Antwort wartet.",
+        "In Handwerk OS hat jeder Auftrag seinen eigenen Verlauf – mit Kunde und Team getrennt. Macher zeigt dir, wer auf Antwort wartet.",
     },
     visual: {
       bereich: "Aufträge",
@@ -666,7 +666,7 @@ export const teil2 = {
     },
     faq: [
       {
-        frage: "Verschickt Macher OS die Nachrichten selbst?",
+        frage: "Verschickt Handwerk OS die Nachrichten selbst?",
         antwort:
           "Meistens nicht. Du wählst E-Mail, SMS oder WhatsApp, dann öffnet sich die passende App mit dem fertigen Text. Die Nachricht steht gleichzeitig im Verlauf am Auftrag.",
       },
@@ -695,7 +695,7 @@ export const teil2 = {
     kurz: "Alle Schreiben mit einem Briefkopf, sauberen Nummern und Textbausteinen – und alle Pläne am Auftrag.",
     enthalten: ["Geschäftsdokumente", "Briefkopf & Textbausteine", "Nummernkreise", "Dateien & Pläne"],
     meta: {
-      title: "Dokumente, Vorlagen & Pläne am Auftrag – Macher OS",
+      title: "Dokumente, Vorlagen & Pläne am Auftrag – Handwerk OS",
       description:
         "Auftragsbestätigung, Lieferschein, Berichte und Rechnungen mit einem Briefkopf und fortlaufenden Nummern. Textbausteine füllen sich selbst, Pläne liegen am Auftrag.",
     },
@@ -704,7 +704,7 @@ export const teil2 = {
       problem:
         "Die Auftragsbestätigung kommt aus Word, der Lieferschein vom Block, der Plan steckt im Postfach vom Chef. Nummern passen nicht zusammen.",
       loesung:
-        "In Macher OS entsteht jedes Dokument am Auftrag – mit deinem Briefkopf, der richtigen Nummer und Texten, die sich selbst füllen. Pläne und Unterlagen liegen gleich daneben.",
+        "In Handwerk OS entsteht jedes Dokument am Auftrag – mit deinem Briefkopf, der richtigen Nummer und Texten, die sich selbst füllen. Pläne und Unterlagen liegen gleich daneben.",
     },
     visual: {
       bereich: "Aufträge",
@@ -837,7 +837,7 @@ export const teil2 = {
     },
     faq: [
       {
-        frage: "Welche Dokumente kann ich mit Macher OS erstellen?",
+        frage: "Welche Dokumente kann ich mit Handwerk OS erstellen?",
         antwort:
           "Angebot, Auftragsbestätigung, Lieferschein, Rapport, Arbeitsbericht, Baustellenbericht, Prüfprotokoll, Abnahme, Rechnung mit Abschlags-, Teil- und Schlussrechnung, Gutschrift, Storno, Zahlungserinnerung und Mahnung.",
       },

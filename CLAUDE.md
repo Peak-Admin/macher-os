@@ -78,7 +78,7 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
 ## Website und Software (ein Next.js-Projekt)
 
 Next.js (App Router, Turbopack) + TypeScript + Tailwind CSS v4. Alles wird statisch erzeugt.
-Website und Software laufen in **einem** Projekt auf **einer** Domain: Website unter `/`, Macher OS (die Software) unter `/os`.
+Website und Software laufen in **einem** Projekt auf **einer** Domain: Website unter `/`, Handwerk OS (die Software) unter `/os`.
 Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 
 ### Deployment – nur `macher-os`
@@ -106,7 +106,7 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - `src/app/(os)/os/` – Route `/os` mit eigenem Root-Layout; lädt die Software nur im Browser. Jede Adresse `/os/…`
   zeigt per Rewrite (`next.config.ts`) diese Seite, den Rest regelt React Router (`basename` = `BASIS` aus `src/os/core/basis.ts`).
   Links außerhalb des Routers (`window.open`, kopierte Links) immer mit `appPfad()` bauen.
-- `src/os/` – **Macher OS, die Software** (Module, Kern, UI). Regeln: `docs/os/MODULE.md`, `docs/os/PAKETE.md`.
+- `src/os/` – **Handwerk OS, die Software** (Module, Kern, UI). Regeln: `docs/os/MODULE.md`, `docs/os/PAKETE.md`.
   Eigene Stile (`src/os/ui/*.css`, `--mm-*`), keine Tailwind-Klassen. Die Modulliste `src/os/shell/module-liste.ts`
   erzeugt `scripts/os-module.mjs` automatisch (vor `dev`, `build`, `test`).
 - `/signup` und `/login` leiten in die Software (`/os/willkommen`, `/os/heute`)

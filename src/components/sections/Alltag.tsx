@@ -41,7 +41,7 @@ const momente: Moment[] = [
 ];
 
 /**
- * „Dein Alltag“: vier Momente als 3D-Karten, jede zeigt oben, wie der Moment in Macher OS aussieht (Beispieldaten) –
+ * „Dein Alltag“: vier Momente als 3D-Karten, jede zeigt oben, wie der Moment in Handwerk OS aussieht (Beispieldaten) –
  * zum Ausprobieren: Der Ausschnitt reagiert auf Klicks, der Titel führt zur Funktion.
  * `nachUeberhang`: oben Platz für das Fenster, das aus dem Hero hineinragt (`UEBERHANG` in KernBereiche).
  */
@@ -52,8 +52,8 @@ export function Alltag({ nachUeberhang = false }: { nachUeberhang?: boolean }) {
       <Container>
         <SectionHeading
           eyebrow="Dein Alltag"
-          title="So läuft's mit Macher OS."
-          intro="Vier Momente aus jedem Handwerksbetrieb – und wie sie in Macher OS aussehen."
+          title="So läuft's mit Handwerk OS."
+          intro="Vier Momente aus jedem Handwerksbetrieb – und wie sie in Handwerk OS aussehen."
         />
         <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {momente.map((m, n) => (

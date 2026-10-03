@@ -2,7 +2,7 @@ import Image from "next/image";
 import { objekte, type ObjektSchluessel } from "@/lib/objekte";
 
 /**
- * Objektbild der Macher-OS-Bildsprache („das digitale Werkzeug“, docs/design/visual-assets.md):
+ * Objektbild der Handwerk-OS-Bildsprache („das digitale Werkzeug“, docs/design/visual-assets.md):
  * ein echtes Foto eines Handwerksobjekts, ruhig gerahmt. Dekorativ (alt="") – die Bedeutung trägt immer der Text daneben.
  */
 export function Objekt({

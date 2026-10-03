@@ -29,7 +29,7 @@ export default function VorlagenHubPage() {
         breadcrumbs={[{ label: "Wissen", href: "/wissen" }, { label: "Vorlagen & Checklisten" }]}
         eyebrow="Vorlagen & Checklisten"
         title="Vorlagen, die auf der Baustelle funktionieren."
-        intro="Kostenlos ansehen, ausdrucken oder als PDF speichern. Ohne Anmeldung. Und wenn du keine Zettel mehr willst: direkt in Macher OS verwenden."
+        intro="Kostenlos ansehen, ausdrucken oder als PDF speichern. Ohne Anmeldung. Und wenn du keine Zettel mehr willst: direkt in Handwerk OS verwenden."
         actions="none"
         visual={<Objekt objekt="klemmbrett" sizes="(min-width: 1024px) 480px, 90vw" className="shadow-popover" />}
       />
@@ -42,13 +42,13 @@ export default function VorlagenHubPage() {
         </Suspense>
       </Section>
 
-      {/* 7. Direkt in Macher OS verwenden */}
+      {/* 7. Direkt in Handwerk OS verwenden */}
       <Section>
         <div className="grid items-center gap-10 rounded-lg border border-line bg-white p-6 sm:p-10 lg:grid-cols-[1.2fr_1fr]">
           <div>
             <SectionHeading
               eyebrow="Ohne Papier"
-              title="Direkt in Macher OS verwenden."
+              title="Direkt in Handwerk OS verwenden."
               intro="Alle Checklisten und Formulare gibt es auch digital: auf dem Handy ausfüllen, Fotos dranhängen, beim Kunden unterschreiben lassen – automatisch am richtigen Auftrag gespeichert."
             />
             <div className="mt-8 flex flex-wrap gap-3">

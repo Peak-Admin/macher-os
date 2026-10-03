@@ -153,7 +153,7 @@ function offeneRechnungen(k: Kontext): Antwort {
         status: r.faelligAm < k.heute ? { ton: 'gefahr', text: tage === 1 ? '1 Tag überfällig' : `${tage} Tage überfällig` } : { ton: 'aktiv', text: 'Offen' },
       };
     }),
-    grundlage: `Rechnungen und Zahlungseingänge in Macher OS · ${stand(k)}`,
+    grundlage: `Rechnungen und Zahlungseingänge in Handwerk OS · ${stand(k)}`,
     folgefragen: ['Welche Angebote sind offen?', 'Was braucht mich gerade?'],
   };
 }
@@ -178,7 +178,7 @@ function offeneAngebote(k: Kontext): Antwort {
       pfad: pfadZu({ typ: 'angebote', id: a.id }),
       status: a.gueltigBis < k.heute ? { ton: 'achtung', text: 'Abgelaufen' } : { ton: 'aktiv', text: `gültig bis ${datum(a.gueltigBis)}` },
     })),
-    grundlage: `Angebote in Macher OS · ${stand(k)}`,
+    grundlage: `Angebote in Handwerk OS · ${stand(k)}`,
     folgefragen: ['Welche Anfragen sind offen?'],
   };
 }

@@ -225,18 +225,18 @@ const wissen: { titel: string; text: string; href: string; icon: IconName; motiv
 
 const faq: FaqItem[] = [
   {
-    frage: "Wer steckt hinter Macher OS?",
-    antwort: `Macher OS ist ein Projekt von ${herausgeber.name} – von Handwerkern für Handwerker. Gebaut aus dem Alltag echter Betriebe, nicht am Schreibtisch.`,
+    frage: "Wer steckt hinter Handwerk OS?",
+    antwort: `Handwerk OS ist ein Projekt von ${herausgeber.name} – von Handwerkern für Handwerker. Gebaut aus dem Alltag echter Betriebe, nicht am Schreibtisch.`,
   },
   {
-    frage: "Für welche Gewerke ist Macher OS geeignet?",
+    frage: "Für welche Gewerke ist Handwerk OS geeignet?",
     antwort:
-      "Für fast alle Handwerksbetriebe – von Elektro, SHK, Maler und Tischler bis Dach, Bau und GaLaBau. Beim Start wählst du dein Gewerk, und Macher OS richtet Begriffe, Vorlagen und Abläufe passend ein.",
+      "Für fast alle Handwerksbetriebe – von Elektro, SHK, Maler und Tischler bis Dach, Bau und GaLaBau. Beim Start wählst du dein Gewerk, und Handwerk OS richtet Begriffe, Vorlagen und Abläufe passend ein.",
   },
   {
     frage: "Muss mein Team technisch versiert sein?",
     antwort:
-      "Nein. Jeder sieht nur das, was er für seine Arbeit braucht. Wer ein Smartphone bedienen kann, kann auch Macher OS bedienen.",
+      "Nein. Jeder sieht nur das, was er für seine Arbeit braucht. Wer ein Smartphone bedienen kann, kann auch Handwerk OS bedienen.",
   },
   {
     frage: "Gibt es eine App?",
@@ -249,9 +249,9 @@ const faq: FaqItem[] = [
       "Ja. Kunden, Mitarbeiter und Artikel kannst du einfach importieren. Bei Bedarf helfen wir dir persönlich beim Umstieg.",
   },
   {
-    frage: "Funktioniert Macher OS auch unterwegs?",
+    frage: "Funktioniert Handwerk OS auch unterwegs?",
     antwort:
-      "Ja. Macher OS läuft im Browser und als App. Wichtige Funktionen gehen auch ohne Netz und werden synchronisiert, sobald wieder Empfang da ist.",
+      "Ja. Handwerk OS läuft im Browser und als App. Wichtige Funktionen gehen auch ohne Netz und werden synchronisiert, sobald wieder Empfang da ist.",
   },
   {
     frage: "Können Mitarbeiter unterschiedliche Rechte bekommen?",
@@ -260,7 +260,7 @@ const faq: FaqItem[] = [
   },
   {
     frage: "Kann ich kostenlos starten?",
-    antwort: "Ja. Du kannst Macher OS kostenlos testen – ohne Kreditkarte und ohne Verpflichtung.",
+    antwort: "Ja. Du kannst Handwerk OS kostenlos testen – ohne Kreditkarte und ohne Verpflichtung.",
   },
   {
     frage: "Wie funktioniert die automatische Planung?",
@@ -348,7 +348,7 @@ export default function HomePage() {
                       <IconAussage icon={gewerkIcons[g.slug]} text={teaser} dunkel={art === "dunkelgruen"} />
                     ) : undefined
                   }
-                  linkText={`Macher OS für ${g.kurz}`}
+                  linkText={`Handwerk OS für ${g.kurz}`}
                   details={<p>{teaser}</p>}
                 />
               );
@@ -396,7 +396,7 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="Feierabend statt Papierkram"
             title="Kein Küchentisch-Büro mehr am Abend."
-            intro="Angebote, Stundenzettel, Rechnungen: Was früher abends liegen blieb, bereitet Macher OS tagsüber vor. Du prüfst und schickst ab."
+            intro="Angebote, Stundenzettel, Rechnungen: Was früher abends liegen blieb, bereitet Handwerk OS tagsüber vor. Du prüfst und schickst ab."
           />
           <ul className="mt-10 grid gap-4 lg:grid-cols-3">
             {feierabend.map((p) => (
@@ -424,7 +424,7 @@ export default function HomePage() {
                 Weniger organisieren. Mehr machen.
               </h2>
               <p className="mt-5 max-w-md text-lg text-white/70">
-                Macher OS übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
+                Handwerk OS übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
               </p>
               <Link
                 href="/funktionen/automatisch-erledigen"
@@ -506,7 +506,7 @@ export default function HomePage() {
                       {topGewerke.find((g) => g.slug === k.gewerk)!.kurz} · {k.mitarbeiter} Mitarbeiter · {k.ort}
                     </p>
                     <p className="mt-3">
-                      Beispielgeschichte mit Symbolbild: Sie zeigt, wie ein typischer Betrieb mit Macher OS arbeitet.
+                      Beispielgeschichte mit Symbolbild: Sie zeigt, wie ein typischer Betrieb mit Handwerk OS arbeitet.
                     </p>
                   </>
                 }
@@ -530,7 +530,7 @@ export default function HomePage() {
               <SectionHeading
                 eyebrow="Einrichtung"
                 title="Dein Betrieb ist schon vorbereitet."
-                intro="Beim Start beantwortest du eine Frage: Welcher Betrieb bist du? Den Rest richtet Macher OS für dich ein."
+                intro="Beim Start beantwortest du eine Frage: Welcher Betrieb bist du? Den Rest richtet Handwerk OS für dich ein."
               />
               <ul className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
                 {[
@@ -549,7 +549,7 @@ export default function HomePage() {
               <p className="mt-4 text-muted">Briefkopf, Kunden, Preise und Team fragt Macher erst, wenn du sie brauchst.</p>
             </div>
             <div className="min-w-0 rounded-2xl bg-ink p-6 text-white sm:p-8">
-              <p className="font-display text-xl font-bold">Macher OS richtet automatisch ein:</p>
+              <p className="font-display text-xl font-bold">Handwerk OS richtet automatisch ein:</p>
               <ul className="mt-5 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
                 {["passende Funktionen", "Begriffe", "Vorlagen", "Abläufe", "Checklisten", "Schulungen"].map((x) => (
                   <li key={x} className="flex items-center gap-2">

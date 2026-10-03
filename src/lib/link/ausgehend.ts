@@ -1,4 +1,4 @@
-/** Kennung für alle Links von Macher OS nach draußen (Website und Software). */
+/** Kennung für alle Links von Handwerk OS nach draußen (Website und Software). */
 export const UTM_QUELLE = "peak-atlas.com";
 
 const EIGENE_HOSTS = ["macher-os.de", "www.macher-os.de", "app.macher-os.de"];

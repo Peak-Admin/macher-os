@@ -72,7 +72,7 @@ function tagesprotokoll(n: number) {
 export const pruefungAutomation: Automation = {
   id: PRUEFUNG_ID,
   titel: 'Regelmäßig alles prüfen',
-  beschreibung: 'Prüft beim Start und alle 30 Minuten, solange Macher OS offen ist, alle Fristen, Wartungen und offenen Punkte.',
+  beschreibung: 'Prüft beim Start und alle 30 Minuten, solange Handwerk OS offen ist, alle Fristen, Wartungen und offenen Punkte.',
   standardAn: true,
   minuten: 10,
   start: () => {

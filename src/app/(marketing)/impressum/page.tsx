@@ -5,7 +5,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = {
   ...pageMeta({
     title: "Impressum",
-    description: "Impressum und Anbieterkennzeichnung von Macher OS.",
+    description: "Impressum und Anbieterkennzeichnung von Handwerk OS.",
     path: "/impressum",
   }),
   robots: { index: false },

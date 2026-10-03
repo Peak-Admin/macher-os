@@ -180,7 +180,7 @@ export function VerrechnungssatzRechner() {
           }
           meldung={f.gueltig ? null : "Bitte prüf die markierten Eingaben."}
           zusammenfassung={zusammenfassung}
-          betreff="Mein Stundenverrechnungssatz – berechnet mit Macher OS"
+          betreff="Mein Stundenverrechnungssatz – berechnet mit Handwerk OS"
           hinweis="Das Ergebnis ist eine Orientierung, keine Steuerberatung."
         >
           <ErgebnisZeile label="Bruttolohn" wert={euro(r?.lohn)} />

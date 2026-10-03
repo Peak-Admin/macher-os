@@ -7,7 +7,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Partner",
   description:
-    "Partner von Macher OS werden – der Software von Mission Mittelstand: für Steuerberater, Großhändler, Verbände, Berater, Hersteller und Integrationspartner, die Handwerksbetriebe begleiten.",
+    "Partner von Handwerk OS werden – der Software von Mission Mittelstand: für Steuerberater, Großhändler, Verbände, Berater, Hersteller und Integrationspartner, die Handwerksbetriebe begleiten.",
   path: "/partner",
 });
 
@@ -28,10 +28,10 @@ const vorteile = [
 ];
 
 const weitereWege = [
-  { label: "Partnerbetriebe", href: "/partnerbetriebe", text: "Handwerksbetriebe, die zeigen, wie sie mit Macher OS arbeiten." },
+  { label: "Partnerbetriebe", href: "/partnerbetriebe", text: "Handwerksbetriebe, die zeigen, wie sie mit Handwerk OS arbeiten." },
   { label: "Creator & Botschafter", href: "/botschafter", text: "Für alle, die online vom Handwerk erzählen." },
   { label: "Meisterschulen", href: "/fuer/meisterschulen", text: "Betriebsführung an echter Software unterrichten." },
-  { label: "Empfehlungsprogramm", href: "/empfehlen", text: "Macher OS im Kollegenkreis weitersagen." },
+  { label: "Empfehlungsprogramm", href: "/empfehlen", text: "Handwerk OS im Kollegenkreis weitersagen." },
 ];
 
 export default function PartnerPage() {
@@ -41,7 +41,7 @@ export default function PartnerPage() {
         bild="seite/partner"
         eyebrow="Partner"
         title="Gemeinsam fürs Handwerk."
-        intro="Ihr begleitet Handwerksbetriebe – als Steuerberater, Großhändler, Verband, Berater, Hersteller oder mit eurer eigenen Software? Dann lasst uns reden – mit Macher OS, dem Joint-Venture-Projekt von Mission Mittelstand."
+        intro="Ihr begleitet Handwerksbetriebe – als Steuerberater, Großhändler, Verband, Berater, Hersteller oder mit eurer eigenen Software? Dann lasst uns reden – mit Handwerk OS, dem Joint-Venture-Projekt von Mission Mittelstand."
         breadcrumbs={[{ label: "Partner" }]}
         actions={
           <>
@@ -49,7 +49,7 @@ export default function PartnerPage() {
               Partner werden
             </ButtonLink>
             <ButtonLink href="/ueber-uns" variant="secondary" size="lg">
-              Über Macher OS
+              Über Handwerk OS
             </ButtonLink>
           </>
         }

@@ -7,29 +7,29 @@ import type { Landing } from "./typ";
  *
  * Fair vergleichen (§ 6 UWG): Wir nennen keine Funktionen, Preise oder Schwächen anderer Anbieter, die wir nicht
  * selbst belegen können – die ändern sich laufend. Bei Wettbewerbern zeigt die linke Spalte deshalb die Frage, die du
- * dort stellen solltest; die rechte Spalte zeigt, wie es bei Macher OS heute ist. HERO und ToolTime sind Marken
+ * dort stellen solltest; die rechte Spalte zeigt, wie es bei Handwerk OS heute ist. HERO und ToolTime sind Marken
  * ihrer jeweiligen Inhaber.
  */
 
 const vergleichBreadcrumb = { label: "Software-Vergleich", href: "/vergleich" };
 
 const fairHinweis =
-  "Stand Oktober 2026. Funktionen und Preise anderer Anbieter ändern sich – frag dort direkt nach. Wir zeigen dir nur, wie es bei Macher OS heute ist.";
+  "Stand Oktober 2026. Funktionen und Preise anderer Anbieter ändern sich – frag dort direkt nach. Wir zeigen dir nur, wie es bei Handwerk OS heute ist.";
 
 export const vergleichsSeiten = {
   "word-excel": {
     pfad: "/vergleich/word-excel",
     meta: {
-      title: "Macher OS vs. Word & Excel – Handwerkersoftware statt Vorlagen",
+      title: "Handwerk OS vs. Word & Excel – Handwerkersoftware statt Vorlagen",
       description:
-        "Angebote in Word, Stundenzettel in Excel, Termine im Kopf? So hilft Macher OS: Angebot, Auftrag und Rechnung hängen zusammen – auf dem Handy und im Büro.",
+        "Angebote in Word, Stundenzettel in Excel, Termine im Kopf? So hilft Handwerk OS: Angebot, Auftrag und Rechnung hängen zusammen – auf dem Handy und im Büro.",
     },
     breadcrumbs: [vergleichBreadcrumb, { label: "Word & Excel" }],
     hero: {
-      eyebrow: "Macher OS vs. Word & Excel",
+      eyebrow: "Handwerk OS vs. Word & Excel",
       title: "Schluss mit Vorlagen-Chaos.",
       intro:
-        "Word und Excel sind gute Programme – aber keine Betriebssoftware. In Macher OS wird aus dem Angebot der Auftrag und aus dem Auftrag die Rechnung. Ohne Abtippen.",
+        "Word und Excel sind gute Programme – aber keine Betriebssoftware. In Handwerk OS wird aus dem Angebot der Auftrag und aus dem Auftrag die Rechnung. Ohne Abtippen.",
       bild: "alltag/buero",
     },
     schmerz: {
@@ -41,11 +41,11 @@ export const vergleichsSeiten = {
         "„angebot_final_neu2.docx“ – welche Version ging an den Kunden?",
         "Offene Rechnungen merkst du erst, wenn du die Liste durchgehst",
       ],
-      antwort: "In Macher OS hängt alles am Auftrag. Einmal eingeben, überall richtig.",
+      antwort: "In Handwerk OS hängt alles am Auftrag. Einmal eingeben, überall richtig.",
     },
     vergleich: {
       titel: "Was sich im Alltag ändert.",
-      spalten: ["Word & Excel", "Macher OS"],
+      spalten: ["Word & Excel", "Handwerk OS"],
       zeilen: [
         { merkmal: "Vom Angebot zur Rechnung", links: "neue Datei, Positionen kopieren", rechts: "ein Klick – die Positionen kommen mit" },
         { merkmal: "Rechnungsnummern", links: "von Hand zählen", rechts: "fortlaufend und automatisch" },
@@ -62,7 +62,7 @@ export const vergleichsSeiten = {
       eyebrow: "Umstieg",
       titel: "Raus aus den Vorlagen – in einem Nachmittag.",
       schritte: [
-        { titel: "Gewerk wählen", text: "Macher OS richtet sich mit Vorlagen für dein Gewerk ein." },
+        { titel: "Gewerk wählen", text: "Handwerk OS richtet sich mit Vorlagen für dein Gewerk ein." },
         { titel: "Kundenliste hochladen", text: "Excel oder CSV hochladen, Spalten zuordnen, fertig." },
         { titel: "Erstes Angebot schreiben", text: "Mit deinem Logo und deinen Zahlungsbedingungen." },
         { titel: "Rechnung mit einem Klick", text: "Wenn der Auftrag fertig ist, wird aus dem Angebot die Rechnung." },
@@ -78,7 +78,7 @@ export const vergleichsSeiten = {
       {
         frage: "Was passiert mit meinen alten Excel-Listen?",
         antwort:
-          "Kunden, Artikel und Mitarbeiter übernimmst du als Excel- oder CSV-Datei. Macher OS schlägt vor, welche Spalte wohin gehört.",
+          "Kunden, Artikel und Mitarbeiter übernimmst du als Excel- oder CSV-Datei. Handwerk OS schlägt vor, welche Spalte wohin gehört.",
       },
       {
         frage: "Brauche ich dann noch Word und Excel?",
@@ -87,7 +87,7 @@ export const vergleichsSeiten = {
       },
       {
         frage: "Ist das nicht viel teurer als Word und Excel?",
-        antwort: `Macher OS kostet einen festen Monatspreis je Betrieb. Du testest ${testTage} Tage kostenlos und siehst selbst, wie viel Zeit du sparst.`,
+        antwort: `Handwerk OS kostet einen festen Monatspreis je Betrieb. Du testest ${testTage} Tage kostenlos und siehst selbst, wie viel Zeit du sparst.`,
       },
     ],
     weiter: {
@@ -103,31 +103,31 @@ export const vergleichsSeiten = {
   hero: {
     pfad: "/vergleich/hero",
     meta: {
-      title: "Macher OS vs. HERO – fairer Vergleich für Handwerksbetriebe",
+      title: "Handwerk OS vs. HERO – fairer Vergleich für Handwerksbetriebe",
       description:
-        "Du überlegst zwischen HERO und Macher OS? Die Fragen, die du jedem Anbieter stellen solltest – und wie Macher OS sie heute beantwortet.",
+        "Du überlegst zwischen HERO und Handwerk OS? Die Fragen, die du jedem Anbieter stellen solltest – und wie Handwerk OS sie heute beantwortet.",
     },
     breadcrumbs: [vergleichBreadcrumb, { label: "HERO" }],
     hero: {
-      eyebrow: "Macher OS vs. HERO",
+      eyebrow: "Handwerk OS vs. HERO",
       title: "Welche Software passt zu deinem Betrieb?",
       intro:
-        "HERO ist eine bekannte Handwerkersoftware. Wir machen dir die Entscheidung leichter: mit den Fragen, die wirklich zählen – und ehrlichen Antworten für Macher OS.",
+        "HERO ist eine bekannte Handwerkersoftware. Wir machen dir die Entscheidung leichter: mit den Fragen, die wirklich zählen – und ehrlichen Antworten für Handwerk OS.",
       bild: "alltag/planung",
     },
     vorteile: {
-      eyebrow: "Wofür Macher OS steht",
+      eyebrow: "Wofür Handwerk OS steht",
       titel: "Einfach vorne. Vollständig hinten.",
       karten: [
         { titel: "Ein Preis, alles drin", text: "Ein fester Monatspreis je Betrieb nach Teamgröße. Keine Zusatzmodule zum Freischalten.", icon: "euro" },
-        { titel: "Eine Frage zum Start", text: "Du wählst dein Gewerk, Macher OS richtet den Rest mit Vorlagen ein.", icon: "spark" },
+        { titel: "Eine Frage zum Start", text: "Du wählst dein Gewerk, Handwerk OS richtet den Rest mit Vorlagen ein.", icon: "spark" },
         { titel: "Macher erledigt", text: "Erinnerungen, Mahnungen und Vorschläge kommen von selbst – du bestätigst nur.", icon: "bolt" },
       ],
     },
     vergleich: {
       titel: "Die Fragen, die du stellen solltest.",
       intro: "Leg diese Liste neben jedes Angebot. Was HERO heute genau kann und kostet, erfährst du direkt bei HERO.",
-      spalten: ["Frag bei HERO nach", "So ist es bei Macher OS"],
+      spalten: ["Frag bei HERO nach", "So ist es bei Handwerk OS"],
       zeilen: [
         { merkmal: "Was kostet es wirklich?", links: "Welche Funktionen sind im Grundpreis, welche kosten extra?", rechts: "Ein Preis nach Teamgröße, alle Funktionen drin" },
         { merkmal: "Wie lange bin ich gebunden?", links: "Mindestlaufzeit und Kündigungsfrist?", rechts: "monatlich kündbar" },
@@ -151,16 +151,16 @@ export const vergleichsSeiten = {
         "Auf dem Handy Fotos und Zeiten erfassen",
         "Rechnung schreiben – wie viele Klicks waren es?",
       ],
-      link: { label: "Macher OS kostenlos testen", href: cta.primary.href },
+      link: { label: "Handwerk OS kostenlos testen", href: cta.primary.href },
     },
     faq: [
       {
-        frage: "Ist Macher OS besser als HERO?",
+        frage: "Ist Handwerk OS besser als HERO?",
         antwort:
-          "Das hängt von deinem Betrieb ab. Macher OS ist für Betriebe gemacht, die eine einfache Software ohne Zusatzmodule wollen, die auch ihre Leute auf der Baustelle nutzen. Teste beides mit einem echten Auftrag.",
+          "Das hängt von deinem Betrieb ab. Handwerk OS ist für Betriebe gemacht, die eine einfache Software ohne Zusatzmodule wollen, die auch ihre Leute auf der Baustelle nutzen. Teste beides mit einem echten Auftrag.",
       },
       {
-        frage: "Kann ich von HERO zu Macher OS wechseln?",
+        frage: "Kann ich von HERO zu Handwerk OS wechseln?",
         antwort:
           "Ja. Kunden, Artikel und Mitarbeiter übernimmst du als Excel- oder CSV-Export. Wie du die Daten aus HERO exportierst, erfährst du bei HERO. Im Zweifel schauen wir uns eine Beispieldatei an.",
       },
@@ -172,8 +172,8 @@ export const vergleichsSeiten = {
     ],
     weiter: {
       links: [
-        { label: "Wechseln zu Macher OS", href: "/wechseln", text: "So kommst du aus deinem alten System raus." },
-        { label: "Macher OS vs. ToolTime", href: "/vergleich/tooltime", text: "Dieselben Fragen für ToolTime." },
+        { label: "Wechseln zu Handwerk OS", href: "/wechseln", text: "So kommst du aus deinem alten System raus." },
+        { label: "Handwerk OS vs. ToolTime", href: "/vergleich/tooltime", text: "Dieselben Fragen für ToolTime." },
         { label: "Preise", href: "/preise", text: "Ein Preis je Betrieb, alles drin." },
       ],
     },
@@ -183,20 +183,20 @@ export const vergleichsSeiten = {
   tooltime: {
     pfad: "/vergleich/tooltime",
     meta: {
-      title: "Macher OS vs. ToolTime – fairer Vergleich für Handwerksbetriebe",
+      title: "Handwerk OS vs. ToolTime – fairer Vergleich für Handwerksbetriebe",
       description:
-        "Du überlegst zwischen ToolTime und Macher OS? Die Fragen, die du jedem Anbieter stellen solltest – und wie Macher OS sie heute beantwortet.",
+        "Du überlegst zwischen ToolTime und Handwerk OS? Die Fragen, die du jedem Anbieter stellen solltest – und wie Handwerk OS sie heute beantwortet.",
     },
     breadcrumbs: [vergleichBreadcrumb, { label: "ToolTime" }],
     hero: {
-      eyebrow: "Macher OS vs. ToolTime",
+      eyebrow: "Handwerk OS vs. ToolTime",
       title: "Zwei Programme. Eine Entscheidung.",
       intro:
-        "ToolTime ist im Handwerk verbreitet. Damit du gut entscheidest: die Fragen, auf die es ankommt – und was Macher OS darauf heute antwortet.",
+        "ToolTime ist im Handwerk verbreitet. Damit du gut entscheidest: die Fragen, auf die es ankommt – und was Handwerk OS darauf heute antwortet.",
       bild: "alltag/baustelle",
     },
     vorteile: {
-      eyebrow: "Wofür Macher OS steht",
+      eyebrow: "Wofür Handwerk OS steht",
       titel: "Gebaut für Baustelle und Büro.",
       karten: [
         { titel: "App für die Baustelle", text: "Große Knöpfe, wenig Text. Jeder sieht nur seinen nächsten Einsatz.", icon: "smartphone" },
@@ -207,7 +207,7 @@ export const vergleichsSeiten = {
     vergleich: {
       titel: "Die Fragen, die du stellen solltest.",
       intro: "Was ToolTime heute genau kann und kostet, erfährst du direkt bei ToolTime.",
-      spalten: ["Frag bei ToolTime nach", "So ist es bei Macher OS"],
+      spalten: ["Frag bei ToolTime nach", "So ist es bei Handwerk OS"],
       zeilen: [
         { merkmal: "Was kostet es für mein Team?", links: "Preis je Nutzer oder je Betrieb? Was kommt dazu?", rechts: "ein Preis nach Teamgröße, alle Funktionen drin" },
         { merkmal: "Wie lange bin ich gebunden?", links: "Mindestlaufzeit und Kündigungsfrist?", rechts: "monatlich kündbar" },
@@ -230,11 +230,11 @@ export const vergleichsSeiten = {
         "Klappt die Unterschrift vom Kunden auf dem Handy?",
         "Geht das auch im Keller ohne Netz?",
       ],
-      link: { label: "Macher OS kostenlos testen", href: cta.primary.href },
+      link: { label: "Handwerk OS kostenlos testen", href: cta.primary.href },
     },
     faq: [
       {
-        frage: "Ist Macher OS eine Alternative zu ToolTime?",
+        frage: "Ist Handwerk OS eine Alternative zu ToolTime?",
         antwort:
           "Ja – beide sind Software für Handwerksbetriebe. Welche besser passt, hängt von deinem Betrieb ab. Teste beide mit einem echten Auftrag.",
       },
@@ -250,8 +250,8 @@ export const vergleichsSeiten = {
     ],
     weiter: {
       links: [
-        { label: "Wechseln zu Macher OS", href: "/wechseln", text: "So kommst du aus deinem alten System raus." },
-        { label: "Macher OS vs. HERO", href: "/vergleich/hero", text: "Dieselben Fragen für HERO." },
+        { label: "Wechseln zu Handwerk OS", href: "/wechseln", text: "So kommst du aus deinem alten System raus." },
+        { label: "Handwerk OS vs. HERO", href: "/vergleich/hero", text: "Dieselben Fragen für HERO." },
         { label: "Handwerker-App", href: "/handwerker-app", text: "Die App für deine Leute auf der Baustelle." },
       ],
     },
@@ -261,16 +261,16 @@ export const vergleichsSeiten = {
   "klassische-handwerkersoftware": {
     pfad: "/vergleich/klassische-handwerkersoftware",
     meta: {
-      title: "Macher OS vs. klassische Handwerkersoftware",
+      title: "Handwerk OS vs. klassische Handwerkersoftware",
       description:
-        "Installiert, Server im Keller, Schulung nötig, Module extra? Macher OS läuft im Browser und auf dem Handy, startet mit einer Frage und hat alles drin.",
+        "Installiert, Server im Keller, Schulung nötig, Module extra? Handwerk OS läuft im Browser und auf dem Handy, startet mit einer Frage und hat alles drin.",
     },
     breadcrumbs: [vergleichBreadcrumb, { label: "Klassische Handwerkersoftware" }],
     hero: {
-      eyebrow: "Macher OS vs. klassische Handwerkersoftware",
+      eyebrow: "Handwerk OS vs. klassische Handwerkersoftware",
       title: "Modern statt Masken-Marathon.",
       intro:
-        "Viele Handwerksprogramme stammen aus einer Zeit vor dem Smartphone. Macher OS ist für heute gebaut: im Browser, auf dem Handy, in Handwerkersprache.",
+        "Viele Handwerksprogramme stammen aus einer Zeit vor dem Smartphone. Handwerk OS ist für heute gebaut: im Browser, auf dem Handy, in Handwerkersprache.",
       bild: "alltag/werkstatt",
     },
     schmerz: {
@@ -282,12 +282,12 @@ export const vergleichsSeiten = {
         "Jede Erweiterung ist ein eigenes Modul mit eigenem Preis",
         "Für die Monteure gibt es keine oder eine extra App",
       ],
-      antwort: "Macher OS läuft im Browser und auf dem Handy, startet mit einer Frage und hat alle Funktionen drin.",
+      antwort: "Handwerk OS läuft im Browser und auf dem Handy, startet mit einer Frage und hat alle Funktionen drin.",
     },
     vergleich: {
       titel: "Was anders ist.",
       intro: "Nicht jede klassische Software hat alle diese Punkte. Prüf deine – die Liste hilft dabei.",
-      spalten: ["Oft bei klassischer Software", "Macher OS"],
+      spalten: ["Oft bei klassischer Software", "Handwerk OS"],
       zeilen: [
         { merkmal: "Installation", links: "Programm auf dem Bürorechner, oft eigener Server", rechts: "nichts installieren – Browser und Handy" },
         { merkmal: "Updates", links: "von Hand, manchmal kostenpflichtig", rechts: "automatisch, alle Updates inklusive" },
@@ -311,7 +311,7 @@ export const vergleichsSeiten = {
     },
     faq: [
       {
-        frage: "Kann Macher OS so viel wie meine alte Software?",
+        frage: "Kann Handwerk OS so viel wie meine alte Software?",
         antwort:
           "Für die meisten Betriebe ja: von Anfrage und Kalkulation über Einsatzplanung bis Rechnung, Mahnung und DATEV-Export. Probier es mit einem echten Auftrag aus – am besten parallel zur alten Software.",
       },
@@ -330,7 +330,7 @@ export const vergleichsSeiten = {
       links: [
         { label: "Cloud-Handwerkersoftware", href: "/cloud-handwerkersoftware", text: "Was die Cloud für deinen Betrieb bedeutet." },
         { label: "Schnittstellen", href: "/schnittstellen", text: "DATEV, GAEB, Datanorm und mehr." },
-        { label: "Wechseln zu Macher OS", href: "/wechseln", text: "Schritt für Schritt umsteigen." },
+        { label: "Wechseln zu Handwerk OS", href: "/wechseln", text: "Schritt für Schritt umsteigen." },
       ],
     },
     cta: { title: "Software, die mitkommt.", intro: "Starte kostenlos – im Browser, auf dem Handy, ohne Installation." },
@@ -344,7 +344,7 @@ export const vergleichUebersicht: Landing = {
   meta: {
     title: "Handwerkersoftware im Vergleich",
     description:
-      "Handwerkersoftware vergleichen: Macher OS vs. Word & Excel, HERO, ToolTime und klassische Handwerkersoftware. Mit Frageliste für deine Entscheidung.",
+      "Handwerkersoftware vergleichen: Handwerk OS vs. Word & Excel, HERO, ToolTime und klassische Handwerkersoftware. Mit Frageliste für deine Entscheidung.",
   },
   breadcrumbs: [{ label: "Software-Vergleich" }],
   hero: {
@@ -362,7 +362,7 @@ export const vergleichUebersicht: Landing = {
       { titel: "HERO", text: "Die Fragen, die du stellen solltest – und unsere Antworten.", href: "/vergleich/hero", icon: "search" },
       { titel: "ToolTime", text: "Worauf es ankommt, wenn du dich entscheidest.", href: "/vergleich/tooltime", icon: "search" },
       { titel: "Klassische Handwerkersoftware", text: "Installiert, Module, Schulung – und was heute anders geht.", href: "/vergleich/klassische-handwerkersoftware", icon: "monitor" },
-      { titel: "Wechseln zu Macher OS", text: "So kommst du aus deinem alten System raus.", href: "/wechseln", icon: "route" },
+      { titel: "Wechseln zu Handwerk OS", text: "So kommst du aus deinem alten System raus.", href: "/wechseln", icon: "route" },
       { titel: "Wechselbonus", text: "Du hast noch einen laufenden Vertrag? Sprich uns an.", href: "/wechselbonus", icon: "award" },
     ],
   },
@@ -379,7 +379,7 @@ export const vergleichUebersicht: Landing = {
       "Komme ich mit DATEV, GAEB und meinem Großhändler klar?",
       "Kann ich alle Daten jederzeit kostenlos exportieren?",
     ],
-    link: { label: "Macher OS kostenlos testen", href: cta.primary.href },
+    link: { label: "Handwerk OS kostenlos testen", href: cta.primary.href },
   },
   faq: [
     {
@@ -401,7 +401,7 @@ export const vergleichUebersicht: Landing = {
   weiter: {
     links: [
       { label: "Preise", href: "/preise", text: "Ein Preis je Betrieb, alles drin." },
-      { label: "Demo ansehen", href: cta.secondary.href, text: "Macher OS mit Beispieldaten ausprobieren." },
+      { label: "Demo ansehen", href: cta.secondary.href, text: "Handwerk OS mit Beispieldaten ausprobieren." },
       { label: "Schnittstellen", href: "/schnittstellen", text: "DATEV, GAEB, Datanorm und mehr." },
     ],
   },

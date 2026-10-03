@@ -1,7 +1,7 @@
 /**
- * Integrationen von Macher OS – die vier Säulen und alle geplanten Verbindungen mit Priorität.
+ * Integrationen von Handwerk OS – die vier Säulen und alle geplanten Verbindungen mit Priorität.
  *
- * Bauplan und Reihenfolge: `docs/os/INTEGRATIONEN.md`. Alle Integrationen gehören zum Angebot von Macher OS – es gibt
+ * Bauplan und Reihenfolge: `docs/os/INTEGRATIONEN.md`. Alle Integrationen gehören zum Angebot von Handwerk OS – es gibt
  * keine „Kommt“-Phase: Wir prüfen eine Integration intern und bauen sie dann direkt. Der Score (0–100) ist unsere interne
  * Reihenfolge und wird nicht angezeigt.
  */
@@ -26,7 +26,7 @@ export const saeulen: Saeule[] = [
     id: "connect",
     name: "Macher Connect",
     kurz: "Deine Programme verbinden",
-    text: "E-Mail, Kalender, Ablage, Buchhaltung und Zahlungen. Du meldest dich beim Anbieter an – Macher OS sieht dein Passwort nie.",
+    text: "E-Mail, Kalender, Ablage, Buchhaltung und Zahlungen. Du meldest dich beim Anbieter an – Handwerk OS sieht dein Passwort nie.",
     icon: "link",
     fundament: "Über unseren Integrationspartner Pipedream Connect (Anmeldung per OAuth beim Anbieter).",
   },
@@ -36,15 +36,15 @@ export const saeulen: Saeule[] = [
     kurz: "Jedes Format im Handwerk",
     text: "DATEV, E-Rechnung, GAEB, DATANORM, Kontoauszug, Excel und mehr. Rein, raus, ohne Abtippen.",
     icon: "dokument",
-    fundament: "Eingebaut in Macher OS. Jede Datei wird geprüft, bevor etwas übernommen wird.",
+    fundament: "Eingebaut in Handwerk OS. Jede Datei wird geprüft, bevor etwas übernommen wird.",
   },
   {
     id: "universal",
     name: "Macher Universal Connectors",
     kurz: "Für alles andere",
-    text: "Weiterleitungs-Postfach, IMAP, Webhooks, REST-Schnittstelle und SFTP. Damit spricht Macher OS auch mit Programmen ohne fertige Verbindung.",
+    text: "Weiterleitungs-Postfach, IMAP, Webhooks, REST-Schnittstelle und SFTP. Damit spricht Handwerk OS auch mit Programmen ohne fertige Verbindung.",
     icon: "stecker",
-    fundament: "Eingebaut in Macher OS, mit denselben Rechten wie in der Software.",
+    fundament: "Eingebaut in Handwerk OS, mit denselben Rechten wie in der Software.",
   },
   {
     id: "handwerk",

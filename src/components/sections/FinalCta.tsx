@@ -12,7 +12,7 @@ import { TrustRow } from "./TrustRow";
 export function FinalCta({
   eyebrow = "Jetzt starten",
   title = "Weniger Büro. Mehr Handwerk.",
-  intro = "Starte kostenlos und richte Macher OS in wenigen Minuten für deinen Betrieb ein.",
+  intro = "Starte kostenlos und richte Handwerk OS in wenigen Minuten für deinen Betrieb ein.",
   primaryLabel = cta.primary.label,
   primaryHref = cta.primary.href,
   secondary = true,

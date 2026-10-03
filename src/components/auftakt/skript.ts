@@ -1,7 +1,7 @@
 /** Schlüssel in `localStorage`: Der Markenauftakt läuft einmal pro Gerät (Website und Software gemeinsam) – nicht bei jeder Sitzung. */
 export const AUFTAKT_SCHLUESSEL = "mm-auftakt";
 
-/** Ereignis, mit dem Macher OS meldet, dass die Software bereit ist (oder nicht starten kann). */
+/** Ereignis, mit dem Handwerk OS meldet, dass die Software bereit ist (oder nicht starten kann). */
 export const OS_BEREIT_EREIGNIS = "macher-os:bereit";
 
 /**

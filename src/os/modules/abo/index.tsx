@@ -51,7 +51,7 @@ function hinweise(): HinweisVorschlag[] {
         ...basis,
         schluessel: `abo-zahlung:${z.offenSeit}:${stufe}`,
         art: stufe === 3 ? 'problem' : 'entscheidung',
-        titel: stufe === 1 ? 'Die Abbuchung für Macher OS hat nicht geklappt' : stufe === 2 ? 'Erinnerung: Abbuchung für Macher OS noch offen' : 'Letzte Erinnerung: Abbuchung noch offen',
+        titel: stufe === 1 ? 'Die Abbuchung für Handwerk OS hat nicht geklappt' : stufe === 2 ? 'Erinnerung: Abbuchung für Handwerk OS noch offen' : 'Letzte Erinnerung: Abbuchung noch offen',
         text: `Prüf bitte deine Zahlungsart. Alles läuft normal weiter bis einschließlich ${datum(z.kulanzBis)}${stufe === 3 ? ', danach nur noch lesen' : ''}.`,
         gewicht: stufe === 3 ? 80 : stufe === 2 ? 60 : 45,
         aktionen: [{ aktion: 'abo.oeffnen', label: 'Zahlungsart prüfen', primaer: true }],
@@ -100,7 +100,7 @@ export default defineModul({
   hinweise,
   aktionen: { 'abo.oeffnen': () => PFAD },
   suche: (q) =>
-    /plan|abo|bezahl|kündig|kuendig|testphase|zahlungsart|lastschrift|sepa|preis|macher os rechnung|lesemodus|nur lesen/i.test(q)
+    /plan|abo|bezahl|kündig|kuendig|testphase|zahlungsart|lastschrift|sepa|preis|macher os rechnung|handwerk os rechnung|lesemodus|nur lesen/i.test(q)
       ? [{ typ: 'Einstellung', titel: 'Dein Plan', untertitel: 'Plan, Testphase, Zahlungsart, Rechnungen, kündigen', pfad: PFAD, relevanz: 26 }]
       : [],
 });

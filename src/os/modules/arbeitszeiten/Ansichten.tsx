@@ -125,7 +125,7 @@ export function StundenkontoSeite() {
         )
       )}
       <Meldung>
-        Das Konto beginnt mit der ersten erfassten Zeit in Macher OS und läuft über den Jahreswechsel weiter. Stunden aus dem alten System trägt das Büro als Übertrag ein (Stundenkonto
+        Das Konto beginnt mit der ersten erfassten Zeit in Handwerk OS und läuft über den Jahreswechsel weiter. Stunden aus dem alten System trägt das Büro als Übertrag ein (Stundenkonto
         korrigieren).
       </Meldung>
       <Meta>Fehlende Pausen nach Arbeitszeitgesetz (über 6 Stunden 30 Minuten, über 9 Stunden 45 Minuten) zieht Macher automatisch ab. Feiertage deines Bundeslands laut Plan-Einstellung haben kein Soll.</Meta>

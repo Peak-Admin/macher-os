@@ -28,7 +28,7 @@ export function GewerkTagMock({
   return (
     <div
       role="img"
-      aria-label={`Tagesansicht in Macher OS für ${label}: heutige Einsätze${hinweis ? " und ein Hinweis von Macher" : ""}`}
+      aria-label={`Tagesansicht in Handwerk OS für ${label}: heutige Einsätze${hinweis ? " und ein Hinweis von Macher" : ""}`}
       className="vorschau-fenster overflow-hidden border border-line bg-app-canvas p-3 text-ink sm:p-4"
     >
       <div className="mb-3 flex items-center justify-between gap-3">
@@ -91,7 +91,7 @@ export function GewerkPhoneMock({
   return (
     <HandyRahmen
       role="img"
-      aria-label={`Macher OS App auf dem Handy: nächster Einsatz „${einsatz.titel}“ mit Navigation, Fotos und Unterschrift`}
+      aria-label={`Handwerk OS App auf dem Handy: nächster Einsatz „${einsatz.titel}“ mit Navigation, Fotos und Unterschrift`}
       zeit={einsatz.zeit}
       kopf={`Nächster Einsatz · ${einsatz.zeit}`}
     >
@@ -127,7 +127,7 @@ export function GewerkPhoneMock({
   );
 }
 
-/** Stilisierte Einrichtung: Gewerk wählen, Macher OS richtet ein. Rein dekorativ. */
+/** Stilisierte Einrichtung: Gewerk wählen, Handwerk OS richtet ein. Rein dekorativ. */
 export function EinrichtungMock() {
   const gewerke = ["Elektro", "SHK", "Maler", "Fliesen", "Tischler", "Dach", "Bau", "GaLaBau"];
   const eingerichtet = [
@@ -139,7 +139,7 @@ export function EinrichtungMock() {
   return (
     <div
       role="img"
-      aria-label="Einrichtung in Macher OS: Gewerk SHK gewählt, Begriffe, Vorlagen, Checklisten und Qualifikationen werden passend eingerichtet"
+      aria-label="Einrichtung in Handwerk OS: Gewerk SHK gewählt, Begriffe, Vorlagen, Checklisten und Qualifikationen werden passend eingerichtet"
       className="vorschau-fenster overflow-hidden border border-line bg-app-canvas p-3 text-ink sm:p-4"
     >
       <div className="app-lift space-y-4 rounded-xl border border-app-linie bg-white p-4 sm:p-5">

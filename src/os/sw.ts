@@ -1,5 +1,5 @@
 /**
- * Service Worker von Macher OS (Monteur-App = installierbare PWA), Scope `/os/`.
+ * Service Worker von Handwerk OS (Monteur-App = installierbare PWA), Scope `/os/`.
  *
  * - App-Shell offline: Seitenaufrufe unter `/os/…` zuerst aus dem Netz, ohne Netz die zuletzt geladene App-Seite
  *   (SPA-Rückfall – den Rest regelt der Router der App).
@@ -151,7 +151,7 @@ async function seite(anfrage: Request): Promise<Response> {
   } catch {
     const shell = await c.match(SHELL);
     if (shell) return shell;
-    return new Response('<!doctype html><meta charset="utf-8"><title>Macher OS</title><p style="font-family:sans-serif;padding:24px">Kein Netz. Öffne Macher OS einmal mit Netz, danach geht es auch offline.</p>', {
+    return new Response('<!doctype html><meta charset="utf-8"><title>Handwerk OS</title><p style="font-family:sans-serif;padding:24px">Kein Netz. Öffne Handwerk OS einmal mit Netz, danach geht es auch offline.</p>', {
       status: 503,
       headers: { 'content-type': 'text/html; charset=utf-8' },
     });
@@ -233,7 +233,7 @@ function inhaltLesen(e: PushEreignis): PushInhalt {
 sw.addEventListener('push', (e) => {
   const inhalt = inhaltLesen(e);
   e.waitUntil(
-    sw.registration.showNotification(inhalt.titel || 'Macher OS', {
+    sw.registration.showNotification(inhalt.titel || 'Handwerk OS', {
       body: inhalt.text,
       icon: '/os/icons/icon-192.png',
       badge: '/os/icons/icon-192.png',

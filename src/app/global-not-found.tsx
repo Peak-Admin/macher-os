@@ -7,7 +7,7 @@ import "./globals.css";
 
 /** 404 für Adressen, die zu keiner Route passen – nötig, weil Website und Software eigene Root-Layouts haben. */
 export const metadata: Metadata = {
-  title: "Seite nicht gefunden | Macher OS",
+  title: "Seite nicht gefunden | Handwerk OS",
   robots: { index: false },
 };
 

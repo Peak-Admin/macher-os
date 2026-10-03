@@ -6,9 +6,9 @@ import { gewerkCluster, kunden, topGewerke, type FunktionSlug, type KundeSlug } 
 import { pageMeta } from "@/lib/metadata";
 
 export const metadata = pageMeta({
-  title: "Kunden – So arbeiten Handwerksbetriebe mit Macher OS",
+  title: "Kunden – So arbeiten Handwerksbetriebe mit Handwerk OS",
   description:
-    "Beispielgeschichten aus Elektro, SHK, Maler, Tischler, Dach und GaLaBau: So organisieren Handwerksbetriebe Aufträge, Planung und Büroarbeit mit Macher OS.",
+    "Beispielgeschichten aus Elektro, SHK, Maler, Tischler, Dach und GaLaBau: So organisieren Handwerksbetriebe Aufträge, Planung und Büroarbeit mit Handwerk OS.",
   path: "/kunden",
 });
 
@@ -34,17 +34,17 @@ const faq: FaqItem[] = [
   {
     frage: "Sind das echte Kunden?",
     antwort:
-      "Noch nicht. Die Geschichten auf dieser Seite sind Beispiele. Sie zeigen, wie ein typischer Betrieb mit Macher OS arbeitet. Echte Kundenstories veröffentlichen wir, sobald Betriebe sie freigegeben haben.",
+      "Noch nicht. Die Geschichten auf dieser Seite sind Beispiele. Sie zeigen, wie ein typischer Betrieb mit Handwerk OS arbeitet. Echte Kundenstories veröffentlichen wir, sobald Betriebe sie freigegeben haben.",
   },
   {
-    frage: "Passt Macher OS auch zu meinem Gewerk?",
+    frage: "Passt Handwerk OS auch zu meinem Gewerk?",
     antwort:
-      "Macher OS ist für fast alle Handwerksbetriebe gemacht. Beim Start wählst du dein Gewerk und deine Leistungen – danach sind Begriffe, Vorlagen und Abläufe passend eingerichtet.",
+      "Handwerk OS ist für fast alle Handwerksbetriebe gemacht. Beim Start wählst du dein Gewerk und deine Leistungen – danach sind Begriffe, Vorlagen und Abläufe passend eingerichtet.",
   },
   {
     frage: "Kann ich meine eigene Geschichte erzählen?",
     antwort:
-      "Gern. Wenn du Macher OS nutzt und erzählen möchtest, wie dein Betrieb damit arbeitet, schreib uns über die Kontaktseite.",
+      "Gern. Wenn du Handwerk OS nutzt und erzählen möchtest, wie dein Betrieb damit arbeitet, schreib uns über die Kontaktseite.",
   },
 ];
 
@@ -65,8 +65,8 @@ export default function KundenPage() {
         bild="seite/kunden"
         breadcrumbs={[{ label: "Kunden" }]}
         eyebrow="Kunden"
-        title="So arbeiten andere Handwerksbetriebe mit Macher OS."
-        intro="Wie kommen Anfragen rein? Wer plant die Woche? Wann geht die Rechnung raus? Diese Geschichten zeigen typische Betriebe und wie sie ihren Alltag mit Macher OS organisieren."
+        title="So arbeiten andere Handwerksbetriebe mit Handwerk OS."
+        intro="Wie kommen Anfragen rein? Wer plant die Woche? Wann geht die Rechnung raus? Diese Geschichten zeigen typische Betriebe und wie sie ihren Alltag mit Handwerk OS organisieren."
       />
 
       {/* Social Proof ohne erfundene Zahlen */}
@@ -94,7 +94,7 @@ export default function KundenPage() {
         <p className="mt-6 flex max-w-3xl items-start gap-2.5 rounded-xl bg-sand px-4 py-3 text-sm text-ink-soft">
           <Icon name="bell" className="mt-0.5 size-4 shrink-0 text-signal-dark" />
           <span>
-            <b>Hinweis:</b> Alle Geschichten sind Beispiele und zeigen, wie ein typischer Betrieb mit Macher OS arbeitet.
+            <b>Hinweis:</b> Alle Geschichten sind Beispiele und zeigen, wie ein typischer Betrieb mit Handwerk OS arbeitet.
             Echte Kundenstories folgen.
           </span>
         </p>
@@ -122,7 +122,7 @@ export default function KundenPage() {
               Dein Gewerk ist nicht dabei?
             </h2>
             <p className="mt-2 text-muted">
-              Macher OS passt sich an viele Gewerke an – von Metall über Fahrzeug bis Gebäude-Service.
+              Handwerk OS passt sich an viele Gewerke an – von Metall über Fahrzeug bis Gebäude-Service.
             </p>
           </div>
           <ArrowLink href="/gewerke">Alle Gewerke ansehen</ArrowLink>
@@ -142,7 +142,7 @@ export default function KundenPage() {
 
       <FinalCta
         title="Schreib deine eigene Geschichte."
-        intro="Starte kostenlos und richte Macher OS in wenigen Minuten für deinen Betrieb ein."
+        intro="Starte kostenlos und richte Handwerk OS in wenigen Minuten für deinen Betrieb ein."
       />
     </>
   );

@@ -141,7 +141,7 @@ export function DeckungsbeitragRechner() {
           }
           meldung={f.gueltig ? null : "Bitte prüf die markierten Eingaben."}
           zusammenfassung={zusammenfassung}
-          betreff="Deckungsbeitrag meines Auftrags – berechnet mit Macher OS"
+          betreff="Deckungsbeitrag meines Auftrags – berechnet mit Handwerk OS"
           hinweis="Das Ergebnis ist eine Orientierung, keine Steuerberatung."
         >
           <ErgebnisZeile label="Umsatz netto" wert={euro(w.umsatz)} />

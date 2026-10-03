@@ -6,7 +6,7 @@ export const supportAnliegen: Anliegen[] = [
   {
     id: "produktfrage",
     label: "Produktfrage",
-    beschreibung: "Wie geht etwas? Kann Macher OS das?",
+    beschreibung: "Wie geht etwas? Kann Handwerk OS das?",
     icon: "chat",
     email: SUPPORT_EMAIL,
     platzhalter: "Was möchtest du wissen?",

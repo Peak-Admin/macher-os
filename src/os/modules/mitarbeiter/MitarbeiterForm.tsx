@@ -103,7 +103,7 @@ export function MitarbeiterForm() {
               <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} optional />
             </FormRaster>
           </FormAbschnitt>
-          <FormAbschnitt titel="Vertrag und Zeiten" text="Daraus rechnet Macher OS Soll-Stunden, Stundenkonto und Urlaub." icon="uhr">
+          <FormAbschnitt titel="Vertrag und Zeiten" text="Daraus rechnet Handwerk OS Soll-Stunden, Stundenkonto und Urlaub." icon="uhr">
             <FormRaster>
               <Eingabe label="Wochenstunden laut Vertrag" inputMode="decimal" value={f.wochenstunden} onChange={set('wochenstunden')} fehler={fehler.wochenstunden} hilfe="Stunden je Wochentag (Teilzeit) stellst du am Mitarbeiter unter Zeiten ein." />
               <Eingabe label="Urlaubstage pro Jahr" inputMode="numeric" value={f.urlaubstageJahr} onChange={set('urlaubstageJahr')} fehler={fehler.urlaubstageJahr} />

@@ -4,19 +4,19 @@ import { env } from './gemeinsam';
 
 const TEXTE: Record<1 | 2 | 3, { betreff: string; text: (bis: string) => string }> = {
   1: {
-    betreff: 'Die Abbuchung für Macher OS hat nicht geklappt',
+    betreff: 'Die Abbuchung für Handwerk OS hat nicht geklappt',
     text: (bis) =>
-      `Hallo,\n\ndie letzte Abbuchung für Macher OS hat nicht geklappt. Das passiert – oft ist das Konto kurz nicht gedeckt oder die Karte abgelaufen.\n\nBitte prüf deine Zahlungsart in Macher OS unter Betrieb › Einstellungen › Dein Plan. Bis einschließlich ${bis} läuft alles normal weiter.\n\nDanke!`,
+      `Hallo,\n\ndie letzte Abbuchung für Handwerk OS hat nicht geklappt. Das passiert – oft ist das Konto kurz nicht gedeckt oder die Karte abgelaufen.\n\nBitte prüf deine Zahlungsart in Handwerk OS unter Betrieb › Einstellungen › Dein Plan. Bis einschließlich ${bis} läuft alles normal weiter.\n\nDanke!`,
   },
   2: {
-    betreff: 'Erinnerung: Abbuchung für Macher OS noch offen',
+    betreff: 'Erinnerung: Abbuchung für Handwerk OS noch offen',
     text: (bis) =>
-      `Hallo,\n\ndie Abbuchung für Macher OS ist noch offen. Prüf bitte deine Zahlungsart unter Betrieb › Einstellungen › Dein Plan.\n\nBis einschließlich ${bis} läuft alles normal weiter. Danach kannst du weiter alles lesen und exportieren, aber nichts Neues anlegen.\n\nDanke!`,
+      `Hallo,\n\ndie Abbuchung für Handwerk OS ist noch offen. Prüf bitte deine Zahlungsart unter Betrieb › Einstellungen › Dein Plan.\n\nBis einschließlich ${bis} läuft alles normal weiter. Danach kannst du weiter alles lesen und exportieren, aber nichts Neues anlegen.\n\nDanke!`,
   },
   3: {
-    betreff: 'Letzte Erinnerung: Abbuchung für Macher OS',
+    betreff: 'Letzte Erinnerung: Abbuchung für Handwerk OS',
     text: (bis) =>
-      `Hallo,\n\ndie Abbuchung für Macher OS ist weiter offen. Nach dem ${bis} wechselt Macher OS in den Lesemodus: Deine Daten bleiben vollständig lesbar und exportierbar, nur Neues anlegen geht nicht mehr.\n\nMit einer gültigen Zahlungsart unter Betrieb › Einstellungen › Dein Plan geht es sofort weiter.\n\nDanke!`,
+      `Hallo,\n\ndie Abbuchung für Handwerk OS ist weiter offen. Nach dem ${bis} wechselt Handwerk OS in den Lesemodus: Deine Daten bleiben vollständig lesbar und exportierbar, nur Neues anlegen geht nicht mehr.\n\nMit einer gültigen Zahlungsart unter Betrieb › Einstellungen › Dein Plan geht es sofort weiter.\n\nDanke!`,
   },
 };
 

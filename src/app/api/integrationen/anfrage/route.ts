@@ -1,5 +1,5 @@
 /**
- * /api/integrationen/anfrage – „Verbinden“ einer Integration, die Macher OS noch nicht hat, wird direkt aus der App
+ * /api/integrationen/anfrage – „Verbinden“ einer Integration, die Handwerk OS noch nicht hat, wird direkt aus der App
  * als Anfrage an das Integrationsteam geschickt (Resend). Bauplan: `docs/os/INTEGRATIONEN.md`.
  *
  * POST { integration, notiz?, betrieb?: { name?, email?, telefon? } } → { id }
@@ -61,7 +61,7 @@ export async function POST(req: Request): Promise<Response> {
     istEmail(email) ? `E-Mail: ${email}` : '',
     telefon ? `Telefon: ${telefon}` : '',
     '',
-    'Gesendet aus Macher OS (Betrieb → Verbindungen).',
+    'Gesendet aus Handwerk OS (Betrieb → Verbindungen).',
   ]
     .filter((z, i, a) => z !== '' || a[i - 1] !== '')
     .join('\n');
@@ -72,7 +72,7 @@ export async function POST(req: Request): Promise<Response> {
     method: 'POST',
     headers: { authorization: `Bearer ${schluessel}`, 'content-type': 'application/json' },
     body: JSON.stringify({
-      from: `Macher OS <${adresse}>`,
+      from: `Handwerk OS <${adresse}>`,
       to: [an],
       subject: `Integration anfragen: ${integration}${betrieb ? ` – ${betrieb}` : ''}`,
       text,

@@ -4,7 +4,7 @@
  * Schlüssel sind die kanonischen Slugs aus `registry.ts`. Der Typ erzwingt,
  * dass jede Funktion aus der Registry hier einen Eintrag hat.
  * Alle Zahlen in den Produktansichten sind Beispielwerte aus einem
- * ausgedachten Betrieb – keine Kennzahlen über Macher OS.
+ * ausgedachten Betrieb – keine Kennzahlen über Handwerk OS.
  */
 import type { FaqItem, IconName, SkizzenMotiv } from "@/components/ui";
 import {
@@ -34,7 +34,7 @@ export type FunktionsVisual = {
   hinweis?: { icon: IconName; ton: "signal" | "moss" | "sky"; titel: string; text: string };
 };
 
-/** Detailansicht eines Datensatzes („So löst Macher OS es“). */
+/** Detailansicht eines Datensatzes („So löst Handwerk OS es“). */
 export type DetailVisual = {
   kopf: string;
   titel: string;
@@ -132,14 +132,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Anfragen verwalten – alle Kundenanfragen an einem Ort",
       description:
-        "Anfragen per Telefon, Mail und Webformular in einem Eingang. Macher OS fragt fehlende Angaben nach und zeigt dir, welche Anfrage zuerst dran ist.",
+        "Anfragen per Telefon, Mail und Webformular in einem Eingang. Handwerk OS fragt fehlende Angaben nach und zeigt dir, welche Anfrage zuerst dran ist.",
     },
     hero: {
       titel: "Keine Anfrage geht mehr verloren.",
       problem:
         "Anfragen kommen per Telefon, Mail und über die Webseite. Ein Teil landet auf Zetteln, ein Teil nur im Kopf.",
       loesung:
-        "Macher OS sammelt alle Anfragen an einer Stelle, fragt fehlende Angaben nach und zeigt dir, welche zuerst dran ist.",
+        "Handwerk OS sammelt alle Anfragen an einer Stelle, fragt fehlende Angaben nach und zeigt dir, welche zuerst dran ist.",
     },
     visual: {
       bereich: "Aufträge",
@@ -211,7 +211,7 @@ export const funktionInhalte: Inhalte = {
     schritte: [
       {
         titel: "Anfrage kommt rein",
-        text: "Per Telefon, Mail oder Webformular. Macher OS legt sofort eine Anfrage an – auch abends und am Wochenende.",
+        text: "Per Telefon, Mail oder Webformular. Handwerk OS legt sofort eine Anfrage an – auch abends und am Wochenende.",
       },
       {
         titel: "Angaben werden ergänzt",
@@ -279,12 +279,12 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Was passiert mit Anfragen, die nicht zu uns passen?",
         antwort:
-          "Du sagst mit einem Klick ab. Macher OS schlägt dir eine freundliche Absage vor, die du noch ändern kannst. Die Anfrage bleibt gespeichert, falls der Kunde später wiederkommt.",
+          "Du sagst mit einem Klick ab. Handwerk OS schlägt dir eine freundliche Absage vor, die du noch ändern kannst. Die Anfrage bleibt gespeichert, falls der Kunde später wiederkommt.",
       },
       {
         frage: "Werden Anfragen per Mail automatisch erkannt?",
         antwort:
-          "Ja. Leitest du dein Anfrage-Postfach an Macher OS weiter, wird aus jeder Mail eine Anfrage mit Kunde, Adresse und Anhängen. Unklare Mails landen zur Prüfung bei dir.",
+          "Ja. Leitest du dein Anfrage-Postfach an Handwerk OS weiter, wird aus jeder Mail eine Anfrage mit Kunde, Adresse und Anhängen. Unklare Mails landen zur Prüfung bei dir.",
       },
       {
         frage: "Sehen alle Mitarbeiter die Anfragen?",
@@ -487,7 +487,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Adresse im Handy, Angebote im Postfach, Fotos in der Galerie, alte Rechnungen im Ordner. Wer etwas wissen will, muss suchen.",
       loesung:
-        "In Macher OS hat jeder Kunde eine Akte: Kontakt, Objekte, Aufträge, Fotos, Rechnungen und jeder Anruf – für alle im Betrieb gleich.",
+        "In Handwerk OS hat jeder Kunde eine Akte: Kontakt, Objekte, Aufträge, Fotos, Rechnungen und jeder Anruf – für alle im Betrieb gleich.",
     },
     visual: {
       bereich: "Aufträge",
@@ -529,7 +529,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Eine Kundenakte, die jeder versteht.",
-      text: "Jeder Kunde hat in Macher OS eine Akte. Darin steht alles, was je passiert ist: Anfragen, Angebote, Aufträge, Fotos, Rechnungen, Anrufe. Bei Hausverwaltungen und Firmen hängen Objekte und Ansprechpartner sauber darunter.",
+      text: "Jeder Kunde hat in Handwerk OS eine Akte. Darin steht alles, was je passiert ist: Anfragen, Angebote, Aufträge, Fotos, Rechnungen, Anrufe. Bei Hausverwaltungen und Firmen hängen Objekte und Ansprechpartner sauber darunter.",
       punkte: [
         "Kontakt, Objekte und Ansprechpartner an einer Stelle",
         "Die ganze Geschichte: was, wann, wer, mit welchem Material",
@@ -615,7 +615,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Kann ich meine bestehenden Kunden übernehmen?",
         antwort:
-          "Ja. Du lädst eine Liste aus deinem alten Programm oder einer Tabelle hoch. Macher OS ordnet die Spalten zu und zeigt dir doppelte Einträge, bevor sie übernommen werden.",
+          "Ja. Du lädst eine Liste aus deinem alten Programm oder einer Tabelle hoch. Handwerk OS ordnet die Spalten zu und zeigt dir doppelte Einträge, bevor sie übernommen werden.",
       },
       {
         frage: "Sehen Monteure auch Preise und offene Rechnungen?",
@@ -643,14 +643,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Auftragsverwaltung für Handwerker – jeder Auftrag mit allem drin",
       description:
-        "Vom angenommenen Angebot bis zur Abnahme: In Macher OS hängen Termine, Mitarbeiter, Material, Fotos, Stunden und Zusatzarbeiten an einem Auftrag.",
+        "Vom angenommenen Angebot bis zur Abnahme: In Handwerk OS hängen Termine, Mitarbeiter, Material, Fotos, Stunden und Zusatzarbeiten an einem Auftrag.",
     },
     hero: {
       titel: "Jeder Auftrag. Alles drin.",
       problem:
         "Was ist zugesagt, was ist bestellt, wer war schon da, was fehlt noch? Bei zehn Baustellen gleichzeitig hält das kein Kopf mehr fest.",
       loesung:
-        "In Macher OS ist der Auftrag die Mitte: Kunde, Angebot, Termine, Mitarbeiter, Material, Fotos, Zeiten und Rechnung hängen daran.",
+        "In Handwerk OS ist der Auftrag die Mitte: Kunde, Angebot, Termine, Mitarbeiter, Material, Fotos, Zeiten und Rechnung hängen daran.",
     },
     visual: {
       bereich: "Aufträge",
@@ -794,7 +794,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Gibt es Vorlagen für typische Aufträge?",
         antwort:
-          "Ja. Beim Start richtet Macher OS Auftragsarten passend zu deinem Gewerk ein – mit Checklisten, Material und Zeitansätzen. Du passt sie jederzeit an.",
+          "Ja. Beim Start richtet Handwerk OS Auftragsarten passend zu deinem Gewerk ein – mit Checklisten, Material und Zeitansätzen. Du passt sie jederzeit an.",
       },
       {
         frage: "Kann der Kunde den Stand seines Auftrags sehen?",
@@ -812,14 +812,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Aufmaß-App für Handwerker – messen, rechnen, ins Angebot",
       description:
-        "Aufmaß direkt auf dem Handy: Räume anlegen, Maße eingeben, Abzüge für Fenster und Türen. Macher OS rechnet Flächen und Laufmeter und übernimmt sie ins Angebot.",
+        "Aufmaß direkt auf dem Handy: Räume anlegen, Maße eingeben, Abzüge für Fenster und Türen. Handwerk OS rechnet Flächen und Laufmeter und übernimmt sie ins Angebot.",
     },
     hero: {
       titel: "Aufmaß machen. Nicht abtippen.",
       problem:
         "Du misst vor Ort, schreibst auf einen Block – und abends tippst du alles ins Angebot. Dabei geht immer mal ein Maß verloren.",
       loesung:
-        "Mit Macher OS nimmst du das Aufmaß direkt auf dem Handy auf. Flächen, Laufmeter und Abzüge rechnet Macher OS selbst und übernimmt sie ins Angebot.",
+        "Mit Handwerk OS nimmst du das Aufmaß direkt auf dem Handy auf. Flächen, Laufmeter und Abzüge rechnet Handwerk OS selbst und übernimmt sie ins Angebot.",
     },
     visual: {
       bereich: "Aufträge",
@@ -866,7 +866,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Raum für Raum – direkt ins Angebot.",
-      text: "Du legst vor Ort die Räume an und tippst Länge, Breite und Höhe ein – oder sprichst sie ein. Macher OS rechnet Boden- und Wandflächen, zieht Fenster und Türen ab und ermittelt Laufmeter für Sockel und Kanten. Mit einem Tipp werden die Mengen zu Positionen im Angebot.",
+      text: "Du legst vor Ort die Räume an und tippst Länge, Breite und Höhe ein – oder sprichst sie ein. Handwerk OS rechnet Boden- und Wandflächen, zieht Fenster und Türen ab und ermittelt Laufmeter für Sockel und Kanten. Mit einem Tipp werden die Mengen zu Positionen im Angebot.",
       punkte: [
         "Räume mit Länge, Breite und Höhe – oder als freie Fläche",
         "Abzüge für Fenster, Türen und Nischen",
@@ -899,7 +899,7 @@ export const funktionInhalte: Inhalte = {
         text: "Länge, Breite, Höhe eintippen oder einsprechen. Fenster und Türen als Abzug dazu.",
       },
       {
-        titel: "Macher OS rechnet",
+        titel: "Handwerk OS rechnet",
         text: "Flächen, Laufmeter und Verschnitt sind sofort da – ohne Taschenrechner.",
       },
       {
@@ -957,12 +957,12 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Funktioniert das Aufmaß auch ohne Netz?",
         antwort:
-          "Ja. Im Keller oder im Rohbau ist oft kein Empfang. Du arbeitest normal weiter, Macher OS gleicht alles ab, sobald wieder Netz da ist.",
+          "Ja. Im Keller oder im Rohbau ist oft kein Empfang. Du arbeitest normal weiter, Handwerk OS gleicht alles ab, sobald wieder Netz da ist.",
       },
       {
         frage: "Kann ich Dachschrägen und schräge Wände erfassen?",
         antwort:
-          "Ja. Dachschrägen, Giebel und unregelmäßige Flächen gibst du als Teilflächen ein – Dreieck, Trapez oder frei. Macher OS rechnet sie zusammen.",
+          "Ja. Dachschrägen, Giebel und unregelmäßige Flächen gibst du als Teilflächen ein – Dreieck, Trapez oder frei. Handwerk OS rechnet sie zusammen.",
       },
       {
         frage: "Kann ich nach Aufmaß abrechnen?",
@@ -985,14 +985,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Kalkulation für Handwerker – wissen, was ein Auftrag bringt",
       description:
-        "Kalkuliere mit deinem echten Stundensatz, aktuellen Materialpreisen und eigenen Zeitansätzen. Macher OS zeigt dir vor dem Angebot, was ein Auftrag kostet und was er bringt.",
+        "Kalkuliere mit deinem echten Stundensatz, aktuellen Materialpreisen und eigenen Zeitansätzen. Handwerk OS zeigt dir vor dem Angebot, was ein Auftrag kostet und was er bringt.",
     },
     hero: {
       titel: "Wissen, was ein Auftrag bringt – bevor du ihn annimmst.",
       problem:
         "Viele Preise kommen aus dem Bauch: „Haben wir immer so gemacht.“ Ob am Ende etwas übrig bleibt, merkst du erst, wenn es zu spät ist.",
       loesung:
-        "Macher OS rechnet mit deinem echten Stundensatz, aktuellen Materialpreisen und deinen Zeitansätzen. Du siehst vor dem Angebot, was der Auftrag kostet und was er bringt.",
+        "Handwerk OS rechnet mit deinem echten Stundensatz, aktuellen Materialpreisen und deinen Zeitansätzen. Du siehst vor dem Angebot, was der Auftrag kostet und was er bringt.",
     },
     visual: {
       bereich: "Aufträge",
@@ -1039,7 +1039,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Kalkulieren mit echten Zahlen.",
-      text: "Du hinterlegst einmal deinen Stundensatz, deine Zeitansätze und deinen Materialaufschlag. Macher OS rechnet jede Position daraus: Lohn, Material, Fahrt, Gerät. Am Ende siehst du Kosten, Preis und was übrig bleibt – bevor das Angebot rausgeht.",
+      text: "Du hinterlegst einmal deinen Stundensatz, deine Zeitansätze und deinen Materialaufschlag. Handwerk OS rechnet jede Position daraus: Lohn, Material, Fahrt, Gerät. Am Ende siehst du Kosten, Preis und was übrig bleibt – bevor das Angebot rausgeht.",
       punkte: [
         "Stundensatz aus deinen echten Kosten",
         "Zeitansätze pro Leistung, die du selbst pflegst",
@@ -1125,7 +1125,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Woher kommt mein Stundensatz?",
         antwort:
-          "Du gibst deine Kosten ein: Löhne, Fahrzeuge, Miete, Versicherungen und die Stunden, die wirklich verkauft werden. Macher OS rechnet daraus deinen Stundensatz. Für einen ersten Überblick hilft der kostenlose Stundensatz-Rechner.",
+          "Du gibst deine Kosten ein: Löhne, Fahrzeuge, Miete, Versicherungen und die Stunden, die wirklich verkauft werden. Handwerk OS rechnet daraus deinen Stundensatz. Für einen ersten Überblick hilft der kostenlose Stundensatz-Rechner.",
       },
       {
         frage: "Kann ich Materialpreise vom Großhändler übernehmen?",
@@ -1153,7 +1153,7 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Angebote schreiben im Handwerk – schneller beim Kunden",
       description:
-        "Macher OS bereitet Angebote aus Anfrage, Aufmaß und deinen Vorlagen vor. Varianten, Online-Annahme mit Unterschrift und freundliches Nachfassen inklusive.",
+        "Handwerk OS bereitet Angebote aus Anfrage, Aufmaß und deinen Vorlagen vor. Varianten, Online-Annahme mit Unterschrift und freundliches Nachfassen inklusive.",
     },
     hero: {
       titel: "Das Angebot geht raus, solange der Kunde noch wartet.",
@@ -1305,7 +1305,7 @@ export const funktionInhalte: Inhalte = {
           "Du kannst Wahlpositionen anbieten, die der Kunde selbst an- oder abwählt. Der Auftrag enthält dann genau das, was angenommen wurde.",
       },
       {
-        frage: "Fragt Macher OS automatisch beim Kunden nach?",
+        frage: "Fragt Handwerk OS automatisch beim Kunden nach?",
         antwort:
           "Wenn du willst, ja. Du legst fest, nach wie vielen Tagen eine freundliche Nachfrage rausgeht – oder ob du lieber selbst anrufst.",
       },
@@ -1327,7 +1327,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Fotos liegen auf privaten Handys, Berichte schreibt man abends aus dem Gedächtnis, und bei der Abnahme fehlt die Unterschrift.",
       loesung:
-        "In Macher OS landet jedes Foto beim richtigen Auftrag. Berichte entstehen aus Fotos, Notizen und Zeiten – die Abnahme unterschreibt der Kunde auf dem Handy.",
+        "In Handwerk OS landet jedes Foto beim richtigen Auftrag. Berichte entstehen aus Fotos, Notizen und Zeiten – die Abnahme unterschreibt der Kunde auf dem Handy.",
     },
     visual: {
       bereich: "Aufträge",
@@ -1403,7 +1403,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Notizen einsprechen",
-        text: "Kurz sagen, was gemacht wurde und was auffällt. Macher OS schreibt mit.",
+        text: "Kurz sagen, was gemacht wurde und was auffällt. Handwerk OS schreibt mit.",
       },
       {
         titel: "Bericht entsteht",
@@ -1488,14 +1488,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Rechnungen schreiben im Handwerk – direkt aus dem Auftrag",
       description:
-        "Macher OS bereitet Rechnungen aus Angebot, erfassten Stunden, Material und Zusatzarbeiten vor. Abschläge, Schlussrechnung und E-Rechnung inklusive.",
+        "Handwerk OS bereitet Rechnungen aus Angebot, erfassten Stunden, Material und Zusatzarbeiten vor. Abschläge, Schlussrechnung und E-Rechnung inklusive.",
     },
     hero: {
       titel: "Arbeit fertig. Rechnung fertig.",
       problem:
         "Die Baustelle ist abgeschlossen, aber die Rechnung bleibt liegen. Stundenzettel suchen, Material nachtragen, Zusatzarbeiten vergessen.",
       loesung:
-        "Macher OS bereitet die Rechnung aus Angebot, Stunden, Material und Zusatzarbeiten vor. Du prüfst und schickst sie ab – auch als E-Rechnung.",
+        "Handwerk OS bereitet die Rechnung aus Angebot, Stunden, Material und Zusatzarbeiten vor. Du prüfst und schickst sie ab – auch als E-Rechnung.",
     },
     visual: {
       bereich: "Aufträge",
@@ -1625,7 +1625,7 @@ export const funktionInhalte: Inhalte = {
     },
     faq: [
       {
-        frage: "Kann Macher OS E-Rechnungen erstellen?",
+        frage: "Kann Handwerk OS E-Rechnungen erstellen?",
         antwort:
           "Ja. Für Geschäftskunden und öffentliche Auftraggeber erstellst du die Rechnung als E-Rechnung. Privatkunden bekommen weiter eine normale Rechnung als PDF.",
       },
@@ -1637,7 +1637,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Kann ich eine verschickte Rechnung noch ändern?",
         antwort:
-          "Eine verschickte Rechnung bleibt, wie sie ist. Brauchst du eine Korrektur, erstellt Macher OS eine Gutschrift oder Korrekturrechnung – sauber und nachvollziehbar.",
+          "Eine verschickte Rechnung bleibt, wie sie ist. Brauchst du eine Korrektur, erstellt Handwerk OS eine Gutschrift oder Korrekturrechnung – sauber und nachvollziehbar.",
       },
       {
         frage: "Kann ich Rechnungen an mein Steuerbüro übergeben?",
@@ -1654,7 +1654,7 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Offene Rechnungen verfolgen – Zahlungen und Mahnungen im Handwerk",
       description:
-        "Macher OS ordnet Zahlungseingänge deinen Rechnungen zu, erkennt Teilzahlungen und Skonto und erinnert Kunden freundlich. Mahnungen gehen nur mit deiner Freigabe raus.",
+        "Handwerk OS ordnet Zahlungseingänge deinen Rechnungen zu, erkennt Teilzahlungen und Skonto und erinnert Kunden freundlich. Mahnungen gehen nur mit deiner Freigabe raus.",
     },
     hero: {
       titel: "Offene Rechnungen? Macher bleibt dran.",
@@ -1708,7 +1708,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Offene Beträge im Blick. Ohne Abhaken.",
-      text: "Macher OS liest die Zahlungseingänge auf deinem Geschäftskonto und ordnet sie den Rechnungen zu. Was nach der Frist nicht bezahlt ist, bekommt eine freundliche Erinnerung in deinem Ton. Erst wenn das nicht hilft, kommt die Mahnung – und die nur mit deiner Freigabe.",
+      text: "Handwerk OS liest die Zahlungseingänge auf deinem Geschäftskonto und ordnet sie den Rechnungen zu. Was nach der Frist nicht bezahlt ist, bekommt eine freundliche Erinnerung in deinem Ton. Erst wenn das nicht hilft, kommt die Mahnung – und die nur mit deiner Freigabe.",
       punkte: [
         "Zahlungseingänge automatisch zugeordnet",
         "Teilzahlungen und Skonto werden erkannt",
@@ -1790,9 +1790,9 @@ export const funktionInhalte: Inhalte = {
     },
     faq: [
       {
-        frage: "Wie kommen die Zahlungen in Macher OS?",
+        frage: "Wie kommen die Zahlungen in Handwerk OS?",
         antwort:
-          "Du verbindest dein Geschäftskonto. Macher OS liest nur die Zahlungseingänge – überweisen kann es nichts.",
+          "Du verbindest dein Geschäftskonto. Handwerk OS liest nur die Zahlungseingänge – überweisen kann es nichts.",
       },
       {
         frage: "Kann ich festlegen, wann erinnert wird?",
@@ -1802,7 +1802,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Was passiert, wenn ein Kunde zu wenig überweist?",
         antwort:
-          "Macher OS erkennt die Teilzahlung, zeigt dir den offenen Rest und fragt, ob der Abzug in Ordnung war – zum Beispiel Skonto.",
+          "Handwerk OS erkennt die Teilzahlung, zeigt dir den offenen Rest und fragt, ob der Abzug in Ordnung war – zum Beispiel Skonto.",
       },
       {
         frage: "Gehen Mahnungen ohne mein Wissen raus?",
@@ -1829,7 +1829,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "„Passt Ihnen Dienstag?“ – „Da kann ich nicht.“ – „Mittwoch?“ Jeder Termin kostet drei Anrufe. Und am Ende steht er doch doppelt im Kalender.",
       loesung:
-        "Macher OS zeigt dem Kunden freie Zeiten, die zu deinem Plan und zur Route passen. Der Kunde bucht selbst, Macher bestätigt und erinnert am Vortag.",
+        "Handwerk OS zeigt dem Kunden freie Zeiten, die zu deinem Plan und zur Route passen. Der Kunde bucht selbst, Macher bestätigt und erinnert am Vortag.",
     },
     visual: {
       bereich: "Planen",
@@ -1871,7 +1871,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Ein Kalender für alle – mit Buchung für Kunden.",
-      text: "Alle Termine stehen in einem Kalender: Besichtigungen, Einsätze, Wartungen, Urlaub. Für Besichtigungen und Kundendienst schickst du dem Kunden einen Link. Er sieht nur Zeiten, die wirklich passen – auch zur Route deines Teams. Wiederkehrende Termine wie Wartungen legt Macher OS selbst an.",
+      text: "Alle Termine stehen in einem Kalender: Besichtigungen, Einsätze, Wartungen, Urlaub. Für Besichtigungen und Kundendienst schickst du dem Kunden einen Link. Er sieht nur Zeiten, die wirklich passen – auch zur Route deines Teams. Wiederkehrende Termine wie Wartungen legt Handwerk OS selbst an.",
       punkte: [
         "Ein gemeinsamer Kalender für Büro und Baustelle",
         "Kunden buchen selbst – nur passende Zeiten",
@@ -1956,7 +1956,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Kann ich meinen Kalender auf dem Handy weiter nutzen?",
         antwort:
-          "Ja. Termine aus Macher OS erscheinen in deinem gewohnten Kalender. Private Termine kannst du als „belegt“ übernehmen, ohne dass jemand Einzelheiten sieht.",
+          "Ja. Termine aus Handwerk OS erscheinen in deinem gewohnten Kalender. Private Termine kannst du als „belegt“ übernehmen, ohne dass jemand Einzelheiten sieht.",
       },
       {
         frage: "Können Kunden einfach irgendwann buchen?",
@@ -1966,7 +1966,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Wie funktionieren wiederkehrende Termine?",
         antwort:
-          "Du legst den Rhythmus fest – zum Beispiel jährliche Wartung im Herbst. Macher OS schlägt rechtzeitig Termine vor und fragt beim Kunden an.",
+          "Du legst den Rhythmus fest – zum Beispiel jährliche Wartung im Herbst. Handwerk OS schlägt rechtzeitig Termine vor und fragt beim Kunden an.",
       },
       {
         frage: "Was passiert, wenn ein Kunde absagt?",
@@ -2163,7 +2163,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Urlaub auf Zetteln, Krankmeldungen per Kurznachricht, Telefonnummern im Handy vom Chef. Wer wann da ist, weiß nur einer.",
       loesung:
-        "In Macher OS hat jeder Mitarbeiter ein Profil mit Rolle, Arbeitszeit, Urlaub und Qualifikationen. Urlaub wird per App beantragt, Krankmeldungen landen direkt im Plan.",
+        "In Handwerk OS hat jeder Mitarbeiter ein Profil mit Rolle, Arbeitszeit, Urlaub und Qualifikationen. Urlaub wird per App beantragt, Krankmeldungen landen direkt im Plan.",
     },
     visual: {
       bereich: "Betrieb",
@@ -2302,9 +2302,9 @@ export const funktionInhalte: Inhalte = {
         antwort: "Nur wenn du es erlaubst. Rechte vergibst du pro Rolle: Monteur, Vorarbeiter, Büro, Chef.",
       },
       {
-        frage: "Macht Macher OS die Lohnabrechnung?",
+        frage: "Macht Handwerk OS die Lohnabrechnung?",
         antwort:
-          "Nein. Macher OS sammelt Stunden, Urlaub und Krankheit sauber und gibt sie für dein Lohnbüro oder Steuerbüro aus.",
+          "Nein. Handwerk OS sammelt Stunden, Urlaub und Krankheit sauber und gibt sie für dein Lohnbüro oder Steuerbüro aus.",
       },
       {
         frage: "Was passiert, wenn jemand den Betrieb verlässt?",
@@ -2328,7 +2328,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Stundenzettel werden am Ende der Woche aus dem Gedächtnis ausgefüllt. Fahrtzeit, Pausen und welche Baustelle – alles grob geschätzt.",
       loesung:
-        "Mit Macher OS startet dein Team die Zeit in der App, wenn es auf der Baustelle ankommt. Fahrt, Arbeit und Pause werden getrennt – fürs Lohnbüro und die Nachkalkulation.",
+        "Mit Handwerk OS startet dein Team die Zeit in der App, wenn es auf der Baustelle ankommt. Fahrt, Arbeit und Pause werden getrennt – fürs Lohnbüro und die Nachkalkulation.",
     },
     visual: {
       bereich: "Betrieb",
@@ -2464,12 +2464,12 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Muss ich die Arbeitszeit überhaupt erfassen?",
         antwort:
-          "Arbeitgeber in Deutschland müssen die Arbeitszeit ihrer Mitarbeiter erfassen. Wie genau, klärst du am besten mit deinem Steuerbüro oder deiner Innung. Macher OS sorgt dafür, dass die Zeiten vollständig und nachvollziehbar vorliegen.",
+          "Arbeitgeber in Deutschland müssen die Arbeitszeit ihrer Mitarbeiter erfassen. Wie genau, klärst du am besten mit deinem Steuerbüro oder deiner Innung. Handwerk OS sorgt dafür, dass die Zeiten vollständig und nachvollziehbar vorliegen.",
       },
       {
         frage: "Wird mein Team dauernd geortet?",
         antwort:
-          "Nein. Macher OS kann beim Start den Ort speichern, damit klar ist, auf welcher Baustelle gearbeitet wurde. Ob du das nutzt, entscheidest du. Eine laufende Ortung gibt es nicht.",
+          "Nein. Handwerk OS kann beim Start den Ort speichern, damit klar ist, auf welcher Baustelle gearbeitet wurde. Ob du das nutzt, entscheidest du. Eine laufende Ortung gibt es nicht.",
       },
       {
         frage: "Kann der Vorarbeiter für die ganze Kolonne stempeln?",
@@ -2492,14 +2492,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Qualifikationen im Handwerk verwalten – Nachweise und Fristen",
       description:
-        "Qualifikationen deines Teams mit Nachweis und Ablaufdatum: Elektrofachkraft, Ersthelfer, Staplerschein, Hubarbeitsbühne. Macher OS warnt vor Ablauf und plant passend ein.",
+        "Qualifikationen deines Teams mit Nachweis und Ablaufdatum: Elektrofachkraft, Ersthelfer, Staplerschein, Hubarbeitsbühne. Handwerk OS warnt vor Ablauf und plant passend ein.",
     },
     hero: {
       titel: "Der Richtige für den richtigen Einsatz.",
       problem:
         "Wer darf an die Elektroanlage, wer hat den Staplerschein, wessen Erste-Hilfe-Kurs ist abgelaufen? Das steht in Ordnern – oder nirgends.",
       loesung:
-        "Macher OS kennt die Qualifikationen deines Teams, warnt vor dem Ablauf und plant nur Leute ein, die den Einsatz auch machen dürfen.",
+        "Handwerk OS kennt die Qualifikationen deines Teams, warnt vor dem Ablauf und plant nur Leute ein, die den Einsatz auch machen dürfen.",
     },
     visual: {
       bereich: "Betrieb",
@@ -2571,7 +2571,7 @@ export const funktionInhalte: Inhalte = {
     schritte: [
       {
         titel: "Qualifikationen anlegen",
-        text: "Macher OS schlägt die üblichen Qualifikationen für dein Gewerk vor. Eigene ergänzt du.",
+        text: "Handwerk OS schlägt die üblichen Qualifikationen für dein Gewerk vor. Eigene ergänzt du.",
       },
       {
         titel: "Nachweise hinterlegen",
@@ -2657,14 +2657,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Unterweisungen und Schulungen im Handwerk – Fristen im Griff",
       description:
-        "Macher OS plant Unterweisungen und Schulungen, erinnert dein Team an Fristen und sammelt Bestätigungen mit Unterschrift in der App – als Nachweis für jeden Mitarbeiter.",
+        "Handwerk OS plant Unterweisungen und Schulungen, erinnert dein Team an Fristen und sammelt Bestätigungen mit Unterschrift in der App – als Nachweis für jeden Mitarbeiter.",
     },
     hero: {
       titel: "Unterweisungen und Schulungen. Ohne eine Frist zu verpassen.",
       problem:
         "Die jährliche Unterweisung steht im Kalender vom letzten Jahr. Wer war dabei, wer fehlt, wer hat unterschrieben? Spätestens bei der Kontrolle wird es hektisch.",
       loesung:
-        "Macher OS plant Unterweisungen und Schulungen, erinnert dein Team, sammelt Unterschriften in der App und zeigt dir jederzeit, wer was erledigt hat.",
+        "Handwerk OS plant Unterweisungen und Schulungen, erinnert dein Team, sammelt Unterschriften in der App und zeigt dir jederzeit, wer was erledigt hat.",
     },
     visual: {
       bereich: "Betrieb",
@@ -2711,7 +2711,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Schulungen planen, erinnern, nachweisen.",
-      text: "Du legst fest, welche Unterweisungen und Schulungen für wen gelten und wie oft. Macher OS plant die Termine, erinnert dein Team und sammelt die Bestätigung mit Unterschrift in der App. Kurze Unterweisungen arbeitet jeder auf dem Handy durch. Du siehst jederzeit, wer noch fehlt.",
+      text: "Du legst fest, welche Unterweisungen und Schulungen für wen gelten und wie oft. Handwerk OS plant die Termine, erinnert dein Team und sammelt die Bestätigung mit Unterschrift in der App. Kurze Unterweisungen arbeitet jeder auf dem Handy durch. Du siehst jederzeit, wer noch fehlt.",
       punkte: [
         "Unterweisungen und Schulungen mit festem Rhythmus",
         "Erinnerung an Mitarbeiter und an dich",
@@ -2736,7 +2736,7 @@ export const funktionInhalte: Inhalte = {
     schritte: [
       {
         titel: "Festlegen, was gilt",
-        text: "Macher OS schlägt typische Unterweisungen für dein Gewerk vor. Du legst Rhythmus und Teilnehmer fest.",
+        text: "Handwerk OS schlägt typische Unterweisungen für dein Gewerk vor. Du legst Rhythmus und Teilnehmer fest.",
       },
       {
         titel: "Im Betrieb oder auf dem Handy",
@@ -2796,7 +2796,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Welche Unterweisungen sind für mich Pflicht?",
         antwort:
-          "Das hängt von deinem Betrieb und euren Tätigkeiten ab. Macher OS schlägt typische Unterweisungen für dein Gewerk vor. Was genau für dich gilt, klärst du am besten mit deiner Fachkraft für Arbeitssicherheit oder deiner Berufsgenossenschaft.",
+          "Das hängt von deinem Betrieb und euren Tätigkeiten ab. Handwerk OS schlägt typische Unterweisungen für dein Gewerk vor. Was genau für dich gilt, klärst du am besten mit deiner Fachkraft für Arbeitssicherheit oder deiner Berufsgenossenschaft.",
       },
       {
         frage: "Kann ich eigene Unterlagen nutzen?",
@@ -2831,7 +2831,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Montag, 7:30 Uhr auf der Baustelle – und das WC-Element liegt noch beim Großhändler. Einer fährt los, zwei warten.",
       loesung:
-        "Macher OS weiß, welches Material jeder Auftrag braucht, prüft vor dem Start, ob alles da ist, und meldet rechtzeitig, was fehlt.",
+        "Handwerk OS weiß, welches Material jeder Auftrag braucht, prüft vor dem Start, ob alles da ist, und meldet rechtzeitig, was fehlt.",
     },
     visual: {
       bereich: "Planen",
@@ -2878,7 +2878,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Jeder Auftrag weiß, was er braucht.",
-      text: "Aus dem Angebot entsteht eine Materialliste für den Auftrag. Macher OS prüft, was im Lager oder im Fahrzeug ist und was bestellt werden muss. Ein paar Tage vor dem Start siehst du: alles bereit – oder es fehlt etwas. Auf der Baustelle erfasst dein Team, was wirklich verbaut wurde.",
+      text: "Aus dem Angebot entsteht eine Materialliste für den Auftrag. Handwerk OS prüft, was im Lager oder im Fahrzeug ist und was bestellt werden muss. Ein paar Tage vor dem Start siehst du: alles bereit – oder es fehlt etwas. Auf der Baustelle erfasst dein Team, was wirklich verbaut wurde.",
       punkte: [
         "Materialliste pro Auftrag aus dem Angebot",
         "Prüfung: Lager, Fahrzeug oder bestellen",
@@ -2999,7 +2999,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Ob noch Kabel da ist, weiß man erst, wenn man nachschaut. Im Transporter von Tom liegt die halbe Werkstatt – aber keiner weiß, was genau.",
       loesung:
-        "Macher OS führt deinen Bestand im Lager und in jedem Fahrzeug. Entnahmen werden per App gebucht, Mindestbestände gemeldet, und vor dem Einkauf siehst du, was schon da ist.",
+        "Handwerk OS führt deinen Bestand im Lager und in jedem Fahrzeug. Entnahmen werden per App gebucht, Mindestbestände gemeldet, und vor dem Einkauf siehst du, was schon da ist.",
     },
     visual: {
       bereich: "Betrieb",
@@ -3141,7 +3141,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Wie funktioniert die Inventur?",
         antwort:
-          "Du gehst mit dem Handy Regal für Regal durch und tippst die gezählten Mengen ein. Macher OS zeigt Abweichungen und bucht sie nach deiner Freigabe aus.",
+          "Du gehst mit dem Handy Regal für Regal durch und tippst die gezählten Mengen ein. Handwerk OS zeigt Abweichungen und bucht sie nach deiner Freigabe aus.",
       },
       {
         frage: "Brauche ich das als kleiner Betrieb?",
@@ -3159,14 +3159,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Einkauf und Lieferanten im Handwerk – bestellen ohne Chaos",
       description:
-        "Macher OS sammelt den Materialbedarf aus Aufträgen und Lager, macht daraus Bestellungen pro Lieferant und gleicht Lieferung und Lieferantenrechnung ab.",
+        "Handwerk OS sammelt den Materialbedarf aus Aufträgen und Lager, macht daraus Bestellungen pro Lieferant und gleicht Lieferung und Lieferantenrechnung ab.",
     },
     hero: {
       titel: "Bestellen mit einem Klick. Nicht mit zehn Anrufen.",
       problem:
         "Bestellt wird per Telefon, Mail und Onlineshop bei drei Großhändlern. Was bestellt ist, was geliefert wurde und ob die Rechnung stimmt, prüft keiner richtig.",
       loesung:
-        "Macher OS sammelt den Bedarf aus allen Aufträgen und dem Lager, macht daraus Bestellungen pro Lieferant und gleicht Lieferung und Rechnung ab.",
+        "Handwerk OS sammelt den Bedarf aus allen Aufträgen und dem Lager, macht daraus Bestellungen pro Lieferant und gleicht Lieferung und Rechnung ab.",
     },
     visual: {
       bereich: "Betrieb",
@@ -3213,7 +3213,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Bedarf sammeln. Bestellen. Abgleichen.",
-      text: "Was Aufträge brauchen und was im Lager knapp wird, landet auf einer gemeinsamen Bestellliste. Macher OS schlägt vor, was bei welchem Lieferanten bestellt wird, und schickt die Bestellung raus. Beim Wareneingang hakst du ab, was angekommen ist. Die Rechnung des Lieferanten wird mit Bestellung und Lieferung verglichen.",
+      text: "Was Aufträge brauchen und was im Lager knapp wird, landet auf einer gemeinsamen Bestellliste. Handwerk OS schlägt vor, was bei welchem Lieferanten bestellt wird, und schickt die Bestellung raus. Beim Wareneingang hakst du ab, was angekommen ist. Die Rechnung des Lieferanten wird mit Bestellung und Lieferung verglichen.",
       punkte: [
         "Eine Bestellliste für alle Aufträge und das Lager",
         "Bestellung pro Lieferant mit einem Klick",
@@ -3309,12 +3309,12 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Wie vergleiche ich Preise?",
         antwort:
-          "Wenn du Artikellisten mehrerer Lieferanten hinterlegst, zeigt Macher OS bei jeder Position, wo sie gerade günstiger ist.",
+          "Wenn du Artikellisten mehrerer Lieferanten hinterlegst, zeigt Handwerk OS bei jeder Position, wo sie gerade günstiger ist.",
       },
       {
         frage: "Was passiert mit der Lieferantenrechnung?",
         antwort:
-          "Du lädst sie hoch oder leitest sie per Mail weiter. Macher OS vergleicht sie mit Bestellung und Lieferung und zeigt dir Abweichungen.",
+          "Du lädst sie hoch oder leitest sie per Mail weiter. Handwerk OS vergleicht sie mit Bestellung und Lieferung und zeigt dir Abweichungen.",
       },
     ],
     verwandt: ["material", "lager", "auswertung"],
@@ -3334,7 +3334,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Teure Maschinen wandern von Baustelle zu Baustelle. Wer was hat, steht nirgends. Prüftermine für Elektrogeräte gehen unter.",
       loesung:
-        "Macher OS zeigt, wo jedes Gerät ist und wer es hat, plant es für Einsätze ein und erinnert an Prüfung und Wartung.",
+        "Handwerk OS zeigt, wo jedes Gerät ist und wer es hat, plant es für Einsätze ein und erinnert an Prüfung und Wartung.",
     },
     visual: {
       bereich: "Betrieb",
@@ -3471,7 +3471,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Welche Codes brauche ich?",
         antwort:
-          "Du druckst Aufkleber mit Code direkt aus Macher OS. Gescannt wird mit der Handykamera – ohne extra Gerät.",
+          "Du druckst Aufkleber mit Code direkt aus Handwerk OS. Gescannt wird mit der Handykamera – ohne extra Gerät.",
       },
       {
         frage: "Kann ich Prüfprotokolle für Elektrogeräte speichern?",
@@ -3500,7 +3500,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Wer fährt heute welchen Transporter? Wann ist der Ölwechsel fällig, wann die Hauptuntersuchung? Und wer hatte den Sprinter mit dem Anhänger?",
       loesung:
-        "Macher OS plant Fahrzeuge mit den Einsätzen, erinnert an Hauptuntersuchung, Wartung und Reifenwechsel und zeigt, was jeder Wagen kostet.",
+        "Handwerk OS plant Fahrzeuge mit den Einsätzen, erinnert an Hauptuntersuchung, Wartung und Reifenwechsel und zeigt, was jeder Wagen kostet.",
     },
     visual: {
       bereich: "Betrieb",
@@ -3633,11 +3633,11 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Ist das ein Fahrtenbuch?",
         antwort:
-          "Nein, kein Fahrtenbuch fürs Finanzamt. Macher OS plant Fahrzeuge, verwaltet Fristen und sammelt Kosten. Für ein Fahrtenbuch nutzt du weiter die Lösung, die dein Steuerbüro empfiehlt.",
+          "Nein, kein Fahrtenbuch fürs Finanzamt. Handwerk OS plant Fahrzeuge, verwaltet Fristen und sammelt Kosten. Für ein Fahrtenbuch nutzt du weiter die Lösung, die dein Steuerbüro empfiehlt.",
       },
       {
         frage: "Werden Fahrzeuge geortet?",
-        antwort: "Nein. Macher OS weiß, wo ein Fahrzeug laut Plan im Einsatz ist. Eine Ortung braucht es dafür nicht.",
+        antwort: "Nein. Handwerk OS weiß, wo ein Fahrzeug laut Plan im Einsatz ist. Eine Ortung braucht es dafür nicht.",
       },
       {
         frage: "Kann ich Anhänger und Maschinen auch erfassen?",
@@ -3659,14 +3659,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Nachkalkulation und Auswertungen im Handwerk",
       description:
-        "Geplant und tatsächlich nebeneinander: Macher OS erstellt für jeden Auftrag die Nachkalkulation aus Stunden, Material und Fahrten und zeigt, welche Leistungen und Kunden sich lohnen.",
+        "Geplant und tatsächlich nebeneinander: Handwerk OS erstellt für jeden Auftrag die Nachkalkulation aus Stunden, Material und Fahrten und zeigt, welche Leistungen und Kunden sich lohnen.",
     },
     hero: {
       titel: "Wissen, welcher Auftrag sich gelohnt hat.",
       problem:
         "Am Jahresende sagt das Steuerbüro, wie es lief. Welche Aufträge Geld gebracht haben und welche nicht, weiß man nur aus dem Bauch.",
       loesung:
-        "Macher OS vergleicht für jeden Auftrag Plan und Wirklichkeit: Stunden, Material, Fahrten. Du siehst laufend, was übrig bleibt – pro Auftrag, Kunde und Leistung.",
+        "Handwerk OS vergleicht für jeden Auftrag Plan und Wirklichkeit: Stunden, Material, Fahrten. Du siehst laufend, was übrig bleibt – pro Auftrag, Kunde und Leistung.",
     },
     visual: {
       bereich: "Betrieb",
@@ -3799,7 +3799,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Ersetzt das meine Buchhaltung?",
         antwort:
-          "Nein. Macher OS zeigt dir, wie es im Betrieb läuft – Aufträge, Stunden, Material. Die Buchhaltung macht weiter dein Steuerbüro. Die Daten dafür gibst du aus Macher OS aus.",
+          "Nein. Handwerk OS zeigt dir, wie es im Betrieb läuft – Aufträge, Stunden, Material. Die Buchhaltung macht weiter dein Steuerbüro. Die Daten dafür gibst du aus Handwerk OS aus.",
       },
       {
         frage: "Woher kommen die Kosten für einen Auftrag?",

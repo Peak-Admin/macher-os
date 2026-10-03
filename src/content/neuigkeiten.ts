@@ -19,7 +19,7 @@ export const neuigkeiten: Neuigkeit[] = [
   {
     datum: "2026-10-02",
     titel: "Einrichtung mit einer Frage",
-    text: "Statt Fragebogen fragt Macher OS nur noch: Welcher Betrieb bist du? Gibst du deine Website an, liest Macher Firmendaten, Logo, Gewerk und Leistungen aus – ohne Website reicht ein Tipp aufs Gewerk.",
+    text: "Statt Fragebogen fragt Handwerk OS nur noch: Welcher Betrieb bist du? Gibst du deine Website an, liest Macher Firmendaten, Logo, Gewerk und Leistungen aus – ohne Website reicht ein Tipp aufs Gewerk.",
     commit: "54bc787",
   },
   {

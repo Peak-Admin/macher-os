@@ -11,7 +11,7 @@ import { LETZTE_SICHERUNG_KEY, beispielAnzahl, beispieleEntfernenZaehlen, papier
 
 export function sicherungHerunterladen() {
   const s = sicherungErstellen();
-  herunterladen(`macher-os-sicherung-${dateiTeil(s.betrieb)}-${heute()}.json`, JSON.stringify(s), 'application/json');
+  herunterladen(`handwerk-os-sicherung-${dateiTeil(s.betrieb)}-${heute()}.json`, JSON.stringify(s), 'application/json');
   setzeEinstellung(LETZTE_SICHERUNG_KEY, s.erstelltAm);
 }
 

@@ -112,7 +112,7 @@ function Postfach() {
         <Meta>
           {verbunden
             ? 'Leite Anfragen von deiner bisherigen Adresse hierhin weiter. Jede E-Mail wird eine Anfrage mit Kunde – bekannte Kunden erkennt Macher wieder.'
-            : 'Diese Adresse funktioniert, sobald Macher OS mit dem Server verbunden ist. Bis dahin nimmst du Anfragen unter „Anfragen“ auf.'}
+            : 'Diese Adresse funktioniert, sobald Handwerk OS mit dem Server verbunden ist. Bis dahin nimmst du Anfragen unter „Anfragen“ auf.'}
         </Meta>
         <div>
           <Button klein variante="tertiaer" icon="mail" onClick={kopieren}>

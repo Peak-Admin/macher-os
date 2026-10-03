@@ -2,7 +2,7 @@ import type { Automation } from '@core/modul';
 import { taktePruefen } from './browser';
 
 /**
- * Browser-Planer für die Takte: prüft jede Minute, solange Macher OS offen ist. Mit Backend stellt zusätzlich der
+ * Browser-Planer für die Takte: prüft jede Minute, solange Handwerk OS offen ist. Mit Backend stellt zusätzlich der
  * Server-Takt (`src/app/api/takte/cron`) zu, auch wenn niemand die App offen hat – ohne doppelte Zustellung.
  */
 export const takteAutomation: Automation = {

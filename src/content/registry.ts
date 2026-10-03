@@ -26,7 +26,7 @@ export const funktionGruppen: Record<
   },
   macher: {
     titel: "Macher erledigt",
-    beschreibung: "Büroarbeit, die Macher OS möglichst automatisch übernimmt.",
+    beschreibung: "Büroarbeit, die Handwerk OS möglichst automatisch übernimmt.",
   },
 };
 
