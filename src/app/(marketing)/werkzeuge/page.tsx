@@ -200,7 +200,7 @@ export default function WerkzeugeHub() {
           <Card title="Praxistipps im Blog" icon="book" href="/wissen/blog" fenster>
             Stundensatz, Angebot, Nachkalkulation – einfach erklärt.
           </Card>
-          <Card title="Kalkulation in Macher OS" icon="calculator" href="/funktionen/kalkulation" fenster>
+          <Card title="Kalkulation in Handwerk OS" icon="calculator" href="/funktionen/kalkulation" fenster>
             Deine Zahlen einmal hinterlegen und in jedem Angebot nutzen.
           </Card>
         </div>
@@ -219,9 +219,9 @@ export default function WerkzeugeHub() {
       <MissionMittelstandStreifen />
 
       <FinalCta
-        title="Macher OS kostenlos testen"
-        intro="Die Rechner sind der Anfang. In Macher OS rechnen Angebote, Aufträge und Auswertungen automatisch mit deinen Zahlen."
-        primaryLabel="Macher OS kostenlos testen"
+        title="Handwerk OS kostenlos testen"
+        intro="Die Rechner sind der Anfang. In Handwerk OS rechnen Angebote, Aufträge und Auswertungen automatisch mit deinen Zahlen."
+        primaryLabel="Handwerk OS kostenlos testen"
       />
     </>
   );

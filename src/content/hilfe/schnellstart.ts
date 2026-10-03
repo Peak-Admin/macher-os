@@ -28,7 +28,7 @@ export const schnellstartSchritte: SchnellstartSchritt[] = [
     wann: "Zum Start",
     titel: "Kostenlos starten",
     dauer: "ein Klick",
-    text: "Klick auf „Kostenlos testen“. Macher OS öffnet sich direkt – ohne Konto, ohne Passwort, ohne Kreditkarte.",
+    text: "Klick auf „Kostenlos testen“. Handwerk OS öffnet sich direkt – ohne Konto, ohne Passwort, ohne Kreditkarte.",
     punkte: ["keine Anmeldung nötig", "Daten bleiben vorerst in deinem Browser"],
     icon: "user",
     artikel: "konto-erstellen",

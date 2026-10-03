@@ -30,7 +30,7 @@ export function DemoExplorer() {
               </h2>
               <p className="mt-3 text-lg text-muted">
                 Die Vorschau zeigt Aufträge, Material und Abläufe aus deinem Alltag. Mit einem Klick öffnest du den
-                Beispielbetrieb im echten Macher OS.
+                Beispielbetrieb im echten Handwerk OS.
               </p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export function DemoExplorer() {
                   href={`/gewerke/${daten.gewerk}`}
                   className="mt-4 inline-flex items-center gap-1.5 font-semibold underline decoration-signal decoration-2 underline-offset-4 hover:decoration-ink"
                 >
-                  Macher OS für {daten.label} <Icon name="arrow-right" className="size-4" />
+                  Handwerk OS für {daten.label} <Icon name="arrow-right" className="size-4" />
                 </Link>
               ) : (
                 <Link
@@ -127,7 +127,7 @@ export function DemoExplorer() {
               Vom Anruf bis zur Rechnung.
             </h2>
             <p className="mt-3 text-lg text-muted">
-              Fünf Schritte, ein Auftrag. So läuft es mit Macher OS – Schritt für Schritt.
+              Fünf Schritte, ein Auftrag. So läuft es mit Handwerk OS – Schritt für Schritt.
             </p>
           </div>
           <div className="mt-10">

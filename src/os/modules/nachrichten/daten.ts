@@ -1,6 +1,6 @@
 /**
  * Nachrichten – Kernobjekt `nachrichten`. Verlauf je Auftrag (oder je Kunde, wenn es keinen Auftrag gibt).
- * Macher OS verschickt nichts selbst: An Kunden geht es über mailto:/sms:/WhatsApp-Links in deiner App.
+ * Handwerk OS verschickt nichts selbst: An Kunden geht es über mailto:/sms:/WhatsApp-Links in deiner App.
  */
 import type { Auftrag, ID, Kunde, Nachricht } from '@core/objects';
 import type { HinweisVorschlag } from '@core/modul';
@@ -108,7 +108,7 @@ export function verfuegbareKanaele(k: Pick<Kunde, 'email' | 'telefon'> | undefin
   return out;
 }
 
-/** Link, der die passende App mit dem Text öffnet (kein Versand durch Macher OS) */
+/** Link, der die passende App mit dem Text öffnet (kein Versand durch Handwerk OS) */
 export function versandLink(kanal: KundenKanal, k: Pick<Kunde, 'email' | 'telefon'>, text: string, betreff?: string): string | undefined {
   const t = encodeURIComponent(text);
   if (kanal === 'email') {

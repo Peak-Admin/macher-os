@@ -18,7 +18,7 @@ export async function POST(req: Request): Promise<Response> {
   if (!k || !geheim) return nichtVerbunden();
   const schluessel = (await body<{ schluessel?: unknown }>(req))?.schluessel;
   const inhalt = typeof schluessel === 'string' ? schluesselPruefen(schluessel, geheim) : undefined;
-  if (!inhalt) return fehler(401, 'Der Knopf ist abgelaufen. Öffne Macher OS und entscheide dort.');
+  if (!inhalt) return fehler(401, 'Der Knopf ist abgelaufen. Öffne Handwerk OS und entscheide dort.');
 
   try {
     // Ist die Person noch Mitglied des Betriebs?
@@ -37,6 +37,6 @@ export async function POST(req: Request): Promise<Response> {
     return json(200, { ok: true, text: ergebnis.text });
   } catch (e) {
     console.error('Takt-Aktion fehlgeschlagen', e);
-    return fehler(502, 'Das hat gerade nicht geklappt. Öffne Macher OS und entscheide dort.');
+    return fehler(502, 'Das hat gerade nicht geklappt. Öffne Handwerk OS und entscheide dort.');
   }
 }

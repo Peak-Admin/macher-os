@@ -89,7 +89,7 @@ export async function POST(req: Request): Promise<Response> {
       await emailSenden({
         an: an!,
         betreff: `Rückmeldung: ${artLabel(r.art)}`,
-        absenderName: "Macher OS",
+        absenderName: "Handwerk OS",
         text: [
           r.text,
           "",

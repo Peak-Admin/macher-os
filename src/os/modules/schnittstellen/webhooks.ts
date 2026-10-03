@@ -228,5 +228,5 @@ export const webhookQuelle = () => quelle;
 /** Text zum Zustand der Zustellung */
 export function zustellungText(q: WebhookQuelle = quelle): string {
   if (q.zustellungAktiv()) return 'Wird zugestellt';
-  return cloudAktiv() ? 'Zustellung wird gerade eingerichtet' : 'Wird zugestellt, sobald Macher OS mit der Cloud verbunden ist';
+  return cloudAktiv() ? 'Zustellung wird gerade eingerichtet' : 'Wird zugestellt, sobald Handwerk OS mit der Cloud verbunden ist';
 }

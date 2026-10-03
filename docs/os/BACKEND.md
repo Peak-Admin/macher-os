@@ -1,6 +1,6 @@
 # Backend verbinden – Schritt für Schritt
 
-Ohne die Schlüssel unten läuft Macher OS (unter `/os`) wie bisher nur im Browser. Sobald `NEXT_PUBLIC_SUPABASE_URL` und
+Ohne die Schlüssel unten läuft Handwerk OS (unter `/os`) wie bisher nur im Browser. Sobald `NEXT_PUBLIC_SUPABASE_URL` und
 `NEXT_PUBLIC_SUPABASE_ANON_KEY` gesetzt sind, schaltet die App automatisch auf Cloud um: Konto ohne Passwort,
 Team auf mehreren Geräten, echter Versand, Push, öffentliche Links und Dateien.
 Jeder Dienst ist einzeln zuschaltbar – fehlt ein Schlüssel, antwortet die zugehörige Server-Funktion mit
@@ -43,7 +43,7 @@ Server-Funktionen: `src/app/api/cloud/*`, `src/app/api/cron/*` und `src/app/api/
 installierten App klappt (der Link öffnet sonst im Browser):
 
 ```html
-<h2>Dein Anmeldelink für Macher OS</h2>
+<h2>Dein Anmeldelink für Handwerk OS</h2>
 <p><a href="{{ .ConfirmationURL }}">Jetzt anmelden</a></p>
 <p>Oder gib diesen Code in der App ein: <strong>{{ .Token }}</strong></p>
 ```
@@ -51,7 +51,7 @@ installierten App klappt (der Link öffnet sonst im Browser):
 **E-Mail-Versand der Anmeldung über Resend** (der eingebaute Versand von Supabase ist stark begrenzt):
 **Project Settings → Authentication → SMTP Settings** → Enable custom SMTP
 - Host `smtp.resend.com`, Port `465`, Benutzer `resend`, Passwort = dein `RESEND_API_KEY` (Schritt 3)
-- Absender: dieselbe Adresse wie `EMAIL_ABSENDER`, Name „Macher OS“
+- Absender: dieselbe Adresse wie `EMAIL_ABSENDER`, Name „Handwerk OS“
 
 **Authentication → Providers → Phone**: aktivieren. Als SMS-Anbieter nichts eintragen – stattdessen den Hook nutzen,
 damit nur ein SMS-Anbieter nötig ist:
@@ -72,7 +72,7 @@ damit nur ein SMS-Anbieter nötig ist:
 Standard ist **seven.io** (deutscher Anbieter, Server in Deutschland):
 1. Konto auf <https://www.seven.io> anlegen, Guthaben aufladen.
 2. **Developer → API Keys** → Schlüssel erzeugen → `SMS_API_KEY`.
-3. `SMS_ABSENDER`: höchstens 11 Zeichen ohne Leerzeichen, z. B. `MacherOS`.
+3. `SMS_ABSENDER`: höchstens 11 Zeichen ohne Leerzeichen, z. B. `HandwerkOS`.
 
 Anderer Anbieter? Solange er „POST mit JSON `{ to, from, text }`“ versteht, reichen zusätzlich
 `SMS_API_URL`, `SMS_API_HEADER` (Name der Schlüssel-Kopfzeile, z. B. `Authorization`) und `SMS_API_PRAEFIX` (z. B. `Bearer `).
@@ -144,7 +144,7 @@ Hat ein Mitarbeiter kein Gerät mit Push, geht die Nachricht als E-Mail raus (we
    (z. B. Tagesbrief), braucht es **Vercel Pro**. Der Cron `/api/cron/taeglich` läuft täglich um 03:17 UTC.
 5. Takte (`/api/takte/cron`): Vercel Hobby erlaubt nur tägliche Crons – deshalb steht in `vercel.json`
    `"schedule": "30 4 * * *"` (04:30 UTC = 6:30 Uhr Sommerzeit). Die feinen Zeiten (Dein Tag 6:30, Tagesbrief 7:00,
-   Zeiten bestätigen 16:30, Wochenbilanz Fr 15:00) plant bis dahin der Browser-Planer, solange Macher OS offen ist;
+   Zeiten bestätigen 16:30, Wochenbilanz Fr 15:00) plant bis dahin der Browser-Planer, solange Handwerk OS offen ist;
    Browser und Server teilen sich „zuletzt zugestellt“, nichts kommt doppelt. **Mit Vercel Pro** den Zeitplan auf
    `"*/15 * * * *"` stellen – dann stellt der Server alle Takte pünktlich zu, auch wenn niemand die App offen hat.
 
@@ -177,7 +177,7 @@ npm run typecheck && npm test && npm run build
 ## Bankverbindung und Webhooks (Integration Hub)
 
 Ohne diese Schritte funktioniert der Zahlungsabgleich weiter über den Datei-Import (CAMT.053 oder CSV unter
-**Betrieb → Zahlungen → Kontoauszug importieren**). Macher OS baut keine eigene Bankanbindung und kein eigenes OAuth:
+**Betrieb → Zahlungen → Kontoauszug importieren**). Handwerk OS baut keine eigene Bankanbindung und kein eigenes OAuth:
 Die Anmeldung bei der Bank übernimmt ein Kontoinformationsdienst (Integrationspartner), der Umsätze per Webhook liefert.
 
 **Bank-Eingang** (`POST /api/eingang/bank?betrieb=<betriebId>`)
@@ -203,5 +203,5 @@ Zustellung: POST mit JSON aus `webhookNutzlast()` (`{ id, type, event, created_a
 Kopfzeilen `x-macher-ereignis` (API-Name, z. B. `invoice.paid`) und `x-macher-signatur`
 (`webhookSignatur()` aus `src/os/server/signatur.ts`, Geheimnis je Webhook in der Einstellung
 `schnittstellen.webhook-geheimnisse`). Die serverseitige Zustellung (`setzeWebhookVersender`, `webhooksZustellen`) ist noch
-nicht verdrahtet – bis dahin zeigt die App „Wird zugestellt, sobald Macher OS mit der Cloud verbunden ist“.
+nicht verdrahtet – bis dahin zeigt die App „Wird zugestellt, sobald Handwerk OS mit der Cloud verbunden ist“.
 Empfehlung: `webhooks`, `webhook_auslieferungen` und `ereignisprotokoll` in `sammlung_rechte` auf Chef und Büro beschränken.

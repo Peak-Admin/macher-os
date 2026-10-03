@@ -76,8 +76,8 @@ export async function pushAnMitarbeiter(
       betreff: n.titel,
       text: n.text ?? n.titel,
       link: basis && n.pfad ? `${basis.replace(/\/$/, '')}${n.pfad === '/os' || n.pfad.startsWith('/os/') ? '' : '/os'}${n.pfad}` : undefined,
-      linkText: 'In Macher OS öffnen',
-      absenderName: 'Macher OS',
+      linkText: 'In Handwerk OS öffnen',
+      absenderName: 'Handwerk OS',
     });
     return { geraete: 0, email: true };
   }

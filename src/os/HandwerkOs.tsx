@@ -31,7 +31,7 @@ function starte() {
   return start;
 }
 
-export default function MacherOs() {
+export default function HandwerkOs() {
   const [bereit, setBereit] = useState(false);
   const [fehler, setFehler] = useState(false);
 
@@ -47,7 +47,7 @@ export default function MacherOs() {
         melden();
       },
       (e) => {
-        console.error('Macher OS konnte nicht starten', e);
+        console.error('Handwerk OS konnte nicht starten', e);
         setFehler(true);
         melden();
       },
@@ -57,14 +57,14 @@ export default function MacherOs() {
   if (fehler)
     return (
       <div className="mm-start" role="alert">
-        <h1>Macher OS startet nicht.</h1>
+        <h1>Handwerk OS startet nicht.</h1>
         <p>Dein Browser lässt keine lokale Datenbank zu. Prüfe, ob du im privaten Modus bist, und lade die Seite neu.</p>
       </div>
     );
   if (!bereit)
     return (
       <div className="mm-start" aria-busy="true">
-        <p>Macher OS wird geladen …</p>
+        <p>Handwerk OS wird geladen …</p>
       </div>
     );
   return <App />;

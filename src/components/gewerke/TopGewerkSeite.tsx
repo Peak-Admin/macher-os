@@ -37,7 +37,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         eyebrow={g.seoTitel}
         title={
           <>
-            Macher OS für <span>{g.name}</span>.
+            Handwerk OS für <span>{g.name}</span>.
           </>
         }
         intro={g.hero.intro}
@@ -51,7 +51,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
             <SectionHeading
               eyebrow={`Ein Tag bei ${g.hero.betrieb}`}
               title="Dein Tag auf einen Blick."
-              intro="Termine, Mitarbeiter und Hinweise in einer Ansicht. So sieht der Tag in Macher OS aus – eingerichtet für dein Gewerk."
+              intro="Termine, Mitarbeiter und Hinweise in einer Ansicht. So sieht der Tag in Handwerk OS aus – eingerichtet für dein Gewerk."
             />
             <p className="mt-4 flex items-center gap-2 text-sm text-muted">
               <Badge>Beispiel</Badge> Beispieldaten, kein echter Betrieb.
@@ -68,7 +68,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         <SectionHeading
           eyebrow="Typischer Arbeitsablauf"
           title="So läuft es in deinem Betrieb."
-          intro="Jedes Gewerk hat seine eigenen Abläufe. Macher OS bildet sie so ab, wie du arbeitest."
+          intro="Jedes Gewerk hat seine eigenen Abläufe. Handwerk OS bildet sie so ab, wie du arbeitest."
         />
         <div className="mt-10 grid gap-4">
           {g.ablaeufe.map((a) => (
@@ -103,10 +103,10 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         </ol>
       </BildText>
 
-      {/* 4. So hilft Macher OS */}
+      {/* 4. So hilft Handwerk OS */}
       <Section tone="sand">
         <SectionHeading
-          eyebrow="So hilft Macher OS"
+          eyebrow="So hilft Handwerk OS"
           title="Für jedes Problem die passende Funktion."
           intro="Alles in einer Software – vom ersten Anruf bis zur bezahlten Rechnung."
         />
@@ -122,7 +122,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         <SectionHeading
           eyebrow={`Für ${reg.kurz} eingerichtet`}
           title="Vom ersten Tag an in deiner Sprache."
-          intro={`Wählst du beim Start „${reg.titel}“, richtet Macher OS Begriffe, Vorlagen, Checklisten und Qualifikationen passend ein. Alles kannst du ändern und ergänzen.`}
+          intro={`Wählst du beim Start „${reg.titel}“, richtet Handwerk OS Begriffe, Vorlagen, Checklisten und Qualifikationen passend ein. Alles kannst du ändern und ergänzen.`}
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <EinrichtungsListe titel="Begriffe" icon="chat" items={g.eingerichtet.begriffe} />
@@ -147,7 +147,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
           ))}
         </div>
         <ArrowLink href="/funktionen/auftraege" className="mt-8">
-          Aufträge in Macher OS ansehen
+          Aufträge in Handwerk OS ansehen
         </ArrowLink>
       </Section>
 
@@ -242,7 +242,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
               title={kundeAusGewerk ? "So arbeitet ein Betrieb wie deiner." : "So arbeitet ein Betrieb aus einem verwandten Gewerk."}
               intro={
                 kundeAusGewerk
-                  ? "Ein Beispiel aus dem Alltag – wie Macher OS in einem Betrieb aus deinem Gewerk eingesetzt wird."
+                  ? "Ein Beispiel aus dem Alltag – wie Handwerk OS in einem Betrieb aus deinem Gewerk eingesetzt wird."
                   : "Für dein Gewerk haben wir noch keine eigene Story. Die Abläufe in diesem Beispiel sind deinen aber sehr ähnlich."
               }
             />
@@ -301,7 +301,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
 
       {/* Weitere Gewerke – Fotokarten */}
       <Section tone="white">
-        <SectionHeading eyebrow="Andere Gewerke" title="Macher OS für jedes Handwerk." />
+        <SectionHeading eyebrow="Andere Gewerke" title="Handwerk OS für jedes Handwerk." />
         <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {andereGewerke.map((x) => (
             <li key={x.slug}>
@@ -321,7 +321,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
 
       {/* 13. FAQ */}
       <Section tone="ink" containerSize="narrow">
-        <DunkleHeadline gruen="Häufige Fragen:" rest={`Macher OS für ${g.name}`} />
+        <DunkleHeadline gruen="Häufige Fragen:" rest={`Handwerk OS für ${g.name}`} />
         <div className="mt-10">
           <Faq items={g.faq} dark />
         </div>
@@ -330,8 +330,8 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
 
       {/* 14. Final CTA */}
       <FinalCta
-        title={`Macher OS für ${g.name}. Jetzt ausprobieren.`}
-        intro={`Starte kostenlos. Macher OS richtet sich beim Start für ${reg.titel} ein – mit Begriffen, Vorlagen und Abläufen aus deinem Gewerk.`}
+        title={`Handwerk OS für ${g.name}. Jetzt ausprobieren.`}
+        intro={`Starte kostenlos. Handwerk OS richtet sich beim Start für ${reg.titel} ein – mit Begriffen, Vorlagen und Abläufen aus deinem Gewerk.`}
         primaryHref={app.einrichten(appGewerk[slug])}
       />
     </>

@@ -132,7 +132,7 @@ export function KernBereiche({
         >
           <div
             role="tablist"
-            aria-label="Kernelemente von Macher OS"
+            aria-label="Kernelemente von Handwerk OS"
             onKeyDown={taste}
             className="flex flex-wrap justify-center gap-2"
           >

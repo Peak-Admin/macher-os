@@ -10,14 +10,14 @@ export const teil7 = {
     meta: {
       title: "DATANORM einlesen – Großhandelspreise ohne Abtippen",
       description:
-        "Lies die DATANORM-Datei deines Großhändlers in Macher OS ein. Artikel, Einheiten, Preise und EAN landen in deiner Artikelliste – vorhandene Artikel werden aktualisiert, nicht doppelt angelegt.",
+        "Lies die DATANORM-Datei deines Großhändlers in Handwerk OS ein. Artikel, Einheiten, Preise und EAN landen in deiner Artikelliste – vorhandene Artikel werden aktualisiert, nicht doppelt angelegt.",
     },
     hero: {
       titel: "Großhandelspreise einlesen statt abtippen.",
       problem:
         "Die Preise ändern sich, die Artikelliste im Programm nicht. Im Angebot steht dann ein Einkaufspreis vom letzten Jahr.",
       loesung:
-        "Du lädst die DATANORM-Datei deines Großhändlers hoch. Macher OS zeigt dir vorher, was neu ist und was sich ändert – dann übernimmst du alles mit einem Klick.",
+        "Du lädst die DATANORM-Datei deines Großhändlers hoch. Handwerk OS zeigt dir vorher, was neu ist und was sich ändert – dann übernimmst du alles mit einem Klick.",
     },
     visual: {
       bereich: "Betrieb",
@@ -64,7 +64,7 @@ export const teil7 = {
     ],
     loesung: {
       titel: "Eine Datei, ein Klick, aktuelle Preise.",
-      text: "Du wählst die DATANORM-Datei und den Großhändler. Macher OS liest Artikel, Einheiten, Preise und EAN und zeigt dir vorher, was neu ist, was sich ändert und was der Großhändler gelöscht hat. Erst wenn du übernimmst, ändert sich deine Artikelliste.",
+      text: "Du wählst die DATANORM-Datei und den Großhändler. Handwerk OS liest Artikel, Einheiten, Preise und EAN und zeigt dir vorher, was neu ist, was sich ändert und was der Großhändler gelöscht hat. Erst wenn du übernimmst, ändert sich deine Artikelliste.",
       punkte: [
         "DATANORM 4 und 5 – so, wie die meisten Großhändler sie liefern",
         "Vorhandene Artikel mit gleicher Nummer oder EAN werden aktualisiert",
@@ -152,7 +152,7 @@ export const teil7 = {
     werkzeug: "materialaufschlag-rechner",
     faq: [
       {
-        frage: "Welche DATANORM-Dateien kann Macher OS lesen?",
+        frage: "Welche DATANORM-Dateien kann Handwerk OS lesen?",
         antwort:
           "DATANORM 4 und 5. Ältere Dateien mit festen Spaltenbreiten (DATANORM 3) gehen nicht – dann frag deinen Großhändler nach Version 4 oder 5. Gelesen werden Artikel mit Nummer, Bezeichnung, Einheit, Preis und Warengruppe sowie die EAN. Langtexte, Preisänderungs- und Rabattsätze werden heute übersprungen.",
       },
@@ -164,7 +164,7 @@ export const teil7 = {
       {
         frage: "Kann ich direkt im Shop meines Großhändlers bestellen (IDS Connect, OCI)?",
         antwort:
-          "Noch nicht. IDS Connect, OCI und UGL sind geplant, aber heute nicht verfügbar. Bis dahin legst du Bestellungen in Macher OS an und schickst sie per E-Mail an deinen Großhändler.",
+          "Noch nicht. IDS Connect, OCI und UGL sind geplant, aber heute nicht verfügbar. Bis dahin legst du Bestellungen in Handwerk OS an und schickst sie per E-Mail an deinen Großhändler.",
       },
       {
         frage: "Wer darf Preise einlesen?",
@@ -184,14 +184,14 @@ export const teil7 = {
     meta: {
       title: "GAEB einlesen – Leistungsverzeichnisse direkt ins Angebot",
       description:
-        "Lies Ausschreibungen als GAEB-XML-Datei (X83, X84) in Macher OS ein. Positionen mit Ordnungszahl, Menge, Einheit und Langtext landen im Angebot – du trägst nur noch die Preise ein.",
+        "Lies Ausschreibungen als GAEB-XML-Datei (X83, X84) in Handwerk OS ein. Positionen mit Ordnungszahl, Menge, Einheit und Langtext landen im Angebot – du trägst nur noch die Preise ein.",
     },
     hero: {
       titel: "Ausschreibung einlesen, nicht abschreiben.",
       problem:
         "Das Leistungsverzeichnis hat 120 Positionen. Jede tippst du mit Menge, Einheit und Text von Hand ins Angebot.",
       loesung:
-        "Du lädst die GAEB-Datei hoch und wählst den Auftrag. Macher OS übernimmt alle Positionen ins Angebot – du trägst nur noch die Preise ein.",
+        "Du lädst die GAEB-Datei hoch und wählst den Auftrag. Handwerk OS übernimmt alle Positionen ins Angebot – du trägst nur noch die Preise ein.",
     },
     visual: {
       bereich: "Aufträge",
@@ -239,7 +239,7 @@ export const teil7 = {
     ],
     loesung: {
       titel: "Das LV landet direkt im Angebot.",
-      text: "Du wählst den Auftrag und die GAEB-Datei. Macher OS zeigt dir eine Vorschau mit allen Titeln und Positionen. Ein Klick – und alles steht im Angebotsentwurf: Ordnungszahl, Kurztext, auf Wunsch Langtext, Menge und Einheit.",
+      text: "Du wählst den Auftrag und die GAEB-Datei. Handwerk OS zeigt dir eine Vorschau mit allen Titeln und Positionen. Ein Klick – und alles steht im Angebotsentwurf: Ordnungszahl, Kurztext, auf Wunsch Langtext, Menge und Einheit.",
       punkte: [
         "GAEB DA XML: X83 (Angebotsaufforderung) und X84 (Angebotsabgabe)",
         "Ordnungszahlen, Mengen und Einheiten werden übernommen",
@@ -268,7 +268,7 @@ export const teil7 = {
       },
       {
         titel: "GAEB-Datei hochladen",
-        text: "Die Datei vom Auftraggeber, meist mit der Endung .X83. Macher OS liest sie und zeigt dir eine Vorschau.",
+        text: "Die Datei vom Auftraggeber, meist mit der Endung .X83. Handwerk OS liest sie und zeigt dir eine Vorschau.",
       },
       {
         titel: "Ins Angebot übernehmen",
@@ -326,19 +326,19 @@ export const teil7 = {
     werkzeug: "angebots-rechner",
     faq: [
       {
-        frage: "Welche GAEB-Dateien kann Macher OS lesen?",
+        frage: "Welche GAEB-Dateien kann Handwerk OS lesen?",
         antwort:
           "GAEB DA XML in der Version 3, vor allem X83 (Angebotsaufforderung) und X84 (Angebotsabgabe). X81 und X86 werden ebenso gelesen. Ältere GAEB-Formate, die kein XML sind, gehen nicht – frag den Auftraggeber dann nach einer Datei mit der Endung .X83.",
       },
       {
         frage: "Kann ich mein Angebot als GAEB-Datei zurückschicken?",
         antwort:
-          "Noch nicht. Der Export als X84 ist geplant. Bis dahin gibst du das Angebot aus Macher OS als Dokument ab oder trägst die Preise in das Programm des Auftraggebers ein.",
+          "Noch nicht. Der Export als X84 ist geplant. Bis dahin gibst du das Angebot aus Handwerk OS als Dokument ab oder trägst die Preise in das Programm des Auftraggebers ein.",
       },
       {
         frage: "Was passiert mit Bedarfs- und Wahlpositionen?",
         antwort:
-          "Macher OS erkennt sie und übernimmt sie als optionale Positionen. Sie stehen im Angebot, zählen aber nicht zur Angebotssumme.",
+          "Handwerk OS erkennt sie und übernimmt sie als optionale Positionen. Sie stehen im Angebot, zählen aber nicht zur Angebotssumme.",
       },
       {
         frage: "Wer darf Leistungsverzeichnisse einlesen?",

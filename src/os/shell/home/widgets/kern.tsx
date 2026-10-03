@@ -355,7 +355,7 @@ export function AnsprechpartnerWidget({ groesse }: WidgetProps) {
 const NEWS_LABEL: Record<NewsTyp, string> = {
   news: 'Neuigkeit',
   workshop: 'Workshop',
-  product_update: 'Neu in Macher OS',
+  product_update: 'Neu in Handwerk OS',
   template: 'Vorlage',
   guide: 'Anleitung',
 };

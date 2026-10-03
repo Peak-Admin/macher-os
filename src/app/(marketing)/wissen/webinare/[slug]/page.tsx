@@ -89,8 +89,8 @@ export default async function WebinarPage({ params }: Props) {
                   }
                   einleitung={
                     aufzeichnung
-                      ? `Hallo Macher-OS-Team, bitte schickt mir die Aufzeichnung des Webinars „${w.titel}“.`
-                      : `Hallo Macher-OS-Team, bitte benachrichtigt mich, sobald es einen Termin für das Webinar „${w.titel}“ gibt.`
+                      ? `Hallo Handwerk-OS-Team, bitte schickt mir die Aufzeichnung des Webinars „${w.titel}“.`
+                      : `Hallo Handwerk-OS-Team, bitte benachrichtigt mich, sobald es einen Termin für das Webinar „${w.titel}“ gibt.`
                   }
                   buttonLabel={aufzeichnung ? "Aufzeichnung anfordern" : "Benachrichtigt mich"}
                   gewerke={gewerkOptionen}
@@ -143,7 +143,7 @@ export default async function WebinarPage({ params }: Props) {
       <Section tone="white">
         <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <SectionHeading eyebrow="In Macher OS" title="Passende Funktionen." />
+            <SectionHeading eyebrow="In Handwerk OS" title="Passende Funktionen." />
             <div className="mt-8">
               <FunktionLinks slugs={w.funktionen} />
             </div>

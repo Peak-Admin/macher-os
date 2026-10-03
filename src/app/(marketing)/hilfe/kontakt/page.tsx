@@ -10,7 +10,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Kontakt & Support",
   description:
-    "Persönliche Hilfe zu Macher OS: Produktfragen, technische Probleme, Einrichtung, Datenübernahme oder Rechnung – wähle dein Thema und schreib uns.",
+    "Persönliche Hilfe zu Handwerk OS: Produktfragen, technische Probleme, Einrichtung, Datenübernahme oder Rechnung – wähle dein Thema und schreib uns.",
   path: "/hilfe/kontakt",
 });
 

@@ -55,7 +55,7 @@ export const einwaende: Einwand[] = [
   { rang: 2, staerke: 98, einwand: "Das ist mir bestimmt wieder zu kompliziert.", antwort: "Zum Start gibt es genau eine Frage – in Handwerkersprache, ohne IT-Begriffe. Was du nicht brauchst, siehst du nicht." },
   { rang: 3, staerke: 97, einwand: "Bis ich das eingerichtet habe, mach ich's lieber wie bisher.", antwort: "Die Einrichtung ist eine Frage. Danach schreibst du direkt dein erstes Angebot – nicht erst in ein paar Wochen." },
   { rang: 4, staerke: 96, einwand: "Meine Leute benutzen das am Ende sowieso nicht.", antwort: "Deine Leute melden sich mit ihrer Handynummer an – ohne Passwort. Auf dem Handy sehen sie nur ihren Einsatz: Adresse, Aufgaben, Fotos, Zeiten." },
-  { rang: 5, staerke: 95, einwand: "Bei uns funktioniert es doch auch so.", antwort: "Bis eine Rechnung liegen bleibt oder ein Termin durchrutscht. Macher OS erinnert dich, bevor Geld oder Zeit verloren gehen." },
+  { rang: 5, staerke: 95, einwand: "Bei uns funktioniert es doch auch so.", antwort: "Bis eine Rechnung liegen bleibt oder ein Termin durchrutscht. Handwerk OS erinnert dich, bevor Geld oder Zeit verloren gehen." },
   { rang: 6, staerke: 95, einwand: "Ich will nicht noch ein Programm.", antwort: "Dann nimm eins statt fünf: Anfragen, Angebote, Planung, Zeiten und Rechnungen an einem Ort." },
   { rang: 7, staerke: 94, einwand: "Dann muss ich alles doppelt pflegen.", antwort: "Im Gegenteil. Aus dem Angebot wird der Auftrag, aus dem Auftrag die Rechnung. Was einmal drin ist, steht überall." },
   { rang: 8, staerke: 94, einwand: "Was passiert mit meinen Daten?", antwort: "Deine Daten liegen auf Servern in Frankfurt. Mit Vertrag zur Auftragsverarbeitung nach DSGVO. Du kannst jederzeit alles exportieren." },
@@ -70,11 +70,11 @@ export const einwaende: Einwand[] = [
   { rang: 17, staerke: 85, einwand: "Funktioniert das mit DATEV, meiner Buchhaltung, meinem Kalender?", antwort: "Für deinen Steuerberater gibt es den DATEV-Export. Termine übernimmst du als Kalenderdatei in dein Handy." },
   { rang: 18, staerke: 84, einwand: "Ich will nicht alles umstellen.", antwort: "Musst du nicht. Fang mit Angeboten oder Rechnungen an. Den Rest nimmst du dazu, wenn du so weit bist." },
   { rang: 19, staerke: 80, einwand: "Dann bin ich von dem Anbieter abhängig.", antwort: "Monatlich kündbar. Der Export deiner Daten ist immer kostenlos – auch nach der Kündigung." },
-  { rang: 20, staerke: 79, einwand: "Ich bin einfach kein Computer-Mensch.", antwort: "Musst du auch nicht sein. Macher OS ist fürs Handy gebaut, mit großen Knöpfen und klaren Worten. Und wenn's hakt, hilft dir jemand auf Deutsch." },
+  { rang: 20, staerke: 79, einwand: "Ich bin einfach kein Computer-Mensch.", antwort: "Musst du auch nicht sein. Handwerk OS ist fürs Handy gebaut, mit großen Knöpfen und klaren Worten. Und wenn's hakt, hilft dir jemand auf Deutsch." },
   { rang: 21, staerke: 77, einwand: "Auf der Baustelle funktioniert sowas doch nicht richtig.", antwort: "Zeiten, Fotos, Material und Unterschrift gehen auch ohne Netz. Sobald wieder Empfang da ist, wird alles übertragen." },
   { rang: 22, staerke: 76, einwand: "Ich hab schon mal so eine Software probiert.", antwort: "Dann weißt du, worauf es ankommt. Teste mit deinem echten Betrieb – ohne Vertrag und ohne Kreditkarte." },
-  { rang: 23, staerke: 75, einwand: "Nachher muss ich dafür erst eine Schulung machen.", antwort: "Nein. Zum Start beantwortest du eine Frage, den Rest zeigt dir Macher OS, wenn du ihn brauchst. Für Büro und Chef gibt es kurze Anleitungen im Hilfe-Center." },
-  { rang: 24, staerke: 73, einwand: "Dafür brauch ich wieder irgendeinen ITler.", antwort: "Nein. Macher OS läuft im Browser und auf dem Handy. Nichts installieren, kein Server im Keller." },
+  { rang: 23, staerke: 75, einwand: "Nachher muss ich dafür erst eine Schulung machen.", antwort: "Nein. Zum Start beantwortest du eine Frage, den Rest zeigt dir Handwerk OS, wenn du ihn brauchst. Für Büro und Chef gibt es kurze Anleitungen im Hilfe-Center." },
+  { rang: 24, staerke: 73, einwand: "Dafür brauch ich wieder irgendeinen ITler.", antwort: "Nein. Handwerk OS läuft im Browser und auf dem Handy. Nichts installieren, kein Server im Keller." },
   { rang: 25, staerke: 70, einwand: "Das sieht wieder nach Bürosoftware aus.", antwort: "Gebaut für Baustelle und Büro: große Knöpfe, klare Sprache, Handy zuerst." },
 ];
 

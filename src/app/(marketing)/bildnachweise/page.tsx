@@ -9,7 +9,7 @@ import { ausgehend } from "@/lib/link/ausgehend";
 export const metadata = {
   ...pageMeta({
     title: "Bildnachweise",
-    description: "Woher die Fotos auf der Website von Macher OS stammen und unter welcher Lizenz sie stehen.",
+    description: "Woher die Fotos auf der Website von Handwerk OS stammen und unter welcher Lizenz sie stehen.",
     path: "/bildnachweise",
   }),
   robots: { index: false },

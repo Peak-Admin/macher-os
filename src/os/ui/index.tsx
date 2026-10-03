@@ -1,5 +1,5 @@
 /**
- * UI-Bausteine von Macher OS. Alle Module verwenden NUR diese Bausteine,
+ * UI-Bausteine von Handwerk OS. Alle Module verwenden NUR diese Bausteine,
  * damit das Design am Ende zentral angepasst werden kann.
  */
 import {

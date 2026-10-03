@@ -53,7 +53,7 @@ export async function emailSenden(e: EmailAuftrag): Promise<{ id?: string }> {
   const key = env('RESEND_API_KEY');
   if (!key) throw new Error('E-Mail nicht verbunden');
   const absender = env('EMAIL_ABSENDER') ?? 'post@macher-os.de';
-  const name = e.absenderName.replace(/["<>]/g, '').trim() || 'Macher OS';
+  const name = e.absenderName.replace(/["<>]/g, '').trim() || 'Handwerk OS';
   const text = [e.text, e.link].filter(Boolean).join('\n\n');
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -87,7 +87,7 @@ export async function smsSenden(an: string, text: string): Promise<{ id?: string
   const r = await fetch(url, {
     method: 'POST',
     headers: { [kopf]: `${praefix}${key}`, 'content-type': 'application/json', accept: 'application/json' },
-    body: JSON.stringify({ to: telefonNormal(an), from: env('SMS_ABSENDER') ?? 'MacherOS', text }),
+    body: JSON.stringify({ to: telefonNormal(an), from: env('SMS_ABSENDER') ?? 'HandwerkOS', text }),
   });
   if (!r.ok) throw new Error(`SMS-Versand fehlgeschlagen (${r.status}): ${(await r.text()).slice(0, 200)}`);
   const antwort = (await r.json().catch(() => ({}))) as { id?: string | number; messages?: { id?: string | number }[] };

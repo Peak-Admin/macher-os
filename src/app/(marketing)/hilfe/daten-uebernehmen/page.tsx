@@ -19,7 +19,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Daten übernehmen",
   description:
-    "Kunden, Mitarbeiter, Artikel, offene Aufträge und Dokumente in Macher OS übernehmen – aus Excel, CSV, deiner bisherigen Software oder per Datanorm.",
+    "Kunden, Mitarbeiter, Artikel, offene Aufträge und Dokumente in Handwerk OS übernehmen – aus Excel, CSV, deiner bisherigen Software oder per Datanorm.",
   path: "/hilfe/daten-uebernehmen",
 });
 
@@ -36,7 +36,7 @@ function ImportMock() {
   return (
     <div
       role="img"
-      aria-label="Import in Macher OS: Spalten aus einer Excel-Datei werden Feldern zugeordnet"
+      aria-label="Import in Handwerk OS: Spalten aus einer Excel-Datei werden Feldern zugeordnet"
       className="overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-xl shadow-ink/10"
     >
       <div className="flex items-center justify-between border-b border-line px-4 py-3">
@@ -48,7 +48,7 @@ function ImportMock() {
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-3 gap-y-2 p-4 text-sm">
         <span className="text-sm font-semibold font-tagline uppercase tracking-wider text-muted">Deine Spalte</span>
         <span />
-        <span className="text-sm font-semibold font-tagline uppercase tracking-wider text-muted">Macher OS</span>
+        <span className="text-sm font-semibold font-tagline uppercase tracking-wider text-muted">Handwerk OS</span>
         {zeilen.map(([von, nach]) => (
           <div key={von} className="contents">
             <span className="rounded-md bg-paper px-2.5 py-1.5 ring-1 ring-line">{von}</span>
@@ -109,7 +109,7 @@ export default function DatenUebernehmenPage() {
         <SectionHeading
           eyebrow="Woher die Daten kommen"
           title="Aus Tabelle, Software oder vom Großhändler."
-          intro="Macher OS arbeitet mit gängigen Dateiformaten. Was deine bisherige Software exportieren kann, ist von Programm zu Programm verschieden – im Zweifel schauen wir uns eine Beispieldatei an."
+          intro="Handwerk OS arbeitet mit gängigen Dateiformaten. Was deine bisherige Software exportieren kann, ist von Programm zu Programm verschieden – im Zweifel schauen wir uns eine Beispieldatei an."
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {datenQuellen.map((q) => (
@@ -126,7 +126,7 @@ export default function DatenUebernehmenPage() {
         <Steps steps={uebernahmeAblauf} className="mt-10" />
         <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
           <ArrowLink href="/hilfe-center/grosshaendler-daten">Artikel vom Großhändler übernehmen</ArrowLink>
-          <ArrowLink href="/wechseln">Wechseln zu Macher OS</ArrowLink>
+          <ArrowLink href="/wechseln">Wechseln zu Handwerk OS</ArrowLink>
         </div>
       </Section>
 
@@ -136,7 +136,7 @@ export default function DatenUebernehmenPage() {
           <div className="rounded-2xl border border-line bg-white p-8">
             <Fenster icon="download" className="-mx-2 -mt-2" />
             <h2 className="mt-6 font-display text-2xl font-extrabold">Selbst übernehmen</h2>
-            <p className="mt-2 text-muted">Für die meisten Betriebe reicht das. Macher OS hilft automatisch mit:</p>
+            <p className="mt-2 text-muted">Für die meisten Betriebe reicht das. Handwerk OS hilft automatisch mit:</p>
             <CheckList
               className="mt-5"
               items={[
@@ -181,7 +181,7 @@ export default function DatenUebernehmenPage() {
               herunterladen.
             </p>
             <ArrowLink href="/datenschutz" className="mt-5">
-              Datenschutz bei Macher OS
+              Datenschutz bei Handwerk OS
             </ArrowLink>
           </div>
         </div>

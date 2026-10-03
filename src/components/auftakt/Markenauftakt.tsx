@@ -67,7 +67,7 @@ function softwareBereit() {
 /**
  * Markenauftakt „Für ein neues Wirtschaftswunder“: läuft einmal pro Gerät beim Erstkontakt (Website oder Einrichtung).
  * Das Kopf-Skript (`auftaktSkript`) entscheidet vor dem ersten Bild, ob er erscheint. Überspringen per Knopf oder Escape.
- * `wartenAufSoftware`: Das Schlussbild bleibt stehen, bis Macher OS `OS_BEREIT_EREIGNIS` meldet (höchstens 8 s länger).
+ * `wartenAufSoftware`: Das Schlussbild bleibt stehen, bis Handwerk OS `OS_BEREIT_EREIGNIS` meldet (höchstens 8 s länger).
  */
 export function Markenauftakt({ wartenAufSoftware = false }: { wartenAufSoftware?: boolean }) {
   const [phase, setPhase] = useState<Phase>("bereit");
@@ -172,7 +172,7 @@ export function Markenauftakt({ wartenAufSoftware = false }: { wartenAufSoftware
 
       <header className="mm-auftakt-kopf">
         <div className="mm-auftakt-marke">
-          <b>Macher OS</b>
+          <b>Handwerk OS</b>
           <span className="mm-auftakt-trenner" />
           <span className="mm-auftakt-ausgabe">Ein neuer Anfang</span>
         </div>

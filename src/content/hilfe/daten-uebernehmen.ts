@@ -13,7 +13,7 @@ export const uebernehmbareDaten: { titel: string; text: string; skizze: SkizzenM
 export const datenQuellen: { titel: string; text: string; skizze: SkizzenMotiv }[] = [
   {
     titel: "Excel und CSV",
-    text: "Die meisten Listen liegen als Tabelle vor. Macher OS erkennt die Spalten und du ordnest sie zu.",
+    text: "Die meisten Listen liegen als Tabelle vor. Handwerk OS erkennt die Spalten und du ordnest sie zu.",
     skizze: "tabelle",
   },
   {
@@ -35,8 +35,8 @@ export const datenQuellen: { titel: string; text: string; skizze: SkizzenMotiv }
 
 export const uebernahmeAblauf: { titel: string; text: string }[] = [
   { titel: "Daten exportieren", text: "Speichere deine Listen als Excel- oder CSV-Datei – oder exportiere sie aus deiner alten Software." },
-  { titel: "Datei hochladen", text: "In Macher OS unter „Betrieb“ → „Importieren“ die Datei auswählen." },
-  { titel: "Spalten zuordnen", text: "Macher OS schlägt vor, welche Spalte wohin gehört. Du prüfst und korrigierst." },
+  { titel: "Datei hochladen", text: "In Handwerk OS unter „Betrieb“ → „Importieren“ die Datei auswählen." },
+  { titel: "Spalten zuordnen", text: "Handwerk OS schlägt vor, welche Spalte wohin gehört. Du prüfst und korrigierst." },
   { titel: "Vorschau prüfen", text: "Du siehst vorher, was übernommen wird. Doppelte Einträge werden markiert." },
   { titel: "Übernehmen", text: "Mit einem Klick sind die Daten da. Ein Import lässt sich rückgängig machen." },
 ];
@@ -55,7 +55,7 @@ export const uebernahmeFaq: FaqItem[] = [
   {
     frage: "Was kostet die Hilfe bei der Übernahme?",
     antwort:
-      "Den Import mit Datei machst du selbst direkt in Macher OS. Ob und in welchem Umfang wir dich persönlich unterstützen und was das kostet, besprechen wir vorher mit dir.",
+      "Den Import mit Datei machst du selbst direkt in Handwerk OS. Ob und in welchem Umfang wir dich persönlich unterstützen und was das kostet, besprechen wir vorher mit dir.",
   },
   {
     frage: "Muss ich alles auf einmal übernehmen?",

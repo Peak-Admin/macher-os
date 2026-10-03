@@ -49,7 +49,7 @@ ${m.summen.map(([l, w, fett]) => `<tr><td style="padding:4px 6px;text-align:righ
 ${m.link ? `<tr><td style="padding:20px 24px 4px"><a href="${esc(m.link.url)}" style="display:inline-block;background:${FARBE.gruen};color:#FFFFFF;font-weight:700;font-size:19px;text-decoration:none;padding:12px 20px;border-radius:4px">${esc(m.link.label)}</a></td></tr>` : ''}
 <tr><td style="padding:16px 24px 24px">${m.schluss.map((p) => `<p style="margin:0 0 8px">${esc(p)}</p>`).join('')}</td></tr>
 </table>
-<div style="font-size:11px;margin-top:12px;color:${FARBE.text}">Versendet mit Macher OS im Auftrag von ${esc(b?.name ?? 'Ihrem Handwerksbetrieb')}. Antworten gehen direkt an den Betrieb.</div>
+<div style="font-size:11px;margin-top:12px;color:${FARBE.text}">Versendet mit Handwerk OS im Auftrag von ${esc(b?.name ?? 'Ihrem Handwerksbetrieb')}. Antworten gehen direkt an den Betrieb.</div>
 </td></tr></table></body></html>`;
 }
 

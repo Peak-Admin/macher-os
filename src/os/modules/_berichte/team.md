@@ -72,7 +72,7 @@ Beispieldaten (`seed`, `beispiel: true`): eine geplante und eine abgeschlossene 
 ## Offene Punkte
 
 - Planungsprüfung „darf der eingeplante Monteur das?“ gehört Paket `planpruefung` (Daten: `db.nachweise` + `aktuellerNachweis`/`hatGueltig` aus `@modules/qualifikationen/daten` sind wiederverwendbar).
-- Stundenkonto beginnt mit der ersten erfassten Zeit (frühestens Jahresanfang), damit Zeiten vor Macher OS nicht als Minus zählen.
+- Stundenkonto beginnt mit der ersten erfassten Zeit (frühestens Jahresanfang), damit Zeiten vor Handwerk OS nicht als Minus zählen.
 - Neue Mitarbeiter aus einer Zusage bekommen Wochenstunden/Urlaub eines Kollegen gleicher Rolle als Vorschlag und landen direkt im Bearbeiten-Formular.
 - Anteiliger Urlaub bei Eintritt im Jahr, Urlaubssperren und Vertretung beim Genehmigen fehlen bewusst.
 - Matrix bei sehr vielen Qualifikationen auf dem Handy nur per Wischen; Liste „Läuft ab“ ist die mobile Hauptsicht.

@@ -2,7 +2,7 @@ import type { FaqItem, IconName } from "@/components/ui";
 import type { FunktionSlug, TopGewerkSlug, WerkzeugSlug } from "@/content/registry";
 
 export type WerkzeugInhalt = {
-  /** SEO-Titel (ohne „| Macher OS“, das ergänzt das Layout). */
+  /** SEO-Titel (ohne „| Handwerk OS“, das ergänzt das Layout). */
   seoTitel: string;
   /** Meta-Beschreibung. */
   beschreibung: string;

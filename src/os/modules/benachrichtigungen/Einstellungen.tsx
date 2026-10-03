@@ -79,10 +79,10 @@ function Kanalhinweis({ kanal, email }: { kanal: Kanal; email?: string }) {
         {verbunden
           ? kanal === 'push'
             ? pushMoeglich()
-              ? 'Die Takte kommen als Mitteilung aufs Handy – auch wenn Macher OS geschlossen ist. Ohne Mitteilung auf dem Gerät kommen sie per E-Mail.'
+              ? 'Die Takte kommen als Mitteilung aufs Handy – auch wenn Handwerk OS geschlossen ist. Ohne Mitteilung auf dem Gerät kommen sie per E-Mail.'
               : 'Mitteilungen aufs Handy sind noch nicht eingerichtet. Bis dahin kommen die Takte per E-Mail und in der Glocke.'
             : `Die Takte kommen per E-Mail${email ? ` an ${email}` : ''}.`
-          : `Noch ohne verbundenes Konto: Die Takte erscheinen in der Glocke und – wenn du es erlaubst – als Mitteilung auf diesem Gerät, aber nur solange Macher OS geöffnet ist.${kanal === 'email' ? ' E-Mails gehen erst mit verbundenem Konto raus.' : ''}`}
+          : `Noch ohne verbundenes Konto: Die Takte erscheinen in der Glocke und – wenn du es erlaubst – als Mitteilung auf diesem Gerät, aber nur solange Handwerk OS geöffnet ist.${kanal === 'email' ? ' E-Mails gehen erst mit verbundenem Konto raus.' : ''}`}
       </Meta>
       {kanal === 'push' && verbunden && pushMoeglich() && <GeraetAnmelden />}
       {kanal === 'push' && !verbunden && status === 'offen' && (
@@ -193,7 +193,7 @@ export function EinstellungenSeite() {
               checked={e.notdienst}
               onChange={(v) => speichern({ ...e, notdienst: v }, v ? 'Notdienst an: Dringendes kommt auch in der Ruhezeit.' : 'Notdienst aus.')}
             />
-            <Meta>In der Ruhezeit sammelt die Glocke alles still. Du siehst es, wenn du Macher OS öffnest.</Meta>
+            <Meta>In der Ruhezeit sammelt die Glocke alles still. Du siehst es, wenn du Handwerk OS öffnest.</Meta>
           </Stapel>
         </Abschnitt>
         <Zeile>

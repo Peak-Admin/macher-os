@@ -180,7 +180,7 @@ export function VorlageVorschau({ vorlage }: { vorlage: Vorlage }) {
         ))}
       </div>
       <footer className="mt-8 border-t border-line pt-3 text-[10px] text-muted">
-        Vorlage von Macher OS · macher-os.de/wissen/vorlagen · Ohne Gewähr, bitte an deinen Betrieb anpassen.
+        Vorlage von Handwerk OS · macher-os.de/wissen/vorlagen · Ohne Gewähr, bitte an deinen Betrieb anpassen.
       </footer>
     </article>
   );

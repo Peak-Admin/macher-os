@@ -2,14 +2,14 @@
  * Kundenstories – ausführliche Inhalte zu den Einträgen aus `registry.ts`.
  *
  * ACHTUNG: Alle Betriebe sind fiktive Beispiele. Sie zeigen, wie ein typischer
- * Betrieb mit Macher OS arbeitet. Auf der Website werden sie sichtbar als
+ * Betrieb mit Handwerk OS arbeitet. Auf der Website werden sie sichtbar als
  * „Beispielgeschichte“ markiert. Keine erfundenen Messwerte ergänzen – das
  * Ergebnis bleibt qualitativ bzw. nutzt den `ergebnis`-Satz aus der Registry.
  */
 import { funktionen, kunden, topGewerke, type FunktionSlug, type KundeSlug } from "./registry";
 
 export const beispielHinweis =
-  "Beispielgeschichte – zeigt, wie ein typischer Betrieb mit Macher OS arbeitet. Echte Kundenstories folgen.";
+  "Beispielgeschichte – zeigt, wie ein typischer Betrieb mit Handwerk OS arbeitet. Echte Kundenstories folgen.";
 
 export type Groesse = "klein" | "mittel" | "gross";
 
@@ -52,7 +52,7 @@ export const kundenStories: Record<KundeSlug, KundenStory> = {
       "Stundenzettel kamen freitags zerknittert zurück, Rechnungen blieben liegen.",
     ],
     warum:
-      "Der Chef wollte keine Software, die erst ein Berater einrichten muss. Bei Macher OS war das Gewerk nach ein paar Fragen vorbereitet – mit Begriffen und Vorlagen für Elektro.",
+      "Der Chef wollte keine Software, die erst ein Berater einrichten muss. Bei Handwerk OS war das Gewerk nach ein paar Fragen vorbereitet – mit Begriffen und Vorlagen für Elektro.",
     einrichtung: [
       "Gewerk Elektro gewählt, Leistungen wie Wallbox, Zählerschrank und E-Check angehakt.",
       "Kunden und Artikel aus der alten Liste übernommen.",

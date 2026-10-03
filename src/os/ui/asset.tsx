@@ -1,5 +1,5 @@
 /**
- * Objektbild der Macher-OS-Bildsprache („das digitale Werkzeug“, docs/design/visual-assets.md).
+ * Objektbild der Handwerk-OS-Bildsprache („das digitale Werkzeug“, docs/design/visual-assets.md).
  * Ein echtes Foto eines Handwerksobjekts als kleiner, ruhiger Hinweis – nie als einzige Information.
  * Funktionale Navigation bleibt bei Linien-Icons; Objekte nur in Kopf-, Karten- und Leerzuständen.
  */

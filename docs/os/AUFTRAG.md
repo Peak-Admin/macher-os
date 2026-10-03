@@ -1,6 +1,6 @@
 # Auftrag an jede Paket-Session
 
-Du baust ein Paket (siehe deine Startnachricht: Paketname `<paket>`, Module, Hinweise) von Macher OS, einem Betriebssystem für Handwerksbetriebe (Zielgruppe: Chef, Büro, Monteure in kleinen Handwerksbetrieben, 1–50 Leute).
+Du baust ein Paket (siehe deine Startnachricht: Paketname `<paket>`, Module, Hinweise) von Handwerk OS, einem Betriebssystem für Handwerksbetriebe (Zielgruppe: Chef, Büro, Monteure in kleinen Handwerksbetrieben, 1–50 Leute).
 
 ## Ausgangslage
 Repo: Peak-Admin/macher-os, Startbranch `claude/fervent-pascal-joztaz` (bereits ausgecheckt). Das Fundament steht (Datenmodell, Datenschicht, Modul-Registry, Shell, UI-Bausteine, Kunden-Referenzmodul). Du baust parallel zu 13 anderen Paketen.

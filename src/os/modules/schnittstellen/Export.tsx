@@ -22,7 +22,7 @@ export function Export() {
 
   const icsLaden = () => {
     const person = mitarbeiterId ? db.mitarbeiter.get(mitarbeiterId) : undefined;
-    const name = `${betrieb?.name ?? 'Macher OS'}${person ? ` – ${personName(person)}` : ''}`;
+    const name = `${betrieb?.name ?? 'Handwerk OS'}${person ? ` – ${personName(person)}` : ''}`;
     const datei = `termine-${dateiTeil(person ? personName(person) : betrieb?.name)}-${heute()}.ics`;
     herunterladen(datei, icsErzeugen(termine, { kalendername: name }), 'text/calendar;charset=utf-8');
     schnittstellen.create({ art: 'ics', dateiname: datei, anzahl: termine.length });
@@ -32,7 +32,7 @@ export function Export() {
   const jsonLaden = () => {
     const daten = jsonExport();
     const anzahl = Object.values(daten.sammlungen).reduce((s, l) => s + l.length, 0);
-    const datei = `macher-os-export-${dateiTeil(betrieb?.name)}-${heute()}.json`;
+    const datei = `handwerk-os-export-${dateiTeil(betrieb?.name)}-${heute()}.json`;
     herunterladen(datei, JSON.stringify(daten, null, 2), 'application/json');
     schnittstellen.create({ art: 'json', dateiname: datei, anzahl });
     toast(`${anzahl} Datensätze exportiert.`);

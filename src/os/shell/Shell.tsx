@@ -67,7 +67,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const monteur = istMonteurRolle(ich);
   const tab = monteurTab(pfad, aktiv);
   const eingang = useEingangsZahl();
-  const titelMobil = monteur ? MONTEUR_TABS.find((t) => t.id === tab)!.titel : (ort?.haupt.titel ?? 'Macher OS');
+  const titelMobil = monteur ? MONTEUR_TABS.find((t) => t.id === tab)!.titel : (ort?.haupt.titel ?? 'Handwerk OS');
 
   useEffect(() => {
     const taste = (e: KeyboardEvent) => {
@@ -92,10 +92,10 @@ export function Shell({ children }: { children: ReactNode }) {
       </a>
       <aside className="mm-sidebar" aria-label="Hauptnavigation">
         <div className="mm-leiste-kopf">
-          <Link to="/heute" className="mm-logo" aria-label="Macher OS, zu Heute" data-tipp={eingeklappt ? 'Macher OS' : undefined}>
+          <Link to="/heute" className="mm-logo" aria-label="Handwerk OS, zu Heute" data-tipp={eingeklappt ? 'Handwerk OS' : undefined}>
             <img className="mm-logo-zeichen" src="/os/icons/icon-192.png" alt="" width={32} height={32} />
             <span className="mm-leiste-text">
-              Macher <strong>OS</strong>
+              Handwerk <strong>OS</strong>
             </span>
           </Link>
           <button
@@ -509,7 +509,7 @@ function installAusGesetzt() {
 const istStandalone = () => window.matchMedia?.('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
 const istIos = () => /iphone|ipad|ipod/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent);
 
-/** Einmal, schließbar: „Macher OS aufs Handy holen“ – nur am Handy und nur, wenn es noch nicht installiert ist */
+/** Einmal, schließbar: „Handwerk OS aufs Handy holen“ – nur am Handy und nur, wenn es noch nicht installiert ist */
 function InstallHinweis() {
   const [, neu] = useState(0);
   const [aus, setAus] = useState(installAusGesetzt);
@@ -528,15 +528,15 @@ function InstallHinweis() {
     schliessen();
   };
   return (
-    <section className="mm-installieren" aria-label="Macher OS installieren">
+    <section className="mm-installieren" aria-label="Handwerk OS installieren">
       <div className="mm-installieren-kopf">
-        <strong>Macher OS aufs Handy holen</strong>
+        <strong>Handwerk OS aufs Handy holen</strong>
         <IconButton icon="x" label="Hinweis schließen" onClick={schliessen} />
       </div>
       <p>
         {installEreignis
-          ? 'Einmal installieren – dann startet Macher OS wie eine App vom Startbildschirm und funktioniert auch ohne Netz.'
-          : 'Tippe unten auf „Teilen“ und dann auf „Zum Home-Bildschirm“ – dann startet Macher OS wie eine App.'}
+          ? 'Einmal installieren – dann startet Handwerk OS wie eine App vom Startbildschirm und funktioniert auch ohne Netz.'
+          : 'Tippe unten auf „Teilen“ und dann auf „Zum Home-Bildschirm“ – dann startet Handwerk OS wie eine App.'}
       </p>
       {installEreignis && (
         <div>

@@ -1,6 +1,6 @@
 # Onboarding – Magic Setup, First Value, Just-in-Time Setup
 
-Stand: 02.10.2026. Verbindlich für alles, was ein neuer Betrieb in Macher OS vor seinem ersten Nutzen sieht.
+Stand: 02.10.2026. Verbindlich für alles, was ein neuer Betrieb in Handwerk OS vor seinem ersten Nutzen sieht.
 Code: `src/os/modules/onboarding/` (Magic Setup, `/willkommen`), `src/os/modules/start/` (First Value, `/start`,
 „Macher fertig machen“, Briefkopf just in time), `src/lib/ki/briefkopf.ts` (Website lesen).
 
@@ -18,7 +18,7 @@ Zielbild (60-Sekunden-Regel):
 | 5 s | Website eingeben |
 | 15 s | Betrieb erkannt |
 | 25 s | Gewerk-Vorlage, Leistungen und Firmendaten erzeugt |
-| 30 s | Macher OS öffnet sich fertig eingerichtet |
+| 30 s | Handwerk OS öffnet sich fertig eingerichtet |
 | 35 s | „Was möchtest du als Erstes erledigen?“ |
 | 60 s | erstes Angebot / erster Auftrag / Datenübernahme begonnen |
 
@@ -75,7 +75,7 @@ Gemessen wird genau einmal je Betrieb (Einstellung `start.erstwert`), nie auf de
 mit `sekundenNachSetup`. Weitere Messpunkte: `setup.gestartet`, `setup.schritt`, `setup.fertig { gewerkQuelle:
 website | regel | tipp }`, `erstwert.gewaehlt`, `briefkopf.vor_senden`, `briefkopf.ergaenzt`, `home_next_action_hidden`.
 
-## Rangfolge der Methoden (Macher-OS-Wert)
+## Rangfolge der Methoden (Handwerk-OS-Wert)
 
 | Rang | Methode | Wert | Einsatz |
 |---|---|---|---|

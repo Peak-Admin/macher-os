@@ -5,7 +5,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = {
   ...pageMeta({
     title: "Datenschutz",
-    description: "Datenschutzerklärung von Macher OS: welche Daten wir verarbeiten, wofür und welche Rechte du hast.",
+    description: "Datenschutzerklärung von Handwerk OS: welche Daten wir verarbeiten, wofür und welche Rechte du hast.",
     path: "/datenschutz",
   }),
   robots: { index: false },

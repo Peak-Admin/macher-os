@@ -7,7 +7,7 @@ import { groesseText } from '@modules/fotos/daten';
 export const DATEI_ARTEN: DokumentArt[] = ['datei', 'plan', 'pdf'];
 export const istDatei = (d: Pick<Dokument, 'art'>) => DATEI_ARTEN.includes(d.art);
 
-/** Höchstgröße je Datei. Grund: Macher OS speichert noch im Browser (wenige MB insgesamt). */
+/** Höchstgröße je Datei. Grund: Handwerk OS speichert noch im Browser (wenige MB insgesamt). */
 export const MAX_DATEI_BYTES = 1.5 * 1024 * 1024;
 
 export const AKZEPTIERT = '.pdf,image/*,.dwg,.dxf,.doc,.docx,.xls,.xlsx,.odt,.ods,.txt,.csv';
@@ -36,7 +36,7 @@ export function dateiFehler(f: { name: string; size: number; type: string }, max
   // Bilder werden vor dem Speichern verkleinert – deshalb großzügiger
   if (f.type.startsWith('image/')) return f.size > 25 * 1024 * 1024 ? `„${f.name}“ ist mit ${groesseText(f.size)} zu groß für ein Bild.` : undefined;
   if (f.size > max)
-    return `„${f.name}“ ist ${groesseText(f.size)} groß. Hier gehen höchstens ${groesseText(max)} pro Datei, weil Macher OS gerade noch im Browser speichert. Verkleinere die Datei (z. B. PDF komprimieren) oder teile sie auf.`;
+    return `„${f.name}“ ist ${groesseText(f.size)} groß. Hier gehen höchstens ${groesseText(max)} pro Datei, weil Handwerk OS gerade noch im Browser speichert. Verkleinere die Datei (z. B. PDF komprimieren) oder teile sie auf.`;
   return undefined;
 }
 

@@ -8,7 +8,7 @@ import { objekte, type ObjektSchluessel } from "@/lib/objekte";
 /**
  * Ansichten für den oberen Teil einer `ReihenKarte`. Jede Karte einer Reihe nimmt eine andere, damit die Reihe
  * lebendig bleibt (Vorbild Feather: Handy-Ausschnitt, Foto mit Hinweis, Objekt mit runder Marke, dunkle Fläche).
- * Die Ausschnitte aus Macher OS lassen sich ausprobieren (Haken setzen, Einsatz bestätigen, Beleg erledigen) –
+ * Die Ausschnitte aus Handwerk OS lassen sich ausprobieren (Haken setzen, Einsatz bestätigen, Beleg erledigen) –
  * sie liegen über dem Link der Karte (`z-10`), der Titel führt weiter. Die Bedeutung tragen Titel und Details der Karte.
  */
 

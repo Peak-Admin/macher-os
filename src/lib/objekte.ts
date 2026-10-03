@@ -1,5 +1,5 @@
 /**
- * Objektbilder von Macher OS – „das digitale Werkzeug“ (docs/design/visual-assets.md).
+ * Objektbilder von Handwerk OS – „das digitale Werkzeug“ (docs/design/visual-assets.md).
  * Echte Fotos von Handwerksobjekten als ruhige, emotionale Ebene. Funktionale Navigation bleibt bei Linien-Icons.
  * Website (`<Objekt>`, src/components/ui/Objekt.tsx) und Software (`<MacherAsset>`, src/os/ui/asset.tsx) nutzen dieses Register.
  * Fotos sind frei lizenziert (CC0 / CC BY / CC BY-SA) – Nachweise erscheinen auf /bildnachweise.

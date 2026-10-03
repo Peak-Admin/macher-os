@@ -24,7 +24,7 @@ export function RechnerRahmen({
 }) {
   return (
     <div data-druck className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-      <p className="hidden print:block print:text-lg print:font-bold">Macher OS – {titel}</p>
+      <p className="hidden print:block print:text-lg print:font-bold">Handwerk OS – {titel}</p>
       <form
         aria-label={`Eingaben ${titel}`}
         onSubmit={(e) => e.preventDefault()}
@@ -214,6 +214,6 @@ export function baueZusammenfassung({
     ...ergebnis.map(zeile),
     "",
     hinweis ?? "Das Ergebnis ist eine Orientierung, keine Steuerberatung.",
-    `Berechnet mit dem kostenlosen ${titel} von Macher OS: ${url}`,
+    `Berechnet mit dem kostenlosen ${titel} von Handwerk OS: ${url}`,
   ].join("\n");
 }

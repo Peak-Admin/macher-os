@@ -61,7 +61,7 @@ export function PreisRechner() {
               +
             </button>
           </div>
-          <p id="leute-hinweis" className="mt-2 text-sm text-muted">Chef, Büro, Monteure und Azubis – alle, die mit Macher OS arbeiten.</p>
+          <p id="leute-hinweis" className="mt-2 text-sm text-muted">Chef, Büro, Monteure und Azubis – alle, die mit Handwerk OS arbeiten.</p>
         </div>
         <fieldset className="flex flex-col gap-2 sm:items-end">
           <legend className="mb-2 block font-display text-lg font-bold sm:text-right">Zahlweise</legend>

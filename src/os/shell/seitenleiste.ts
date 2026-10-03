@@ -54,7 +54,7 @@ export function neueId(): string {
   return `l-${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36).slice(-4)}`;
 }
 
-/** Nur Pfade innerhalb von Macher OS: „/auftraege?x=1“, nie „//fremd.de“ oder „https://…“ */
+/** Nur Pfade innerhalb von Handwerk OS: „/auftraege?x=1“, nie „//fremd.de“ oder „https://…“ */
 export function sichererPfad(wert: unknown): string | null {
   if (typeof wert !== 'string') return null;
   const pfad = wert.trim().slice(0, 300);

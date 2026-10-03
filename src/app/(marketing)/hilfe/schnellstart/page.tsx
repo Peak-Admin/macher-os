@@ -85,7 +85,7 @@ export default function SchnellstartPage() {
           <SectionHeading
             eyebrow="Geschafft"
             title="Und jetzt? Einfach arbeiten."
-            intro="Ab hier lernst du Macher OS im Alltag kennen. Macher erinnert dich an offene Aufgaben und schlägt dir vor, was als Nächstes sinnvoll ist."
+            intro="Ab hier lernst du Handwerk OS im Alltag kennen. Macher erinnert dich an offene Aufgaben und schlägt dir vor, was als Nächstes sinnvoll ist."
           />
           <div className="grid gap-3 sm:grid-cols-2">
             <ArrowLink href="/hilfe/daten-uebernehmen">Bestehende Daten übernehmen</ArrowLink>

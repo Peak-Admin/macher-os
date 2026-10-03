@@ -69,7 +69,7 @@ export const immerDabei = ["Alle Funktionen, alle Updates", "Support auf Deutsch
 
 export const preiseFaq: FaqItem[] = [
   {
-    frage: "Was kostet Macher OS am Ende wirklich?",
+    frage: "Was kostet Handwerk OS am Ende wirklich?",
     antwort:
       "Ein fester Monatspreis für deinen Betrieb – er richtet sich nur danach, wie viele Leute mitarbeiten. Alle Funktionen sind drin. Es gibt keine Zusatzmodule und keine Pakete zum Freischalten. Die Preise sind netto, zuzüglich Mehrwertsteuer.",
   },
@@ -80,12 +80,12 @@ export const preiseFaq: FaqItem[] = [
   {
     frage: "Wie bezahle ich?",
     antwort:
-      "Am einfachsten per SEPA-Lastschrift von deinem Geschäftskonto. Eine Karte geht auch. Die Rechnung liegt nach jeder Abbuchung in Macher OS zum Herunterladen – für dich und deinen Steuerberater.",
+      "Am einfachsten per SEPA-Lastschrift von deinem Geschäftskonto. Eine Karte geht auch. Die Rechnung liegt nach jeder Abbuchung in Handwerk OS zum Herunterladen – für dich und deinen Steuerberater.",
   },
   {
     frage: "Wie lange binde ich mich?",
     antwort:
-      "Gar nicht. Monatlich kündbar, in zwei Klicks direkt in Macher OS. Wer jährlich zahlt, bekommt einen günstigeren Monatspreis und zahlt das Jahr im Voraus.",
+      "Gar nicht. Monatlich kündbar, in zwei Klicks direkt in Handwerk OS. Wer jährlich zahlt, bekommt einen günstigeren Monatspreis und zahlt das Jahr im Voraus.",
   },
   {
     frage: "Was passiert mit meinen Daten, wenn ich nicht weiter zahle?",
@@ -95,7 +95,7 @@ export const preiseFaq: FaqItem[] = [
   {
     frage: "Was passiert, wenn mein Team wächst?",
     antwort:
-      "Macher OS zählt die aktiven Leute in deinem Team. Passt ein anderer Plan, fragt Macher OS dich vorher – der Preis ändert sich erst, wenn du zustimmst. Der Unterschied wird tagesgenau verrechnet.",
+      "Handwerk OS zählt die aktiven Leute in deinem Team. Passt ein anderer Plan, fragt Handwerk OS dich vorher – der Preis ändert sich erst, wenn du zustimmst. Der Unterschied wird tagesgenau verrechnet.",
   },
   {
     frage: "Sind die Preise schon endgültig?",

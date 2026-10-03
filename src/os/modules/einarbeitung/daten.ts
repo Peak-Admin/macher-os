@@ -43,7 +43,7 @@ type V = Omit<Schritt, 'id' | 'erledigt' | 'erledigtAm'> & { rollen?: Rolle[] };
 const GEMEINSAM: V[] = [
   { titel: 'Arbeitsvertrag unterschrieben zurück', art: 'unterlagen', tag: 0 },
   { titel: 'Steuer-ID, Sozialversicherungsnummer, Krankenkasse und Bankverbindung abgeben', art: 'unterlagen', tag: 0 },
-  { titel: 'Macher OS am Handy einrichten und anmelden', art: 'zugang', tag: 0 },
+  { titel: 'Handwerk OS am Handy einrichten und anmelden', art: 'zugang', tag: 0 },
   { titel: 'Betrieb, Team und Ansprechpartner vorstellen', art: 'praxis', tag: 0 },
   { titel: 'Zeiterfassung zeigen: Start, Pause, Stopp', art: 'praxis', tag: 0 },
   { titel: 'Feedbackgespräch nach den ersten Wochen', art: 'gespraech', tag: 28 },
@@ -61,8 +61,8 @@ const JE_ROLLE: V[] = [
   { titel: 'Ausbildungsnachweis (Berichtsheft) erklären', art: 'unterlagen', tag: 5, rollen: ['azubi'] },
   { titel: 'Arbeitsplatz, Rechner und E-Mail einrichten', art: 'zugang', tag: 0, rollen: ['buero'] },
   { titel: 'Telefon, Postfach und Ablage erklären', art: 'praxis', tag: 1, rollen: ['buero'] },
-  { titel: 'Angebote, Rechnungen und Mahnwesen in Macher OS zeigen', art: 'praxis', tag: 3, rollen: ['buero'] },
-  { titel: 'Rechte in Macher OS prüfen (Rollen & Rechte)', art: 'zugang', tag: 0, rollen: ['buero', 'chef'] },
+  { titel: 'Angebote, Rechnungen und Mahnwesen in Handwerk OS zeigen', art: 'praxis', tag: 3, rollen: ['buero'] },
+  { titel: 'Rechte in Handwerk OS prüfen (Rollen & Rechte)', art: 'zugang', tag: 0, rollen: ['buero', 'chef'] },
 ];
 
 /** Einarbeitungsplan je Rolle inkl. der Pflicht-Unterweisungen dieser Rolle */

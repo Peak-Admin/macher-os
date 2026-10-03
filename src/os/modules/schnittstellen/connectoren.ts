@@ -3,7 +3,7 @@
  *
  * Jeder Connector sagt ehrlich,
  * - wie er verbunden wird (`art`): Datei-Import/-Export, über einen externen Integrationsanbieter (OAuth –
- *   Macher OS baut kein eigenes OAuth und speichert keine fremden Passwörter), mit Zugangsschlüssel, oder eingebaut,
+ *   Handwerk OS baut kein eigenes OAuth und speichert keine fremden Passwörter), mit Zugangsschlüssel, oder eingebaut,
  * - was er kann (`faehigkeiten`, in Handwerkersprache),
  * - wie es gerade steht (`status()`: verbunden / nicht verbunden / Fehler / auf Anfrage / angefragt – immer als Text).
  *
@@ -51,7 +51,7 @@ export const VERBINDUNGSART: Record<Verbindungsart, { titel: string; text: strin
   datei: { titel: 'Datei', text: 'Du lädst eine Datei hoch oder herunter. Keine Zugangsdaten nötig.' },
   anbieter: {
     titel: 'Über Integrationspartner',
-    text: 'Die Anmeldung läuft beim Anbieter selbst (OAuth) über unseren Integrationspartner. Macher OS sieht und speichert dein Passwort nie.',
+    text: 'Die Anmeldung läuft beim Anbieter selbst (OAuth) über unseren Integrationspartner. Handwerk OS sieht und speichert dein Passwort nie.',
   },
   schluessel: { titel: 'Mit Zugangsschlüssel', text: 'Du bekommst vom Anbieter einen Schlüssel oder eine Adresse und trägst sie einmal ein.' },
   eingebaut: { titel: 'Eingebaut', text: 'Läuft ohne Einrichtung, sobald dein Betrieb mit der Cloud verbunden ist.' },
@@ -508,7 +508,7 @@ export function ausKatalog(): Connector[] {
       id: i.id,
       titel: i.name,
       kategorie: KATALOG_KATEGORIE[i.id] ?? (i.saeule === 'handwerk' ? 'grosshandel' : i.saeule === 'connect' ? 'kommunikation' : i.saeule === 'universal' ? 'plattform' : 'daten'),
-      text: i.hinweis ? `${i.hinweis}.` : `${i.name} mit Macher OS verbinden.`,
+      text: i.hinweis ? `${i.hinweis}.` : `${i.name} mit Handwerk OS verbinden.`,
       art: SAEULE_ART[i.saeule],
       faehigkeiten: [i.hinweis ?? 'Daten austauschen'],
       verfuegbar: false,

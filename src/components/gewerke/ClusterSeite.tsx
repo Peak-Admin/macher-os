@@ -29,7 +29,7 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
           <SectionHeading
             eyebrow="Für diese Berufe"
             title="Wer hier richtig ist."
-            intro="Macher OS ist für diese Berufe vorbereitet. Dein Beruf fehlt? Die Einrichtung richtet sich nach deiner Arbeitsweise – nicht nach einer Liste."
+            intro="Handwerk OS ist für diese Berufe vorbereitet. Dein Beruf fehlt? Die Einrichtung richtet sich nach deiner Arbeitsweise – nicht nach einer Liste."
           />
           <ul className="flex flex-wrap content-start gap-2.5">
             {c.berufe.map((b) => (
@@ -51,7 +51,7 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
         <SectionHeading
           eyebrow="Typische Arbeitsweisen"
           title="So wird in diesen Betrieben gearbeitet."
-          intro="Beim Start wählst du, wie dein Betrieb arbeitet. Danach richtet Macher OS Abläufe und Planung ein."
+          intro="Beim Start wählst du, wie dein Betrieb arbeitet. Danach richtet Handwerk OS Abläufe und Planung ein."
         />
         <div className={`mt-10 grid gap-4 sm:grid-cols-2 ${c.arbeitsweisen.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
           {c.arbeitsweisen.map((a) => (
@@ -64,11 +64,11 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
         </div>
       </Section>
 
-      {/* Was Macher OS einrichtet */}
+      {/* Was Handwerk OS einrichtet */}
       <Section tone="sand">
         <SectionHeading
           eyebrow="Eingerichtet für dich"
-          title="Was Macher OS für dich vorbereitet."
+          title="Was Handwerk OS für dich vorbereitet."
           intro="Alles ist von Anfang an da – und lässt sich an deinen Betrieb anpassen."
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -142,8 +142,8 @@ export function ClusterSeite({ slug }: { slug: GewerkClusterSlug }) {
       </Section>
 
       <FinalCta
-        title="Macher OS für deinen Betrieb einrichten."
-        intro="Starte kostenlos. Wähle dein Gewerk und deine Arbeitsweise – Macher OS richtet den Rest ein."
+        title="Handwerk OS für deinen Betrieb einrichten."
+        intro="Starte kostenlos. Wähle dein Gewerk und deine Arbeitsweise – Handwerk OS richtet den Rest ein."
       />
     </>
   );

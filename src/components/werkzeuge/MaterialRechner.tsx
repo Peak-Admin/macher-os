@@ -150,7 +150,7 @@ export function MaterialRechner() {
           }
           meldung={meldung}
           zusammenfassung={zusammenfassung}
-          betreff="Materialpreis – berechnet mit Macher OS"
+          betreff="Materialpreis – berechnet mit Handwerk OS"
           hinweis="Alle Preise netto, also ohne Mehrwertsteuer. Das Ergebnis ist eine Orientierung, keine Steuerberatung."
         >
           <ErgebnisZeile label="Verkaufspreis je Einheit" wert={euro(r?.vk)} />

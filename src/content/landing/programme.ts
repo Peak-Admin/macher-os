@@ -13,25 +13,25 @@ import type { Landing } from "./typ";
 export const empfehlen: Landing = {
   pfad: "/empfehlen",
   meta: {
-    title: "Empfehlungsprogramm – Macher OS weiterempfehlen",
+    title: "Empfehlungsprogramm – Handwerk OS weiterempfehlen",
     description:
-      "Du nutzt Macher OS und kennst einen Betrieb, dem es hilft? Empfiehl uns weiter. So funktioniert das Empfehlungsprogramm von Macher OS.",
+      "Du nutzt Handwerk OS und kennst einen Betrieb, dem es hilft? Empfiehl uns weiter. So funktioniert das Empfehlungsprogramm von Handwerk OS.",
   },
   breadcrumbs: [{ label: "Empfehlungsprogramm" }],
   hero: {
     eyebrow: "Empfehlungsprogramm",
     title: "Gute Werkzeuge gibt man weiter.",
     intro:
-      "Im Handwerk zählt die Empfehlung vom Kollegen mehr als jede Werbung. Du kennst einen Betrieb, dem Macher OS hilft? Sag es weiter – und sag uns Bescheid.",
+      "Im Handwerk zählt die Empfehlung vom Kollegen mehr als jede Werbung. Du kennst einen Betrieb, dem Handwerk OS hilft? Sag es weiter – und sag uns Bescheid.",
     bild: "alltag/team",
     aktionen: { primaer: { label: "Betrieb empfehlen", href: "#anfrage" }, sekundaer: { label: "Erst selbst testen", href: cta.primary.href } },
   },
   ablauf: {
     titel: "So funktioniert's.",
     schritte: [
-      { titel: "Erzählen", text: "Erzähl einem Kollegen, Kunden oder Lieferanten aus dem Handwerk von Macher OS." },
+      { titel: "Erzählen", text: "Erzähl einem Kollegen, Kunden oder Lieferanten aus dem Handwerk von Handwerk OS." },
       { titel: "Bescheid sagen", text: "Schreib uns, wen du empfohlen hast – mit dessen Einverständnis." },
-      { titel: "Dankeschön", text: "Wenn der Betrieb Macher OS nutzt, melden wir uns bei dir." },
+      { titel: "Dankeschön", text: "Wenn der Betrieb Handwerk OS nutzt, melden wir uns bei dir." },
     ],
   },
   vorteile: {
@@ -39,7 +39,7 @@ export const empfehlen: Landing = {
     titel: "Was du davon hast.",
     karten: [
       { titel: "Ein Dankeschön", text: "Für jede erfolgreiche Empfehlung bedanken wir uns. Wie, besprechen wir mit dir.", icon: "heart" },
-      { titel: "Bessere Zusammenarbeit", text: "Wenn dein Subunternehmer oder Partnerbetrieb auch Macher OS nutzt, läuft die Abstimmung leichter.", icon: "users" },
+      { titel: "Bessere Zusammenarbeit", text: "Wenn dein Subunternehmer oder Partnerbetrieb auch Handwerk OS nutzt, läuft die Abstimmung leichter.", icon: "users" },
       { titel: "Mitreden", text: "Wer empfiehlt, hat einen kurzen Draht zu uns – für Wünsche und Ideen.", icon: "chat" },
     ],
   },
@@ -52,7 +52,7 @@ export const empfehlen: Landing = {
     anliegen: [
       {
         id: "kunde",
-        label: "Ich nutze Macher OS",
+        label: "Ich nutze Handwerk OS",
         beschreibung: "Du bist selbst Kunde und empfiehlst einen Betrieb.",
         icon: "home",
         email: KONTAKT_EMAIL,
@@ -60,11 +60,11 @@ export const empfehlen: Landing = {
       },
       {
         id: "andere",
-        label: "Ich kenne Macher OS",
+        label: "Ich kenne Handwerk OS",
         beschreibung: "Du bist kein Kunde, kennst aber einen passenden Betrieb.",
         icon: "user",
         email: KONTAKT_EMAIL,
-        platzhalter: "Woher kennst du Macher OS, und welchen Betrieb hast du empfohlen?",
+        platzhalter: "Woher kennst du Handwerk OS, und welchen Betrieb hast du empfohlen?",
       },
     ],
   },
@@ -76,7 +76,7 @@ export const empfehlen: Landing = {
     },
     {
       frage: "Muss ich selbst Kunde sein?",
-      antwort: "Nein. Am meisten zählt aber die Empfehlung von jemandem, der Macher OS selbst nutzt.",
+      antwort: "Nein. Am meisten zählt aber die Empfehlung von jemandem, der Handwerk OS selbst nutzt.",
     },
     {
       frage: "Gebt ihr Daten weiter?",
@@ -86,11 +86,11 @@ export const empfehlen: Landing = {
   weiter: {
     links: [
       { label: "Creator & Botschafter", href: "/botschafter", text: "Du erzählst gern online vom Handwerk?" },
-      { label: "Partnerbetriebe", href: "/partnerbetriebe", text: "Zeig anderen, wie du mit Macher OS arbeitest." },
+      { label: "Partnerbetriebe", href: "/partnerbetriebe", text: "Zeig anderen, wie du mit Handwerk OS arbeitest." },
       { label: "Wechselbonus", href: "/wechselbonus", text: "Für Betriebe mit laufendem Vertrag." },
     ],
   },
-  cta: { title: "Noch nicht dabei?", intro: "Teste Macher OS selbst – dann weißt du, was du empfiehlst." },
+  cta: { title: "Noch nicht dabei?", intro: "Teste Handwerk OS selbst – dann weißt du, was du empfiehlst." },
 };
 
 export const botschafter: Landing = {
@@ -98,15 +98,15 @@ export const botschafter: Landing = {
   meta: {
     title: "Creator & Botschafter – fürs Handwerk sichtbar werden",
     description:
-      "Du zeigst dein Handwerk auf Instagram, TikTok oder YouTube? Werde Botschafter von Macher OS – dem Joint-Venture-Projekt von Mission Mittelstand.",
+      "Du zeigst dein Handwerk auf Instagram, TikTok oder YouTube? Werde Botschafter von Handwerk OS – dem Joint-Venture-Projekt von Mission Mittelstand.",
   },
   breadcrumbs: [{ label: "Creator & Botschafter" }],
   hero: {
     eyebrow: "Creator & Botschafter",
     title: "Du zeigst, wie modernes Handwerk geht.",
-    intro: `Du erzählst online von deinem Betrieb, deinen Baustellen und deinem Alltag? Dann lass uns zusammen zeigen, dass Handwerk und gute Organisation zusammengehören – mit Macher OS und ${herausgeber.name}.`,
+    intro: `Du erzählst online von deinem Betrieb, deinen Baustellen und deinem Alltag? Dann lass uns zusammen zeigen, dass Handwerk und gute Organisation zusammengehören – mit Handwerk OS und ${herausgeber.name}.`,
     bild: "seite/ueber-uns",
-    aktionen: { primaer: { label: "Bewerben", href: "#anfrage" }, sekundaer: { label: "Über Macher OS", href: "/ueber-uns" } },
+    aktionen: { primaer: { label: "Bewerben", href: "#anfrage" }, sekundaer: { label: "Über Handwerk OS", href: "/ueber-uns" } },
   },
   vorteile: {
     eyebrow: "Wen wir suchen",
@@ -145,7 +145,7 @@ export const botschafter: Landing = {
       {
         id: "botschafter",
         label: "Botschafter",
-        beschreibung: "Du empfiehlst Macher OS in deinem Netzwerk, Verband oder Kurs.",
+        beschreibung: "Du empfiehlst Handwerk OS in deinem Netzwerk, Verband oder Kurs.",
         icon: "users",
         email: PARTNER_EMAIL,
         platzhalter: "Wer bist du, und in welchem Netzwerk bist du unterwegs?",
@@ -158,7 +158,7 @@ export const botschafter: Landing = {
       antwort: "Das besprechen wir mit jedem Creator einzeln. Bezahlte Beiträge kennzeichnest du als Werbung.",
     },
     {
-      frage: "Muss ich Macher OS selbst nutzen?",
+      frage: "Muss ich Handwerk OS selbst nutzen?",
       antwort: "Ja. Wir wollen, dass du nur erzählst, was du selbst erlebt hast.",
     },
     {
@@ -168,8 +168,8 @@ export const botschafter: Landing = {
   ],
   weiter: {
     links: [
-      { label: "Empfehlungsprogramm", href: "/empfehlen", text: "Macher OS im Kollegenkreis weitersagen." },
-      { label: "Über Macher OS", href: "/ueber-uns", text: `Ein Joint Venture von ${herausgeber.name}.` },
+      { label: "Empfehlungsprogramm", href: "/empfehlen", text: "Handwerk OS im Kollegenkreis weitersagen." },
+      { label: "Über Handwerk OS", href: "/ueber-uns", text: `Ein Joint Venture von ${herausgeber.name}.` },
       { label: "Partner", href: "/partner", text: "Für Verbände, Händler und Berater." },
     ],
   },
@@ -178,16 +178,16 @@ export const botschafter: Landing = {
 export const partnerbetriebe: Landing = {
   pfad: "/partnerbetriebe",
   meta: {
-    title: "Partnerbetriebe – Handwerksbetriebe, die mit Macher OS vorangehen",
+    title: "Partnerbetriebe – Handwerksbetriebe, die mit Handwerk OS vorangehen",
     description:
-      "Werde Partnerbetrieb von Macher OS: Zeig anderen Betrieben, wie du arbeitest, rede bei neuen Funktionen mit und tausch dich mit anderen Machern aus.",
+      "Werde Partnerbetrieb von Handwerk OS: Zeig anderen Betrieben, wie du arbeitest, rede bei neuen Funktionen mit und tausch dich mit anderen Machern aus.",
   },
   breadcrumbs: [{ label: "Partnerbetriebe" }],
   hero: {
     eyebrow: "Partnerbetriebe",
     title: "Betriebe, die vorangehen.",
     intro:
-      "Partnerbetriebe nutzen Macher OS im Alltag und zeigen anderen, wie es läuft. Dafür reden sie früh mit, wenn neue Funktionen entstehen – und haben einen direkten Draht zu uns.",
+      "Partnerbetriebe nutzen Handwerk OS im Alltag und zeigen anderen, wie es läuft. Dafür reden sie früh mit, wenn neue Funktionen entstehen – und haben einen direkten Draht zu uns.",
     bild: "alltag/werkstatt",
     aktionen: { primaer: { label: "Partnerbetrieb werden", href: "#anfrage" }, sekundaer: { label: "Kunden ansehen", href: "/kunden" } },
   },
@@ -203,7 +203,7 @@ export const partnerbetriebe: Landing = {
   ablauf: {
     titel: "So wirst du Partnerbetrieb.",
     schritte: [
-      { titel: "Macher OS nutzen", text: "Du arbeitest im Alltag mit Macher OS." },
+      { titel: "Handwerk OS nutzen", text: "Du arbeitest im Alltag mit Handwerk OS." },
       { titel: "Anfrage schicken", text: "Schreib uns kurz, wer ihr seid und was ihr macht." },
       { titel: "Gespräch", text: "Wir lernen uns kennen und besprechen, was für beide Seiten passt." },
     ],
@@ -221,7 +221,7 @@ export const partnerbetriebe: Landing = {
         beschreibung: "Solo oder kleines Team.",
         icon: "user",
         email: PARTNER_EMAIL,
-        platzhalter: "Dein Betrieb, dein Gewerk und seit wann du mit Macher OS arbeitest.",
+        platzhalter: "Dein Betrieb, dein Gewerk und seit wann du mit Handwerk OS arbeitest.",
       },
       {
         id: "gross",
@@ -229,7 +229,7 @@ export const partnerbetriebe: Landing = {
         beschreibung: "Mehrere Teams oder Standorte.",
         icon: "users",
         email: PARTNER_EMAIL,
-        platzhalter: "Dein Betrieb, dein Gewerk und seit wann du mit Macher OS arbeitest.",
+        platzhalter: "Dein Betrieb, dein Gewerk und seit wann du mit Handwerk OS arbeitest.",
       },
     ],
   },
@@ -249,8 +249,8 @@ export const partnerbetriebe: Landing = {
   ],
   weiter: {
     links: [
-      { label: "Kunden", href: "/kunden", text: "Wie Betriebe mit Macher OS arbeiten (Beispiele)." },
-      { label: "Empfehlungsprogramm", href: "/empfehlen", text: "Macher OS weitersagen." },
+      { label: "Kunden", href: "/kunden", text: "Wie Betriebe mit Handwerk OS arbeiten (Beispiele)." },
+      { label: "Empfehlungsprogramm", href: "/empfehlen", text: "Handwerk OS weitersagen." },
       { label: "Partner", href: "/partner", text: "Für Verbände, Händler und Berater." },
     ],
   },

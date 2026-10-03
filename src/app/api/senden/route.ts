@@ -89,7 +89,7 @@ export async function POST(req: Request): Promise<Response> {
   const text = typeof v.text === 'string' ? v.text.slice(0, 20_000) : '';
   const link = typeof v.link === 'string' && /^https?:\/\//.test(v.link) ? v.link.slice(0, 500) : '';
   const html = typeof v.html === 'string' ? v.html.slice(0, 200_000) : undefined;
-  const name = sauber(v.absender?.name, 80).replace(/[<>"]/g, '') || 'Macher OS';
+  const name = sauber(v.absender?.name, 80).replace(/[<>"]/g, '') || 'Handwerk OS';
   const antwortAn = sauber(v.absender?.antwortAn, 254);
   const adresse = (process.env.RESEND_ABSENDER ?? STANDARD_ABSENDER).replace(/^.*<([^>]+)>.*$/, '$1').trim();
   const anhaenge = Array.isArray(v.anhaenge) ? v.anhaenge.slice(0, 5).map(anhang).filter(Boolean) : [];

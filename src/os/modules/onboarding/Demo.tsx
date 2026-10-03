@@ -32,7 +32,7 @@ export function Demo() {
           <Oberzeile>Demo</Oberzeile>
           <h1>{fehler ? 'Die Demo startet gerade nicht' : 'Dein Beispielbetrieb wird eingerichtet'}</h1>
           <p>
-            Du siehst gleich das echte Macher OS mit Beispieldaten: Aufträge, Plan, Team und Rechnungen. Klick dich frei durch – du
+            Du siehst gleich das echte Handwerk OS mit Beispieldaten: Aufträge, Plan, Team und Rechnungen. Klick dich frei durch – du
             kannst nichts kaputt machen.
           </p>
         </div>

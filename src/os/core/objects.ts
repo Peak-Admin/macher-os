@@ -1,5 +1,5 @@
 /**
- * Kanonische Geschäftsobjekte von Macher OS.
+ * Kanonische Geschäftsobjekte von Handwerk OS.
  *
  * Regel: Jedes Objekt existiert genau einmal (eine ID, eine Quelle).
  * Module sind Sichten auf diese Objekte, keine Silos. Modulspezifische

@@ -1,6 +1,6 @@
 /**
  * E-Rechnung nach XRechnung 3.0 (Syntax UBL 2.1, EN 16931) – reiner XML-Baustein ohne Datenschicht,
- * damit ihn auch Server-Funktionen nutzen können (z. B. Rechnungen für Macher OS selbst).
+ * damit ihn auch Server-Funktionen nutzen können (z. B. Rechnungen für Handwerk OS selbst).
  */
 import type { Betrieb, Einheit, Kunde } from '@core/objects';
 import { positionSumme } from '@core/format';

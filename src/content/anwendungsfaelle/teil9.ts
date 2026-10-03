@@ -10,14 +10,14 @@ export const teil9 = {
     meta: {
       title: "Finanzen im Handwerk – Rechnungen, Zahlungen und Mahnungen im Blick",
       description:
-        "Vom Angebot bis zum Geld auf dem Konto: Macher OS verbindet Rechnungen, Kontoauszug, Mahnungen, Belege und Nachkalkulation. Du siehst offene Posten sofort und übergibst alles im DATEV-Format.",
+        "Vom Angebot bis zum Geld auf dem Konto: Handwerk OS verbindet Rechnungen, Kontoauszug, Mahnungen, Belege und Nachkalkulation. Du siehst offene Posten sofort und übergibst alles im DATEV-Format.",
     },
     hero: {
       titel: "Du weißt jeden Tag, wo dein Geld steht.",
       problem:
         "Die Rechnungen stehen im einen Programm, die Zahlungen auf dem Konto, die Belege im Handschuhfach. Wer noch nicht bezahlt hat, merkst du erst, wenn das Geld knapp wird.",
       loesung:
-        "Macher OS hängt alles am Auftrag zusammen. Der Kontoauszug zeigt, was bezahlt ist. Was offen ist, wird erinnert. Und am Monatsende geht alles an den Steuerberater.",
+        "Handwerk OS hängt alles am Auftrag zusammen. Der Kontoauszug zeigt, was bezahlt ist. Was offen ist, wird erinnert. Und am Monatsende geht alles an den Steuerberater.",
     },
     visual: {
       bereich: "Betrieb",
@@ -168,7 +168,7 @@ export const teil9 = {
       {
         frage: "Ersetzt das meine Buchhaltung?",
         antwort:
-          "Nein. Macher OS kümmert sich um Rechnungen, Zahlungen und Belege im Betrieb. Die Buchhaltung macht weiter dein Steuerberater – er bekommt alles als DATEV-Datei.",
+          "Nein. Handwerk OS kümmert sich um Rechnungen, Zahlungen und Belege im Betrieb. Die Buchhaltung macht weiter dein Steuerberater – er bekommt alles als DATEV-Datei.",
       },
     ],
     verwandt: ["rechnungen", "zahlungen", "datev"],
@@ -183,7 +183,7 @@ export const teil9 = {
     meta: {
       title: "Buchhaltung für Handwerker – Belege und Buchungen für den Steuerberater",
       description:
-        "Macher OS ist kein Buchhaltungsprogramm. Es bereitet Rechnungen, Belege und Zahlungen so vor, dass dein Steuerberater sie ohne Abtippen übernimmt. Heute schon: DATEV-Export mit SKR03 oder SKR04.",
+        "Handwerk OS ist kein Buchhaltungsprogramm. Es bereitet Rechnungen, Belege und Zahlungen so vor, dass dein Steuerberater sie ohne Abtippen übernimmt. Heute schon: DATEV-Export mit SKR03 oder SKR04.",
     },
     aufAnfrage: {
       aktion: "Buchhaltung anfragen",
@@ -200,7 +200,7 @@ export const teil9 = {
       problem:
         "Am Monatsende suchst du Quittungen zusammen, schreibst Listen und schickst Rechnungen doppelt. Der Steuerberater tippt ab und fragt Wochen später nach.",
       loesung:
-        "Macher OS sammelt Rechnungen, Belege und Zahlungen im Alltag mit. Am Monatsende gibst du alles als DATEV-Datei weiter. Buchen und Steuern bleiben beim Steuerberater.",
+        "Handwerk OS sammelt Rechnungen, Belege und Zahlungen im Alltag mit. Am Monatsende gibst du alles als DATEV-Datei weiter. Buchen und Steuern bleiben beim Steuerberater.",
     },
     visual: {
       bereich: "Betrieb",
@@ -248,7 +248,7 @@ export const teil9 = {
     ],
     loesung: {
       titel: "Vorbereitet im Alltag, übergeben mit einem Klick.",
-      text: "Rechnungen entstehen in Macher OS, Belege fotografierst du direkt mit dem Handy. Zahlungen kommen über den Kontoauszug dazu. Für den Export bestimmt Macher Konten und Steuerschlüssel aus Kategorie und Steuersatz. Dein Steuerberater liest die Datei in DATEV ein – und bucht wie gewohnt.",
+      text: "Rechnungen entstehen in Handwerk OS, Belege fotografierst du direkt mit dem Handy. Zahlungen kommen über den Kontoauszug dazu. Für den Export bestimmt Macher Konten und Steuerschlüssel aus Kategorie und Steuersatz. Dein Steuerberater liest die Datei in DATEV ein – und bucht wie gewohnt.",
       punkte: [
         "Buchungsstapel im DATEV-Format, SKR03 oder SKR04",
         "Debitoren- und Kreditorennummern von selbst",
@@ -334,9 +334,9 @@ export const teil9 = {
     },
     faq: [
       {
-        frage: "Ersetzt Macher OS meinen Steuerberater?",
+        frage: "Ersetzt Handwerk OS meinen Steuerberater?",
         antwort:
-          "Nein. Macher OS ist kein Buchhaltungsprogramm und keine Steuerberatung. Es bereitet Rechnungen, Belege und Zahlungen vor. Buchen, Umsatzsteuer und Abschluss macht weiter dein Steuerberater.",
+          "Nein. Handwerk OS ist kein Buchhaltungsprogramm und keine Steuerberatung. Es bereitet Rechnungen, Belege und Zahlungen vor. Buchen, Umsatzsteuer und Abschluss macht weiter dein Steuerberater.",
       },
       {
         frage: "Wie bekomme ich die Anbindung an mein Buchhaltungsprogramm?",
@@ -351,7 +351,7 @@ export const teil9 = {
       {
         frage: "Werden auch die Belegbilder übergeben?",
         antwort:
-          "Heute nicht. Der Export enthält die Buchungen. Die Fotos der Belege bleiben in Macher OS am Auftrag und lassen sich dort jederzeit aufrufen.",
+          "Heute nicht. Der Export enthält die Buchungen. Die Fotos der Belege bleiben in Handwerk OS am Auftrag und lassen sich dort jederzeit aufrufen.",
       },
     ],
     verwandt: ["datev", "belege", "zahlungen"],
@@ -366,7 +366,7 @@ export const teil9 = {
     meta: {
       title: "Dokumentenmanagement im Handwerk – Unterlagen geordnet und schnell gefunden",
       description:
-        "Pläne, PDFs, Fotos und Berichte liegen in Macher OS am richtigen Auftrag und sind über die Suche schnell gefunden. Die Ablage für alle Unterlagen des Betriebs richten wir auf Anfrage ein.",
+        "Pläne, PDFs, Fotos und Berichte liegen in Handwerk OS am richtigen Auftrag und sind über die Suche schnell gefunden. Die Ablage für alle Unterlagen des Betriebs richten wir auf Anfrage ein.",
     },
     aufAnfrage: {
       aktion: "Dokumentenablage anfragen",
@@ -383,7 +383,7 @@ export const teil9 = {
       problem:
         "Der Plan steckt im Postfach vom Chef, das Datenblatt auf dem Büro-PC, das Foto auf einem Handy. Wer etwas sucht, ruft herum.",
       loesung:
-        "In Macher OS hängt jede Datei am Auftrag. Monteur und Büro sehen denselben Stand. Und die Suche findet Dateien, Berichte und Rechnungen mit ein paar Buchstaben.",
+        "In Handwerk OS hängt jede Datei am Auftrag. Monteur und Büro sehen denselben Stand. Und die Suche findet Dateien, Berichte und Rechnungen mit ein paar Buchstaben.",
     },
     visual: {
       bereich: "Betrieb",
@@ -544,11 +544,11 @@ export const teil9 = {
   "ids-connect": {
     icon: "cart",
     kurz: "Im Shop deines Großhändlers bestellen, der Warenkorb kommt zurück an den Auftrag. Auf Anfrage für deinen Großhändler eingerichtet.",
-    enthalten: ["Shop aus Macher OS öffnen", "Warenkorb als Bestellung zurück", "Preise und Verfügbarkeit"],
+    enthalten: ["Shop aus Handwerk OS öffnen", "Warenkorb als Bestellung zurück", "Preise und Verfügbarkeit"],
     meta: {
-      title: "IDS Connect für Handwerker – Großhandel direkt aus Macher OS",
+      title: "IDS Connect für Handwerker – Großhandel direkt aus Handwerk OS",
       description:
-        "Den Shop deines Großhändlers aus Macher OS öffnen und den Warenkorb als Bestellung zurück an den Auftrag holen. Wir richten IDS Connect auf Anfrage für deinen Großhändler ein.",
+        "Den Shop deines Großhändlers aus Handwerk OS öffnen und den Warenkorb als Bestellung zurück an den Auftrag holen. Wir richten IDS Connect auf Anfrage für deinen Großhändler ein.",
     },
     aufAnfrage: {
       aktion: "IDS Connect anfragen",
@@ -612,7 +612,7 @@ export const teil9 = {
     ],
     loesung: {
       titel: "Vom Auftrag in den Shop – und zurück.",
-      text: "Mit IDS Connect öffnest du aus dem Auftrag heraus den Shop deines Großhändlers. Du bestellst wie gewohnt. Der Warenkorb kommt als Bestellung zurück an den Auftrag. Bis die Verbindung eingerichtet ist, liest du Artikel und Preise per DATANORM ein und bestellst je Lieferant per E-Mail aus Macher OS.",
+      text: "Mit IDS Connect öffnest du aus dem Auftrag heraus den Shop deines Großhändlers. Du bestellst wie gewohnt. Der Warenkorb kommt als Bestellung zurück an den Auftrag. Bis die Verbindung eingerichtet ist, liest du Artikel und Preise per DATANORM ein und bestellst je Lieferant per E-Mail aus Handwerk OS.",
       punkte: [
         "Shop aus dem Auftrag öffnen",
         "Warenkorb kommt als Bestellung zurück",
@@ -632,7 +632,7 @@ export const teil9 = {
         { label: "Version", wert: "IDS Connect 2.x" },
         { label: "Bis dahin", wert: "Bestellung per E-Mail", hervor: true },
       ],
-      fuss: { icon: "link", text: "Der Warenkorb kommt über eine Rücksprung-Adresse an Macher OS." },
+      fuss: { icon: "link", text: "Der Warenkorb kommt über eine Rücksprung-Adresse an Handwerk OS." },
     },
     schritte: [
       {
@@ -645,7 +645,7 @@ export const teil9 = {
       },
       {
         titel: "Warenkorb zurückschicken",
-        text: "Statt im Shop abzuschließen, schickst du den Warenkorb an Macher OS zurück.",
+        text: "Statt im Shop abzuschließen, schickst du den Warenkorb an Handwerk OS zurück.",
       },
       {
         titel: "Bestellung prüfen und senden",
@@ -693,14 +693,14 @@ export const teil9 = {
     ],
     kunde: {
       slug: "haustechnik-yilmaz",
-      text: "Beispiel: Wie ein SHK-Betrieb Großhandelspreise per DATANORM einliest und Bestellungen je Lieferant aus Macher OS verschickt.",
+      text: "Beispiel: Wie ein SHK-Betrieb Großhandelspreise per DATANORM einliest und Bestellungen je Lieferant aus Handwerk OS verschickt.",
     },
     werkzeug: "materialaufschlag-rechner",
     faq: [
       {
         frage: "Wie bekomme ich IDS Connect?",
         antwort:
-          "Über „IDS Connect anfragen“. Wir richten die Verbindung zu deinem Großhändler ein. Bis sie steht, liest du Artikel und Preise per DATANORM ein und schickst Bestellungen je Lieferant per E-Mail aus Macher OS.",
+          "Über „IDS Connect anfragen“. Wir richten die Verbindung zu deinem Großhändler ein. Bis sie steht, liest du Artikel und Preise per DATANORM ein und schickst Bestellungen je Lieferant per E-Mail aus Handwerk OS.",
       },
       {
         frage: "Welche Großhändler werden unterstützt?",
@@ -710,7 +710,7 @@ export const teil9 = {
       {
         frage: "Was brauche ich dafür?",
         antwort:
-          "Deine Kundennummer und einen Shop-Benutzer bei deinem Großhändler. Die trägst du einmal in Macher OS ein.",
+          "Deine Kundennummer und einen Shop-Benutzer bei deinem Großhändler. Die trägst du einmal in Handwerk OS ein.",
       },
       {
         frage: "Was mache ich bis dahin?",

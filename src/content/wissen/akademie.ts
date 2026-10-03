@@ -48,7 +48,7 @@ export const lernbereiche = [
     icon: "users",
   },
   {
-    titel: "Macher OS nutzen",
+    titel: "Handwerk OS nutzen",
     text: "Die Software Schritt für Schritt – für jede Rolle im Betrieb.",
     icon: "smartphone",
   },
@@ -75,9 +75,9 @@ export type Kurs = {
 export const kurse: Kurs[] = [
   {
     slug: "schnellstart-macher-os",
-    titel: "Schnellstart: Macher OS in einer Stunde",
+    titel: "Schnellstart: Handwerk OS in einer Stunde",
     kurz: "Betrieb einrichten, erste Kunden anlegen, ersten Auftrag durchspielen.",
-    lernbereich: "Macher OS nutzen",
+    lernbereich: "Handwerk OS nutzen",
     rollen: ["chef", "buero"],
     gewerke: [],
     themen: ["digital-arbeiten"],
@@ -97,7 +97,7 @@ export const kurse: Kurs[] = [
     slug: "app-fuer-monteure",
     titel: "Die App für Monteure",
     kurz: "Einsatz sehen, Zeiten erfassen, Fotos machen, Unterschrift holen – in 20 Minuten gelernt.",
-    lernbereich: "Macher OS nutzen",
+    lernbereich: "Handwerk OS nutzen",
     rollen: ["monteur", "azubi"],
     gewerke: [],
     themen: ["digital-arbeiten"],

@@ -1,7 +1,7 @@
 # Integrationen – Bauplan
 
 > **Verbindlich für jede Verbindung zu anderen Programmen, Formaten und Großhändlern.**
-> Macher OS wird Schritt für Schritt angebunden – in **vier Säulen**. Neue Integrationen gehören in genau eine Säule.
+> Handwerk OS wird Schritt für Schritt angebunden – in **vier Säulen**. Neue Integrationen gehören in genau eine Säule.
 
 Daten der Website: `src/content/integrationen.ts` (Säulen, alle Integrationen, Score).
 Stand in der Software: `src/os/modules/schnittstellen/connectoren.ts` (Connector-Registry, Status je Betrieb).
@@ -12,7 +12,7 @@ Menü „Funktionen“ (plus Link unten im Menü und im Footer) und als Abschnit
 
 | # | Säule | Was | Fundament |
 |---|---|---|---|
-| 1 | **Macher Connect** | Gmail, Outlook, Google/Microsoft-Kalender, Google Drive, OneDrive, Lexware Office, sevDesk, Stripe, SumUp, PayPal, HubSpot, Pipedrive, Dropbox, Google Sheets | **Pipedream Connect Gateway** (OAuth beim Anbieter; Macher OS speichert keine fremden Passwörter) |
+| 1 | **Macher Connect** | Gmail, Outlook, Google/Microsoft-Kalender, Google Drive, OneDrive, Lexware Office, sevDesk, Stripe, SumUp, PayPal, HubSpot, Pipedrive, Dropbox, Google Sheets | **Pipedream Connect Gateway** (OAuth beim Anbieter; Handwerk OS speichert keine fremden Passwörter) |
 | 2 | **Macher Format Engine** | DATEV · XRechnung · ZUGFeRD · GAEB (X31, X83, X84, X86, X87, X89) · DATANORM 4/5 · BMEcat · ETIM · UBL/CII · CAMT.053 · MT940 · SEPA pain.001 · CSV/XLSX/XML/JSON · PDF/A · ICS · VCF | Eingebaut, läuft im Browser und auf dem Server; jede Datei wird vor der Übernahme geprüft |
 | 3 | **Macher Universal Connectors** | Weiterleitungs-Postfach · IMAP · Webhook ein/aus · REST-API · SFTP/FTP · Karten-Deep-Links | Eingebaut, mit denselben Rechten wie in der Software (Capabilities aus der Constitution) |
 | 4 | **Macher Handwerk Connect** | IDS Connect · UGL · Open Masterdata · OCI | Zugangsdaten des Großhändlers, je Großhändler einzeln |
@@ -32,7 +32,7 @@ Der Score ist unsere Reihenfolge – nicht für Kunden sichtbar. Hoch = zuerst. 
 ## Bauweise – Schritt für Schritt
 
 **Es gibt keine „Kommt“-Phase.** Jede Integration wird erst intern angeschaut und dann direkt gebaut. Die Website zeigt
-alle Integrationen als Teil von Macher OS – ohne Status-Abzeichen, ohne „bis dahin“. Ein Schritt ist fertig, wenn der
+alle Integrationen als Teil von Handwerk OS – ohne Status-Abzeichen, ohne „bis dahin“. Ein Schritt ist fertig, wenn der
 Connector in `connectoren.ts` `verfuegbar: true` meldet.
 
 1. **Format Engine schließen (Score 100):** ZUGFeRD (PDF/A-3 mit CII), CSV/XLSX-Export, GAEB X84-Abgabe.
@@ -59,7 +59,7 @@ Website: eigene Connectoren aus `connectoren.ts`, der Rest kommt über `ausKatal
 
 Regeln für jede neue Integration:
 
-- Gehört in genau eine Säule; kanonische Objekte bleiben in Macher OS (keine Kopien, Beziehungen statt Duplikate).
+- Gehört in genau eine Säule; kanonische Objekte bleiben in Handwerk OS (keine Kopien, Beziehungen statt Duplikate).
 - Ereignisse über die Event-Schicht (`invoice.paid` …); ausgehende Webhooks hängen daran.
 - KI nutzt Integrationen nur über den Macher AI Gateway (`docs/os/KI-GATEWAY.md`) mit denselben Rechten.
 - Geldbewegungen (MONEY) und Versand nach außen (PUBLICATION) brauchen immer eine Bestätigung.

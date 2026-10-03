@@ -26,7 +26,7 @@ Gestaltung und Tonalität folgen dem [Brand & Software Design Playbook](docs/des
 
 | Ordner | Inhalt |
 |---|---|
-| `src/os/` | **Macher OS – die Software** (React, läuft unter `/os`): 81 Module, sichtbar in genau vier Bereichen Heute · Aufträge · Planen · Betrieb (Zielstruktur: [`docs/produkt/navigation.md`](docs/produkt/navigation.md)) |
+| `src/os/` | **Handwerk OS – die Software** (React, läuft unter `/os`): 81 Module, sichtbar in genau vier Bereichen Heute · Aufträge · Planen · Betrieb (Zielstruktur: [`docs/produkt/navigation.md`](docs/produkt/navigation.md)) |
 | `src/app/(os)/` | Next.js-Route `/os`, die die Software lädt |
 | `src/app/(marketing)/`, `src/components/`, `src/content/` | Marketing-Website |
 | `docs/` | Design-Playbook, Produkt-Modulliste (`docs/produkt/module.md`), Website-Struktur |

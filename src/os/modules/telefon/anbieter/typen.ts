@@ -1,7 +1,7 @@
 /**
  * Anschluss eines Telefon-/Voice-Anbieters (sipgate, Twilio, Vapi, Retell, ElevenLabs …) an den Telefonassistenten.
  *
- * Macher OS spricht nie direkt mit einem Anbieter. Ein Adapter (`TelefonAnbieter`) übersetzt in beide Richtungen:
+ * Handwerk OS spricht nie direkt mit einem Anbieter. Ein Adapter (`TelefonAnbieter`) übersetzt in beide Richtungen:
  *  - hin:   die anbieterneutrale `AgentDefinition` (Ansage, Anweisung, Fragen, Ziel-Schema, Werkzeuge, Weiterleitung)
  *           in die Agent-Konfiguration des Anbieters (`einrichten`),
  *  - zurück: die Webhooks des Anbieters in normalisierte `TelefonEreignis`se (`eingangLesen`).

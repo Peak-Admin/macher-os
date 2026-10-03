@@ -62,7 +62,7 @@ export function Rahmen({ children, vorteile }: { children: ReactNode; vorteile?:
           <div className="ob-logo">
             <img className="mm-logo-zeichen" src="/os/icons/icon-192.png" alt="" width={32} height={32} />
             <span>
-              Macher <strong>OS</strong>
+              Handwerk <strong>OS</strong>
             </span>
           </div>
           <p className="ob-marke-statement">Dein Betrieb. Klar geführt.</p>
@@ -640,7 +640,7 @@ function Einladung({ betrieb }: { betrieb: string }) {
       <div className="ob-frage-kopf ob-frage-kopf--mitte">
         <Oberzeile>Einladung</Oberzeile>
         <h1>{betrieb ? `${betrieb} hat dich eingeladen` : 'Du wurdest eingeladen'}</h1>
-        <p>Über Macher OS bekommst du deine Einsätze, Adressen und Aufgaben aufs Handy.</p>
+        <p>Über Handwerk OS bekommst du deine Einsätze, Adressen und Aufgaben aufs Handy.</p>
       </div>
       {verbunden ? (
         <Meldung ton="erfolg" titel="Du bist angemeldet">Deine Einsätze erscheinen unter Heute.</Meldung>

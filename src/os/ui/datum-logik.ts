@@ -1,6 +1,6 @@
 /**
  * Reine Logik der Datumswahl (`DatumEingabe`): Tippen lesen, Kalenderwochen, Monatsraster.
- * Datumswerte sind ISO-Tage (`JJJJ-MM-TT`) wie überall in Macher OS.
+ * Datumswerte sind ISO-Tage (`JJJJ-MM-TT`) wie überall in Handwerk OS.
  */
 import { isoDatum, plusTage, wochentag } from '@core/format';
 import type { Datum } from '@core/objects';

@@ -262,7 +262,7 @@ export type Bildnachweis = {
   lizenzUrl?: string;
 };
 
-/** Fotos von Mission Mittelstand (Herausgeber von Macher OS). */
+/** Fotos von Mission Mittelstand (Herausgeber von Handwerk OS). */
 export const missionMittelstandBilder: Bildnachweis[] = [
   {
     src: "/bilder/mission-mittelstand/matthias-aumann.webp",

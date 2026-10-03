@@ -33,7 +33,7 @@ describe('Stripe-Formular', () => {
   });
 });
 
-describe('E-Rechnung für Macher OS', () => {
+describe('E-Rechnung für Handwerk OS', () => {
   test('XRechnung aus einer Stripe-Rechnung mit Netto, USt und Zeitraum', async () => {
     const { xrechnungAusStripe } = await import('@/app/api/abo/_lib/rechnung');
     const xml = xrechnungAusStripe(
@@ -51,7 +51,7 @@ describe('E-Rechnung für Macher OS', () => {
         customer_email: 'chef@example.org',
         customer_address: { line1: 'Hauptstr. 1', postal_code: '12345', city: 'Musterstadt' },
         customer_tax_ids: [{ value: 'DE123456789' }],
-        lines: { data: [{ description: 'Macher OS Team', amount: 8900 }] },
+        lines: { data: [{ description: 'Handwerk OS Team', amount: 8900 }] },
       },
       { name: 'Anbieter GmbH', strasse: 'Weg 2', plz: '54321', ort: 'Stadt', email: 'rechnung@example.org', ustId: 'DE999999999' },
     );

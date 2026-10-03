@@ -73,13 +73,13 @@ const punkte = [
 ];
 
 /**
- * Abschnitt „Von Mission Mittelstand“: Macher OS ist ein Joint-Venture-Projekt
+ * Abschnitt „Von Mission Mittelstand“: Handwerk OS ist ein Joint-Venture-Projekt
  * von Mission Mittelstand. Dunkle Fläche, Person vor Pfeilmotiv.
  */
 export function MissionMittelstand({
   id,
   title = "Von Handwerkern. Für Handwerker.",
-  intro = `Macher OS ist eine Mission Mittelstand: ein Projekt von ${herausgeber.name}, gemacht von Leuten, die den Betriebsalltag kennen – für Betriebe, die lieber arbeiten als verwalten.`,
+  intro = `Handwerk OS ist eine Mission Mittelstand: ein Projekt von ${herausgeber.name}, gemacht von Leuten, die den Betriebsalltag kennen – für Betriebe, die lieber arbeiten als verwalten.`,
 }: {
   id?: string;
   title?: string;
@@ -145,7 +145,7 @@ export function MissionMittelstandFoto({ className = "" }: { className?: string 
 }
 
 /**
- * Kompakter Hinweis „Hinter Macher OS steht Mission Mittelstand“: echtes Teamfoto, Porträt von Matthias Aumann, Logo.
+ * Kompakter Hinweis „Hinter Handwerk OS steht Mission Mittelstand“: echtes Teamfoto, Porträt von Matthias Aumann, Logo.
  * Für Seiten, auf denen Vertrauen zählt (Funktionen, Preise, Hilfe, Kontakt, Gewerke).
  */
 export function MissionMittelstandStreifen({ className = "" }: { className?: string }) {
@@ -169,10 +169,10 @@ export function MissionMittelstandStreifen({ className = "" }: { className?: str
           <div className="min-w-0">
             <HerausgeberMarke className="h-8" />
             <h2 className="mt-5 font-display text-2xl font-bold leading-tight text-balance sm:text-3xl">
-              Hinter Macher OS steht {herausgeber.name}.
+              Hinter Handwerk OS steht {herausgeber.name}.
             </h2>
             <p className="mt-3 text-lg leading-relaxed text-muted">
-              Von Handwerkern für Handwerker: Macher OS ist aus dem Alltag echter Betriebe gebaut, nicht am Schreibtisch.
+              Von Handwerkern für Handwerker: Handwerk OS ist aus dem Alltag echter Betriebe gebaut, nicht am Schreibtisch.
             </p>
             <Link
               href="/ueber-uns#mission-mittelstand"

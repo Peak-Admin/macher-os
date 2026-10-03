@@ -85,7 +85,7 @@ export function VertrauensKacheln({ className = "" }: { className?: string }) {
 }
 
 const FRAGE =
-  "Was ist Macher OS (macher-os.de)? Erklär mir kurz, was die Software für Handwerksbetriebe kann und für wen sie passt.";
+  "Was ist Handwerk OS (macher-os.de)? Erklär mir kurz, was die Software für Handwerksbetriebe kann und für wen sie passt.";
 
 const KIS: { name: string; url: (q: string) => string; logo: ReactNode }[] = [
   {
@@ -111,13 +111,13 @@ const KIS: { name: string; url: (q: string) => string; logo: ReactNode }[] = [
   },
 ];
 
-/** „KI fragen“: öffnet ChatGPT, Claude oder Perplexity mit einer fertigen Frage zu Macher OS (neuer Tab). */
+/** „KI fragen“: öffnet ChatGPT, Claude oder Perplexity mit einer fertigen Frage zu Handwerk OS (neuer Tab). */
 export function KiFragen({ className = "" }: { className?: string }) {
   const q = encodeURIComponent(FRAGE);
   return (
     <div className={className}>
       <p className="text-sm font-bold text-accent">KI fragen</p>
-      <p className="mt-1 text-sm text-white/65">Lass dir Macher OS von deiner KI erklären.</p>
+      <p className="mt-1 text-sm text-white/65">Lass dir Handwerk OS von deiner KI erklären.</p>
       <ul className="mt-3 flex gap-3 sm:justify-end">
         {KIS.map((k) => (
           <li key={k.name}>
@@ -131,7 +131,7 @@ export function KiFragen({ className = "" }: { className?: string }) {
               <svg viewBox="0 0 24 24" aria-hidden className="size-6">
                 {k.logo}
               </svg>
-              <span className="sr-only">{k.name} nach Macher OS fragen (öffnet in neuem Tab)</span>
+              <span className="sr-only">{k.name} nach Handwerk OS fragen (öffnet in neuem Tab)</span>
             </a>
           </li>
         ))}

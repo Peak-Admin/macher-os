@@ -147,7 +147,7 @@ export default async function HilfeArtikelPage({ params }: { params: Promise<{ s
 
       <FinalCta
         title="Ausprobieren ist der schnellste Weg."
-        intro="Teste Macher OS kostenlos mit deinem eigenen Betrieb – ohne Kreditkarte."
+        intro="Teste Handwerk OS kostenlos mit deinem eigenen Betrieb – ohne Kreditkarte."
       />
     </>
   );

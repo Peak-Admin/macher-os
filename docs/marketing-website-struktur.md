@@ -1,7 +1,7 @@
-# Macher OS – Marketing Website Master Structure v2
+# Handwerk OS – Marketing Website Master Structure v2
 
 **Status:** Canonical Marketing Information Architecture  
-**Brand:** Macher OS  
+**Brand:** Handwerk OS  
 **Product:** Betriebssystem für Handwerksunternehmen  
 **Primary Goal:** Kostenlosen Start maximieren  
 **Secondary Goal:** Produktverständnis, Vertrauen und direkte Nutzung aufbauen  
@@ -13,7 +13,7 @@
 
 Die Marketing-Website muss innerhalb weniger Sekunden beantworten:
 
-1. **Was ist Macher OS?**
+1. **Was ist Handwerk OS?**
 2. **Ist es für meinen Betrieb / mein Gewerk gemacht?**
 3. **Was kann es konkret?**
 4. **Wie hilft es mir im Alltag?**
@@ -26,7 +26,7 @@ Die Marketing-Website muss innerhalb weniger Sekunden beantworten:
 
 > **Dein Betrieb. Eine Software.**
 
-Macher OS bildet den gesamten Handwerksbetrieb ab und erledigt möglichst viel Büro- und Organisationsarbeit automatisch, damit Chef, Büro und Mitarbeiter mehr Zeit für Kunden, Baustelle und Ausführung haben.
+Handwerk OS bildet den gesamten Handwerksbetrieb ab und erledigt möglichst viel Büro- und Organisationsarbeit automatisch, damit Chef, Büro und Mitarbeiter mehr Zeit für Kunden, Baustelle und Ausführung haben.
 
 ## Produktprinzip für Marketing
 
@@ -53,7 +53,7 @@ Sie soll vermitteln:
 ## Desktop Header
 
 ```text
-[MACHER OS]
+[HANDWERK OS]
 
 Funktionen ▾   Gewerke ▾   Wissen ▾   Kunden   Preise
 
@@ -142,7 +142,7 @@ Funktionen ▾   Gewerke ▾   Wissen ▾   Kunden   Preise
 
 ## Spalte 4 – Macher erledigt
 
-**Beschreibung:** Büroarbeit, die Macher OS möglichst automatisch übernimmt.
+**Beschreibung:** Büroarbeit, die Handwerk OS möglichst automatisch übernimmt.
 
 - Anrufe aufnehmen
 - Anfragen erfassen
@@ -233,7 +233,7 @@ Praxisbeispiele und Arbeitsweisen aus anderen Betrieben.
 ## Spalte 2 – Hilfe
 
 ### Schnellstart
-In wenigen Minuten mit Macher OS loslegen.
+In wenigen Minuten mit Handwerk OS loslegen.
 
 ### Hilfe-Center
 Antworten auf häufige Fragen und Schritt-für-Schritt-Anleitungen.
@@ -244,7 +244,7 @@ Persönliche Hilfe bei Fragen und Problemen.
 ### Daten übernehmen
 Kunden, Mitarbeiter, Artikel und bestehende Daten einfach übernehmen.
 
-### Macher OS einrichten
+### Handwerk OS einrichten
 Hilfe bei Gewerk, Leistungen, Rollen und Betriebseinstellungen.
 
 ---
@@ -291,7 +291,7 @@ Optional über die ganze Breite:
 
 ## Ziel
 
-Macher OS in weniger als 30 Sekunden verständlich machen und zum kostenlosen Start führen.
+Handwerk OS in weniger als 30 Sekunden verständlich machen und zum kostenlosen Start führen.
 
 ## Seitenaufbau
 
@@ -307,7 +307,7 @@ Macher OS in weniger als 30 Sekunden verständlich machen und zum kostenlosen St
 
 Alternative:
 
-> Macher OS organisiert deinen Betrieb – damit ihr mehr Zeit fürs Handwerk habt.
+> Handwerk OS organisiert deinen Betrieb – damit ihr mehr Zeit fürs Handwerk habt.
 
 **CTAs:**
 
@@ -340,7 +340,7 @@ Visualer Ablauf:
 
 Darunter kurze Erklärung:
 
-Macher OS hält alle Informationen zusammen und übernimmt möglichst viel Organisation dazwischen.
+Handwerk OS hält alle Informationen zusammen und übernimmt möglichst viel Organisation dazwischen.
 
 ---
 
@@ -503,7 +503,7 @@ Beim Start wählt der Nutzer:
 - Arbeitsweise
 - Teamgröße
 
-Macher OS richtet daraufhin automatisch ein:
+Handwerk OS richtet daraufhin automatisch ein:
 
 - passende Funktionen
 - Begriffe
@@ -561,11 +561,11 @@ CTA:
 
 Beispiele:
 
-- Für welche Gewerke ist Macher OS geeignet?
+- Für welche Gewerke ist Handwerk OS geeignet?
 - Muss mein Team technisch versiert sein?
 - Gibt es eine App?
 - Kann ich bestehende Daten übernehmen?
-- Funktioniert Macher OS auch unterwegs?
+- Funktioniert Handwerk OS auch unterwegs?
 - Können Mitarbeiter unterschiedliche Rechte bekommen?
 - Kann ich kostenlos starten?
 - Wie funktioniert die automatische Planung?
@@ -640,7 +640,7 @@ Keine alphabetische Feature-Wand.
 
 ### 5. Gewerkspezifische Anpassung
 
-> Macher OS richtet Funktionen und Abläufe passend zu deinem Gewerk ein.
+> Handwerk OS richtet Funktionen und Abläufe passend zu deinem Gewerk ein.
 
 CTA:
 
@@ -667,7 +667,7 @@ Beispiele:
 
 1. **Hero** – Problem + konkrete Lösung.
 2. **Das Problem** – 3–5 typische Alltagssituationen.
-3. **So löst Macher OS es** – Produktvisual + Beschreibung.
+3. **So löst Handwerk OS es** – Produktvisual + Beschreibung.
 4. **So läuft es ab** – 3–5 Schritte.
 5. **Automatisch erledigt** – Was Macher übernimmt.
 6. **Auf Handy und Computer** – relevante Geräteansicht.
@@ -688,11 +688,11 @@ Besucher findet seinen Betrieb und gelangt auf eine zugeschnittene Seite.
 
 ### 1. Hero
 
-> # Macher OS für dein Handwerk.
+> # Handwerk OS für dein Handwerk.
 
 Subheadline:
 
-> Wähle dein Gewerk. Macher OS passt Abläufe, Begriffe und Funktionen an deinen Betrieb an.
+> Wähle dein Gewerk. Handwerk OS passt Abläufe, Begriffe und Funktionen an deinen Betrieb an.
 
 ---
 
@@ -744,7 +744,7 @@ Zeigen, was sich verändert:
 
 ### 6. Final CTA
 
-`Macher OS für meinen Betrieb einrichten`
+`Handwerk OS für meinen Betrieb einrichten`
 
 ---
 
@@ -759,10 +759,10 @@ Beispiele:
 
 ## Aufbau
 
-1. **Hero** – `Macher OS für [Gewerk]`
+1. **Hero** – `Handwerk OS für [Gewerk]`
 2. **Typischer Arbeitsablauf** – gewerksspezifisch
 3. **Die größten Probleme** – 5–7 echte Probleme
-4. **So hilft Macher OS** – passende Module/Funktionen
+4. **So hilft Handwerk OS** – passende Module/Funktionen
 5. **Für dein Gewerk eingerichtet**
 6. **Aufträge** – typische Auftragsarten
 7. **Planung** – Mitarbeiter, Material und Termine
@@ -894,7 +894,7 @@ Praxistipps, SEO und Vertrauen.
 5. Beispiele
 6. Checkliste
 7. ggf. Rechner / Vorlage
-8. passende Macher-OS-Funktion
+8. passende Handwerk-OS-Funktion
 9. weitere Artikel
 10. CTA
 
@@ -960,7 +960,7 @@ Lernen für Unternehmer und Mitarbeiter.
 4. Vorlagen
 5. Checklisten
 6. Formulare
-7. direkt in Macher OS verwenden
+7. direkt in Handwerk OS verwenden
 8. CTA
 
 ---
@@ -973,7 +973,7 @@ Lernen für Unternehmer und Mitarbeiter.
 2. Wofür braucht man sie?
 3. Vorschau
 4. kostenlos nutzen / herunterladen
-5. direkt in Macher OS verwenden
+5. direkt in Handwerk OS verwenden
 6. Erklärung
 7. verwandte Vorlagen
 8. CTA
@@ -1099,7 +1099,7 @@ Crosslink zu `/wissen/vorlagen`
 
 ### 6. CTA
 
-`Macher OS kostenlos testen`
+`Handwerk OS kostenlos testen`
 
 ---
 
@@ -1113,7 +1113,7 @@ Crosslink zu `/wissen/vorlagen`
 4. kurze Erklärung
 5. Beispiel
 6. Ergebnis speichern / senden
-7. passende Macher-OS-Funktion
+7. passende Handwerk-OS-Funktion
 8. FAQ
 9. CTA
 
@@ -1127,7 +1127,7 @@ Vertrauen durch echte Betriebe und konkrete Ergebnisse.
 
 ## Aufbau
 
-1. **Hero** – `So arbeiten andere Handwerksbetriebe mit Macher OS.`
+1. **Hero** – `So arbeiten andere Handwerksbetriebe mit Handwerk OS.`
 2. **Kennzahlen / Social Proof** – nur echte, belegbare Zahlen
 3. **Filter** – Gewerk, Betriebsgröße, genutzte Funktionen
 4. **Kundenstories**
@@ -1143,7 +1143,7 @@ Vertrauen durch echte Betriebe und konkrete Ergebnisse.
 1. Hero – Betrieb + konkretes Ergebnis
 2. Betrieb – Wer ist der Kunde?
 3. Vorher – Was war das Problem?
-4. Warum Macher OS?
+4. Warum Handwerk OS?
 5. Einrichtung
 6. Nutzung – welche Funktionen?
 7. Ergebnis – messbare Veränderungen
@@ -1234,7 +1234,7 @@ Produkt zeigen, ohne zwingend Vertriebsgespräch.
 
 ### 1. Hero
 
-> # Sieh Macher OS in Aktion.
+> # Sieh Handwerk OS in Aktion.
 
 ### 2. Demo auswählen
 
@@ -1312,7 +1312,7 @@ Teamgröße.
 
 ### Ergebnis
 
-> Macher OS wird für deinen Betrieb eingerichtet.
+> Handwerk OS wird für deinen Betrieb eingerichtet.
 
 Danach direkt in das produktinterne Onboarding.
 
@@ -1326,14 +1326,14 @@ Keine Marketing-Ablenkung.
 
 ---
 
-# 32. Über Macher OS `/ueber-uns`
+# 32. Über Handwerk OS `/ueber-uns`
 
 Nicht in der Hauptnavigation nötig.
 
 ## Aufbau
 
 1. Mission
-2. Warum Macher OS existiert
+2. Warum Handwerk OS existiert
 3. Produktphilosophie
 4. Team
 5. Partner optional
@@ -1709,7 +1709,7 @@ Jedes Werkzeug verlinkt auf:
 # 43. Finale Marketing-Navigation
 
 ```text
-[MACHER OS]
+[HANDWERK OS]
 
 Funktionen ▾   Gewerke ▾   Wissen ▾   Kunden   Preise
 
@@ -1788,7 +1788,7 @@ Blog                    Schnellstart             Stundensatz-Rechner
 Webinare                Hilfe-Center             Angebots-Rechner
 Vorlagen                Kontakt & Support        Materialaufschlag
 Macher Akademie         Daten übernehmen         Fahrtkosten
-Kundenwissen            Macher OS einrichten     Deckungsbeitrag
+Kundenwissen            Handwerk OS einrichten     Deckungsbeitrag
 
                                                  [Alle Werkzeuge ansehen]
 ```

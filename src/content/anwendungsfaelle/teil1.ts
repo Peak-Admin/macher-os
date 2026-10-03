@@ -17,7 +17,7 @@ export const teil1 = {
       problem:
         "Wie kommt man rein? Wo liegt der Schlüssel? Wo darf man parken? Das weiß oft nur ein Kollege – und der ist gerade nicht erreichbar.",
       loesung:
-        "Macher OS speichert zu jedem Ort, was man vor Ort wissen muss. Dein Monteur sieht es direkt am Termin und fährt mit einem Tipp los.",
+        "Handwerk OS speichert zu jedem Ort, was man vor Ort wissen muss. Dein Monteur sieht es direkt am Termin und fährt mit einem Tipp los.",
     },
     visual: {
       bereich: "Aufträge",
@@ -182,14 +182,14 @@ export const teil1 = {
     meta: {
       title: "Anlagen verwalten – Seriennummer, Wartung und Gewährleistung im Blick",
       description:
-        "Heizung, Wallbox oder Maschine: Typ, Seriennummer, Baujahr, Wartung und Gewährleistung an einer Stelle. Macher OS rechnet die nächste Wartung selbst aus und zeigt jeden früheren Einsatz.",
+        "Heizung, Wallbox oder Maschine: Typ, Seriennummer, Baujahr, Wartung und Gewährleistung an einer Stelle. Handwerk OS rechnet die nächste Wartung selbst aus und zeigt jeden früheren Einsatz.",
     },
     hero: {
       titel: "Du weißt, was beim Kunden verbaut ist – bevor du hinfährst.",
       problem:
         "Störungsanruf: Welche Therme, welches Baujahr, wann war die letzte Wartung? Keiner weiß es. Der Monteur fährt los – ohne das passende Ersatzteil.",
       loesung:
-        "Macher OS führt jede Anlage mit Typ, Seriennummer, Wartung und Gewährleistung. Jeder Einsatz an der Anlage steht in ihrer Historie.",
+        "Handwerk OS führt jede Anlage mit Typ, Seriennummer, Wartung und Gewährleistung. Jeder Einsatz an der Anlage steht in ihrer Historie.",
     },
     visual: {
       bereich: "Aufträge",
@@ -265,7 +265,7 @@ export const teil1 = {
       },
       {
         titel: "Wartung festlegen",
-        text: "Trag das Intervall in Monaten ein. Die nächste Wartung rechnet Macher OS selbst aus.",
+        text: "Trag das Intervall in Monaten ein. Die nächste Wartung rechnet Handwerk OS selbst aus.",
       },
       {
         titel: "Mit dem Auftrag verknüpfen",
@@ -327,7 +327,7 @@ export const teil1 = {
           "Nein. Fang mit dem nächsten Einsatz an. Der Monteur erfasst die Anlage vor Ort, wenn er sowieso davor steht. So wächst die Liste nebenbei.",
       },
       {
-        frage: "Wie rechnet Macher OS die nächste Wartung aus?",
+        frage: "Wie rechnet Handwerk OS die nächste Wartung aus?",
         antwort:
           "Aus der letzten Wartung oder dem Einbaudatum plus dem Intervall in Monaten. Du kannst das Datum jederzeit von Hand ändern.",
       },
@@ -354,14 +354,14 @@ export const teil1 = {
     meta: {
       title: "Besichtigungen planen und dokumentieren – Fotos, Notizen, Angebot",
       description:
-        "Besichtigungstermine planen, vor Ort Fotos und Notizen am Auftrag speichern und danach mit einem Tipp zu Aufmaß oder Angebot. Macher OS erinnert an Besichtigungen ohne Ergebnis.",
+        "Besichtigungstermine planen, vor Ort Fotos und Notizen am Auftrag speichern und danach mit einem Tipp zu Aufmaß oder Angebot. Handwerk OS erinnert an Besichtigungen ohne Ergebnis.",
     },
     hero: {
       titel: "Von der Besichtigung direkt zum Angebot.",
       problem:
         "Nach der Besichtigung liegen die Notizen im Auto und die Fotos auf dem privaten Handy. Das Angebot verzögert sich um Tage.",
       loesung:
-        "Macher OS plant den Termin, speichert Fotos und Notizen gleich am Auftrag und fragt am Ende: Aufmaß, Angebot oder kein Auftrag?",
+        "Handwerk OS plant den Termin, speichert Fotos und Notizen gleich am Auftrag und fragt am Ende: Aufmaß, Angebot oder kein Auftrag?",
     },
     visual: {
       bereich: "Aufträge",
@@ -502,7 +502,7 @@ export const teil1 = {
       {
         frage: "Kann auch ein Mitarbeiter die Besichtigung machen?",
         antwort:
-          "Ja. Du wählst beim Planen, wer hinfährt. Macher OS warnt, wenn er zu der Zeit schon einen Termin hat oder abwesend ist.",
+          "Ja. Du wählst beim Planen, wer hinfährt. Handwerk OS warnt, wenn er zu der Zeit schon einen Termin hat oder abwesend ist.",
       },
       {
         frage: "Was passiert, wenn der Kunde doch nicht will?",
@@ -527,14 +527,14 @@ export const teil1 = {
     meta: {
       title: "Aufgaben im Handwerk verteilen und abhaken – nichts geht mehr unter",
       description:
-        "Rückrufe, Bestellungen, Nacharbeiten: Aufgaben in Sekunden anlegen, einem Mitarbeiter geben und abhaken. Macher OS zeigt, was überfällig ist – am Auftrag und in deiner Liste.",
+        "Rückrufe, Bestellungen, Nacharbeiten: Aufgaben in Sekunden anlegen, einem Mitarbeiter geben und abhaken. Handwerk OS zeigt, was überfällig ist – am Auftrag und in deiner Liste.",
     },
     hero: {
       titel: "Kein „Kannst du mal …“ geht mehr verloren.",
       problem:
         "Aufgaben stehen auf Zetteln, in Chats oder nur im Kopf. Keiner weiß genau, wer sich kümmert – bis der Kunde nachfragt.",
       loesung:
-        "In Macher OS hat jede Aufgabe einen Zuständigen und ein Datum. Wer sie hat, sieht sie in „Meine“. Überfälliges fällt sofort auf.",
+        "In Handwerk OS hat jede Aufgabe einen Zuständigen und ein Datum. Wer sie hat, sieht sie in „Meine“. Überfälliges fällt sofort auf.",
     },
     visual: {
       bereich: "Aufträge",
@@ -697,14 +697,14 @@ export const teil1 = {
     meta: {
       title: "Checklisten für Handwerker – Prüfschritte abhaken, Fotos als Nachweis",
       description:
-        "Fertige Checklisten-Vorlagen fürs Gewerk, Pflichtpunkte und Foto-Nachweis direkt am Auftrag. Macher OS hängt die passende Checkliste an, sobald ein Auftrag beauftragt ist.",
+        "Fertige Checklisten-Vorlagen fürs Gewerk, Pflichtpunkte und Foto-Nachweis direkt am Auftrag. Handwerk OS hängt die passende Checkliste an, sobald ein Auftrag beauftragt ist.",
     },
     hero: {
       titel: "Vor Ort wird nichts mehr vergessen.",
       problem:
         "Ein Schritt vergessen, und du fährst ein zweites Mal raus. Gibt es später Streit, fehlt das Foto als Nachweis.",
       loesung:
-        "Macher OS hängt die passende Checkliste an den Auftrag. Der Monteur hakt am Handy ab und macht Fotos direkt am Punkt.",
+        "Handwerk OS hängt die passende Checkliste an den Auftrag. Der Monteur hakt am Handy ab und macht Fotos direkt am Punkt.",
     },
     visual: {
       bereich: "Aufträge",
@@ -876,7 +876,7 @@ export const teil1 = {
       problem:
         "„Was soll ich hier eigentlich machen?“ Das Wissen steckt im Kopf vom Chef oder Bauleiter. Was bei der Besichtigung besprochen wurde, kommt vor Ort nicht an.",
       loesung:
-        "In Macher OS schreibst du kurz das Ziel, die Sicherheitshinweise und die Schritte auf – mit Fotos. Der Monteur sieht alles am Termin.",
+        "In Handwerk OS schreibst du kurz das Ziel, die Sicherheitshinweise und die Schritte auf – mit Fotos. Der Monteur sieht alles am Termin.",
     },
     visual: {
       bereich: "Aufträge",
@@ -1040,14 +1040,14 @@ export const teil1 = {
     meta: {
       title: "Schnell erfassen auf der Baustelle – Foto, Notiz, Zeit und Material",
       description:
-        "Foto, Sprachnotiz, Zeit, Material oder Zusatzleistung in wenigen Sekunden erfassen. Macher OS wählt den Auftrag aus, an dem du gerade arbeitest – nichts landet mehr im privaten Handy.",
+        "Foto, Sprachnotiz, Zeit, Material oder Zusatzleistung in wenigen Sekunden erfassen. Handwerk OS wählt den Auftrag aus, an dem du gerade arbeitest – nichts landet mehr im privaten Handy.",
     },
     hero: {
       titel: "Festhalten, solange du noch dran denkst.",
       problem:
         "Fotos landen im privaten Handy, Material wird vergessen, Zeiten trägst du abends aus dem Kopf nach. Erfassen dauert zu lange – also schiebt man es auf.",
       loesung:
-        "In Macher OS tippst du am Einsatz auf „Foto“, „Notiz“ oder „Material“. Der Auftrag ist schon gewählt. Nach wenigen Sekunden ist es gespeichert.",
+        "In Handwerk OS tippst du am Einsatz auf „Foto“, „Notiz“ oder „Material“. Der Auftrag ist schon gewählt. Nach wenigen Sekunden ist es gespeichert.",
     },
     visual: {
       bereich: "Heute",
@@ -1184,7 +1184,7 @@ export const teil1 = {
           "Fotos, Notizen (geschrieben oder gesprochen), Zeiten, Material, Aufgaben, Zusatzleistungen, Mängel, Belege und Anrufe. Dazu Urlaub oder Krankheit und defekte Werkzeuge.",
       },
       {
-        frage: "Woher weiß Macher OS, zu welchem Auftrag es gehört?",
+        frage: "Woher weiß Handwerk OS, zu welchem Auftrag es gehört?",
         antwort:
           "Tippst du am Auftrag, ist es dieser Auftrag. Sonst nimmt Macher den Auftrag, an dem deine Zeit gerade läuft, oder deinen Einsatz von heute. Der gewählte Auftrag steht immer sichtbar oben.",
       },
@@ -1195,7 +1195,7 @@ export const teil1 = {
       },
       {
         frage: "Brauche ich dafür eine eigene App?",
-        antwort: "Nein. Macher OS läuft im Browser auf dem Handy. Du musst nichts installieren.",
+        antwort: "Nein. Handwerk OS läuft im Browser auf dem Handy. Du musst nichts installieren.",
       },
     ],
     verwandt: ["dokumentation", "zeiterfassung", "zusatzleistungen"],

@@ -71,7 +71,7 @@ export function MacherChat({ onNavigiert, start }: { onNavigiert?: () => void; s
           <span className="mm-fenster" aria-hidden>
             <FensterSkizze icon="macher" />
           </span>
-          <p style={{ margin: 0 }}>Frag mich nach Terminen, offenen Rechnungen, Kunden oder deinem Team. Ich antworte aus deinen Daten in Macher OS und bereite Aufgaben für dich vor.</p>
+          <p style={{ margin: 0 }}>Frag mich nach Terminen, offenen Rechnungen, Kunden oder deinem Team. Ich antworte aus deinen Daten in Handwerk OS und bereite Aufgaben für dich vor.</p>
           <Meta>Zum Beispiel:</Meta>
           <div className="mf-beispiele">
             {BEISPIELFRAGEN.map((b) => (

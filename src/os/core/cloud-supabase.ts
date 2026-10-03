@@ -456,8 +456,8 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
         const lokal = await rueckfall.senden({
           an,
           kanal: ziel.telefon ? 'sms' : 'email',
-          betreff: 'Einladung zu Macher OS',
-          text: 'Du bist zu Macher OS eingeladen. Tippe auf den Link und melde dich an:',
+          betreff: 'Einladung zu Handwerk OS',
+          text: 'Du bist zu Handwerk OS eingeladen. Tippe auf den Link und melde dich an:',
           link: r.daten.link,
         });
         return { ...lokal, id: r.daten.id };

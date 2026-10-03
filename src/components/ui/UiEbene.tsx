@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 /**
- * UI-Ebene: ein kleiner Ausschnitt aus Macher OS auf der ruhigen Grüngrau-Fläche – die Alternative zur `Skizze`.
+ * UI-Ebene: ein kleiner Ausschnitt aus Handwerk OS auf der ruhigen Grüngrau-Fläche – die Alternative zur `Skizze`.
  * Zeigt echte Beschriftungen mit Beispieldaten, wo ein konkreter Stand mehr erklärt als eine Zeichnung
  * (z. B. „Stundenzettel kommen vom Handy“). Rein dekorativ – die Aussage steht immer im Text daneben.
  * Regeln: docs/design/festlegungen.md („Skizzen und UI-Ebenen“).

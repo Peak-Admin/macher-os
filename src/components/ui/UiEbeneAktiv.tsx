@@ -11,7 +11,7 @@ export type UiAktivZeile = {
 };
 
 /**
- * UI-Ebene zum Ausprobieren: wie `UiEbene` (Ausschnitt aus Macher OS auf ruhiger Fläche), aber eine Zeile hat einen
+ * UI-Ebene zum Ausprobieren: wie `UiEbene` (Ausschnitt aus Handwerk OS auf ruhiger Fläche), aber eine Zeile hat einen
  * Knopf, der etwas tut (freigeben, senden …). Beispieldaten, nichts wird gespeichert; „Von vorn“ setzt zurück.
  */
 export function UiEbeneAktiv({ ort, zeilen, className = "" }: { ort: string; zeilen: UiAktivZeile[]; className?: string }) {

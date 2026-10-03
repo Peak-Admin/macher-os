@@ -12,7 +12,7 @@ export function SchnellstartAnsicht({ ansicht }: { ansicht: Ansicht }) {
         <span className="size-2 rounded-full bg-line" />
         <span className="size-2 rounded-full bg-line" />
         <span className="size-2 rounded-full bg-line" />
-        <span className="ml-2 text-[0.65rem] font-semibold text-muted">Macher OS</span>
+        <span className="ml-2 text-[0.65rem] font-semibold text-muted">Handwerk OS</span>
       </div>
       <div className="p-4 text-sm">{inhalt[ansicht]}</div>
     </div>

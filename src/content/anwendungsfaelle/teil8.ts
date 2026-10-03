@@ -10,14 +10,14 @@ export const teil8 = {
     meta: {
       title: "KI-Bürokraft im Handwerk – Macher arbeitet mit, du entscheidest",
       description:
-        "Macher arbeitet in Macher OS mit wie eine Bürokraft: erledigt Wiederkehrendes, legt Entscheidungen vorbereitet hin und fragt bei Geld, Versand an Kunden und Löschen immer nach. Gekennzeichnet und mit Rückgängig.",
+        "Macher arbeitet in Handwerk OS mit wie eine Bürokraft: erledigt Wiederkehrendes, legt Entscheidungen vorbereitet hin und fragt bei Geld, Versand an Kunden und Löschen immer nach. Gekennzeichnet und mit Rückgängig.",
     },
     hero: {
       titel: "Deine Bürokraft sitzt schon im Programm.",
       problem:
         "Belege zuordnen, an Angebote denken, Zahlungen abhaken: Das Büro bleibt bis abends liegen. Für eine eigene Bürokraft reicht die Arbeit aber noch nicht.",
       loesung:
-        "Macher arbeitet in Macher OS mit. Wiederkehrendes erledigt er selbst, Entscheidungen legt er dir fertig vorbereitet hin. Geld, Versand an Kunden und Löschen gibt es nur mit deinem Okay.",
+        "Macher arbeitet in Handwerk OS mit. Wiederkehrendes erledigt er selbst, Entscheidungen legt er dir fertig vorbereitet hin. Geld, Versand an Kunden und Löschen gibt es nur mit deinem Okay.",
     },
     visual: {
       bereich: "Heute",
@@ -64,7 +64,7 @@ export const teil8 = {
     ],
     loesung: {
       titel: "Macher arbeitet mit. Du behältst das Sagen.",
-      text: "Macher prüft beim Öffnen und alle 30 Minuten, solange Macher OS offen ist, was ansteht. Kleinkram erledigt er nach festen Regeln, die du an- und abschaltest. Was eine Entscheidung braucht, landet unter „Braucht dich“ – mit fertigem Vorschlag und dem passenden Knopf. Alles, was Macher tut, steht im Verlauf mit dem Vermerk „durch Macher“.",
+      text: "Macher prüft beim Öffnen und alle 30 Minuten, solange Handwerk OS offen ist, was ansteht. Kleinkram erledigt er nach festen Regeln, die du an- und abschaltest. Was eine Entscheidung braucht, landet unter „Braucht dich“ – mit fertigem Vorschlag und dem passenden Knopf. Alles, was Macher tut, steht im Verlauf mit dem Vermerk „durch Macher“.",
       punkte: [
         "Wiederkehrendes erledigt Macher selbst: zuordnen, erinnern, Status setzen",
         "Entscheidungen gesammelt unter „Braucht dich“, das Wichtigste zuerst",
@@ -202,7 +202,7 @@ export const teil8 = {
       problem:
         "Während du arbeitest, klingelt das Handy ins Leere. Viele Anrufer legen auf, ohne etwas zu sagen – und rufen den nächsten Betrieb an.",
       loesung:
-        "Der Telefonassistent nimmt den Anruf an, fragt das Wichtige ab und schreibt es als Anfrage oder Rückruf in Macher OS. Notfälle gibt er an deine Bereitschaft weiter.",
+        "Der Telefonassistent nimmt den Anruf an, fragt das Wichtige ab und schreibt es als Anfrage oder Rückruf in Handwerk OS. Notfälle gibt er an deine Bereitschaft weiter.",
     },
     visual: {
       bereich: "Aufträge",
@@ -367,7 +367,7 @@ export const teil8 = {
     meta: {
       title: "Baustellen-App für Handwerker – Zeiten, Fotos, Material, Unterschrift",
       description:
-        "Die Baustellen-App von Macher OS: Zeiten laufen über den Einsatz, Fotos landen am Auftrag, Material und Zusatzarbeiten sind vor Ort erfasst, der Kunde unterschreibt auf dem Handy. Auch ohne Netz.",
+        "Die Baustellen-App von Handwerk OS: Zeiten laufen über den Einsatz, Fotos landen am Auftrag, Material und Zusatzarbeiten sind vor Ort erfasst, der Kunde unterschreibt auf dem Handy. Auch ohne Netz.",
     },
     hero: {
       titel: "Was auf der Baustelle passiert, ist abends schon im Büro.",
@@ -512,7 +512,7 @@ export const teil8 = {
       {
         frage: "Muss ich eine App aus dem Store laden?",
         antwort:
-          "Nein. Die Baustellen-App ist Macher OS im Browser deines Handys. Leg es einmal auf den Startbildschirm, dann startet es wie eine App. Was zur App für iPhone und Android geplant ist, steht auf der Seite „App“.",
+          "Nein. Die Baustellen-App ist Handwerk OS im Browser deines Handys. Leg es einmal auf den Startbildschirm, dann startet es wie eine App. Was zur App für iPhone und Android geplant ist, steht auf der Seite „App“.",
       },
       {
         frage: "Funktioniert das ohne Netz?",
@@ -542,14 +542,14 @@ export const teil8 = {
     meta: {
       title: "Handwerkersoftware in der Cloud – überall arbeiten, Daten in Frankfurt",
       description:
-        "Macher OS speichert deine Daten auf Servern in Frankfurt, DSGVO-konform mit Vertrag zur Auftragsverarbeitung. Büro, Handy und Tablet arbeiten mit demselben Stand, ohne Netz geht es weiter. Anmeldung ohne Passwort.",
+        "Handwerk OS speichert deine Daten auf Servern in Frankfurt, DSGVO-konform mit Vertrag zur Auftragsverarbeitung. Büro, Handy und Tablet arbeiten mit demselben Stand, ohne Netz geht es weiter. Anmeldung ohne Passwort.",
     },
     hero: {
       titel: "Ein Stand. Auf jedem Gerät.",
       problem:
         "Die Kundendaten liegen auf dem Bürorechner, die Fotos auf drei Handys, die Stundenzettel im Wagen. Geht ein Gerät kaputt, ist ein Teil davon weg.",
       loesung:
-        "Mit deinem Konto liegen die Daten von Macher OS auf Servern in Frankfurt. Büro, Chef-Handy und Monteure arbeiten mit demselben Stand – und ohne Netz einfach weiter.",
+        "Mit deinem Konto liegen die Daten von Handwerk OS auf Servern in Frankfurt. Büro, Chef-Handy und Monteure arbeiten mit demselben Stand – und ohne Netz einfach weiter.",
     },
     visual: {
       bereich: "Betrieb",
@@ -692,12 +692,12 @@ export const teil8 = {
       {
         frage: "Muss ich etwas installieren?",
         antwort:
-          "Nein. Macher OS läuft im Browser – am Rechner, auf dem Tablet und auf dem Handy. Kein Server im Keller. Auf dem Handy legst du es einmal auf den Startbildschirm, dann startet es wie eine App.",
+          "Nein. Handwerk OS läuft im Browser – am Rechner, auf dem Tablet und auf dem Handy. Kein Server im Keller. Auf dem Handy legst du es einmal auf den Startbildschirm, dann startet es wie eine App.",
       },
       {
         frage: "Was passiert ohne Konto?",
         antwort:
-          "Du kannst Macher OS ohne Konto ausprobieren. Dann liegen die Daten nur in diesem Browser, auf anderen Geräten siehst du sie nicht. Legst du ein Konto an, werden sie einmal übernommen und gesichert.",
+          "Du kannst Handwerk OS ohne Konto ausprobieren. Dann liegen die Daten nur in diesem Browser, auf anderen Geräten siehst du sie nicht. Legst du ein Konto an, werden sie einmal übernommen und gesichert.",
       },
       {
         frage: "Komme ich an meine Daten, wenn ich aufhöre?",
@@ -723,7 +723,7 @@ export const teil8 = {
       problem:
         "Der Arbeitsbericht klemmt am Brett, der Kuli schreibt nicht, der Durchschlag verschwindet im Auto. Und bei Streit fehlt genau das eine Blatt.",
       loesung:
-        "In Macher OS unterschreibt der Kunde mit dem Finger auf dem Handy. Name, Ort und Uhrzeit stehen dabei, die Unterschrift hängt am Auftrag und steht im Ausdruck.",
+        "In Handwerk OS unterschreibt der Kunde mit dem Finger auf dem Handy. Name, Ort und Uhrzeit stehen dabei, die Unterschrift hängt am Auftrag und steht im Ausdruck.",
     },
     visual: {
       bereich: "Aufträge",

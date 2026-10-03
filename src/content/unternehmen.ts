@@ -31,7 +31,7 @@ export const kontaktAnliegen: Anliegen[] = [
   {
     id: "produkt",
     label: "Frage zum Produkt",
-    beschreibung: "Was kann Macher OS? Passt es zu meinem Betrieb?",
+    beschreibung: "Was kann Handwerk OS? Passt es zu meinem Betrieb?",
     icon: "chat",
     email: KONTAKT_EMAIL,
     platzhalter: "Was möchtest du wissen? Erzähl gern kurz von deinem Betrieb.",
@@ -39,7 +39,7 @@ export const kontaktAnliegen: Anliegen[] = [
   {
     id: "hilfe",
     label: "Hilfe",
-    beschreibung: "Du nutzt Macher OS schon und kommst nicht weiter.",
+    beschreibung: "Du nutzt Handwerk OS schon und kommst nicht weiter.",
     icon: "shield",
     email: SUPPORT_EMAIL,
     platzhalter: "Wobei hängst du gerade? Was hast du schon versucht?",
@@ -140,13 +140,13 @@ export const partnerGruppen: {
   {
     id: "integration",
     titel: "Integrationspartner",
-    text: "Eure Software spricht mit Macher OS – statt Daten doppelt zu pflegen.",
+    text: "Eure Software spricht mit Handwerk OS – statt Daten doppelt zu pflegen.",
     nutzen: ["Daten austauschen statt abtippen", "gemeinsame Kunden", "technische Abstimmung"],
     icon: "link",
   },
 ];
 
-/** Anbieter von Macher OS. */
+/** Anbieter von Handwerk OS. */
 export const firma = {
   name: "Peak Atlas Group",
   rechtsform: "AG",
@@ -167,12 +167,12 @@ const anbieterAnschrift = `${anbieter}, ${firma.anschrift}, ${firma.ort}`;
 /** Stand der Rechtstexte. */
 export const rechtStand = "2. Oktober 2026";
 
-/** Dienstleister, die für Website und Macher OS Daten verarbeiten (Datenschutz + Anlage 2 der AVV). */
+/** Dienstleister, die für Website und Handwerk OS Daten verarbeiten (Datenschutz + Anlage 2 der AVV). */
 export const dienstleister: { name: string; sitz: string; zweck: string; ort: string }[] = [
   {
     name: "Vercel Inc.",
     sitz: "Covina, USA",
-    zweck: "Hosting von Website und Macher OS, Server-Funktionen",
+    zweck: "Hosting von Website und Handwerk OS, Server-Funktionen",
     ort: "Rechenzentrum Frankfurt am Main",
   },
   {
@@ -287,7 +287,7 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
     id: "verantwortlicher",
     titel: "Verantwortlicher",
     absaetze: [
-      "Verantwortlich für die Verarbeitung personenbezogener Daten auf dieser Website und in Macher OS ist:",
+      "Verantwortlich für die Verarbeitung personenbezogener Daten auf dieser Website und in Handwerk OS ist:",
       `${anbieterAnschrift}, vertreten durch den Vorstand ${firma.vorstand}.`,
       `Fragen zum Datenschutz: ${DATENSCHUTZ_EMAIL}`,
     ],
@@ -296,17 +296,17 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
     id: "ueberblick",
     titel: "Überblick: Welche Daten wir verarbeiten",
     liste: [
-      "Daten, die beim Besuch der Website oder beim Öffnen von Macher OS technisch anfallen (z. B. IP-Adresse, Zeitpunkt, aufgerufene Seite, Browser)",
+      "Daten, die beim Besuch der Website oder beim Öffnen von Handwerk OS technisch anfallen (z. B. IP-Adresse, Zeitpunkt, aufgerufene Seite, Browser)",
       "Daten, die du uns selbst mitteilst (z. B. per E-Mail oder bei der Anmeldung)",
       "Daten zu deinem Konto, deinem Betrieb und deinem Abo",
-      "Daten, die du als Betrieb in Macher OS über deine Kunden, Mitarbeiter und Aufträge speicherst – diese verarbeiten wir in deinem Auftrag (siehe „Daten deines Betriebs“)",
+      "Daten, die du als Betrieb in Handwerk OS über deine Kunden, Mitarbeiter und Aufträge speicherst – diese verarbeiten wir in deinem Auftrag (siehe „Daten deines Betriebs“)",
     ],
   },
   {
     id: "hosting",
     titel: "Hosting und Server-Logdateien",
     absaetze: [
-      "Website und Macher OS laufen bei Vercel Inc. (USA) im Rechenzentrum Frankfurt am Main. Die Datenbank und die Dateien von Macher OS liegen bei Supabase Inc. (USA), ebenfalls im Rechenzentrum Frankfurt am Main.",
+      "Website und Handwerk OS laufen bei Vercel Inc. (USA) im Rechenzentrum Frankfurt am Main. Die Datenbank und die Dateien von Handwerk OS liegen bei Supabase Inc. (USA), ebenfalls im Rechenzentrum Frankfurt am Main.",
       "Beim Aufruf werden technisch notwendige Daten in Server-Logdateien gespeichert: IP-Adresse, Datum und Uhrzeit, aufgerufene Adresse, übertragene Datenmenge, Browser und Betriebssystem. Wir brauchen sie, um Website und Software sicher und stabil bereitzustellen und Angriffe zu erkennen.",
       "Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem sicheren Betrieb). Die Logdateien werden nach spätestens 30 Tagen gelöscht.",
     ],
@@ -322,7 +322,7 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
   },
   {
     id: "konto",
-    titel: "Anmeldung und Konto in Macher OS",
+    titel: "Anmeldung und Konto in Handwerk OS",
     absaetze: [
       "Für ein Konto brauchen wir deine E-Mail-Adresse oder Handynummer, deinen Namen und die Angaben zu deinem Betrieb. Die Anmeldung läuft ohne Passwort: per Link oder Code per E-Mail bzw. SMS. Wenn du „Mit Google anmelden“ wählst, erhalten wir von Google (Google Ireland Limited, Dublin) deinen Namen und deine E-Mail-Adresse.",
       "Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertrag). Wir speichern die Daten, solange dein Konto besteht. Nach dem Löschen des Kontos löschen wir sie innerhalb von 30 Tagen, soweit keine Aufbewahrungspflicht besteht.",
@@ -332,8 +332,8 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
     id: "betriebsdaten",
     titel: "Daten deines Betriebs",
     absaetze: [
-      "Was du in Macher OS über deine Kunden, Mitarbeiter, Aufträge, Termine, Zeiten, Fotos, Angebote und Rechnungen speicherst, verarbeiten wir nur in deinem Auftrag und nach deinen Weisungen. Verantwortlich für diese Daten bist du als Betrieb. Dafür gilt unser Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO (Seite „Auftragsverarbeitung“).",
-      "Das gilt auch für deine Kunden, wenn sie einen Link aus Macher OS öffnen (z. B. Kundenbereich, Angebot, Terminbuchung): Wir vermerken für dich, dass und wann der Link geöffnet wurde.",
+      "Was du in Handwerk OS über deine Kunden, Mitarbeiter, Aufträge, Termine, Zeiten, Fotos, Angebote und Rechnungen speicherst, verarbeiten wir nur in deinem Auftrag und nach deinen Weisungen. Verantwortlich für diese Daten bist du als Betrieb. Dafür gilt unser Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO (Seite „Auftragsverarbeitung“).",
+      "Das gilt auch für deine Kunden, wenn sie einen Link aus Handwerk OS öffnen (z. B. Kundenbereich, Angebot, Terminbuchung): Wir vermerken für dich, dass und wann der Link geöffnet wurde.",
     ],
   },
   {
@@ -341,7 +341,7 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
     titel: "E-Mails, SMS und Benachrichtigungen",
     absaetze: [
       "E-Mails verschicken wir über Resend (Plus Five Five, Inc., USA), SMS über seven.io (seven communications GmbH & Co. KG, Kiel). Wenn ein Betrieb es einschaltet, gehen Nachrichten auch über WhatsApp Business (Meta Platforms Ireland Ltd., Dublin).",
-      "Wenn du Benachrichtigungen auf deinem Gerät einschaltest, speichern wir die technische Adresse deines Geräts beim Push-Dienst deines Browsers (z. B. Google, Apple, Mozilla). Du kannst Benachrichtigungen jederzeit in Macher OS oder in deinem Browser abschalten; dann löschen wir die Adresse.",
+      "Wenn du Benachrichtigungen auf deinem Gerät einschaltest, speichern wir die technische Adresse deines Geräts beim Push-Dienst deines Browsers (z. B. Google, Apple, Mozilla). Du kannst Benachrichtigungen jederzeit in Handwerk OS oder in deinem Browser abschalten; dann löschen wir die Adresse.",
       "Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertrag).",
     ],
   },
@@ -366,7 +366,7 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
     id: "messung",
     titel: "Messung ohne Cookies",
     absaetze: [
-      "Um Macher OS besser zu machen, zählen wir in der Software einzelne Schritte, z. B. „Einrichtung fertig“ oder „Angebot versendet“. Dabei speichern wir nur den Namen des Schritts, die Uhrzeit, deinen Betrieb und grobe Werte (z. B. Dauer in Sekunden) – keine Inhalte wie Kundennamen oder Beträge, keine Cookies, kein Profil über mehrere Websites.",
+      "Um Handwerk OS besser zu machen, zählen wir in der Software einzelne Schritte, z. B. „Einrichtung fertig“ oder „Angebot versendet“. Dabei speichern wir nur den Namen des Schritts, die Uhrzeit, deinen Betrieb und grobe Werte (z. B. Dauer in Sekunden) – keine Inhalte wie Kundennamen oder Beträge, keine Cookies, kein Profil über mehrere Websites.",
       "Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer funktionierenden, verständlichen Software). Du kannst jederzeit widersprechen; schreib dafür an die Adresse oben. Die Messwerte löschen wir nach spätestens 24 Monaten.",
     ],
   },
@@ -375,7 +375,7 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
     titel: "Cookies und Speicher im Browser",
     absaetze: [
       "Wir setzen keine Cookies oder Werkzeuge für Werbung oder Analyse ein. Deshalb gibt es auch kein Cookie-Banner.",
-      "Macher OS speichert technisch notwendige Daten in deinem Browser: deine Anmeldung, die Daten deines Betriebs für die Arbeit ohne Netz und Einstellungen wie die gewählte Ansicht. Die Website merkt sich für die laufende Sitzung, ob du den Markenauftakt schon gesehen hast. Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG; die Daten bleiben, bis du dich abmeldest oder sie in deinem Browser löschst.",
+      "Handwerk OS speichert technisch notwendige Daten in deinem Browser: deine Anmeldung, die Daten deines Betriebs für die Arbeit ohne Netz und Einstellungen wie die gewählte Ansicht. Die Website merkt sich für die laufende Sitzung, ob du den Markenauftakt schon gesehen hast. Rechtsgrundlage ist § 25 Abs. 2 Nr. 2 TDDDG; die Daten bleiben, bis du dich abmeldest oder sie in deinem Browser löschst.",
       "Links zu Karten (z. B. „Route öffnen“) öffnen Google Maps erst, wenn du darauf tippst. Ab dann gilt die Datenschutzerklärung von Google.",
     ],
   },
@@ -391,7 +391,7 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
     id: "drittland",
     titel: "Übermittlung in Drittländer",
     absaetze: [
-      "Die Daten von Macher OS speichern wir in Frankfurt am Main. Einige Dienstleister haben ihren Sitz in den USA oder gehören zu Unternehmen dort, sodass ein Zugriff aus den USA nicht ausgeschlossen ist; Anthropic verarbeitet die Inhalte für KI-Funktionen in den USA.",
+      "Die Daten von Handwerk OS speichern wir in Frankfurt am Main. Einige Dienstleister haben ihren Sitz in den USA oder gehören zu Unternehmen dort, sodass ein Zugriff aus den USA nicht ausgeschlossen ist; Anthropic verarbeitet die Inhalte für KI-Funktionen in den USA.",
       "Grundlage dafür ist der Angemessenheitsbeschluss der EU-Kommission für das EU-US Data Privacy Framework, soweit der Anbieter danach zertifiziert ist, und sonst die Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO).",
     ],
   },
@@ -428,7 +428,7 @@ export const datenschutzAbschnitte: RechtsAbschnitt[] = [
     id: "aenderungen",
     titel: "Änderungen dieser Datenschutzerklärung",
     absaetze: [
-      "Wir passen diese Erklärung an, wenn sich unsere Website, Macher OS oder die Rechtslage ändert. Es gilt die jeweils hier veröffentlichte Fassung.",
+      "Wir passen diese Erklärung an, wenn sich unsere Website, Handwerk OS oder die Rechtslage ändert. Es gilt die jeweils hier veröffentlichte Fassung.",
     ],
   },
 ];
@@ -438,8 +438,8 @@ export const agbAbschnitte: RechtsAbschnitt[] = [
     id: "geltung",
     titel: "Geltungsbereich",
     absaetze: [
-      `Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge über die Nutzung von Macher OS zwischen der ${anbieterAnschrift} („Anbieter“, „wir“) und dem Kunden.`,
-      "Macher OS richtet sich ausschließlich an Unternehmer im Sinne von § 14 BGB, also an Betriebe, Selbstständige und Unternehmen. Verbraucher können keinen Vertrag schließen.",
+      `Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge über die Nutzung von Handwerk OS zwischen der ${anbieterAnschrift} („Anbieter“, „wir“) und dem Kunden.`,
+      "Handwerk OS richtet sich ausschließlich an Unternehmer im Sinne von § 14 BGB, also an Betriebe, Selbstständige und Unternehmen. Verbraucher können keinen Vertrag schließen.",
       "Abweichende Bedingungen des Kunden gelten nur, wenn wir ihnen ausdrücklich in Textform zustimmen.",
     ],
   },
@@ -447,20 +447,20 @@ export const agbAbschnitte: RechtsAbschnitt[] = [
     id: "leistung",
     titel: "Leistungen",
     absaetze: [
-      "Wir stellen Macher OS als Software über das Internet bereit – im Browser und als installierbare App. Der Funktionsumfang ergibt sich aus der Beschreibung auf unserer Website zum Zeitpunkt des Vertragsschlusses. In jedem Plan sind alle Funktionen enthalten; die Pläne unterscheiden sich nur nach der Zahl der aktiven Personen im Betrieb.",
-      "Wir entwickeln Macher OS laufend weiter. Wir dürfen Funktionen ändern, wenn dadurch der vereinbarte Zweck nicht wesentlich eingeschränkt wird. Fällt eine wesentliche Funktion weg, informieren wir den Kunden mindestens 6 Wochen vorher; er kann dann zum Zeitpunkt der Änderung kündigen.",
-      "Wir bemühen uns um eine möglichst unterbrechungsfreie Verfügbarkeit. Geplante Wartungen legen wir möglichst außerhalb der üblichen Arbeitszeiten (werktags 6 bis 19 Uhr) und kündigen längere Wartungen in Macher OS vorher an. Eine bestimmte Verfügbarkeit sichern wir nur zu, wenn das gesondert vereinbart ist. Ausfälle durch Störungen außerhalb unseres Einflussbereichs (z. B. Internetanbieter des Kunden, höhere Gewalt) gehen nicht zu unseren Lasten.",
+      "Wir stellen Handwerk OS als Software über das Internet bereit – im Browser und als installierbare App. Der Funktionsumfang ergibt sich aus der Beschreibung auf unserer Website zum Zeitpunkt des Vertragsschlusses. In jedem Plan sind alle Funktionen enthalten; die Pläne unterscheiden sich nur nach der Zahl der aktiven Personen im Betrieb.",
+      "Wir entwickeln Handwerk OS laufend weiter. Wir dürfen Funktionen ändern, wenn dadurch der vereinbarte Zweck nicht wesentlich eingeschränkt wird. Fällt eine wesentliche Funktion weg, informieren wir den Kunden mindestens 6 Wochen vorher; er kann dann zum Zeitpunkt der Änderung kündigen.",
+      "Wir bemühen uns um eine möglichst unterbrechungsfreie Verfügbarkeit. Geplante Wartungen legen wir möglichst außerhalb der üblichen Arbeitszeiten (werktags 6 bis 19 Uhr) und kündigen längere Wartungen in Handwerk OS vorher an. Eine bestimmte Verfügbarkeit sichern wir nur zu, wenn das gesondert vereinbart ist. Ausfälle durch Störungen außerhalb unseres Einflussbereichs (z. B. Internetanbieter des Kunden, höhere Gewalt) gehen nicht zu unseren Lasten.",
       "Ergebnisse von KI-Funktionen sind Vorschläge. Der Kunde prüft sie, bevor er sie verwendet oder verschickt.",
-      "Für den Versand von E-Mails, SMS und WhatsApp-Nachrichten aus Macher OS an Kunden des Kunden setzen wir Dienstleister ein. Wir stellen den Versand bereit, schulden aber nicht die Zustellung beim Empfänger.",
+      "Für den Versand von E-Mails, SMS und WhatsApp-Nachrichten aus Handwerk OS an Kunden des Kunden setzen wir Dienstleister ein. Wir stellen den Versand bereit, schulden aber nicht die Zustellung beim Empfänger.",
     ],
   },
   {
     id: "vertragsschluss",
     titel: "Vertragsschluss und Testphase",
     absaetze: [
-      "Der Vertrag über die Testphase kommt zustande, wenn der Kunde Macher OS einrichtet und ein Konto anlegt. Die Testphase dauert 30 Tage, ist kostenlos und braucht keine Zahlungsdaten. Sie endet automatisch; sie verlängert sich nicht von selbst in ein kostenpflichtiges Abo.",
-      "Der kostenpflichtige Vertrag kommt zustande, wenn der Kunde in Macher OS unter „Dein Plan“ einen Plan wählt und den Bezahlvorgang abschließt.",
-      "Nach dem Ende der Testphase ohne Abo bleibt Macher OS lesbar: Der Kunde kann seine Daten ansehen und exportieren, aber nichts Neues anlegen. Kundenbereich und Links zu bereits versendeten Rechnungen funktionieren weiter. Die Daten bleiben 12 Monate gespeichert; vor dem Löschen erinnern wir den Kunden per E-Mail.",
+      "Der Vertrag über die Testphase kommt zustande, wenn der Kunde Handwerk OS einrichtet und ein Konto anlegt. Die Testphase dauert 30 Tage, ist kostenlos und braucht keine Zahlungsdaten. Sie endet automatisch; sie verlängert sich nicht von selbst in ein kostenpflichtiges Abo.",
+      "Der kostenpflichtige Vertrag kommt zustande, wenn der Kunde in Handwerk OS unter „Dein Plan“ einen Plan wählt und den Bezahlvorgang abschließt.",
+      "Nach dem Ende der Testphase ohne Abo bleibt Handwerk OS lesbar: Der Kunde kann seine Daten ansehen und exportieren, aber nichts Neues anlegen. Kundenbereich und Links zu bereits versendeten Rechnungen funktionieren weiter. Die Daten bleiben 12 Monate gespeichert; vor dem Löschen erinnern wir den Kunden per E-Mail.",
     ],
   },
   {
@@ -469,20 +469,20 @@ export const agbAbschnitte: RechtsAbschnitt[] = [
     liste: [
       "Anmeldezugänge (E-Mail-Postfach, Handy) vor Unbefugten schützen und uns einen Missbrauch sofort melden",
       "nur Personen Zugang geben, die zum Betrieb gehören oder für ihn arbeiten",
-      "Macher OS nicht missbräuchlich oder rechtswidrig nutzen, insbesondere keine Werbung ohne Einwilligung des Empfängers verschicken",
+      "Handwerk OS nicht missbräuchlich oder rechtswidrig nutzen, insbesondere keine Werbung ohne Einwilligung des Empfängers verschicken",
       "für die Rechtmäßigkeit der eingegebenen Daten verantwortlich sein, insbesondere für Daten seiner Kunden und Mitarbeiter",
-      "steuer- und handelsrechtliche Pflichten selbst erfüllen (z. B. Aufbewahrung nach GoBD, Prüfung von Rechnungen vor dem Versand); Macher OS unterstützt dabei, ersetzt aber weder Steuerberater noch Buchhaltung",
-      "wichtige Daten regelmäßig über den Export sichern, wenn er sie unabhängig von Macher OS braucht",
+      "steuer- und handelsrechtliche Pflichten selbst erfüllen (z. B. Aufbewahrung nach GoBD, Prüfung von Rechnungen vor dem Versand); Handwerk OS unterstützt dabei, ersetzt aber weder Steuerberater noch Buchhaltung",
+      "wichtige Daten regelmäßig über den Export sichern, wenn er sie unabhängig von Handwerk OS braucht",
     ],
   },
   {
     id: "preise",
     titel: "Preise und Zahlung",
     absaetze: [
-      "Es gelten die Preise, die bei Abschluss des Abos auf der Preisseite und in Macher OS genannt sind. Alle Preise verstehen sich zuzüglich der gesetzlichen Umsatzsteuer.",
+      "Es gelten die Preise, die bei Abschluss des Abos auf der Preisseite und in Handwerk OS genannt sind. Alle Preise verstehen sich zuzüglich der gesetzlichen Umsatzsteuer.",
       "Der Preis richtet sich nach der Zahl der aktiven Personen im Betrieb. Wächst der Betrieb über die Grenze seines Plans, fragen wir vor einer Umstellung nach. Ändert sich der Plan während eines Abrechnungszeitraums, rechnen wir anteilig ab.",
       "Abgerechnet wird monatlich oder – auf Wunsch mit Rabatt – jährlich, jeweils im Voraus. Der Kunde zahlt per SEPA-Lastschrift oder Karte über unseren Zahlungsdienstleister Stripe. Die Rechnung kommt als E-Rechnung per E-Mail.",
-      "Schlägt eine Zahlung fehl, erinnern wir den Kunden bis zu dreimal. Ist der Betrag 14 Tage nach der ersten Erinnerung nicht bezahlt, schalten wir Macher OS in den Lesemodus (siehe Testphase). Daten gehen dabei nicht verloren. Kosten einer zurückgegebenen Lastschrift trägt der Kunde, wenn er sie zu vertreten hat.",
+      "Schlägt eine Zahlung fehl, erinnern wir den Kunden bis zu dreimal. Ist der Betrag 14 Tage nach der ersten Erinnerung nicht bezahlt, schalten wir Handwerk OS in den Lesemodus (siehe Testphase). Daten gehen dabei nicht verloren. Kosten einer zurückgegebenen Lastschrift trägt der Kunde, wenn er sie zu vertreten hat.",
       "Preisänderungen teilen wir mindestens 6 Wochen vorher in Textform mit. Sie gelten ab dem nächsten Abrechnungszeitraum. Der Kunde kann bis zum Inkrafttreten kündigen; darauf weisen wir in der Mitteilung hin.",
     ],
   },
@@ -491,15 +491,15 @@ export const agbAbschnitte: RechtsAbschnitt[] = [
     titel: "Laufzeit und Kündigung",
     absaetze: [
       "Das monatliche Abo läuft auf unbestimmte Zeit und kann jederzeit zum Ende des laufenden Monats gekündigt werden. Das jährliche Abo verlängert sich um jeweils ein Jahr, wenn es nicht bis zum Ende der Laufzeit gekündigt wird.",
-      "Der Kunde kann direkt in Macher OS unter „Dein Plan“ kündigen oder per E-Mail. Wir können mit einer Frist von 3 Monaten zum Monatsende kündigen.",
-      "Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt. Ein wichtiger Grund liegt für uns insbesondere vor, wenn der Kunde Macher OS trotz Hinweis rechtswidrig nutzt.",
+      "Der Kunde kann direkt in Handwerk OS unter „Dein Plan“ kündigen oder per E-Mail. Wir können mit einer Frist von 3 Monaten zum Monatsende kündigen.",
+      "Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt. Ein wichtiger Grund liegt für uns insbesondere vor, wenn der Kunde Handwerk OS trotz Hinweis rechtswidrig nutzt.",
     ],
   },
   {
     id: "daten",
     titel: "Daten des Kunden",
     absaetze: [
-      "Die Daten, die der Kunde in Macher OS speichert, gehören dem Kunden. Er kann sie jederzeit kostenlos exportieren – auch im Lesemodus und nach einer Kündigung.",
+      "Die Daten, die der Kunde in Handwerk OS speichert, gehören dem Kunden. Er kann sie jederzeit kostenlos exportieren – auch im Lesemodus und nach einer Kündigung.",
       "Nach Vertragsende bleiben die Daten 90 Tage lesbar und exportierbar. Danach löschen wir sie, Sicherungskopien spätestens 30 Tage später, sofern keine gesetzliche Pflicht zur Aufbewahrung besteht. Vor dem Löschen erinnern wir den Kunden per E-Mail.",
       "Soweit wir personenbezogene Daten im Auftrag des Kunden verarbeiten, gilt der Vertrag zur Auftragsverarbeitung (Seite „Auftragsverarbeitung“). Er ist Teil dieses Vertrags.",
     ],
@@ -540,14 +540,14 @@ export const avvAbschnitte: RechtsAbschnitt[] = [
     titel: "Gegenstand und Dauer",
     absaetze: [
       `Dieser Vertrag regelt die Verarbeitung personenbezogener Daten durch die ${anbieterAnschrift} („Auftragsverarbeiter“, „wir“) im Auftrag des Kunden („Verantwortlicher“) nach Art. 28 DSGVO.`,
-      "Er gilt für die Dauer des Hauptvertrags über die Nutzung von Macher OS einschließlich Testphase und Lesemodus und endet mit der Löschung der Daten.",
+      "Er gilt für die Dauer des Hauptvertrags über die Nutzung von Handwerk OS einschließlich Testphase und Lesemodus und endet mit der Löschung der Daten.",
     ],
   },
   {
     id: "art-zweck",
     titel: "Art und Zweck der Verarbeitung",
     absaetze: [
-      "Wir stellen Macher OS bereit. Dabei speichern und verarbeiten wir Daten, die der Verantwortliche oder seine Mitarbeiter eingeben oder die seine Kunden über Links aus Macher OS übermitteln. Zweck ist die Verwaltung von Anfragen, Kunden, Aufträgen, Planung, Zeiten, Material, Dokumenten, Angeboten und Rechnungen und der Versand von Nachrichten an Kunden des Verantwortlichen.",
+      "Wir stellen Handwerk OS bereit. Dabei speichern und verarbeiten wir Daten, die der Verantwortliche oder seine Mitarbeiter eingeben oder die seine Kunden über Links aus Handwerk OS übermitteln. Zweck ist die Verwaltung von Anfragen, Kunden, Aufträgen, Planung, Zeiten, Material, Dokumenten, Angeboten und Rechnungen und der Versand von Nachrichten an Kunden des Verantwortlichen.",
       "Die Verarbeitung umfasst Speichern, Abgleichen zwischen Geräten, Anzeigen, Versenden, Auswerten im Auftrag des Verantwortlichen (z. B. Erinnerungen, KI-Vorschläge), Exportieren und Löschen.",
       "Wir nutzen die Daten nicht für eigene Zwecke. Davon ausgenommen sind die Daten, die wir als eigener Verantwortlicher für Konto, Abrechnung und Betrieb der Software brauchen (siehe Datenschutzerklärung).",
     ],
@@ -568,7 +568,7 @@ export const avvAbschnitte: RechtsAbschnitt[] = [
     titel: "Weisungsgebundenheit",
     absaetze: [
       "Wir verarbeiten die Daten nur auf dokumentierte Weisung des Verantwortlichen, es sei denn, wir sind gesetzlich zur Verarbeitung verpflichtet; dann teilen wir ihm das vorher mit, soweit das Gesetz es erlaubt (Art. 28 Abs. 3 lit. a DSGVO).",
-      "Die Weisungen ergeben sich aus diesem Vertrag und aus der Nutzung von Macher OS durch den Verantwortlichen. Weitere Weisungen erteilt er in Textform. Halten wir eine Weisung für rechtswidrig, sagen wir das sofort.",
+      "Die Weisungen ergeben sich aus diesem Vertrag und aus der Nutzung von Handwerk OS durch den Verantwortlichen. Weitere Weisungen erteilt er in Textform. Halten wir eine Weisung für rechtswidrig, sagen wir das sofort.",
     ],
   },
   {
@@ -617,7 +617,7 @@ export const avvAbschnitte: RechtsAbschnitt[] = [
     id: "unterstuetzung",
     titel: "Unterstützung des Verantwortlichen",
     absaetze: [
-      "Wir unterstützen den Verantwortlichen bei Anfragen betroffener Personen (Auskunft, Berichtigung, Löschung, Export) – die meisten kann er direkt in Macher OS erledigen. Erreicht uns eine solche Anfrage direkt, leiten wir sie an ihn weiter.",
+      "Wir unterstützen den Verantwortlichen bei Anfragen betroffener Personen (Auskunft, Berichtigung, Löschung, Export) – die meisten kann er direkt in Handwerk OS erledigen. Erreicht uns eine solche Anfrage direkt, leiten wir sie an ihn weiter.",
       "Wir unterstützen ihn außerdem bei seinen Pflichten nach Art. 32 bis 36 DSGVO (Sicherheit, Meldungen, Datenschutz-Folgenabschätzung).",
     ],
   },
@@ -652,7 +652,7 @@ export const avvAbschnitte: RechtsAbschnitt[] = [
     id: "abschluss",
     titel: "Abschluss des Vertrags",
     absaetze: [
-      "Dieser Vertrag ist Teil der AGB. Er kommt mit dem Anlegen eines Kontos in Macher OS zustande und gilt ohne gesonderte Unterschrift. Wer eine unterschriebene Fassung braucht, bekommt sie auf Anfrage per E-Mail.",
+      "Dieser Vertrag ist Teil der AGB. Er kommt mit dem Anlegen eines Kontos in Handwerk OS zustande und gilt ohne gesonderte Unterschrift. Wer eine unterschriebene Fassung braucht, bekommt sie auf Anfrage per E-Mail.",
       "Bei Widersprüchen zwischen diesem Vertrag und den AGB geht dieser Vertrag vor, soweit es um den Schutz personenbezogener Daten geht.",
     ],
   },

@@ -10,7 +10,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Webinare für Handwerksbetriebe",
   description:
-    "Kostenlose Webinare zu E-Rechnung, Kalkulation, Einsatzplanung, KI und Macher OS – als Aufzeichnung oder demnächst live.",
+    "Kostenlose Webinare zu E-Rechnung, Kalkulation, Einsatzplanung, KI und Handwerk OS – als Aufzeichnung oder demnächst live.",
   path: "/wissen/webinare",
 });
 
@@ -125,7 +125,7 @@ export default function WebinareHubPage() {
         <SectionHeading
           eyebrow="Sprecher"
           title="Wer spricht?"
-          intro="Unsere Webinare halten Leute aus dem Macher-OS-Team – keine bezahlten Redner, keine Show."
+          intro="Unsere Webinare halten Leute aus dem Handwerk-OS-Team – keine bezahlten Redner, keine Show."
         />
         <div className="mt-10 grid gap-4 md:grid-cols-2">
           {sprecherRollen.map((s) => (
@@ -143,7 +143,7 @@ export default function WebinareHubPage() {
       {/* 7. CTA */}
       <FinalCta
         title="Lieber gleich selbst ausprobieren?"
-        intro="Teste Macher OS kostenlos mit deinen eigenen Aufträgen – oder schau dir zuerst die Demo an."
+        intro="Teste Handwerk OS kostenlos mit deinen eigenen Aufträgen – oder schau dir zuerst die Demo an."
       />
     </>
   );

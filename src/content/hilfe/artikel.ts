@@ -3,7 +3,7 @@ import type { FunktionSlug } from "@/content/registry";
 
 /**
  * Hilfe-Center: Kategorien und Anleitungen.
- * Die Artikel beschreiben, wie Macher OS gedacht ist – allgemein und Schritt für Schritt.
+ * Die Artikel beschreiben, wie Handwerk OS gedacht ist – allgemein und Schritt für Schritt.
  */
 
 export const hilfeKategorien = [
@@ -42,12 +42,12 @@ export const hilfeArtikel: HilfeArtikel[] = [
   {
     slug: "konto-erstellen",
     kategorie: "konto",
-    titel: "Macher OS starten und Betrieb einrichten",
-    kurz: "Ohne Konto und ohne Passwort: Du beantwortest eine Frage, den Rest richtet Macher OS ein.",
+    titel: "Handwerk OS starten und Betrieb einrichten",
+    kurz: "Ohne Konto und ohne Passwort: Du beantwortest eine Frage, den Rest richtet Handwerk OS ein.",
     einleitung:
       "Du brauchst kein Konto. Klick auf „Kostenlos testen“ und beantworte eine Frage: Welcher Betrieb bist du? Briefkopf, Kunden, Preise und Team fragt Macher erst, wenn du sie brauchst.",
     schritte: [
-      { titel: "Kostenlos testen", text: "Klicke auf „Kostenlos testen“. Macher OS öffnet sich direkt mit der Einrichtung. Keine E-Mail, kein Passwort, keine Kreditkarte." },
+      { titel: "Kostenlos testen", text: "Klicke auf „Kostenlos testen“. Handwerk OS öffnet sich direkt mit der Einrichtung. Keine E-Mail, kein Passwort, keine Kreditkarte." },
       { titel: "Welcher Betrieb bist du?", text: "Gib deine Website an und tippe auf „Betrieb übernehmen“. Macher liest Name, Logo, Gewerk und Leistungen aus. Keine Website? Tippe auf „Gewerk auswählen“ – ein Tipp genügt." },
       { titel: "Prüfen und loslegen", text: "Macher zeigt dir, was erkannt wurde. Passt es, geht es direkt weiter: erstes Angebot schreiben, Auftrag anlegen oder Kunden übernehmen." },
     ],
@@ -60,13 +60,13 @@ export const hilfeArtikel: HilfeArtikel[] = [
     titel: "Daten sichern und auf ein anderes Gerät mitnehmen",
     kurz: "Ohne Konto liegen deine Daten in deinem Browser. So sicherst du sie.",
     einleitung:
-      "Macher OS speichert im Moment alles in deinem Browser auf diesem Gerät. Ein Konto mit Anmeldung gibt es noch nicht. Darum: regelmäßig sichern.",
+      "Handwerk OS speichert im Moment alles in deinem Browser auf diesem Gerät. Ein Konto mit Anmeldung gibt es noch nicht. Darum: regelmäßig sichern.",
     schritte: [
-      { titel: "Einstellungen öffnen", text: "Gehe in Macher OS zu „Betrieb“ → „Unternehmen“ → „Einstellungen“." },
+      { titel: "Einstellungen öffnen", text: "Gehe in Handwerk OS zu „Betrieb“ → „Unternehmen“ → „Einstellungen“." },
       { titel: "Sicherung herunterladen", text: "Unter „Daten“ lädst du eine Sicherungsdatei herunter. Leg sie an einem sicheren Ort ab." },
-      { titel: "Auf anderem Gerät einspielen", text: "Öffne Macher OS auf dem neuen Gerät und spiel die Sicherung unter „Daten“ wieder ein." },
+      { titel: "Auf anderem Gerät einspielen", text: "Öffne Handwerk OS auf dem neuen Gerät und spiel die Sicherung unter „Daten“ wieder ein." },
     ],
-    tipp: "Browserdaten löschen entfernt auch deine Macher-OS-Daten. Sichere vorher.",
+    tipp: "Browserdaten löschen entfernt auch deine Handwerk-OS-Daten. Sichere vorher.",
     stichworte: ["login", "passwort", "anmelden", "sichern", "backup", "gerät", "export"],
   },
   {
@@ -74,7 +74,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
     kategorie: "konto",
     titel: "Tarif wechseln und eigene Rechnungen finden",
     kurz: "Wo du deinen Tarif siehst, ihn änderst und deine Rechnungen von uns findest.",
-    einleitung: "Dein Tarif und deine Rechnungen von Macher OS liegen an einer Stelle. Nur der Inhaber oder Admins sehen diesen Bereich.",
+    einleitung: "Dein Tarif und deine Rechnungen von Handwerk OS liegen an einer Stelle. Nur der Inhaber oder Admins sehen diesen Bereich.",
     schritte: [
       { titel: "Bereich öffnen", text: "Gehe zu „Betrieb“ → „Tarif & Zahlung“." },
       { titel: "Tarif ansehen", text: "Oben siehst du deinen aktuellen Tarif und wie viele Nutzer aktiv sind." },
@@ -97,7 +97,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
       { titel: "Kunden wählen oder anlegen", text: "Tippe den Namen ein. Gibt es den Kunden noch nicht, legst du ihn direkt hier an." },
       { titel: "Ort festlegen", text: "Gib die Adresse der Baustelle an, falls sie von der Kundenadresse abweicht." },
       { titel: "Arbeit beschreiben", text: "Wähle eine passende Leistung aus deiner Liste oder schreib kurz, was zu tun ist." },
-      { titel: "Speichern und einplanen", text: "Speichere den Auftrag. Macher OS schlägt dir direkt passende Termine und Mitarbeiter vor." },
+      { titel: "Speichern und einplanen", text: "Speichere den Auftrag. Handwerk OS schlägt dir direkt passende Termine und Mitarbeiter vor." },
     ],
     tipp: "Kommt die Anfrage per Telefon oder E-Mail, kann Macher den Auftrag schon vorbereiten. Du prüfst nur noch.",
     stichworte: ["auftrag", "neu", "kunde", "baustelle", "projekt"],
@@ -114,7 +114,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
       { titel: "Positionen hinzufügen", text: "Füge Leistungen und Material hinzu. Mengen und Preise kannst du direkt in der Zeile ändern." },
       { titel: "Texte prüfen", text: "Einleitung und Schlusstext kommen aus deiner Vorlage. Passe sie bei Bedarf an." },
       { titel: "Vorschau ansehen", text: "In der Vorschau siehst du das Angebot so, wie der Kunde es bekommt." },
-      { titel: "Verschicken", text: "Sende das Angebot per E-Mail direkt aus Macher OS oder lade es als PDF herunter." },
+      { titel: "Verschicken", text: "Sende das Angebot per E-Mail direkt aus Handwerk OS oder lade es als PDF herunter." },
       { titel: "Antwort verfolgen", text: "Macher erinnert dich, wenn der Kunde nach einer Weile nicht reagiert hat." },
     ],
     tipp: "Nutzt du ein Angebot öfter, speichere es als Vorlage. Beim nächsten Mal geht es viel schneller.",
@@ -149,7 +149,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
       { titel: "Plan öffnen", text: "Gehe zu „Plan“. Du siehst deine Mitarbeiter und die Woche." },
       { titel: "Offenen Auftrag wählen", text: "Rechts stehen Aufträge, die noch keinen Termin haben." },
       { titel: "Einsatz einplanen", text: "Ziehe den Auftrag auf den Mitarbeiter und den Tag. Die Dauer kannst du am Rand verlängern." },
-      { titel: "Hinweise beachten", text: "Fehlt Material, ist jemand im Urlaub oder fehlt eine Qualifikation, zeigt Macher OS das direkt an." },
+      { titel: "Hinweise beachten", text: "Fehlt Material, ist jemand im Urlaub oder fehlt eine Qualifikation, zeigt Handwerk OS das direkt an." },
       { titel: "Mitarbeiter informieren", text: "Gespeicherte Einsätze erscheinen sofort in der App des Mitarbeiters." },
     ],
     stichworte: ["plantafel", "termin", "disposition", "woche", "kalender"],
@@ -199,7 +199,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
     schritte: [
       { titel: "Mitarbeiter anlegen", text: "Gehe zu „Betrieb“ → „Mitarbeiter“ und klicke auf „Hinzufügen“." },
       { titel: "Daten eintragen", text: "Name, Handynummer oder E-Mail und die Rolle, zum Beispiel Monteur, Büro oder Meister." },
-      { titel: "Einladung senden", text: "Macher OS schickt eine Einladung per SMS oder E-Mail mit einem Link zur App." },
+      { titel: "Einladung senden", text: "Handwerk OS schickt eine Einladung per SMS oder E-Mail mit einem Link zur App." },
       { titel: "App einrichten", text: "Der Mitarbeiter installiert die App, öffnet den Link und vergibt sein Passwort." },
     ],
     tipp: "Du kannst Mitarbeiter auch ohne eigenen Zugang anlegen, zum Beispiel für die Planung von Aushilfen.",
@@ -216,7 +216,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
       { titel: "Rollen ansehen", text: "Unter „Betrieb“ → „Rollen“ findest du fertige Rollen wie Inhaber, Büro, Meister und Monteur." },
       { titel: "Rolle zuweisen", text: "Öffne einen Mitarbeiter und wähle seine Rolle aus." },
       { titel: "Rechte anpassen", text: "Bei Bedarf änderst du einzelne Rechte, zum Beispiel „darf Preise sehen“ oder „darf Rechnungen erstellen“." },
-      { titel: "Prüfen", text: "Mit „Ansicht als …“ siehst du Macher OS so, wie der Mitarbeiter es sieht." },
+      { titel: "Prüfen", text: "Mit „Ansicht als …“ siehst du Handwerk OS so, wie der Mitarbeiter es sieht." },
     ],
     stichworte: ["berechtigung", "zugriff", "admin", "preise ausblenden"],
     funktion: "mitarbeiter",
@@ -275,12 +275,12 @@ export const hilfeArtikel: HilfeArtikel[] = [
     kategorie: "material",
     titel: "Lagerbestand und Bestellungen",
     kurz: "Bestand im Blick behalten und Material rechtzeitig bestellen.",
-    einleitung: "Macher OS erkennt, wenn für geplante Einsätze Material fehlt, und hilft beim Bestellen.",
+    einleitung: "Handwerk OS erkennt, wenn für geplante Einsätze Material fehlt, und hilft beim Bestellen.",
     schritte: [
       { titel: "Lagerorte anlegen", text: "Unter „Betrieb“ → „Lager“ legst du Lagerorte an, zum Beispiel Halle und Fahrzeuge." },
       { titel: "Bestand eintragen", text: "Trage den aktuellen Bestand ein oder übernimm ihn aus einer Datei." },
       { titel: "Mindestbestand festlegen", text: "Für wichtige Artikel legst du fest, ab wann nachbestellt werden soll." },
-      { titel: "Bestellvorschlag prüfen", text: "Macher OS sammelt fehlendes Material in einer Bestellliste. Du prüfst und schickst sie an den Lieferanten." },
+      { titel: "Bestellvorschlag prüfen", text: "Handwerk OS sammelt fehlendes Material in einer Bestellliste. Du prüfst und schickst sie an den Lieferanten." },
     ],
     stichworte: ["lager", "bestand", "einkauf", "bestellen", "lieferant"],
     funktion: "lager",
@@ -295,7 +295,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
     einleitung: "Weil Zeiten und Material schon am Auftrag hängen, ist die Rechnung meist in wenigen Minuten fertig.",
     schritte: [
       { titel: "Auftrag öffnen", text: "Öffne den abgeschlossenen Auftrag und klicke auf „Rechnung erstellen“." },
-      { titel: "Positionen übernehmen", text: "Macher OS schlägt Zeiten und Material vor. Wähle aus, was berechnet wird." },
+      { titel: "Positionen übernehmen", text: "Handwerk OS schlägt Zeiten und Material vor. Wähle aus, was berechnet wird." },
       { titel: "Prüfen", text: "Prüfe Preise, Texte und Anschrift. Abschlagsrechnungen werden automatisch verrechnet." },
       { titel: "Rechnung festschreiben", text: "Mit „Abschließen“ bekommt die Rechnung ihre Nummer und kann nicht mehr geändert werden." },
       { titel: "Verschicken", text: "Sende die Rechnung per E-Mail oder lade sie als PDF herunter." },
@@ -325,10 +325,10 @@ export const hilfeArtikel: HilfeArtikel[] = [
     slug: "app-installieren",
     kategorie: "app",
     titel: "App installieren und anmelden",
-    kurz: "Die Macher OS App auf iPhone oder Android einrichten.",
+    kurz: "Die Handwerk OS App auf iPhone oder Android einrichten.",
     einleitung: "Die App ist für die Baustelle gemacht: große Knöpfe, wenig Text, nur das Nötigste.",
     schritte: [
-      { titel: "App laden", text: "Öffne den Link aus deiner Einladung oder suche im App Store bzw. bei Google Play nach „Macher OS“." },
+      { titel: "App laden", text: "Öffne den Link aus deiner Einladung oder suche im App Store bzw. bei Google Play nach „Handwerk OS“." },
       { titel: "Anmelden", text: "Melde dich mit deiner E-Mail oder Handynummer und deinem Passwort an." },
       { titel: "Rechte erlauben", text: "Erlaube Kamera, Standort und Mitteilungen. Nur so funktionieren Fotos, Navigation und Hinweise auf neue Einsätze." },
       { titel: "Loslegen", text: "Auf der Startseite siehst du deinen nächsten Einsatz." },
@@ -401,7 +401,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
     kategorie: "einstellungen",
     titel: "Gewerk und Leistungen anpassen",
     kurz: "Später ein Gewerk ergänzen oder Leistungen ändern.",
-    einleitung: "Betriebe wachsen und ändern sich. Macher OS passt sich an.",
+    einleitung: "Betriebe wachsen und ändern sich. Handwerk OS passt sich an.",
     schritte: [
       { titel: "Bereich öffnen", text: "Gehe zu „Betrieb“ → „Gewerk & Leistungen“." },
       { titel: "Gewerk ergänzen", text: "Füge ein weiteres Gewerk hinzu, wenn ihr mehr anbietet." },
@@ -418,7 +418,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
     titel: "Daten an Buchhaltung und Steuerberater geben",
     kurz: "Rechnungen und Zahlungen exportieren, z. B. als DATEV-Export.",
     einleitung:
-      "Dein Steuerberater braucht Rechnungen und Zahlungen geordnet. Macher OS stellt sie als Export bereit, zum Beispiel im DATEV-Format oder als Tabelle.",
+      "Dein Steuerberater braucht Rechnungen und Zahlungen geordnet. Handwerk OS stellt sie als Export bereit, zum Beispiel im DATEV-Format oder als Tabelle.",
     schritte: [
       { titel: "Export öffnen", text: "Gehe zu „Betrieb“ → „Geld“ → „Export“." },
       { titel: "Zeitraum wählen", text: "Wähle Monat oder Zeitraum, zum Beispiel den letzten Monat." },
@@ -434,12 +434,12 @@ export const hilfeArtikel: HilfeArtikel[] = [
     titel: "Artikeldaten vom Großhändler übernehmen",
     kurz: "Artikel und Preise per Datanorm, UGL oder IDS übernehmen.",
     einleitung:
-      "Im Handwerk sind Formate wie Datanorm (Artikeldaten), UGL und IDS (Bestellen und Preise abfragen) verbreitet. Damit kommen Artikel und Preise vom Großhändler direkt in Macher OS.",
+      "Im Handwerk sind Formate wie Datanorm (Artikeldaten), UGL und IDS (Bestellen und Preise abfragen) verbreitet. Damit kommen Artikel und Preise vom Großhändler direkt in Handwerk OS.",
     schritte: [
       { titel: "Daten beim Großhändler anfordern", text: "Frag deinen Großhändler nach einer Datanorm-Datei mit deinen Preisen." },
       { titel: "Datei hochladen", text: "Gehe zu „Betrieb“ → „Material“ → „Importieren“ und wähle die Datei aus." },
       { titel: "Lieferant zuordnen", text: "Wähle, zu welchem Lieferanten die Artikel gehören." },
-      { titel: "Import prüfen", text: "Macher OS zeigt dir vorab, wie viele Artikel neu sind oder aktualisiert werden." },
+      { titel: "Import prüfen", text: "Handwerk OS zeigt dir vorab, wie viele Artikel neu sind oder aktualisiert werden." },
       { titel: "Regelmäßig aktualisieren", text: "Neue Preislisten lädst du genauso hoch. Bestehende Artikel werden aktualisiert." },
     ],
     tipp: "Welche Formate dein Großhändler anbietet, ist unterschiedlich. Frag im Zweifel bei uns nach.",
@@ -456,7 +456,7 @@ export const hilfeArtikel: HilfeArtikel[] = [
       { titel: "Link erzeugen", text: "Gehe zu „Mein Konto“ → „Kalender“ und klicke auf „Kalender-Link erstellen“." },
       { titel: "Link kopieren", text: "Kopiere den Link. Er ist nur für dich bestimmt." },
       { titel: "Im Kalender abonnieren", text: "Füge den Link in deinem Kalenderprogramm als abonnierten Kalender hinzu." },
-      { titel: "Änderungen", text: "Änderungen in Macher OS erscheinen nach kurzer Zeit auch dort. Bearbeitet wird in Macher OS." },
+      { titel: "Änderungen", text: "Änderungen in Handwerk OS erscheinen nach kurzer Zeit auch dort. Bearbeitet wird in Handwerk OS." },
     ],
     stichworte: ["kalender", "outlook", "ics", "termine", "abonnieren"],
     funktion: "kalender",

@@ -39,7 +39,7 @@ const funktionIcons: Partial<Record<FunktionSlug, IconName>> = {
   "automatisch-erledigen": "spark",
 };
 
-/** Kacheln „Passende Funktion in Macher OS“. */
+/** Kacheln „Passende Funktion in Handwerk OS“. */
 export function FunktionLinks({ slugs }: { slugs: FunktionSlug[] }) {
   const liste = slugs.map((s) => funktionen.find((f) => f.slug === s)).filter((f) => f !== undefined);
   return (

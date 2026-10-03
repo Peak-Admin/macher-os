@@ -32,7 +32,7 @@ export async function POST(req: Request): Promise<Response> {
   const code = daten.sms?.otp;
   if (!telefon || !code) return hookFehler(400, 'Telefon oder Code fehlt');
   try {
-    await smsSenden(telefon, `${code} ist dein Anmeldecode für Macher OS. Gib ihn niemandem weiter.`);
+    await smsSenden(telefon, `${code} ist dein Anmeldecode für Handwerk OS. Gib ihn niemandem weiter.`);
   } catch (e) {
     return hookFehler(502, e instanceof Error ? e.message : 'SMS nicht verschickt');
   }

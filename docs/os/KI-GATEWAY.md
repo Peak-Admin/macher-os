@@ -1,6 +1,6 @@
 # Macher AI Gateway
 
-> **Verbindlich für jede KI-Funktion in Macher OS.** Kein Modul spricht direkt mit einem Modell.
+> **Verbindlich für jede KI-Funktion in Handwerk OS.** Kein Modul spricht direkt mit einem Modell.
 > Alle Anfragen, Absichten, Aktionen und Modellaufrufe laufen über `src/os/core/gateway.ts`.
 
 Abschnitt A beschreibt den Stand im Code. Abschnitt B ist die Strategie (übernommen von Peak One).
@@ -21,7 +21,7 @@ Verstehen → Routen → Kontext → Rechte → günstigste ausreichende Lane
 | Verstehen, Lane 1 (Jev) | `ModellAdapter.erkenne` – nur wenn keine Regel greift; gilt ab Sicherheit `MIN_SICHERHEIT` (0,7) |
 | Auffang | Absicht mit `auffang: true` (in „Macher fragen“: Suche) |
 | Gezielt aus einem Formular | Absicht mit `direkt: true`, nur über die Vorgabe `frage(text, k, { absicht })` (wie bei „Mit Macher vorbereiten“) – z. B. `offer.positions.suggest` (Angebot: „Beschreib kurz, was gemacht wird“). Freie Sätze landen nie dort. |
-| Rechte | `AbsichtDef.rechte` / `AktionDef.rechte` gegen `darf()` – KI-Recht = Macher-OS-Recht |
+| Rechte | `AbsichtDef.rechte` / `AktionDef.rechte` gegen `darf()` – KI-Recht = Handwerk-OS-Recht |
 | Lane wählen | `waehleLane(mindestens, kontext)` – von unten nach oben, gedeckelt durch den Kostenrahmen |
 | Minimaler Kontext | `AbsichtDef.kontext` – nur das bekommt ein Modell (Lane 2+) zu sehen |
 | Strukturierte Aktion | `Aktion { aktion, daten, absicht, lane, modell }` – das Modell ändert nie selbst Daten |
@@ -234,7 +234,7 @@ während der Arbeit, bei `prefers-reduced-motion` statisch. Zustand aus Absicht/
 
 ### Ziel
 
-Für **Macher OS / Handwerker OS** wird dieselbe grundlegende AI-Gateway-Strategie wie bei Peak One verwendet.
+Für **Handwerk OS / Handwerker OS** wird dieselbe grundlegende AI-Gateway-Strategie wie bei Peak One verwendet.
 
 Das zentrale Prinzip:
 
@@ -250,7 +250,7 @@ Dadurch bleiben Kosten, Sicherheit, Rechte, Qualität, Modellwahl und Aktionen z
 ```text
 User
  ↓
-Macher OS
+Handwerk OS
  ↓
 AI Gateway
  ↓
@@ -281,7 +281,7 @@ Der Gateway entscheidet für jede Anfrage:
 
 Der Gateway prüft zuerst:
 
-> **Kann Macher OS diese Anfrage deterministisch lösen?**
+> **Kann Handwerk OS diese Anfrage deterministisch lösen?**
 
 Beispiel:
 
@@ -347,9 +347,9 @@ Mögliche strukturierte Interpretation:
 }
 ```
 
-Anschließend wird keine allgemeine Chat-Antwort erzeugt, sondern die entsprechende Funktion in Macher OS aufgerufen.
+Anschließend wird keine allgemeine Chat-Antwort erzeugt, sondern die entsprechende Funktion in Handwerk OS aufgerufen.
 
-#### Typische Macher-OS-Intents
+#### Typische Handwerk-OS-Intents
 
 ```text
 customer.search
@@ -443,7 +443,7 @@ Beispiel:
 }
 ```
 
-Danach übernimmt Macher OS die eigentliche Business-Logik.
+Danach übernimmt Handwerk OS die eigentliche Business-Logik.
 
 #### Vorteile
 
@@ -463,7 +463,7 @@ Danach übernimmt Macher OS die eigentliche Business-Logik.
 
 Nicht jede Aktion darf sofort ausgeführt werden.
 
-Macher OS unterscheidet zwischen:
+Handwerk OS unterscheidet zwischen:
 
 #### A. Read Actions
 
@@ -527,7 +527,7 @@ Erst nach Bestätigung wird die Aktion ausgeführt.
 
 ### 7. Context Gateway
 
-Der eigentliche langfristige Vorteil von Macher OS ist nicht das Sprachmodell.
+Der eigentliche langfristige Vorteil von Handwerk OS ist nicht das Sprachmodell.
 
 Der entscheidende Vorteil ist der verbundene Unternehmenskontext.
 
@@ -557,13 +557,13 @@ Rechnungen
 Dokumente
 ```
 
-Da diese Objekte miteinander verbunden sind, kann Macher OS wesentlich bessere Antworten und Aktionen liefern als ein allgemeiner Chatbot.
+Da diese Objekte miteinander verbunden sind, kann Handwerk OS wesentlich bessere Antworten und Aktionen liefern als ein allgemeiner Chatbot.
 
 Beispiel:
 
 > „Was ist heute wichtig?“
 
-Macher OS könnte auf Basis realer Unternehmensdaten antworten:
+Handwerk OS könnte auf Basis realer Unternehmensdaten antworten:
 
 ```text
 Müller wartet seit drei Tagen auf sein Angebot.
@@ -615,7 +615,7 @@ Der Gateway verarbeitet Sprache und Text identisch.
 
 ### 9. Ein AI-System statt AI pro Modul
 
-Macher OS soll nicht für jedes Modul eine eigene isolierte AI bauen.
+Handwerk OS soll nicht für jedes Modul eine eigene isolierte AI bauen.
 
 Nicht:
 
@@ -652,7 +652,7 @@ Beispiel:
 
 > „Der Müller-Auftrag ist fertig.“
 
-Macher OS kann daraus eine Reihe verbundener Aktionen ableiten:
+Handwerk OS kann daraus eine Reihe verbundener Aktionen ableiten:
 
 ```text
 ✓ Auftrag abschließen
@@ -688,7 +688,7 @@ Beispiel:
 
 > „Die Arbeiten bei Müller sind abgeschlossen.“
 
-Macher OS zeigt:
+Handwerk OS zeigt:
 
 ```text
 Was möchtest du tun?
@@ -705,7 +705,7 @@ Die AI wird damit nicht nur zum Chatbot, sondern zu einer **Action Layer über d
 
 ### 12. Berechtigungen
 
-Jede Action läuft durch die normale Rechte- und Rollenlogik von Macher OS.
+Jede Action läuft durch die normale Rechte- und Rollenlogik von Handwerk OS.
 
 Beispielrollen:
 
@@ -733,7 +733,7 @@ Prinzip:
 ```text
 AI Permission
 =
-normale Macher-OS-Permission
+normale Handwerk-OS-Permission
 ```
 
 ---
@@ -770,7 +770,7 @@ Damit kann später nachvollzogen werden:
 
 ### 14. Model Lanes
 
-Zum Start sollte Macher OS dieselbe kosteneffiziente Lane-Strategie wie Peak One verwenden.
+Zum Start sollte Handwerk OS dieselbe kosteneffiziente Lane-Strategie wie Peak One verwenden.
 
 #### Lane 0 – No AI
 
@@ -882,7 +882,7 @@ Wenn Rechnung 14 Tage überfällig
 → Büro informieren
 ```
 
-Dafür braucht Macher OS keinen autonomen AI-Agent.
+Dafür braucht Handwerk OS keinen autonomen AI-Agent.
 
 AI kann bei Bedarf einzelne Schritte unterstützen, aber die Automationslogik selbst bleibt deterministisch.
 
@@ -897,7 +897,7 @@ Das erhöht:
 
 ### 17. Zielbild
 
-Langfristig soll Macher OS so funktionieren:
+Langfristig soll Handwerk OS so funktionieren:
 
 Der Handwerksunternehmer muss nicht mehr wissen:
 
@@ -923,7 +923,7 @@ Der **Macher AI Gateway** übersetzt natürliche Sprache in die richtigen Untern
 
 ### 18. Architektur-Prinzip in einem Satz
 
-> **Macher OS verwendet AI nicht als isolierten Chatbot, sondern als zentralen, permission-aware Action- und Intelligence-Layer über allen verbundenen Unternehmensobjekten und Modulen.**
+> **Handwerk OS verwendet AI nicht als isolierten Chatbot, sondern als zentralen, permission-aware Action- und Intelligence-Layer über allen verbundenen Unternehmensobjekten und Modulen.**
 
 ---
 
@@ -942,4 +942,4 @@ Understand
 → Audit
 ```
 
-Das sollte die kanonische Gateway-Pipeline von Macher OS sein.
+Das sollte die kanonische Gateway-Pipeline von Handwerk OS sein.

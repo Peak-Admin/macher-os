@@ -95,7 +95,7 @@ greift der Lesemodus nach Ablauf sofort. Das löst auch die Frage nach bestehend
 Nach jeder bezahlten Stripe-Rechnung (`invoice.paid`) geht eine E-Mail an den Betrieb, in Kopie an die Steuerberater-Adresse
 aus dem DATEV-Modul (`datev.steuerberater`), mit PDF-Link und **XRechnung 3.0** im Anhang. Die XRechnung baut derselbe Baustein
 wie in der App: `xrechnungAus` liegt dafür jetzt in `src/os/modules/rechnungen/xrechnung-xml.ts` (ohne Datenschicht, damit der
-Server ihn nutzen kann); `xrechnung.ts` exportiert ihn unverändert weiter. Der Rechnungssteller (Macher OS) kommt aus
+Server ihn nutzen kann); `xrechnung.ts` exportiert ihn unverändert weiter. Der Rechnungssteller (Handwerk OS) kommt aus
 `ABO_RECHNUNGSSTELLER` – ohne ihn keine XRechnung, Firmendaten erfinden wir nicht.
 
 ## Schlüssel (Vercel, Projekt `macher-os`)

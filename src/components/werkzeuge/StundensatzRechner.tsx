@@ -151,7 +151,7 @@ export function StundensatzRechner() {
             ) : null
           }
           zusammenfassung={zusammenfassung}
-          betreff="Mein Stundensatz – berechnet mit Macher OS"
+          betreff="Mein Stundensatz – berechnet mit Handwerk OS"
           hinweis="Das Ergebnis ist eine Orientierung, keine Steuerberatung."
           meldung={hinweis}
         >

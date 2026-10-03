@@ -77,7 +77,7 @@ export const videoBisDahin: { titel: string; text: string; href: string; icon: I
   },
   {
     titel: "Schnellstart",
-    text: "So richtest du Macher OS ein und legst los.",
+    text: "So richtest du Handwerk OS ein und legst los.",
     href: "/hilfe/schnellstart",
     icon: "bolt",
   },
@@ -89,7 +89,7 @@ export const videoBisDahin: { titel: string; text: string; href: string; icon: I
   },
   {
     titel: "Demo",
-    text: "Macher OS mit Beispieldaten ansehen, ohne etwas einzurichten.",
+    text: "Handwerk OS mit Beispieldaten ansehen, ohne etwas einzurichten.",
     href: "/demo",
     icon: "monitor",
   },

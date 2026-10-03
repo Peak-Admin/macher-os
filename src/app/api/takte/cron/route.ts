@@ -4,7 +4,7 @@
  * Funktionen wie der Browser (`src/os/modules/takte`, Planung in `src/os/server/takte`).
  *
  * Zeitplan (vercel.json): einmal täglich um 04:30 UTC (Vercel Hobby erlaubt nur tägliche Crons). Die feinen Zeiten
- * (6:30 · 7:00 · 16:30 · Fr 15:00) plant zusätzlich der Browser-Planer, solange Macher OS offen ist; „zuletzt zugestellt“
+ * (6:30 · 7:00 · 16:30 · Fr 15:00) plant zusätzlich der Browser-Planer, solange Handwerk OS offen ist; „zuletzt zugestellt“
  * liegt für beide in `objekte`, damit kein Takt doppelt kommt. Mit Vercel Pro: `*\/15 * * * *` (siehe docs/os/BACKEND.md).
  *
  * Schlüssel: `SUPABASE_URL` (oder `NEXT_PUBLIC_SUPABASE_URL`), `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET`;
@@ -49,7 +49,7 @@ async function zustellen(k: SupabaseKonfig, betriebId: string, z: Zustellung, ba
   }
   if (z.email && emailVerbunden()) {
     const mail = emailAus(z.nachricht, z.takt, basis);
-    await emailSenden({ an: z.email, betreff: mail.betreff, text: mail.text, absenderName: 'Macher OS' });
+    await emailSenden({ an: z.email, betreff: mail.betreff, text: mail.text, absenderName: 'Handwerk OS' });
     return 'email';
   }
   return 'kein-weg';

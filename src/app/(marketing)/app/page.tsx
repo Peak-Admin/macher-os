@@ -20,7 +20,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "App für iPhone und Android",
   description:
-    "Die Macher OS App für die Baustelle: nächster Einsatz, Navigation, Fotos, Spracheingabe, Zeiten, Material und Unterschrift – auch ohne Netz.",
+    "Die Handwerk OS App für die Baustelle: nächster Einsatz, Navigation, Fotos, Spracheingabe, Zeiten, Material und Unterschrift – auch ohne Netz.",
   path: "/app",
 });
 
@@ -43,7 +43,7 @@ const offline = [
 const faq: FaqItem[] = [
   {
     frage: "Was kostet die App?",
-    antwort: "Die App gehört zu Macher OS – du kaufst keine separate App. Was in deinem Tarif enthalten ist, siehst du auf der Preisseite.",
+    antwort: "Die App gehört zu Handwerk OS – du kaufst keine separate App. Was in deinem Tarif enthalten ist, siehst du auf der Preisseite.",
   },
   {
     frage: "Brauche ich ein bestimmtes Handy?",
@@ -56,7 +56,7 @@ const faq: FaqItem[] = [
   {
     frage: "Wann ist die App in den Stores?",
     antwort:
-      "Die Store-Links folgen hier, sobald die App verfügbar ist. Bis dahin kannst du Macher OS im Browser auf dem Handy nutzen.",
+      "Die Store-Links folgen hier, sobald die App verfügbar ist. Bis dahin kannst du Handwerk OS im Browser auf dem Handy nutzen.",
   },
 ];
 
@@ -80,7 +80,7 @@ export default function AppPage() {
         trust={false}
       >
         <p className="mt-4 text-sm text-muted">
-          Die App ist bald in den Stores. Bis dahin funktioniert Macher OS im Browser auf jedem Handy.
+          Die App ist bald in den Stores. Bis dahin funktioniert Handwerk OS im Browser auf jedem Handy.
         </p>
       </PageHero>
 

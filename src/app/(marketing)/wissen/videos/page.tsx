@@ -5,9 +5,9 @@ import { videoBisDahin, videoFaq, videoStatus, videoThemaHref, videoThemen } fro
 import { pageMeta } from "@/lib/metadata";
 
 export const metadata = pageMeta({
-  title: "Video-Anleitungen für Macher OS",
+  title: "Video-Anleitungen für Handwerk OS",
   description:
-    "Kurze Video-Anleitungen zu den wichtigsten Abläufen in Macher OS sind in Arbeit. Hier siehst du die geplanten Themen und wo du bis dahin Hilfe findest.",
+    "Kurze Video-Anleitungen zu den wichtigsten Abläufen in Handwerk OS sind in Arbeit. Hier siehst du die geplanten Themen und wo du bis dahin Hilfe findest.",
   path: "/wissen/videos",
 });
 
@@ -27,7 +27,7 @@ export default function VideosPage() {
       <PageHero
         breadcrumbs={[{ label: "Wissen", href: "/wissen" }, { label: "Video-Anleitungen" }]}
         eyebrow="Video-Anleitungen"
-        title="Macher OS in kurzen Videos."
+        title="Handwerk OS in kurzen Videos."
         intro="Wir drehen gerade kurze Anleitungen zu den Abläufen, die du jeden Tag brauchst. Noch ist kein Video fertig – hier siehst du, was kommt."
         actions="none"
       >
@@ -103,7 +103,7 @@ export default function VideosPage() {
       {/* 5. CTA */}
       <FinalCta
         title="Lieber gleich selbst ausprobieren?"
-        intro="Teste Macher OS kostenlos mit deinen eigenen Aufträgen – oder schau dir zuerst die Demo an."
+        intro="Teste Handwerk OS kostenlos mit deinen eigenen Aufträgen – oder schau dir zuerst die Demo an."
       />
     </>
   );

@@ -4,9 +4,9 @@ import { demnaechst, neuigkeiten } from "@/content/landing/neuigkeiten";
 import { pageMeta } from "@/lib/metadata";
 
 export const metadata = pageMeta({
-  title: "Was ist neu? – Produktupdates von Macher OS",
+  title: "Was ist neu? – Produktupdates von Handwerk OS",
   description:
-    "Neue Funktionen in Macher OS: GAEB-Import, Datanorm, Zahlungsabgleich, XRechnung, Sprach-Baustellenbericht und mehr. Und was als Nächstes kommt.",
+    "Neue Funktionen in Handwerk OS: GAEB-Import, Datanorm, Zahlungsabgleich, XRechnung, Sprach-Baustellenbericht und mehr. Und was als Nächstes kommt.",
   path: "/neuigkeiten",
 });
 
@@ -15,7 +15,7 @@ export default function NeuigkeitenPage() {
     <>
       <PageHero
         eyebrow="Was ist neu?"
-        title="Macher OS wird laufend besser."
+        title="Handwerk OS wird laufend besser."
         intro="Hier siehst du, was neu dazugekommen ist. Alle Updates sind in deinem Plan drin – automatisch, ohne Aufpreis."
         breadcrumbs={[{ label: "Was ist neu?" }]}
       />

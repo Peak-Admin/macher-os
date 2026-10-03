@@ -10,14 +10,14 @@ export const teil3 = {
     meta: {
       title: "Wartungsplanung für Handwerker – keine Wartung mehr vergessen",
       description:
-        "Macher OS zeigt, welche Wartungen überfällig und fällig sind, legt Wartungsaufträge rechtzeitig an, bündelt Anlagen am selben Ort und trägt danach die nächste Wartung ein.",
+        "Handwerk OS zeigt, welche Wartungen überfällig und fällig sind, legt Wartungsaufträge rechtzeitig an, bündelt Anlagen am selben Ort und trägt danach die nächste Wartung ein.",
     },
     hero: {
       titel: "Die Wartung meldet sich, bevor der Kunde anruft.",
       problem:
         "Wann welche Heizung, welcher Zählerschrank oder welches Flachdach dran ist, steht in einer Tabelle, am Wandkalender oder nur im Kopf. Oft merkst du es erst, wenn die Anlage steht.",
       loesung:
-        "Macher OS kennt die Fälligkeit jeder Anlage. Wochen vorher liegt der Wartungsauftrag bereit – mit Prüfpunkten, Terminvorschlag und Nachricht an den Kunden.",
+        "Handwerk OS kennt die Fälligkeit jeder Anlage. Wochen vorher liegt der Wartungsauftrag bereit – mit Prüfpunkten, Terminvorschlag und Nachricht an den Kunden.",
     },
     visual: {
       bereich: "Aufträge",
@@ -183,14 +183,14 @@ export const teil3 = {
     meta: {
       title: "Wartungsverträge verwalten – Abrechnung und Fristen im Griff",
       description:
-        "Serviceverträge mit Leistungen, Preis pro Jahr und Laufzeit. Macher OS erstellt zu Beginn jeder Abrechnungsperiode den Rechnungsentwurf und erinnert an Kündigungsfristen.",
+        "Serviceverträge mit Leistungen, Preis pro Jahr und Laufzeit. Handwerk OS erstellt zu Beginn jeder Abrechnungsperiode den Rechnungsentwurf und erinnert an Kündigungsfristen.",
     },
     hero: {
       titel: "Wartungsverträge, die sich selbst abrechnen.",
       problem:
         "Die Verträge liegen im Ordner. Wann was abgerechnet wird und wann die Kündigungsfrist endet, weiß keiner genau. Mal fehlt eine Rechnung, mal wird eine Wartung doppelt berechnet.",
       loesung:
-        "In Macher OS hat jeder Vertrag Laufzeit, Preis und Rhythmus. Zu Beginn jeder Periode liegt der Rechnungsentwurf bereit. Vor der Kündigungsfrist bekommst du Bescheid.",
+        "In Handwerk OS hat jeder Vertrag Laufzeit, Preis und Rhythmus. Zu Beginn jeder Periode liegt der Rechnungsentwurf bereit. Vor der Kündigungsfrist bekommst du Bescheid.",
     },
     visual: {
       bereich: "Aufträge",
@@ -355,14 +355,14 @@ export const teil3 = {
     meta: {
       title: "Reklamationen und Gewährleistung im Handwerk – Mängel sauber abarbeiten",
       description:
-        "Mängel per Handy mit Foto aufnehmen. Macher OS prüft anhand des Abnahmedatums, ob noch Gewährleistung besteht, legt die Nacharbeit mit Frist an und erinnert, bevor die Frist abläuft.",
+        "Mängel per Handy mit Foto aufnehmen. Handwerk OS prüft anhand des Abnahmedatums, ob noch Gewährleistung besteht, legt die Nacharbeit mit Frist an und erinnert, bevor die Frist abläuft.",
     },
     hero: {
       titel: "Ein Mangel ist ärgerlich. Ein vergessener ist teuer.",
       problem:
         "Der Kunde meldet einen Mangel am Telefon. Ist das noch Gewährleistung? Wann war die Abnahme? Bis das geklärt ist, liegt die Reklamation – und die Frist läuft.",
       loesung:
-        "Macher OS nimmt den Mangel mit Foto auf, rechnet die Gewährleistung aus dem Abnahmedatum aus und legt die Nacharbeit mit Frist an. Du entscheidest nur noch.",
+        "Handwerk OS nimmt den Mangel mit Foto auf, rechnet die Gewährleistung aus dem Abnahmedatum aus und legt die Nacharbeit mit Frist an. Du entscheidest nur noch.",
     },
     visual: {
       bereich: "Aufträge",
@@ -527,7 +527,7 @@ export const teil3 = {
     meta: {
       title: "Mehr Google-Bewertungen für deinen Handwerksbetrieb",
       description:
-        "Macher OS bereitet nach jedem erledigten Auftrag eine Bewertungsanfrage mit deinem Google-Link vor. Unzufriedene Kunden und Reklamationen lässt er aus. Du gibst nur frei.",
+        "Handwerk OS bereitet nach jedem erledigten Auftrag eine Bewertungsanfrage mit deinem Google-Link vor. Unzufriedene Kunden und Reklamationen lässt er aus. Du gibst nur frei.",
     },
     hero: {
       titel: "Zufriedene Kunden fragen – ohne es zu vergessen.",
@@ -699,7 +699,7 @@ export const teil3 = {
     meta: {
       title: "Online-Terminbuchung für Handwerker – Kunden buchen selbst",
       description:
-        "Kunden buchen Besichtigung oder Reparatur über deinen Link – nur echte freie Zeiten. Macher OS legt Kunde, Anfrage und Termin an. Du bestätigst mit einem Klick.",
+        "Kunden buchen Besichtigung oder Reparatur über deinen Link – nur echte freie Zeiten. Handwerk OS legt Kunde, Anfrage und Termin an. Du bestätigst mit einem Klick.",
     },
     hero: {
       titel: "Der Kunde bucht. Das Telefon bleibt ruhig.",
@@ -871,7 +871,7 @@ export const teil3 = {
     meta: {
       title: "Wiederkehrende Termine planen – Wartung und Pflege als Serie",
       description:
-        "Wöchentlich, monatlich, alle sechs Monate oder jährlich: Macher OS trägt Serientermine drei Monate im Voraus ein, schiebt Wochenenden auf Montag und warnt, wenn ein Mitarbeiter im Urlaub ist.",
+        "Wöchentlich, monatlich, alle sechs Monate oder jährlich: Handwerk OS trägt Serientermine drei Monate im Voraus ein, schiebt Wochenenden auf Montag und warnt, wenn ein Mitarbeiter im Urlaub ist.",
     },
     hero: {
       titel: "Einmal anlegen. Die Termine kommen von selbst.",
@@ -1043,7 +1043,7 @@ export const teil3 = {
     meta: {
       title: "KI-Bürokraft für Handwerker – Macher beantwortet Fragen aus deinen Daten",
       description:
-        "„Was steht morgen an?“ – „Welche Rechnungen sind offen?“ Macher antwortet aus deinen Daten in Macher OS, mit Quelle. Aufgaben und Nachrichten bereitet er vor. Ausgeführt wird erst, wenn du bestätigst.",
+        "„Was steht morgen an?“ – „Welche Rechnungen sind offen?“ Macher antwortet aus deinen Daten in Handwerk OS, mit Quelle. Aufgaben und Nachrichten bereitet er vor. Ausgeführt wird erst, wenn du bestätigst.",
     },
     hero: {
       titel: "Frag einfach. Wie deine beste Bürokraft.",
@@ -1122,7 +1122,7 @@ export const teil3 = {
     schritte: [
       {
         titel: "Frage stellen",
-        text: "Über „Suchen oder fragen“ oben in Macher OS. Zum Beispiel: „Wer hat nächste Woche Zeit?“",
+        text: "Über „Suchen oder fragen“ oben in Handwerk OS. Zum Beispiel: „Wer hat nächste Woche Zeit?“",
       },
       {
         titel: "Macher antwortet",
@@ -1195,7 +1195,7 @@ export const teil3 = {
       {
         frage: "Woher kommen die Antworten?",
         antwort:
-          "Aus deinen Daten in Macher OS. Jede Antwort zeigt Links zu den Quellen und den Stand der Daten. Findet Macher nichts, sagt er das – und erfindet keine Antwort.",
+          "Aus deinen Daten in Handwerk OS. Jede Antwort zeigt Links zu den Quellen und den Stand der Daten. Findet Macher nichts, sagt er das – und erfindet keine Antwort.",
       },
       {
         frage: "Was passiert mit meinen Daten, wenn ein KI-Modell hilft?",

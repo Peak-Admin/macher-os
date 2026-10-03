@@ -1,10 +1,10 @@
-# Macher OS: moderne, elegante und vertraute Bedienung
+# Handwerk OS: moderne, elegante und vertraute Bedienung
 
 Verbindliche Umsetzungsspezifikation für Claude Code · 2. Oktober 2026
 
 ## 0. Auftrag und Ziel
 
-Überarbeite Marketingseiten, Marketingnavigation und App von Macher OS nach dieser Spezifikation. Die wichtigste Qualität ist eine verständliche User Experience für wenig technikaffine Handwerker. Das Ergebnis soll modern und elegant wirken, sich aber sofort vertraut bedienen lassen.
+Überarbeite Marketingseiten, Marketingnavigation und App von Handwerk OS nach dieser Spezifikation. Die wichtigste Qualität ist eine verständliche User Experience für wenig technikaffine Handwerker. Das Ergebnis soll modern und elegant wirken, sich aber sofort vertraut bedienen lassen.
 
 **Leitsatz: „Das sieht ordentlich aus. Das verstehe ich. Damit kann ich arbeiten.“**
 

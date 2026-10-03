@@ -23,7 +23,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Hilfe",
   description:
-    "Schnellstart, Anleitungen, Datenübernahme und persönlicher Support für Macher OS – alle Hilfe an einem Ort.",
+    "Schnellstart, Anleitungen, Datenübernahme und persönlicher Support für Handwerk OS – alle Hilfe an einem Ort.",
   path: "/hilfe",
 });
 
@@ -110,7 +110,7 @@ export default function HilfePage() {
         <SectionHeading
           eyebrow="Hilfe-Center"
           title="Anleitungen für jeden Bereich."
-          intro="Schritt für Schritt erklärt – so, wie Macher OS gedacht ist."
+          intro="Schritt für Schritt erklärt – so, wie Handwerk OS gedacht ist."
         />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {hilfeKategorien.map((k) => (

@@ -1,5 +1,5 @@
-# Macher OS — Visual Asset & Image Language Specification
-**Purpose:** Canonical context for Claude Code when designing or implementing visual elements in Macher OS / Handwerker OS.
+# Handwerk OS — Visual Asset & Image Language Specification
+**Purpose:** Canonical context for Claude Code when designing or implementing visual elements in Handwerk OS / Handwerker OS.
 
 > **Stand Oktober 2026:** In der Software (`src/os`) ersetzen Fenster-Skizzen – Drahtgitter-Fenster mit Glas-Icon – die
 > Objektfotos (Türen, Widget-Köpfe, Leerzustände; `SkizzenKachel`, `Leer`). Die Objektfotos dieser Spezifikation gelten
@@ -9,7 +9,7 @@
 
 ## 1. Core Principle
 
-Macher OS is software for tradespeople and craft businesses.
+Handwerk OS is software for tradespeople and craft businesses.
 
 The target user is often **anti-IT**, does not want to learn software, and should understand the interface almost immediately.
 
@@ -38,7 +38,7 @@ Visual assets should make the product easier to understand and more emotionally 
 
 ## “Das digitale Werkzeug”
 
-Use the following mental model across Macher OS:
+Use the following mental model across Handwerk OS:
 
 | Software concept | Visual metaphor |
 |---|---|
@@ -63,7 +63,7 @@ Do **not** turn the software into a game, cartoon or literal workshop simulation
 
 # 3. Canonical Core Asset Library
 
-These are the preferred visual objects for Macher OS.
+These are the preferred visual objects for Handwerk OS.
 
 ## Tier 1 — Primary Assets
 
@@ -156,7 +156,7 @@ The **cordless drill** is one of the strongest hero objects besides the hammer.
 
 # 6. Material World
 
-Macher OS should have a consistent physical material language.
+Handwerk OS should have a consistent physical material language.
 
 Preferred materials:
 
@@ -275,7 +275,7 @@ Do **not** use:
 - overly literal skeuomorphic UI
 - complex metaphors users need to interpret
 
-Macher OS should never look like:
+Handwerk OS should never look like:
 
 > “Software trying to look like a construction site.”
 
@@ -303,7 +303,7 @@ If the answer is no, do not add it.
 
 # 11. Density Rule
 
-Macher OS should prefer:
+Handwerk OS should prefer:
 
 > **one strong visual object over five weak decorative elements.**
 
@@ -496,7 +496,7 @@ Text labels and familiar UI patterns remain primary.
 
 # 17. Performance
 
-Visual assets must not make Macher OS feel slow.
+Visual assets must not make Handwerk OS feel slow.
 
 Rules:
 
@@ -554,7 +554,7 @@ The first production asset library should contain:
 15. Coffee mug
 16. Workbench
 
-This pack is sufficient to establish the Macher OS visual identity.
+This pack is sufficient to establish the Handwerk OS visual identity.
 
 ---
 
@@ -568,7 +568,7 @@ The desired reaction is:
 
 > “Ah, klar. So funktioniert das.”
 
-Macher OS should translate software concepts into familiar real-world concepts whenever this makes the interface easier.
+Handwerk OS should translate software concepts into familiar real-world concepts whenever this makes the interface easier.
 
 The product remains:
 
@@ -582,8 +582,8 @@ It must never compete with it.
 
 # 21. Canonical Claude Code Instruction
 
-When implementing or redesigning Macher OS screens:
+When implementing or redesigning Handwerk OS screens:
 
-> Use the Macher OS visual language defined in this document. Prefer familiar trade objects and physical metaphors over abstract SaaS visuals. Keep interfaces extremely simple, elegant and obvious for non-technical tradespeople. Use realistic craft assets as a restrained visual layer, while functional UI remains clean and minimal. Never introduce visual complexity merely to make the product look more “designed.” Every visual element must support comprehension, orientation or familiarity.
+> Use the Handwerk OS visual language defined in this document. Prefer familiar trade objects and physical metaphors over abstract SaaS visuals. Keep interfaces extremely simple, elegant and obvious for non-technical tradespeople. Use realistic craft assets as a restrained visual layer, while functional UI remains clean and minimal. Never introduce visual complexity merely to make the product look more “designed.” Every visual element must support comprehension, orientation or familiarity.
 
-This document is the canonical baseline for visual assets in Macher OS.
+This document is the canonical baseline for visual assets in Handwerk OS.

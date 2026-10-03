@@ -10,7 +10,7 @@ export function NichtGefunden() {
         Diese Seite gibt es nicht.
       </h1>
       <p className="mt-4 text-lg text-muted">
-        Vielleicht wurde sie verschoben. Fang am besten auf der Startseite an – oder schau dir an, was Macher OS kann.
+        Vielleicht wurde sie verschoben. Fang am besten auf der Startseite an – oder schau dir an, was Handwerk OS kann.
       </p>
       <div className="mt-8 flex flex-wrap items-center gap-5">
         <ButtonLink href="/">Zur Startseite</ButtonLink>

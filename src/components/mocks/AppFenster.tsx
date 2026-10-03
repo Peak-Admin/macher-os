@@ -98,7 +98,7 @@ export function AppSeitenleiste<F extends string = string>({
       <div className="flex items-center gap-2 px-1">
         <Image src="/marke/zeichen.png" alt="" width={24} height={24} className="size-6 shrink-0" />
         <span className="whitespace-nowrap font-display text-[15px] text-ink">
-          Macher <b className="font-black">OS</b>
+          Handwerk <b className="font-black">OS</b>
         </span>
         <span className="ml-auto rounded-sm border border-dashed border-line-dark px-1 text-[10px] font-semibold text-muted sm:hidden">Beispiel</span>
       </div>

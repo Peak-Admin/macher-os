@@ -8,7 +8,7 @@ import { cta } from "@/lib/site";
 export const metadata = pageMeta({
   title: "Kontakt",
   description:
-    "Kontakt zu Macher OS, der Software von Mission Mittelstand: Fragen zum Produkt, Hilfe, Partnerschaft oder Presse. Wähle dein Thema und schreib uns ein paar Zeilen.",
+    "Kontakt zu Handwerk OS, der Software von Mission Mittelstand: Fragen zum Produkt, Hilfe, Partnerschaft oder Presse. Wähle dein Thema und schreib uns ein paar Zeilen.",
   path: "/kontakt",
 });
 
@@ -48,7 +48,7 @@ export default function KontaktPage() {
               </dl>
             </div>
             <div>
-              <p className="text-muted">Du nutzt Macher OS schon und brauchst Hilfe?</p>
+              <p className="text-muted">Du nutzt Handwerk OS schon und brauchst Hilfe?</p>
               <ArrowLink href="/hilfe/kontakt" className="mt-2">
                 Kontakt & Support
               </ArrowLink>

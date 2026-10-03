@@ -164,7 +164,7 @@ export function FahrtkostenRechner() {
           unterzeile={r ? `${zahl(r.kilometer, 1)} km und ${zahl(r.stunden * 60)} Min. Fahrzeit` : null}
           meldung={gueltig ? null : "Bitte prüf die markierten Eingaben."}
           zusammenfassung={zusammenfassung}
-          betreff="Fahrtkosten – berechnet mit Macher OS"
+          betreff="Fahrtkosten – berechnet mit Handwerk OS"
           hinweis="Das Ergebnis ist eine Orientierung, keine Steuerberatung."
         >
           <ErgebnisZeile

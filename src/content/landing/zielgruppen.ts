@@ -14,14 +14,14 @@ export const zielgruppenSeiten = {
     meta: {
       title: "Handwerkersoftware für Neugründer – von Anfang an richtig organisiert",
       description:
-        "Betrieb gegründet? Mit Macher OS schreibst du ab dem ersten Tag saubere Angebote und Rechnungen, planst Termine und bist bereit für die ersten Mitarbeiter.",
+        "Betrieb gegründet? Mit Handwerk OS schreibst du ab dem ersten Tag saubere Angebote und Rechnungen, planst Termine und bist bereit für die ersten Mitarbeiter.",
     },
     breadcrumbs: [{ label: "Für Neugründer" }],
     hero: {
       eyebrow: "Für Neugründer",
       title: "Gleich richtig anfangen.",
       intro:
-        "Du hast dich selbstständig gemacht – jetzt willst du arbeiten, nicht verwalten. Macher OS ist ab dem ersten Auftrag dein Büro: Angebote, Termine, Rechnungen. Und es wächst mit, wenn die ersten Leute dazukommen.",
+        "Du hast dich selbstständig gemacht – jetzt willst du arbeiten, nicht verwalten. Handwerk OS ist ab dem ersten Auftrag dein Büro: Angebote, Termine, Rechnungen. Und es wächst mit, wenn die ersten Leute dazukommen.",
       bild: "alltag/handy",
     },
     schmerz: {
@@ -33,7 +33,7 @@ export const zielgruppenSeiten = {
         "Kunden warten auf Rückruf, weil die Anfrage im Handy untergeht",
         "Später umziehen kostet doppelt Zeit",
       ],
-      antwort: "Mit Macher OS hast du vom ersten Tag an ein ordentliches Büro – ohne Büro.",
+      antwort: "Mit Handwerk OS hast du vom ersten Tag an ein ordentliches Büro – ohne Büro.",
     },
     vorteile: {
       eyebrow: "Was du sofort hast",
@@ -48,7 +48,7 @@ export const zielgruppenSeiten = {
     ablauf: {
       titel: "Vom ersten Auftrag bis zum ersten Mitarbeiter.",
       schritte: [
-        { titel: "Gewerk wählen", text: "Macher OS richtet Vorlagen für dein Gewerk ein." },
+        { titel: "Gewerk wählen", text: "Handwerk OS richtet Vorlagen für dein Gewerk ein." },
         { titel: "Betrieb eintragen", text: "Logo, Anschrift, Bankverbindung – einmal, für immer." },
         { titel: "Erstes Angebot", text: "Positionen aus den Vorlagen, Preise anpassen, verschicken." },
         { titel: "Wachsen", text: "Mitarbeiter, Plantafel und Lager nutzt du, wenn du sie brauchst." },
@@ -69,7 +69,7 @@ export const zielgruppenSeiten = {
       {
         frage: "Lohnt sich Software, wenn ich allein bin?",
         antwort:
-          "Gerade dann: Du hast niemanden, der dir das Büro abnimmt. Macher OS hilft dir, Angebote und Rechnungen schnell und richtig zu schreiben.",
+          "Gerade dann: Du hast niemanden, der dir das Büro abnimmt. Handwerk OS hilft dir, Angebote und Rechnungen schnell und richtig zu schreiben.",
       },
       {
         frage: "Gibt es einen Gründerrabatt?",
@@ -87,7 +87,7 @@ export const zielgruppenSeiten = {
     weiter: {
       links: [
         { label: "Stundensatz berechnen", href: "/werkzeuge/stundensatz-rechner", text: "Was muss deine Stunde kosten?" },
-        { label: "Macher OS vs. Word & Excel", href: "/vergleich/word-excel", text: "Warum Vorlagen dich später bremsen." },
+        { label: "Handwerk OS vs. Word & Excel", href: "/vergleich/word-excel", text: "Warum Vorlagen dich später bremsen." },
         { label: "Vorlagen & Checklisten", href: "/wissen/vorlagen", text: "Praktische Hilfen für den Alltag." },
       ],
     },
@@ -99,14 +99,14 @@ export const zielgruppenSeiten = {
     meta: {
       title: "Für Meisterschüler – Betriebsführung mit echter Software üben",
       description:
-        "Du machst deinen Meister? Lerne mit Macher OS, wie ein Betrieb organisiert ist: Kalkulation, Angebot, Einsatzplanung, Rechnung – mit Beispieldaten oder deinem eigenen Projekt.",
+        "Du machst deinen Meister? Lerne mit Handwerk OS, wie ein Betrieb organisiert ist: Kalkulation, Angebot, Einsatzplanung, Rechnung – mit Beispieldaten oder deinem eigenen Projekt.",
     },
     breadcrumbs: [{ label: "Für Meisterschüler" }],
     hero: {
       eyebrow: "Für Meisterschüler",
       title: "Den Betrieb führen lernen – bevor es ernst wird.",
       intro:
-        "In der Meisterschule lernst du Kalkulation, Angebot und Betriebsführung. Mit Macher OS übst du es an einer echten Software – und hast sie schon parat, wenn du dich selbstständig machst oder Verantwortung übernimmst.",
+        "In der Meisterschule lernst du Kalkulation, Angebot und Betriebsführung. Mit Handwerk OS übst du es an einer echten Software – und hast sie schon parat, wenn du dich selbstständig machst oder Verantwortung übernimmst.",
       bild: "alltag/team",
       aktionen: { primaer: { label: "Demo mit Beispieldaten", href: cta.secondary.href }, sekundaer: { label: "Kostenlos testen", href: cta.primary.href } },
     },
@@ -121,24 +121,24 @@ export const zielgruppenSeiten = {
       ],
     },
     ablauf: {
-      titel: "So nutzt du Macher OS in der Meisterschule.",
+      titel: "So nutzt du Handwerk OS in der Meisterschule.",
       schritte: [
         { titel: "Demo öffnen", text: "Ein Beispielbetrieb mit Aufträgen, Team und Rechnungen – zum Ausprobieren." },
         { titel: "Eigenes Projekt", text: "Dein Meisterprojekt oder einen Übungsauftrag selbst durchspielen." },
-        { titel: "Mitnehmen", text: "Beim Start in die Selbstständigkeit richtest du Macher OS für deinen Betrieb ein." },
+        { titel: "Mitnehmen", text: "Beim Start in die Selbstständigkeit richtest du Handwerk OS für deinen Betrieb ein." },
       ],
     },
     faq: [
       {
-        frage: "Was kostet Macher OS für Meisterschüler?",
+        frage: "Was kostet Handwerk OS für Meisterschüler?",
         antwort: `Die Demo mit Beispieldaten ist kostenlos. Für deinen eigenen Betrieb testest du ${testTage} Tage kostenlos. Eigene Schülerpreise gibt es derzeit nicht.`,
       },
       {
         frage: "Ersetzt das den Unterricht?",
-        antwort: "Nein. Macher OS hilft dir, das Gelernte an einer echten Software anzuwenden.",
+        antwort: "Nein. Handwerk OS hilft dir, das Gelernte an einer echten Software anzuwenden.",
       },
       {
-        frage: "Kann meine Meisterschule Macher OS im Unterricht nutzen?",
+        frage: "Kann meine Meisterschule Handwerk OS im Unterricht nutzen?",
         antwort: "Ja, sprich deine Schule an oder schick sie auf unsere Seite für Meisterschulen.",
       },
     ],
@@ -146,10 +146,10 @@ export const zielgruppenSeiten = {
       links: [
         { label: "Stundensatz-Rechner", href: "/werkzeuge/stundensatz-rechner", text: "Den eigenen Stundensatz ausrechnen." },
         { label: "Für Neugründer", href: "/fuer/neugruender", text: "Nach dem Meister in die Selbstständigkeit." },
-        { label: "Für Meisterschulen", href: "/fuer/meisterschulen", text: "Macher OS im Unterricht." },
+        { label: "Für Meisterschulen", href: "/fuer/meisterschulen", text: "Handwerk OS im Unterricht." },
       ],
     },
-    cta: { title: "Üben mit echter Software.", intro: "Probier die Demo aus oder richte Macher OS für dein eigenes Projekt ein." },
+    cta: { title: "Üben mit echter Software.", intro: "Probier die Demo aus oder richte Handwerk OS für dein eigenes Projekt ein." },
   },
 
   meisterschulen: {
@@ -157,14 +157,14 @@ export const zielgruppenSeiten = {
     meta: {
       title: "Für Meisterschulen – Betriebsführung praxisnah unterrichten",
       description:
-        "Macher OS für Meisterschulen und Bildungszentren: Kalkulation, Angebot, Einsatzplanung und Rechnung an einer echten Handwerkersoftware zeigen. Jetzt Kooperation anfragen.",
+        "Handwerk OS für Meisterschulen und Bildungszentren: Kalkulation, Angebot, Einsatzplanung und Rechnung an einer echten Handwerkersoftware zeigen. Jetzt Kooperation anfragen.",
     },
     breadcrumbs: [{ label: "Für Meisterschulen" }],
     hero: {
       eyebrow: "Für Meisterschulen",
       title: "Betriebsführung zum Anfassen.",
       intro:
-        "Eure Meisterschüler führen bald selbst einen Betrieb. Mit Macher OS zeigt ihr an einer echten Software, wie Kalkulation, Angebot, Planung und Rechnung zusammenhängen.",
+        "Eure Meisterschüler führen bald selbst einen Betrieb. Mit Handwerk OS zeigt ihr an einer echten Software, wie Kalkulation, Angebot, Planung und Rechnung zusammenhängen.",
       bild: "seite/partner",
       aktionen: { primaer: { label: "Kooperation anfragen", href: "#anfrage" }, sekundaer: cta.secondary },
     },
@@ -178,7 +178,7 @@ export const zielgruppenSeiten = {
       ],
     },
     ablauf: {
-      titel: "So kommt Macher OS in euren Unterricht.",
+      titel: "So kommt Handwerk OS in euren Unterricht.",
       schritte: [
         { titel: "Anfrage schicken", text: "Kurz beschreiben, welche Kurse und wie viele Teilnehmer ihr habt." },
         { titel: "Gespräch", text: "Wir klären, was ihr braucht und was wir beitragen können." },
@@ -212,12 +212,12 @@ export const zielgruppenSeiten = {
     },
     faq: [
       {
-        frage: "Was kostet Macher OS für Schulen?",
+        frage: "Was kostet Handwerk OS für Schulen?",
         antwort: "Das besprechen wir mit jeder Schule einzeln. Die Demo mit Beispieldaten könnt ihr jederzeit kostenlos nutzen.",
       },
       {
         frage: "Brauchen die Teilnehmer ein eigenes Konto?",
-        antwort: "Für die Demo nicht. Wer Macher OS für einen eigenen Betrieb einrichtet, braucht kein Konto, solange die Daten im Browser bleiben.",
+        antwort: "Für die Demo nicht. Wer Handwerk OS für einen eigenen Betrieb einrichtet, braucht kein Konto, solange die Daten im Browser bleiben.",
       },
       {
         frage: "Gibt es Unterrichtsmaterial?",
@@ -228,7 +228,7 @@ export const zielgruppenSeiten = {
       links: [
         { label: "Für Meisterschüler", href: "/fuer/meisterschueler", text: "Was eure Teilnehmer davon haben." },
         { label: "Macher Akademie", href: "/wissen/akademie", text: "Lernen im eigenen Tempo." },
-        { label: "Partner", href: "/partner", text: "Alle Partnerschaften mit Macher OS." },
+        { label: "Partner", href: "/partner", text: "Alle Partnerschaften mit Handwerk OS." },
       ],
     },
     cta: { title: "Den Meistern von morgen zeigen, wie's geht.", intro: "Schaut euch die Demo an oder startet selbst kostenlos." },

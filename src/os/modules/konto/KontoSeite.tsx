@@ -40,7 +40,7 @@ function NichtVerbunden() {
       titel="Konto"
       untertitel="Deine Daten liegen nur in diesem Browser."
       aktion={
-        <Button icon="download" onClick={() => (herunterladen(exportieren(), `macher-os-sicherung-${heute()}.json`), toast('Sicherung ist heruntergeladen.'))}>
+        <Button icon="download" onClick={() => (herunterladen(exportieren(), `handwerk-os-sicherung-${heute()}.json`), toast('Sicherung ist heruntergeladen.'))}>
           Sicherung herunterladen
         </Button>
       }
@@ -243,7 +243,7 @@ function Angemeldet() {
                 onClick={async () => {
                   const d = await sicherungLesen(z.sicherung!);
                   if (!d) return toast('Die Sicherung ist nicht mehr da.', { ton: 'achtung' });
-                  herunterladen(d, `macher-os-geraet-sicherung-${d.angelegtAm.slice(0, 10)}.json`);
+                  herunterladen(d, `handwerk-os-geraet-sicherung-${d.angelegtAm.slice(0, 10)}.json`);
                 }}
               >
                 Herunterladen

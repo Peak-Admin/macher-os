@@ -1,7 +1,7 @@
 /**
  * Widget-Bibliothek des Home. Ein neues Widget = ein Eintrag hier (oder `registriereWidget()` aus einem Modul).
  * Welche Widgets jemand sehen und hinzufügen darf, bestimmen Rolle, Rechte und installierte Module –
- * dieselben Regeln wie überall in Macher OS.
+ * dieselben Regeln wie überall in Handwerk OS.
  */
 import { modul } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';

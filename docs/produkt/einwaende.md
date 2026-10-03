@@ -19,7 +19,7 @@ Prüfen und ersetzen, sobald wir echte Daten haben: Gespräche mit Betrieben, K�
 
 ## Die fünf Kernängste
 
-| Kernangst | Stärke | Was Macher OS vermitteln muss | Wo |
+| Kernangst | Stärke | Was Handwerk OS vermitteln muss | Wo |
 |---|---:|---|---|
 | „Das kostet mich Zeit.“ | 100 | In wenigen Minuten startklar. | Startseite, Anmeldung |
 | „Das ist kompliziert.“ | 99 | Du musst keine Software lernen. | Startseite, Anmeldung |

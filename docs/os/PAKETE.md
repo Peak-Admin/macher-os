@@ -1,6 +1,6 @@
 # Arbeitspakete & Verträge zwischen den Paketen
 
-Macher OS wird in 14 parallelen Paketen gebaut. Jedes Paket arbeitet auf einem eigenen Branch
+Handwerk OS wird in 14 parallelen Paketen gebaut. Jedes Paket arbeitet auf einem eigenen Branch
 `claude/fervent-pascal-joztaz-<paket>` ausgehend von `claude/fervent-pascal-joztaz` und berührt **nur**
 seine eigenen Ordner `src/os/modules/<modul-id>/`. Dadurch entstehen beim Zusammenführen keine Konflikte.
 

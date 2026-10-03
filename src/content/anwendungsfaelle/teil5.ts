@@ -10,14 +10,14 @@ export const teil5 = {
     meta: {
       title: "Neue Mitarbeiter einarbeiten – Plan je Rolle für Handwerksbetriebe",
       description:
-        "Legst du einen neuen Mitarbeiter an, steht sofort sein Einarbeitungsplan: Unterlagen, Kleidung, Werkzeug, Unterweisungen, erste Einsätze und Gespräche. Macher OS meldet, was liegen bleibt.",
+        "Legst du einen neuen Mitarbeiter an, steht sofort sein Einarbeitungsplan: Unterlagen, Kleidung, Werkzeug, Unterweisungen, erste Einsätze und Gespräche. Handwerk OS meldet, was liegen bleibt.",
     },
     hero: {
       titel: "Der Neue fängt an. Der Plan steht schon.",
       problem:
         "Am ersten Tag hat keiner Zeit. Die Steuer-ID fehlt, die Schutzschuhe auch, und die Unterweisung wird „nächste Woche“ nachgeholt.",
       loesung:
-        "Macher OS erstellt beim Anlegen sofort einen Einarbeitungsplan passend zur Rolle. Du hakst nur ab – und siehst, was überfällig ist.",
+        "Handwerk OS erstellt beim Anlegen sofort einen Einarbeitungsplan passend zur Rolle. Du hakst nur ab – und siehst, was überfällig ist.",
     },
     visual: {
       bereich: "Betrieb",
@@ -157,7 +157,7 @@ export const teil5 = {
       {
         frage: "Kann ich den Plan anpassen?",
         antwort:
-          "Ja. Du ergänzt eigene Schritte direkt am Plan. Die Grundschritte je Rolle gibt Macher OS vor, damit nichts Wichtiges fehlt.",
+          "Ja. Du ergänzt eigene Schritte direkt am Plan. Die Grundschritte je Rolle gibt Handwerk OS vor, damit nichts Wichtiges fehlt.",
       },
       {
         frage: "Gibt es einen Plan für Azubis?",
@@ -182,14 +182,14 @@ export const teil5 = {
     meta: {
       title: "Bewerber verwalten im Handwerk – schnell antworten, gute Leute halten",
       description:
-        "Bewerbungen per Anruf, Mail oder WhatsApp in einer Liste. Macher OS meldet, wer zu lange wartet, hilft mit fertigen Antworten und legt bei Zusage den Mitarbeiter an.",
+        "Bewerbungen per Anruf, Mail oder WhatsApp in einer Liste. Handwerk OS meldet, wer zu lange wartet, hilft mit fertigen Antworten und legt bei Zusage den Mitarbeiter an.",
     },
     hero: {
       titel: "Gute Leute warten nicht. Du auch nicht mehr.",
       problem:
         "Bewerbungen kommen per Anruf, Mail und WhatsApp. Im Alltag bleiben sie eine Woche liegen – und der Bewerber ist beim nächsten Betrieb.",
       loesung:
-        "Macher OS sammelt alle Bewerbungen in einer Liste, meldet sich, wenn jemand zu lange wartet, und gibt dir fertige Antworten für jeden Schritt.",
+        "Handwerk OS sammelt alle Bewerbungen in einer Liste, meldet sich, wenn jemand zu lange wartet, und gibt dir fertige Antworten für jeden Schritt.",
     },
     visual: {
       bereich: "Betrieb",
@@ -350,14 +350,14 @@ export const teil5 = {
     meta: {
       title: "Subunternehmer verwalten – Freistellungsbescheinigung, Einsätze, Kosten",
       description:
-        "Subunternehmer mit Freistellungsbescheinigung nach § 48b, Unbedenklichkeitsbescheinigungen und Ablaufdatum. Einsätze und Kosten am Auftrag. Macher OS warnt, bevor ein Nachweis abläuft.",
+        "Subunternehmer mit Freistellungsbescheinigung nach § 48b, Unbedenklichkeitsbescheinigungen und Ablaufdatum. Einsätze und Kosten am Auftrag. Handwerk OS warnt, bevor ein Nachweis abläuft.",
     },
     hero: {
       titel: "Die Freistellung läuft ab? Du weißt es vorher.",
       problem:
         "Nachweise der Fremdfirmen liegen im Ordner. Dass die Freistellungsbescheinigung abgelaufen ist, merkt keiner – bis die Rechnung bezahlt ist.",
       loesung:
-        "Macher OS hält Nachweise mit Ablaufdatum bei jeder Firma, zeigt Einsätze und Kosten am Auftrag und warnt rechtzeitig vor dem Ablauf.",
+        "Handwerk OS hält Nachweise mit Ablaufdatum bei jeder Firma, zeigt Einsätze und Kosten am Auftrag und warnt rechtzeitig vor dem Ablauf.",
     },
     visual: {
       bereich: "Betrieb",
@@ -523,14 +523,14 @@ export const teil5 = {
     meta: {
       title: "Materialbedarf im Handwerk – wissen, was für die nächsten Aufträge fehlt",
       description:
-        "Macher OS vergleicht das geplante Material aller anstehenden Aufträge mit Lager und offenen Bestellungen. Was fehlt, landet mit einem Klick als Bestellentwurf beim richtigen Lieferanten.",
+        "Handwerk OS vergleicht das geplante Material aller anstehenden Aufträge mit Lager und offenen Bestellungen. Was fehlt, landet mit einem Klick als Bestellentwurf beim richtigen Lieferanten.",
     },
     hero: {
       titel: "Material fehlt? Du weißt es, bevor der Monteur losfährt.",
       problem:
         "Für jeden Auftrag wird das Material einzeln zusammengesucht. Was im Lager liegt und was schon bestellt ist, weiß keiner genau.",
       loesung:
-        "Macher OS prüft jeden Tag, was für die anstehenden Aufträge fehlt – abzüglich Lager und offener Bestellungen – und schlägt die Bestellung vor.",
+        "Handwerk OS prüft jeden Tag, was für die anstehenden Aufträge fehlt – abzüglich Lager und offener Bestellungen – und schlägt die Bestellung vor.",
     },
     visual: {
       bereich: "Betrieb",
@@ -695,14 +695,14 @@ export const teil5 = {
     meta: {
       title: "Eingangsrechnungen & Belege im Handwerk – fotografieren, zuordnen, Skonto sichern",
       description:
-        "Quittung mit dem Handy fotografieren, Lieferant und Betrag eintragen, fertig. Macher OS ordnet Belege dem Auftrag zu, trägt Skonto und Zahlungsziel ein und erinnert rechtzeitig.",
+        "Quittung mit dem Handy fotografieren, Lieferant und Betrag eintragen, fertig. Handwerk OS ordnet Belege dem Auftrag zu, trägt Skonto und Zahlungsziel ein und erinnert rechtzeitig.",
     },
     hero: {
       titel: "Die Quittung ist im Kasten. Nicht im Handschuhfach.",
       problem:
         "Quittungen verschwinden im Fahrzeug. Lieferantenrechnungen liegen im Stapel, Skonto verfällt, und am Monatsende sucht das Büro alles zusammen.",
       loesung:
-        "Macher OS nimmt den Beleg per Foto auf, ordnet ihn dem richtigen Auftrag zu und erinnert dich an Skonto und Zahlungsziel.",
+        "Handwerk OS nimmt den Beleg per Foto auf, ordnet ihn dem richtigen Auftrag zu und erinnert dich an Skonto und Zahlungsziel.",
     },
     visual: {
       bereich: "Betrieb",
@@ -864,14 +864,14 @@ export const teil5 = {
     meta: {
       title: "Maschinen & Geräte verwalten – Standort, Defekte, Prüffristen",
       description:
-        "Kernbohrgerät, Rüttelplatte, Bautrockner: Macher OS zeigt, wo jede Maschine ist, wer sie hat und ob sie einsatzbereit ist. Defekte und Prüfungen werden beim Gerät festgehalten.",
+        "Kernbohrgerät, Rüttelplatte, Bautrockner: Handwerk OS zeigt, wo jede Maschine ist, wer sie hat und ob sie einsatzbereit ist. Defekte und Prüfungen werden beim Gerät festgehalten.",
     },
     hero: {
       titel: "Die Rüttelplatte ist nicht weg. Sie ist bei Jonas.",
       problem:
         "Große Maschinen wandern zwischen Baustellen, Fahrzeugen und Werkstatt. Wer sie hat und ob sie heil ist, weiß meist nur einer.",
       loesung:
-        "Macher OS zeigt für jede Maschine, wo sie steht, wer sie hat, ob sie defekt ist und wann die nächste Prüfung fällig ist.",
+        "Handwerk OS zeigt für jede Maschine, wo sie steht, wer sie hat, ob sie defekt ist und wann die nächste Prüfung fällig ist.",
     },
     visual: {
       bereich: "Betrieb",
@@ -1033,14 +1033,14 @@ export const teil5 = {
     meta: {
       title: "Prüffristen im Handwerk – DGUV V3, UVV, TÜV, Leiterprüfung im Blick",
       description:
-        "Alle Prüffristen für Werkzeuge, Maschinen, Leitern und Fahrzeuge an einem Ort. Macher OS erinnert 30 und 14 Tage vorher, rechnet die nächste Frist aus und warnt bei Überfälligkeit.",
+        "Alle Prüffristen für Werkzeuge, Maschinen, Leitern und Fahrzeuge an einem Ort. Handwerk OS erinnert 30 und 14 Tage vorher, rechnet die nächste Frist aus und warnt bei Überfälligkeit.",
     },
     hero: {
       titel: "Keine Prüffrist mehr verpasst.",
       problem:
         "Prüftermine stehen auf Plaketten, in Excel und im Kalender. Läuft eine Frist ab, merkt es keiner – und das Gerät wird weiter benutzt.",
       loesung:
-        "Macher OS sammelt alle Prüffristen in einer Liste, erinnert rechtzeitig und warnt, sobald ein Gerät nicht mehr verwendet werden darf.",
+        "Handwerk OS sammelt alle Prüffristen in einer Liste, erinnert rechtzeitig und warnt, sobald ein Gerät nicht mehr verwendet werden darf.",
     },
     visual: {
       bereich: "Betrieb",

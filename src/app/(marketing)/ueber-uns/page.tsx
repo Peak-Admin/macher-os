@@ -8,7 +8,7 @@ import { herausgeber } from "@/lib/site";
 export const metadata = pageMeta({
   title: "Über uns",
   description:
-    "Macher OS ist ein Joint-Venture-Projekt von Mission Mittelstand: ein Betriebssystem für Handwerksbetriebe, das Büroarbeit abnimmt. Einfach vorne. Vollständig hinten.",
+    "Handwerk OS ist ein Joint-Venture-Projekt von Mission Mittelstand: ein Betriebssystem für Handwerksbetriebe, das Büroarbeit abnimmt. Einfach vorne. Vollständig hinten.",
   path: "/ueber-uns",
 });
 
@@ -25,9 +25,9 @@ export default function UeberUnsPage() {
     <>
       <PageHero
         bild="seite/ueber-uns"
-        eyebrow="Über Macher OS"
+        eyebrow="Über Handwerk OS"
         title="Software von Mission Mittelstand. Gemacht fürs Handwerk."
-        intro={`Macher OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. Handwerker sollen machen, nicht verwalten – deshalb nimmt Macher OS so viel Büroarbeit ab wie möglich. Damit mehr Zeit für Kunden, Baustelle und Feierabend bleibt.`}
+        intro={`Handwerk OS ist ein Joint-Venture-Projekt von ${herausgeber.name}. Handwerker sollen machen, nicht verwalten – deshalb nimmt Handwerk OS so viel Büroarbeit ab wie möglich. Damit mehr Zeit für Kunden, Baustelle und Feierabend bleibt.`}
         breadcrumbs={[{ label: "Über uns" }]}
         actions="none"
       />
@@ -43,7 +43,7 @@ export default function UeberUnsPage() {
         </div>
       </Section>
 
-      {/* 2. Warum Macher OS existiert */}
+      {/* 2. Warum Handwerk OS existiert */}
       <Section>
         <div className="grid gap-12 lg:grid-cols-2">
           <div>
@@ -64,7 +64,7 @@ export default function UeberUnsPage() {
               ))}
             </ul>
             <p className="mt-6 border-t border-line pt-5 text-muted">
-              Macher OS hält alles an einem Ort zusammen – vom ersten Anruf bis zur bezahlten Rechnung.
+              Handwerk OS hält alles an einem Ort zusammen – vom ersten Anruf bis zur bezahlten Rechnung.
             </p>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function UeberUnsPage() {
       {/* 4. Mission Mittelstand */}
       <MissionMittelstand
         id="mission-mittelstand"
-        title="Hinter Macher OS steht Mission Mittelstand."
+        title="Hinter Handwerk OS steht Mission Mittelstand."
       />
 
       {/* 5. Team */}
@@ -118,7 +118,7 @@ export default function UeberUnsPage() {
           <SectionHeading
             eyebrow="Team"
             title="Ein Team, das Betriebe von innen kennt."
-            intro={`Macher OS entsteht gemeinsam mit ${herausgeber.name}. Das ist uns bei der Arbeit wichtig:`}
+            intro={`Handwerk OS entsteht gemeinsam mit ${herausgeber.name}. Das ist uns bei der Arbeit wichtig:`}
           />
           <MissionMittelstandFoto />
         </div>
@@ -131,7 +131,7 @@ export default function UeberUnsPage() {
         </div>
         <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
           <ArrowLink href="/karriere">Mitmachen? Zur Karriere-Seite</ArrowLink>
-          <ArrowLink href="/neuigkeiten">Was ist neu in Macher OS?</ArrowLink>
+          <ArrowLink href="/neuigkeiten">Was ist neu in Handwerk OS?</ArrowLink>
         </div>
       </Section>
 

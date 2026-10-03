@@ -1,8 +1,8 @@
-# Macher OS – Module & Produktlogik
+# Handwerk OS – Module & Produktlogik
 
-## Ziel von Macher OS
+## Ziel von Handwerk OS
 
-**Macher OS ist das einfache Betriebssystem für Handwerksunternehmen.**
+**Handwerk OS ist das einfache Betriebssystem für Handwerksunternehmen.**
 
 Das Ziel ist nicht, dem Handwerker möglichst viel Software zu zeigen.  
 Das Ziel ist, den gesamten Betrieb digital abzubilden und möglichst viel Verwaltungsarbeit automatisch zu erledigen, damit Chef, Büro und Mitarbeiter möglichst viel Zeit in **Kundenarbeit, Baustelle und Ausführung** verbringen.
@@ -147,7 +147,7 @@ Grundprinzipien:
 | **Wissen & Anleitungen** | Speichert Arbeitsanweisungen, Firmenwissen und Herstellerinformationen. |
 | **Subunternehmer** | Verwaltet Fremdfirmen, Leistungen, Termine und Kosten. |
 | **Rollen & Rechte** | Legt fest, wer im Betrieb welche Informationen sehen oder ändern darf. |
-| **Schnittstellen** | Verbindet Macher OS mit DATEV, Großhandel, Banken und anderen Systemen. |
+| **Schnittstellen** | Verbindet Handwerk OS mit DATEV, Großhandel, Banken und anderen Systemen. |
 | **Einstellungen** | Enthält die grundlegenden Einstellungen des Betriebs. |
 
 ---
@@ -168,7 +168,7 @@ Diese Funktionen sind keine eigene Hauptnavigation. Sie arbeiten überall im Sys
 
 # Onboarding: sofort Nutzen statt leere Software
 
-Beim ersten Start fragt Macher OS nur das Nötigste:
+Beim ersten Start fragt Handwerk OS nur das Nötigste:
 
 1. **Was macht ihr?** → Gewerk
 2. **Welche Arbeiten bietet ihr an?** → Leistungen
@@ -176,7 +176,7 @@ Beim ersten Start fragt Macher OS nur das Nötigste:
 4. **Wie groß ist euer Team?**
 5. **Welche Daten gibt es schon?** → Kunden, Mitarbeiter, Leistungen, Preise, laufende Aufträge
 
-Danach richtet Macher OS automatisch ein:
+Danach richtet Handwerk OS automatisch ein:
 
 - passende Module
 - passende Begriffe
@@ -204,4 +204,4 @@ Alles Weitere sind Module, Ansichten oder Aktionen innerhalb dieser vier Bereich
 - **Favoriten:** Bis zu drei Module lassen sich mit dem Stern markieren und stehen dann zusätzlich in der Navigation.
   Jeder Nutzer – und damit jede Rolle – stellt sich seine Favoriten selbst zusammen.
 
-**Leitregel:** Macher OS darf im Hintergrund sehr umfangreich sein. Auf der Oberfläche sieht jeder Nutzer nur das, was er für seine Arbeit gerade braucht.
+**Leitregel:** Handwerk OS darf im Hintergrund sehr umfangreich sein. Auf der Oberfläche sieht jeder Nutzer nur das, was er für seine Arbeit gerade braucht.

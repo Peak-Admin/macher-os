@@ -13,13 +13,13 @@ import type { Landing } from "./typ";
 export const wechseln: Landing = {
   pfad: "/wechseln",
   meta: {
-    title: "Wechseln zu Macher OS – so kommst du aus deiner alten Software raus",
+    title: "Wechseln zu Handwerk OS – so kommst du aus deiner alten Software raus",
     description:
-      "Von Excel, Word oder einer anderen Handwerkersoftware zu Macher OS: Kunden, Artikel und Mitarbeiter mitnehmen, parallel testen, in Ruhe umsteigen.",
+      "Von Excel, Word oder einer anderen Handwerkersoftware zu Handwerk OS: Kunden, Artikel und Mitarbeiter mitnehmen, parallel testen, in Ruhe umsteigen.",
   },
-  breadcrumbs: [{ label: "Wechseln zu Macher OS" }],
+  breadcrumbs: [{ label: "Wechseln zu Handwerk OS" }],
   hero: {
-    eyebrow: "Wechseln zu Macher OS",
+    eyebrow: "Wechseln zu Handwerk OS",
     title: "Umsteigen, ohne bei null anzufangen.",
     intro:
       "Die größte Hürde ist nicht die neue Software, sondern der Weg raus aus der alten. Wir zeigen dir, wie es geht – Schritt für Schritt und ohne Stillstand im Betrieb.",
@@ -40,12 +40,12 @@ export const wechseln: Landing = {
   },
   ablauf: {
     eyebrow: "Der Umstieg",
-    titel: "In fünf Schritten zu Macher OS.",
+    titel: "In fünf Schritten zu Handwerk OS.",
     schritte: [
-      { titel: "Testen", text: "Richte Macher OS ein und spiel einen echten Auftrag durch – parallel zur alten Software." },
+      { titel: "Testen", text: "Richte Handwerk OS ein und spiel einen echten Auftrag durch – parallel zur alten Software." },
       { titel: "Exportieren", text: "Kunden, Artikel und Mitarbeiter aus der alten Software als Excel- oder CSV-Datei speichern." },
       { titel: "Übernehmen", text: "Datei hochladen, Spalten zuordnen, Vorschau prüfen. Doppelte werden markiert." },
-      { titel: "Neue Aufträge in Macher OS", text: "Ab einem Stichtag läuft alles Neue in Macher OS. Alte Aufträge schließt du im alten System ab." },
+      { titel: "Neue Aufträge in Handwerk OS", text: "Ab einem Stichtag läuft alles Neue in Handwerk OS. Alte Aufträge schließt du im alten System ab." },
       { titel: "Alte Software kündigen", text: "Wenn alles läuft. Alte Rechnungen bewahrst du für die gesetzliche Frist weiter auf." },
     ],
     link: { label: "Anleitung: Daten übernehmen", href: "/hilfe/daten-uebernehmen" },
@@ -105,35 +105,35 @@ export const wechseln: Landing = {
     },
     {
       frage: "Muss ich die alte Software sofort kündigen?",
-      antwort: "Nein. Teste parallel und kündige erst, wenn alles in Macher OS läuft.",
+      antwort: "Nein. Teste parallel und kündige erst, wenn alles in Handwerk OS läuft.",
     },
     {
       frage: "Was ist mit laufenden Aufträgen?",
       antwort:
-        "Die einfachste Lösung: Was angefangen ist, schließt du im alten System ab. Alles Neue legst du in Macher OS an. Offene Aufträge kannst du aber auch per Datei übernehmen.",
+        "Die einfachste Lösung: Was angefangen ist, schließt du im alten System ab. Alles Neue legst du in Handwerk OS an. Offene Aufträge kannst du aber auch per Datei übernehmen.",
     },
     {
       frage: "Was passiert mit alten Rechnungen?",
       antwort:
-        "Die bewahrst du für die gesetzliche Frist auf – als PDF oder mit Zugang zur alten Software. PDFs kannst du am Kunden in Macher OS ablegen.",
+        "Die bewahrst du für die gesetzliche Frist auf – als PDF oder mit Zugang zur alten Software. PDFs kannst du am Kunden in Handwerk OS ablegen.",
     },
   ],
   weiter: {
     links: [
-      { label: "Software-Vergleich", href: "/vergleich", text: "Macher OS neben Excel, HERO, ToolTime & Co." },
+      { label: "Software-Vergleich", href: "/vergleich", text: "Handwerk OS neben Excel, HERO, ToolTime & Co." },
       { label: "Wechselbonus", href: "/wechselbonus", text: "Du hast noch einen laufenden Vertrag?" },
       { label: "Schnittstellen", href: "/schnittstellen", text: "DATEV, GAEB, Datanorm und mehr." },
     ],
   },
-  cta: { title: "Dein nächster Auftrag läuft in Macher OS.", intro: "Starte kostenlos – den Rest holst du nach." },
+  cta: { title: "Dein nächster Auftrag läuft in Handwerk OS.", intro: "Starte kostenlos – den Rest holst du nach." },
 };
 
 export const wechselbonus: Landing = {
   pfad: "/wechselbonus",
   meta: {
-    title: "Wechselbonus – von deiner alten Handwerkersoftware zu Macher OS",
+    title: "Wechselbonus – von deiner alten Handwerkersoftware zu Handwerk OS",
     description:
-      "Dein alter Vertrag läuft noch? Mit dem Wechselbonus von Macher OS steigst du um, ohne doppelt zu zahlen. Schick uns deine Vertragsdaten, wir machen dir ein Angebot.",
+      "Dein alter Vertrag läuft noch? Mit dem Wechselbonus von Handwerk OS steigst du um, ohne doppelt zu zahlen. Schick uns deine Vertragsdaten, wir machen dir ein Angebot.",
   },
   breadcrumbs: [{ label: "Wechseln", href: "/wechseln" }, { label: "Wechselbonus" }],
   hero: {
@@ -148,7 +148,7 @@ export const wechselbonus: Landing = {
     schritte: [
       { titel: "Anfragen", text: "Schreib uns, welche Software du nutzt und wie lange dein Vertrag noch läuft." },
       { titel: "Angebot bekommen", text: "Wir schauen uns deine Lage an und machen dir ein persönliches Angebot." },
-      { titel: "Umsteigen", text: "Du richtest Macher OS ein und nimmst deine Daten mit." },
+      { titel: "Umsteigen", text: "Du richtest Handwerk OS ein und nimmst deine Daten mit." },
     ],
   },
   vorteile: {
@@ -203,7 +203,7 @@ export const wechselbonus: Landing = {
   ],
   weiter: {
     links: [
-      { label: "Wechseln zu Macher OS", href: "/wechseln", text: "Der Umstieg Schritt für Schritt." },
+      { label: "Wechseln zu Handwerk OS", href: "/wechseln", text: "Der Umstieg Schritt für Schritt." },
       { label: "Preise", href: "/preise", text: "Ein Preis je Betrieb, alles drin." },
       { label: "Software-Vergleich", href: "/vergleich", text: "Die richtigen Fragen an jede Software." },
     ],

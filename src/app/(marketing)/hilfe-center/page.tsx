@@ -8,7 +8,7 @@ import { pageMeta } from "@/lib/metadata";
 export const metadata = pageMeta({
   title: "Hilfe-Center",
   description:
-    "Anleitungen für Macher OS: Konto, Aufträge, Planung, Mitarbeiter, Material, Geld, App, Einstellungen, Schnittstellen und Sicherheit – Schritt für Schritt erklärt.",
+    "Anleitungen für Handwerk OS: Konto, Aufträge, Planung, Mitarbeiter, Material, Geld, App, Einstellungen, Schnittstellen und Sicherheit – Schritt für Schritt erklärt.",
   path: "/hilfe-center",
 });
 

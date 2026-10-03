@@ -38,7 +38,7 @@ export interface BriefkopfErkannt {
   leistungen: string[];
 }
 
-/** Gewerke von Macher OS (`Gewerk` in `src/os/core/objects.ts`); die Erkennung wählt eins davon oder keins */
+/** Gewerke von Handwerk OS (`Gewerk` in `src/os/core/objects.ts`); die Erkennung wählt eins davon oder keins */
 export const GEWERK_IDS = ['elektro', 'shk', 'maler', 'dach', 'tischler', 'fliesen', 'garten', 'metall', 'bau', 'sonstiges'] as const;
 
 export interface KiUmgebung {
@@ -195,7 +195,7 @@ export async function sicherAbrufen(start: URL, env: KiUmgebung, accept: string)
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 8000);
     try {
-      const r = await f(u.toString(), { headers: { 'user-agent': 'MacherOS-Einrichtung/1.0', accept }, redirect: 'manual', signal: ctrl.signal });
+      const r = await f(u.toString(), { headers: { 'user-agent': 'HandwerkOS-Einrichtung/1.0', accept }, redirect: 'manual', signal: ctrl.signal });
       const ziel = r.status >= 300 && r.status < 400 ? r.headers.get('location') : null;
       if (!ziel) return r;
       u = new URL(ziel, u);

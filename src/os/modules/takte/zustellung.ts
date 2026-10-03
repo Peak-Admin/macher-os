@@ -99,6 +99,6 @@ export function emailAus(n: TaktNachricht, takt: string, basisUrl: string): { be
   const link = `${basisUrl.replace(/\/$/, '')}${n.pfad}`;
   return {
     betreff: n.titel,
-    text: [n.text, '', `Öffnen: ${link}`, '', `Du bekommst diese Nachricht als „${def?.titel ?? takt}“. Abbestellen oder Uhrzeit ändern: Macher OS › Benachrichtigungen › Einstellungen.`].join('\n'),
+    text: [n.text, '', `Öffnen: ${link}`, '', `Du bekommst diese Nachricht als „${def?.titel ?? takt}“. Abbestellen oder Uhrzeit ändern: Handwerk OS › Benachrichtigungen › Einstellungen.`].join('\n'),
   };
 }

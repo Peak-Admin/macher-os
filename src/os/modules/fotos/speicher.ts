@@ -1,7 +1,7 @@
 /**
  * Speichergrenze im Browser.
  *
- * Macher OS speichert in IndexedDB (viel Platz), im Rückfall im localStorage (wenige MB).
+ * Handwerk OS speichert in IndexedDB (viel Platz), im Rückfall im localStorage (wenige MB).
  * Vor dem Speichern großer Inhalte (Fotos, Sprachnotizen, Dateien) prüfen wir, ob der Platz reicht.
  */
 import { platzFuer, speicherStatus } from '@core/db';
@@ -44,4 +44,4 @@ export function speicherBelegt(): number {
 }
 
 export const SPEICHER_VOLL_TEXT =
-  'Der Speicher in diesem Browser ist voll. Macher OS speichert lokal auf deinem Gerät. Lösche alte Fotos oder Dateien, die du nicht mehr brauchst, und versuch es dann noch mal.';
+  'Der Speicher in diesem Browser ist voll. Handwerk OS speichert lokal auf deinem Gerät. Lösche alte Fotos oder Dateien, die du nicht mehr brauchst, und versuch es dann noch mal.';

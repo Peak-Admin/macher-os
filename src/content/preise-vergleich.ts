@@ -112,7 +112,7 @@ export const zusatzleistungen: { titel: string; text: string; icon: IconName; hr
   },
   {
     titel: "Persönliche Einrichtung",
-    text: "Wir richten Macher OS gemeinsam mit dir ein und übernehmen deine Daten.",
+    text: "Wir richten Handwerk OS gemeinsam mit dir ein und übernehmen deine Daten.",
     icon: "users",
     href: "/hilfe/daten-uebernehmen",
     linkLabel: "Daten übernehmen",
@@ -128,14 +128,14 @@ export const zusatzleistungen: { titel: string; text: string; icon: IconName; hr
 
 export const wechselSchritte = [
   { titel: "Daten schicken", text: "Kunden, Mitarbeiter und Artikel – als Liste oder Export aus deinem alten Programm." },
-  { titel: "Wir übernehmen", text: "Wir helfen dir, alles sauber in Macher OS zu übernehmen." },
+  { titel: "Wir übernehmen", text: "Wir helfen dir, alles sauber in Handwerk OS zu übernehmen." },
   { titel: "Loslegen", text: "Dein Team startet mit den gewohnten Daten – ohne doppelte Arbeit." },
 ];
 
 export const preiseFaq: FaqItem[] = [
   {
-    frage: "Kann ich Macher OS kostenlos testen?",
-    antwort: "Ja. Du kannst Macher OS kostenlos testen – ohne Kreditkarte und ohne Verpflichtung.",
+    frage: "Kann ich Handwerk OS kostenlos testen?",
+    antwort: "Ja. Du kannst Handwerk OS kostenlos testen – ohne Kreditkarte und ohne Verpflichtung.",
   },
   {
     frage: "Was ist der Unterschied zwischen monatlich und jährlich?",

@@ -35,7 +35,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
             {f.hero.problem} <span className="font-semibold text-ink">{f.hero.loesung}</span>
           </>
         }
-        visual={<FunktionsMock visual={f.visual} label={`Produktansicht Macher OS: ${titel}`} />}
+        visual={<FunktionsMock visual={f.visual} label={`Produktansicht Handwerk OS: ${titel}`} />}
         actions={
           f.aufAnfrage ? (
             <>
@@ -68,15 +68,15 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
         </ul>
       </Section>
 
-      {/* 3. So löst Macher OS es */}
+      {/* 3. So löst Handwerk OS es */}
       <Section>
         <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_1fr]">
           <div>
-            <SectionHeading eyebrow="So löst Macher OS es" title={f.loesung.titel} intro={f.loesung.text} />
+            <SectionHeading eyebrow="So löst Handwerk OS es" title={f.loesung.titel} intro={f.loesung.text} />
             <CheckList items={f.loesung.punkte} className="mt-8" />
           </div>
           <div className="px-3 sm:px-6">
-            <DetailKarte detail={f.detail} label={`Detailansicht in Macher OS: ${f.detail.titel}`} />
+            <DetailKarte detail={f.detail} label={`Detailansicht in Handwerk OS: ${f.detail.titel}`} />
           </div>
         </div>
       </Section>
@@ -120,7 +120,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
       <Section tone="white">
         <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.3fr]">
           <div className="order-2 min-w-0 lg:order-1">
-            <FunktionsHandy handy={f.geraete.handyVisual} label={`Macher OS App auf dem Handy: ${titel}`} />
+            <FunktionsHandy handy={f.geraete.handyVisual} label={`Handwerk OS App auf dem Handy: ${titel}`} />
           </div>
           <div className="order-1 lg:order-2">
             <SectionHeading
@@ -151,7 +151,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
         <SectionHeading
           eyebrow="Gewerke"
           title="Für diese Gewerke besonders wichtig."
-          intro="Macher OS richtet die Funktion passend zu deinem Gewerk ein – mit den Begriffen und Vorlagen, die du kennst."
+          intro="Handwerk OS richtet die Funktion passend zu deinem Gewerk ein – mit den Begriffen und Vorlagen, die du kennst."
         />
         <ul className="mt-10 grid gap-4 md:grid-cols-3">
           {f.gewerke.map((g) => (
@@ -183,7 +183,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
           <div>
             <SectionHeading eyebrow="Aus der Praxis" title="So arbeiten andere Betriebe." intro={f.kunde.text} />
             <p className="mt-4 text-sm text-muted">
-              Die Kundenstory ist ein Beispiel und zeigt, wie ein Betrieb mit Macher OS arbeiten kann.
+              Die Kundenstory ist ein Beispiel und zeigt, wie ein Betrieb mit Handwerk OS arbeiten kann.
             </p>
             <div className="mt-8 flex flex-wrap gap-x-8 gap-y-4">
               <ArrowLink href="/kunden">Alle Kundenstories</ArrowLink>

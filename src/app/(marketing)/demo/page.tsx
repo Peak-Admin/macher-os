@@ -16,9 +16,9 @@ import {
 import { pageMeta } from "@/lib/metadata";
 
 export const metadata = pageMeta({
-  title: "Demo – Sieh Macher OS in Aktion",
+  title: "Demo – Sieh Handwerk OS in Aktion",
   description:
-    "Öffne das echte Macher OS mit einem Beispielbetrieb: Heute, Aufträge, Plan, Betrieb und Rechnungen – für Elektro, SHK, Tischler, Maler und allgemeine Betriebe.",
+    "Öffne das echte Handwerk OS mit einem Beispielbetrieb: Heute, Aufträge, Plan, Betrieb und Rechnungen – für Elektro, SHK, Tischler, Maler und allgemeine Betriebe.",
   path: "/demo",
 });
 
@@ -30,17 +30,17 @@ const faq: FaqItem[] = [
   {
     frage: "Ist das das echte Programm?",
     antwort:
-      "Ja. Die Demo ist das echte Macher OS mit einem Beispielbetrieb. Du kannst Aufträge anlegen, planen und Rechnungen schreiben. Die Beispieldaten bleiben getrennt von deinen echten Daten und verschwinden, sobald du deinen eigenen Betrieb einrichtest.",
+      "Ja. Die Demo ist das echte Handwerk OS mit einem Beispielbetrieb. Du kannst Aufträge anlegen, planen und Rechnungen schreiben. Die Beispieldaten bleiben getrennt von deinen echten Daten und verschwinden, sobald du deinen eigenen Betrieb einrichtest.",
   },
   {
-    frage: "Was passiert mit meinen Daten, wenn ich Macher OS schon nutze?",
+    frage: "Was passiert mit meinen Daten, wenn ich Handwerk OS schon nutze?",
     antwort:
       "Sie werden während der Demo sicher zur Seite gelegt. Über den Hinweis „Spielwiese“ oben kommst du jederzeit zurück – deine Daten sind dann unverändert da.",
   },
   {
-    frage: "Kann ich mir Macher OS auch persönlich zeigen lassen?",
+    frage: "Kann ich mir Handwerk OS auch persönlich zeigen lassen?",
     antwort:
-      "Ja. Schreib uns über die Kontaktseite, dann zeigen wir dir Macher OS in Ruhe – passend zu deinem Gewerk und deinen Fragen.",
+      "Ja. Schreib uns über die Kontaktseite, dann zeigen wir dir Handwerk OS in Ruhe – passend zu deinem Gewerk und deinen Fragen.",
   },
 ];
 
@@ -50,7 +50,7 @@ export default function DemoPage() {
       <PageHero
         breadcrumbs={[{ label: "Demo" }]}
         eyebrow="Demo"
-        title="Sieh Macher OS in Aktion."
+        title="Sieh Handwerk OS in Aktion."
         intro="Das echte Programm mit einem Beispielbetrieb. Ohne Anmeldung, ohne Verkaufsgespräch – getrennt von deinen echten Daten."
         actions={
           <>
@@ -75,7 +75,7 @@ export default function DemoPage() {
               Jetzt mit deinem eigenen Betrieb.
             </h2>
             <p className="mt-4 max-w-xl text-lg text-white/75">
-              Teste Macher OS kostenlos – eingerichtet für dein Gewerk, mit deinen Leistungen.
+              Teste Handwerk OS kostenlos – eingerichtet für dein Gewerk, mit deinen Leistungen.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href={cta.primary.href} size="lg">
@@ -91,7 +91,7 @@ export default function DemoPage() {
             <Fenster icon="chat" ton="dunkel" className="mb-5" />
             <p className="font-display text-lg font-bold">Lieber persönlich?</p>
             <p className="mt-2 text-white/70">
-              Wir zeigen dir Macher OS passend zu deinem Gewerk und beantworten deine Fragen.
+              Wir zeigen dir Handwerk OS passend zu deinem Gewerk und beantworten deine Fragen.
             </p>
           </div>
         </Container>

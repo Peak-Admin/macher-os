@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-/** Website und Software (Macher OS) laufen in einem Projekt auf einer Domain. Die Software liegt unter `/os`
+/** Website und Software (Handwerk OS) laufen in einem Projekt auf einer Domain. Die Software liegt unter `/os`
  *  (Code: `src/os/`, Route: `src/app/(os)/os`). Es gibt (noch) kein Konto und keinen Login:
  *  „Kostenlos testen“ startet direkt die Einrichtung, die Daten bleiben im Browser. */
 const nextConfig: NextConfig = {

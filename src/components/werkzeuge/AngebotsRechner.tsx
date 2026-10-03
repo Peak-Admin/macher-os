@@ -271,7 +271,7 @@ export function AngebotsRechner() {
           }
           meldung={gueltig ? null : "Bitte prüf die markierten Eingaben."}
           zusammenfassung={zusammenfassung}
-          betreff="Angebotskalkulation – berechnet mit Macher OS"
+          betreff="Angebotskalkulation – berechnet mit Handwerk OS"
           hinweis="Das Ergebnis ist eine Orientierung, keine Steuerberatung."
         >
           {(Object.keys(positionsTypen) as PositionsTyp[]).map((k) => (

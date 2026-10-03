@@ -8,24 +8,24 @@ import { GlasIcon } from "@/os/ui/glas";
 export const metadata = pageMeta({
   title: "Integrationen – Gmail, Outlook, DATEV, GAEB, DATANORM und mehr",
   description:
-    "Macher OS verbindet sich in vier Säulen: Macher Connect (Gmail, Outlook, Kalender, Lexware, Stripe), Format Engine (DATEV, XRechnung, GAEB, DATANORM), Universal Connectors und Handwerk Connect (IDS Connect, UGL, OCI).",
+    "Handwerk OS verbindet sich in vier Säulen: Macher Connect (Gmail, Outlook, Kalender, Lexware, Stripe), Format Engine (DATEV, XRechnung, GAEB, DATANORM), Universal Connectors und Handwerk Connect (IDS Connect, UGL, OCI).",
   path: "/integrationen",
 });
 
 const faq: FaqItem[] = [
   {
-    frage: "Muss ich bei Gmail oder Outlook mein Passwort in Macher OS eingeben?",
+    frage: "Muss ich bei Gmail oder Outlook mein Passwort in Handwerk OS eingeben?",
     antwort:
-      "Nein. Die Anmeldung läuft beim Anbieter selbst über unseren Integrationspartner. Macher OS sieht und speichert dein Passwort nie, und du kannst die Verbindung jederzeit trennen.",
+      "Nein. Die Anmeldung läuft beim Anbieter selbst über unseren Integrationspartner. Handwerk OS sieht und speichert dein Passwort nie, und du kannst die Verbindung jederzeit trennen.",
   },
   {
     frage: "Kostet eine Integration extra?",
-    antwort: "Die Verbindungen in Macher OS sind in jedem Plan drin. Spezielle Anbindungen nur für deinen Betrieb gibt es ab dem Plan Betrieb auf Anfrage.",
+    antwort: "Die Verbindungen in Handwerk OS sind in jedem Plan drin. Spezielle Anbindungen nur für deinen Betrieb gibt es ab dem Plan Betrieb auf Anfrage.",
   },
   {
     frage: "Mein Programm fehlt. Was jetzt?",
     antwort:
-      "Sag uns, womit Macher OS sprechen soll. Wir schauen es uns an und bauen die Verbindung – oder nutzen eine der vier Säulen, zum Beispiel Webhooks oder die REST-Schnittstelle.",
+      "Sag uns, womit Handwerk OS sprechen soll. Wir schauen es uns an und bauen die Verbindung – oder nutzen eine der vier Säulen, zum Beispiel Webhooks oder die REST-Schnittstelle.",
   },
 ];
 
@@ -34,7 +34,7 @@ export default function IntegrationenPage() {
     <>
       <PageHero
         eyebrow="Integrationen"
-        title="Macher OS spricht mit deinen Programmen."
+        title="Handwerk OS spricht mit deinen Programmen."
         intro={`E-Mail, Kalender, Steuerberater, Großhändler und Ausschreibung – in vier Säulen. ${integrationenZahl} Verbindungen, damit nichts doppelt getippt wird.`}
         breadcrumbs={[{ label: "Integrationen" }]}
         visual={
@@ -48,7 +48,7 @@ export default function IntegrationenPage() {
       <Section tone="beige">
         <SectionHeading
           eyebrow="Vier Säulen"
-          title="So ist Macher OS verbunden."
+          title="So ist Handwerk OS verbunden."
           intro="Jede Säule löst eine Art von Verbindung. Du musst dir nur merken: Was du schon nutzt, bleibt."
         />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -118,7 +118,7 @@ export default function IntegrationenPage() {
           <div className="min-w-0">
             <SectionHeading eyebrow="Fragen" title="Gut zu wissen." />
             <p className="mt-4 text-muted">
-              Marken und Logos gehören ihren Inhabern. Sie zeigen, womit Macher OS arbeitet – das ist keine Partnerschaft.
+              Marken und Logos gehören ihren Inhabern. Sie zeigen, womit Handwerk OS arbeitet – das ist keine Partnerschaft.
             </p>
             <div className="mt-6 flex flex-col gap-3">
               <ArrowLink href="/schnittstellen#anfrage">Integration fehlt? Sag uns Bescheid</ArrowLink>
@@ -132,7 +132,7 @@ export default function IntegrationenPage() {
       </Section>
       <FaqJsonLd items={faq} />
 
-      <FinalCta title="Probier es mit deinen Daten." intro="Starte kostenlos und schau, was Macher OS mit deinen Programmen heute schon kann." />
+      <FinalCta title="Probier es mit deinen Daten." intro="Starte kostenlos und schau, was Handwerk OS mit deinen Programmen heute schon kann." />
     </>
   );
 }

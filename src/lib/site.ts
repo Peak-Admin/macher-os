@@ -2,15 +2,15 @@ import { integration, logoReihe } from "@/content/integrationen";
 import type { GlasIconName } from "@/os/ui/glas";
 
 export const site = {
-  name: "Macher OS",
+  name: "Handwerk OS",
   claim: "Dein Betrieb. Einfach im Griff.",
   description:
-    "Macher OS ist das Betriebssystem für Handwerksbetriebe von Mission Mittelstand: Aufträge, Mitarbeiter, Planung und Büroarbeit in einer einfachen Software – für Büro und Baustelle.",
+    "Handwerk OS ist das Betriebssystem für Handwerksbetriebe von Mission Mittelstand: Aufträge, Mitarbeiter, Planung und Büroarbeit in einer einfachen Software – für Büro und Baustelle.",
   url: "https://macher-os.de",
 };
 
 /**
- * Herausgeber: Macher OS ist ein Joint-Venture-Projekt von Mission Mittelstand.
+ * Herausgeber: Handwerk OS ist ein Joint-Venture-Projekt von Mission Mittelstand.
  *
  * Bilder liegen unter `public/` und erscheinen automatisch, sobald die Datei
  * existiert (siehe `Foto`). Nur freigegebene Originalbilder von Mission
@@ -45,7 +45,7 @@ export const app = {
   demo: (gewerk?: string) => `/os/demo${gewerk ? `?gewerk=${encodeURIComponent(gewerk)}` : ""}`,
 };
 
-/** „Kostenlos testen“ führt direkt in die Einrichtung von Macher OS – ohne Konto, ohne Login. */
+/** „Kostenlos testen“ führt direkt in die Einrichtung von Handwerk OS – ohne Konto, ohne Login. */
 export const cta = {
   primary: { label: "Kostenlos testen", href: app.einrichten() },
   secondary: { label: "Demo ansehen", href: app.demo() },
@@ -148,7 +148,7 @@ export const mainNav: NavItem[] = [
       highlight: {
         href: "/integrationen",
         titel: "Integrationen",
-        text: "Gmail, Outlook, DATEV, Lexware, Stripe und mehr – Macher OS passt zu dem, was du schon nutzt.",
+        text: "Gmail, Outlook, DATEV, Lexware, Stripe und mehr – Handwerk OS passt zu dem, was du schon nutzt.",
         aktion: "Alle Integrationen ansehen",
         logos: logoReihe
           .map(integration)
@@ -297,11 +297,11 @@ export const footerNav: { titel: string; links: NavLink[] }[] = [
     titel: "Vergleich & Wechsel",
     links: [
       { label: "Software-Vergleich", href: "/vergleich" },
-      { label: "Macher OS vs. Word & Excel", href: "/vergleich/word-excel" },
-      { label: "Macher OS vs. HERO", href: "/vergleich/hero" },
-      { label: "Macher OS vs. ToolTime", href: "/vergleich/tooltime" },
-      { label: "Macher OS vs. klassische Software", href: "/vergleich/klassische-handwerkersoftware" },
-      { label: "Wechseln zu Macher OS", href: "/wechseln" },
+      { label: "Handwerk OS vs. Word & Excel", href: "/vergleich/word-excel" },
+      { label: "Handwerk OS vs. HERO", href: "/vergleich/hero" },
+      { label: "Handwerk OS vs. ToolTime", href: "/vergleich/tooltime" },
+      { label: "Handwerk OS vs. klassische Software", href: "/vergleich/klassische-handwerkersoftware" },
+      { label: "Wechseln zu Handwerk OS", href: "/wechseln" },
       { label: "Wechselbonus", href: "/wechselbonus" },
     ],
   },
