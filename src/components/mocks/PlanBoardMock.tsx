@@ -136,7 +136,7 @@ export function PlanBoardMock() {
         ) : (
           <>
             <span>
-              <b>Macher-Vorschlag:</b> Kundendienst Fr. Weber → Mehmet, Freitag 8:00 (frei, 12 Min. entfernt)
+              <b>Vorschlag von Lotte:</b> Kundendienst Fr. Weber → Mehmet, Freitag 8:00 (frei, 12 Min. entfernt)
             </span>
             <button type="button" onClick={uebernehmen} className="ml-auto rounded-lg bg-primary px-2.5 py-1.5 font-semibold text-white transition-colors duration-150 hover:bg-primary-hover">
               Vorschlag übernehmen

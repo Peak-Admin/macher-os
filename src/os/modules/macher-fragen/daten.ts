@@ -1,4 +1,4 @@
-/** Verlauf von „Macher fragen“ – eigene Sammlung `chat` (je Mitarbeiter). */
+/** Verlauf von „Frag Lotte“ – eigene Sammlung `chat` (je Mitarbeiter). */
 import { auditAusnehmen, defineCollection } from '@core/db';
 import type { Basis, ID } from '@core/objects';
 import type { Antwort } from './assistent';

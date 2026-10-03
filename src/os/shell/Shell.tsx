@@ -1,7 +1,7 @@
 /**
  * App-Rahmen: genau vier feste Hauptbereiche (Heute · Aufträge · Planen · Betrieb).
  * Desktop: nur die Seitenleiste, keine Topbar. Oben darin der Betriebs-Wechsler, dann ein gemeinsames Feld „Suchen oder fragen“
- * (Suche und Macher in einem), darunter die Benachrichtigungen. Mobil: schmaler Kopf + untere Navigation. Keine Unterbäume, kein globales „Neu“,
+ * (Suche und Lotte in einem), darunter die Benachrichtigungen. Mobil: schmaler Kopf + untere Navigation. Keine Unterbäume, kein globales „Neu“,
  * kein Plus, kein Hamburger-Menü. Lokale Navigation (höchstens vier Ziele) steht im Inhaltsbereich.
  * Unter den vier Bereichen deine eigene Seitenleiste (`Seitenleiste.tsx`, nach Peak One): Module, Smart Views,
  * gemerkte Seiten und Ordner – frei eingerichtet über „+“ und „Anpassen“. Mobil im Profilmenü.
@@ -281,18 +281,18 @@ const istMac = () => typeof navigator !== 'undefined' && /mac|iphone|ipad/i.test
 
 /**
  * Ein Einstieg für beides: eine Fläche mit Lupe, „Suchen“ und Tastenkürzel. Sie öffnet die KI-Leiste
- * (Treffer in deinen Daten oder eine Frage an Macher, Strg K bzw. ⌘K) – die KI-Kugel steht erst dort, nicht in der Navigation.
+ * (Treffer in deinen Daten oder eine Frage an Lotte, Strg K bzw. ⌘K) – die KI-Kugel steht erst dort, nicht in der Navigation.
  */
 function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
   if (kompakt)
     return (
-      <button type="button" className="mm-iconbtn" aria-label="Suchen oder Macher fragen" onClick={() => oeffne('suche')}>
+      <button type="button" className="mm-iconbtn" aria-label="Suchen oder Lotte fragen" onClick={() => oeffne('suche')}>
         <Icon name="suche" />
       </button>
     );
   const kuerzel = istMac() ? '⌘K' : 'Strg K';
   return (
-    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" data-tipp={`Suchen oder Macher fragen (${kuerzel})`}>
+    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" data-tipp={`Suchen oder Lotte fragen (${kuerzel})`}>
       <Icon name="suche" size={18} />
       <span className="mm-leiste-suche-text mm-leiste-text">Suchen</span>
       <kbd className="mm-leiste-kbd mm-leiste-text">{kuerzel}</kbd>

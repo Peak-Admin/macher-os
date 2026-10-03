@@ -19,13 +19,13 @@ export const neuigkeiten: Neuigkeit[] = [
   {
     datum: "2026-10-02",
     titel: "Einrichtung mit einer Frage",
-    text: "Statt Fragebogen fragt Handwerk OS nur noch: Welcher Betrieb bist du? Gibst du deine Website an, liest Macher Firmendaten, Logo, Gewerk und Leistungen aus – ohne Website reicht ein Tipp aufs Gewerk.",
+    text: "Statt Fragebogen fragt Handwerk OS nur noch: Welcher Betrieb bist du? Gibst du deine Website an, liest Lotte Firmendaten, Logo, Gewerk und Leistungen aus – ohne Website reicht ein Tipp aufs Gewerk.",
     commit: "54bc787",
   },
   {
     datum: "2026-10-02",
     titel: "Zahlungen automatisch zuordnen",
-    text: "Lies deine Kontoumsätze als CSV oder CAMT-Datei ein. Macher erkennt Rechnungsnummer, Betrag und Kunde, bucht Eindeutiges selbst und schlägt dir den Rest zum Zuordnen vor.",
+    text: "Lies deine Kontoumsätze als CSV oder CAMT-Datei ein. Lotte erkennt Rechnungsnummer, Betrag und Kunde, bucht Eindeutiges selbst und schlägt dir den Rest zum Zuordnen vor.",
     funktion: "zahlungen",
     commit: "c002424",
   },
@@ -67,7 +67,7 @@ export const neuigkeiten: Neuigkeit[] = [
   {
     datum: "2026-10-02",
     titel: "Einsatz vor Ort und Bericht per Sprache",
-    text: "Monteure sehen den nächsten Einsatz mit Adresse und starten die Arbeit mit einem Tipp. Den Baustellenbericht sprichst du ein – Macher macht daraus Zeit, Material und Nachtrag.",
+    text: "Monteure sehen den nächsten Einsatz mit Adresse und starten die Arbeit mit einem Tipp. Den Baustellenbericht sprichst du ein – Lotte macht daraus Zeit, Material und Nachtrag.",
     funktion: "baustellen-app",
     commit: "1e6f499",
   },

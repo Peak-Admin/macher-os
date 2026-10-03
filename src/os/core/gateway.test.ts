@@ -159,7 +159,7 @@ describe('Gateway: Aktionen und Bestätigung', () => {
     expect(kiProtokoll.all().every((p) => p.ergebnis === 'verweigert')).toBe(true);
   });
 
-  it('führt als Macher aus, schneidet die Änderungen mit und nimmt sie über das Audit zurück', async () => {
+  it('führt als Lotte aus, schneidet die Änderungen mit und nimmt sie über das Audit zurück', async () => {
     const gesendet: string[] = [];
     const weg = on('*', (e) => void (e.typ.startsWith('ki.') || e.typ === 'macher.aktion_ausgefuehrt' ? gesendet.push(e.typ) : undefined));
     const r = await fuehreAus({ aktion: 'task.create', daten: { titel: 'Leiter prüfen' } }, kontext(), { bestaetigt: true });

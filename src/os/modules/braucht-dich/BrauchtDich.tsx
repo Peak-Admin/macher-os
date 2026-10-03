@@ -138,7 +138,7 @@ export function BrauchtDichWidget() {
         </Liste>
       ) : (
         <Meldung ton="erfolg" titel="Nichts brennt.">
-          Macher meldet sich hier, sobald etwas deine Entscheidung braucht.
+          Lotte meldet sich hier, sobald etwas deine Entscheidung braucht.
         </Meldung>
       )}
     </Abschnitt>
@@ -156,7 +156,7 @@ export function BrauchtDichSeite() {
   const buero = istBuero(ich);
 
   return (
-    <Seite titel="Braucht dich" untertitel="Nur Probleme, Fristen und Entscheidungen. Routine erledigt Macher selbst.">
+    <Seite titel="Braucht dich" untertitel="Nur Probleme, Fristen und Entscheidungen. Routine erledigt Lotte selbst.">
       <Stapel abstand={12}>
         {buero && (
           <Filter
@@ -181,12 +181,12 @@ export function BrauchtDichSeite() {
       </Stapel>
       {team && <Meta>Du siehst auch Hinweise, die an einzelne Mitarbeiter gehen.</Meta>}
       <Meta>
-        Auch hier: <Link to="/macher/hinweise">Freigaben & alle Hinweise</Link> · <Link to="/heute/erledigt">Was Macher schon erledigt hat</Link>
+        Auch hier: <Link to="/macher/hinweise">Freigaben & alle Hinweise</Link> · <Link to="/heute/erledigt">Was Lotte schon erledigt hat</Link>
       </Meta>
       <Liste
         leer={
           art === 'alle' ? (
-            <Leer icon="check" titel="Nichts brennt" text="Gerade braucht nichts deine Entscheidung. Macher meldet sich, sobald sich das ändert." />
+            <Leer icon="check" titel="Nichts brennt" text="Gerade braucht nichts deine Entscheidung. Lotte meldet sich, sobald sich das ändert." />
           ) : (
             <Leer icon="filter" titel="Keine Treffer" text="Zu diesem Filter gibt es nichts. Passe die Auswahl an." aktion={<Button variante="sekundaer" onClick={() => setArt('alle')}>Alle zeigen</Button>} />
           )

@@ -80,7 +80,7 @@ export default defineModul({
     {
       id: 'mitarbeiter.austritt',
       titel: 'Austritt automatisch abschließen',
-      beschreibung: 'Ist der letzte Arbeitstag vorbei, stellt Macher den Mitarbeiter auf „ausgetreten“. Er verschwindet aus Planung und Auswahllisten, seine Daten bleiben erhalten.',
+      beschreibung: 'Ist der letzte Arbeitstag vorbei, stellt Lotte den Mitarbeiter auf „ausgetreten“. Er verschwindet aus Planung und Auswahllisten, seine Daten bleiben erhalten.',
       standardAn: true,
       minuten: 2,
       start: () => () => {},

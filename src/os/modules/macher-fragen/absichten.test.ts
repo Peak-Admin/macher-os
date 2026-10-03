@@ -1,6 +1,6 @@
 /**
  * Die sechs Sätze der früheren Action Engine – jetzt über den Macher AI Gateway:
- * erkennen → Plan (Vorschau) → Bestätigung → Aktion des Besitzer-Moduls (als Macher) → Rückgängig über das Audit.
+ * erkennen → Plan (Vorschau) → Bestätigung → Aktion des Besitzer-Moduls (als Lotte) → Rückgängig über das Audit.
  */
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { db, setAktuellerNutzer, zeitstrahl, zuruecksetzen } from '@core/db';
@@ -100,7 +100,7 @@ describe('Rechte und Bestätigung', () => {
 });
 
 describe('Die sechs Sätze', () => {
-  it('macht die Rechnung fertig – als Macher protokolliert und rückgängig zu machen', async () => {
+  it('macht die Rechnung fertig – als Lotte protokolliert und rückgängig zu machen', async () => {
     const a = beantworte('Mach Müller die Rechnung fertig', kontext());
     expect(a.absicht).toBe('rechnung-entwurf');
     expect(a.eintraege?.[0].titel).toBe('A-2026-0001 · Bad Elektrik');
@@ -114,7 +114,7 @@ describe('Die sechs Sätze', () => {
     expect(rechnung).toMatchObject({ status: 'entwurf', kundeId: db.kunden.all()[0].id });
     const verlauf = zeitstrahl({ typ: 'rechnungen', id: rechnung.id }).find((e) => e.aenderung === 'created');
     expect(verlauf).toMatchObject({ quelle: 'ai', akteurId: 'macher', vonMitarbeiterId: db.mitarbeiter.all()[0].id });
-    expect(verlauf?.text).toBe('Angelegt – durch Macher');
+    expect(verlauf?.text).toBe('Angelegt – durch Lotte');
     expect(s.ergebnis.eintraege.length).toBeGreaterThan(0);
     expect(ereignisse).toHaveLength(1);
     // zweiter Versuch: Entwurf liegt schon – kein zweiter

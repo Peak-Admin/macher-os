@@ -47,7 +47,7 @@ export function VertragDetail() {
 
   const kuendigung = async () => {
     const ende = laufzeitBis(v, t);
-    const ok = await fragen('Kündigung vermerken?', `Der Vertrag endet dann am ${datum(ende)}. Bis dahin plant und berechnet Macher weiter wie vereinbart.`, 'Kündigung vermerken');
+    const ok = await fragen('Kündigung vermerken?', `Der Vertrag endet dann am ${datum(ende)}. Bis dahin plant und berechnet Lotte weiter wie vereinbart.`, 'Kündigung vermerken');
     if (!ok) return;
     kuendigen(v.id, t);
     toast(`Kündigung vermerkt – Vertrag endet am ${datum(ende)}.`);
@@ -97,7 +97,7 @@ export function VertragDetail() {
             )}
             {faellig && geld && (
               <Meldung ton="aktiv" titel={`Abrechnung fällig: ${datum(faellig.von)} – ${datum(faellig.bis)}`} aktion={<Button klein onClick={jetztAbrechnen}>Rechnung erstellen</Button>}>
-                {euro(faellig.betrag)} netto. Macher legt einen Abrechnungsauftrag und einen Rechnungsentwurf an – du prüfst und versendest.
+                {euro(faellig.betrag)} netto. Lotte legt einen Abrechnungsauftrag und einen Rechnungsentwurf an – du prüfst und versendest.
               </Meldung>
             )}
             <Karte titel="Enthaltene Leistungen" icon="liste">
@@ -134,7 +134,7 @@ export function VertragDetail() {
               </Liste>
             </Karte>
             <Karte titel="Wartungsaufträge" icon="wiederholen" aktion={<Meta>im Vertrag enthalten, ohne Berechnung</Meta>}>
-              <Liste leer={<Meta>Noch keine. Macher legt sie automatisch vor der nächsten fälligen Wartung an.</Meta>}>
+              <Liste leer={<Meta>Noch keine. Lotte legt sie automatisch vor der nächsten fälligen Wartung an.</Meta>}>
                 {wartungen.slice(0, 8).map((a) => (
                   <ListenZeile
                     key={a.id}

@@ -31,7 +31,7 @@ export function ChecklistenSeite() {
           })}
         </Liste>
       </Abschnitt>
-      <Abschnitt titel="Vorlagen" hinweis="Vorlagen mit „automatisch“ hängt Macher an jeden passenden Auftrag, sobald er beauftragt ist.">
+      <Abschnitt titel="Vorlagen" hinweis="Vorlagen mit „automatisch“ hängt Lotte an jeden passenden Auftrag, sobald er beauftragt ist.">
         <Liste leer={<Leer titel="Noch keine Vorlagen" text="Leg deine erste Checkliste an – zum Beispiel für Kundendienst oder Baustellenabschluss." icon="liste" aktion={<Button to="/auftraege/checklisten/vorlage/neu">Vorlage anlegen</Button>} />}>
           {vorlagen.map((v) => (
             <ListenZeile

@@ -30,7 +30,7 @@ export function PruefungenListe() {
           </Meldung>
         )}
         {!alleGeraete ? (
-          <Leer skizze titel="Noch keine Geräte erfasst" text="Lege Werkzeuge, Maschinen und Fahrzeuge an und trag die nächste Prüfung ein. Macher erinnert dich 30 und 14 Tage vorher." icon="schild" aktion={<Button to="/betrieb/werkzeuge/neu">Gerät anlegen</Button>} />
+          <Leer skizze titel="Noch keine Geräte erfasst" text="Lege Werkzeuge, Maschinen und Fahrzeuge an und trag die nächste Prüfung ein. Lotte erinnert dich 30 und 14 Tage vorher." icon="schild" aktion={<Button to="/betrieb/werkzeuge/neu">Gerät anlegen</Button>} />
         ) : (
           <>
             <Filter

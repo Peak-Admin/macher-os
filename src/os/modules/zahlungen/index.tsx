@@ -45,7 +45,7 @@ export default defineModul({
     const u = p.filter((r) => istUeberfaellig(r)).length;
     return { text: `${euro(p.reduce((s, r) => s + offenerBetrag(r), 0))} offen${u ? `, ${u} überfällig` : ''}`, ton: u ? 'gefahr' : 'aktiv' };
   },
-  // Exception-First: der Chef sieht nur zwei Sätze – was überfällig ist und was Macher nicht allein zuordnen konnte
+  // Exception-First: der Chef sieht nur zwei Sätze – was überfällig ist und was Lotte nicht allein zuordnen konnte
   hinweise: () => {
     if (!darf('geld')) return [];
     const liste = [];
@@ -56,7 +56,7 @@ export default defineModul({
         schluessel: 'zahlungen-zuordnen',
         art: 'entscheidung' as const,
         titel: unklar.length === 1 ? '1 Zahlung konnte nicht eindeutig zugeordnet werden' : `${unklar.length} Zahlungen konnten nicht eindeutig zugeordnet werden`,
-        text: `${euro(summe)} sind eingegangen. Sag kurz, zu welcher Rechnung sie gehören – Macher merkt sich das Konto für das nächste Mal.`,
+        text: `${euro(summe)} sind eingegangen. Sag kurz, zu welcher Rechnung sie gehören – Lotte merkt sich das Konto für das nächste Mal.`,
         gewicht: 62,
         fuerRollen: ['chef' as const, 'buero' as const],
         pfad: ABGLEICH_PFAD,
@@ -69,7 +69,7 @@ export default defineModul({
         schluessel: 'rechnungen-ueberfaellig',
         art: 'problem' as const,
         titel: ueber.length === 1 ? '1 Rechnung ist überfällig' : `${ueber.length} Rechnungen sind überfällig`,
-        text: `Zusammen ${euro(ueber.reduce((s, r) => s + offenerBetrag(r), 0))} offen. Zahlungserinnerungen bereitet Macher vor, du gibst sie frei.`,
+        text: `Zusammen ${euro(ueber.reduce((s, r) => s + offenerBetrag(r), 0))} offen. Zahlungserinnerungen bereitet Lotte vor, du gibst sie frei.`,
         gewicht: 56,
         fuerRollen: ['chef' as const, 'buero' as const],
         pfad: '/betrieb/zahlungen?ansicht=ueberfaellig',
@@ -109,7 +109,7 @@ export default defineModul({
     {
       id: 'zahlungen.status',
       titel: 'Rechnungsstatus nach Zahlungseingang setzen',
-      beschreibung: 'Geht Geld ein, setzt Macher die Rechnung auf „teilbezahlt“ oder „bezahlt“ und vermerkt es am Auftrag.',
+      beschreibung: 'Geht Geld ein, setzt Lotte die Rechnung auf „teilbezahlt“ oder „bezahlt“ und vermerkt es am Auftrag.',
       standardAn: true,
       minuten: 3,
       start: () => {
@@ -140,7 +140,7 @@ export default defineModul({
       id: AUTOMATION_ABGLEICH,
       titel: 'Zahlungseingänge den Rechnungen zuordnen',
       beschreibung:
-        'Kommen Umsätze von der Bank, erkennt Macher Rechnungsnummer, Betrag und Kunde. Passt es eindeutig, bucht Macher die Zahlung (rückgängig machbar) – sonst fragt Macher dich.',
+        'Kommen Umsätze von der Bank, erkennt Lotte Rechnungsnummer, Betrag und Kunde. Passt es eindeutig, bucht Lotte die Zahlung (rückgängig machbar) – sonst fragt Lotte dich.',
       standardAn: true,
       minuten: 4,
       start: () => {
@@ -164,7 +164,7 @@ export default defineModul({
     {
       id: 'zahlungen.mahnung_stoppen',
       titel: 'Mahnung stoppen, sobald bezahlt ist',
-      beschreibung: 'Ist eine Rechnung bezahlt, schließt Macher die Freigabe für ein vorbereitetes Mahnschreiben – niemand mahnt aus Versehen einen Kunden, der schon gezahlt hat.',
+      beschreibung: 'Ist eine Rechnung bezahlt, schließt Lotte die Freigabe für ein vorbereitetes Mahnschreiben – niemand mahnt aus Versehen einen Kunden, der schon gezahlt hat.',
       standardAn: true,
       minuten: 2,
       start: () =>

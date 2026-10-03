@@ -28,7 +28,7 @@ export function VertragListe() {
   return (
     <Seite
       titel="Serviceverträge"
-      untertitel="Feste Wartung, fester Preis – Macher rechnet ab und erinnert an Fristen."
+      untertitel="Feste Wartung, fester Preis – Lotte rechnet ab und erinnert an Fristen."
       aktion={<Button icon="plus" to="/auftraege/servicevertraege/neu">Vertrag anlegen</Button>}
     >
       {alle.length > 0 && (
@@ -60,7 +60,7 @@ export function VertragListe() {
           ) : (
             <Leer
               titel="Noch keine Serviceverträge"
-              text="Leg deinen ersten Wartungsvertrag an. Macher plant dann die Wartungen, schreibt die Rechnungen und erinnert dich an Kündigungsfristen."
+              text="Leg deinen ersten Wartungsvertrag an. Lotte plant dann die Wartungen, schreibt die Rechnungen und erinnert dich an Kündigungsfristen."
               aktion={<Button to="/auftraege/servicevertraege/neu">Vertrag anlegen</Button>}
               icon="dokument"
             />

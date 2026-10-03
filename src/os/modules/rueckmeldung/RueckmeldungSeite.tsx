@@ -84,7 +84,7 @@ export function RueckmeldungSeite() {
   return (
     <Seite
       titel="Rückmeldung geben"
-      oberzeile="Macher verbessern"
+      oberzeile="Lotte verbessern"
       untertitel="Sag uns, was klemmt, was fehlt oder was gut läuft. Wir lesen jede Rückmeldung."
       formular
     >

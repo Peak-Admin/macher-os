@@ -77,9 +77,9 @@ export function DemoExplorer() {
                   [
                   ["home", "Heute: Was jetzt wichtig ist. Klick auf einen Einsatz, um den Auftrag zu öffnen."],
                   ["clipboard", "Auftrag: Arbeitsschritte abhaken und sehen, welches Material fehlt."],
-                  ["calendar", "Plan: Wer ist wann wo – mit Vorschlag von Macher."],
+                  ["calendar", "Plan: Wer ist wann wo – mit Vorschlag von Lotte."],
                   ["layers", "Betrieb: Mitarbeiter, Lager und Fahrzeuge."],
-                  ["spark", "Automatisch: Was Macher erledigt hat und was auf dich wartet."],
+                  ["spark", "Automatisch: Was Lotte erledigt hat und was auf dich wartet."],
                   ] as [IconName, string][]
                 ).map(([icon, text]) => (
                   <li key={icon} className="flex gap-3">

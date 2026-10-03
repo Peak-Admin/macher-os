@@ -1,6 +1,6 @@
 /**
- * Daten übernehmen: Datei wählen → Macher erkennt den Inhalt → Zuordnung bestätigen → Vorschau → übernehmen.
- * Kein technisches Mapping-Tool: Macher schlägt vor, du bestätigst. Korrigieren nur auf Wunsch.
+ * Daten übernehmen: Datei wählen → Lotte erkennt den Inhalt → Zuordnung bestätigen → Vorschau → übernehmen.
+ * Kein technisches Mapping-Tool: Lotte schlägt vor, du bestätigst. Korrigieren nur auf Wunsch.
  */
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -140,13 +140,13 @@ export function Assistent() {
           <>
             <Karte titel={vorgabe ? `${artDef(vorgabe).label} aus Excel übernehmen` : 'Welche Datei möchtest du übernehmen?'}>
               {laedt ? (
-                <MacherArbeitet zustand="verbindet" text="Macher liest die Datei …" />
+                <MacherArbeitet zustand="verbindet" text="Lotte liest die Datei …" />
               ) : (
                 <div className="mm-einstieg">
                   <span className="mm-fenster" aria-hidden>
                     <FensterSkizze icon="import" />
                   </span>
-                  <Meta>Excel (.xlsx) oder CSV. Die erste Zeile braucht Überschriften, darunter steht je Zeile ein Eintrag. Macher erkennt selbst, was drinsteht.</Meta>
+                  <Meta>Excel (.xlsx) oder CSV. Die erste Zeile braucht Überschriften, darunter steht je Zeile ein Eintrag. Lotte erkennt selbst, was drinsteht.</Meta>
                   <div>
                     <DateiKnopf variante="primaer" accept=".xlsx,.csv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onDateien={([f]) => dateiGewaehlt(f)}>
                       Datei auswählen
@@ -162,7 +162,7 @@ export function Assistent() {
 
         {schritt === 'zuordnung' && tabelle && (
           <>
-            <Karte titel={erkannt ? `Macher hat ${def.label} erkannt` : `Die Datei enthält ${def.label}`} icon="dokument" oberzeile={dateiname}>
+            <Karte titel={erkannt ? `Lotte hat ${def.label} erkannt` : `Die Datei enthält ${def.label}`} icon="dokument" oberzeile={dateiname}>
               <Stapel>
                 <Meta>
                   {zahl(tabelle.zeilen.length)} Zeilen, {zahl(tabelle.kopf.length)} Spalten. Prüf kurz, ob die Spalten richtig verstanden wurden.
@@ -171,7 +171,7 @@ export function Assistent() {
               </Stapel>
             </Karte>
             <Karte
-              titel="So übernimmt Macher die Spalten"
+              titel="So übernimmt Lotte die Spalten"
               icon="liste"
               aktion={
                 <Button klein variante="tertiaer" icon="stift" onClick={() => setKorrigieren(!korrigieren)}>
@@ -272,9 +272,9 @@ function VorschauAnsicht({ vorschau, onZurueck, onUebernehmen }: { vorschau: Vor
             {anzahl
               ? `${zahl(anzahl)} ${anzahl === 1 ? def.einzahl : mehrzahl} ${vorschau.art === 'preise' || vorschau.art === 'ansprechpartner' ? 'werden ergänzt' : 'werden neu angelegt'}.`
               : 'Es gibt nichts Neues zu übernehmen.'}
-            {vorschau.doppelt ? ` ${vorschau.doppelt === 1 ? 'Eine doppelte Zeile' : `${zahl(vorschau.doppelt)} doppelte Zeilen`} lässt Macher weg.` : ''}
+            {vorschau.doppelt ? ` ${vorschau.doppelt === 1 ? 'Eine doppelte Zeile' : `${zahl(vorschau.doppelt)} doppelte Zeilen`} lässt Lotte weg.` : ''}
             {vorschau.fehler ? ` ${vorschau.fehler === 1 ? 'Eine Zeile mit Fehler wird' : `${zahl(vorschau.fehler)} Zeilen mit Fehler werden`} übersprungen – du kannst sie später nachtragen.` : ''}
-            {vorschau.neueKunden ? ` Dafür legt Macher ${zahl(vorschau.neueKunden)} Kunden neu an.` : ''}
+            {vorschau.neueKunden ? ` Dafür legt Lotte ${zahl(vorschau.neueKunden)} Kunden neu an.` : ''}
           </Meta>
           <Tabelle
             zeilen={ersteZeilen}
@@ -369,7 +369,7 @@ function Ergebnis({ lauf, vorschau, onNochmal }: { lauf: ImportLauf; vorschau: V
               <Meta key={f}>{f}</Meta>
             ))}
             {fehler.length > 20 && <Meta>… und {zahl(fehler.length - 20)} weitere.</Meta>}
-            <Meta>Korrigier die Zeilen in deiner Datei und übernimm sie noch einmal – was schon da ist, erkennt Macher als doppelt.</Meta>
+            <Meta>Korrigier die Zeilen in deiner Datei und übernimm sie noch einmal – was schon da ist, erkennt Lotte als doppelt.</Meta>
           </Stapel>
         </Karte>
       )}

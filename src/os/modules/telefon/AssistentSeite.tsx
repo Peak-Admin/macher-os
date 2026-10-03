@@ -25,10 +25,10 @@ function Regeln({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Partial
   const zeiten = betriebsZeiten();
   const mitKlingeln = k.annahme === 'keiner' || k.annahme === 'ausserhalb_keiner';
   return (
-    <Karte titel="Wann Macher rangeht" icon="uhr">
+    <Karte titel="Wann Lotte rangeht" icon="uhr">
       <Stapel abstand={16}>
         <Schalter label="Telefonassistent einschalten" beschreibung="Gilt, sobald deine Telefonnummer verbunden ist." checked={k.an} onChange={(an) => setze({ an })} disabled={gesperrt} />
-        <AuswahlKarten label="Wann Macher rangeht" wert={k.annahme} optionen={ANNAHME} onChange={(v) => !gesperrt && setze({ annahme: v as AssistentKonfig['annahme'] })} />
+        <AuswahlKarten label="Wann Lotte rangeht" wert={k.annahme} optionen={ANNAHME} onChange={(v) => !gesperrt && setze({ annahme: v as AssistentKonfig['annahme'] })} />
         {mitKlingeln && (
           <ZahlEingabe label="Nach wie vielen Sekunden Klingeln?" hilfe="Zwischen 5 und 60 Sekunden." wert={k.klingelSekunden} onWert={(n) => n && setze({ klingelSekunden: n })} disabled={gesperrt} />
         )}
@@ -85,7 +85,7 @@ function Notfaelle({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Part
           type="tel"
           inputMode="tel"
           optional
-          hilfe="Hierhin stellt Macher Notfälle durch. Ohne Nummer bekommt die Bereitschaft eine Mitteilung in Handwerk OS."
+          hilfe="Hierhin stellt Lotte Notfälle durch. Ohne Nummer bekommt die Bereitschaft eine Mitteilung in Handwerk OS."
           value={nummer}
           disabled={gesperrt}
           onChange={(e) => setNummer(e.target.value)}
@@ -98,9 +98,9 @@ function Notfaelle({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Part
 
 function Fragen({ k, setze, gesperrt }: { k: AssistentKonfig; setze: (p: Partial<AssistentKonfig>) => void; gesperrt: boolean }) {
   return (
-    <Karte titel="Was Macher fragt" icon="chat">
+    <Karte titel="Was Lotte fragt" icon="chat">
       <Stapel abstand={8}>
-        <Meta>In dieser Reihenfolge. Was der Anrufer schon gesagt hat, fragt Macher nicht noch einmal.</Meta>
+        <Meta>In dieser Reihenfolge. Was der Anrufer schon gesagt hat, fragt Lotte nicht noch einmal.</Meta>
         <Liste>
           {k.fragen.map((f, i) => (
             <ListenZeile
@@ -162,7 +162,7 @@ function Probeanruf({ k }: { k: AssistentKonfig }) {
           }}
         >
           <Stapel abstand={16}>
-            <Meta>Schreib auf, was ein Anrufer sagen würde. Macher zeigt dir, was er daraus macht. Es wird nichts gespeichert.</Meta>
+            <Meta>Schreib auf, was ein Anrufer sagen würde. Lotte zeigt dir, was sie daraus macht. Es wird nichts gespeichert.</Meta>
             <Eingabe label="Nummer des Anrufers" type="tel" inputMode="tel" optional value={nummer} onChange={(e) => setNummer(e.target.value)} placeholder="z. B. 0171 2345678" autoComplete="off" />
             <Textfeld label="Was sagt der Anrufer?" value={text} rows={5} fehler={fehler} onChange={(e) => setText(e.target.value)} placeholder="z. B. Hier ist Herr Kaya, unser Dachfenster ist undicht …" />
             <Zeile>
@@ -180,12 +180,12 @@ function Probeanruf({ k }: { k: AssistentKonfig }) {
         <Karte titel="Das würde im Eingang landen" icon="liste">
           <Stapel abstand={16}>
             <Zeile>
-              <Status icon={false}>Von Macher angenommen</Status>
+              <Status icon={false}>Von Lotte angenommen</Status>
               <DringlichkeitStatus d={u.dringlichkeit} immer />
               <Status ton={u.notfall ? 'gefahr' : 'neutral'}>{ERGEBNIS_TEXT[u.details.ergebnis ?? u.schritt]}</Status>
             </Zeile>
             <Meta>
-              {ergebnis.kunde ? `Erkannt: ${ergebnis.kunde.name}` : u.schritt === 'anfrage' ? 'Unbekannte Nummer – Macher legt den Kunden mit an.' : 'Unbekannte Nummer.'}
+              {ergebnis.kunde ? `Erkannt: ${ergebnis.kunde.name}` : u.schritt === 'anfrage' ? 'Unbekannte Nummer – Lotte legt den Kunden mit an.' : 'Unbekannte Nummer.'}
               {ergebnis.auftrag ? ` Wird an Auftrag ${ergebnis.auftrag.nummer} gehängt.` : ''}
               {u.notfall ? ` Notfall: ${u.notfallGrund}. Geht sofort an die Bereitschaft${k.bereitschaft.nummer ? ` (${k.bereitschaft.nummer})` : ''}.` : ''}
             </Meta>
@@ -197,7 +197,7 @@ function Probeanruf({ k }: { k: AssistentKonfig }) {
           </Stapel>
         </Karte>
       )}
-      <Meta>Jetzt gerade: {annahme.annehmen ? `Macher würde rangehen – ${annahme.grund.charAt(0).toLowerCase()}${annahme.grund.slice(1)}` : annahme.grund}</Meta>
+      <Meta>Jetzt gerade: {annahme.annehmen ? `Lotte würde rangehen – ${annahme.grund.charAt(0).toLowerCase()}${annahme.grund.slice(1)}` : annahme.grund}</Meta>
     </Stapel>
   );
 }
@@ -211,13 +211,13 @@ export function AssistentSeite() {
     <Seite
       titel="Telefonassistent"
       zurueck={{ to: '/auftraege/telefon', label: 'Telefon & Empfang' }}
-      untertitel="Lege fest, wann Macher rangeht, was ein Notfall ist und was er fragt."
+      untertitel="Lege fest, wann Lotte rangeht, was ein Notfall ist und was sie fragt."
       status={verbindung ? <Status ton="erfolg">Verbunden</Status> : <Status icon={false}>Kommt bald</Status>}
     >
       <Stapel abstand={24}>
         {!verbindung && (
           <Meldung titel="Noch nicht mit einer Telefonnummer verbunden">
-            Kommt bald: Dann verbindest du hier deine Nummer, und Macher nimmt Anrufe nach deinen Regeln an. Deine Einstellungen bleiben gespeichert. Mit dem Probeanruf siehst du schon heute, was Macher eintragen würde.
+            Kommt bald: Dann verbindest du hier deine Nummer, und Lotte nimmt Anrufe nach deinen Regeln an. Deine Einstellungen bleiben gespeichert. Mit dem Probeanruf siehst du schon heute, was Lotte eintragen würde.
           </Meldung>
         )}
         {!darf && <Meldung ton="achtung">Ändern darf nur, wer Einstellungen bearbeiten darf. Du kannst alles ansehen und den Probeanruf nutzen.</Meldung>}

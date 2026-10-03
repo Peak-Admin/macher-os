@@ -111,7 +111,7 @@ function Postfach() {
         <input className="mm-input" readOnly value={adresse} aria-label="Weiterleitungsadresse für Anfragen" onFocus={(ev) => ev.target.select()} />
         <Meta>
           {verbunden
-            ? 'Leite Anfragen von deiner bisherigen Adresse hierhin weiter. Jede E-Mail wird eine Anfrage mit Kunde – bekannte Kunden erkennt Macher wieder.'
+            ? 'Leite Anfragen von deiner bisherigen Adresse hierhin weiter. Jede E-Mail wird eine Anfrage mit Kunde – bekannte Kunden erkennt Lotte wieder.'
             : 'Diese Adresse funktioniert, sobald Handwerk OS mit dem Server verbunden ist. Bis dahin nimmst du Anfragen unter „Anfragen“ auf.'}
         </Meta>
         <div>

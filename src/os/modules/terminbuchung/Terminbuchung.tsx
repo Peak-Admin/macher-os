@@ -113,7 +113,7 @@ export function Terminbuchung() {
           <span className="mm-fenster" aria-hidden>
             <FensterSkizze icon="kalender" rahmen="handy" />
           </span>
-          <Meta>Über diesen Link sehen Kunden freie Termine und buchen selbst. Neue Kunden legt Macher automatisch an, bekannte erkennt es an Telefon oder E-Mail.</Meta>
+          <Meta>Über diesen Link sehen Kunden freie Termine und buchen selbst. Neue Kunden legt Lotte automatisch an, bekannte erkennt es an Telefon oder E-Mail.</Meta>
           <code style={{ wordBreak: 'break-all', fontSize: 14 }}>{link}</code>
           <Zeile>
             <Button icon="link" onClick={() => kopieren(link)}>
@@ -246,7 +246,7 @@ function FensterFormular({ fenster, onFertig }: { fenster?: Buchungsfenster; onF
       <FormAbschnitt titel="Team und Freigabe" icon="team">
         <div className="mm-feld">
           <span className="mm-label">Wer übernimmt diese Termine?</span>
-          <Meta>Nichts gewählt = alle Monteure und der Chef. Macher nimmt, wer in der Woche am wenigsten verplant ist.</Meta>
+          <Meta>Nichts gewählt = alle Monteure und der Chef. Lotte nimmt, wer in der Woche am wenigsten verplant ist.</Meta>
           {mitarbeiter.map((m) => (
             <Checkbox key={m.id} label={<Person m={m} />} checked={f.mitarbeiterIds.includes(m.id)} onChange={(an) => set('mitarbeiterIds', an ? [...f.mitarbeiterIds, m.id] : f.mitarbeiterIds.filter((x) => x !== m.id))} />
           ))}

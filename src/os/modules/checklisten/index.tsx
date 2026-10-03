@@ -62,7 +62,7 @@ export default defineModul({
     {
       id: 'checklisten.automatisch',
       titel: 'Checklisten automatisch anhängen',
-      beschreibung: 'Sobald ein Auftrag beauftragt ist, hängt Macher die passenden Checklisten fürs Gewerk und die Auftragsart an.',
+      beschreibung: 'Sobald ein Auftrag beauftragt ist, hängt Lotte die passenden Checklisten fürs Gewerk und die Auftragsart an.',
       standardAn: true,
       minuten: 3,
       start: () => {

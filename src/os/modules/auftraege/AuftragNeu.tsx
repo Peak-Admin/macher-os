@@ -21,7 +21,7 @@ const adresseKurz = (a: Adresse) => [a.strasse, a.zusatz, [a.plz, a.ort].filter(
 /**
  * „Neuer Auftrag“ als ruhiger, zentrierter Dialog über der Auftragsliste. Drei Gruppen, eine Hauptaktion:
  * Allgemein (Projektname, Nummer und Status vorbelegt, Mitarbeiter) → Kunde → Baustellenadresse → Weitere Angaben (zu).
- * Die Projektnummer vergibt Macher (`2610-001`); wer sie überschreibt, bekommt bei Doppel eine klare Meldung.
+ * Die Projektnummer vergibt Lotte (`2610-001`); wer sie überschreibt, bekommt bei Doppel eine klare Meldung.
  */
 export function AuftragNeuDialog({ offen, onSchliessen, kundeId }: { offen: boolean; onSchliessen: () => void; kundeId?: ID }) {
   const formId = useId();
@@ -186,7 +186,7 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
               value={nummer}
               onChange={(e) => (setNummer(e.target.value), setNummerGeaendert(true))}
               fehler={fehler.nummer}
-              hilfe={fehler.nummer ? undefined : 'Vergibt Macher automatisch.'}
+              hilfe={fehler.nummer ? undefined : 'Vergibt Lotte automatisch.'}
               autoComplete="off"
               spellCheck={false}
             />

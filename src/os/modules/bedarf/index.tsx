@@ -33,7 +33,7 @@ export default defineModul({
     {
       id: BEDARF_AUTOMATION,
       titel: 'Materialbedarf täglich prüfen',
-      beschreibung: 'Macher vergleicht geplantes Material aller anstehenden Aufträge mit Lager und Bestellungen und meldet sich mit einem fertigen Bestellvorschlag.',
+      beschreibung: 'Lotte vergleicht geplantes Material aller anstehenden Aufträge mit Lager und Bestellungen und meldet sich mit einem fertigen Bestellvorschlag.',
       standardAn: true,
       minuten: 15,
       start: () => {

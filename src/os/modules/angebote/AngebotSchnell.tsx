@@ -169,8 +169,8 @@ export function AngebotSchnell() {
             ) : (
               <Meta>Trag oben Telefon oder E-Mail ein – dahin geht das Angebot mit Link zum Annehmen.</Meta>
             )}
-            {lokal && kanal === 'sms' && <Meta>SMS verschickt Macher noch nicht selbst: Deine SMS-App öffnet sich mit fertigem Text und Link. Du drückst dort auf Senden.</Meta>}
-            {lokal && kanal !== 'sms' && <Meta>E-Mail-Versand ist noch nicht eingerichtet: Macher öffnet dein Mailprogramm mit fertigem Text und Link. Du drückst dort auf Senden.</Meta>}
+            {lokal && kanal === 'sms' && <Meta>SMS verschickt Lotte noch nicht selbst: Deine SMS-App öffnet sich mit fertigem Text und Link. Du drückst dort auf Senden.</Meta>}
+            {lokal && kanal !== 'sms' && <Meta>E-Mail-Versand ist noch nicht eingerichtet: Lotte öffnet dein Mailprogramm mit fertigem Text und Link. Du drückst dort auf Senden.</Meta>}
             {!lokal && kanal === 'email' && <Meta>{db.betrieb.get('betrieb')?.email ? `Absender ist dein Betrieb, Antworten gehen an ${db.betrieb.get('betrieb')?.email}.` : 'Absender ist dein Betrieb. Trag unter Betrieb deine E-Mail ein, damit Antworten bei dir landen.'}</Meta>}
             {!darfSenden && <Meldung ton="neutral">Deine Rolle darf nichts an Kunden senden. Frag im Büro nach.</Meldung>}
             <div className="mm-zeile" style={{ gap: 8, flexWrap: 'wrap' }}>
@@ -218,7 +218,7 @@ function Raus({ angebotId, r, kanal, onNeu }: { angebotId: string; r: SendeErgeb
     <Seite titel={echt ? 'Dein Angebot ist raus' : 'Fast geschafft'} oberzeile={a ? `Angebot ${a.nummer}` : 'Angebot'} aktion={<Button to={`/auftraege/angebote/${angebotId}`}>Zum Angebot</Button>}>
       <Stapel abstand={16}>
         <Meldung ton={echt ? 'erfolg' : 'neutral'} titel={versandText(r, kanal, 'Dein Angebot')}>
-          {a && `${a.titel} · ${euro(angebotSummen(a).brutto)} an ${kunde?.name ?? 'deinen Kunden'}.`} Nach {nachfassenTage()} Tagen ohne Antwort erinnert dich Macher ans Nachfassen.
+          {a && `${a.titel} · ${euro(angebotSummen(a).brutto)} an ${kunde?.name ?? 'deinen Kunden'}.`} Nach {nachfassenTage()} Tagen ohne Antwort erinnert dich Lotte ans Nachfassen.
         </Meldung>
         {geoeffnet ? (
           <Meldung ton="erfolg" titel={`${kunde?.name ?? 'Dein Kunde'} hat dein Angebot geöffnet (${relativ(geoeffnet)}).`}>
@@ -228,8 +228,8 @@ function Raus({ angebotId, r, kanal, onNeu }: { angebotId: string; r: SendeErgeb
           <Karte kompakt>
             <Meta>
               {cloudAktiv()
-                ? `Sobald ${kunde?.name ?? 'dein Kunde'} das Angebot öffnet, sagt Macher dir Bescheid.`
-                : 'Sobald dein Konto verbunden ist, meldet Macher dir, wenn der Kunde das Angebot öffnet. Bis dahin öffnet der Link nur auf diesem Gerät.'}
+                ? `Sobald ${kunde?.name ?? 'dein Kunde'} das Angebot öffnet, sagt Lotte dir Bescheid.`
+                : 'Sobald dein Konto verbunden ist, meldet Lotte dir, wenn der Kunde das Angebot öffnet. Bis dahin öffnet der Link nur auf diesem Gerät.'}
             </Meta>
           </Karte>
         )}

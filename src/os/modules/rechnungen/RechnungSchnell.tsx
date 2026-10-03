@@ -1,6 +1,6 @@
 /**
  * „Rechnung schreiben“ – EIN Bildschirm: Wofür (Auftrag oder frei) · Positionen · Vorschau und senden.
- * Macher kennt Kunde, Auftrag, Leistungen, Material, Zeiten und Abschläge und bereitet die passende Rechnung vor
+ * Lotte kennt Kunde, Auftrag, Leistungen, Material, Zeiten und Abschläge und bereitet die passende Rechnung vor
  * (nach Abschlägen automatisch die Schlussrechnung). Fortgeschrittenes steht hinter „Weitere Optionen“.
  * Senden: Vorbereiten → Vorschau → Bestätigen. Erst dann wird festgeschrieben (Nummer, GoBD) und verschickt.
  */
@@ -62,7 +62,7 @@ export function RechnungSchnell() {
     const r = abschlussRechnung(a.id);
     return !r || r.status === 'entwurf';
   });
-  // Einstieg aus dem Kontext: ?auftrag=… (Macher bereitet sofort vor), ?kunde=… (frei), ?art=abschlag
+  // Einstieg aus dem Kontext: ?auftrag=… (Lotte bereitet sofort vor), ?kunde=… (frei), ?art=abschlag
   const [start] = useState(() => {
     const aId = params.get('auftrag') ?? '';
     const a = db.auftraege.get(aId);
@@ -95,7 +95,7 @@ export function RechnungSchnell() {
   if (!darf) return <KeinZugriff />;
   if (ergebnis) return <Raus {...ergebnis} />;
 
-  /** Macher bereitet die passende Rechnung aus dem Auftrag vor */
+  /** Lotte bereitet die passende Rechnung aus dem Auftrag vor */
   const vorbereiten = (id: ID, art: RechnungsArt, prozent = o.prozent) => {
     const v = rechnungsVorschau(id, art, { prozent: zahlAus(prozent) || 0 });
     setVorschau(v);
@@ -241,7 +241,7 @@ export function RechnungSchnell() {
                 <>
                   <Auswahl label="Auftrag" value={auftragId} leer="Auftrag wählen" onChange={(e) => waehleAuftrag(e.target.value)} optionen={offene.map((a) => ({ wert: a.id, label: `${a.titel} · ${db.kunden.get(a.kundeId)?.name ?? ''}` }))} />
                   {auftragId && vorschau && (
-                    <Meldung ton="neutral" titel={`Macher bereitet die ${artLabel} vor`}>
+                    <Meldung ton="neutral" titel={`Lotte bereitet die ${artLabel} vor`}>
                       <ul style={{ margin: 0, paddingLeft: 18 }}>
                         {vorschau.quellen.map((q) => (
                           <li key={q}>{q}</li>
@@ -332,7 +332,7 @@ export function RechnungSchnell() {
               </Meldung>
             )}
             <Meta>
-              {kanal ? `Geht ${kanal === 'email' ? 'per E-Mail' : 'per SMS'} an ${kunde.kontakt.trim()} – ` : 'Geht '}mit Link zum Kundenbereich. Du siehst vorher, was rausgeht. Macher vergibt die Rechnungsnummer und legt die E-Rechnung (XRechnung) dazu.
+              {kanal ? `Geht ${kanal === 'email' ? 'per E-Mail' : 'per SMS'} an ${kunde.kontakt.trim()} – ` : 'Geht '}mit Link zum Kundenbereich. Du siehst vorher, was rausgeht. Lotte vergibt die Rechnungsnummer und legt die E-Rechnung (XRechnung) dazu.
             </Meta>
             {!darfSenden && <Meldung ton="neutral">Deine Rolle darf nichts an Kunden senden. Frag im Büro nach.</Meldung>}
             <Zeile>
@@ -392,7 +392,7 @@ function Raus({ rechnung, r, kanal }: { rechnung: RechnungX; r: SendeErgebnis; k
     <Seite titel={echt ? 'Deine Rechnung ist raus' : 'Fast geschafft'} oberzeile={`${ART_LABEL[rechnung.art]} ${rechnung.nummer}`} aktion={<Button to={`/betrieb/rechnungen/${rechnung.id}`}>Zur Rechnung</Button>}>
       <Stapel abstand={16}>
         <Meldung ton={echt ? 'erfolg' : 'neutral'} titel={versandText(r, kanal, 'Deine Rechnung')}>
-          {`${euro(rechnungsSummen(rechnung).zahlbetrag)} an ${kunde?.name ?? 'deinen Kunden'}, fällig am ${datum(rechnung.faelligAm)}. Macher behält die Zahlung im Blick und erinnert dich, wenn nichts kommt.`}
+          {`${euro(rechnungsSummen(rechnung).zahlbetrag)} an ${kunde?.name ?? 'deinen Kunden'}, fällig am ${datum(rechnung.faelligAm)}. Lotte behält die Zahlung im Blick und erinnert dich, wenn nichts kommt.`}
         </Meldung>
         <div className="mm-zeile" style={{ gap: 8, flexWrap: 'wrap' }}>
           <Button variante="sekundaer" icon="download" onClick={() => window.open(appPfad(`/druck/rechnung/${rechnung.id}`), '_blank')}>

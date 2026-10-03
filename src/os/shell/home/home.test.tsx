@@ -140,7 +140,7 @@ describe('Einrichtung im nächsten Schritt', () => {
         a={{
           id: 'einrichtung:kunden',
           type: 'onboarding',
-          title: 'Macher fertig machen',
+          title: 'Handwerk OS einrichten',
           description: 'Als Nächstes: Kunden & Preise übernehmen.',
           priority: 40,
           icon: 'start',

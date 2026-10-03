@@ -106,7 +106,7 @@ export default defineModul({
     {
       id: 'rechnungen.entwurf-bei-abrechnung',
       titel: 'Rechnung vorbereiten, wenn der Auftrag fertig ist',
-      beschreibung: 'Kommt ein Auftrag in die Phase „Abrechnung“, legt Macher den Rechnungsentwurf aus Angebot, Material und Zeiten an – nach Abschlägen gleich als Schlussrechnung.',
+      beschreibung: 'Kommt ein Auftrag in die Phase „Abrechnung“, legt Lotte den Rechnungsentwurf aus Angebot, Material und Zeiten an – nach Abschlägen gleich als Schlussrechnung.',
       standardAn: true,
       minuten: 15,
       start: () =>

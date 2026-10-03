@@ -109,7 +109,7 @@ export const demoGewerke: DemoGewerk[] = [
     },
     tour: [
       "Fam. Krüger ruft an: Die Sicherung fliegt ständig raus.",
-      "Macher findet Mittwoch 8:00 – Lukas ist frei und in der Nähe.",
+      "Lotte findet Mittwoch 8:00 – Lukas ist frei und in der Nähe.",
       "Lukas sieht Adresse, Fehlerbeschreibung und Material in der App.",
       "Fotos vom Verteiler, Messwerte und 2,5 Stunden sind im Auftrag.",
       "Arbeitszeit und Material stehen schon auf der Rechnung.",
@@ -175,7 +175,7 @@ export const demoGewerke: DemoGewerk[] = [
     },
     tour: [
       "Fr. Albers meldet sich über das Formular: Die Heizung wird nicht warm.",
-      "Macher schlägt Murat vor – Gas-Qualifikation, Donnerstag frei, auf dem Weg.",
+      "Lotte schlägt Murat vor – Gas-Qualifikation, Donnerstag frei, auf dem Weg.",
       "Murat sieht die Anlage, die letzte Wartung und das passende Ersatzteil.",
       "Wartungsprotokoll, Fotos und Unterschrift entstehen direkt vor Ort.",
       "Wartungspauschale und Ersatzteil landen auf der Rechnung.",
@@ -241,7 +241,7 @@ export const demoGewerke: DemoGewerk[] = [
     },
     tour: [
       "Fam. Reuter fragt per Mail nach einer neuen Treppe.",
-      "Macher schlägt das Aufmaß für Stefan vor – Dienstag 16:00.",
+      "Lotte schlägt das Aufmaß für Stefan vor – Dienstag 16:00.",
       "Werkstatt und Montage sehen ihre Schritte im selben Auftrag.",
       "Stunden in der Werkstatt und Fotos von der Montage werden erfasst.",
       "Die Rechnung kommt aus dem Auftrag – mit Nachkalkulation dazu.",
@@ -307,7 +307,7 @@ export const demoGewerke: DemoGewerk[] = [
     },
     tour: [
       "Fr. Kaya schreibt über die Website: Büro soll frisch gestrichen werden.",
-      "Macher plant Tobias für die Besichtigung ein und bestätigt den Termin.",
+      "Lotte plant Tobias für die Besichtigung ein und bestätigt den Termin.",
       "Leon sieht Räume, Aufmaß und Farbtöne in der App.",
       "Vorher-Nachher-Fotos und Arbeitszeit landen im Auftrag.",
       "Aus Aufmaß und Leistungen ist die Rechnung schon vorbereitet.",
@@ -371,8 +371,8 @@ export const demoGewerke: DemoGewerk[] = [
       ],
     },
     tour: [
-      "Fr. Ott ruft an, während alle unterwegs sind – Macher nimmt die Anfrage auf.",
-      "Macher findet Mittwoch 13:00 – Max ist frei und in der Nähe.",
+      "Fr. Ott ruft an, während alle unterwegs sind – Lotte nimmt die Anfrage auf.",
+      "Lotte findet Mittwoch 13:00 – Max ist frei und in der Nähe.",
       "Max sieht Adresse, Beschreibung und Fotos vom Kunden in der App.",
       "Fotos, Zeit und verbrauchtes Material werden direkt erfasst.",
       "Die Rechnung ist vorbereitet – Sabine prüft und schickt sie ab.",

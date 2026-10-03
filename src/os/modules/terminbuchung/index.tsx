@@ -72,7 +72,7 @@ export default defineModul({
     {
       id: 'terminbuchung.auto-bestaetigen',
       titel: 'Online-Buchungen ohne Konflikt sofort bestätigen',
-      beschreibung: 'Bucht ein Kunde einen freien Termin und passt alles, bestätigt Macher ihn sofort. Sonst landet er bei dir.',
+      beschreibung: 'Bucht ein Kunde einen freien Termin und passt alles, bestätigt Lotte ihn sofort. Sonst landet er bei dir.',
       standardAn: false,
       minuten: 3,
       start: () =>

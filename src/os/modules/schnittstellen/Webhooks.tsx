@@ -29,7 +29,7 @@ export function Webhooks() {
   return (
     <Seite
       titel="Webhooks"
-      untertitel="Ein anderes Programm erfährt sofort, wenn in Macher etwas passiert."
+      untertitel="Ein anderes Programm erfährt sofort, wenn in Lotte etwas passiert."
       zurueck={{ to: '/betrieb/schnittstellen', label: 'Schnittstellen' }}
       aktion={<Button onClick={() => setNeu(true)}>Webhook hinzufügen</Button>}
     >
@@ -37,7 +37,7 @@ export function Webhooks() {
         {!q.zustellungAktiv() && abos.length > 0 && <Meldung>{zustellungText(q)}. Deine Einstellungen bleiben gespeichert.</Meldung>}
         {geheimnis && (
           <Meldung ton="erfolg" titel="Geheimnis jetzt kopieren" aktion={<Button klein variante="sekundaer" onClick={() => (void navigator.clipboard?.writeText(geheimnis), toast('Kopiert.'))}>Kopieren</Button>}>
-            Damit prüft das andere Programm, dass die Nachricht wirklich von Macher kommt. Es wird nur dieses eine Mal angezeigt:
+            Damit prüft das andere Programm, dass die Nachricht wirklich von Lotte kommt. Es wird nur dieses eine Mal angezeigt:
             <br />
             <code style={{ wordBreak: 'break-all' }}>{geheimnis}</code>
           </Meldung>
@@ -75,7 +75,7 @@ export function Webhooks() {
         <details className="mm-aufklapper">
           <summary>So kommen die Nachrichten an</summary>
           <Meta>
-            POST mit JSON {'{ id, type, event, created_at, source, actor, object: { type, id, data }, data }'}. Kopfzeilen: x-macher-ereignis (z. B. invoice.paid) und x-macher-signatur: sha256=HMAC-SHA256(Geheimnis, Inhalt). Dein Programm antwortet mit 2xx, damit die Zustellung als erfolgreich gilt. Klappt es nicht, versucht Macher es nach 1, 5, 30, 120 und 720 Minuten erneut.
+            POST mit JSON {'{ id, type, event, created_at, source, actor, object: { type, id, data }, data }'}. Kopfzeilen: x-macher-ereignis (z. B. invoice.paid) und x-macher-signatur: sha256=HMAC-SHA256(Geheimnis, Inhalt). Dein Programm antwortet mit 2xx, damit die Zustellung als erfolgreich gilt. Klappt es nicht, versucht Lotte es nach 1, 5, 30, 120 und 720 Minuten erneut.
           </Meta>
         </details>
       </Stapel>

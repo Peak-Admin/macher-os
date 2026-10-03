@@ -72,7 +72,7 @@ export function WartungTab({ id }: { id: ID }) {
             ))}
           </Stapel>
         ) : (
-          <Leer titel="Keine Prüfpunkte" text="Macher legt Prüfpunkte je Anlagentyp an, wenn der Wartungsauftrag automatisch entsteht." icon="liste" />
+          <Leer titel="Keine Prüfpunkte" text="Lotte legt Prüfpunkte je Anlagentyp an, wenn der Wartungsauftrag automatisch entsteht." icon="liste" />
         )}
       </Karte>
 
@@ -104,7 +104,7 @@ export function WartungTab({ id }: { id: ID }) {
               <Status ton="erfolg">Kunde ist informiert</Status>
             ) : (
               <>
-                <Textfeld label="Nachricht an den Kunden" rows={7} value={text ?? benachrichtigungsText(a.id)} onChange={(e) => setText(e.target.value)} hilfe="Von Macher vorbereitet – prüfen, anpassen, freigeben." />
+                <Textfeld label="Nachricht an den Kunden" rows={7} value={text ?? benachrichtigungsText(a.id)} onChange={(e) => setText(e.target.value)} hilfe="Von Lotte vorbereitet – prüfen, anpassen, freigeben." />
                 <div>
                   <Button
                     variante="sekundaer"

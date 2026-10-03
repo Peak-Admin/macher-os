@@ -64,7 +64,7 @@ export const teil9 = {
     ],
     loesung: {
       titel: "Ein Weg vom Auftrag bis zum Geld auf dem Konto.",
-      text: "Die Rechnung entsteht aus dem Auftrag, ohne Abtippen. Der Kontoauszug als Datei sagt Macher, was bezahlt ist. Was offen bleibt, landet als fertige Mahnung bei dir zur Freigabe. Belege hängen am Auftrag, und die Nachkalkulation zeigt, was übrig bleibt. Am Ende übergibst du alles im DATEV-Format.",
+      text: "Die Rechnung entsteht aus dem Auftrag, ohne Abtippen. Der Kontoauszug als Datei sagt Lotte, was bezahlt ist. Was offen bleibt, landet als fertige Mahnung bei dir zur Freigabe. Belege hängen am Auftrag, und die Nachkalkulation zeigt, was übrig bleibt. Am Ende übergibst du alles im DATEV-Format.",
       punkte: [
         "Offene Posten mit Überfällig-Filter",
         "Kontoauszug als CAMT- oder CSV-Datei abgleichen",
@@ -93,7 +93,7 @@ export const teil9 = {
       },
       {
         titel: "Kontoauszug einlesen",
-        text: "Lade die Datei aus deinem Online-Banking hoch. Macher ordnet die Zahlungen den Rechnungen zu.",
+        text: "Lade die Datei aus deinem Online-Banking hoch. Lotte ordnet die Zahlungen den Rechnungen zu.",
       },
       {
         titel: "Offenes klären",
@@ -158,7 +158,7 @@ export const teil9 = {
       {
         frage: "Gehen Mahnungen von selbst raus?",
         antwort:
-          "Nein. Macher schreibt die Erinnerung oder Mahnung fertig. Senden tust du – oder du sagst „Noch warten“. Für gute Kunden kannst du das Mahnen ganz abschalten.",
+          "Nein. Lotte schreibt die Erinnerung oder Mahnung fertig. Senden tust du – oder du sagst „Noch warten“. Für gute Kunden kannst du das Mahnen ganz abschalten.",
       },
       {
         frage: "Wer sieht die Zahlen?",
@@ -248,7 +248,7 @@ export const teil9 = {
     ],
     loesung: {
       titel: "Vorbereitet im Alltag, übergeben mit einem Klick.",
-      text: "Rechnungen entstehen in Handwerk OS, Belege fotografierst du direkt mit dem Handy. Zahlungen kommen über den Kontoauszug dazu. Für den Export bestimmt Macher Konten und Steuerschlüssel aus Kategorie und Steuersatz. Dein Steuerberater liest die Datei in DATEV ein – und bucht wie gewohnt.",
+      text: "Rechnungen entstehen in Handwerk OS, Belege fotografierst du direkt mit dem Handy. Zahlungen kommen über den Kontoauszug dazu. Für den Export bestimmt Lotte Konten und Steuerschlüssel aus Kategorie und Steuersatz. Dein Steuerberater liest die Datei in DATEV ein – und bucht wie gewohnt.",
       punkte: [
         "Buchungsstapel im DATEV-Format, SKR03 oder SKR04",
         "Debitoren- und Kreditorennummern von selbst",
@@ -277,7 +277,7 @@ export const teil9 = {
       },
       {
         titel: "Zahlungen abgleichen",
-        text: "Kontoauszug als Datei hochladen. Macher ordnet die Eingänge den Rechnungen zu.",
+        text: "Kontoauszug als Datei hochladen. Lotte ordnet die Eingänge den Rechnungen zu.",
       },
       {
         titel: "Monat prüfen",
@@ -430,7 +430,7 @@ export const teil9 = {
     ],
     loesung: {
       titel: "Ablage am Auftrag statt Ordner auf dem Rechner.",
-      text: "Du lädst eine Datei hoch und wählst den Auftrag. Macher übernimmt den Titel aus dem Dateinamen und erkennt Plan oder PDF. Fotos, Berichte, Belege und Schreiben hängen ohnehin am Auftrag. In der zentralen Liste filterst du nach Art, die Suche findet alles über den Titel.",
+      text: "Du lädst eine Datei hoch und wählst den Auftrag. Lotte übernimmt den Titel aus dem Dateinamen und erkennt Plan oder PDF. Fotos, Berichte, Belege und Schreiben hängen ohnehin am Auftrag. In der zentralen Liste filterst du nach Art, die Suche findet alles über den Titel.",
       punkte: [
         "Eine Liste aller Dateien mit Filter",
         "Vorschau für Bilder und PDFs, auch auf dem Handy",
@@ -455,7 +455,7 @@ export const teil9 = {
     schritte: [
       {
         titel: "Datei hochladen",
-        text: "Am Auftrag oder in der zentralen Liste. Titel und Art schlägt Macher aus dem Dateinamen vor.",
+        text: "Am Auftrag oder in der zentralen Liste. Titel und Art schlägt Lotte aus dem Dateinamen vor.",
       },
       {
         titel: "Auftrag wählen",
@@ -523,7 +523,7 @@ export const teil9 = {
       {
         frage: "Wie groß darf eine Datei sein?",
         antwort:
-          "Heute höchstens 1,5 MB je Datei. Fotos verkleinert Macher von selbst. Ist ein PDF zu groß, sagt Macher dir, warum – und dass du es verkleinern oder aufteilen kannst.",
+          "Heute höchstens 1,5 MB je Datei. Fotos verkleinert Lotte von selbst. Ist ein PDF zu groß, sagt Lotte dir, warum – und dass du es verkleinern oder aufteilen kannst.",
       },
       {
         frage: "Gibt es Ordner und Versionen?",
@@ -715,7 +715,7 @@ export const teil9 = {
       {
         frage: "Was mache ich bis dahin?",
         antwort:
-          "Lies die DATANORM-Datei deines Großhändlers ein. Der Materialbedarf zeigt, was fehlt, und macht daraus Bestellungen je Lieferant. Die gehen per E-Mail raus, der Wareneingang wird in Macher gebucht.",
+          "Lies die DATANORM-Datei deines Großhändlers ein. Der Materialbedarf zeigt, was fehlt, und macht daraus Bestellungen je Lieferant. Die gehen per E-Mail raus, der Wareneingang wird in Lotte gebucht.",
       },
     ],
     verwandt: ["datanorm", "einkauf", "materialbedarf"],

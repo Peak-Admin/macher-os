@@ -54,7 +54,7 @@ export default defineModul({
         (n): HinweisVorschlag => ({
           schluessel: `ki-anruf:${n.id}`,
           art: 'problem',
-          titel: `Anruf von Macher nicht eingetragen: ${n.betreff?.replace(/^Anruf von /, '') ?? 'Unbekannt'}`,
+          titel: `Anruf von Lotte nicht eingetragen: ${n.betreff?.replace(/^Anruf von /, '') ?? 'Unbekannt'}`,
           text: [n.text.split('\n')[0], n.anruf?.fehler].filter(Boolean).join(' · '),
           bezug: { typ: 'nachrichten', id: n.id },
           gewicht: 72,
@@ -81,7 +81,7 @@ export default defineModul({
     {
       id: 'telefon.ki-anrufe',
       titel: 'Anrufe vom Telefonassistenten eintragen',
-      beschreibung: 'Nimmt Macher einen Anruf an, wird daraus eine Anfrage, ein Rückruf oder eine Notiz – mit erkanntem Kunden. Notfälle gehen sofort an die Bereitschaft.',
+      beschreibung: 'Nimmt Lotte einen Anruf an, wird daraus eine Anfrage, ein Rückruf oder eine Notiz – mit erkanntem Kunden. Notfälle gehen sofort an die Bereitschaft.',
       standardAn: true,
       minuten: 4,
       start: () =>
@@ -98,7 +98,7 @@ export default defineModul({
     {
       id: 'telefon.zuordnen',
       titel: 'Anrufe dem Auftrag zuordnen',
-      beschreibung: 'Hat der Anrufer genau einen offenen Auftrag, hängt Macher die Gesprächsnotiz automatisch an diesen Auftrag.',
+      beschreibung: 'Hat der Anrufer genau einen offenen Auftrag, hängt Lotte die Gesprächsnotiz automatisch an diesen Auftrag.',
       standardAn: true,
       minuten: 1,
       start: () =>
@@ -115,7 +115,7 @@ export default defineModul({
   suche: (q) =>
     [
       ...(/telefonassistent|assistent|anrufbeantworter|ki|notfall|bereitschaft|rangehen/i.test(q)
-        ? [{ typ: 'Einstellung', titel: 'Telefonassistent', untertitel: 'Wann Macher rangeht, Notfälle, Bereitschaft, Probeanruf', pfad: '/auftraege/telefon/assistent', relevanz: 35 }]
+        ? [{ typ: 'Einstellung', titel: 'Telefonassistent', untertitel: 'Wann Lotte rangeht, Notfälle, Bereitschaft, Probeanruf', pfad: '/auftraege/telefon/assistent', relevanz: 35 }]
         : []),
       ...db.nachrichten
       .where((n) => n.kanal === 'telefon' && passt(q, n.betreff, n.text))

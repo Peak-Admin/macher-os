@@ -520,7 +520,7 @@ export function spaeterAm(datum: Datum): Zeitpunkt {
 
 // ------------------------------------------------------------------ Inbox zusammenstellen
 
-/** Live-Hinweis aus „Braucht dich“ in der Form, die die Inbox braucht (keine Abhängigkeit zum Macher-Kern) */
+/** Live-Hinweis aus „Braucht dich“ in der Form, die die Inbox braucht (keine Abhängigkeit zum Lotte-Kern) */
 export interface HinweisQuelle {
   schluessel: string;
   fuerMitarbeiterId?: ID;

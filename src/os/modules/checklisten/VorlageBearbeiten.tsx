@@ -69,7 +69,7 @@ function Formular({ vorlageId }: { vorlageId?: string }) {
                 ))}
               </Zeile>
             </fieldset>
-            <Schalter label="Automatisch anlegen" beschreibung="Macher hängt die Checkliste an jeden passenden Auftrag, sobald er beauftragt ist." checked={automatisch} onChange={setAutomatisch} />
+            <Schalter label="Automatisch anlegen" beschreibung="Lotte hängt die Checkliste an jeden passenden Auftrag, sobald er beauftragt ist." checked={automatisch} onChange={setAutomatisch} />
             <Schalter label="Vorlage aktiv" checked={aktiv} onChange={setAktiv} />
             <Stapel abstand={12}>
               <h3>Punkte</h3>

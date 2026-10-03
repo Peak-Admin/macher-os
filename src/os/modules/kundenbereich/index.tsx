@@ -36,7 +36,7 @@ export default defineModul({
     {
       id: REGEL,
       titel: 'Kundenbereich-Link bereitstellen',
-      beschreibung: 'Wird ein Angebot versendet, legt Macher für den Kunden einen Link zum Kundenbereich an – dort kann er es direkt annehmen.',
+      beschreibung: 'Wird ein Angebot versendet, legt Lotte für den Kunden einen Link zum Kundenbereich an – dort kann er es direkt annehmen.',
       standardAn: true,
       minuten: 2,
       start: () =>

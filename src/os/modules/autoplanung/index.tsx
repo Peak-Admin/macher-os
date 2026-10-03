@@ -23,7 +23,7 @@ function dringendOhneTermin(a: Auftrag) {
   return einzuplanen(ctx, a) && !ctx.termine.some((t) => t.auftragId === a.id && t.status !== 'abgesagt' && datumVon(t.start) >= ctx.heute);
 }
 
-/** Macher legt für dringende Aufträge einen Planvorschlag zur Freigabe in „Braucht dich“ */
+/** Lotte legt für dringende Aufträge einen Planvorschlag zur Freigabe in „Braucht dich“ */
 function dringendVorschlagen(a: Auftrag) {
   if (!dringendOhneTermin(a)) return;
   // offen – oder in den letzten 7 Tagen von dir erledigt/verworfen: nicht sofort wieder vorlegen
@@ -51,7 +51,7 @@ export default defineModul({
   id: 'autoplanung',
   titel: 'Automatische Planung',
   bereich: 'plan',
-  beschreibung: 'Macher schlägt Termin und Team vor – nach Verfügbarkeit, Qualifikation, Fahrweg, Auslastung und Kundenwunsch.',
+  beschreibung: 'Lotte schlägt Termin und Team vor – nach Verfügbarkeit, Qualifikation, Fahrweg, Auslastung und Kundenwunsch.',
   icon: 'macher',
   gewicht: 75,
   navigation: 'haupt',
@@ -101,7 +101,7 @@ export default defineModul({
     {
       id: AUTOMATION,
       titel: 'Dringende Aufträge sofort vorplanen',
-      beschreibung: 'Kommt ein dringender Auftrag rein, sucht Macher Team und Termin und legt dir den Vorschlag zur Freigabe hin.',
+      beschreibung: 'Kommt ein dringender Auftrag rein, sucht Lotte Team und Termin und legt dir den Vorschlag zur Freigabe hin.',
       standardAn: true,
       minuten: 10,
       start: () => {

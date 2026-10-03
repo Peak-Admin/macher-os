@@ -140,7 +140,7 @@ export function ReklamationDetail() {
                 </Stapel>
               ) : istOffen ? (
                 <Stapel abstand={12}>
-                  <Meta>{r.bewertung === 'offen' ? 'Erst entscheiden, dann legt Macher den Nacharbeitsauftrag an.' : 'Noch kein Nacharbeitsauftrag.'}</Meta>
+                  <Meta>{r.bewertung === 'offen' ? 'Erst entscheiden, dann legt Lotte den Nacharbeitsauftrag an.' : 'Noch kein Nacharbeitsauftrag.'}</Meta>
                   <div>
                     <Button
                       variante="sekundaer"

@@ -176,7 +176,7 @@ export function SerieForm() {
                     />
                   ))}
                 </Stapel>
-                <p className="mm-hilfe">Verknüpfte Anlagen: Macher hängt den passenden Serientermin automatisch an den Wartungsauftrag.</p>
+                <p className="mm-hilfe">Verknüpfte Anlagen: Lotte hängt den passenden Serientermin automatisch an den Wartungsauftrag.</p>
               </div>
             )}
             <div className="mm-feld">

@@ -60,7 +60,7 @@ export async function dateiLesen(datei: Blob & { name?: string }): Promise<Datei
   try {
     const daten = await bytes(datei);
     if (/\.(xls|numbers|ods)$/i.test(datei.name ?? '') && !istXlsx(daten))
-      return { ok: false, fehler: 'Dieses Dateiformat kann Macher nicht lesen. Speichere die Liste in Excel als .xlsx oder als CSV.' };
+      return { ok: false, fehler: 'Dieses Dateiformat kann Lotte nicht lesen. Speichere die Liste in Excel als .xlsx oder als CSV.' };
     const roh = istXlsx(daten) ? await xlsxZeilen(daten) : csvZeilen(textDekodieren(daten));
     return tabelleErgebnis(roh);
   } catch (e) {

@@ -1,7 +1,7 @@
 /**
- * Magic Setup: eine einzige Frage – „Welcher Betrieb bist du?“. Aus der Website liest Macher Firmendaten,
+ * Magic Setup: eine einzige Frage – „Welcher Betrieb bist du?“. Aus der Website liest Lotte Firmendaten,
  * Logo, Gewerk und Leistungen und richtet den Betrieb aus der passenden Gewerk-Vorlage ein. Ohne Website
- * genügt ein Tipp aufs Gewerk. Alles Weitere (Briefkopf prüfen, Kunden & Preise, Team) fragt Macher erst,
+ * genügt ein Tipp aufs Gewerk. Alles Weitere (Briefkopf prüfen, Kunden & Preise, Team) fragt Lotte erst,
  * wenn es gebraucht wird (Just-in-Time Setup, siehe `docs/os/ONBOARDING.md`).
  *
  * Reine Logik: Briefkopf-Entwurf (KI über `/api/ki/briefkopf`), Bundesland aus PLZ, Kunden aus
@@ -510,7 +510,7 @@ export async function kundenAusDatei(datei: Blob & { name?: string }): Promise<K
   try {
     const daten = await bytes(datei);
     if (istXlsx(daten)) return kundenAusZeilen(await xlsxZeilen(daten));
-    if (/\.xls$/i.test(datei.name ?? '')) return { kunden: [], zusammengefuehrt: 0, hinweise: [], fehler: 'Alte Excel-Dateien (.xls) kann Macher nicht lesen. Speichere die Liste als .xlsx oder CSV.' };
+    if (/\.xls$/i.test(datei.name ?? '')) return { kunden: [], zusammengefuehrt: 0, hinweise: [], fehler: 'Alte Excel-Dateien (.xls) kann Lotte nicht lesen. Speichere die Liste als .xlsx oder CSV.' };
     return kundenAusCsv(textDekodieren(daten));
   } catch (e) {
     return { kunden: [], zusammengefuehrt: 0, hinweise: [], fehler: e instanceof Error && e.message ? e.message : 'Die Datei konnte nicht gelesen werden. Speichere sie als CSV und versuche es erneut.' };
@@ -611,7 +611,7 @@ export interface TeamEintrag {
   rolle: Rolle;
 }
 
-/** Rolle aus der Teamgröße: kleine Teams sind Monteure; ab dem 4. Kopf schlägt Macher einmal „Büro“ vor */
+/** Rolle aus der Teamgröße: kleine Teams sind Monteure; ab dem 4. Kopf schlägt Lotte einmal „Büro“ vor */
 export function rolleVorschlag(bisher: Rolle[]): Rolle {
   if (bisher.length >= 3 && !bisher.includes('buero')) return 'buero';
   return 'monteur';
@@ -874,7 +874,7 @@ export interface Vorbereitet {
   anzahl: number;
 }
 
-/** Was hat Macher vorbereitet? Nur echte Zahlen aus den Daten. */
+/** Was hat Lotte vorbereitet? Nur echte Zahlen aus den Daten. */
 export function vorbereitet(): Vorbereitet[] {
   const zaehle = (name: string) => sammlung(name)?.all().length ?? 0;
   const liste: Vorbereitet[] = [

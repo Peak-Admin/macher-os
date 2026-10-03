@@ -67,7 +67,7 @@ export function ablaufHinweise(): HinweisVorschlag[] {
         schluessel: `ablauf-rechnung:${a.id}`,
         art: 'entscheidung',
         titel: `${a.titel}: Rechnung vorbereiten`,
-        text: `${kunde} · Die Arbeit ist abgenommen. Macher legt den Entwurf aus Angebot, Material und Zeiten an.`,
+        text: `${kunde} · Die Arbeit ist abgenommen. Lotte legt den Entwurf aus Angebot, Material und Zeiten an.`,
         bezug,
         gewicht: 60,
         fuerRollen: ['chef', 'buero'],

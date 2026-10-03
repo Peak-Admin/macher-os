@@ -1,5 +1,5 @@
 /**
- * Globale Overlays (Suche, Macher fragen, Schnell erfassen, Benachrichtigungen).
+ * Globale Overlays (Suche, Frag Lotte, Schnell erfassen, Benachrichtigungen).
  * Die Shell löst sie aus, Module rendern sie über `global` in ihrer ModulDef.
  */
 import { useSyncExternalStore } from 'react';
@@ -27,6 +27,6 @@ export function schliesse(name?: OverlayName) {
 export function useOverlay(name: OverlayName) {
   const o = useSyncExternalStore(sub, get, get);
   // Nur das eigene Overlay schließen: Ein Dialog meldet „close“ erst nach dem Schließen (asynchron) –
-  // war inzwischen ein anderes Overlay geöffnet (Suche → Macher fragen), bleibt es offen.
+  // war inzwischen ein anderes Overlay geöffnet (Suche → Frag Lotte), bleibt es offen.
   return { offen: o?.name === name, payload: o?.name === name ? o.payload : undefined, schliessen: () => schliesse(name) };
 }

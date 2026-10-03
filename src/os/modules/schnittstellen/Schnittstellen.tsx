@@ -63,7 +63,7 @@ export function Schnittstellen() {
   return (
     <Seite
       titel="Schnittstellen"
-      untertitel={`Verbinde Macher mit deinen anderen Programmen – ${sichtbar.length} Integrationen. Fehlt dir eine Verbindung, sende uns eine Anfrage: Wir richten sie für dich ein.`}
+      untertitel={`Verbinde Lotte mit deinen anderen Programmen – ${sichtbar.length} Integrationen. Fehlt dir eine Verbindung, sende uns eine Anfrage: Wir richten sie für dich ein.`}
     >
       <Stapel abstand={32}>
         {!gruppen.length && <Leer titel="Keine Verbindungen für dich" text="Verbindungen zu Bank, Buchhaltung und Großhandel richtet das Büro ein." icon="stecker" />}

@@ -90,14 +90,14 @@ function objektName(e: Ereignis): string {
   return name ? `${art} ${name}` : art;
 }
 
-/** Mensch hinter einer Änderung – nur bei eigenen Änderungen, nicht bei Macher, Import oder Abgleich */
+/** Mensch hinter einer Änderung – nur bei eigenen Änderungen, nicht bei Lotte, Import oder Abgleich */
 function werMensch(e: Ereignis) {
   if (e.quelle === 'automation' || e.quelle === 'ai' || e.quelle === 'import' || e.quelle === 'sync') return undefined;
   return e.vonMitarbeiterId ? db.mitarbeiter.get(e.vonMitarbeiterId) : undefined;
 }
 
 function werText(e: Ereignis): string {
-  if (e.quelle === 'automation' || e.quelle === 'ai') return e.vonMitarbeiterId ? `Macher für ${db.mitarbeiter.get(e.vonMitarbeiterId)?.vorname ?? 'dich'}` : 'Macher';
+  if (e.quelle === 'automation' || e.quelle === 'ai') return e.vonMitarbeiterId ? `Lotte für ${db.mitarbeiter.get(e.vonMitarbeiterId)?.vorname ?? 'dich'}` : 'Lotte';
   if (e.quelle === 'import') return 'Import';
   if (e.quelle === 'sync') return 'Abgleich';
   return e.vonMitarbeiterId ? personName(db.mitarbeiter.get(e.vonMitarbeiterId)) : 'Unbekannt';
@@ -129,14 +129,14 @@ function LetzteAenderungen() {
   return (
     <Karte titel="Letzte Änderungen" icon="uhr" oberzeile="Verlauf">
       <Stapel abstand={16}>
-        <Meta>Was in den letzten Tagen geändert wurde – von dir, deinem Team oder Macher. Einzelne Änderungen kannst du hier zurücknehmen.</Meta>
+        <Meta>Was in den letzten Tagen geändert wurde – von dir, deinem Team oder Lotte. Einzelne Änderungen kannst du hier zurücknehmen.</Meta>
         <Filter
           label="Von wem"
           wert={wer}
           onChange={setWer}
           optionen={[
             { wert: 'alle', label: 'Alle' },
-            { wert: 'macher', label: 'Durch Macher' },
+            { wert: 'macher', label: 'Durch Lotte' },
             { wert: 'menschen', label: 'Durch Menschen' },
           ]}
         />

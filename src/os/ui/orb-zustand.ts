@@ -1,5 +1,5 @@
 /**
- * Orb-Zustände: Was zeigt der Macher-Orb, solange die KI arbeitet? Reine Regeln, ohne React testbar.
+ * Orb-Zustände: Was zeigt der Lotte-Orb, solange die KI arbeitet? Reine Regeln, ohne React testbar.
  *
  * Eigene, ruhige Animationsvarianten in den Markengrüns (`orb.css`). Neben dem Orb steht immer ein Statustext
  * (`orbText`) – die Animation ist nie die einzige Information.
@@ -20,15 +20,15 @@ export const ORB_ZUSTAENDE = ['arbeitet', 'sucht', 'prueft', 'hoert', 'verbindet
 export type OrbZustand = (typeof ORB_ZUSTAENDE)[number];
 
 const TEXT: Record<OrbZustand, string> = {
-  arbeitet: 'Macher arbeitet …',
-  sucht: 'Macher sucht …',
-  prueft: 'Macher prüft …',
-  hoert: 'Macher hört zu …',
-  verbindet: 'Macher verbindet …',
-  schreibt: 'Macher schreibt …',
-  formt: 'Macher bereitet vor …',
-  denkt: 'Macher denkt nach …',
-  verknuepft: 'Macher führt zusammen …',
+  arbeitet: 'Lotte arbeitet …',
+  sucht: 'Lotte sucht …',
+  prueft: 'Lotte prüft …',
+  hoert: 'Lotte hört zu …',
+  verbindet: 'Lotte verbindet …',
+  schreibt: 'Lotte schreibt …',
+  formt: 'Lotte bereitet vor …',
+  denkt: 'Lotte denkt nach …',
+  verknuepft: 'Lotte führt zusammen …',
 };
 
 /** Statustext neben dem Orb */

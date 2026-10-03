@@ -106,7 +106,7 @@ export function FotoErfassen({ fertig, auftragId }: ErfassenProps) {
       <Textfeld label="Notiz" optional value={notiz} onChange={(e) => setNotiz(e.target.value)} placeholder="z. B. Wasserschaden hinter der Verkleidung" />
       {/* Der Auftrag ist aus dem Kontext bekannt – nicht noch einmal fragen */}
       {!auftragId && <AuftragAuswahl label="Auftrag" optional wert={auftrag} onChange={(id) => setAuftrag(id || undefined)} />}
-      {!auftragId && !auftrag && <Meta>Ohne Auftrag ordnet Macher das Foto deinem laufenden Einsatz zu, sobald es einen gibt.</Meta>}
+      {!auftragId && !auftrag && <Meta>Ohne Auftrag ordnet Lotte das Foto deinem laufenden Einsatz zu, sobald es einen gibt.</Meta>}
       {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
       <Button breit onClick={speichern} disabled={laedt || !bilder.length} icon="check">
         {bilder.length > 1 ? `${bilder.length} Fotos speichern` : 'Foto speichern'}

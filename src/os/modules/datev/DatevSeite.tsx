@@ -209,7 +209,7 @@ function Export({ monatVorschlag, zuEinstellungen }: { monatVorschlag?: string; 
             <FensterSkizze icon="stecker" />
           </span>
           <p style={{ margin: 0 }}>
-            Später schickt Macher Belege und Buchungen direkt an DATEV – ohne Datei. Bis dahin lädst du den Buchungsstapel herunter und schickst ihn deinem Steuerberater oder lädst ihn in DATEV hoch.
+            Später schickt Lotte Belege und Buchungen direkt an DATEV – ohne Datei. Bis dahin lädst du den Buchungsstapel herunter und schickst ihn deinem Steuerberater oder lädst ihn in DATEV hoch.
           </p>
         </div>
       </Karte>
@@ -276,7 +276,7 @@ function Monatsabschluss({ monatVorschlag }: { monatVorschlag?: string }) {
         ))}
       </Liste>
       <p className="mm-meta" style={{ margin: 0 }}>
-        Punkte mit „Erledigt/Offen“ prüft Macher automatisch aus deinen Daten. Punkte „Von dir“ hakst du selbst ab.
+        Punkte mit „Erledigt/Offen“ prüft Lotte automatisch aus deinen Daten. Punkte „Von dir“ hakst du selbst ab.
       </p>
     </Stapel>
   );

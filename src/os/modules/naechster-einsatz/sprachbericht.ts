@@ -1,5 +1,5 @@
 /**
- * Sprach-Baustellenbericht: Was der Monteur am Ende des Einsatzes sagt, zerlegt Macher offline und regelbasiert in
+ * Sprach-Baustellenbericht: Was der Monteur am Ende des Einsatzes sagt, zerlegt Lotte offline und regelbasiert in
  * Ausgeführt · Zusatzarbeit · Zeit · Material · Status · Doku. Keine KI, kein Netz – nur Regeln, die man testen kann.
  *
  * Beispiel: „Heizkörper im Wohnzimmer getauscht. Zusätzlich das Thermostatventil erneuert, hat eine Stunde länger

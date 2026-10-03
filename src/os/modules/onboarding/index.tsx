@@ -7,7 +7,7 @@ export default defineModul({
   id: 'onboarding',
   titel: 'Onboarding',
   bereich: 'macher',
-  beschreibung: 'Magic Setup: eine Frage, Website angeben – Macher richtet Betrieb, Gewerk und Leistungen ein. Ohne Website ein Tipp aufs Gewerk.',
+  beschreibung: 'Magic Setup: eine Frage, Website angeben – Lotte richtet Betrieb, Gewerk und Leistungen ein. Ohne Website ein Tipp aufs Gewerk.',
   icon: 'start',
   gewicht: 40,
   navigation: 'versteckt',

@@ -54,7 +54,7 @@ export default defineModul({
     {
       id: 'einsatzplanung.abwesenheit-pruefen',
       titel: 'Termine prüfen, wenn jemand ausfällt',
-      beschreibung: 'Wird Urlaub genehmigt oder jemand krank gemeldet, prüft Macher dessen Termine und sagt dir, was umgeplant werden muss.',
+      beschreibung: 'Wird Urlaub genehmigt oder jemand krank gemeldet, prüft Lotte dessen Termine und sagt dir, was umgeplant werden muss.',
       standardAn: true,
       minuten: 10,
       start: () => {

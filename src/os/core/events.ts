@@ -8,7 +8,7 @@
  *   `ereignisse.ts`. Viele leitet der Kern selbst aus Datenereignissen ab; Module senden die übrigen mit `emit`.
  *
  * Handler, die eine Automation in `start()` registriert, laufen automatisch im Namen dieser Automation
- * (Audit: „geändert durch Macher“).
+ * (Audit: „geändert durch Lotte“).
  */
 import { alsAkteur, registrierAkteur, type Akteur } from './akteur';
 import type { Basis } from './objects';

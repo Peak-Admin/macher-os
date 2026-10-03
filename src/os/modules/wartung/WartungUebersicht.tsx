@@ -43,7 +43,7 @@ export function WartungUebersicht() {
   return (
     <Seite
       titel="Wartung & Service"
-      untertitel={`Was fällig ist. Macher legt Wartungsaufträge ${vorlauf} Wochen vorher an und bündelt Anlagen am selben Ort.`}
+      untertitel={`Was fällig ist. Lotte legt Wartungsaufträge ${vorlauf} Wochen vorher an und bündelt Anlagen am selben Ort.`}
       aktion={anlegbar.length ? <Button icon="plus" onClick={alleAnlegen}>{anlegbar.length === 1 ? 'Fällige Wartung anlegen' : `${anlegbar.length} fällige Wartungen anlegen`}</Button> : undefined}
     >
       <Raster min={160}>
@@ -55,14 +55,14 @@ export function WartungUebersicht() {
 
       {ohneDatum.length > 0 && (
         <Meldung ton="neutral" titel={ohneDatum.length === 1 ? '1 Anlage ohne nächstes Wartungsdatum' : `${ohneDatum.length} Anlagen ohne nächstes Wartungsdatum`}>
-          {ohneDatum.map((a) => `${a.typ} (${db.kunden.get(a.kundeId)?.name ?? 'Kunde'})`).join(', ')}. Trag an der Anlage die letzte oder nächste Wartung ein, dann plant Macher mit.
+          {ohneDatum.map((a) => `${a.typ} (${db.kunden.get(a.kundeId)?.name ?? 'Kunde'})`).join(', ')}. Trag an der Anlage die letzte oder nächste Wartung ein, dann plant Lotte mit.
         </Meldung>
       )}
 
       {mitDatum.length === 0 ? (
         <Leer
           titel="Noch keine Wartungen geplant"
-          text="Trag an deinen Anlagen das Wartungsintervall und die nächste Wartung ein. Macher legt die Aufträge dann rechtzeitig an."
+          text="Trag an deinen Anlagen das Wartungsintervall und die nächste Wartung ein. Lotte legt die Aufträge dann rechtzeitig an."
           aktion={<Button to="/auftraege">Zu den Aufträgen</Button>}
           icon="werkzeug"
         />
@@ -154,7 +154,7 @@ export function WartungUebersicht() {
         </Liste>
       </Karte>
 
-      <Karte titel="So arbeitet Macher für dich" kompakt>
+      <Karte titel="So arbeitet Lotte für dich" kompakt>
         <Auswahl
           label="Wartungsaufträge anlegen"
           value={String(vorlauf)}

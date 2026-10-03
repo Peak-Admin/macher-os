@@ -1,7 +1,7 @@
 import type { ObjektSchluessel } from '@/lib/objekte';
 /**
  * Datenmodell des Home-Screens („Heute“). Bewusst generisch: Widgets, Aktionen und Arbeitsposten kommen aus
- * verschiedenen Quellen (Kernobjekte, Macher-Hinweise, Inhalte von Mission Mittelstand) und werden hier nur
+ * verschiedenen Quellen (Kernobjekte, Lotte-Hinweise, Inhalte von Mission Mittelstand) und werden hier nur
  * beschrieben – nie kopiert. Jeder Posten verweist über `bezug`/`actionUrl` auf sein Original.
  */
 import type { ComponentType } from 'react';
@@ -36,8 +36,8 @@ export interface NextAction {
 export type WorkItemTyp = 'aufgabe' | 'freigabe' | 'entscheidung' | 'angebot' | 'vertretung' | 'anfrage';
 export type WorkItemStatus = 'to_do' | 'in_progress' | 'waiting' | 'ready' | 'completed';
 /**
- * Gruppe in „Deine Arbeit“: erledigen (Aufgaben) · pruefen (vorbereitete Entwürfe) · entscheiden (Macher fragt dich)
- * · bestaetigen (Macher hat etwas vorbereitet und wartet auf deine Freigabe – KI-Entwürfe).
+ * Gruppe in „Deine Arbeit“: erledigen (Aufgaben) · pruefen (vorbereitete Entwürfe) · entscheiden (Lotte fragt dich)
+ * · bestaetigen (Lotte hat etwas vorbereitet und wartet auf deine Freigabe – KI-Entwürfe).
  */
 export type WorkItemGruppe = 'erledigen' | 'pruefen' | 'entscheiden' | 'bestaetigen';
 

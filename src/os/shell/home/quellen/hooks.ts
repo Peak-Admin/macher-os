@@ -1,4 +1,4 @@
-/** Verbindet die reinen Regeln mit den echten Daten (lokale Datenbank, Macher-Hinweise, Einstellungen). */
+/** Verbindet die reinen Regeln mit den echten Daten (lokale Datenbank, Lotte-Hinweise, Einstellungen). */
 import { db, useDatenstand } from '@core/db';
 import { einstellung } from '@core/einstellungen';
 import { heute } from '@core/format';

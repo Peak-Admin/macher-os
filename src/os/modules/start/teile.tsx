@@ -233,7 +233,7 @@ export function PositionenSchnell({ positionen, onChange, vorschlag: alsVorschla
     try {
       const { positionen: neu, quelle } = await positionenAusText(satz);
       if (!neu.length) {
-        setMeldung({ ton: 'achtung', text: 'Daraus konnte Macher keine Position bauen. Versuch es mit „Menge, Leistung“, z. B. „zwei Steckdosen setzen“.' });
+        setMeldung({ ton: 'achtung', text: 'Daraus konnte Lotte keine Position bauen. Versuch es mit „Menge, Leistung“, z. B. „zwei Steckdosen setzen“.' });
         return;
       }
       if (alsVorschlag) {
@@ -291,14 +291,14 @@ export function PositionenSchnell({ positionen, onChange, vorschlag: alsVorschla
             {sprache.an ? 'Fertig' : 'Sprechen'}
           </Button>
         )}
-        <Button variante="sekundaer" icon={ki === 'aus' ? 'plus' : 'macher'} onClick={() => void uebernehmen()} laedt={laedt} laedtText="Macher erkennt …" ki={ki === 'aus' ? undefined : 'formt'} disabled={!text.trim()}>
+        <Button variante="sekundaer" icon={ki === 'aus' ? 'plus' : 'macher'} onClick={() => void uebernehmen()} laedt={laedt} laedtText="Lotte erkennt …" ki={ki === 'aus' ? undefined : 'formt'} disabled={!text.trim()}>
           {alsVorschlag ? 'Vorschlagen' : ki === 'aus' ? 'Übernehmen' : 'Erkennen'}
         </Button>
       </div>
       {ki === 'demo' && (
         <div className="mm-zeile" style={{ gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           <Status ton="neutral">KI-Demo</Status>
-          <Meta>Macher erkennt Mengen, Einheiten und Leistungen aus deinem Katalog. Mit eingerichteter KI versteht er auch freie Sätze.</Meta>
+          <Meta>Lotte erkennt Mengen, Einheiten und Leistungen aus deinem Katalog. Mit eingerichteter KI versteht sie auch freie Sätze.</Meta>
         </div>
       )}
       {sprache.an && <Meta>Ich höre zu … sprich einfach los, z. B. „zwei Steckdosen setzen, zehn Meter Leitung, Anfahrt“.</Meta>}
@@ -326,7 +326,7 @@ export function PositionenSchnell({ positionen, onChange, vorschlag: alsVorschla
       {meldung && <Meldung ton={meldung.ton}>{meldung.text}</Meldung>}
       {!leistungen.length && <Meta>Dein Leistungskatalog ist noch leer. Positionen ohne Katalog bekommen keinen Preis – den trägst du dann selbst ein.</Meta>}
       {positionen.length === 0 ? (
-        <Meta>Noch keine Positionen. Macher nimmt die Preise aus deinem Katalog.</Meta>
+        <Meta>Noch keine Positionen. Lotte nimmt die Preise aus deinem Katalog.</Meta>
       ) : (
         positionen.map((p, i) => (
           <div key={p.id} className="mm-schnell-pos">

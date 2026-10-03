@@ -50,7 +50,7 @@ export const vergleichsSeiten = {
         { merkmal: "Vom Angebot zur Rechnung", links: "neue Datei, Positionen kopieren", rechts: "ein Klick – die Positionen kommen mit" },
         { merkmal: "Rechnungsnummern", links: "von Hand zählen", rechts: "fortlaufend und automatisch" },
         { merkmal: "E-Rechnung (XRechnung)", links: "nicht vorgesehen", rechts: true },
-        { merkmal: "Offene Rechnungen im Blick", links: "eigene Liste pflegen", rechts: "Macher erinnert dich" },
+        { merkmal: "Offene Rechnungen im Blick", links: "eigene Liste pflegen", rechts: "Lotte erinnert dich" },
         { merkmal: "Termine und Einsätze", links: "getrennt im Kalender oder im Kopf", rechts: "am Auftrag, fürs Team sichtbar" },
         { merkmal: "Auf der Baustelle", links: "Dateien am Handy kaum bearbeitbar", rechts: "App mit großen Knöpfen, auch ohne Netz" },
         { merkmal: "Fotos und Unterschrift", links: "im privaten Handy", rechts: "direkt am Auftrag" },
@@ -121,7 +121,7 @@ export const vergleichsSeiten = {
       karten: [
         { titel: "Ein Preis, alles drin", text: "Ein fester Monatspreis je Betrieb nach Teamgröße. Keine Zusatzmodule zum Freischalten.", icon: "euro" },
         { titel: "Eine Frage zum Start", text: "Du wählst dein Gewerk, Handwerk OS richtet den Rest mit Vorlagen ein.", icon: "spark" },
-        { titel: "Macher erledigt", text: "Erinnerungen, Mahnungen und Vorschläge kommen von selbst – du bestätigst nur.", icon: "bolt" },
+        { titel: "Lotte erledigt", text: "Erinnerungen, Mahnungen und Vorschläge kommen von selbst – du bestätigst nur.", icon: "bolt" },
       ],
     },
     vergleich: {

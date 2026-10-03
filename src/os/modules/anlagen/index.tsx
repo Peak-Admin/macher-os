@@ -90,7 +90,7 @@ export default defineModul({
     {
       id: REGEL,
       titel: 'Wartung an der Anlage fortschreiben',
-      beschreibung: 'Ist ein Wartungsauftrag erledigt, trägt Macher die letzte Wartung an der Anlage ein und berechnet die nächste aus dem Intervall.',
+      beschreibung: 'Ist ein Wartungsauftrag erledigt, trägt Lotte die letzte Wartung an der Anlage ein und berechnet die nächste aus dem Intervall.',
       standardAn: true,
       minuten: 3,
       start: () =>

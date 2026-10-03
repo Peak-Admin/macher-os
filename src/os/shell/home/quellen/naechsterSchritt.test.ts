@@ -25,10 +25,10 @@ describe('Dein nächster Schritt', () => {
     expect(naechsteAktionen(basis())).toEqual([]);
   });
 
-  it('„Macher fertig machen“: optional, ausblendbar, mit Fortschritt und erstem offenen Schritt', () => {
+  it('„Handwerk OS einrichten“: optional, ausblendbar, mit Fortschritt und erstem offenen Schritt', () => {
     const [a] = naechsteAktionen(basis({ einrichtung: haken([true, true, false, false]) }));
     expect(a.type).toBe('onboarding');
-    expect(a.title).toBe('Macher fertig machen');
+    expect(a.title).toBe('Handwerk OS einrichten');
     expect(a.actionLabel).toBe('Weiter einrichten');
     expect(a.actionUrl).toBe('/s/2');
     expect(a.progress).toMatchObject({ erledigt: 2, gesamt: 4 });

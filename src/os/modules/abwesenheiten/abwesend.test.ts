@@ -32,7 +32,7 @@ describe('Event mitarbeiter.abwesend', () => {
     expect(events).toHaveLength(1);
   });
 
-  it('auch direkt angelegte Abwesenheiten (z. B. von Macher) werden gemeldet', () => {
+  it('auch direkt angelegte Abwesenheiten (z. B. von Lotte) werden gemeldet', () => {
     db.abwesenheiten.create({ mitarbeiterId: 'm2', art: 'schule', von: '2026-10-07', bis: '2026-10-07', status: 'genehmigt', halbtags: true });
     expect(events.map((e) => (e.daten as { art: string }).art)).toEqual(['schule']);
   });

@@ -6,28 +6,28 @@ import { funktionHref, gewerkHref } from "@/content/registry";
 import { FunktionKarte } from "./FunktionKarte";
 import { FunktionsMock } from "./FunktionsMock";
 
-/** Eigene, ausführlichere Seite für „Macher erledigt automatisch“. */
+/** Eigene, ausführlichere Seite für „Lotte erledigt automatisch“. */
 export function AutomatischSeite() {
   const f = funktionInhalte["automatisch-erledigen"];
 
   return (
     <>
       <PageHero
-        breadcrumbs={[{ label: "Funktionen", href: "/funktionen" }, { label: "Macher erledigt automatisch" }]}
-        eyebrow="Macher erledigt"
+        breadcrumbs={[{ label: "Funktionen", href: "/funktionen" }, { label: "Lotte erledigt automatisch" }]}
+        eyebrow="Lotte erledigt"
         title={f.hero.titel}
         intro={
           <>
             {f.hero.problem} <span className="font-semibold text-ink">{f.hero.loesung}</span>
           </>
         }
-        visual={<FunktionsMock visual={f.visual} label="Startseite in Handwerk OS: Was Macher heute erledigt hat" />}
+        visual={<FunktionsMock visual={f.visual} label="Startseite in Handwerk OS: Was Lotte heute erledigt hat" />}
       />
 
       {/* Übersicht: zehn Aufgaben als Sprungmarken */}
       <Section tone="white" tight>
         <SectionHeading
-          eyebrow="Was Macher übernimmt"
+          eyebrow="Was Lotte übernimmt"
           title="Zehn Aufgaben, die du nicht mehr selbst machen musst."
           intro="Jede davon kannst du einzeln einschalten – oder erst einmal nur Vorschläge bekommen."
         />
@@ -48,7 +48,7 @@ export function AutomatischSeite() {
 
       {/* Vorher / Nachher */}
       <Section>
-        <SectionHeading eyebrow="Vorher und nachher" title="So sieht der Alltag mit Macher aus." />
+        <SectionHeading eyebrow="Vorher und nachher" title="So sieht der Alltag mit Lotte aus." />
         <ol className="mt-10 grid gap-5">
           {f.aufgaben.map((a, i) => (
             <li
@@ -78,7 +78,7 @@ export function AutomatischSeite() {
                 </div>
                 <div className="border-b border-line bg-moss-soft/60 p-5 sm:p-6 md:border-b-0 md:border-r">
                   <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold font-tagline uppercase tracking-wider text-moss">
-                    <Icon name="spark" className="size-3.5" /> Mit Macher
+                    <Icon name="spark" className="size-3.5" /> Mit Lotte
                   </p>
                   <p className="font-semibold leading-relaxed">{a.nachher}</p>
                 </div>
@@ -92,16 +92,16 @@ export function AutomatischSeite() {
         </ol>
       </Section>
 
-      {/* Ein Tag mit Macher */}
+      {/* Ein Tag mit Lotte */}
       <Section tone="ink">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Ein Tag mit Macher</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Ein Tag mit Lotte</p>
             <h2 className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl">
               Dienstag in einem Elektrobetrieb.
             </h2>
             <p className="mt-5 max-w-md text-lg text-white/70">
-              Ein ausgedachter, aber typischer Tag: Was passiert, und was Macher davon übernimmt.
+              Ein ausgedachter, aber typischer Tag: Was passiert, und was Lotte davon übernimmt.
             </p>
           </div>
           <ol className="relative grid gap-4 border-l border-white/15 pl-6">
@@ -119,9 +119,9 @@ export function AutomatischSeite() {
       {/* Prinzipien */}
       <Section tone="white">
         <SectionHeading
-          eyebrow="So arbeitet Macher"
+          eyebrow="So arbeitet Lotte"
           title="Automatisch heißt nicht: ohne dich."
-          intro="Macher arbeitet nach deinen Regeln. Du kannst jederzeit sehen, was passiert ist, und alles ändern."
+          intro="Lotte arbeitet nach deinen Regeln. Du kannst jederzeit sehen, was passiert ist, und alles ändern."
         />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {f.prinzipien.map((p) => (
@@ -138,7 +138,7 @@ export function AutomatischSeite() {
       <Section>
         <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <SectionHeading eyebrow="Gewerke" title="Macher kennt dein Gewerk." />
+            <SectionHeading eyebrow="Gewerke" title="Lotte kennt dein Gewerk." />
             <ul className="mt-8 grid gap-3">
               {f.gewerke.map((g) => (
                 <li key={g.slug}>
@@ -171,7 +171,7 @@ export function AutomatischSeite() {
 
       {/* FAQ */}
       <Section tone="white" containerSize="narrow">
-        <SectionHeading title="Häufige Fragen zu Macher" />
+        <SectionHeading title="Häufige Fragen zu Lotte" />
         <div className="mt-8">
           <Faq items={f.faq} />
         </div>
@@ -180,7 +180,7 @@ export function AutomatischSeite() {
 
       {/* Verwandte Funktionen */}
       <Section tone="sand" tight>
-        <SectionHeading eyebrow="Verwandte Funktionen" title="Hier arbeitet Macher am meisten mit." />
+        <SectionHeading eyebrow="Verwandte Funktionen" title="Hier arbeitet Lotte am meisten mit." />
         <ul className="mt-8 grid gap-4 md:grid-cols-3">
           {f.verwandt.map((v) => (
             <li key={v}>

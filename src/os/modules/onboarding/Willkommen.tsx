@@ -173,7 +173,7 @@ function Ablauf() {
     setLiest(false);
     if (!r.ok) {
       if (r.art === 'nicht-verbunden') {
-        setHinweis('Deine Website kann Macher hier noch nicht lesen. Wähl dein Gewerk – den Rest ergänzt du, wenn du ihn brauchst.');
+        setHinweis('Deine Website kann Lotte hier noch nicht lesen. Wähl dein Gewerk – den Rest ergänzt du, wenn du ihn brauchst.');
         return geheZu('gewerk');
       }
       return setFehler(`${r.fehler} Du kannst auch ohne Website starten.`);
@@ -256,7 +256,7 @@ function Ablauf() {
   if (schritt === 'gewerk')
     return (
       <div className="ob-ablauf">
-        <Frage titel="Was macht ihr?" text="Ein Tipp genügt. Macher richtet Leistungen, Richtpreise und Auftragsabläufe für dein Gewerk ein. Alles lässt sich später ändern.">
+        <Frage titel="Was macht ihr?" text="Ein Tipp genügt. Lotte richtet Leistungen, Richtpreise und Auftragsabläufe für dein Gewerk ein. Alles lässt sich später ändern.">
           {hinweis && <Meldung>{hinweis}</Meldung>}
           {richtetEin ? (
             <Meldung ton="erfolg" titel="Dein Betrieb wird eingerichtet …">
@@ -286,7 +286,7 @@ function Ablauf() {
 
   return (
     <div className="ob-ablauf">
-      <Frage titel="Welcher Betrieb bist du?" text="Gib deine Website an. Macher liest Name, Logo, Gewerk, Leistungen und Kontaktdaten aus und richtet alles für dich ein.">
+      <Frage titel="Welcher Betrieb bist du?" text="Gib deine Website an. Lotte liest Name, Logo, Gewerk, Leistungen und Kontaktdaten aus und richtet alles für dich ein.">
         <form
           className="ob-website ob-website--gross"
           onSubmit={(e) => {
@@ -295,7 +295,7 @@ function Ablauf() {
           }}
         >
           <Eingabe label="Website" value={website} onChange={(e) => (setWebsite(e.target.value), setFehler(undefined))} placeholder="www.maler-mueller.de" inputMode="url" autoComplete="url" autoFocus />
-          <WeiterButton icon="pfeil" onClick={() => void betriebFinden()} laedt={liest} laedtText="Macher liest deine Website …">
+          <WeiterButton icon="pfeil" onClick={() => void betriebFinden()} laedt={liest} laedtText="Lotte liest deine Website …">
             Betrieb übernehmen
           </WeiterButton>
         </form>

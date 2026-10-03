@@ -158,7 +158,7 @@ function BerichtInhaltBearbeiten({ b }: { b: Bericht }) {
         </Meldung>
       )}
       {b.automatisch && b.status === 'entwurf' && (
-        <Meldung ton="neutral" titel="Von Macher vorbereitet">
+        <Meldung ton="neutral" titel="Von Lotte vorbereitet">
           Zeiten, Material, Fotos und erledigte Aufgaben des Tages sind schon drin. Ergänze, was gemacht wurde, und schließ den Bericht ab.
         </Meldung>
       )}
@@ -284,9 +284,9 @@ export function BerichteListe() {
         <Liste
           leer={
             filter === 'offen' && alle.length ? (
-              <Leer titel="Alles erledigt" text="Keine offenen Berichte. Macher bereitet nach jedem beendeten Einsatz einen Bericht vor." icon="check" />
+              <Leer titel="Alles erledigt" text="Keine offenen Berichte. Lotte bereitet nach jedem beendeten Einsatz einen Bericht vor." icon="check" />
             ) : (
-              <Leer titel="Noch keine Berichte" text="Erstelle einen Bericht – Zeiten, Material und Fotos des Tages übernimmt Macher automatisch." aktion={<Button to="/auftraege/berichte/neu">Bericht erstellen</Button>} icon="notiz" />
+              <Leer titel="Noch keine Berichte" text="Erstelle einen Bericht – Zeiten, Material und Fotos des Tages übernimmt Lotte automatisch." aktion={<Button to="/auftraege/berichte/neu">Bericht erstellen</Button>} icon="notiz" />
             )
           }
         >
@@ -344,7 +344,7 @@ export function BerichteTab({ id }: { id: ID }) {
           Bericht für heute
         </Button>
       </div>
-      <Liste leer={<Leer titel="Noch keine Berichte" text="Nach einem Einsatz bereitet Macher den Bericht automatisch vor." icon="notiz" />}>
+      <Liste leer={<Leer titel="Noch keine Berichte" text="Nach einem Einsatz bereitet Lotte den Bericht automatisch vor." icon="notiz" />}>
         {[...liste]
           .sort((a, b) => b.datum.localeCompare(a.datum))
           .map((b) => (

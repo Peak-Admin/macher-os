@@ -96,7 +96,7 @@ export function DatanormImport() {
           <Stapel>
             <FormRaster>
               <Auswahl label="Großhändler" optional value={lieferantId} leer="Ohne Zuordnung" onChange={(e) => setLieferantId(e.target.value)} optionen={lieferanten.map((l) => ({ wert: l.id, label: l.name }))} />
-              <ZahlEingabe label="Dein Rabatt auf den Listenpreis (%)" optional wert={rabatt} onWert={setRabatt} hilfe="Nur bei Listenpreisen: daraus rechnet Macher deinen Einkaufspreis." />
+              <ZahlEingabe label="Dein Rabatt auf den Listenpreis (%)" optional wert={rabatt} onWert={setRabatt} hilfe="Nur bei Listenpreisen: daraus rechnet Lotte deinen Einkaufspreis." />
             </FormRaster>
             <div>
               <DateiKnopf variante="primaer" onDateien={([f]) => datei(f)} laedt={laedt} laedtText="Wird gelesen …">

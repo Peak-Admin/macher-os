@@ -36,7 +36,7 @@ export function LagerBestand() {
       <Stapel>
         {unter.length > 0 && (
           <Meldung ton="achtung" titel={`${unter.length} ${unter.length === 1 ? 'Artikel' : 'Artikel'} unter Mindestbestand`} aktion={<Button klein variante="sekundaer" to="/betrieb/bedarf">Zum Bedarf</Button>}>
-            Macher rechnet die Nachbestellung im Bedarf mit ein.
+            Lotte rechnet die Nachbestellung im Bedarf mit ein.
           </Meldung>
         )}
         <Zeile zwischen>

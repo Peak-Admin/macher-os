@@ -60,7 +60,7 @@ export function AuftragTermine({ id }: { id: string }) {
         </Zeile>
       )}
       {!termine.length ? (
-        <Leer titel="Noch kein Termin" text="Plane den Auftrag ein – Macher zeigt dir, wer wann frei ist." icon="kalender" />
+        <Leer titel="Noch kein Termin" text="Plane den Auftrag ein – Lotte zeigt dir, wer wann frei ist." icon="kalender" />
       ) : (
         <>
           <Abschnitt titel="Geplant">

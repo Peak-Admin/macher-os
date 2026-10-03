@@ -79,7 +79,7 @@ export function WissenArtikel() {
                     ))}
                   </Liste>
                 )}
-                {!a.anlagentypen?.length && !leistungen.length && <Meta>Noch nicht verknüpft. Verknüpfte Anleitungen schlägt Macher am passenden Auftrag vor.</Meta>}
+                {!a.anlagentypen?.length && !leistungen.length && <Meta>Noch nicht verknüpft. Verknüpfte Anleitungen schlägt Lotte am passenden Auftrag vor.</Meta>}
               </Stapel>
             </Karte>
             {a.links?.length ? (

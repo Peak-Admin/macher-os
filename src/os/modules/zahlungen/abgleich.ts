@@ -112,7 +112,7 @@ export function nameTreffer(name: string, zweck: string, k: Kunde | undefined): 
   return woerter.some((w) => new RegExp(`(^|[^a-zäöüß])${w}($|[^a-zäöüß])`).test(heu));
 }
 
-/** IBAN → Kunde aus früheren Zuordnungen (Macher lernt mit jeder bestätigten Zahlung dazu) */
+/** IBAN → Kunde aus früheren Zuordnungen (Lotte lernt mit jeder bestätigten Zahlung dazu) */
 export function ibanKunden(): Map<string, ID> {
   const karte = new Map<string, ID>();
   const mehrdeutig = new Set<string>();

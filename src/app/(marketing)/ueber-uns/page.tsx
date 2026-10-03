@@ -94,7 +94,7 @@ export default function UeberUnsPage() {
               <div>
                 <p className="font-display text-lg font-bold">Vollständig hinten</p>
                 <p className="mt-2 text-white/70">
-                  Im Hintergrund hängt alles zusammen. Was einmal erfasst ist, wird überall genutzt – und Macher erledigt
+                  Im Hintergrund hängt alles zusammen. Was einmal erfasst ist, wird überall genutzt – und Lotte erledigt
                   die Routine automatisch.
                 </p>
               </div>

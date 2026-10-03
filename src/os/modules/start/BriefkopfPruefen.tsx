@@ -1,5 +1,5 @@
 /**
- * Briefkopf just in time: erst wenn das erste Angebot oder die erste Rechnung rausgehen soll, fragt Macher nach
+ * Briefkopf just in time: erst wenn das erste Angebot oder die erste Rechnung rausgehen soll, fragt Lotte nach
  * dem, was im Briefkopf noch fehlt – mit Begründung im Moment, in dem sie einleuchtet. Vorhandenes steht mit ✓ da.
  */
 import { useState, type ReactNode } from 'react';

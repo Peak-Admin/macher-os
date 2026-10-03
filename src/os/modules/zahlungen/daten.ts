@@ -14,7 +14,7 @@ export type UmsatzQuelle = 'csv' | 'camt' | 'bank';
 /**
  * - `neu`: noch nicht abgeglichen (z. B. gerade von der Bank gekommen)
  * - `zugeordnet`: Zahlung(en) gebucht (`zahlungIds`)
- * - `vorschlag`: Macher hat eine passende Rechnung, ist sich aber nicht sicher (`vorschlagIds`)
+ * - `vorschlag`: Lotte hat eine passende Rechnung, ist sich aber nicht sicher (`vorschlagIds`)
  * - `offen`: keine passende Rechnung gefunden
  * - `ignoriert`: gehört zu keiner Rechnung (Privateinlage, Erstattung …)
  */
@@ -36,7 +36,7 @@ export interface Bankumsatz extends Basis {
   vorschlagIds?: ID[];
   /** ein Satz: warum so zugeordnet / warum nicht */
   grund?: string;
-  /** von Macher ohne Rückfrage zugeordnet */
+  /** von Lotte ohne Rückfrage zugeordnet */
   automatisch?: boolean;
   bearbeitetAm?: string;
 }

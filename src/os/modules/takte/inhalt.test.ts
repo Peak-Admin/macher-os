@@ -124,7 +124,7 @@ describe('Wochenbilanz (Chef)', () => {
     expect(i).toMatchObject({ von: '2026-09-28', bis: '2026-10-02', umsatz: { netto: 100_00, anzahl: 1 }, auftraege: { neu: 1, abgeschlossen: 1, laufend: 1 }, erledigt: { anzahl: 2, minuten: 5 } });
     expect(i.offen).toMatchObject({ summe: 238_00, anzahl: 2, anzahlUeberfaellig: 2 });
     const n = nachrichtAus(i, 'chefin');
-    expect(n.text.replace(/\s/g, ' ')).toBe('Umsatz 100,00 € netto · offen 238,00 € · 1 Auftrag fertig · Macher hat 2 erledigt');
+    expect(n.text.replace(/\s/g, ' ')).toBe('Umsatz 100,00 € netto · offen 238,00 € · 1 Auftrag fertig · Lotte hat 2 erledigt');
     const mail = emailAus(n, 'wochenbilanz', 'https://app.example/');
     expect(mail.text).toContain('Öffnen: https://app.example/os/macher/takte/wochenbilanz');
     expect(mail.text).toContain('Abbestellen');

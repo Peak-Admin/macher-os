@@ -32,7 +32,7 @@ export function BedarfAnsicht() {
         {!zeilen.length ? (
           <Leer
             titel="Alles da"
-            text="Für die anstehenden Aufträge fehlt kein Material und kein Lagerartikel ist unter Mindestbestand. Macher prüft das täglich."
+            text="Für die anstehenden Aufträge fehlt kein Material und kein Lagerartikel ist unter Mindestbestand. Lotte prüft das täglich."
             icon="check"
             aktion={<Button variante="sekundaer" to="/betrieb/bestellungen">Zu den Bestellungen</Button>}
           />
@@ -82,7 +82,7 @@ export function BedarfAnsicht() {
                   />
                 ))}
               </Liste>
-              {!l && <p className="mm-meta">Tipp: Hinterlege beim Artikel einen Lieferanten, dann bündelt Macher die Bestellung automatisch.</p>}
+              {!l && <p className="mm-meta">Tipp: Hinterlege beim Artikel einen Lieferanten, dann bündelt Lotte die Bestellung automatisch.</p>}
             </Karte>
           );
         })}

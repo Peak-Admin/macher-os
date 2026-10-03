@@ -414,7 +414,7 @@ export interface SchrittVorlage {
   /** Jeder Schritt gehört zu genau einer Phase – so funktioniert alles, was auf Phasen schaut, weiter */
   phase: Phase;
   zustaendig?: SchrittZustaendig;
-  /** Frist ab Beginn des Schritts in Tagen – danach erinnert Macher unter „Braucht dich“ */
+  /** Frist ab Beginn des Schritts in Tagen – danach erinnert Lotte unter „Braucht dich“ */
   fristTage?: number;
   /** Text der Erinnerung */
   erinnerung?: string;

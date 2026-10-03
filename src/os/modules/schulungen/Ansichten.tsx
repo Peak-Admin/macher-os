@@ -64,7 +64,7 @@ export function SchulungenSeite() {
   return (
     <Seite titel="Schulungen" untertitel="Planen, durchführen, Nachweis kommt automatisch." aktion={buero ? <Button icon="plus" to="/betrieb/schulungen/neu">Schulung planen</Button> : undefined}>
       {buero && vs.length > 0 && (
-        <Karte titel="Wer muss als Nächstes?" icon="team" oberzeile="Vorschlag von Macher">
+        <Karte titel="Wer muss als Nächstes?" icon="team" oberzeile="Vorschlag von Lotte">
           <Liste>
             {vs.slice(0, 5).map((v) => (
               <ListenZeile
@@ -180,7 +180,7 @@ export function SchulungNeu() {
                 leer="Keine – interne Einweisung"
                 onChange={(e) => setF({ ...f, qualifikationId: e.target.value, titel: f.titel || db.qualifikationen.get(e.target.value)?.name || '' })}
                 optionen={qualis.map((q) => ({ wert: q.id, label: q.name }))}
-                hilfe="Nach dem Abschluss trägt Macher den Nachweis automatisch ein."
+                hilfe="Nach dem Abschluss trägt Lotte den Nachweis automatisch ein."
               />
               <Eingabe label="Titel" value={f.titel} onChange={(e) => setF({ ...f, titel: e.target.value })} />
               <Eingabe label="Datum" type="date" value={f.datum} onChange={(e) => setF({ ...f, datum: e.target.value })} />
@@ -266,7 +266,7 @@ export function SchulungDetail() {
           <Stapel abstand={24}>
             {s.status === 'geplant' && buero && vorbei && (
               <Meldung ton="achtung" titel="Wer war dabei?">
-                Hak ab, wer teilgenommen hat, und schließ die Schulung ab. {q ? 'Den Nachweis trägt Macher dann automatisch ein.' : ''}
+                Hak ab, wer teilgenommen hat, und schließ die Schulung ab. {q ? 'Den Nachweis trägt Lotte dann automatisch ein.' : ''}
               </Meldung>
             )}
             <Stapel abstand={8}>

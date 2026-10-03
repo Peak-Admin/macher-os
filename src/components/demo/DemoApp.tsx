@@ -136,7 +136,7 @@ function Heute({ daten, oeffneAuftrag }: { daten: DemoGewerk; oeffneAuftrag: () 
       </div>
       <div className="rounded-xl bg-signal-soft p-3">
         <p className="flex items-center gap-1.5 text-xs font-bold text-signal-dark">
-          <Icon name="spark" className="size-3.5" /> Macher hat erledigt
+          <Icon name="spark" className="size-3.5" /> Lotte hat erledigt
         </p>
         <ul className="mt-1.5 space-y-1 text-[13px] text-ink">
           {daten.automatisch.erledigt.map((x) => (
@@ -257,7 +257,7 @@ function Plan({ daten }: { daten: DemoGewerk }) {
       </Blatt>
       <div className="mt-3 rounded-xl bg-signal-soft p-3 text-[13px]">
         <p className="flex items-center gap-1.5 font-bold text-signal-dark">
-          <Icon name="spark" className="size-3.5" /> Macher-Vorschlag
+          <Icon name="spark" className="size-3.5" /> Vorschlag von Lotte
         </p>
         <p className="mt-1">{p.vorschlag}</p>
       </div>
@@ -331,7 +331,7 @@ function Automatisch({
   const a = daten.automatisch;
   return (
     <div className="space-y-3">
-      <Kopf titel="Macher erledigt" rechts="automatische Arbeit" />
+      <Kopf titel="Lotte erledigt" rechts="automatische Arbeit" />
       <div>
         <p className="mb-1.5 text-[13px] font-semibold text-ink">Wartet auf dich</p>
         <Blatt className="divide-y divide-app-linie">
@@ -363,7 +363,7 @@ function Automatisch({
           ))}
         </ul>
       </div>
-      <p className="text-xs text-muted">Du entscheidest: Macher bereitet vor, du bestätigst.</p>
+      <p className="text-xs text-muted">Du entscheidest: Lotte bereitet vor, du bestätigst.</p>
     </div>
   );
 }

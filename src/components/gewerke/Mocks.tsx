@@ -28,7 +28,7 @@ export function GewerkTagMock({
   return (
     <div
       role="img"
-      aria-label={`Tagesansicht in Handwerk OS für ${label}: heutige Einsätze${hinweis ? " und ein Hinweis von Macher" : ""}`}
+      aria-label={`Tagesansicht in Handwerk OS für ${label}: heutige Einsätze${hinweis ? " und ein Hinweis von Lotte" : ""}`}
       className="vorschau-fenster overflow-hidden border border-line bg-app-canvas p-3 text-ink sm:p-4"
     >
       <div className="mb-3 flex items-center justify-between gap-3">
@@ -159,7 +159,7 @@ export function EinrichtungMock() {
         </div>
         <div className="rounded-xl bg-signal-soft p-3">
           <p className="flex items-center gap-1.5 text-xs font-bold text-signal-dark">
-            <Icon name="spark" className="size-3.5" /> Macher richtet für SHK ein:
+            <Icon name="spark" className="size-3.5" /> Lotte richtet für SHK ein:
           </p>
           <ul className="mt-2 space-y-1.5 text-sm text-ink">
             {eingerichtet.map((e) => (

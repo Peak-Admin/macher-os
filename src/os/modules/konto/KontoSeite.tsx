@@ -27,7 +27,7 @@ export function syncText(s: SyncStatus): { ton: 'erfolg' | 'aktiv' | 'achtung' |
   if (s.uebernahme) return { ton: 'aktiv', text: 'Deine Daten werden gesichert …' };
   if (s.zustand === 'offline')
     return { ton: 'neutral', text: s.wartend ? `${s.wartend} ${s.wartend === 1 ? 'Änderung wartet' : 'Änderungen warten'} – du bist offline. Sobald du Netz hast, geht es automatisch weiter.` : 'Du bist offline. Neue Änderungen werden später abgeglichen.' };
-  if (s.zustand === 'fehler') return { ton: 'achtung', text: 'Die Sicherung klemmt gerade. Macher versucht es automatisch weiter.' };
+  if (s.zustand === 'fehler') return { ton: 'achtung', text: 'Die Sicherung klemmt gerade. Lotte versucht es automatisch weiter.' };
   if (s.zustand === 'sendet' || s.zustand === 'verbindet' || s.wartend) return { ton: 'aktiv', text: 'Wird gesichert …' };
   if (s.zustand === 'bereit') return { ton: 'erfolg', text: `Alles gesichert${s.zuletzt ? ` · zuletzt ${uhrzeit(s.zuletzt)}` : ''}` };
   return { ton: 'neutral', text: 'Abgleich ist aus.' };

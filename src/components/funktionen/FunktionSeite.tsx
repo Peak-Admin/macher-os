@@ -93,7 +93,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
           <div>
             <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Automatisch erledigt</p>
             <h2 className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl">
-              Das übernimmt Macher für dich.
+              Das übernimmt Lotte für dich.
             </h2>
             <p className="mt-5 max-w-md text-lg text-white/70">
               Du legst die Regeln fest. Was nach außen geht oder Geld kostet, gibst du frei.
@@ -102,14 +102,14 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
               href="/funktionen/automatisch-erledigen"
               className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
-              Alles, was Macher erledigt <Icon name="arrow-right" className="size-4" />
+              Alles, was Lotte erledigt <Icon name="arrow-right" className="size-4" />
             </Link>
           </div>
           <ul className="grid content-start gap-3 sm:grid-cols-2">
             {f.automatisch.map((a) => (
               <li key={a} className="flex items-start gap-3 karte-dunkel p-4">
                 <IconTile name="spark" className="size-8" />
-                <span className="font-semibold leading-snug">Macher {a}</span>
+                <span className="font-semibold leading-snug">Lotte {a}</span>
               </li>
             ))}
           </ul>

@@ -28,7 +28,7 @@ export function AuftragSubunternehmer({ id }: { id: ID }) {
           Subunternehmer einsetzen
         </Button>
       </Zeile>
-      <Liste leer={<Leer titel="Kein Subunternehmer an diesem Auftrag" text="Brauchst du Gerüst, Trockenbau oder Erdarbeiten? Setz eine Fremdfirma ein – Macher prüft ihre Nachweise." icon="team" />}>
+      <Liste leer={<Leer titel="Kein Subunternehmer an diesem Auftrag" text="Brauchst du Gerüst, Trockenbau oder Erdarbeiten? Setz eine Fremdfirma ein – Lotte prüft ihre Nachweise." icon="team" />}>
         {liste.map(({ sub, einsatz }) => (
           <ListenZeile
             key={einsatz.id}

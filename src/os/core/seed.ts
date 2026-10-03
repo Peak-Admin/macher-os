@@ -161,7 +161,7 @@ export function beispieleEntfernen() {
       .allMitGeloeschten()
       .filter((a) => (a.auftragId && weg.has(a.auftragId)) || (a.bezug && weg.has(a.bezug.id)))
       .forEach((a) => (weg.add(a.id), db.aufgaben.purge(a.id)));
-    // Was Macher zu Beispielen notiert hat (Hinweise, Benachrichtigungen, Erledigt, Verlauf), geht mit
+    // Was Lotte zu Beispielen notiert hat (Hinweise, Benachrichtigungen, Erledigt, Verlauf), geht mit
     for (const name of ['hinweise', 'benachrichtigungen', 'erledigungen', 'ereignisse'] as const) {
       db[name]
         .allMitGeloeschten()

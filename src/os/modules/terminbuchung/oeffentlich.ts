@@ -42,7 +42,7 @@ export function buchungSichtenVeroeffentlichen(jetzt = new Date()): number {
 
 /**
  * Buchung vom Kundengerät übernehmen. Ist der Termin inzwischen vergeben, geht nichts verloren:
- * Macher legt eine Anfrage mit dem Wunschtermin an und meldet sich beim Büro.
+ * Lotte legt eine Anfrage mit dem Wunschtermin an und meldet sich beim Büro.
  */
 export function buchungEingabe(e: OeffentlicheEingabe, jetzt = new Date()): string {
   if (e.typ === 'geoeffnet') return 'geöffnet';

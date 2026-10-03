@@ -91,7 +91,7 @@ export default defineModul({
     {
       id: REGEL,
       titel: 'Bewertungsanfrage vorbereiten',
-      beschreibung: 'Ist ein Auftrag erledigt, bereitet Macher die Bewertungsanfrage vor. Reklamationen, unzufriedene und kürzlich gefragte Kunden lässt er aus. Du gibst nur frei.',
+      beschreibung: 'Ist ein Auftrag erledigt, bereitet Lotte die Bewertungsanfrage vor. Reklamationen, unzufriedene und kürzlich gefragte Kunden lässt sie aus. Du gibst nur frei.',
       standardAn: true,
       minuten: 5,
       start: () => on('auftraege.updated', (e) => vorbereitenWennPassend(e.objekt as Auftrag, (e.vorher as Auftrag | undefined)?.phase)),
@@ -108,7 +108,7 @@ export default defineModul({
 
   seed: () => {
     // Erledigter Beispielauftrag → vorbereitete Anfrage zur Freigabe.
-    // Empfehlungen erfinden wir nicht: „Wer hat empfohlen?“ fragt Macher beim Kunden mit Quelle Empfehlung.
+    // Empfehlungen erfinden wir nicht: „Wer hat empfohlen?“ fragt Lotte beim Kunden mit Quelle Empfehlung.
     const erledigterAuftrag = db.auftraege.all().find((a) => a.beispiel && a.phase === 'erledigt');
     if (erledigterAuftrag) anfrageVorbereiten(erledigterAuftrag, true);
   },

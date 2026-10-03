@@ -10,14 +10,14 @@ export const teil2 = {
     meta: {
       title: "Baustellenbericht & Arbeitsbericht per App – Handwerk OS",
       description:
-        "Baustellenbericht, Regiebericht, Rapport und Prüfprotokoll: Macher bereitet den Bericht nach dem Einsatz vor. Der Kunde unterschreibt auf dem Handy.",
+        "Baustellenbericht, Regiebericht, Rapport und Prüfprotokoll: Lotte bereitet den Bericht nach dem Einsatz vor. Der Kunde unterschreibt auf dem Handy.",
     },
     hero: {
       titel: "Der Bericht ist fertig, bevor du im Auto sitzt.",
       problem:
         "Nach zehn Stunden Baustelle noch Berichte schreiben. Stunden und Material stehen auf Zetteln, die Unterschrift fehlt.",
       loesung:
-        "Ist der Einsatz beendet, legt Macher den Bericht an – mit Zeiten, Material, Fotos und erledigten Aufgaben. Du prüfst kurz, der Kunde unterschreibt.",
+        "Ist der Einsatz beendet, legt Lotte den Bericht an – mit Zeiten, Material, Fotos und erledigten Aufgaben. Du prüfst kurz, der Kunde unterschreibt.",
     },
     visual: {
       bereich: "Aufträge",
@@ -31,7 +31,7 @@ export const teil2 = {
       liste: {
         ueberschrift: "Offen",
         zeilen: [
-          { titel: "Baustellenbericht · Haus 24", sub: "BR-2026-0141 · gestern · von Macher vorbereitet", tag: "prüfen", ton: "sky" },
+          { titel: "Baustellenbericht · Haus 24", sub: "BR-2026-0141 · gestern · von Lotte vorbereitet", tag: "prüfen", ton: "sky" },
           { titel: "Arbeitsbericht · Kellerverteilung", sub: "BR-2026-0142 · 3,50 h · 2 Positionen", tag: "Unterschrift fehlt", ton: "signal" },
           { titel: "Prüfprotokoll · Zählerschrank Kurz", sub: "BR-2026-0139 · 7 Prüfpunkte", tag: "unterschrieben", ton: "moss" },
         ],
@@ -39,7 +39,7 @@ export const teil2 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat vorbereitet:",
+        titel: "Lotte hat vorbereitet:",
         text: "Baustellenbericht für Haus 24 – Zeiten, Material und 4 Fotos sind schon drin.",
       },
     },
@@ -64,7 +64,7 @@ export const teil2 = {
     ],
     loesung: {
       titel: "Prüfen statt schreiben.",
-      text: "Macher sammelt, was am Einsatztag zum Auftrag erfasst wurde: Zeiten, verbrauchtes Material, Fotos und erledigte Aufgaben. Notizen und Sprachnotizen des Tages stehen schon als Tätigkeiten drin. Du ergänzt, was fehlt, und lässt den Kunden direkt auf dem Handy unterschreiben.",
+      text: "Lotte sammelt, was am Einsatztag zum Auftrag erfasst wurde: Zeiten, verbrauchtes Material, Fotos und erledigte Aufgaben. Notizen und Sprachnotizen des Tages stehen schon als Tätigkeiten drin. Du ergänzt, was fehlt, und lässt den Kunden direkt auf dem Handy unterschreiben.",
       punkte: [
         "Vier Arten: Baustellenbericht, Arbeitsbericht, Rapport, Prüfprotokoll",
         "Zeiten, Material, Fotos und Aufgaben des Tages automatisch drin",
@@ -84,7 +84,7 @@ export const teil2 = {
         { label: "Erledigte Aufgaben", wert: "Verteilung gesichert" },
         { label: "Nächster Schritt", wert: "Kunde unterschreibt", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Die Tätigkeiten hat Macher aus den Sprachnotizen von Tom übernommen." },
+      fuss: { icon: "spark", text: "Die Tätigkeiten hat Lotte aus den Sprachnotizen von Tom übernommen." },
     },
     schritte: [
       {
@@ -93,11 +93,11 @@ export const teil2 = {
       },
       {
         titel: "Bericht liegt bereit",
-        text: "Macher legt den Bericht an und trägt Zeiten, Material, Fotos und erledigte Aufgaben ein.",
+        text: "Lotte legt den Bericht an und trägt Zeiten, Material, Fotos und erledigte Aufgaben ein.",
       },
       {
         titel: "Kurz prüfen",
-        text: "Tätigkeiten ergänzen, Bemerkung für den Kunden schreiben. Fehlt etwas, liest Macher den Tag neu ein.",
+        text: "Tätigkeiten ergänzen, Bemerkung für den Kunden schreiben. Fehlt etwas, liest Lotte den Tag neu ein.",
       },
       {
         titel: "Unterschreiben lassen",
@@ -124,7 +124,7 @@ export const teil2 = {
         "Berichte nach Auftrag, Nummer oder Art suchen",
       ],
       handyVisual: {
-        kopf: "Bericht · von Macher vorbereitet",
+        kopf: "Bericht · von Lotte vorbereitet",
         titel: "Baustellenbericht Haus 24",
         sub: "Sanierung Wohnanlage · gestern",
         tags: [
@@ -162,7 +162,7 @@ export const teil2 = {
       {
         frage: "Was ist, wenn im Bericht etwas fehlt?",
         antwort:
-          "Trag die fehlende Zeit oder das Material am Auftrag nach und tipp auf „Neu einlesen“. Macher holt alles vom Tag noch einmal in den Bericht.",
+          "Trag die fehlende Zeit oder das Material am Auftrag nach und tipp auf „Neu einlesen“. Lotte holt alles vom Tag noch einmal in den Bericht.",
       },
       {
         frage: "Muss der Kunde unterschreiben?",
@@ -182,14 +182,14 @@ export const teil2 = {
     meta: {
       title: "Nachträge & Zusatzleistungen erfassen – nichts mehr verschenken",
       description:
-        "Zusatzarbeit auf der Baustelle in Sekunden erfassen, vom Kunden per Unterschrift freigeben lassen. Macher übernimmt freigegebene Nachträge automatisch in die Rechnung.",
+        "Zusatzarbeit auf der Baustelle in Sekunden erfassen, vom Kunden per Unterschrift freigeben lassen. Lotte übernimmt freigegebene Nachträge automatisch in die Rechnung.",
     },
     hero: {
       titel: "Was du mehr machst, wird auch bezahlt.",
       problem:
         "„Können Sie das gleich mitmachen?“ Klar. Aufgeschrieben wird es nicht – und auf der Rechnung fehlt es.",
       loesung:
-        "Du erfasst die Zusatzleistung direkt vor Ort, der Kunde gibt sie mit seiner Unterschrift frei. Macher übernimmt sie automatisch in die Rechnung.",
+        "Du erfasst die Zusatzleistung direkt vor Ort, der Kunde gibt sie mit seiner Unterschrift frei. Lotte übernimmt sie automatisch in die Rechnung.",
     },
     visual: {
       bereich: "Aufträge",
@@ -236,7 +236,7 @@ export const teil2 = {
     ],
     loesung: {
       titel: "Erfassen, freigeben, abrechnen.",
-      text: "Dein Monteur erfasst die Zusatzleistung am Auftrag: nach Stunden, als Festpreis oder aus deinem Leistungskatalog. Die Summe steht sofort da. Der Kunde liest, was es netto und brutto kostet, und unterschreibt. Bei der nächsten Rechnung zum Auftrag übernimmt Macher alle freigegebenen Nachträge als Positionen.",
+      text: "Dein Monteur erfasst die Zusatzleistung am Auftrag: nach Stunden, als Festpreis oder aus deinem Leistungskatalog. Die Summe steht sofort da. Der Kunde liest, was es netto und brutto kostet, und unterschreibt. Bei der nächsten Rechnung zum Auftrag übernimmt Lotte alle freigegebenen Nachträge als Positionen.",
       punkte: [
         "Preis nach Stunden, Festpreis oder Leistungskatalog",
         "Freigabe per Unterschrift – mit Preis netto und brutto",
@@ -256,7 +256,7 @@ export const teil2 = {
         { label: "Foto", wert: "1 Nachweis" },
         { label: "Abrechnung", wert: "kommt in die nächste Rechnung", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Wird eine Rechnung zum Auftrag angelegt, hängt Macher den Nachtrag als Position an." },
+      fuss: { icon: "spark", text: "Wird eine Rechnung zum Auftrag angelegt, hängt Lotte den Nachtrag als Position an." },
     },
     schritte: [
       {
@@ -273,7 +273,7 @@ export const teil2 = {
       },
       {
         titel: "Ab in die Rechnung",
-        text: "Macher übernimmt freigegebene Nachträge in die Rechnung. Nichts wird doppelt berechnet.",
+        text: "Lotte übernimmt freigegebene Nachträge in die Rechnung. Nichts wird doppelt berechnet.",
       },
     ],
     automatisch: [
@@ -334,12 +334,12 @@ export const teil2 = {
       {
         frage: "Woher kommt der Preis?",
         antwort:
-          "Nach Stunden rechnet Macher mit deinem Stundensatz aus den Einstellungen. Du kannst auch einen Festpreis eingeben oder eine Leistung aus deinem Leistungskatalog wählen.",
+          "Nach Stunden rechnet Lotte mit deinem Stundensatz aus den Einstellungen. Du kannst auch einen Festpreis eingeben oder eine Leistung aus deinem Leistungskatalog wählen.",
       },
       {
         frage: "Was passiert, wenn ich die Rechnung storniere?",
         antwort:
-          "Die Nachträge sind dann wieder abrechenbar. Mit der nächsten Rechnung zum Auftrag übernimmt Macher sie erneut.",
+          "Die Nachträge sind dann wieder abrechenbar. Mit der nächsten Rechnung zum Auftrag übernimmt Lotte sie erneut.",
       },
     ],
     verwandt: ["rechnungen", "abnahme", "nachkalkulation"],
@@ -408,7 +408,7 @@ export const teil2 = {
     ],
     loesung: {
       titel: "Die Abnahme führt dich durch.",
-      text: "Fünf Schritte: Angaben, Mängel, Fotos, Bemerkungen, Unterschrift. Jeder Mangel wird sofort eine Aufgabe am Auftrag – mit Frist. Der Kunde unterschreibt mit dem Finger und schreibt seinen Namen in Druckbuchstaben dazu. Zeitpunkt und Ort hält Macher fest.",
+      text: "Fünf Schritte: Angaben, Mängel, Fotos, Bemerkungen, Unterschrift. Jeder Mangel wird sofort eine Aufgabe am Auftrag – mit Frist. Der Kunde unterschreibt mit dem Finger und schreibt seinen Namen in Druckbuchstaben dazu. Zeitpunkt und Ort hält Lotte fest.",
       punkte: [
         "Geführte Abnahme in fünf Schritten",
         "Jeder Mangel wird eine Aufgabe mit 14 Tagen Frist",
@@ -446,7 +446,7 @@ export const teil2 = {
       },
       {
         titel: "Weiter zur Rechnung",
-        text: "Der Auftrag rückt in die Abrechnung. Macher bereitet den Rechnungsentwurf vor.",
+        text: "Der Auftrag rückt in die Abrechnung. Lotte bereitet den Rechnungsentwurf vor.",
       },
     ],
     automatisch: [
@@ -502,12 +502,12 @@ export const teil2 = {
       {
         frage: "Was passiert mit den Mängeln?",
         antwort:
-          "Jeder Mangel wird eine Aufgabe am Auftrag mit 14 Tagen Frist. Ist die Frist um und der Mangel noch offen, meldet sich Macher.",
+          "Jeder Mangel wird eine Aufgabe am Auftrag mit 14 Tagen Frist. Ist die Frist um und der Mangel noch offen, meldet sich Lotte.",
       },
       {
         frage: "Und wenn der Kunde die Abnahme verweigert?",
         antwort:
-          "Dann tippst du auf „Kunde verweigert die Abnahme“ und schreibst den Grund dazu. Macher zeigt dir die verweigerte Abnahme als Hinweis, damit es weitergeht.",
+          "Dann tippst du auf „Kunde verweigert die Abnahme“ und schreibst den Grund dazu. Lotte zeigt dir die verweigerte Abnahme als Hinweis, damit es weitergeht.",
       },
       {
         frage: "Wo wird die Unterschrift noch genutzt?",
@@ -527,14 +527,14 @@ export const teil2 = {
     meta: {
       title: "Kundenkommunikation im Handwerk – alle Nachrichten am Auftrag",
       description:
-        "Nachrichten mit Kunden und im Team, gesammelt je Auftrag. Macher zeigt dir, welcher Kunde auf Antwort wartet, und ordnet Nachrichten dem richtigen Auftrag zu.",
+        "Nachrichten mit Kunden und im Team, gesammelt je Auftrag. Lotte zeigt dir, welcher Kunde auf Antwort wartet, und ordnet Nachrichten dem richtigen Auftrag zu.",
     },
     hero: {
       titel: "Wer was geschrieben hat, steht am Auftrag.",
       problem:
         "Der Kunde schreibt dem Chef, ruft das Büro an und schickt dem Monteur ein Foto. Keiner weiß, was der andere schon geantwortet hat.",
       loesung:
-        "In Handwerk OS hat jeder Auftrag seinen eigenen Verlauf – mit Kunde und Team getrennt. Macher zeigt dir, wer auf Antwort wartet.",
+        "In Handwerk OS hat jeder Auftrag seinen eigenen Verlauf – mit Kunde und Team getrennt. Lotte zeigt dir, wer auf Antwort wartet.",
     },
     visual: {
       bereich: "Aufträge",
@@ -601,7 +601,7 @@ export const teil2 = {
         { label: "Antworten über", wert: "E-Mail oder SMS" },
         { label: "Schnellantwort", wert: "„Wir sind jetzt auf dem Weg zu Ihnen.“", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat die Nachricht dem einzigen offenen Auftrag des Kunden zugeordnet." },
+      fuss: { icon: "spark", text: "Lotte hat die Nachricht dem einzigen offenen Auftrag des Kunden zugeordnet." },
     },
     schritte: [
       {
@@ -609,7 +609,7 @@ export const teil2 = {
         text: "Über den Kundenbereich landet die Nachricht direkt im Verlauf. Kam sie per Mail oder Telefon, trägst du sie mit „Kunde hat geschrieben“ ein.",
       },
       {
-        titel: "Macher ordnet zu",
+        titel: "Lotte ordnet zu",
         text: "Hat der Kunde genau einen offenen Auftrag, kommt die Nachricht dorthin.",
       },
       {
@@ -780,11 +780,11 @@ export const teil2 = {
       },
       {
         titel: "Dokument am Auftrag erstellen",
-        text: "Macher schlägt vor, was zur Phase passt – zum Beispiel die Auftragsbestätigung nach der Beauftragung.",
+        text: "Lotte schlägt vor, was zur Phase passt – zum Beispiel die Auftragsbestätigung nach der Beauftragung.",
       },
       {
         titel: "Prüfen und senden",
-        text: "Du siehst eine Vorschau mit dem fertigen Text. Fehlt eine Angabe, sagt Macher es dir vorher.",
+        text: "Du siehst eine Vorschau mit dem fertigen Text. Fehlt eine Angabe, sagt Lotte es dir vorher.",
       },
       {
         titel: "Alles bleibt am Auftrag",
@@ -849,7 +849,7 @@ export const teil2 = {
       {
         frage: "Wie groß dürfen Pläne und Dateien sein?",
         antwort:
-          "Im Moment bis 1,5 MB je Datei. Fotos und Bilder verkleinert Macher beim Hochladen automatisch. Ist eine Datei zu groß, sagt dir Macher, woran es liegt.",
+          "Im Moment bis 1,5 MB je Datei. Fotos und Bilder verkleinert Lotte beim Hochladen automatisch. Ist eine Datei zu groß, sagt dir Lotte, woran es liegt.",
       },
       {
         frage: "Was passiert, wenn in einem Textbaustein eine Angabe fehlt?",
@@ -864,19 +864,19 @@ export const teil2 = {
 
   mahnungen: {
     icon: "bell",
-    kurz: "Macher prüft jeden Tag, was überfällig ist, und legt dir das fertige Schreiben hin. Du gibst nur noch frei.",
+    kurz: "Lotte prüft jeden Tag, was überfällig ist, und legt dir das fertige Schreiben hin. Du gibst nur noch frei.",
     enthalten: ["Zahlungserinnerung", "1. und 2. Mahnung", "Gebühren & Verzugszinsen"],
     meta: {
       title: "Mahnungen schreiben im Handwerk – automatisch vorbereitet",
       description:
-        "Macher prüft täglich offene Rechnungen und bereitet Zahlungserinnerung, 1. und 2. Mahnung mit Gebühr und Verzugszinsen vor. Raus geht nur, was du freigibst.",
+        "Lotte prüft täglich offene Rechnungen und bereitet Zahlungserinnerung, 1. und 2. Mahnung mit Gebühr und Verzugszinsen vor. Raus geht nur, was du freigibst.",
     },
     hero: {
       titel: "Mahnen, ohne dass du daran denken musst.",
       problem:
         "Überfällige Rechnungen fallen keinem auf. Und wenn doch, schiebt man das Mahnen vor sich her – es ist unangenehm.",
       loesung:
-        "Macher prüft jeden Tag die Fälligkeiten und bereitet Erinnerung und Mahnung fertig vor – mit Gebühr und Zinsen. Du entscheidest: senden, warten oder verwerfen.",
+        "Lotte prüft jeden Tag die Fälligkeiten und bereitet Erinnerung und Mahnung fertig vor – mit Gebühr und Zinsen. Du entscheidest: senden, warten oder verwerfen.",
     },
     visual: {
       bereich: "Betrieb",
@@ -898,7 +898,7 @@ export const teil2 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat vorbereitet:",
+        titel: "Lotte hat vorbereitet:",
         text: "1. Mahnung an WEG Am Park – mit Gebühr und Verzugszinsen berechnet.",
       },
     },
@@ -923,7 +923,7 @@ export const teil2 = {
     ],
     loesung: {
       titel: "Fertig vorbereitet. Du gibst frei.",
-      text: "Macher schaut jeden Tag auf deine offenen Rechnungen. Ist eine lange genug überfällig, liegt das passende Schreiben bereit: erst die freundliche Zahlungserinnerung, dann die 1. und 2. Mahnung. Gebühr und Verzugszinsen sind schon berechnet. Ohne deine Freigabe geht nichts raus.",
+      text: "Lotte schaut jeden Tag auf deine offenen Rechnungen. Ist eine lange genug überfällig, liegt das passende Schreiben bereit: erst die freundliche Zahlungserinnerung, dann die 1. und 2. Mahnung. Gebühr und Verzugszinsen sind schon berechnet. Ohne deine Freigabe geht nichts raus.",
       punkte: [
         "Zahlungserinnerung, 1. und 2. Mahnung als fertiges Schreiben",
         "Verzugszinsen für Privat- und Firmenkunden richtig berechnet",
@@ -943,12 +943,12 @@ export const teil2 = {
         { label: "Neue Frist", wert: "10 Tage" },
         { label: "Entscheidung", wert: "Senden oder noch warten", hervor: true },
       ],
-      fuss: { icon: "shield", text: "Geht vorher eine Zahlung ein, verwirft Macher das Schreiben von selbst." },
+      fuss: { icon: "shield", text: "Geht vorher eine Zahlung ein, verwirft Lotte das Schreiben von selbst." },
     },
     schritte: [
       {
-        titel: "Macher prüft täglich",
-        text: "Jeden Tag schaut Macher, welche Rechnungen überfällig sind und welche Stufe dran ist.",
+        titel: "Lotte prüft täglich",
+        text: "Jeden Tag schaut Lotte, welche Rechnungen überfällig sind und welche Stufe dran ist.",
       },
       {
         titel: "Schreiben liegt bereit",
@@ -999,9 +999,9 @@ export const teil2 = {
       },
     },
     gewerke: [
-      { slug: "maler", text: "Viele Privatkunden, viele kleine Rechnungen: Macher behält jede im Blick." },
+      { slug: "maler", text: "Viele Privatkunden, viele kleine Rechnungen: Lotte behält jede im Blick." },
       { slug: "shk", text: "Kundendienst-Rechnungen gehen schnell unter. Die Zahlungserinnerung kommt trotzdem." },
-      { slug: "bau", text: "Bei Firmenkunden rechnet Macher Zinsen mit 9 Prozentpunkten über Basiszins und auf Wunsch die 40-Euro-Pauschale." },
+      { slug: "bau", text: "Bei Firmenkunden rechnet Lotte Zinsen mit 9 Prozentpunkten über Basiszins und auf Wunsch die 40-Euro-Pauschale." },
     ],
     kunde: {
       slug: "malerei-koch",
@@ -1009,9 +1009,9 @@ export const teil2 = {
     },
     faq: [
       {
-        frage: "Verschickt Macher Mahnungen ohne mich?",
+        frage: "Verschickt Lotte Mahnungen ohne mich?",
         antwort:
-          "Nein. Macher bereitet das Schreiben vor. Raus geht es erst, wenn du auf „Senden“ tippst.",
+          "Nein. Lotte bereitet das Schreiben vor. Raus geht es erst, wenn du auf „Senden“ tippst.",
       },
       {
         frage: "Wie werden die Verzugszinsen berechnet?",
@@ -1026,7 +1026,7 @@ export const teil2 = {
       {
         frage: "Was passiert bei einer Teilzahlung?",
         antwort:
-          "Macher rechnet mit dem Betrag, der noch offen ist. Ein schon vorbereitetes Schreiben bringt Macher bei der täglichen Prüfung auf den neuen Stand.",
+          "Lotte rechnet mit dem Betrag, der noch offen ist. Ein schon vorbereitetes Schreiben bringt Lotte bei der täglichen Prüfung auf den neuen Stand.",
       },
     ],
     verwandt: ["rechnungen", "zahlungen", "kunden"],
@@ -1070,7 +1070,7 @@ export const teil2 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat erledigt:",
+        titel: "Lotte hat erledigt:",
         text: "Link zum Kundenbereich für Fam. Schulte angelegt – mit dem Angebot verschickt.",
       },
     },
@@ -1120,7 +1120,7 @@ export const teil2 = {
     schritte: [
       {
         titel: "Link entsteht",
-        text: "Beim Versand eines Angebots legt Macher den Link an. Oder du erzeugst ihn selbst beim Kunden.",
+        text: "Beim Versand eines Angebots legt Lotte den Link an. Oder du erzeugst ihn selbst beim Kunden.",
       },
       {
         titel: "Kunde öffnet",

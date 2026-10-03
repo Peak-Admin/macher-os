@@ -422,7 +422,7 @@ export interface Rechnung extends Basis {
   zusatzleistungIds?: ID[];
   leistungVon?: Datum;
   leistungBis?: Datum;
-  /** von Macher automatisch vorbereitet */
+  /** von Lotte automatisch vorbereitet */
   vonMacher?: boolean;
   abschlagProzent?: number;
   /** freier Text unter den Positionen */
@@ -555,7 +555,7 @@ export interface AnrufDetails {
   dringlichkeit: AnrufDringlichkeit;
   /** woran der Notfall erkannt wurde (Stichwort oder Einschätzung des Assistenten) */
   notfallGrund?: string;
-  /** bei `status: 'neu'` der Vorschlag des Assistenten, danach das, was Macher daraus gemacht hat */
+  /** bei `status: 'neu'` der Vorschlag des Assistenten, danach das, was Lotte daraus gemacht hat */
   ergebnis?: 'anfrage' | 'rueckruf' | 'notiz' | 'weitergeleitet';
   transkript?: { wer: 'anrufer' | 'assistent'; text: string }[];
   /** an wen der Notfall ging (Bereitschaft) */
@@ -588,7 +588,7 @@ export interface Betriebsmittel extends Basis {
   notiz?: string;
 }
 
-// ---------------------------------------------------------------- Macher (Assistenz & Automation)
+// ---------------------------------------------------------------- Lotte (Assistenz & Automation)
 
 /**
  * Hinweis: etwas, wofür ein Mensch gebraucht wird (Entscheidung, Freigabe, Problem).
@@ -613,7 +613,7 @@ export interface Hinweis extends Basis {
   faellig?: Datum;
 }
 
-/** Protokoll dessen, was Macher automatisch erledigt hat */
+/** Protokoll dessen, was Lotte automatisch erledigt hat */
 export interface Erledigung extends Basis {
   titel: string;
   text?: string;
@@ -684,7 +684,7 @@ export interface Benachrichtigung extends Basis {
   archiviert?: boolean;
 }
 
-/** Wer eine Änderung ausgelöst hat: Mensch, Automation, Macher (KI), Import, Abgleich */
+/** Wer eine Änderung ausgelöst hat: Mensch, Automation, Lotte (KI), Import, Abgleich */
 export type AuditQuelle = 'user' | 'automation' | 'ai' | 'import' | 'sync';
 
 /** Ein geändertes Feld im Verlauf (nur geänderte Felder werden gespeichert) */

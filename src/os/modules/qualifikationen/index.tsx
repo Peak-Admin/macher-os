@@ -42,7 +42,7 @@ export default defineModul({
     {
       id: 'qualifikationen.gueltigkeit',
       titel: 'Gültigkeit automatisch berechnen',
-      beschreibung: 'Trägst du einen Nachweis mit Erwerbsdatum ein, rechnet Macher das Ablaufdatum aus der Gültigkeit der Qualifikation aus.',
+      beschreibung: 'Trägst du einen Nachweis mit Erwerbsdatum ein, rechnet Lotte das Ablaufdatum aus der Gültigkeit der Qualifikation aus.',
       standardAn: true,
       minuten: 1,
       start: () =>

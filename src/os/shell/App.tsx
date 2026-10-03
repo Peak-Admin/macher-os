@@ -48,7 +48,7 @@ export function App() {
                     <Route path="/betrieb/:kategorie" element={<KategorieWeiter />} />
                     {/* Smart Views aus deiner Seitenleiste */}
                     <Route path="/ansicht/:id" element={<SmartViewSeite />} />
-                    {/* frühere Macher-Leiste: führt jetzt an den neuen Ort */}
+                    {/* frühere Lotte-Leiste: führt jetzt an den neuen Ort */}
                     <Route path="/macher" element={<Navigate to="/heute/braucht-dich" replace />} />
                     {module.flatMap((m) =>
                       (m.routen ?? []).map((r) => {

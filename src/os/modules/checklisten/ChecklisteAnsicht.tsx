@@ -14,7 +14,7 @@ export function ChecklisteAnsicht({ c }: { c: Checkliste }) {
       <Fortschritt wert={s.erledigt} max={s.gesamt} label={`${s.erledigt} von ${s.gesamt} erledigt`} />
       {s.offenePflicht > 0 && (
         <Meta>
-          {s.offenePflicht === 1 ? '1 Pflichtpunkt ist' : `${s.offenePflicht} Pflichtpunkte sind`} noch offen. Das hält dich nicht auf – Macher erinnert vor der Abnahme.
+          {s.offenePflicht === 1 ? '1 Pflichtpunkt ist' : `${s.offenePflicht} Pflichtpunkte sind`} noch offen. Das hält dich nicht auf – Lotte erinnert vor der Abnahme.
         </Meta>
       )}
       <Liste>

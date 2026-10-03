@@ -75,7 +75,7 @@ export function AnfrageNeu() {
   }
 
   return (
-    <Seite titel="Anfrage aufnehmen" untertitel="Wer, was, wie dringend – den Rest erledigt Macher." zurueck={{ to: '/auftraege/anfragen', label: 'Anfragen' }}>
+    <Seite titel="Anfrage aufnehmen" untertitel="Wer, was, wie dringend – den Rest erledigt Lotte." zurueck={{ to: '/auftraege/anfragen', label: 'Anfragen' }}>
       <form
         onSubmit={(e) => {
           e.preventDefault();

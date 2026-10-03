@@ -44,7 +44,7 @@ export function AuftragRechnungenTab({ id }: { id: ID }) {
   };
   return (
     <Stapel>
-      {a?.phase === 'abrechnung' && !abschlussRechnung(id) && <Meldung ton="achtung" titel="Der Auftrag wartet auf die Rechnung">Macher übernimmt Angebot, Material, Zeiten und bezahlte Abschläge in den Entwurf.</Meldung>}
+      {a?.phase === 'abrechnung' && !abschlussRechnung(id) && <Meldung ton="achtung" titel="Der Auftrag wartet auf die Rechnung">Lotte übernimmt Angebot, Material, Zeiten und bezahlte Abschläge in den Entwurf.</Meldung>}
       <Zeile>
         <Button icon="plus" onClick={erstellen}>
           {art === 'schluss' ? 'Schlussrechnung erstellen' : 'Rechnung erstellen'}

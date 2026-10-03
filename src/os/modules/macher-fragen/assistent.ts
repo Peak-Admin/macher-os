@@ -1,5 +1,5 @@
 /**
- * Macher fragen – Fragen und Aufträge in Alltagssprache, beantwortet aus den echten Daten.
+ * Frag Lotte – Fragen und Aufträge in Alltagssprache, beantwortet aus den echten Daten.
  *
  * Läuft vollständig über den Macher AI Gateway (`@core/gateway`): Dieses Modul meldet nur seine
  * Absichten (`ABSICHTEN`) und Aktionen (`AKTIONEN`) an. Heute erkennt Lane 0 (Regeln) alles ohne
@@ -350,7 +350,7 @@ function woIst(k: Kontext, frage: string): Antwort {
 
 function brauchtMich(k: Kontext): Antwort {
   const liste = offeneHinweise(k.ich ? { rolle: k.ich.rolle, mitarbeiterId: k.ich.id } : undefined).slice(0, 6);
-  if (!liste.length) return { absicht: 'braucht-mich', text: 'Gerade braucht dich nichts. Macher meldet sich, sobald eine Entscheidung ansteht.', grundlage: stand(k) };
+  if (!liste.length) return { absicht: 'braucht-mich', text: 'Gerade braucht dich nichts. Lotte meldet sich, sobald eine Entscheidung ansteht.', grundlage: stand(k) };
   return {
     absicht: 'braucht-mich',
     text: `${anzahl(liste.length, 'Punkt braucht', 'Punkte brauchen')} dich. Das Wichtigste zuerst:`,
@@ -519,7 +519,7 @@ function auftragFertig(k: Kontext, frage: string): Antwort {
   };
   return planAntwort(
     'auftrag-fertig',
-    `${a.titel} bei ${kunde?.name ?? 'Kunde'}: Ich habe vorbereitet, was jetzt ansteht. Wähl aus, was passieren soll – erst nach deiner Bestätigung führt Macher es aus.`,
+    `${a.titel} bei ${kunde?.name ?? 'Kunde'}: Ich habe vorbereitet, was jetzt ansteht. Wähl aus, was passieren soll – erst nach deiner Bestätigung führt Lotte es aus.`,
     plan,
     `Auftrag ${a.nummer}, Phase „${PHASE_LABEL[a.phase] ?? a.phase}“ · ${stand(k)}`,
   );
@@ -610,7 +610,7 @@ function rechnungVorbereiten(k: Kontext, frage: string): Antwort {
   return {
     ...planAntwort(
       'rechnung-entwurf',
-      `${a.titel} bei ${kunde}: Macher übernimmt Leistungen, Material und Zeiten in einen Entwurf. Versendet wird nichts.`,
+      `${a.titel} bei ${kunde}: Lotte übernimmt Leistungen, Material und Zeiten in einen Entwurf. Versendet wird nichts.`,
       plan,
       `Auftrag ${a.nummer} · ${stand(k)}`,
     ),
@@ -631,7 +631,7 @@ const nurMeineRolle = (k: Kontext) => !!k.ich && (k.ich.rolle === 'monteur' || k
 const naechsteWoche = (k: Kontext): Zeitraum => ({ von: plusTage(wochenStart(k.heute), 7), bis: plusTage(wochenStart(k.heute), 11), label: 'nächste Woche', tag: false });
 
 /**
- * Was Macher versteht – in der Reihenfolge der Prüfung. Alle Absichten laufen über `@core/gateway`:
+ * Was Lotte versteht – in der Reihenfolge der Prüfung. Alle Absichten laufen über `@core/gateway`:
  * Regeln vor Modell, Rechte vor Antwort, Aktionen nur als Entwurf.
  */
 export const ABSICHTEN: Def[] = [
@@ -655,7 +655,7 @@ export const ABSICHTEN: Def[] = [
   },
   // Aktionen in anderen Modulen (Senden, Verschieben, Kunden schreiben …) – vor den Fragen geprüft
   ...AKTIONS_ABSICHTEN,
-  // „Mit Macher vorbereiten“ am Objekt – nur mit Vorgabe (Absicht + Objekt), ohne Texterkennung
+  // „Mit Lotte vorbereiten“ am Objekt – nur mit Vorgabe (Absicht + Objekt), ohne Texterkennung
   ...VORBEREITEN_ABSICHTEN,
   {
     id: 'job.finish',
@@ -797,14 +797,14 @@ export function beantworte(frage: string, k: Kontext): Antwort {
 
 /**
  * Vermutete Absicht vor der Antwort (nur Regeln, ohne Protokoll) – damit der Orb schon beim Fragen den passenden
- * Zustand zeigt („Macher sucht …“, „Macher schreibt …“).
+ * Zustand zeigt („Lotte sucht …“, „Lotte schreibt …“).
  */
 export function vermuteteAbsicht(text: string, k: Kontext): string | undefined {
   if (!text.trim()) return undefined;
   return ABSICHTEN.find((a) => a.erkenne?.(text, k))?.id;
 }
 
-/** Der Weg für die Oberfläche: Text oder Sprache → Gateway → Antwort (protokolliert). Mit `vorgabe` aus „Mit Macher vorbereiten“. */
+/** Der Weg für die Oberfläche: Text oder Sprache → Gateway → Antwort (protokolliert). Mit `vorgabe` aus „Mit Lotte vorbereiten“. */
 export async function fragen(text: string, k: Kontext, kanal: Kanal = 'text', vorgabe?: Vorgabe): Promise<{ antwort: Antwort; modell: string }> {
   if (!text.trim()) return { antwort: LEER, modell: 'Regeln' };
   const g = await gatewayFrage<Antwort>(text, { ...k, kanal }, vorgabe);

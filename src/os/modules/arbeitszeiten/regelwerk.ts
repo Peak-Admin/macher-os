@@ -22,7 +22,7 @@ import { arbeitsmodelle, modellSollAm, stundenbuchungen, type Arbeitsmodell, typ
 export interface Regeln {
   /** fehlende Pausen nach §4 ArbZG automatisch abziehen */
   autoPause: boolean;
-  /** ab so vielen Plusstunden auf dem Konto meldet Macher sich (Minuten) */
+  /** ab so vielen Plusstunden auf dem Konto meldet Lotte sich (Minuten) */
   grenzePlus: number;
   /** ab so vielen Minusstunden (Minuten, positiv) */
   grenzeMinus: number;

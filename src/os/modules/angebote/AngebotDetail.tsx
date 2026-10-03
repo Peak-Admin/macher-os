@@ -110,7 +110,7 @@ export function AngebotDetail() {
                 icon="check"
                 onClick={() => {
                   alsNachgefasstMarkieren(a.id);
-                  toast(`Nachfassen vermerkt. Macher erinnert dich in ${nachfassenTage()} Tagen wieder.`);
+                  toast(`Nachfassen vermerkt. Lotte erinnert dich in ${nachfassenTage()} Tagen wieder.`);
                 }}
               >
                 Nachgefasst
@@ -317,13 +317,13 @@ export function VersandDialog({ angebot, onSchliessen }: { angebot?: Angebot; on
       <Stapel abstand={12}>
         <Eingabe label="An (E-Mail oder Telefon)" value={ziel} onChange={(e) => setAn(e.target.value)} fehler={ziel && !kanal ? 'Bitte eine gültige E-Mail oder Telefonnummer.' : undefined} />
         <Meta>Dein Kunde bekommt einen Link zum Kundenbereich: Dort sieht er das Angebot als Briefbogen und nimmt es mit einem Klick an.</Meta>
-        {lokal && <Meta>Dein Konto ist noch nicht verbunden: Macher öffnet dein Programm mit fertigem Text und Link – du drückst dort auf Senden.</Meta>}
+        {lokal && <Meta>Dein Konto ist noch nicht verbunden: Lotte öffnet dein Programm mit fertigem Text und Link – du drückst dort auf Senden.</Meta>}
         <div>
           <Button klein variante="sekundaer" icon="download" onClick={() => angebot && window.open(appPfad(`/druck/angebot/${angebot.id}`), '_blank')}>
             Druckansicht / PDF
           </Button>
         </div>
-        <Meta>Nach {nachfassenTage()} Tagen ohne Antwort erinnert dich Macher ans Nachfassen.</Meta>
+        <Meta>Nach {nachfassenTage()} Tagen ohne Antwort erinnert dich Lotte ans Nachfassen.</Meta>
       </Stapel>
     </Dialog>
   );

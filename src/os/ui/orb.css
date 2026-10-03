@@ -174,7 +174,7 @@
   }
 }
 
-/* Die KI-Kugel als ruhiges Zeichen (ohne Animation): Suchen-und-Fragen, KI-Leiste, „Macher fragen“ */
+/* Die KI-Kugel als ruhiges Zeichen (ohne Animation): Suchen-und-Fragen, KI-Leiste, „Frag Lotte“ */
 .mm-ki-kugel {
   --kugel: 24px;
   display: inline-block; flex: none; width: var(--kugel); height: var(--kugel); border-radius: 50%; vertical-align: middle;

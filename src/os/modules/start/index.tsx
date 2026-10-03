@@ -1,7 +1,7 @@
 /**
  * Modul „start“ (First Value): „Was möchtest du als Erstes erledigen?“ unter /start,
  * Angebot in drei Minuten (/start/angebot), Rechnung in einer Minute (/start/rechnung),
- * „Macher fertig machen“ auf Home und die Messung des ersten echten Nutzens (drei Pfade).
+ * „Handwerk OS einrichten“ auf Home und die Messung des ersten echten Nutzens (drei Pfade).
  */
 import { defineModul } from '@core/modul';
 import { on } from '@core/events';

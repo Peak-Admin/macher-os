@@ -40,12 +40,12 @@ export function AblaeufeSeite() {
   const laufend = (id: string) => schrittstaende.all().filter((s) => s.ablaufId === id && db.auftraege.get(s.auftragId) && !['erledigt', 'verloren'].includes(db.auftraege.get(s.auftragId)!.phase)).length;
 
   return (
-    <Seite titel="Auftragsabläufe" untertitel="Welche Schritte ein Auftrag durchläuft, wer sich kümmert und wann Macher erinnert." zurueck={{ to: '/betrieb/einstellungen', label: 'Einstellungen' }}>
+    <Seite titel="Auftragsabläufe" untertitel="Welche Schritte ein Auftrag durchläuft, wer sich kümmert und wann Lotte erinnert." zurueck={{ to: '/betrieb/einstellungen', label: 'Einstellungen' }}>
       <Stapel abstand={24}>
         <Meldung titel={eigen ? 'Eigene Abläufe' : `Vorlage: ${vorlage.label}`}>
           {eigen
             ? 'Du hast die Abläufe an deinen Betrieb angepasst. Laufende Aufträge behalten ihren Ablauf.'
-            : 'Macher nutzt die Abläufe aus der Vorlage für dein Gewerk. Sobald du etwas änderst, werden sie zu deinen eigenen.'}
+            : 'Lotte nutzt die Abläufe aus der Vorlage für dein Gewerk. Sobald du etwas änderst, werden sie zu deinen eigenen.'}
         </Meldung>
 
         {darf && fach.length > 0 && !eigen && betrieb && (
@@ -192,7 +192,7 @@ export function AblaufBearbeiten() {
               />
             ))}
           </Liste>
-          <Meta>Jeder Schritt gehört zu einer Phase. Beim Speichern stehen die Schritte in der Reihenfolge der Phasen. Macher geht von selbst weiter, wenn die Bedingung eines Schritts erfüllt ist.</Meta>
+          <Meta>Jeder Schritt gehört zu einer Phase. Beim Speichern stehen die Schritte in der Reihenfolge der Phasen. Lotte geht von selbst weiter, wenn die Bedingung eines Schritts erfüllt ist.</Meta>
         </Stapel>
       </Stapel>
 
@@ -292,7 +292,7 @@ function SchrittDialog({
           <Eingabe label="Erinnern nach (Tage)" value={frist} onChange={(e) => setFrist(e.target.value.replace(/\D/g, '').slice(0, 3))} inputMode="numeric" placeholder="ohne Frist" optional />
         </FormRaster>
         {frist && <Eingabe label="Text der Erinnerung" value={erinnerung} onChange={(e) => setErinnerung(e.target.value)} placeholder="z. B. Gerüst beim Gerüstbauer bestellen" optional />}
-        {schritt?.automatisch && <Meta>Macher geht von selbst zu diesem Schritt, sobald {BEDINGUNG_LABEL[schritt.automatisch]}.</Meta>}
+        {schritt?.automatisch && <Meta>Lotte geht von selbst zu diesem Schritt, sobald {BEDINGUNG_LABEL[schritt.automatisch]}.</Meta>}
         {schritt && (onHoch || onRunter || onEntfernen) && (
           <Zeile abstand={8}>
             {onHoch && (

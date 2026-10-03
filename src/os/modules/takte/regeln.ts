@@ -27,7 +27,7 @@ export const TAKTE: TaktDef[] = [
   { id: 'dein-tag', titel: 'Dein Tag', beschreibung: 'Erster Einsatz mit Adresse, Material und Hinweisen.', uhr: '06:30', tage: WERKTAGE, rollen: ['monteur', 'azubi'] },
   { id: 'tagesbrief', titel: 'Tagesbrief', beschreibung: 'Höchstens drei Entscheidungen und dein Geld: Eingänge und Überfälliges.', uhr: '07:00', tage: WERKTAGE, rollen: ['chef', 'buero'] },
   { id: 'zeiten', titel: 'Zeiten bestätigen', beschreibung: 'Deine Zeiten von heute – mit einem Tipp bestätigt.', uhr: '16:30', tage: WERKTAGE, rollen: ['monteur', 'azubi'] },
-  { id: 'wochenbilanz', titel: 'Wochenbilanz', beschreibung: 'Umsatz, offene Posten, Aufträge und was Macher erledigt hat.', uhr: '15:00', tage: [5], rollen: ['chef'] },
+  { id: 'wochenbilanz', titel: 'Wochenbilanz', beschreibung: 'Umsatz, offene Posten, Aufträge und was Lotte erledigt hat.', uhr: '15:00', tage: [5], rollen: ['chef'] },
 ];
 
 export const TAKT_IDS = TAKTE.map((t) => t.id);

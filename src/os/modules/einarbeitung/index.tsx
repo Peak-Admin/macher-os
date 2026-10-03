@@ -76,7 +76,7 @@ export default defineModul({
     {
       id: 'einarbeitung.plan',
       titel: 'Einarbeitungsplan beim Anlegen',
-      beschreibung: 'Legst du einen neuen Mitarbeiter an, erstellt Macher sofort den Einarbeitungsplan passend zur Rolle – inklusive Pflicht-Unterweisungen.',
+      beschreibung: 'Legst du einen neuen Mitarbeiter an, erstellt Lotte sofort den Einarbeitungsplan passend zur Rolle – inklusive Pflicht-Unterweisungen.',
       standardAn: true,
       minuten: 20,
       start: () =>
@@ -91,7 +91,7 @@ export default defineModul({
     {
       id: 'einarbeitung.unterweisung',
       titel: 'Unterweisungen in der Einarbeitung abhaken',
-      beschreibung: 'Bestätigt ein neuer Mitarbeiter eine Unterweisung am Handy, hakt Macher den Schritt im Einarbeitungsplan ab.',
+      beschreibung: 'Bestätigt ein neuer Mitarbeiter eine Unterweisung am Handy, hakt Lotte den Schritt im Einarbeitungsplan ab.',
       standardAn: true,
       minuten: 1,
       start: () =>

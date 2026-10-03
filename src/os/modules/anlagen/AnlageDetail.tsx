@@ -90,7 +90,7 @@ export function AnlageDetail() {
                 {offen ? (
                   <LaufenderAuftrag offen={offen.id} nummer={offen.nummer} phase={PHASEN.find((p) => p.id === offen.phase)?.label ?? ''} />
                 ) : w === 'keine' ? (
-                  <Meta>Trag ein Wartungsintervall ein, dann erinnert Macher rechtzeitig.</Meta>
+                  <Meta>Trag ein Wartungsintervall ein, dann erinnert Lotte rechtzeitig.</Meta>
                 ) : (
                   <div>
                     <Button icon="plus" variante={w === 'ok' ? 'sekundaer' : 'primaer'} onClick={wartungAnlegen}>

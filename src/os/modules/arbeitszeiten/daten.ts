@@ -256,7 +256,7 @@ export function tagAuswerten(
 }
 
 /**
- * Prüfung eines Tages für Anzeige und Hinweise: wie `pruefeMitarbeiterTag`, aber eine fehlende Pause, die Macher
+ * Prüfung eines Tages für Anzeige und Hinweise: wie `pruefeMitarbeiterTag`, aber eine fehlende Pause, die Lotte
  * automatisch abgezogen hat, erscheint als „Pause fehlte – 30 min automatisch abgezogen“.
  */
 export function tagesProbleme(maId: ID, d: Datum, zeiten: Zeiteintrag[], autoPause = autoPauseAn()): { probleme: string[]; pauseAuto: number } {

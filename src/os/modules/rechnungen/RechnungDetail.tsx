@@ -120,7 +120,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
       zurueck={{ to: '/betrieb/rechnungen', label: 'Rechnungen' }}
       aktion={aktion}
     >
-      {r.vonMacher && entwurf && <Meldung ton="neutral" titel="Von Macher vorbereitet">Prüf die Positionen und schick die Rechnung los.</Meldung>}
+      {r.vonMacher && entwurf && <Meldung ton="neutral" titel="Von Lotte vorbereitet">Prüf die Positionen und schick die Rechnung los.</Meldung>}
       {original && (
         <Meldung ton="neutral">
           Storniert die Rechnung <ObjektLink bezug={{ typ: 'rechnungen', id: original.id }}>{original.nummer}</ObjektLink>.
@@ -305,7 +305,7 @@ function PositionenEditor({ r }: { r: RechnungX }) {
           value={r.leistungszeitraum ?? ''}
           placeholder="z. B. 12.09.2026 oder September 2026"
           onChange={(e) => rechnungAendern(r.id, { leistungszeitraum: e.target.value }, { leise: true })}
-          hilfe="Pflichtangabe. Macher trägt ihn aus Zeiten und Terminen ein."
+          hilfe="Pflichtangabe. Lotte trägt ihn aus Zeiten und Terminen ein."
         />
       </FormRaster>
       {r.positionen.length === 0 && <Leer titel="Noch keine Positionen" text="Füge Leistungen, Material oder Arbeitszeit hinzu." icon="liste" />}
@@ -400,7 +400,7 @@ function ZahlungenListe({ r, onNeu }: { r: RechnungX; onNeu: () => void }) {
     return (
       <Leer
         titel="Noch keine Zahlung"
-        text={r.art === 'gutschrift' ? 'Gutschriften werden nicht bezahlt, sondern erstattet oder verrechnet.' : 'Erfasse die Zahlung hier oder importiere deinen Kontoauszug – Macher ordnet sie zu.'}
+        text={r.art === 'gutschrift' ? 'Gutschriften werden nicht bezahlt, sondern erstattet oder verrechnet.' : 'Erfasse die Zahlung hier oder importiere deinen Kontoauszug – Lotte ordnet sie zu.'}
         aktion={offen > 0 ? <Button onClick={onNeu}>Zahlung erfassen</Button> : undefined}
         icon="euro"
       />
@@ -469,9 +469,9 @@ function StornoDialog({ r, modus, onSchliessen }: { r: RechnungX; modus?: 'storn
     >
       <Stapel>
         {korrektur ? (
-          <p>Eine festgeschriebene Rechnung darfst du nicht mehr ändern. Macher storniert sie mit einer Stornorechnung und legt dir eine Kopie als Entwurf an. Den änderst du und schickst ihn neu.</p>
+          <p>Eine festgeschriebene Rechnung darfst du nicht mehr ändern. Lotte storniert sie mit einer Stornorechnung und legt dir eine Kopie als Entwurf an. Den änderst du und schickst ihn neu.</p>
         ) : (
-          <p>Macher erstellt eine Stornorechnung mit eigener Nummer, die alle Beträge aufhebt. Die Originalrechnung bleibt erhalten.</p>
+          <p>Lotte erstellt eine Stornorechnung mit eigener Nummer, die alle Beträge aufhebt. Die Originalrechnung bleibt erhalten.</p>
         )}
         <Eingabe label="Grund" optional value={grund} onChange={(e) => setGrund(e.target.value)} placeholder="z. B. falscher Stundensatz" />
         {gezahlt > 0 && (

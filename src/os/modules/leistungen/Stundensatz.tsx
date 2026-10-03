@@ -110,7 +110,7 @@ export function Stundensatz() {
                   <Button onClick={uebernehmen}>{`${euro(ergebnis.verrechnungssatz)} als Stundensatz übernehmen`}</Button>
                 </div>
               )}
-              <Meta>Stundenleistungen mit dem bisherigen Stundensatz als Preis passt Macher automatisch mit an.</Meta>
+              <Meta>Stundenleistungen mit dem bisherigen Stundensatz als Preis passt Lotte automatisch mit an.</Meta>
             </Stapel>
           )}
         </Karte>

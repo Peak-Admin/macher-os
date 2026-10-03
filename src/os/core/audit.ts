@@ -2,7 +2,7 @@
  * Audit & Rückgängig – Hintergrund-Infrastruktur.
  *
  * Die Datenschicht protokolliert jede Änderung automatisch im Verlauf des Objekts (`ereignisse`):
- * wer (Mensch, Automation, Macher, Import, Abgleich), wann, was (angelegt/geändert/gelöscht) und – bei
+ * wer (Mensch, Automation, Lotte, Import, Abgleich), wann, was (angelegt/geändert/gelöscht) und – bei
  * Änderungen – nur die geänderten Felder mit vorher/nachher. Sichtbar ist das als „Verlauf“ am Objekt
  * (Zeitstrahl) in Klartext; ein eigenes Audit-Modul gibt es bewusst nicht.
  *
@@ -96,7 +96,7 @@ export function rueckgaengig(ereignisId: ID): void {
   db.ereignisse.update(e.id, { rueckgaengigAm: new Date().toISOString() }, { leise: true });
 }
 
-/** Mehrere Einträge (z. B. alles, was eine Macher-Aktion getan hat) in umgekehrter Reihenfolge zurücknehmen */
+/** Mehrere Einträge (z. B. alles, was eine Lotte-Aktion getan hat) in umgekehrter Reihenfolge zurücknehmen */
 export function allesRueckgaengig(ereignisIds: ID[]): { ok: number; fehler: string[] } {
   let ok = 0;
   const fehler: string[] = [];

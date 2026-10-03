@@ -7,7 +7,7 @@ export default defineModul({
   id: 'erledigt',
   titel: 'Erledigt',
   bereich: 'heute',
-  beschreibung: 'Was Macher heute schon automatisch erledigt hat – mit Rückgängig.',
+  beschreibung: 'Was Lotte heute schon automatisch erledigt hat – mit Rückgängig.',
   icon: 'check',
   gewicht: 40,
   routen: [{ pfad: '', element: ErledigtSeite }],

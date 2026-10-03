@@ -48,7 +48,7 @@ export default defineModul({
     {
       id: 'ablauf.zusage',
       titel: 'Zusage → Vorbereitung',
-      beschreibung: 'Nimmt der Kunde das Angebot an, steht der Auftrag auf „Vorbereitung“: Macher erinnert ans Material und sagt der Planung Bescheid.',
+      beschreibung: 'Nimmt der Kunde das Angebot an, steht der Auftrag auf „Vorbereitung“: Lotte erinnert ans Material und sagt der Planung Bescheid.',
       standardAn: true,
       minuten: 3,
       start: () => {
@@ -60,7 +60,7 @@ export default defineModul({
     {
       id: 'ablauf.abnahme',
       titel: 'Abnahme → Rechnung',
-      beschreibung: 'Ist die Abnahme unterschrieben, steht der Auftrag auf „Rechnung“. Fehlt sie noch, schlägt Macher vor, sie vorzubereiten.',
+      beschreibung: 'Ist die Abnahme unterschrieben, steht der Auftrag auf „Rechnung“. Fehlt sie noch, schlägt Lotte vor, sie vorzubereiten.',
       standardAn: true,
       minuten: 2,
       start: () => on('abnahme.unterschrieben', (e) => beiAbnahme(auftragIdAus(e))),
@@ -68,7 +68,7 @@ export default defineModul({
     {
       id: 'ablauf.bezahlt',
       titel: 'Bezahlt → Abschließen',
-      beschreibung: 'Ist alles bezahlt, schließt Macher den Auftrag ab. Als Nächstes steht in der Akte: Bewertung anfragen.',
+      beschreibung: 'Ist alles bezahlt, schließt Lotte den Auftrag ab. Als Nächstes steht in der Akte: Bewertung anfragen.',
       standardAn: true,
       minuten: 2,
       start: () => {

@@ -70,7 +70,7 @@ export const EREIGNISSE: EreignisArt[] = [
   art('zeit.freigegeben', 'Zeiten freigegeben', 'zeiten', 'time_entry.approved', 'modul', 'Arbeitszeiten wurden für die Lohnabrechnung freigegeben.'),
   art('material.knapp', 'Material knapp', 'artikel', 'material.low_stock', 'abgeleitet', 'Ein Lagerartikel ist unter den Mindestbestand gefallen.'),
   art('nachricht.eingegangen', 'Nachricht eingegangen', 'nachrichten', 'message.received', 'abgeleitet', 'Ein Kunde hat geschrieben oder angerufen.'),
-  art('anruf.angenommen', 'Anruf von Macher angenommen', 'nachrichten', 'call.answered', 'modul', 'Der Telefonassistent hat einen Anruf angenommen und eingetragen.'),
+  art('anruf.angenommen', 'Anruf von Lotte angenommen', 'nachrichten', 'call.answered', 'modul', 'Der Telefonassistent hat einen Anruf angenommen und eingetragen.'),
   art('anruf.notfall_weitergeleitet', 'Notfall an Bereitschaft weitergegeben', 'nachrichten', 'call.emergency_forwarded', 'modul', 'Der Telefonassistent hat einen Notfall an die Bereitschaft weitergegeben.'),
   art('beleg.erfasst', 'Beleg erfasst', 'belege', 'bill.created', 'abgeleitet', 'Eine Eingangsrechnung oder Quittung ist erfasst.'),
   art('bestellung.angelegt', 'Bestellung angelegt', 'bestellungen', 'purchase_order.created', 'abgeleitet', 'Eine Materialbestellung ist angelegt.'),
@@ -86,7 +86,7 @@ export const EREIGNISSE: EreignisArt[] = [
   art('import.abgeschlossen', 'Import abgeschlossen', 'importe', 'import.completed', 'modul', 'Ein Datenimport ist fertig (Excel/CSV, DATANORM, GAEB).'),
   art('import.rueckgaengig', 'Import rückgängig gemacht', 'importe', 'import.reverted', 'modul', 'Ein Datenimport wurde zurückgenommen.'),
   art('formular.ausgefuellt', 'Formular ausgefüllt', 'eigeneFormulare', 'form.completed', 'modul', 'Ein eigenes Formular wurde an einem Kunden, Auftrag oder Ort ausgefüllt.'),
-  art('macher.aktion_ausgefuehrt', 'Macher hat etwas erledigt', 'ki-protokoll', 'assistant.action_executed', 'modul', 'Macher hat nach deiner Bestätigung eine Aktion über den Gateway ausgeführt (Bezug: das geänderte Objekt).'),
+  art('macher.aktion_ausgefuehrt', 'Lotte hat etwas erledigt', 'ki-protokoll', 'assistant.action_executed', 'modul', 'Lotte hat nach deiner Bestätigung eine Aktion über den Gateway ausgeführt (Bezug: das geänderte Objekt).'),
 ];
 
 /** Gruppe für Auswahllisten (Webhooks, Automationen) – nach dem Objekt des Ereignisses */
@@ -120,7 +120,7 @@ const GRUPPEN: Record<string, string> = {
 
 /** `rechnung.bezahlt` → „Geld“ */
 export function ereignisGruppe(typ: string): string {
-  return GRUPPEN[typ.split('.')[0]] ?? 'Daten und Macher';
+  return GRUPPEN[typ.split('.')[0]] ?? 'Daten und Lotte';
 }
 
 const nachTyp = new Map(EREIGNISSE.map((a) => [a.typ, a]));

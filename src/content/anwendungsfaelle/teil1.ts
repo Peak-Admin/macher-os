@@ -84,7 +84,7 @@ export const teil1 = {
         { label: "Parken", wert: "Nur auf der Baustraße, nicht am Gehweg" },
         { label: "Gut zu wissen", wert: "Baustrom vorhanden, Toilette am Container", hervor: true },
       ],
-      fuss: { icon: "map", text: "Macher hat den Ort dem neuen Auftrag automatisch zugeordnet." },
+      fuss: { icon: "map", text: "Lotte hat den Ort dem neuen Auftrag automatisch zugeordnet." },
     },
     schritte: [
       {
@@ -97,7 +97,7 @@ export const teil1 = {
       },
       {
         titel: "Auftrag bekommt den Ort",
-        text: "Hat der Kunde nur einen Ort, ordnet Macher ihn dem Auftrag zu. Die Termine übernehmen ihn.",
+        text: "Hat der Kunde nur einen Ort, ordnet Lotte ihn dem Auftrag zu. Die Termine übernehmen ihn.",
       },
       {
         titel: "Monteur fährt los",
@@ -157,7 +157,7 @@ export const teil1 = {
       {
         frage: "Muss ich für jeden Auftrag einen Ort auswählen?",
         antwort:
-          "Nein. Hat der Kunde genau einen Ort, ordnet Macher ihn automatisch zu. Gibt es noch keinen, legt Macher ihn aus der Kundenadresse an. Nur bei mehreren Orten wählst du selbst.",
+          "Nein. Hat der Kunde genau einen Ort, ordnet Lotte ihn automatisch zu. Gibt es noch keinen, legt Lotte ihn aus der Kundenadresse an. Nur bei mehreren Orten wählst du selbst.",
       },
       {
         frage: "Wo sieht mein Monteur die Infos?",
@@ -167,7 +167,7 @@ export const teil1 = {
       {
         frage: "Was passiert, wenn ich einen Ort lösche?",
         antwort:
-          "Er kommt in den Papierkorb und lässt sich wiederherstellen. Aufträge und Anlagen bleiben erhalten. Laufen dort noch Aufträge, weist Macher dich vorher darauf hin.",
+          "Er kommt in den Papierkorb und lässt sich wiederherstellen. Aufträge und Anlagen bleiben erhalten. Laufen dort noch Aufträge, weist Lotte dich vorher darauf hin.",
       },
     ],
     verwandt: ["kunden", "anlagen", "fahrt-route"],
@@ -273,7 +273,7 @@ export const teil1 = {
       },
       {
         titel: "Wartung erledigt",
-        text: "Ist der Wartungsauftrag fertig, trägt Macher die Wartung an der Anlage ein und plant die nächste.",
+        text: "Ist der Wartungsauftrag fertig, trägt Lotte die Wartung an der Anlage ein und plant die nächste.",
       },
     ],
     automatisch: [
@@ -445,7 +445,7 @@ export const teil1 = {
       },
       {
         titel: "Weiter im Auftrag",
-        text: "Macher startet den nächsten Schritt. Fotos und Notizen sind schon am Auftrag.",
+        text: "Lotte startet den nächsten Schritt. Fotos und Notizen sind schon am Auftrag.",
       },
     ],
     automatisch: [
@@ -618,7 +618,7 @@ export const teil1 = {
       },
       {
         titel: "Nichts bleibt liegen",
-        text: "Überfällige Aufgaben meldet Macher dem Zuständigen. Mit einem Knopf ist sie erledigt.",
+        text: "Überfällige Aufgaben meldet Lotte dem Zuständigen. Mit einem Knopf ist sie erledigt.",
       },
     ],
     automatisch: [
@@ -677,7 +677,7 @@ export const teil1 = {
       {
         frage: "Was passiert mit Aufgaben, wenn der Auftrag fertig ist?",
         antwort:
-          "Aufgaben, die Macher selbst angelegt hat, schließt er mit dem Auftrag. Deine eigenen bleiben stehen, bis du sie abhakst.",
+          "Aufgaben, die Lotte selbst angelegt hat, schließt sie mit dem Auftrag. Deine eigenen bleiben stehen, bis du sie abhakst.",
       },
       {
         frage: "Kann ich eine Aufgabe wieder öffnen?",
@@ -751,7 +751,7 @@ export const teil1 = {
     ],
     loesung: {
       titel: "Die richtige Checkliste – automatisch am Auftrag.",
-      text: "Zum Start gibt es Vorlagen für dein Gewerk, zum Beispiel für Kundendienst, Baustellenstart oder Übergabe. Sobald ein Auftrag beauftragt ist, hängt Macher die passenden an. Der Monteur hakt ab, Pflichtpunkte und Foto-Punkte sind klar markiert.",
+      text: "Zum Start gibt es Vorlagen für dein Gewerk, zum Beispiel für Kundendienst, Baustellenstart oder Übergabe. Sobald ein Auftrag beauftragt ist, hängt Lotte die passenden an. Der Monteur hakt ab, Pflichtpunkte und Foto-Punkte sind klar markiert.",
       punkte: [
         "Fertige Vorlagen je Gewerk und Auftragsart",
         "Pflichtpunkte vor der Abnahme",
@@ -780,7 +780,7 @@ export const teil1 = {
       },
       {
         titel: "Auftrag wird beauftragt",
-        text: "Macher hängt die passenden Checklisten an – je nach Gewerk und Auftragsart.",
+        text: "Lotte hängt die passenden Checklisten an – je nach Gewerk und Auftragsart.",
       },
       {
         titel: "Vor Ort abhaken",
@@ -788,7 +788,7 @@ export const teil1 = {
       },
       {
         titel: "Vor der Abnahme",
-        text: "Sind noch Pflichtpunkte offen, zeigt Macher sie dir – bevor der Kunde abnimmt.",
+        text: "Sind noch Pflichtpunkte offen, zeigt Lotte sie dir – bevor der Kunde abnimmt.",
       },
     ],
     automatisch: [
@@ -1114,7 +1114,7 @@ export const teil1 = {
         { label: "Uhrzeit", wert: "09:40" },
         { label: "Danach", wert: "steht am Auftrag für die Rechnung", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat den Auftrag gewählt, weil deine Zeit dort läuft." },
+      fuss: { icon: "spark", text: "Lotte hat den Auftrag gewählt, weil deine Zeit dort läuft." },
     },
     schritte: [
       {
@@ -1123,7 +1123,7 @@ export const teil1 = {
       },
       {
         titel: "Auftrag ist gewählt",
-        text: "Macher nimmt den Auftrag, an dem deine Zeit läuft, sonst deinen Einsatz von heute.",
+        text: "Lotte nimmt den Auftrag, an dem deine Zeit läuft, sonst deinen Einsatz von heute.",
       },
       {
         titel: "Kurz erfassen",
@@ -1186,7 +1186,7 @@ export const teil1 = {
       {
         frage: "Woher weiß Handwerk OS, zu welchem Auftrag es gehört?",
         antwort:
-          "Tippst du am Auftrag, ist es dieser Auftrag. Sonst nimmt Macher den Auftrag, an dem deine Zeit gerade läuft, oder deinen Einsatz von heute. Der gewählte Auftrag steht immer sichtbar oben.",
+          "Tippst du am Auftrag, ist es dieser Auftrag. Sonst nimmt Lotte den Auftrag, an dem deine Zeit gerade läuft, oder deinen Einsatz von heute. Der gewählte Auftrag steht immer sichtbar oben.",
       },
       {
         frage: "Geht das auch ohne Auftrag?",

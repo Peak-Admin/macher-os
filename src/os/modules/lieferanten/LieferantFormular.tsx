@@ -92,7 +92,7 @@ export function LieferantFormular() {
               <Eingabe label="E-Mail für Bestellungen" type="email" value={f.email} onChange={set('email')} fehler={ff('email')} optional />
               <Eingabe label="Telefon" type="tel" value={f.telefon} onChange={set('telefon')} optional />
               <Eingabe label="Website / Shop" value={f.website} onChange={set('website')} optional />
-              <Eingabe label="Lieferzeit in Tagen" inputMode="numeric" value={f.lieferzeitTage} onChange={set('lieferzeitTage')} fehler={ff('lieferzeit')} optional hilfe="Daraus rechnet Macher den Liefertermin." />
+              <Eingabe label="Lieferzeit in Tagen" inputMode="numeric" value={f.lieferzeitTage} onChange={set('lieferzeitTage')} fehler={ff('lieferzeit')} optional hilfe="Daraus rechnet Lotte den Liefertermin." />
               <Eingabe label="Straße und Hausnummer" value={f.strasse} onChange={set('strasse')} optional />
               <Eingabe label="PLZ" value={f.plz} onChange={set('plz')} optional inputMode="numeric" />
               <Eingabe label="Ort" value={f.ort} onChange={set('ort')} optional />

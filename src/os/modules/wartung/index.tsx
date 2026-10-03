@@ -60,7 +60,7 @@ export default defineModul({
   id: 'wartung',
   titel: 'Wartung & Service',
   bereich: 'auftraege',
-  beschreibung: 'Fällige Wartungen im Blick – Aufträge, Prüfpunkte und Kundeninfo legt Macher an.',
+  beschreibung: 'Fällige Wartungen im Blick – Aufträge, Prüfpunkte und Kundeninfo legt Lotte an.',
   icon: 'werkzeug',
   gewicht: 60,
   routen: [{ pfad: '', element: WartungUebersicht }],
@@ -102,7 +102,7 @@ export default defineModul({
     {
       id: REGEL_FORTSCHREIBEN,
       titel: 'Nächste Wartung eintragen',
-      beschreibung: 'Ist ein Wartungsauftrag fertig, trägt Macher die Wartung an den Anlagen ein und rechnet die nächste aus. Wartungen aus Verträgen gehen ohne Rechnung auf erledigt.',
+      beschreibung: 'Ist ein Wartungsauftrag fertig, trägt Lotte die Wartung an den Anlagen ein und rechnet die nächste aus. Wartungen aus Verträgen gehen ohne Rechnung auf erledigt.',
       standardAn: true,
       minuten: 3,
       start: () =>
@@ -153,7 +153,7 @@ export default defineModul({
     // Überfällig ohne Auftrag (z. B. Automation aus oder Anlage gerade erst erfasst)
     const autoAn = automationAn(REGEL_ANLEGEN);
     for (const a of db.anlagen.where((x) => !!x.naechsteWartung && x.naechsteWartung < t && !offenerWartungsauftrag(x.id))) {
-      if (autoAn && a.naechsteWartung! >= plusTage(t, -1)) continue; // Macher legt gleich selbst an
+      if (autoAn && a.naechsteWartung! >= plusTage(t, -1)) continue; // Lotte legt gleich selbst an
       const k = db.kunden.get(a.kundeId);
       out.push({
         schluessel: `wartung-ueberfaellig:${a.id}:${a.naechsteWartung}`,

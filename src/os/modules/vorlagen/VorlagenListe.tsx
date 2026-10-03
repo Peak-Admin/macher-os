@@ -28,7 +28,7 @@ export function VorlagenListe() {
   return (
     <Seite
       titel="Vorlagen & Formulare"
-      untertitel="Texte, die du immer wieder brauchst – Macher setzt Kunde, Betrag und Termin automatisch ein."
+      untertitel="Texte, die du immer wieder brauchst – Lotte setzt Kunde, Betrag und Termin automatisch ein."
       aktion={schreiben ? <Button icon="plus" onClick={() => (setNeu(true), setTitel(''), setFehler(undefined))}>Vorlage anlegen</Button> : undefined}
     >
       <Stapel abstand={24}>

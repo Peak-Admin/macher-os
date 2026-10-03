@@ -272,7 +272,7 @@ export const teil7 = {
       },
       {
         titel: "Ins Angebot übernehmen",
-        text: "Mit oder ohne Langtexte. Die Positionen landen im Angebotsentwurf des Auftrags. Gibt es keinen, legt Macher einen an.",
+        text: "Mit oder ohne Langtexte. Die Positionen landen im Angebotsentwurf des Auftrags. Gibt es keinen, legt Lotte einen an.",
       },
       {
         titel: "Preise eintragen",

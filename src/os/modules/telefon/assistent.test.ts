@@ -56,7 +56,7 @@ describe('Telefonassistent in der App', () => {
     expect(a.annahme.geschaeftszeiten).toBe('Mo–Fr, 06:30–15:00 Uhr');
   });
 
-  it('unbekannter Anrufer: Anfrage mit neuem Kunden samt Adresse, über den Gateway als Macher', async () => {
+  it('unbekannter Anrufer: Anfrage mit neuem Kunden samt Adresse, über den Gateway als Lotte', async () => {
     const r = await kiAnrufAufnehmen(ergebnis({ felder: { anliegen: 'Dachfenster undicht, tropft bei Regen', name: 'Hr. Kaya', adresse: 'Lindenstr. 12, 34117 Kassel' } }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;

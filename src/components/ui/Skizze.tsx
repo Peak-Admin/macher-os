@@ -11,7 +11,7 @@ import { IconPfade, type IconName } from "./Icon";
  * Echte Beispieldaten zeigt stattdessen die `UiEbene`. Regeln: docs/design/festlegungen.md („Skizzen und UI-Ebenen“).
  *
  * Motive: eins je Funktion (Slug aus der Registry), dazu Handy-Motive für die App (vorne ein Handy statt Blatt),
- * Grundsätze von „Macher erledigt“ und Quellen beim Daten übernehmen.
+ * Grundsätze von „Lotte erledigt“ und Quellen beim Daten übernehmen.
  */
 
 /** Motive, die keine eigene Funktion sind. Neue Motive hier und in `motive` eintragen. */
@@ -839,7 +839,7 @@ const motive = {
     ),
   },
 
-  // ---------- Grundsätze von „Macher erledigt“
+  // ---------- Grundsätze von „Lotte erledigt“
   freigabe: {
     icon: "check",
     kopf: { titel: "Vorschlag" },

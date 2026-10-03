@@ -900,7 +900,7 @@ function Auswertung() {
 
 const vorschlaege = ["Welche Rechnungen sind offen?", "Was ist heute dringend?", "Wer hat heute Termine?"];
 
-/** Regelbasierte Antwort aus den Beispieldaten – wie Macher: erst Regeln, nichts erfunden */
+/** Regelbasierte Antwort aus den Beispieldaten – wie Lotte: erst Regeln, nichts erfunden */
 function macherAntwort(frage: string, heute: Termin[]): { text: string; ziel?: Ansicht } {
   const q = frage.toLowerCase();
   if (/rechnung|offen|geld|zahl/.test(q)) {
@@ -947,14 +947,14 @@ function Suche({ gehe, heute }: { gehe: (a: Ansicht) => void; heute: Termin[] })
       >
         <label className="flex items-center gap-2.5 rounded-[10px] bg-white px-3 py-2.5">
           <span className="ki-kugel size-5" aria-hidden />
-          <span className="sr-only">Macher fragen oder suchen</span>
+          <span className="sr-only">Lotte fragen oder suchen</span>
           <input
             value={text}
             onChange={(e) => {
               setText(e.target.value);
               setAntwort(null);
             }}
-            placeholder="Frag Macher oder such etwas …"
+            placeholder="Frag Lotte oder such etwas …"
             className="min-w-0 flex-1 bg-transparent text-[14px] text-ink outline-none placeholder:text-muted"
           />
         </label>
@@ -971,7 +971,7 @@ function Suche({ gehe, heute }: { gehe: (a: Ansicht) => void; heute: Termin[] })
       {antwort && (
         <div className="vorschau-ein app-lift rounded-xl border border-app-linie bg-white p-3">
           <p className="flex items-center gap-2 text-[11px] font-semibold text-muted">
-            <span className="ki-kugel size-4" aria-hidden /> Macher · aus deinen Beispieldaten
+            <span className="ki-kugel size-4" aria-hidden /> Lotte · aus deinen Beispieldaten
           </p>
           <p role="status" className="mt-1.5 text-[13px] leading-relaxed text-ink">{antwort.text}</p>
           {antwort.ziel && (
@@ -983,7 +983,7 @@ function Suche({ gehe, heute }: { gehe: (a: Ansicht) => void; heute: Termin[] })
       )}
       {text.trim() && !antwort && (
         <Liste>
-          <Zeile titel={`Macher fragen: „${text.trim()}“`} unter="Antwort aus deinen Daten" links={<span className="ki-kugel size-6" aria-hidden />} onClick={() => fragen(text.trim())} />
+          <Zeile titel={`Frag Lotte: „${text.trim()}“`} unter="Antwort aus deinen Daten" links={<span className="ki-kugel size-6" aria-hidden />} onClick={() => fragen(text.trim())} />
           {treffer.map((t) => (
             <Zeile key={t.titel} titel={t.titel} unter={t.unter} onClick={() => gehe(t.ziel)} />
           ))}

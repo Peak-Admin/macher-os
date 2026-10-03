@@ -178,7 +178,7 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
             ))}
             <div className="rounded-lg border border-signal/40 bg-signal-soft p-5">
               <p className="flex items-center gap-1.5 text-sm font-bold text-signal-dark">
-                <Icon name="spark" className="size-4" /> Macher-Vorschlag
+                <Icon name="spark" className="size-4" /> Vorschlag von Lotte
               </p>
               <p className="mt-1.5 font-semibold leading-snug">{g.planung.vorschlag}</p>
             </div>
@@ -204,29 +204,29 @@ export function TopGewerkSeite({ slug }: { slug: TopGewerkSlug }) {
         </div>
       </Section>
 
-      {/* 9. Macher erledigt automatisch */}
+      {/* 9. Lotte erledigt automatisch */}
       <Section tone="ink">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">
           <div>
-            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Macher erledigt</p>
+            <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Lotte erledigt</p>
             <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-balance sm:text-5xl">
               Büroarbeit, die sich von selbst erledigt.
             </h2>
             <p className="mt-5 max-w-md text-lg text-white/70">
-              Macher bereitet vor, du entscheidest. Was Macher für {g.name} übernimmt:
+              Lotte bereitet vor, du entscheidest. Was Lotte für {g.name} übernimmt:
             </p>
             <Link
               href="/funktionen/automatisch-erledigen"
               className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
-              So arbeitet Macher <Icon name="arrow-right" className="size-4" />
+              So arbeitet Lotte <Icon name="arrow-right" className="size-4" />
             </Link>
           </div>
           <ul className="grid gap-3 sm:grid-cols-2">
             {g.automatisch.map((a) => (
               <li key={a} className="flex items-center gap-3 karte-dunkel p-4">
                 <IconTile name="spark" className="size-9" />
-                <span className="font-semibold leading-snug">Macher {a}</span>
+                <span className="font-semibold leading-snug">Lotte {a}</span>
               </li>
             ))}
           </ul>

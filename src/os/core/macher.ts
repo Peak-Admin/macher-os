@@ -1,8 +1,8 @@
 /**
- * Macher-Laufzeit: Automationen, Hinweise („Braucht dich“), Erledigt-Protokoll, Benachrichtigungen.
+ * Lotte-Laufzeit: Automationen, Hinweise („Braucht dich“), Erledigt-Protokoll, Benachrichtigungen.
  *
- * Grundsatz: Macher erledigt Routine selbst und holt den Menschen nur bei
- * Entscheidungen, Freigaben oder echten Problemen dazu. Alles, was Macher tut,
+ * Grundsatz: Lotte erledigt Routine selbst und holt den Menschen nur bei
+ * Entscheidungen, Freigaben oder echten Problemen dazu. Alles, was Lotte tut,
  * steht im Erledigt-Protokoll und ist – wo möglich – rückgängig zu machen.
  */
 import { db } from './db';
@@ -29,7 +29,7 @@ export function setzeAutomation(id: string, an: boolean) {
   if (an) starteAutomation(id);
 }
 
-/** Als wer eine Automation handelt (Audit: „durch Macher“) */
+/** Als wer eine Automation handelt (Audit: „durch Lotte“) */
 export function automationAkteur(a: { id: string; titel?: string }): Akteur {
   return { quelle: 'automation', id: a.id, name: a.titel };
 }
@@ -76,9 +76,9 @@ export function starteAutomationen() {
 }
 
 /**
- * Im Erledigt-Protokoll vermerken, was Macher getan hat.
+ * Im Erledigt-Protokoll vermerken, was Lotte getan hat.
  * `regel` = Automation-ID. Wird nur geschrieben, wenn die Automation an ist
- * (oder `regel` keine registrierte Automation ist, z. B. manuelle Macher-Aktion).
+ * (oder `regel` keine registrierte Automation ist, z. B. manuelle Lotte-Aktion).
  */
 export function erledigt(
   regel: string,

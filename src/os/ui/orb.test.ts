@@ -33,6 +33,6 @@ describe('Orb-Zustand aus Absicht oder Gateway-Aktion', () => {
   });
 
   it('jeder Zustand hat einen Statustext – nie nur die Animation', () => {
-    for (const z of ORB_ZUSTAENDE) expect(orbText(z)).toMatch(/^Macher .+ …$/);
+    for (const z of ORB_ZUSTAENDE) expect(orbText(z)).toMatch(/^Lotte .+ …$/);
   });
 });

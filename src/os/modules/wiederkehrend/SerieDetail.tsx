@@ -100,7 +100,7 @@ export function SerieDetail() {
                 leer={
                   <Leer
                     titel={aktiv ? 'Gerade keine kommenden Termine' : 'Serie ist beendet'}
-                    text={aktiv ? `Macher legt Termine immer ${HORIZONT_MONATE} Monate im Voraus an.` : 'Es entstehen keine neuen Termine mehr.'}
+                    text={aktiv ? `Lotte legt Termine immer ${HORIZONT_MONATE} Monate im Voraus an.` : 'Es entstehen keine neuen Termine mehr.'}
                     icon="kalender"
                   />
                 }

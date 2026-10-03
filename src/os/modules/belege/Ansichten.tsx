@@ -447,7 +447,7 @@ export function BelegDetail() {
           {[b.eingangVon ? `Von ${b.eingangVon}` : null, b.eingangBetreff ? `Betreff „${b.eingangBetreff}“` : null, b.lieferantGrund ? `Lieferant ${b.lieferantGrund}` : null].filter(Boolean).join(' · ')}. Betrag und Datum trägst du beim Prüfen ein.
         </Meldung>
       )}
-      {b.zuordnungGrund && (b.auftragId || b.bereich) && <Meldung ton="neutral" titel="Von Macher zugeordnet">{b.zuordnungGrund}</Meldung>}
+      {b.zuordnungGrund && (b.auftragId || b.bereich) && <Meldung ton="neutral" titel="Von Lotte zugeordnet">{b.zuordnungGrund}</Meldung>}
       <ZweiSpalten
         haupt={
           <Karte>

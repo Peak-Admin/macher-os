@@ -1,4 +1,4 @@
-/** „Mit Macher vorbereiten“: Kontextübergabe (Objekt + Absicht) vom Knopf über das Overlay bis in den Gateway. */
+/** „Mit Lotte vorbereiten“: Kontextübergabe (Objekt + Absicht) vom Knopf über das Overlay bis in den Gateway. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { db, zuruecksetzen } from '@core/db';
@@ -110,7 +110,7 @@ describe('Kontextübergabe an den Assistenten', () => {
     expect(db.auftraege.get(d.anfrage.id)?.phase).toBe('angebot');
   });
 
-  it('gibt es schon einen Entwurf, schlägt Macher vor, dort weiterzumachen', async () => {
+  it('gibt es schon einen Entwurf, schlägt Lotte vor, dort weiterzumachen', async () => {
     db.angebote.create({ nummer: 'AN-1', auftragId: d.anfrage.id, kundeId: d.kunde.id, titel: 'Küche', positionen: [], status: 'entwurf', datum: HEUTE, gueltigBis: '2026-11-01', version: 1 });
     const { antwort } = await fragen('Angebot vorbereiten', kontext(), 'text', { absicht: 'offer.prepare_from_request', werte: { bezug: { typ: 'auftraege', id: d.anfrage.id } } });
     expect(antwort.absicht).toBe('angebot-vorhanden');

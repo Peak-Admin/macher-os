@@ -147,7 +147,7 @@ function Tagesbrief({ i, ausfuehren }: { i: TagesbriefInhalt; ausfuehren: Return
           </Liste>
         ) : (
           <Meldung ton="erfolg" titel="Nichts brennt.">
-            Heute wartet keine Entscheidung auf dich. Macher meldet sich, wenn sich das ändert.
+            Heute wartet keine Entscheidung auf dich. Lotte meldet sich, wenn sich das ändert.
           </Meldung>
         )}
       </Abschnitt>
@@ -221,7 +221,7 @@ function Wochenbilanz({ i }: { i: WochenbilanzInhalt }) {
         <Kennzahl label="Offene Posten" wert={euro(i.offen.summe)} ton={i.offen.anzahlUeberfaellig ? 'gefahr' : undefined} hinweis={i.offen.anzahlUeberfaellig ? `davon ${euro(i.offen.ueberfaellig)} überfällig` : i.offen.anzahl ? 'nichts überfällig' : 'alles bezahlt'} to="/plan/offen" />
         <Kennzahl label="Aufträge fertig" wert={i.auftraege.abgeschlossen} hinweis={`${i.auftraege.neu} neu · ${i.auftraege.laufend} laufen`} to="/auftraege" />
       </Raster>
-      <Karte oberzeile="Macher hat erledigt" titel={i.erledigt.anzahl === 1 ? '1 Sache diese Woche' : `${i.erledigt.anzahl} Sachen diese Woche`} aktion={<Button variante="tertiaer" klein to="/heute/erledigt" icon="pfeilRechts">Ansehen</Button>}>
+      <Karte oberzeile="Lotte hat erledigt" titel={i.erledigt.anzahl === 1 ? '1 Sache diese Woche' : `${i.erledigt.anzahl} Sachen diese Woche`} aktion={<Button variante="tertiaer" klein to="/heute/erledigt" icon="pfeilRechts">Ansehen</Button>}>
         <Meta>{i.erledigt.minuten > 0 ? `Gesparte Zeit: ca. ${dauerText(i.erledigt.minuten)} (Schätzung je Regel, keine Messung).` : 'Für diese Woche liegt noch keine Zeitschätzung vor.'}</Meta>
       </Karte>
     </>

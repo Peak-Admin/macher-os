@@ -121,14 +121,14 @@ export function StundenkontoSeite() {
         </Stapel>
       ) : (
         !eigenes && (
-          <Leer titel="Noch keine Zeiten" text="Sobald du deine erste Zeit stempelst, rechnet Macher dein Stundenkonto." icon="uhr" aktion={<Button to="/betrieb/arbeitszeiten">Zur Stempeluhr</Button>} />
+          <Leer titel="Noch keine Zeiten" text="Sobald du deine erste Zeit stempelst, rechnet Lotte dein Stundenkonto." icon="uhr" aktion={<Button to="/betrieb/arbeitszeiten">Zur Stempeluhr</Button>} />
         )
       )}
       <Meldung>
         Das Konto beginnt mit der ersten erfassten Zeit in Handwerk OS und läuft über den Jahreswechsel weiter. Stunden aus dem alten System trägt das Büro als Übertrag ein (Stundenkonto
         korrigieren).
       </Meldung>
-      <Meta>Fehlende Pausen nach Arbeitszeitgesetz (über 6 Stunden 30 Minuten, über 9 Stunden 45 Minuten) zieht Macher automatisch ab. Feiertage deines Bundeslands laut Plan-Einstellung haben kein Soll.</Meta>
+      <Meta>Fehlende Pausen nach Arbeitszeitgesetz (über 6 Stunden 30 Minuten, über 9 Stunden 45 Minuten) zieht Lotte automatisch ab. Feiertage deines Bundeslands laut Plan-Einstellung haben kein Soll.</Meta>
       {buero && <BuchungDialog key={String(buchungOffen)} offen={buchungOffen} onSchliessen={() => setBuchungOffen(false)} />}
       {admin && <RegelnDialog offen={regelnOffen} onSchliessen={() => setRegelnOffen(false)} />}
     </Seite>

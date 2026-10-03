@@ -55,7 +55,7 @@ export const vergleich: { gruppe: string; zeilen: VergleichsZeile[] }[] = [
     ],
   },
   {
-    gruppe: "Macher erledigt",
+    gruppe: "Lotte erledigt",
     zeilen: [
       { merkmal: "Büroarbeit automatisch erledigen", funktion: "automatisch-erledigen", werte: ab("team") },
     ],
@@ -98,14 +98,14 @@ export const wegweiser: { id: string; label: string; hinweis: string; plan: Plan
 export const zusatzleistungen: { titel: string; text: string; icon: IconName; href: string; linkLabel: string }[] = [
   {
     titel: "Telefon-Assistent",
-    text: "Macher nimmt Anrufe an, wenn ihr auf der Baustelle seid, und legt daraus Anfragen an.",
+    text: "Lotte nimmt Anrufe an, wenn ihr auf der Baustelle seid, und legt daraus Anfragen an.",
     icon: "phone",
     href: "/funktionen/telefon",
     linkLabel: "Telefon & Empfang",
   },
   {
     titel: "Zahlungsfunktionen",
-    text: "Kunden bezahlen direkt aus der Rechnung. Macher behält offene Zahlungen im Blick.",
+    text: "Kunden bezahlen direkt aus der Rechnung. Lotte behält offene Zahlungen im Blick.",
     icon: "euro",
     href: "/funktionen/zahlungen",
     linkLabel: "Zahlungen",

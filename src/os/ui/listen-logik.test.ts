@@ -78,10 +78,10 @@ describe('Zuletzt-bearbeitet-Text', () => {
     expect(zuletztText(b, 'Anna', jetzt)).toBe('Heute 14:32 · Anna');
     expect(zuletztText(b, undefined, jetzt)).toBe('Heute 14:32');
   });
-  it('Bearbeiter: Mensch, Macher, Import', () => {
+  it('Bearbeiter: Mensch, Lotte, Import', () => {
     expect(bearbeiterName({ zeit: '', quelle: 'user' }, 'Anna')).toBe('Anna');
-    expect(bearbeiterName({ zeit: '', quelle: 'ai' }, undefined)).toBe('Macher');
-    expect(bearbeiterName({ zeit: '', quelle: 'automation' }, undefined)).toBe('Macher');
+    expect(bearbeiterName({ zeit: '', quelle: 'ai' }, undefined)).toBe('Lotte');
+    expect(bearbeiterName({ zeit: '', quelle: 'automation' }, undefined)).toBe('Lotte');
     expect(bearbeiterName({ zeit: '', quelle: 'import' }, undefined)).toBe('Import');
     expect(bearbeiterName({ zeit: '' }, undefined)).toBeUndefined();
   });

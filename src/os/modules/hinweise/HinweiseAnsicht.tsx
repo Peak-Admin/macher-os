@@ -22,7 +22,7 @@ export function HinweiseAnsicht() {
   const erledigt = erledigteSeit(7);
 
   return (
-    <Seite titel="Hinweise & Freigaben" untertitel="Hier holt Macher dich dazu – nur wenn eine Entscheidung, Freigabe oder ein Problem ansteht.">
+    <Seite titel="Hinweise & Freigaben" untertitel="Hier holt Lotte dich dazu – nur wenn eine Entscheidung, Freigabe oder ein Problem ansteht.">
       <Stapel abstand={12}>
         {buero && <Segmente label="Zeigen" wert={wer} onChange={setWer} optionen={[{ wert: 'mich', label: 'Für mich', icon: 'person' }, { wert: 'alle', label: 'Alle im Betrieb', icon: 'team' }]} />}
         <Filter label="Art" wert={art} onChange={setArt} optionen={[{ wert: 'alle' as ArtFilter, label: 'Alle', zaehler: z.alle }, ...ARTEN.map((a) => ({ wert: a.wert as ArtFilter, label: a.label, zaehler: z[a.wert] }))]} />
@@ -37,7 +37,7 @@ export function HinweiseAnsicht() {
       ) : basis.length ? (
         <Leer icon="filter" titel="Keine Treffer" text="Zu diesem Filter gibt es keine offenen Punkte. Passe die Auswahl an." aktion={<Button variante="sekundaer" onClick={() => setArt('alle')}>Alle zeigen</Button>} />
       ) : (
-        <Leer icon="check" titel="Alles erledigt" text="Gerade braucht dich nichts. Macher meldet sich, sobald eine Entscheidung oder Freigabe ansteht." />
+        <Leer icon="check" titel="Alles erledigt" text="Gerade braucht dich nichts. Lotte meldet sich, sobald eine Entscheidung oder Freigabe ansteht." />
       )}
 
       {erledigt.length > 0 && (

@@ -50,7 +50,7 @@ export function Inventur() {
   };
 
   return (
-    <Seite titel="Inventur" untertitel="Zähle, was wirklich da ist. Macher bucht nur die Unterschiede." zurueck={{ to: '/betrieb/lager', label: 'Lager' }}>
+    <Seite titel="Inventur" untertitel="Zähle, was wirklich da ist. Lotte bucht nur die Unterschiede." zurueck={{ to: '/betrieb/lager', label: 'Lager' }}>
       <Stapel>
         <Auswahl label="Welcher Lagerort?" value={ort} onChange={(e) => ortWechseln(e.target.value)} optionen={orte.map((o) => ({ wert: o.id, label: o.name }))} />
         {ergebnis != null && (

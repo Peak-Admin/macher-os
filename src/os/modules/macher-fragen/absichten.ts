@@ -1,5 +1,5 @@
 /**
- * Weitere Absichten für „Macher fragen“ – aus der früheren Action Engine in den Gateway übernommen.
+ * Weitere Absichten für „Frag Lotte“ – aus der früheren Action Engine in den Gateway übernommen.
  *
  *   „Was fehlt noch für die Baustelle Wagner?“            job.missing         (lesen – Antwort aus den Daten)
  *   „Plane Jonas morgen bei Schneider ein“                  employee.schedule   (Plan → Aktion der Autoplanung)
@@ -9,7 +9,7 @@
  *
  * „Mach Müller die Rechnung fertig“ (`invoice.create_draft`) und „Schreib Frau Müller, dass …“ (`message.send`)
  * stehen in `assistent.ts` bzw. `aktionen.ts`. Jede Absicht baut nur einen Plan aus strukturierten Aktionen
- * (`@core/gateway`); ausgeführt wird erst nach Bestätigung – durch die Aktion des Besitzer-Moduls, als Macher
+ * (`@core/gateway`); ausgeführt wird erst nach Bestätigung – durch die Aktion des Besitzer-Moduls, als Lotte
  * protokolliert und über das Audit rücknehmbar.
  */
 import { db } from '@core/db';
@@ -150,7 +150,7 @@ export function einplanen(k: Kontext, frage: string): Antwort {
     bloecke: [{ datum: tag, von, bis }],
     stunden: (bis - von) / 60,
     score: 0,
-    gruende: [`Von ${k.ich?.vorname ?? 'dir'} über Macher eingeplant`],
+    gruende: [`Von ${k.ich?.vorname ?? 'dir'} über Lotte eingeplant`],
     warnungen: [],
   };
   const plan: Plan = {

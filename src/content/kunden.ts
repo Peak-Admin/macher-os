@@ -60,7 +60,7 @@ export const kundenStories: Record<KundeSlug, KundenStory> = {
     ],
     nutzung: [
       { funktion: "anfragen", text: "Alle Anfragen landen an einer Stelle – egal ob Anruf, Mail oder Formular." },
-      { funktion: "einsatzplanung", text: "Macher schlägt vor, wer wann zu welchem Kunden fährt." },
+      { funktion: "einsatzplanung", text: "Lotte schlägt vor, wer wann zu welchem Kunden fährt." },
       { funktion: "zeiterfassung", text: "Monteure erfassen Zeiten direkt im Auftrag auf dem Handy." },
       { funktion: "rechnungen", text: "Aus dem fertigen Auftrag wird die Rechnung vorbereitet." },
     ],
@@ -94,7 +94,7 @@ export const kundenStories: Record<KundeSlug, KundenStory> = {
     ],
     nutzung: [
       { funktion: "einsatzplanung", text: "Fällige Wartungen erscheinen von selbst im Plan – mit passendem Monteur." },
-      { funktion: "qualifikationen", text: "Macher plant nur Leute ein, die die nötige Qualifikation haben." },
+      { funktion: "qualifikationen", text: "Lotte plant nur Leute ein, die die nötige Qualifikation haben." },
       { funktion: "material", text: "Vor dem Termin ist klar, ob die Teile im Wagen oder im Lager sind." },
       { funktion: "dokumentation", text: "Wartungsprotokoll und Fotos entstehen direkt beim Kunden." },
     ],
@@ -128,7 +128,7 @@ export const kundenStories: Record<KundeSlug, KundenStory> = {
     ],
     nutzung: [
       { funktion: "aufmass", text: "Flächen werden vor Ort aufgenommen und landen direkt im Auftrag." },
-      { funktion: "angebote", text: "Macher bereitet das Angebot aus Aufmaß und Leistungen vor." },
+      { funktion: "angebote", text: "Lotte bereitet das Angebot aus Aufmaß und Leistungen vor." },
       { funktion: "kalender", text: "Kunden bekommen ihren Termin bestätigt, ohne Hin und Her am Telefon." },
       { funktion: "dokumentation", text: "Vorher-Nachher-Fotos landen automatisch im Auftrag." },
     ],
@@ -232,7 +232,7 @@ export const kundenStories: Record<KundeSlug, KundenStory> = {
       { funktion: "auftraege", text: "Neuanlage und Pflege laufen als Aufträge mit klaren Schritten." },
       { funktion: "material", text: "Verbrauchtes Material wird auf der Baustelle erfasst." },
       { funktion: "rechnungen", text: "Nach der Abnahme liegt die Rechnung fertig vorbereitet bereit." },
-      { funktion: "zahlungen", text: "Macher behält offene Zahlungen im Blick und erinnert rechtzeitig." },
+      { funktion: "zahlungen", text: "Lotte behält offene Zahlungen im Blick und erinnert rechtzeitig." },
     ],
     ergebnis: [
       "Rechnungen gehen am Tag der Abnahme raus.",

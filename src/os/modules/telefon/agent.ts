@@ -3,10 +3,10 @@
  *
  *  - Konfiguration (`AssistentKonfig`) mit Opinionated Defaults
  *  - Ansage mit Pflichthinweis „digitaler Assistent“ (EU AI Act, Art. 50)
- *  - Annahmeregel: wann Macher rangeht (Geschäftszeiten in Europe/Berlin)
+ *  - Annahmeregel: wann Lotte rangeht (Geschäftszeiten in Europe/Berlin)
  *  - Notfall-Erkennung zuerst per Regeln (Stichworte), die Einschätzung des Assistenten nur ergänzend
  *  - `agentDefinition`: anbieterneutrale Agent-Beschreibung (Ansage, Anweisung, Ziel-Schema, Werkzeuge)
- *  - `ergebnisUebersetzen`: Gesprächsergebnis des Anbieters → nächster Schritt in Macher (Anfrage, Rückruf, Notiz, Notfall)
+ *  - `ergebnisUebersetzen`: Gesprächsergebnis des Anbieters → nächster Schritt in Lotte (Anfrage, Rückruf, Notiz, Notfall)
  */
 import type { AnrufDetails, AnrufDringlichkeit, Basis, Nachricht } from '@core/objects';
 import type { AgentDefinition, Annahme, AnrufErgebnis, FrageId, JsonSchema, WerkzeugDef } from './anbieter/typen';
@@ -44,10 +44,10 @@ export const STANDARD_BEGRUESSUNG = 'Guten Tag, Sie sprechen mit dem digitalen A
 export const STANDARD_STICHWORTE = ['Rohrbruch', 'Wasserschaden', 'Wasser läuft', 'Heizung aus', 'Heizung ausgefallen', 'Gasgeruch', 'riecht nach Gas', 'Stromausfall', 'kein Strom', 'Brandgeruch', 'Sturmschaden'];
 
 export const ANNAHME: { wert: Annahme; label: string; text: string }[] = [
-  { wert: 'keiner', label: 'Wenn keiner rangeht', text: 'Klingelt es ohne Antwort, nimmt Macher nach der eingestellten Zeit an.' },
-  { wert: 'ausserhalb', label: 'Außerhalb der Geschäftszeiten', text: 'Abends, am Wochenende und an Feiertagen nimmt Macher sofort an.' },
+  { wert: 'keiner', label: 'Wenn keiner rangeht', text: 'Klingelt es ohne Antwort, nimmt Lotte nach der eingestellten Zeit an.' },
+  { wert: 'ausserhalb', label: 'Außerhalb der Geschäftszeiten', text: 'Abends, am Wochenende und an Feiertagen nimmt Lotte sofort an.' },
   { wert: 'ausserhalb_keiner', label: 'Beides', text: 'Außerhalb der Geschäftszeiten sofort, sonst wenn keiner rangeht.' },
-  { wert: 'immer', label: 'Immer', text: 'Macher nimmt jeden Anruf sofort an.' },
+  { wert: 'immer', label: 'Immer', text: 'Lotte nimmt jeden Anruf sofort an.' },
 ];
 
 export const STANDARD_KONFIG: AssistentKonfig = {
@@ -151,13 +151,13 @@ export function geschaeftszeitenText(z: Pick<Geschaeftszeiten, 'beginn' | 'ende'
 
 export type AnnahmeEntscheidung = { annehmen: false; grund: string } | { annehmen: true; nachSekunden: number; grund: string };
 
-/** Nimmt Macher diesen Anruf an – und nach wie vielen Sekunden Klingeln? */
+/** Nimmt Lotte diesen Anruf an – und nach wie vielen Sekunden Klingeln? */
 export function nimmtAn(k: Pick<AssistentKonfig, 'an' | 'annahme' | 'klingelSekunden'>, jetzt: Date, z: Geschaeftszeiten): AnnahmeEntscheidung {
   if (!k.an) return { annehmen: false, grund: 'Der Telefonassistent ist aus.' };
   const offen = inGeschaeftszeit(jetzt, z);
   switch (k.annahme) {
     case 'immer':
-      return { annehmen: true, nachSekunden: 0, grund: 'Macher nimmt jeden Anruf an.' };
+      return { annehmen: true, nachSekunden: 0, grund: 'Lotte nimmt jeden Anruf an.' };
     case 'keiner':
       return { annehmen: true, nachSekunden: k.klingelSekunden, grund: `Wenn nach ${k.klingelSekunden} Sekunden keiner rangeht.` };
     case 'ausserhalb':
@@ -315,7 +315,7 @@ const DRINGEND = /\b(dringend|eilig|sofort|schnellstm|heute noch|so schnell wie)
 const RUECKRUF = /zur(ü|ue)ckruf|r(ü|ue)ckruf|ruf\w* .*zur(ü|ue)ck|melden sie sich/i;
 
 /**
- * Gesprächsergebnis (strukturierte Felder vom Anbieter) → nächster Schritt in Macher.
+ * Gesprächsergebnis (strukturierte Felder vom Anbieter) → nächster Schritt in Lotte.
  *
  * Reihenfolge: 1. Notfall per Stichwort (Regel), 2. Einschätzung des Assistenten (ergänzend), 3. Vorschlag des
  * Assistenten für den Schritt, 4. Standard: mit Anliegen → Anfrage, sonst Rückruf. Ein bekannter Kunde mit offenem

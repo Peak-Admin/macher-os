@@ -4,7 +4,7 @@ import { Felder } from './Felder';
 import { SAMMLUNG_LABEL, eigeneFelder, eigeneFormulare, feldwertTreffer, objektTitel } from './daten';
 
 /**
- * Eigene Felder & Formulare: Angaben, die Macher nicht kennt, an Kunde, Ort, Anlage, Auftrag (auch Aufmaß,
+ * Eigene Felder & Formulare: Angaben, die Lotte nicht kennt, an Kunde, Ort, Anlage, Auftrag (auch Aufmaß,
  * Wartung, Abnahme), Mitarbeiter und Termin. Hängt sich als Panel „Eigene Angaben“ in die Detailansichten –
  * kein neuer Bereich, unsichtbar, solange es keine eigenen Felder gibt. Verwaltung im Kontext unter
  * Betrieb › Einstellungen.
