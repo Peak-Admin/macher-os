@@ -41,6 +41,13 @@
 .pl-termin .mm-meta { font-size: 13px; line-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pl-termin--abgesagt { opacity: 0.6; text-decoration: line-through; }
 .pl-termin--konflikt { border-color: var(--mm-danger); }
+/* Drag and Drop: gezogener Termin blass, Zieltag grün umrandet */
+.pl-termin[draggable='true'], .pl-monat-termin { cursor: grab; }
+.pl-termin--zug { opacity: 0.45; }
+.pl-ablage { border-color: var(--mm-brand); box-shadow: inset 0 0 0 2px var(--mm-brand); background: var(--mm-brand-soft); }
+.pl-ablage-zeiten { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; margin: 0; }
+.pl-ablage-zeiten dt { color: var(--mm-text-secondary); }
+.pl-ablage-zeiten dd { margin: 0; }
 
 .pl-monat { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .pl-monat-kopf { font: 600 13px/20px var(--mm-font); color: var(--mm-text); padding: 0 4px; }

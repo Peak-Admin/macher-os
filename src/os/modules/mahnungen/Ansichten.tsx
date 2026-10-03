@@ -363,7 +363,7 @@ export function KundeOffenPanel({ id }: { id: ID }) {
   return (
     <Karte titel="Offene Posten" icon="euro" kompakt>
       <Stapel abstand={8}>
-        {o.ueberfaellig.length ? <Status ton="achtung">{`${euro(o.ueberfaelligSumme)} überfällig`}</Status> : <Status ton="aktiv">{`${euro(o.summe)} offen`}</Status>}
+        {o.ueberfaellig.length ? <Status ton="gefahr">{`${euro(o.ueberfaelligSumme)} überfällig`}</Status> : <Status ton="aktiv">{`${euro(o.summe)} offen`}</Status>}
         {stufe > 0 && <Meta>Zuletzt: {STUFE_LABEL[stufe as 1 | 2 | 3]}</Meta>}
         <Liste>
           {o.liste.map((r) => (

@@ -88,7 +88,7 @@ export function BetriebsmittelZeile({ b, zeigeArt }: { b: Betriebsmittel; zeigeA
       untertitel={[zeigeArt ? ART_LABEL[b.art] : null, nummer, wo.text].filter(Boolean).join(' · ')}
       rechts={
         f.stufe === 'ueberfaellig' ? (
-          <Status ton="achtung">Prüfung überfällig</Status>
+          <Status ton="gefahr">Prüfung überfällig</Status>
         ) : b.status === 'defekt' || b.status === 'in_pruefung' ? (
           <Status ton={STATUS_LABEL[b.status].ton}>{STATUS_LABEL[b.status].text}</Status>
         ) : f.stufe === 'tage14' ? (

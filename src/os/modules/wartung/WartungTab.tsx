@@ -168,7 +168,7 @@ export function AnlageWartungPanel({ id }: { id: ID }) {
         <Meta>Letzte Wartung: {datum(a.letzteWartung)}</Meta>
         <div>
           {a.naechsteWartung ? (
-            <Status ton={ueber ? 'achtung' : 'neutral'}>{`${ueber ? 'Überfällig seit' : 'Nächste'} ${datum(a.naechsteWartung)}`}</Status>
+            <Status ton={ueber ? 'gefahr' : 'neutral'}>{`${ueber ? 'Überfällig seit' : 'Nächste'} ${datum(a.naechsteWartung)}`}</Status>
           ) : (
             <Status>Kein Datum eingetragen</Status>
           )}

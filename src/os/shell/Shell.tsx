@@ -24,7 +24,7 @@ import { useEinstellung } from '@core/einstellungen';
 import { personName } from '@core/format';
 import { alleModule, modul } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Auswahl, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
+import { Auswahl, Button, Icon, IconButton, Meldung, SeitenSternProvider, ThemenIcon } from '@ui/index';
 import { Personenbild } from '@ui/person';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { useInboxZahl } from '@modules/benachrichtigungen/Inbox';
@@ -35,10 +35,14 @@ import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
 import { BetriebWechsler } from './BetriebWechsler';
 import { DeineLeiste, useLeistenZiele } from './Seitenleiste';
+import { SeitenStern } from './SeitenStern';
 import { BREITE_MAX, BREITE_MIN, BREITE_STANDARD, leisteBreite } from './seitenleiste';
 import './shell.css';
 
 /** Monteur und Azubi bekommen am Handy die schlanke Monteur-App */
+/** Stern im Seitenkopf für jede Seite (nicht in der Monteur-App, die keine Favoriten hat) */
+const seitenStern = (titel?: string) => <SeitenStern titel={titel} />;
+
 export const istMonteurRolle = (m: Pick<Mitarbeiter, 'rolle'> | undefined) => m?.rolle === 'monteur' || m?.rolle === 'azubi';
 
 export const MONTEUR_TABS = [
@@ -162,7 +166,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <InstallHinweis />
           <SpeicherWarnung />
           {ort && <LokaleNavigation ort={ort} />}
-          {children}
+          <SeitenSternProvider value={monteur ? null : seitenStern}>{children}</SeitenSternProvider>
         </main>
       </div>
 

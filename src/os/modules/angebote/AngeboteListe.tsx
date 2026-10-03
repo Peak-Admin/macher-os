@@ -82,9 +82,9 @@ export function AngeboteListe() {
     <Seite titel="Angebote" untertitel="Schreiben, versenden, nachfassen – bis zum Auftrag." aktion={<Button icon="plus" onClick={() => setNeuOffen(true)}>Angebot erstellen</Button>}>
       <Stapel>
         <Raster min={200}>
-          <Kennzahl label="Offen beim Kunden" wert={euro(summeOffen)} hinweis={`${offen.length === 1 ? '1 Angebot' : `${offen.length} Angebote`}, ${ansicht.betragsart}`} />
-          <Kennzahl label="Nachfassen fällig" wert={nachfassen.length} ton={nachfassen.length ? 'achtung' : undefined} hinweis={`ohne Antwort seit ${nachfassenTage()} Tagen`} />
-          <Kennzahl label="Annahmequote" wert={quote != null ? `${quote} %` : null} zeitraum="letzte 90 Tage" hinweis={quote == null ? 'ab 3 Entscheidungen' : `${entschieden.length} entschieden`} />
+          <Kennzahl icon="euro" label="Offen beim Kunden" wert={euro(summeOffen)} hinweis={`${offen.length === 1 ? '1 Angebot' : `${offen.length} Angebote`}, ${ansicht.betragsart}`} />
+          <Kennzahl icon="telefon" label="Nachfassen fällig" wert={nachfassen.length} ton={nachfassen.length ? 'achtung' : undefined} hinweis={`ohne Antwort seit ${nachfassenTage()} Tagen`} />
+          <Kennzahl icon="diagramm" label="Annahmequote" wert={quote != null ? `${quote} %` : null} zeitraum="letzte 90 Tage" hinweis={quote == null ? 'ab 3 Entscheidungen' : `${entschieden.length} entschieden`} />
         </Raster>
         <FinanzFilter
           ansicht={ansicht}

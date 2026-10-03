@@ -29,6 +29,9 @@ const CONNECTOR_ICON: Partial<Record<string, GlasIconName>> = {
 
 const iconFuer = (c: Connector): GlasIconName => CONNECTOR_ICON[c.id] ?? KATEGORIE_ICON[c.kategorie];
 
+/** Markenlogo der Verbindung (Google Kalender, DATEV …) – so erkennt man das Programm auf einen Blick */
+const logoFuer = (c: Connector) => (c.logo ? `/logos/integrationen/${c.logo}` : undefined);
+
 /** Glas-Icon je Bereich (Ausweich für Verbindungen ohne eigenes Icon). */
 const KATEGORIE_ICON: Record<Kategorie, GlasIconName> = {
   banking: 'rechnung',
@@ -85,7 +88,7 @@ function ConnectorKarte({ c, onMehr }: { c: Connector; onMehr: () => void }) {
     <Karte titel={c.titel} oberzeile={VERBINDUNGSART[c.art].titel}>
       <Stapel abstand={12}>
         <span className="mm-fenster" aria-hidden>
-          <FensterSkizze icon={iconFuer(c)} />
+          <FensterSkizze icon={iconFuer(c)} logo={logoFuer(c)} />
         </span>
         <Meta>{c.text}</Meta>
         <div>
@@ -143,7 +146,7 @@ function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchl
     >
       <Stapel>
         <span className="mm-fenster" aria-hidden>
-          <FensterSkizze icon={iconFuer(c)} />
+          <FensterSkizze icon={iconFuer(c)} logo={logoFuer(c)} />
         </span>
         <p>{c.text}</p>
         <div>

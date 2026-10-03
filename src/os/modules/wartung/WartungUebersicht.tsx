@@ -47,7 +47,7 @@ export function WartungUebersicht() {
       aktion={anlegbar.length ? <Button icon="plus" onClick={alleAnlegen}>{anlegbar.length === 1 ? 'Fällige Wartung anlegen' : `${anlegbar.length} fällige Wartungen anlegen`}</Button> : undefined}
     >
       <Raster min={160}>
-        <Kennzahl label="Überfällig" wert={gruppen.ueberfaellig.length} ton={gruppen.ueberfaellig.length ? 'achtung' : undefined} />
+        <Kennzahl label="Überfällig" wert={gruppen.ueberfaellig.length} ton={gruppen.ueberfaellig.length ? 'gefahr' : undefined} />
         <Kennzahl label="Diese Woche" wert={gruppen.woche.length} />
         <Kennzahl label="Diesen Monat" wert={gruppen.monat.length} hinweis="nach dieser Woche" />
         <Kennzahl label="Offene Wartungsaufträge" wert={offeneAuftraege.length} />
@@ -107,13 +107,13 @@ export function WartungUebersicht() {
                   rechts={
                     auftrag ? (
                       <Zeile abstand={8}>
-                        {ueber && <Status ton="achtung">Überfällig</Status>}
+                        {ueber && <Status ton="gefahr">Überfällig</Status>}
                         <Status ton="aktiv">{`Auftrag ${auftrag.nummer}`}</Status>
                         {p && <Button klein variante="tertiaer" to={p}>Öffnen</Button>}
                       </Zeile>
                     ) : (
                       <Zeile abstand={8}>
-                        {ueber && <Status ton="achtung">Überfällig</Status>}
+                        {ueber && <Status ton="gefahr">Überfällig</Status>}
                         <Button klein variante={ueber ? 'primaer' : 'sekundaer'} onClick={() => einzeln(a)}>
                           Auftrag anlegen
                         </Button>

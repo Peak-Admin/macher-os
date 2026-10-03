@@ -68,7 +68,7 @@ export function AuswertungSeite() {
             label="Offene Posten"
             wert={euro(k.offen.summe)}
             zeitraum="Stand heute"
-            ton={k.offen.ueberfaellig ? 'achtung' : undefined}
+            ton={k.offen.ueberfaellig ? 'gefahr' : undefined}
             hinweis={k.offen.anzahl ? `${k.offen.anzahl} ${k.offen.anzahl === 1 ? 'Rechnung' : 'Rechnungen'}${k.offen.ueberfaellig ? `, davon ${euro(k.offen.ueberfaellig)} überfällig` : ''}` : 'Alles bezahlt'}
           />
           <Kennzahl
@@ -121,7 +121,7 @@ export function AuswertungWidget() {
     <Karte titel="Zahlen auf einen Blick" icon="diagramm" oberzeile={k.zeitraum.label} aktion={<Button variante="tertiaer" klein icon="weiter" to="/betrieb/auswertung">Auswertung</Button>}>
       <Raster min={200}>
         <Kennzahl label="Umsatz netto" wert={k.umsatz.anzahl || k.umsatzVor.anzahl ? euro(k.umsatz.netto) : LEER} hinweis={k.umsatz.anzahl || k.umsatzVor.anzahl ? vergleich(k, k.umsatz.netto, k.umsatzVor.netto) : 'Noch keine Daten – keine Rechnung im Monat'} />
-        <Kennzahl label="Offene Posten" wert={euro(k.offen.summe)} ton={k.offen.ueberfaellig ? 'achtung' : undefined} hinweis={k.offen.ueberfaellig ? `${euro(k.offen.ueberfaellig)} überfällig` : 'nichts überfällig'} to="/betrieb/zahlungen" />
+        <Kennzahl label="Offene Posten" wert={euro(k.offen.summe)} ton={k.offen.ueberfaellig ? 'gefahr' : undefined} hinweis={k.offen.ueberfaellig ? `${euro(k.offen.ueberfaellig)} überfällig` : 'nichts überfällig'} to="/betrieb/zahlungen" />
         <Kennzahl label="Auftragsbestand" wert={k.bestand.anzahl ? euro(k.bestand.summe) : LEER} hinweis={k.bestand.anzahl ? `${k.bestand.anzahl} ${k.bestand.anzahl === 1 ? 'Auftrag' : 'Aufträge'} mit Angebot` : 'Noch keine Daten – kein angenommenes Angebot'} />
         <Kennzahl label="Angebotsquote" wert={k.quote ? prozent(k.quote.anteil) : LEER} hinweis={k.quote ? `${k.quote.angenommen} von ${k.quote.entschieden} angenommen` : 'Noch keine Daten – kein Angebot entschieden'} />
       </Raster>

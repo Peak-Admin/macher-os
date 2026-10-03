@@ -49,7 +49,7 @@ function WartungWidget() {
   return (
     <Abschnitt titel="Wartung">
       <Raster min={180}>
-        {ueber > 0 && <Kennzahl label="Wartungen überfällig" wert={ueber} ton="achtung" to="/auftraege/wartung" />}
+        {ueber > 0 && <Kennzahl label="Wartungen überfällig" wert={ueber} ton="gefahr" to="/auftraege/wartung" />}
         {woche > 0 && <Kennzahl label="Wartungen diese Woche" wert={woche} to="/auftraege/wartung" />}
       </Raster>
     </Abschnitt>
@@ -79,7 +79,7 @@ export default defineModul({
   kurzinfo: () => {
     const t = heute();
     const n = db.anlagen.where((a) => !!a.naechsteWartung && a.naechsteWartung < t).length;
-    return n ? { text: n === 1 ? '1 Wartung überfällig' : `${n} Wartungen überfällig`, ton: 'achtung' } : undefined;
+    return n ? { text: n === 1 ? '1 Wartung überfällig' : `${n} Wartungen überfällig`, ton: 'gefahr' } : undefined;
   },
   automationen: [
     {

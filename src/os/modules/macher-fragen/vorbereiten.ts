@@ -205,7 +205,7 @@ function rechnungErinnern(k: Kontext, rechnungId: ID | undefined): Antwort {
   };
   return {
     ...planAntwort('rechnung-erinnern', `Rechnung ${r.nummer} ist seit ${datumKurz(r.faelligAm)} fällig. Macher bereitet die nächste Stufe nach deinen Mahnregeln vor.`, plan, `Offene Posten und Mahnregeln · ${stand(k)}`),
-    eintraege: [{ titel: `${euro(offenerBetrag(r))} offen`, untertitel: kunde?.name, status: { ton: 'achtung', text: 'Überfällig' } }],
+    eintraege: [{ titel: `${euro(offenerBetrag(r))} offen`, untertitel: kunde?.name, status: { ton: 'gefahr', text: 'Überfällig' } }],
   };
 }
 

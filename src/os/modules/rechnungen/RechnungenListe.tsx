@@ -63,7 +63,7 @@ export function RechnungenListe() {
           label="Überfällig"
           wert={euro(ueber.reduce((s, r) => s + offenerBetrag(r), 0))}
           hinweis={ueber.length === 1 ? '1 Rechnung' : `${ueber.length} Rechnungen`}
-          ton={ueber.length ? 'achtung' : undefined}
+          ton={ueber.length ? 'gefahr' : undefined}
           to="/betrieb/mahnungen"
         />
         <Kennzahl label="Entwürfe" wert={entwuerfe.length} hinweis={alteEntwuerfe.length ? `${alteEntwuerfe.length} älter als ${ENTWURF_TAGE} Tage` : 'warten auf Versand'} ton={alteEntwuerfe.length ? 'achtung' : undefined} />

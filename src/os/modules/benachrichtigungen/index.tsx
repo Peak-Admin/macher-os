@@ -17,6 +17,7 @@ function GlockenOverlay() {
       onSchliessen={schliessen}
       titel="Benachrichtigungen"
       icon="glocke"
+      breit
       aktionen={
         <>
           <Button variante="tertiaer" klein onClick={() => gehe('/macher/benachrichtigungen/einstellungen')}>

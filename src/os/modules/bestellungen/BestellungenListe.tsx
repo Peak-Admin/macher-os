@@ -22,7 +22,7 @@ export function BestellungenListe() {
     <Seite titel="Bestellungen" aktion={<Button icon="plus" to="/betrieb/bestellungen/neu">Bestellung anlegen</Button>}>
       <Stapel>
         {zuSpaet.length > 0 && (
-          <Meldung ton="achtung" titel={`${zuSpaet.length} ${zuSpaet.length === 1 ? 'Lieferung ist' : 'Lieferungen sind'} überfällig`}>
+          <Meldung ton="gefahr" titel={`${zuSpaet.length} ${zuSpaet.length === 1 ? 'Lieferung ist' : 'Lieferungen sind'} überfällig`}>
             Frag beim Lieferanten nach – oder buche den Wareneingang, falls die Ware schon da ist.
           </Meldung>
         )}
@@ -66,7 +66,7 @@ export function BestellungenListe() {
                   </>
                 }
                 untertitel={[kurzText(b, geld), istUnterwegs(b) && b.erwartetAm ? `erwartet ${relativ(b.erwartetAm)}` : null, b.status === 'geliefert' && b.geliefertAm ? `geliefert am ${datum(b.geliefertAm)}` : null].filter(Boolean).join(' · ')}
-                rechts={spaet ? <Status ton="achtung">Lieferung überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>}
+                rechts={spaet ? <Status ton="gefahr">Lieferung überfällig</Status> : <Status ton={STATUS[b.status].ton}>{STATUS[b.status].text}</Status>}
               />
             );
           })}

@@ -233,7 +233,7 @@ export function ArbeitWidget({ groesse, ich }: WidgetProps) {
                   </span>
                   <span className="mm-meta">{w.description}</span>
                   <span>
-                    {w.ueberfaellig ? <Status ton="achtung">Überfällig</Status> : <Status ton={STATUS_TON[w.status]}>{STATUS_TEXT[w.status]}</Status>}
+                    {w.ueberfaellig ? <Status ton="gefahr">Überfällig</Status> : <Status ton={STATUS_TON[w.status]}>{STATUS_TEXT[w.status]}</Status>}
                   </span>
                 </div>
                 <Button variante={w === posten[0] ? 'sekundaer' : 'tertiaer'} klein to={w.actionUrl} onClick={() => homeMessen('home_work_item_clicked', { typ: w.type })}>

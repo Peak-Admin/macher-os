@@ -64,7 +64,7 @@ export function WoStehtDerAuftrag({ auftrag: a, naechstes }: { auftrag: Auftrag;
               </Meta>
             )}
           </div>
-          {st.ueberfaellig ? <Status ton="achtung">Frist {datumKurz(st.faellig)} überschritten</Status> : st.faellig ? <Status ton="neutral">Frist {datumKurz(st.faellig)}</Status> : st.fertig ? <Status ton="erfolg">Abgeschlossen</Status> : null}
+          {st.ueberfaellig ? <Status ton="gefahr">Frist {datumKurz(st.faellig)} überschritten</Status> : st.faellig ? <Status ton="neutral">Frist {datumKurz(st.faellig)}</Status> : st.fertig ? <Status ton="erfolg">Abgeschlossen</Status> : null}
         </Zeile>
         {naechstes}
         {vonSelbst?.automatisch && <Meta>Weiter zu „{vonSelbst.label}“ geht es von selbst, sobald {BEDINGUNG_LABEL[vonSelbst.automatisch]}.</Meta>}

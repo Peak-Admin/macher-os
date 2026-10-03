@@ -1,17 +1,19 @@
-/** Kalender: Tag / Woche / Monat am Rechner, Agenda-Liste am Handy. Filter nach Mitarbeiter. */
-import { Fragment, useMemo } from 'react';
+/** Kalender: Tag / Woche / Monat am Rechner, Agenda-Liste am Handy. Filter nach Mitarbeiter.
+ *  In Woche und Monat lassen sich Termine per Drag and Drop auf einen anderen Tag ziehen – erst nach Bestätigung wird gespeichert. */
+import { Fragment, useMemo, useState, type DragEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
-import { datumKurz, heute, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart } from '@core/format';
-import { useIch, istBuero } from '@core/session';
+import { datumKurz, heute, isoDatum, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart } from '@core/format';
+import { useDarf, useIch, istBuero } from '@core/session';
 import type { Datum, Termin } from '@core/objects';
 import { TERMINART_ICON, TERMINART_TON } from '@core/zeichen';
-import { Auswahl, Button, IconButton, Leer, Liste, ListenZeile, Meta, Segmente, Seite, Stapel, Status, TypIcon, type IconName } from '@ui/index';
+import { Auswahl, Button, Dialog, IconButton, Leer, Liste, ListenZeile, Meldung, Meta, Segmente, Seite, Stapel, Status, TypIcon, useToast, type IconName } from '@ui/index';
 import { Person, Personen } from '@ui/person';
 import { kontextAusDb, terminKonflikte, anwesenheit } from '../verfuegbarkeit/daten';
-import { monatsAnfang, terminAmTag, termineIm, TERMINART_LABEL, TERMINSTATUS } from './daten';
+import { monatsAnfang, terminAmTag, termineIm, TERMINART_LABEL, TERMINSTATUS, verschoben } from './daten';
 import { useSchmal } from './hooks';
 import { TerminFormular } from './TerminFormular';
+import { terminVerschieben } from './TerminDetail';
 import './plan.css';
 
 type Ansicht = 'tag' | 'woche' | 'monat';
@@ -31,6 +33,53 @@ function zeitraum(ansicht: Ansicht, datum: Datum, schmal: boolean): { von: Datum
   return { von, bis };
 }
 
+/** Ziehen und Ablegen: welcher Termin gerade gezogen wird und über welchem Tag er schwebt */
+type Ziehen = {
+  darf: (t: Termin) => boolean;
+  zug?: string;
+  ziel?: Datum;
+  start: (t: Termin) => (e: DragEvent) => void;
+  ende: () => void;
+  tag: (d: Datum) => { onDragOver: (e: DragEvent) => void; onDragLeave: () => void; onDrop: (e: DragEvent) => void };
+};
+
+/** Nur geplante und bestätigte Termine – laufende, erledigte und abgesagte bleiben, wo sie sind */
+const verschiebbar = (t: Termin) => t.status === 'geplant' || t.status === 'bestaetigt';
+
+function useZiehen(darfPlanen: boolean, onAblegen: (t: Termin, tag: Datum) => void): Ziehen {
+  const [zug, setZug] = useState<string>();
+  const [ziel, setZiel] = useState<Datum>();
+  const ende = () => (setZug(undefined), setZiel(undefined));
+  return {
+    darf: (t) => darfPlanen && verschiebbar(t),
+    zug,
+    ziel,
+    start: (t) => (e) => {
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', t.titel);
+      setZug(t.id);
+    },
+    ende,
+    tag: (d) => ({
+      onDragOver: (e) => {
+        if (!zug) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (ziel !== d) setZiel(d);
+      },
+      onDragLeave: () => ziel === d && setZiel(undefined),
+      onDrop: (e) => {
+        e.preventDefault();
+        const t = zug ? db.termine.get(zug) : undefined;
+        ende();
+        if (t && isoTag(t.start) !== d) onAblegen(t, d);
+      },
+    }),
+  };
+}
+
+const isoTag = (iso: string) => isoDatum(new Date(iso));
+
 function schritt(ansicht: Ansicht, datum: Datum, richtung: 1 | -1, schmal: boolean): Datum {
   if (schmal) return plusTage(datum, 14 * richtung);
   if (ansicht === 'tag') return plusTage(datum, richtung);
@@ -49,6 +98,8 @@ export function Kalender() {
   const ma = sp.has('ma') ? sp.get('ma')! : ich && !istBuero(ich) ? ich.id : '';
   const neu = sp.get('neu') === '1';
   const mitarbeiter = db.mitarbeiter.all().filter((m) => m.aktiv);
+  const [ablage, setAblage] = useState<{ t: Termin; tag: Datum }>();
+  const ziehen = useZiehen(useDarf('planen'), (t, tag) => setAblage({ t, tag }));
 
   const setze = (patch: Record<string, string | undefined>) => {
     const n = new URLSearchParams(sp);
@@ -115,9 +166,9 @@ export function Kalender() {
       ) : ansicht === 'tag' ? (
         <TagListe datum={datum} termine={termine} konflikte={konflikte} mitarbeiterId={ma} onNeu={() => setze({ neu: '1' })} />
       ) : ansicht === 'woche' ? (
-        <Woche von={von} termine={termine} konflikte={konflikte} onTag={(d) => setze({ ansicht: 'tag', datum: d })} />
+        <Woche von={von} termine={termine} konflikte={konflikte} ziehen={ziehen} onTag={(d) => setze({ ansicht: 'tag', datum: d })} />
       ) : (
-        <Monat von={von} bis={bis} monat={datum.slice(0, 7)} termine={termine} onTag={(d) => setze({ ansicht: 'tag', datum: d })} />
+        <Monat von={von} bis={bis} monat={datum.slice(0, 7)} termine={termine} ziehen={ziehen} onTag={(d) => setze({ ansicht: 'tag', datum: d })} />
       )}
 
       <TerminFormular
@@ -126,21 +177,25 @@ export function Kalender() {
         vorgabe={{ datum: datum < heute() ? heute() : datum, mitarbeiterIds: ma ? [ma] : undefined }}
         onGespeichert={(t) => navigate(terminPfad(t.id))}
       />
+      <AblegenDialog ablage={ablage} onSchliessen={() => setAblage(undefined)} />
     </Seite>
   );
 }
 
 // ------------------------------------------------------------------ Bausteine
 
-export function TerminKachel({ t, konflikt, zeigeTag }: { t: Termin; konflikt?: boolean; zeigeTag?: boolean }) {
+export function TerminKachel({ t, konflikt, zeigeTag, ziehen }: { t: Termin; konflikt?: boolean; zeigeTag?: boolean; ziehen?: Ziehen }) {
   const ma = t.mitarbeiterIds.map((id) => db.mitarbeiter.get(id)).filter((m): m is NonNullable<typeof m> => !!m);
   const kunde = db.kunden.get(t.kundeId);
   const st = TERMINSTATUS[t.status];
   return (
     <Link
       to={terminPfad(t.id)}
-      className={`pl-termin ${t.status === 'abgesagt' ? 'pl-termin--abgesagt' : ''} ${konflikt ? 'pl-termin--konflikt' : ''}`}
+      className={`pl-termin ${t.status === 'abgesagt' ? 'pl-termin--abgesagt' : ''} ${konflikt ? 'pl-termin--konflikt' : ''} ${ziehen?.zug === t.id ? 'pl-termin--zug' : ''}`}
       style={{ ['--pl-farbe' as string]: ma[0]?.farbe ?? undefined }}
+      draggable={ziehen?.darf(t) ?? false}
+      onDragStart={ziehen?.darf(t) ? ziehen.start(t) : undefined}
+      onDragEnd={ziehen?.ende}
     >
       <span className="mm-meta">
         {zeigeTag ? `${datumKurz(t.start)}, ` : ''}
@@ -262,7 +317,7 @@ function TagListe({ datum, termine, konflikte, mitarbeiterId, onNeu }: { datum: 
   );
 }
 
-function Woche({ von, termine, konflikte, onTag }: { von: Datum; termine: Termin[]; konflikte: Set<string>; onTag: (d: Datum) => void }) {
+function Woche({ von, termine, konflikte, ziehen, onTag }: { von: Datum; termine: Termin[]; konflikte: Set<string>; ziehen: Ziehen; onTag: (d: Datum) => void }) {
   const k = kontextAusDb();
   return (
     <>
@@ -271,7 +326,7 @@ function Woche({ von, termine, konflikte, onTag }: { von: Datum; termine: Termin
           const liste = termine.filter((t) => terminAmTag(t, d));
           const arbeitstag = k.arbeitstage.includes(i + 1);
           return (
-            <div key={d} className={`pl-tag ${d === heute() ? 'pl-tag--heute' : ''} ${!arbeitstag ? 'pl-tag--frei' : ''}`}>
+            <div key={d} className={`pl-tag ${d === heute() ? 'pl-tag--heute' : ''} ${!arbeitstag ? 'pl-tag--frei' : ''} ${ziehen.ziel === d ? 'pl-ablage' : ''}`} {...ziehen.tag(d)}>
               <div className="pl-tagkopf">
                 <button type="button" onClick={() => onTag(d)} aria-label={`Tagesansicht ${datumKurz(d)}`}>
                   <span className="pl-tagkopf-wochentag">{WOCHENTAGE[i]}</span>
@@ -282,7 +337,7 @@ function Woche({ von, termine, konflikte, onTag }: { von: Datum; termine: Termin
                 {liste.length > 0 && <span className="pl-tagkopf-anzahl">{liste.length === 1 ? '1 Termin' : `${liste.length} Termine`}</span>}
               </div>
               {liste.map((t) => (
-                <TerminKachel key={t.id} t={t} konflikt={konflikte.has(t.id)} />
+                <TerminKachel key={t.id} t={t} konflikt={konflikte.has(t.id)} ziehen={ziehen} />
               ))}
               {!liste.length && arbeitstag && <span className="mm-meta">Frei</span>}
             </div>
@@ -294,7 +349,7 @@ function Woche({ von, termine, konflikte, onTag }: { von: Datum; termine: Termin
   );
 }
 
-function Monat({ von, bis, monat, termine, onTag }: { von: Datum; bis: Datum; monat: string; termine: Termin[]; onTag: (d: Datum) => void }) {
+function Monat({ von, bis, monat, termine, ziehen, onTag }: { von: Datum; bis: Datum; monat: string; termine: Termin[]; ziehen: Ziehen; onTag: (d: Datum) => void }) {
   return (
     <div className="pl-monat">
       {WOCHENTAGE.map((w) => (
@@ -308,13 +363,20 @@ function Monat({ von, bis, monat, termine, onTag }: { von: Datum; bis: Datum; mo
           <button
             key={d}
             type="button"
-            className={`pl-monatstag ${d.slice(0, 7) !== monat ? 'pl-monatstag--fremd' : ''} ${d === heute() ? 'pl-monatstag--heute' : ''}`}
+            className={`pl-monatstag ${d.slice(0, 7) !== monat ? 'pl-monatstag--fremd' : ''} ${d === heute() ? 'pl-monatstag--heute' : ''} ${ziehen.ziel === d ? 'pl-ablage' : ''}`}
             onClick={() => onTag(d)}
+            {...ziehen.tag(d)}
             aria-label={`${datumKurz(d)}: ${liste.length ? `${liste.length} Termine` : 'keine Termine'}`}
           >
             <strong>{Number(d.slice(8))}</strong>
             {liste.slice(0, 3).map((t) => (
-              <span key={t.id}>
+              <span
+                key={t.id}
+                className={ziehen.darf(t) ? `pl-monat-termin ${ziehen.zug === t.id ? 'pl-termin--zug' : ''}` : undefined}
+                draggable={ziehen.darf(t)}
+                onDragStart={ziehen.darf(t) ? ziehen.start(t) : undefined}
+                onDragEnd={ziehen.ende}
+              >
                 {t.ganztags ? '' : uhrzeit(t.start) + ' '}
                 {t.titel}
               </span>
@@ -324,5 +386,64 @@ function Monat({ von, bis, monat, termine, onTag }: { von: Datum; bis: Datum; mo
         );
       })}
     </div>
+  );
+}
+
+// ------------------------------------------------------------------ Ablegen bestätigen
+
+const zeitText = (t: Pick<Termin, 'start' | 'ende' | 'ganztags'>) =>
+  `${datumKurz(t.start)}, ${t.ganztags ? 'ganztägig' : `${uhrzeit(t.start)}–${uhrzeit(t.ende)} Uhr`}`;
+
+/** Nach dem Ablegen: erst fragen, dann speichern. Abbrechen lässt den Termin, wo er war. */
+function AblegenDialog({ ablage, onSchliessen }: { ablage?: { t: Termin; tag: Datum }; onSchliessen: () => void }) {
+  const toast = useToast();
+  const t = ablage?.t;
+  const neu = ablage ? verschoben(ablage.t, ablage.tag) : undefined;
+  const konflikte = t && neu ? terminKonflikte({ ...t, ...neu }, kontextAusDb()) : [];
+  const speichern = () => {
+    if (t && neu) terminVerschieben(t, neu, toast);
+    onSchliessen();
+  };
+  return (
+    <Dialog
+      offen={!!ablage}
+      onSchliessen={onSchliessen}
+      titel="Termin verschieben?"
+      aktionen={
+        <>
+          <Button variante="tertiaer" onClick={onSchliessen}>
+            Abbrechen
+          </Button>
+          <Button onClick={speichern}>{konflikte.length ? 'Trotzdem verschieben' : 'Verschieben'}</Button>
+        </>
+      }
+    >
+      {t && neu && (
+        <Stapel>
+          <p style={{ margin: 0 }}>
+            Du verschiebst gerade den Termin „{t.titel}“{db.kunden.get(t.kundeId) ? ` bei ${db.kunden.get(t.kundeId)!.name}` : ''}.
+          </p>
+          <dl className="pl-ablage-zeiten">
+            <dt>Bisher</dt>
+            <dd>{zeitText(t)}</dd>
+            <dt>Neu</dt>
+            <dd>
+              <strong>{zeitText({ ...t, ...neu })}</strong>
+            </dd>
+          </dl>
+          {konflikte.length > 0 ? (
+            <Meldung ton="achtung" titel="Konflikt am neuen Tag">
+              {konflikte.map((k) => (
+                <div key={k.mitarbeiterId}>
+                  <Person m={k.mitarbeiterId} groesse={20} />: {k.gruende.map((g) => g.text).join(', ')}
+                </div>
+              ))}
+            </Meldung>
+          ) : (
+            <Meta>Die Uhrzeit bleibt gleich. Alle Eingeplanten sind an diesem Tag frei.</Meta>
+          )}
+        </Stapel>
+      )}
+    </Dialog>
   );
 }

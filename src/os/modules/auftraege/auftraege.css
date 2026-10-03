@@ -57,7 +57,8 @@
 .ak-ort-zusammenfassung > svg { flex-shrink: 0; color: var(--mm-brand-ink); }
 /* Dialog „Neuer Auftrag“: Gruppen als schlichte Fieldsets mit Abschnittstitel */
 .ak-gruppe { display: grid; gap: 16px; min-width: 0; margin: 0; padding: 0; border: 0; }
-.ak-gruppe-titel { margin-bottom: 4px; padding: 0; font-size: 18px; line-height: 24px; font-weight: 650; color: var(--mm-black); }
+.ak-gruppe-titel { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; padding: 0; font-size: 18px; line-height: 24px; font-weight: 650; color: var(--mm-black); }
+.ak-gruppe-titel > svg { flex-shrink: 0; color: var(--mm-brand-text); }
 .ak-mitarbeiter { display: grid; gap: 8px; min-width: 0; }
 .ak-mitarbeiter-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .ak-mitarbeiter-chips .mm-chip { max-width: 100%; overflow-wrap: anywhere; text-align: left; }

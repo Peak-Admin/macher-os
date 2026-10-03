@@ -6,7 +6,7 @@ import { useIch } from '@core/session';
 import type { Adresse, Auftrag, Auftragsart, ID, Phase } from '@core/objects';
 import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Icon, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
 import { KundeAuswahl } from '@ui/objekt';
-import { AKTIVE_PHASEN, ART_ICON, ART_LABEL, phaseLabel } from './logik';
+import { AKTIVE_PHASEN, ART_ICON, ART_LABEL, phaseOptionen } from './logik';
 import { auftragPfad } from './daten';
 import { MitarbeiterWahl } from './MitarbeiterWahl';
 import './auftraege.css';
@@ -175,7 +175,10 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
     >
       <Stapel abstand={24}>
         <fieldset className="ak-gruppe">
-          <legend className="ak-gruppe-titel">Allgemein</legend>
+          <legend className="ak-gruppe-titel">
+            <Icon name="auftraege" size={20} />
+            Allgemein
+          </legend>
           <Eingabe label="Projektname" value={titel} onChange={(e) => setTitel(e.target.value)} fehler={fehler.titel} placeholder="z. B. Steckdosen im Bad erneuern" autoFocus />
           <FormRaster>
             <Eingabe
@@ -187,13 +190,16 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
               autoComplete="off"
               spellCheck={false}
             />
-            <Auswahl label="Status" value={phase} onChange={(e) => setPhase(e.target.value as Phase)} optionen={AKTIVE_PHASEN.map((p) => ({ wert: p, label: phaseLabel(p) }))} />
+            <Auswahl label="Status" value={phase} onChange={(e) => setPhase(e.target.value as Phase)} optionen={phaseOptionen(AKTIVE_PHASEN)} />
           </FormRaster>
           <MitarbeiterWahl wert={team} onChange={setTeam} />
         </fieldset>
 
         <fieldset className="ak-gruppe">
-          <legend className="ak-gruppe-titel">Kunde</legend>
+          <legend className="ak-gruppe-titel">
+            <Icon name="person" size={20} />
+            Kunde
+          </legend>
           {kundenAnzahl > 0 && (
             <Segmente
               label="Kunde auswählen oder neu anlegen"
@@ -217,7 +223,10 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
 
         {(neueAdresse || (kundeModus === 'bestehend' && !!kundeId)) && (
           <fieldset className="ak-gruppe">
-            <legend className="ak-gruppe-titel">Baustellenadresse</legend>
+            <legend className="ak-gruppe-titel">
+            <Icon name="ort" size={20} />
+            Baustellenadresse
+          </legend>
             {kundeModus === 'bestehend' && kundeId && (
               zusammenfassung ? (
                 <div className="ak-ort-zusammenfassung">

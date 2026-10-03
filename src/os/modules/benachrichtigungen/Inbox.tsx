@@ -12,7 +12,7 @@ import { hinweisErledigen, meinPosteingang, offeneHinweise } from '@core/macher'
 import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { useIch } from '@core/session';
 import type { Mitarbeiter } from '@core/objects';
-import { Button, Icon, Leer, Meta, Stapel, Status, useToast } from '@ui/index';
+import { Button, DatumEingabe, Icon, Leer, Meta, Stapel, Status, useToast, type IconName } from '@ui/index';
 import './inbox.css';
 
 /** Neu berechnen, sobald sich Daten ändern – und jede Minute (Später und Lebensdauer laufen ab, auch ohne Änderung) */
@@ -134,10 +134,7 @@ function SpaeterMenue({ e, h }: { e: InboxEintrag; h: Handlungen }) {
                 h.spaeter(e, spaeterAm(datum), `am ${new Date(datum + 'T12:00:00').toLocaleDateString('de-DE')}`);
               }}
             >
-              <label>
-                <span className="mm-meta">Datum wählen</span>
-                <input type="date" className="mm-input" min={morgen} value={datum} onChange={(ev) => setDatum(ev.target.value)} />
-              </label>
+              <DatumEingabe label="Datum wählen" min={morgen} value={datum} onChange={(ev) => setDatum(ev.target.value)} />
               <Button variante="sekundaer" klein type="submit" disabled={!datum}>
                 Übernehmen
               </Button>
@@ -256,11 +253,14 @@ function KenntnisZeile({ g, h }: { g: InboxGruppe; h: Handlungen }) {
   );
 }
 
-function Bereich({ titel, anzahl, children, ruhig }: { titel: string; anzahl: number; children: React.ReactNode; ruhig?: boolean }) {
+function Bereich({ titel, icon, anzahl, children, ruhig }: { titel: string; icon: IconName; anzahl: number; children: React.ReactNode; ruhig?: boolean }) {
   if (!anzahl) return null;
   return (
     <section className={`mm-inbox-bereich ${ruhig ? 'mm-inbox-bereich--ruhig' : ''}`} aria-label={titel}>
       <h3 className="mm-inbox-bereich-titel">
+        <span className="mm-inbox-bereich-icon" aria-hidden="true">
+          <Icon name={icon} size={16} />
+        </span>
         {titel} <span className="mm-meta">{anzahl}</span>
       </h3>
       {children}
@@ -290,21 +290,21 @@ export function InboxListe({ onNavigiert }: { onNavigiert?: () => void }) {
         />
       ) : (
         <>
-          <Bereich titel="Jetzt" anzahl={inbox.jetzt.length}>
+          <Bereich titel="Jetzt" icon="achtung" anzahl={inbox.jetzt.length}>
             <ul className="mm-inbox-liste">
               {inbox.jetzt.map((g) => (
                 <Buendel key={g.schluessel} g={g} h={h} fuehrend={g.schluessel === erste} />
               ))}
             </ul>
           </Bereich>
-          <Bereich titel="Aktion nötig" anzahl={inbox.aktion.length}>
+          <Bereich titel="Aktion nötig" icon="liste" anzahl={inbox.aktion.length}>
             <ul className="mm-inbox-liste">
               {inbox.aktion.map((g) => (
                 <Buendel key={g.schluessel} g={g} h={h} fuehrend={g.schluessel === erste} />
               ))}
             </ul>
           </Bereich>
-          <Bereich titel="Zur Kenntnis" anzahl={inbox.info.length} ruhig>
+          <Bereich titel="Zur Kenntnis" icon="info" anzahl={inbox.info.length} ruhig>
             <ul className="mm-inbox-liste mm-inbox-liste--ruhig">
               {inbox.info.map((g) => (
                 <KenntnisZeile key={g.schluessel} g={g} h={h} />

@@ -25,6 +25,7 @@ import {
   useToast,
 } from '@ui/index';
 import { Person, Personenbild } from '@ui/person';
+import { OrtsKarte } from '@ui/ortskarte';
 import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import { kontextAusDb, terminKonflikte } from '../verfuegbarkeit/daten';
 import { icsDateiname, terminAlsIcs, TERMINART_LABEL, TERMINSTATUS, verschoben } from './daten';
@@ -190,6 +191,12 @@ export function TerminDetail() {
                   )}
                   {ort?.hinweise && <Meta>{ort.hinweise}</Meta>}
                   {(ort?.telefonVorOrt || kunde?.telefon) && <a href={telLink(ort?.telefonVorOrt ?? kunde?.telefon)}>Anrufen: {ort?.telefonVorOrt ?? kunde?.telefon}</a>}
+                  {(ort || kunde?.adresse) && (
+                    <OrtsKarte
+                      ziel={ort ? { adresse: ort.adresse, lat: ort.lat, lng: ort.lng } : { adresse: kunde?.adresse }}
+                      titel={ort?.bezeichnung ?? kunde?.name ?? 'Einsatzort'}
+                    />
+                  )}
                 </Stapel>
               </Karte>
             )}
@@ -215,6 +222,14 @@ export function TerminDetail() {
   );
 }
 
+/** Verschieben speichern – mit Vermerk am Auftrag und „Rückgängig“ im Hinweis. Auch für Drag and Drop im Kalender. */
+export function terminVerschieben(t: NonNullable<ReturnType<typeof db.termine.get>>, ziel: { start: string; ende: string }, toast: ReturnType<typeof useToast>) {
+  const alt = { start: t.start, ende: t.ende };
+  db.termine.update(t.id, ziel, { text: `Verschoben auf ${datumKurz(ziel.start)}, ${uhrzeit(ziel.start)} Uhr` });
+  if (t.auftragId) vermerken({ typ: 'auftraege', id: t.auftragId }, 'termin.verschoben', `Termin „${t.titel}“ verschoben auf ${datumKurz(ziel.start)}`);
+  toast(`Verschoben auf ${datumKurz(ziel.start)}`, { aktion: { label: 'Rückgängig', onClick: () => db.termine.update(t.id, alt, { text: 'Verschieben rückgängig gemacht' }) } });
+}
+
 function VerschiebenDialog({ offen, onSchliessen, terminId }: { offen: boolean; onSchliessen: () => void; terminId: string }) {
   const t = db.termine.get(terminId)!;
   return (
@@ -234,10 +249,7 @@ function VerschiebenInhalt({ t, onFertig }: { t: NonNullable<ReturnType<typeof d
 
   const speichern = (ziel = neu) => {
     if (!ziel) return setFehler('Wähle ein Datum.');
-    const alt = { start: t.start, ende: t.ende };
-    db.termine.update(t.id, ziel, { text: `Verschoben auf ${datumKurz(ziel.start)}, ${uhrzeit(ziel.start)} Uhr` });
-    if (t.auftragId) vermerken({ typ: 'auftraege', id: t.auftragId }, 'termin.verschoben', `Termin „${t.titel}“ verschoben auf ${datumKurz(ziel.start)}`);
-    toast(`Verschoben auf ${datumKurz(ziel.start)}`, { aktion: { label: 'Rückgängig', onClick: () => db.termine.update(t.id, alt, { text: 'Verschieben rückgängig gemacht' }) } });
+    terminVerschieben(t, ziel, toast);
     onFertig();
   };
 

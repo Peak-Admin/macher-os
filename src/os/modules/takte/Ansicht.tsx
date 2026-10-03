@@ -155,12 +155,12 @@ function Tagesbrief({ i, ausfuehren }: { i: TagesbriefInhalt; ausfuehren: Return
         <Abschnitt titel="Geld">
           <Raster min={180}>
             <Kennzahl label={`Eingänge ${i.geld.seitText}`} wert={i.geld.eingaenge.anzahl ? euro(i.geld.eingaenge.summe) : 'Keine'} hinweis={i.geld.eingaenge.anzahl ? (i.geld.eingaenge.anzahl === 1 ? '1 Zahlung' : `${i.geld.eingaenge.anzahl} Zahlungen`) : undefined} to="/betrieb/zahlungen" />
-            <Kennzahl label="Überfällig" wert={i.geld.ueberfaellig.anzahl ? euro(i.geld.ueberfaellig.summe) : 'Nichts'} ton={i.geld.ueberfaellig.anzahl ? 'achtung' : 'erfolg'} hinweis={i.geld.ueberfaellig.anzahl ? (i.geld.ueberfaellig.anzahl === 1 ? '1 Rechnung' : `${i.geld.ueberfaellig.anzahl} Rechnungen`) : undefined} to="/plan/offen" />
+            <Kennzahl label="Überfällig" wert={i.geld.ueberfaellig.anzahl ? euro(i.geld.ueberfaellig.summe) : 'Nichts'} ton={i.geld.ueberfaellig.anzahl ? 'gefahr' : 'erfolg'} hinweis={i.geld.ueberfaellig.anzahl ? (i.geld.ueberfaellig.anzahl === 1 ? '1 Rechnung' : `${i.geld.ueberfaellig.anzahl} Rechnungen`) : undefined} to="/plan/offen" />
           </Raster>
           {i.geld.ueberfaellig.liste.length > 0 && (
             <Liste>
               {i.geld.ueberfaellig.liste.map((p) => (
-                <ListenZeile key={p.rechnungId} titel={`${p.nummer} · ${p.kunde}`} untertitel={`seit ${p.tageUeber === 1 ? '1 Tag' : `${p.tageUeber} Tagen`} fällig`} rechts={<Status ton="achtung">{euro(p.offen)}</Status>} to={pfadZu({ typ: 'rechnungen', id: p.rechnungId })} />
+                <ListenZeile key={p.rechnungId} titel={`${p.nummer} · ${p.kunde}`} untertitel={`seit ${p.tageUeber === 1 ? '1 Tag' : `${p.tageUeber} Tagen`} fällig`} rechts={<Status ton="gefahr">{euro(p.offen)}</Status>} to={pfadZu({ typ: 'rechnungen', id: p.rechnungId })} />
               ))}
             </Liste>
           )}
@@ -218,7 +218,7 @@ function Wochenbilanz({ i }: { i: WochenbilanzInhalt }) {
     <>
       <Raster min={200}>
         <Kennzahl label="Umsatz netto" wert={euro(i.umsatz.netto)} hinweis={i.umsatz.anzahl === 1 ? 'aus 1 Rechnung' : `aus ${i.umsatz.anzahl} Rechnungen`} />
-        <Kennzahl label="Offene Posten" wert={euro(i.offen.summe)} ton={i.offen.anzahlUeberfaellig ? 'achtung' : undefined} hinweis={i.offen.anzahlUeberfaellig ? `davon ${euro(i.offen.ueberfaellig)} überfällig` : i.offen.anzahl ? 'nichts überfällig' : 'alles bezahlt'} to="/plan/offen" />
+        <Kennzahl label="Offene Posten" wert={euro(i.offen.summe)} ton={i.offen.anzahlUeberfaellig ? 'gefahr' : undefined} hinweis={i.offen.anzahlUeberfaellig ? `davon ${euro(i.offen.ueberfaellig)} überfällig` : i.offen.anzahl ? 'nichts überfällig' : 'alles bezahlt'} to="/plan/offen" />
         <Kennzahl label="Aufträge fertig" wert={i.auftraege.abgeschlossen} hinweis={`${i.auftraege.neu} neu · ${i.auftraege.laufend} laufen`} to="/auftraege" />
       </Raster>
       <Karte oberzeile="Macher hat erledigt" titel={i.erledigt.anzahl === 1 ? '1 Sache diese Woche' : `${i.erledigt.anzahl} Sachen diese Woche`} aktion={<Button variante="tertiaer" klein to="/heute/erledigt" icon="pfeilRechts">Ansehen</Button>}>

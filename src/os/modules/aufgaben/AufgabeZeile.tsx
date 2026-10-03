@@ -33,7 +33,7 @@ export function AufgabeZeile({ a, ohneAuftrag }: { a: Aufgabe; ohneAuftrag?: boo
       rechts={
         <>
           {a.prioritaet === 'hoch' && !a.erledigt && <Status ton="achtung">Wichtig</Status>}
-          {a.faellig && !a.erledigt && <Status ton={ueberfaellig ? 'achtung' : 'neutral'} icon={ueberfaellig}>{relativ(a.faellig)}</Status>}
+          {a.faellig && !a.erledigt && <Status ton={ueberfaellig ? 'gefahr' : 'neutral'} icon={ueberfaellig}>{relativ(a.faellig)}</Status>}
           {wer && <Personenbild m={wer} groesse={28} />}
         </>
       }
