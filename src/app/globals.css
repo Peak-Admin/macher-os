@@ -549,6 +549,25 @@ input[type="search"]::-ms-clear {
     color: #fff;
   }
 
+  /*
+   * Oberfläche des Start-Heros: auf der grünen Markenfläche liegt ein feines Korn wie auf einer Werkbank und eine leichte
+   * Lichtkante oben – gibt der Fläche Tiefe, ohne mit dem Inhalt zu konkurrieren. Liegt als eigene Ebene unter dem Inhalt
+   * (`::before`, z-index -1 in der isolierten Box).
+   */
+  .hero-oberflaeche::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='k'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 -0.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23k)'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, rgb(255 255 255 / 0.06), transparent 30%);
+    background-size: 240px 240px, 100% 100%;
+    opacity: 0.28;
+  }
+
   /* 3D-Karte (src/components/ui/Karte3D.tsx) */
   .karte-3d {
     perspective: 900px;
