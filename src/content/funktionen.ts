@@ -18,7 +18,7 @@ import {
 } from "./registry";
 import { anwendungsfaelle } from "./anwendungsfaelle";
 
-export type Ton = "signal" | "moss" | "sky" | "ink" | "sand";
+export type Ton = "signal" | "moss" | "sky" | "ink" | "sand" | "gefahr";
 
 /** Desktop-Produktansicht im Hero. */
 export type FunktionsVisual = {
@@ -332,7 +332,7 @@ export const funktionInhalte: Inhalte = {
       liste: {
         ueberschrift: "Von Macher angenommen",
         zeilen: [
-          { titel: "Heizung ausgefallen", sub: "K. Wendt · 10:24 · an Bereitschaft", tag: "dringend", ton: "signal" },
+          { titel: "Heizung ausgefallen", sub: "K. Wendt · 10:24 · an Bereitschaft", tag: "dringend", ton: "gefahr" },
           { titel: "Frage zum Angebot Dachfenster", sub: "Fr. Lindner · 11:02", tag: "Rückruf", ton: "sky" },
           { titel: "Neue Anfrage: Carport-Dach", sub: "Hr. Basler · 12:47", tag: "Anfrage angelegt", ton: "moss" },
         ],
@@ -377,7 +377,7 @@ export const funktionInhalte: Inhalte = {
       kopf: "Anruf · 10:24 · 2:13 Min.",
       titel: "Heizung ausgefallen",
       sub: "Klaus Wendt · Bestandskunde",
-      status: { text: "dringend", ton: "signal" },
+      status: { text: "dringend", ton: "gefahr" },
       zeilen: [
         { label: "Anliegen", wert: "kein Warmwasser seit heute früh" },
         { label: "Anlage", wert: "Gas-Brennwert, Wartung 10/2025" },
@@ -428,7 +428,7 @@ export const funktionInhalte: Inhalte = {
         titel: "Heizung ausgefallen",
         sub: "Klaus Wendt · Birkenweg 8",
         tags: [
-          { text: "dringend", ton: "signal" },
+          { text: "dringend", ton: "gefahr" },
           { text: "Bestandskunde", ton: "moss" },
         ],
         felder: [
@@ -1770,7 +1770,7 @@ export const funktionInhalte: Inhalte = {
         kopf: "Offene Beträge · heute",
         titel: "7.940,80 € offen",
         sub: "5 Rechnungen · 1 überfällig",
-        tags: [{ text: "1 überfällig", ton: "signal" }],
+        tags: [{ text: "1 überfällig", ton: "gefahr" }],
         felder: [
           { label: "Hr. Demir", wert: "9 Tage überfällig" },
           { label: "Fr. Lindner", wert: "fällig Freitag" },
