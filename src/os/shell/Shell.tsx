@@ -5,7 +5,7 @@
  * kein Plus, kein Hamburger-Menü. Lokale Navigation (höchstens vier Ziele) steht im Inhaltsbereich.
  * Unter den vier Bereichen deine eigene Seitenleiste (`Seitenleiste.tsx`, nach Peak One): Module, Smart Views,
  * gemerkte Seiten und Ordner – frei eingerichtet über „+“ und „Anpassen“. Mobil im Profilmenü.
- * Die Seitenleiste lässt sich komplett einklappen (schmale Leiste nur mit Icons) und wieder ausklappen (Strg B);
+ * Die Seitenleiste lässt sich komplett einklappen – dann bleibt nur ein Knopf oben links – und wieder ausklappen (Strg B);
  * die Wahl wird je Mitarbeiter gespeichert.
  *
  * Monteur-App (Rolle Monteur/Azubi): am Handy unten, am Desktop in der Seitenleiste genau drei Ziele –
@@ -63,6 +63,18 @@ export function Shell({ children }: { children: ReactNode }) {
   const ich = useIch();
   const [eingeklappt, setzeEingeklappt] = useEinstellung<boolean>(`navigation.eingeklappt.${ich?.id ?? 'alle'}`, false);
   const umschalten = () => setzeEingeklappt(!eingeklappt);
+  const einklappen = useRef<HTMLButtonElement>(null);
+  const ausklappen = useRef<HTMLButtonElement>(null);
+  // Der gedrückte Knopf verschwindet – der Fokus wandert zum Gegenstück, damit Tastatur und Screenreader nicht ins Leere fallen
+  const ersterLauf = useRef(true);
+  useEffect(() => {
+    if (ersterLauf.current) {
+      ersterLauf.current = false;
+      return;
+    }
+    const weg = document.activeElement === document.body || document.activeElement === null;
+    if (weg || document.activeElement === einklappen.current || document.activeElement === ausklappen.current) (eingeklappt ? ausklappen : einklappen).current?.focus();
+  }, [eingeklappt]);
   const [breite, setzeBreite] = useEinstellung<number>(`navigation.breite.${ich?.id ?? 'alle'}`, BREITE_STANDARD);
   const monteur = istMonteurRolle(ich);
   const tab = monteurTab(pfad, aktiv);
@@ -92,25 +104,26 @@ export function Shell({ children }: { children: ReactNode }) {
       </a>
       <aside className="mm-sidebar" aria-label="Hauptnavigation">
         <div className="mm-leiste-kopf">
-          <Link to="/heute" className="mm-logo" aria-label="Handwerk OS, zu Heute" data-tipp={eingeklappt ? 'Handwerk OS' : undefined}>
+          <Link to="/heute" className="mm-logo" aria-label="Handwerk OS, zu Heute">
             <img className="mm-logo-zeichen" src="/os/icons/icon-192.png" alt="" width={32} height={32} />
             <span className="mm-leiste-text">
               Handwerk <strong>OS</strong>
             </span>
           </Link>
           <button
+            ref={einklappen}
             type="button"
             className="mm-leiste-umschalter"
-            aria-expanded={!eingeklappt}
+            aria-expanded
             aria-keyshortcuts="Control+B"
-            aria-label={eingeklappt ? 'Navigation ausklappen' : 'Navigation einklappen'}
-            data-tipp={`${eingeklappt ? 'Navigation ausklappen' : 'Navigation einklappen'} (Strg B)`}
+            aria-label="Navigation einklappen"
+            data-tipp="Navigation einklappen (Strg B)"
             onClick={umschalten}
           >
             <Icon name="leiste" />
           </button>
         </div>
-        <BetriebWechsler kompakt={eingeklappt} />
+        <BetriebWechsler />
         <div className="mm-leiste-werkzeuge">
           <SuchenOderFragen />
           <Glocke />
@@ -124,7 +137,6 @@ export function Shell({ children }: { children: ReactNode }) {
                   to={t.pfad}
                   className={`mm-nav-haupt ${tab === t.id ? 'mm-nav-haupt--aktiv' : ''}`}
                   aria-current={tab === t.id ? 'page' : undefined}
-                  data-tipp={eingeklappt ? t.titel : undefined}
                 >
                   <span className="mm-nav-haupt-icon">
                     <ThemenIcon name={t.icon} size={28} />
@@ -138,7 +150,6 @@ export function Shell({ children }: { children: ReactNode }) {
                   to={b.pfad}
                   className={`mm-nav-haupt ${aktiv === b.id ? 'mm-nav-haupt--aktiv' : ''}`}
                   aria-current={aktiv === b.id ? 'page' : undefined}
-                  data-tipp={eingeklappt ? b.titel : undefined}
                 >
                   <span className="mm-nav-haupt-icon">
                     <ThemenIcon name={b.icon} size={28} />
@@ -148,9 +159,23 @@ export function Shell({ children }: { children: ReactNode }) {
                 </Link>
               ))}
         </nav>
-        {!monteur && <DeineLeiste eingeklappt={eingeklappt} />}
+        {!monteur && <DeineLeiste />}
         <Profil oben />
       </aside>
+      {/* Eingeklappt: die Leiste ist ganz weg, nur dieser Knopf bleibt (nur am Desktop – mobil gibt es die untere Navigation) */}
+      <button
+        ref={ausklappen}
+        type="button"
+        className="mm-leiste-umschalter mm-leiste-ausklappen"
+        aria-expanded={false}
+        aria-keyshortcuts="Control+B"
+        aria-label="Navigation ausklappen"
+        data-tipp="Navigation ausklappen (Strg B)"
+        hidden={!eingeklappt}
+        onClick={umschalten}
+      >
+        <Icon name="leiste" />
+      </button>
       <LeistenGriff breite={leisteBreite(breite)} eingeklappt={eingeklappt} setzeBreite={setzeBreite} umschalten={umschalten} />
 
       <div className="mm-hauptbereich">

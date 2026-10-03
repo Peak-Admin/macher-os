@@ -23,7 +23,9 @@ Code: `src/components/auftakt/` (`Markenauftakt.tsx`, `auftakt.css`, `skript.ts`
   Sitzungen zeigen ihn nicht noch einmal.
   Ohne JavaScript, bei automatisierten Browsern (`navigator.webdriver`) und bei Folgeaufrufen erscheint nichts,
   Bilder werden dann nicht geladen.
-- `?auftakt` in der Adresse erzwingt den Auftakt (zum Ansehen und Abnehmen).
+- `?auftakt` in der Adresse erzwingt den Auftakt (zum Ansehen und Abnehmen) und wird sofort aus der Adresse entfernt.
+- `/preloader` spielt den Auftakt jederzeit neu ab (auch wenn er schon gesehen wurde) und geht danach normal auf der
+  Startseite weiter – z. B. für mehrere Anläufe bei Videoaufnahmen einfach den Link erneut öffnen.
 - Reduzierte Bewegung: Schlussbild ohne Animation, nach 1,8 s weiter.
 - Kein Ton: Der Auftakt läuft stumm.
 - Schrift: Barlow/Poppins nach Playbook (der Entwurf nutzte Switzer – nicht übernommen).
