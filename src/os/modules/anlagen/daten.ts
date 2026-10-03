@@ -53,14 +53,14 @@ export function wartungFortschreiben(a: Anlage, erledigtAm: Datum): Partial<Anla
   return patch;
 }
 
-export const WARTUNG_TEXT: Record<WartungsStatus, { text: string; ton: 'achtung' | 'aktiv' | 'erfolg' | 'neutral' }> = {
-  ueberfaellig: { text: 'Wartung überfällig', ton: 'achtung' },
+export const WARTUNG_TEXT: Record<WartungsStatus, { text: string; ton: 'gefahr' | 'achtung' | 'aktiv' | 'erfolg' | 'neutral' }> = {
+  ueberfaellig: { text: 'Wartung überfällig', ton: 'gefahr' },
   bald: { text: 'Wartung bald fällig', ton: 'aktiv' },
   ok: { text: 'Wartung im Plan', ton: 'erfolg' },
   keine: { text: 'Kein Wartungsintervall', ton: 'neutral' },
 };
 
-export const GEWAEHRLEISTUNG_TEXT: Record<GewaehrleistungsStatus, { text: string; ton: 'achtung' | 'aktiv' | 'erfolg' | 'neutral' }> = {
+export const GEWAEHRLEISTUNG_TEXT: Record<GewaehrleistungsStatus, { text: string; ton: 'gefahr' | 'achtung' | 'aktiv' | 'erfolg' | 'neutral' }> = {
   laeuft: { text: 'In Gewährleistung', ton: 'erfolg' },
   endet_bald: { text: 'Gewährleistung endet bald', ton: 'achtung' },
   abgelaufen: { text: 'Gewährleistung abgelaufen', ton: 'neutral' },

@@ -150,7 +150,7 @@ function offeneRechnungen(k: Kontext): Antwort {
         titel: `${r.nummer} · ${db.kunden.get(r.kundeId)?.name ?? 'Kunde'}`,
         untertitel: `${euro(betrag)} offen · fällig ${relativ(r.faelligAm)}${r.mahnstufe ? ` · Mahnstufe ${r.mahnstufe}` : ''}`,
         pfad: pfadZu({ typ: 'rechnungen', id: r.id }),
-        status: r.faelligAm < k.heute ? { ton: 'achtung', text: tage === 1 ? '1 Tag überfällig' : `${tage} Tage überfällig` } : { ton: 'aktiv', text: 'Offen' },
+        status: r.faelligAm < k.heute ? { ton: 'gefahr', text: tage === 1 ? '1 Tag überfällig' : `${tage} Tage überfällig` } : { ton: 'aktiv', text: 'Offen' },
       };
     }),
     grundlage: `Rechnungen und Zahlungseingänge in Macher OS · ${stand(k)}`,
@@ -377,7 +377,7 @@ function meineAufgaben(k: Kontext): Antwort {
       titel: a.titel,
       untertitel: [a.faellig ? `fällig ${relativ(a.faellig)}` : 'ohne Frist', a.auftragId ? db.auftraege.get(a.auftragId)?.titel : undefined].filter(Boolean).join(' · '),
       pfad: pfadZu({ typ: 'aufgaben', id: a.id }) ?? (a.auftragId ? pfadZu({ typ: 'auftraege', id: a.auftragId }) : undefined),
-      status: a.faellig && a.faellig < k.heute ? { ton: 'achtung', text: 'Überfällig' } : undefined,
+      status: a.faellig && a.faellig < k.heute ? { ton: 'gefahr', text: 'Überfällig' } : undefined,
     })),
     grundlage: `Aufgaben · ${stand(k)}`,
   };

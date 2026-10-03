@@ -4,7 +4,7 @@ import { PHASEN } from '@core/objects';
 import type { Auftrag, Auftragsart, Phase } from '@core/objects';
 import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Textfeld, useToast } from '@ui/index';
 import { KundeAuswahl, MitarbeiterAuswahl, OrtAuswahl } from '@ui/objekt';
-import { ART_LABEL, phaseLabel } from './logik';
+import { ART_LABEL, phaseLabel, phaseOptionen } from './logik';
 import { setzePhase } from './daten';
 import { auftragsnummerFehler, nummerBereinigt } from '@core/nummern';
 import { MitarbeiterWahl } from './MitarbeiterWahl';
@@ -120,7 +120,7 @@ export function PhaseDialog({ a, offen, onSchliessen }: { a: Auftrag; offen: boo
       }
     >
       <p>Normalerweise schiebt Macher den Auftrag selbst weiter – etwa wenn das Angebot angenommen oder die Rechnung bezahlt ist. Hier kannst du die Phase von Hand setzen.</p>
-      <Auswahl label="Neue Phase" value={phase} onChange={(e) => setPhase(e.target.value as Phase)} optionen={PHASEN.filter((p) => p.id !== 'verloren').map((p) => ({ wert: p.id, label: p.label }))} />
+      <Auswahl label="Neue Phase" value={phase} onChange={(e) => setPhase(e.target.value as Phase)} optionen={phaseOptionen(PHASEN.filter((p) => p.id !== 'verloren').map((p) => p.id))} />
     </Dialog>
   );
 }

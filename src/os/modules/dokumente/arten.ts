@@ -149,7 +149,7 @@ export interface DokumentEintrag {
   titel: string;
   nummer?: string;
   datum: Datum;
-  status: { text: string; ton: 'neutral' | 'aktiv' | 'erfolg' | 'achtung' };
+  status: { text: string; ton: 'neutral' | 'aktiv' | 'erfolg' | 'achtung' | 'gefahr' };
   pfad: string;
   druck: string;
   beispiel?: boolean;

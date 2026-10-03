@@ -202,7 +202,7 @@ export function offenFuerKunde(kundeId: ID) {
 
 // ------------------------------------------------------------------ Status für die Anzeige
 
-export function statusText(r: RechnungX): { text: string; ton: 'neutral' | 'aktiv' | 'erfolg' | 'achtung' } {
+export function statusText(r: RechnungX): { text: string; ton: 'neutral' | 'aktiv' | 'erfolg' | 'achtung' | 'gefahr' } {
   if (r.status === 'entwurf') return { text: 'Entwurf', ton: 'neutral' };
   if (r.status === 'storniert') return { text: 'Storniert', ton: 'neutral' };
   if (r.stornoFuerId) return { text: 'Storno', ton: 'neutral' };
@@ -212,7 +212,7 @@ export function statusText(r: RechnungX): { text: string; ton: 'neutral' | 'akti
   if (verrechnet) return { text: `Verrechnet mit ${verrechnet.nummer}`, ton: 'neutral' };
   if (istUeberfaellig(r)) {
     const t = tageUeberfaellig(r);
-    return { text: t === 1 ? 'Seit 1 Tag überfällig' : `Seit ${t} Tagen überfällig`, ton: 'achtung' };
+    return { text: t === 1 ? 'Seit 1 Tag überfällig' : `Seit ${t} Tagen überfällig`, ton: 'gefahr' };
   }
   if (r.status === 'teilbezahlt') return { text: 'Teilbezahlt', ton: 'aktiv' };
   return { text: 'Offen', ton: 'aktiv' };

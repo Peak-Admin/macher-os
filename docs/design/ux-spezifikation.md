@@ -563,7 +563,8 @@ Wenn der vorhandene Umschalter semantisch Radiobuttons benutzt, diese Semantik e
 |---|---|---|
 | Normaler nächster Schritt | Neutral | Termin fehlt |
 | Freigabe ohne unmittelbare Frist | Neutral | Freigabe offen |
-| Zeitkritisch/überfällig | Amber + Text | Rechnung überfällig |
+| Zeitkritisch (noch nicht überfällig) | Amber + Text | Termin fehlt |
+| Überfällig | Rot (hell) + dunkelroter Text | Rechnung überfällig |
 | Tatsächliche Sperre/Gefahr | Rot + eindeutiger Text | Nicht verwenden |
 | Bestätigt/erledigt | Zurückhaltendes Grün + Text | Termin bestätigt |
 
@@ -1493,6 +1494,6 @@ Ergänzt und ändert die Abschnitte oben, wo sie widersprechen:
   weißer Hauptknopf); Begleitboxen warm beige oder hellgrün; Arbeitslisten bleiben weiß.
 - **KI-Zeichen:** Kugel Pink → Orange (`--mm-ki-*`), nur für Macher (KI). In der Navigation nur eine Fläche:
   Lupe, „Suchen“ und Kürzel – keine Kugel. Ein Klick öffnet die KI-Leiste (Eingabe mit Verlaufsrand und Kugel).
-- **Dringend ist rot** (Gefahr-Ton), nie gelb. Überfällig bleibt gelb (Warnung), färbt aber die ganze Kennzahl-Karte.
+- **Dringend ist rot** (Gefahr-Ton), nie gelb. Überfällig ist ebenfalls rot (hellrote Fläche, dunkelrote Schrift) und färbt die ganze Kennzahl-Karte.
 - **Typ-Icons in Listen:** einfache Strich-Icons, keine Glas-Icons; **Kunden** mit Logo von ihrer Website oder Initialen.
 - **Kalender:** links Datum und Blättern, rechts Ansicht und Filter.

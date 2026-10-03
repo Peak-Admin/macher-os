@@ -43,7 +43,7 @@ export default defineModul({
     const p = offenePosten();
     if (!p.length) return { text: 'Alles bezahlt', ton: 'erfolg' };
     const u = p.filter((r) => istUeberfaellig(r)).length;
-    return { text: `${euro(p.reduce((s, r) => s + offenerBetrag(r), 0))} offen${u ? `, ${u} überfällig` : ''}`, ton: u ? 'achtung' : 'aktiv' };
+    return { text: `${euro(p.reduce((s, r) => s + offenerBetrag(r), 0))} offen${u ? `, ${u} überfällig` : ''}`, ton: u ? 'gefahr' : 'aktiv' };
   },
   // Exception-First: der Chef sieht nur zwei Sätze – was überfällig ist und was Macher nicht allein zuordnen konnte
   hinweise: () => {
