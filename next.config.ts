@@ -10,7 +10,11 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     // Die Software ist eine Single-Page-App mit eigenem Router: jede Adresse unter /os/… lädt dieselbe Seite.
-    return [{ source: "/os/:pfad+", destination: "/os" }];
+    // Action API für Partner (HeyLotte): öffentlich versioniert unter /v1/…, umgesetzt unter /api/v1/…
+    return [
+      { source: "/os/:pfad+", destination: "/os" },
+      { source: "/v1/:pfad*", destination: "/api/v1/:pfad*" },
+    ];
   },
   async headers() {
     // Service Worker der App immer frisch prüfen, damit Updates sofort ankommen

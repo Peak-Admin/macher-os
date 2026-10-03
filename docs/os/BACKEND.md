@@ -25,7 +25,8 @@ Server-Funktionen: `src/app/api/cloud/*`, `src/app/api/cron/*` und `src/app/api/
 3. **SQL Editor → New query**: nacheinander den Inhalt von
    `supabase/migrations/20261002000000_fundament.sql`, `supabase/migrations/20261002100000_aktivierung.sql`
    (eindeutiges Anfrage-Postfach je Betrieb), `supabase/migrations/20261002120000_rechte_und_dateien.sql` und
-   `supabase/migrations/20261002180000_haertung.sql` (Härtung nach dem Supabase-Sicherheitscheck) einfügen → jeweils **Run**. (Alternativ mit der Supabase-CLI: `supabase link --project-ref <ref> && supabase db push`.)
+   `supabase/migrations/20261002180000_haertung.sql` (Härtung nach dem Supabase-Sicherheitscheck) und
+   `supabase/migrations/20261003120000_partner_schnittstelle.sql` (Action API für HeyLotte, `docs/os/PARTNER-API.md`) einfügen → jeweils **Run**. (Alternativ mit der Supabase-CLI: `supabase link --project-ref <ref> && supabase db push`.)
    Das legt Tabellen, Zugriffsregeln (RLS: nur Mitglieder des eigenen Betriebs), Realtime für `objekte`
    den privaten Speicher `dateien` und die Rechte je Rolle an (Rechnungen, Zahlungen, Belege, Mahnungen und
    `mitarbeiter.kostensatz` lesen nur Chef und Büro – erweiterbar über die Tabellen `sammlung_rechte` und `feld_rechte`).
@@ -205,3 +206,9 @@ Kopfzeilen `x-macher-ereignis` (API-Name, z. B. `invoice.paid`) und `x-macher-si
 `schnittstellen.webhook-geheimnisse`). Die serverseitige Zustellung (`setzeWebhookVersender`, `webhooksZustellen`) ist noch
 nicht verdrahtet – bis dahin zeigt die App „Wird zugestellt, sobald Handwerk OS mit der Cloud verbunden ist“.
 Empfehlung: `webhooks`, `webhook_auslieferungen` und `ereignisprotokoll` in `sammlung_rechte` auf Chef und Büro beschränken.
+
+## Partner-Schnittstelle (HeyLotte)
+
+Action API unter `/v1/actions/<aktion>` mit eigenem Schlüssel je Betrieb – HeyLotte bekommt nie den Service-Key.
+Einrichten, Aufruf, Ereignisse und Signatur: [`docs/os/PARTNER-API.md`](PARTNER-API.md). Braucht nur
+`SUPABASE_SERVICE_ROLE_KEY` und die Migration `20261003120000_partner_schnittstelle.sql`; keine weitere Variable.
