@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FinalCta, KundenCard, PageHero, Steps } from "@/components/sections";
-import { ArrowLink, ButtonLink, CheckList, Faq, FaqJsonLd, Icon, IconTile, Section, SectionHeading } from "@/components/ui";
+import { ArrowLink, ButtonLink, CheckList, Faq, FaqJsonLd, Icon, IconTile, Lotte, Section, SectionHeading } from "@/components/ui";
+import { lottePoseFuer } from "@/content/lotte";
 import {
   funktionGruppe,
   funktionInhalte,
@@ -104,6 +105,7 @@ export function FunktionSeite({ slug }: { slug: StandardSlug }) {
             >
               Alles, was Lotte erledigt <Icon name="arrow-right" className="size-4" />
             </Link>
+            <Lotte pose={lottePoseFuer(slug)} dekorativ className="mt-10 w-48 sm:w-60" sizes="240px" />
           </div>
           <ul className="grid content-start gap-3 sm:grid-cols-2">
             {f.automatisch.map((a) => (

@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { FinalCta, KundenCard, PageHero } from "@/components/sections";
-import { ArrowLink, Faq, FaqJsonLd, Icon, IconTile, Section, SectionHeading, Skizze } from "@/components/ui";
+import { ArrowLink, Faq, FaqJsonLd, Icon, IconTile, Lotte, Section, SectionHeading, Skizze } from "@/components/ui";
+import type { LottePose } from "@/content/lotte";
 import { funktionInhalte, funktionTitel, gewerkTitel } from "@/content/funktionen";
 import { funktionHref, gewerkHref } from "@/content/registry";
 import { FunktionKarte } from "./FunktionKarte";
 import { FunktionsMock } from "./FunktionsMock";
+
+const lotteZeigt: { pose: LottePose; titel: string; text: string }[] = [
+  { pose: "erklaert", titel: "Sie fragt nach", text: "Fehlt eine Angabe, fragt Lotte nach – bei dir oder beim Kunden." },
+  { pose: "laptop", titel: "Sie bereitet vor", text: "Angebote, Rechnungen, Termine: Lotte legt alles fertig hin." },
+  { pose: "telefon", titel: "Du gibst frei", text: "Was nach außen geht oder Geld kostet, schickst du mit einem Klick ab." },
+];
 
 /** Eigene, ausführlichere Seite für „Lotte erledigt automatisch“. */
 export function AutomatischSeite() {
@@ -23,6 +30,24 @@ export function AutomatischSeite() {
         }
         visual={<FunktionsMock visual={f.visual} label="Startseite in Handwerk OS: Was Lotte heute erledigt hat" />}
       />
+
+      {/* Das ist Lotte */}
+      <Section tone="sand" tight>
+        <SectionHeading
+          eyebrow="Das ist Lotte"
+          title="Deine Bürokraft, die nie Feierabend braucht."
+          intro="Lotte ist die KI in Handwerk OS. Sie kennt deine Kunden, Aufträge und Termine – und sieht nur, was du auch siehst."
+        />
+        <ul className="mt-10 grid gap-6 sm:grid-cols-3">
+          {lotteZeigt.map((l) => (
+            <li key={l.pose} className="flex flex-col items-center text-center">
+              <Lotte pose={l.pose} dekorativ className="w-44 sm:w-full sm:max-w-60" sizes="(min-width: 640px) 240px, 176px" />
+              <h3 className="mt-4 font-display text-xl font-bold">{l.titel}</h3>
+              <p className="mt-1 max-w-xs text-muted">{l.text}</p>
+            </li>
+          ))}
+        </ul>
+      </Section>
 
       {/* Übersicht: zehn Aufgaben als Sprungmarken */}
       <Section tone="white" tight>

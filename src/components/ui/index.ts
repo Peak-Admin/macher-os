@@ -17,3 +17,4 @@ export { UiEbene, UiZeile, UiStatus } from "./UiEbene";
 export { UiEbeneAktiv, type UiAktivZeile } from "./UiEbeneAktiv";
 export { Fenster } from "./Fenster";
 export { IntegrationLogo } from "./IntegrationLogo";
+export { Lotte } from "./Lotte";

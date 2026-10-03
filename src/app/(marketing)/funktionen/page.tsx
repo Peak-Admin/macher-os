@@ -11,6 +11,7 @@ import {
   FaqJsonLd,
   Icon,
   IconTile,
+  Lotte,
   Section,
   SectionHeading,
   type FaqItem,
@@ -167,7 +168,9 @@ export default function FunktionenPage() {
                 }`}
               >
                 {b.gruppe === "macher" ? (
-                  <IconTile name={b.icon} tone="signal" />
+                  <span className="-mx-2 -mt-2 flex aspect-[4/3] items-end justify-center overflow-hidden rounded-xl bg-white/5">
+                    <Lotte pose="erklaert" dekorativ className="w-3/4 translate-y-[18%]" sizes="240px" />
+                  </span>
                 ) : (
                   <Objekt objekt={{ auftraege: "klemmbrett", planen: "zollstock", betrieb: "handschuhe" }[b.gruppe as "auftraege" | "planen" | "betrieb"] as ObjektSchluessel} className="-mx-2 -mt-2" />
                 )}

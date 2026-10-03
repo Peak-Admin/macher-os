@@ -35,6 +35,7 @@ import {
   Icon,
   IconTile,
   Karte3D,
+  Lotte,
   Section,
   SectionHeading,
   UiEbeneAktiv,
@@ -414,17 +415,18 @@ export default function HomePage() {
         </Section>
       </Zone>
 
-      {/* 8. Lotte erledigt */}
+      {/* 8. Das ist Lotte */}
       <Zone ton="dunkel">
         <Section tone="transparent">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
             <div>
-              <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Lotte erledigt</p>
+              <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Das ist Lotte</p>
               <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
-                Weniger organisieren. Mehr machen.
+                Du machst das Handwerk. Lotte macht das Büro.
               </h2>
               <p className="mt-5 max-w-md text-lg text-white/70">
-                Handwerk OS übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
+                Lotte ist die KI in Handwerk OS. Sie übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
+                Was nach außen geht oder Geld kostet, gibst du frei.
               </p>
               <Link
                 href="/funktionen/automatisch-erledigen"
@@ -433,7 +435,9 @@ export default function HomePage() {
                 So arbeitet Lotte <Icon name="arrow-right" className="size-4" />
               </Link>
             </div>
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <Lotte pose="mit-dir" className="mx-auto w-full max-w-md lg:max-w-lg" sizes="(min-width: 1024px) 512px, 90vw" />
+          </div>
+          <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {machtMacher.map((m) => (
                 <li key={m.text}>
                   <Karte3D innen="flex items-center gap-3 karte-dunkel p-4" stark={8}>
@@ -442,8 +446,7 @@ export default function HomePage() {
                   </Karte3D>
                 </li>
               ))}
-            </ul>
-          </div>
+          </ul>
         </Section>
       </Zone>
 
