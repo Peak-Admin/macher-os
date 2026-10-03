@@ -34,7 +34,7 @@ export function RollenRechte() {
   const person = mitarbeiter.find((m) => m.rolle === vorschau);
 
   return (
-    <Seite titel="Rollen & Rechte" untertitel="Wer im Betrieb was sehen und ändern darf. Macher hält sich an dieselben Rechte wie der Mensch, für den es arbeitet.">
+    <Seite titel="Rollen & Rechte" untertitel="Wer im Betrieb was sehen und ändern darf. Lotte hält sich an dieselben Rechte wie der Mensch, für den es arbeitet.">
       <Stapel abstand={24}>
         {!admin && <Meldung titel="Nur ansehen">Rechte ändern darf nur, wer das Recht „Einstellungen“ hat.</Meldung>}
         <Karte
@@ -122,7 +122,7 @@ export function RollenRechte() {
                     icon="person"
                     onClick={() => {
                       setzeIch(person.id);
-                      toast(`Du siehst Macher jetzt als ${personName(person)}. Zurück wechselst du unten links in der Navigation.`);
+                      toast(`Du siehst Lotte jetzt als ${personName(person)}. Zurück wechselst du unten links in der Navigation.`);
                       navigate('/heute');
                     }}
                   >

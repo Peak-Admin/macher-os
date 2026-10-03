@@ -50,7 +50,7 @@ describe('Katalog', () => {
     for (const typ of ['zeit.freigegeben', 'import.abgeschlossen', 'import.rueckgaengig', 'formular.ausgefuellt', 'mahnung.versendet', 'bericht.unterschrieben', 'einsatz.gestartet', 'einsatz.beendet', 'einsatz.problem_gemeldet', 'abnahme.unterschrieben', 'dokument.versendet', 'dokument.erstellt', 'auftragsbestaetigung.versendet', 'lieferschein.versendet', 'lieferschein.unterschrieben', 'rechnung.storniert', 'kunde.zusammengefuehrt', 'portal.geoeffnet', 'team.eingeladen', 'team.beigetreten', 'macher.aktion_ausgefuehrt'])
       expect(ereignisArt(typ), typ).toBeDefined();
     expect(ereignisGruppe('rechnung.bezahlt')).toBe('Geld');
-    expect(ereignisGruppe('macher.aktion_ausgefuehrt')).toBe('Daten und Macher');
+    expect(ereignisGruppe('macher.aktion_ausgefuehrt')).toBe('Daten und Lotte');
     expect(apiName('rechnung.bezahlt')).toBe('invoice.paid');
     expect(apiName('unbekannt.passiert')).toBe('unbekannt.passiert');
   });

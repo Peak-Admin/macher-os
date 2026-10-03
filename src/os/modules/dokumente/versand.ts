@@ -123,7 +123,7 @@ export function versandVorbereiten(bezug: Bezug, an: string = standardEmpfaenger
         nummer = rechnungsNummer(r);
         const p = pflichtangabenPruefen(r);
         fehler.push(...p.pflicht.map((m) => m.text));
-        folgen.push(`Macher schreibt die Rechnung fest: Nummer ${nummer}, Datum von heute. Danach ändern nur noch per Storno.`);
+        folgen.push(`Lotte schreibt die Rechnung fest: Nummer ${nummer}, Datum von heute. Danach ändern nur noch per Storno.`);
       }
       const n = rechnungNachricht({ ...r, nummer: nummer ?? r.nummer }, kanal ?? 'email');
       betreff = n.betreff;
@@ -138,7 +138,7 @@ export function versandVorbereiten(bezug: Bezug, an: string = standardEmpfaenger
       betreff = n.betreff;
       text = n.text;
       folgen.push('Dein Kunde bekommt den Link zum Kundenbereich und kann dort direkt annehmen.');
-      if (a.status === 'entwurf') folgen.push('Das Angebot gilt danach als versendet, Macher erinnert dich ans Nachfassen.');
+      if (a.status === 'entwurf') folgen.push('Das Angebot gilt danach als versendet, Lotte erinnert dich ans Nachfassen.');
     }
   } else if (bezug.typ === 'mahnungen') {
     const m = mahnungen.get(bezug.id);

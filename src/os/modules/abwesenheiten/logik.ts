@@ -43,7 +43,7 @@ export function abwesendMelden(a: Abwesenheit | undefined, vorher?: Abwesenheit)
   return true;
 }
 
-/** Hört auf alle Wege, auf denen Abwesenheiten entstehen (Formular, Macher, Import) – einmal beim Start */
+/** Hört auf alle Wege, auf denen Abwesenheiten entstehen (Formular, Lotte, Import) – einmal beim Start */
 export function abwesendBeobachten(): () => void {
   const aus1 = on('abwesenheiten.created', (e) => abwesendMelden(e.objekt as Abwesenheit));
   const aus2 = on('abwesenheiten.updated', (e) => abwesendMelden(e.objekt as Abwesenheit, e.vorher as Abwesenheit | undefined));

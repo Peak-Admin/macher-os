@@ -91,7 +91,7 @@ export default defineModul({
     {
       id: 'mahnungen.pruefen',
       titel: 'Fälligkeiten täglich prüfen und Mahnungen vorbereiten',
-      beschreibung: 'Macher prüft jeden Tag die offenen Rechnungen, bereitet Zahlungserinnerung und Mahnungen vor und fragt dich vor dem Versand.',
+      beschreibung: 'Lotte prüft jeden Tag die offenen Rechnungen, bereitet Zahlungserinnerung und Mahnungen vor und fragt dich vor dem Versand.',
       standardAn: true,
       minuten: 10,
       start: () => {

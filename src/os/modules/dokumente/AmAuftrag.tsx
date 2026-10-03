@@ -1,6 +1,6 @@
 /**
  * Kontext am Auftrag: alle Geschäftsdokumente dieses Auftrags in einer Liste (eine Sicht, keine Kopie)
- * und „Dokument erstellen“ – Macher schlägt passend zur Phase vor.
+ * und „Dokument erstellen“ – Lotte schlägt passend zur Phase vor.
  */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -47,7 +47,7 @@ export function DokumentErstellenDialog({ auftragId, offen, onSchliessen }: { au
       }
     >
       <Stapel abstand={12}>
-        <Meta>Macher füllt Kunde, Auftrag, Positionen, Material und Zeiten selbst ein. Vorgeschlagen ist, was jetzt passt.</Meta>
+        <Meta>Lotte füllt Kunde, Auftrag, Positionen, Material und Zeiten selbst ein. Vorgeschlagen ist, was jetzt passt.</Meta>
         <AuswahlKarten
           label="Welches Dokument?"
           wert={gewaehlt?.id ?? ''}

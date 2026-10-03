@@ -30,7 +30,7 @@ const elemente: { id: Start; label: string; icon: IconName; text: string }[] = [
     id: "planen",
     label: "Planen",
     icon: "calendar",
-    text: "Kalender und Plantafel – Macher schlägt den Einsatz vor.",
+    text: "Kalender und Plantafel – Lotte schlägt den Einsatz vor.",
   },
   {
     id: "rechnungen",

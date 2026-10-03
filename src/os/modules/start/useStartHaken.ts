@@ -1,4 +1,4 @@
-/** „Macher fertig machen“: die vier optionalen Haken aus den echten Daten (Home zeigt sie im nächsten Schritt). */
+/** „Handwerk OS einrichten“: die vier optionalen Haken aus den echten Daten (Home zeigt sie im nächsten Schritt). */
 import { db } from '@core/db';
 import { useEinstellung } from '@core/einstellungen';
 import { DATEN_UEBERNOMMEN, START_AUS, startHaken, TEAM_EINGELADEN, type Haken } from './daten';

@@ -158,7 +158,7 @@ function Formular({ betrieb: b }: { betrieb: Betrieb }) {
               </FormRaster>
               <Schalter
                 label="Kleinunternehmer (§ 19 UStG)"
-                beschreibung="Dann weist Macher auf Rechnungen keine Umsatzsteuer aus."
+                beschreibung="Dann weist Lotte auf Rechnungen keine Umsatzsteuer aus."
                 checked={f.kleinunternehmer}
                 onChange={(v) => setF({ ...f, kleinunternehmer: v })}
                 disabled={!admin}

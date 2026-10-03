@@ -34,7 +34,7 @@ export const KALENDER_AKTIONEN: AktionDef<VerschiebenDaten>[] = [
     fuehreAus: (d) => {
       const t = db.termine.get(d.terminId)!;
       const neu = verschoben(t, d.tag, t.ganztags ? undefined : d.uhr);
-      db.termine.update(t.id, neu, { text: `Verschoben auf ${datumKurz(neu.start)}, ${uhrzeit(neu.start)} Uhr (über Macher)` });
+      db.termine.update(t.id, neu, { text: `Verschoben auf ${datumKurz(neu.start)}, ${uhrzeit(neu.start)} Uhr (über Lotte)` });
       if (t.auftragId) vermerken({ typ: 'auftraege', id: t.auftragId }, 'termin.verschoben', `Termin „${t.titel}“ verschoben auf ${datumKurz(neu.start)}`);
       return { bezug: { typ: 'termine', id: t.id }, text: `Neu: ${datumKurz(neu.start)}, ${uhrzeit(neu.start)} Uhr` };
     },

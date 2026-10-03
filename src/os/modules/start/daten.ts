@@ -1,5 +1,5 @@
 /**
- * First Value: „Was möchtest du als Erstes erledigen?“, „Macher fertig machen“, Briefkopf just in time und der gemeinsame Versandweg
+ * First Value: „Was möchtest du als Erstes erledigen?“, „Handwerk OS einrichten“, Briefkopf just in time und der gemeinsame Versandweg
  * für Angebot und Rechnung (Cloud, sonst ehrlicher lokaler Rückfall).
  * Reine Regeln sind ohne Datenbank testbar.
  */
@@ -27,8 +27,8 @@ export interface StartKarte {
 
 export const KARTEN: Record<Wahl, StartKarte> = {
   angebot: { id: 'angebot', titel: 'Angebot erstellen', text: 'Kunde, Positionen, senden – in drei Minuten raus.', icon: 'dokument', pfad: '/start/angebot' },
-  kunden: { id: 'kunden', titel: 'Kunden übernehmen', text: 'Aus Excel oder deinem alten Programm. Doppelte führt Macher zusammen.', icon: 'upload', pfad: '/betrieb/import?art=kunden' },
-  auftrag: { id: 'auftrag', titel: 'Auftrag anlegen', text: 'Kunde, was zu tun ist, wo – Macher legt den passenden Ablauf an.', icon: 'auftraege', pfad: '/auftraege/auftraege/neu' },
+  kunden: { id: 'kunden', titel: 'Kunden übernehmen', text: 'Aus Excel oder deinem alten Programm. Doppelte führt Lotte zusammen.', icon: 'upload', pfad: '/betrieb/import?art=kunden' },
+  auftrag: { id: 'auftrag', titel: 'Auftrag anlegen', text: 'Kunde, was zu tun ist, wo – Lotte legt den passenden Ablauf an.', icon: 'auftraege', pfad: '/auftraege/auftraege/neu' },
 };
 
 /** Angebot ist die Hauptaktion. Ohne Geld-Recht gibt es kein Angebot – dann bleiben Kunden und Auftrag. */
@@ -45,7 +45,7 @@ export function erstwertPfad(e: { typ: string; objekt?: { beispiel?: boolean; ph
   return undefined;
 }
 
-// ------------------------------------------------------------------ Macher fertig machen
+// ------------------------------------------------------------------ Handwerk OS einrichten
 
 export interface Haken {
   id: 'betrieb' | 'gewerk' | 'kunden' | 'team';
@@ -65,7 +65,7 @@ export interface StartStand {
   teamEingeladen?: boolean;
 }
 
-/** Vier Haken „Macher fertig machen“ – komplett optional, nur echte Daten zählen, Beispieldaten nie. */
+/** Vier Haken „Handwerk OS einrichten“ – komplett optional, nur echte Daten zählen, Beispieldaten nie. */
 export function startHaken(s: StartStand): Haken[] {
   const echt = <T extends { beispiel?: boolean }>(x: T) => !x.beispiel;
   return [
@@ -88,7 +88,7 @@ export function startHaken(s: StartStand): Haken[] {
 
 export const TEAM_EINGELADEN = 'start.teamEingeladen';
 export const DATEN_UEBERNOMMEN = 'start.datenUebernommen';
-/** „Macher fertig machen“ weggeklickt */
+/** „Handwerk OS einrichten“ weggeklickt */
 export const START_AUS = 'start.karteAus';
 /** Erster sichtbarer Nutzen: { pfad, am } – wird genau einmal gesetzt und gemessen */
 export const ERSTWERT_KEY = 'start.erstwert';
@@ -104,7 +104,7 @@ export interface BriefkopfLuecke {
 }
 
 /**
- * Was fehlt im Briefkopf, bevor ein Dokument rausgeht? Erst hier fragt Macher danach – nicht im Onboarding.
+ * Was fehlt im Briefkopf, bevor ein Dokument rausgeht? Erst hier fragt Lotte danach – nicht im Onboarding.
  * `platzhalter` ist der Name, unter dem ein Betrieb ohne Website eingerichtet wurde.
  */
 export function briefkopfVorSenden(b: Pick<Betrieb, 'name' | 'adresse' | 'steuernummer' | 'ustId'> | undefined, platzhalter: string): BriefkopfLuecke[] {
@@ -123,7 +123,7 @@ export interface SendeErgebnis extends VersandErgebnis {
 }
 
 /**
- * Über den Cloud-Vertrag senden. Klappt das nicht, öffnet Macher das Mail-/SMS-Programm (lokaler Rückfall) –
+ * Über den Cloud-Vertrag senden. Klappt das nicht, öffnet Lotte das Mail-/SMS-Programm (lokaler Rückfall) –
  * damit das Dokument trotzdem rausgeht. Das Ergebnis sagt ehrlich, was passiert ist.
  */
 export async function sendenMitRueckfall(v: Versand, c: Cloud = cloud(), lokal: Cloud = LOKALE_CLOUD): Promise<SendeErgebnis> {
@@ -142,7 +142,7 @@ export async function sendenMitRueckfall(v: Versand, c: Cloud = cloud(), lokal: 
 export function versandText(r: SendeErgebnis, kanal: Versand['kanal'], was: string): string {
   const programm = kanal === 'sms' ? 'SMS-App' : kanal === 'whatsapp' ? 'WhatsApp' : 'Mailprogramm';
   if (r.status === 'gesendet') return `${was} ist raus.`;
-  if (r.status === 'geoeffnet') return `${r.rueckfall ? `Der Versand über Macher hat nicht geklappt${r.fehler ? ` (${r.fehler})` : ''}. ` : ''}${kanal === 'email' ? 'Dein' : 'Deine'} ${programm} ist offen – drück dort auf Senden.`;
+  if (r.status === 'geoeffnet') return `${r.rueckfall ? `Der Versand über Lotte hat nicht geklappt${r.fehler ? ` (${r.fehler})` : ''}. ` : ''}${kanal === 'email' ? 'Dein' : 'Deine'} ${programm} ist offen – drück dort auf Senden.`;
   return `${was} konnte nicht gesendet werden${r.fehler ? `: ${r.fehler}` : '.'}`;
 }
 

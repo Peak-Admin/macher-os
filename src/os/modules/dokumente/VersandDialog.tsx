@@ -1,5 +1,5 @@
 /**
- * Senden für alle Geschäftsdokumente: Macher bereitet vor (Empfänger, Betreff, Text, Nummer, Betrag),
+ * Senden für alle Geschäftsdokumente: Lotte bereitet vor (Empfänger, Betreff, Text, Nummer, Betrag),
  * du siehst die Vorschau und bestätigst. Erst dann wird festgeschrieben bzw. verschickt.
  */
 import { useState } from 'react';
@@ -103,7 +103,7 @@ function Inhalt({ bezug, offen, onSchliessen, onGesendet, nebenaktion }: Props) 
             ))}
           </ul>
         )}
-        {lokal && e.kanal && <Meta>{e.kanal === 'sms' ? 'SMS verschickt Macher noch nicht selbst: Deine SMS-App öffnet sich mit fertigem Text. Du drückst dort auf Senden.' : 'E-Mail-Versand ist noch nicht eingerichtet: Macher öffnet dein Mailprogramm mit fertigem Text. Du drückst dort auf Senden.'}</Meta>}
+        {lokal && e.kanal && <Meta>{e.kanal === 'sms' ? 'SMS verschickt Lotte noch nicht selbst: Deine SMS-App öffnet sich mit fertigem Text. Du drückst dort auf Senden.' : 'E-Mail-Versand ist noch nicht eingerichtet: Lotte öffnet dein Mailprogramm mit fertigem Text. Du drückst dort auf Senden.'}</Meta>}
         {!darfSenden && <Meldung ton="neutral">Deine Rolle darf nichts an Kunden senden. Frag im Büro nach.</Meldung>}
         {[...e.fehler, ...fehler].length > 0 && (
           <Meldung ton="achtung" titel="Das fehlt noch">

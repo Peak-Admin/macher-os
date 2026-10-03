@@ -228,7 +228,7 @@ export function ZusatzDetail() {
                   In Rechnung <ObjektLink bezug={{ typ: 'rechnungen', id: rechnung.id }}>{rechnung.nummer}</ObjektLink> vom {datum(rechnung.datum)}.
                 </Meta>
               ) : abrechenbar(z) ? (
-                <Meta>Macher übernimmt den Nachtrag automatisch in die nächste Rechnung zu diesem Auftrag.</Meta>
+                <Meta>Lotte übernimmt den Nachtrag automatisch in die nächste Rechnung zu diesem Auftrag.</Meta>
               ) : (
                 <Meta>Wird abrechenbar, sobald der Kunde freigegeben hat.</Meta>
               )}

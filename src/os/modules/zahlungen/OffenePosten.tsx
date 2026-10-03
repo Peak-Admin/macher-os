@@ -62,7 +62,7 @@ export function OffenePosten() {
         ]}
       />
       {filter === 'eingang' ? (
-        <Liste leer={<Leer titel="Noch keine Zahlungen" text="Importiere deinen Kontoauszug – Macher ordnet die Eingänge den Rechnungen zu." aktion={<Button to="/betrieb/zahlungen/import">Kontoauszug importieren</Button>} icon="euro" />}>
+        <Liste leer={<Leer titel="Noch keine Zahlungen" text="Importiere deinen Kontoauszug – Lotte ordnet die Eingänge den Rechnungen zu." aktion={<Button to="/betrieb/zahlungen/import">Kontoauszug importieren</Button>} icon="euro" />}>
           {eingaenge.map((z) => {
             const r = db.rechnungen.get(z.rechnungId);
             return (

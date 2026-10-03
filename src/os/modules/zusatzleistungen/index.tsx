@@ -54,7 +54,7 @@ export default defineModul({
     {
       id: 'zusatzleistungen.abrechnen',
       titel: 'Freigegebene Nachträge in die Rechnung',
-      beschreibung: 'Wird zu einem Auftrag eine Rechnung angelegt (oder liegt schon ein Entwurf vor), übernimmt Macher alle freigegebenen Nachträge als Positionen. Wird sie storniert, sind die Nachträge wieder abrechenbar.',
+      beschreibung: 'Wird zu einem Auftrag eine Rechnung angelegt (oder liegt schon ein Entwurf vor), übernimmt Lotte alle freigegebenen Nachträge als Positionen. Wird sie storniert, sind die Nachträge wieder abrechenbar.',
       standardAn: true,
       minuten: 5,
       start: () => {

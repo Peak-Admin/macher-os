@@ -61,7 +61,7 @@ export function DatenSicherung() {
   const beispieleWeg = async () => {
     if (!(await fragen('Beispieldaten entfernen?', `${zahl(beispiele)} Beispiel-Einträge (Kunden, Aufträge, Team …) werden endgültig gelöscht. Was du selbst angelegt hast, bleibt.`, 'Beispieldaten entfernen'))) return;
     const entfernt = beispieleEntfernenZaehlen();
-    toast(`${zahl(entfernt)} Beispiel-Einträge entfernt. Jetzt gehört Macher ganz dir.`);
+    toast(`${zahl(entfernt)} Beispiel-Einträge entfernt. Jetzt gehört Lotte ganz dir.`);
   };
 
   const onboarding = async () => {
@@ -104,7 +104,7 @@ export function DatenSicherung() {
               <FensterSkizze icon="import" />
             </span>
             <Stapel>
-              <Meta>Kunden, Artikel, Preise oder offene Rechnungen aus Excel oder deinem alten Programm übernehmen. Macher erkennt die Spalten selbst.</Meta>
+              <Meta>Kunden, Artikel, Preise oder offene Rechnungen aus Excel oder deinem alten Programm übernehmen. Lotte erkennt die Spalten selbst.</Meta>
               <div>
                 <Button variante="sekundaer" icon="upload" to="/betrieb/import">
                   Daten übernehmen

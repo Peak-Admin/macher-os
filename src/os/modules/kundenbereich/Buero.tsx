@@ -112,7 +112,7 @@ export function Zugaenge() {
         zeilen={zeilen}
         schluessel={(z) => z.id}
         zeilenLink={(z) => `/auftraege/kunden/${z.kundeId}`}
-        leer={<Leer skizze titel="Noch kein Kunde hat einen Link" text="Öffne einen Kunden und klick bei „Kundenbereich“ auf „Link erzeugen“. Beim Versand eines Angebots legt Macher den Link automatisch an." icon="link" aktion={<Button variante="sekundaer" to="/auftraege/kunden">Zu den Kunden</Button>} />}
+        leer={<Leer skizze titel="Noch kein Kunde hat einen Link" text="Öffne einen Kunden und klick bei „Kundenbereich“ auf „Link erzeugen“. Beim Versand eines Angebots legt Lotte den Link automatisch an." icon="link" aktion={<Button variante="sekundaer" to="/auftraege/kunden">Zu den Kunden</Button>} />}
         spalten={[
           { titel: 'Kunde', wert: (z) => kunden.find((k) => k.id === z.kundeId)?.name ?? '–', sortierWert: (z) => kunden.find((k) => k.id === z.kundeId)?.name ?? '' },
           { titel: 'Status', wert: statusVon },

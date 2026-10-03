@@ -38,7 +38,7 @@ export function SubListe() {
             alle.length ? (
               <Leer titel={filter === 'achtung' ? 'Alle Nachweise sind in Ordnung' : 'Keine Treffer'} icon={filter === 'achtung' ? 'check' : 'suche'} />
             ) : (
-              <Leer titel="Noch keine Subunternehmer" text="Leg Firmen an, mit denen du zusammenarbeitest. Macher behält ihre Freistellungsbescheinigung im Blick." icon="team" aktion={<Button to="/betrieb/subunternehmer/neu">Subunternehmer anlegen</Button>} />
+              <Leer titel="Noch keine Subunternehmer" text="Leg Firmen an, mit denen du zusammenarbeitest. Lotte behält ihre Freistellungsbescheinigung im Blick." icon="team" aktion={<Button to="/betrieb/subunternehmer/neu">Subunternehmer anlegen</Button>} />
             )
           }
         >

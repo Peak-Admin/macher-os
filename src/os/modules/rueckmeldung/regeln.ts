@@ -27,7 +27,7 @@ export const ARTEN: {
     wert: "idee",
     label: "Idee oder Wunsch",
     text: "Das fehlt mir noch",
-    platzhalter: "Was soll Macher können? Wofür brauchst du es?",
+    platzhalter: "Was soll Lotte können? Wofür brauchst du es?",
   },
   {
     wert: "lob",

@@ -21,7 +21,7 @@ export function BereicheEinstellung() {
       <Stapel abstand={12}>
         <Textfeld
           label="Ein Bereich pro Zeile"
-          hilfe="Belege, die zu keinem Auftrag gehören, ordnest du einem Bereich zu. Macher schlägt ihn vor, z. B. Tankbeleg → Fahrzeuge."
+          hilfe="Belege, die zu keinem Auftrag gehören, ordnest du einem Bereich zu. Lotte schlägt ihn vor, z. B. Tankbeleg → Fahrzeuge."
           rows={6}
           value={text}
           fehler={fehler}

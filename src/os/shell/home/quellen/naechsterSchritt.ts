@@ -6,7 +6,7 @@
 import type { Angebot, Auftrag, Bezug, Rechnung, Termin } from '@core/objects';
 import type { NextAction } from '../typen';
 
-/** Einstellung, mit der „Macher fertig machen“ weggeklickt wird (gleicher Schlüssel wie `START_AUS` im Modul start) */
+/** Einstellung, mit der „Handwerk OS einrichten“ weggeklickt wird (gleicher Schlüssel wie `START_AUS` im Modul start) */
 export const EINRICHTUNG_AUS = 'start.karteAus';
 
 export interface Einrichtungsschritt {
@@ -30,7 +30,7 @@ export interface NaechsterSchrittStand {
   ueberfaellig: Pick<Rechnung, 'id' | 'nummer' | 'kundeId'>[];
   /** eigener nächster Einsatz */
   einsatz?: Pick<Termin, 'id' | 'titel' | 'status' | 'start'>;
-  /** wichtigste offene Entscheidung (Macher) */
+  /** wichtigste offene Entscheidung (Lotte) */
   entscheidung?: { schluessel: string; titel: string; text?: string; pfad?: string; gewicht: number };
   ueberfaelligeAufgaben: number;
   nachfassenTage: number;
@@ -61,7 +61,7 @@ export function naechsteAktionen(s: NaechsterSchrittStand): NextAction[] {
     });
   }
 
-  // „Macher fertig machen“: optional, wegklappbar, nach echter Arbeit – nie vor Anfragen oder Rechnungen
+  // „Handwerk OS einrichten“: optional, wegklappbar, nach echter Arbeit – nie vor Anfragen oder Rechnungen
   const offen = s.einrichtung.filter((h) => !h.erledigt);
   if (s.darfGeld && offen.length) {
     const erster = offen[0];
@@ -69,7 +69,7 @@ export function naechsteAktionen(s: NaechsterSchrittStand): NextAction[] {
     liste.push({
       id: `einrichtung:${erster.id}`,
       type: 'onboarding',
-      title: 'Macher fertig machen',
+      title: 'Handwerk OS einrichten',
       description: `Als Nächstes: ${erster.titel}. Komplett optional – du kannst das auch ausblenden.`,
       priority: 40,
       icon: 'start',
@@ -103,7 +103,7 @@ export function naechsteAktionen(s: NaechsterSchrittStand): NextAction[] {
       id: 'rechnungen-ueberfaellig',
       type: 'rechnung_ueberfaellig',
       title: n === 1 ? `Rechnung ${r.nummer} ist überfällig` : `${n} Rechnungen sind überfällig`,
-      description: n === 1 ? `${s.kundenName(r.kundeId) ?? 'Der Kunde'} hat noch nicht bezahlt. Eine freundliche Erinnerung hilft meist.` : 'Eine freundliche Erinnerung hilft meist. Macher bereitet sie vor.',
+      description: n === 1 ? `${s.kundenName(r.kundeId) ?? 'Der Kunde'} hat noch nicht bezahlt. Eine freundliche Erinnerung hilft meist.` : 'Eine freundliche Erinnerung hilft meist. Lotte bereitet sie vor.',
       priority: 80,
       icon: 'euro',
       actionLabel: 'Offene Posten ansehen',
@@ -172,7 +172,7 @@ export function naechsteAktionen(s: NaechsterSchrittStand): NextAction[] {
       id: `entscheidung:${s.entscheidung.schluessel}`,
       type: 'entscheidung',
       title: s.entscheidung.titel,
-      description: s.entscheidung.text ?? 'Macher braucht hier deine Entscheidung.',
+      description: s.entscheidung.text ?? 'Lotte braucht hier deine Entscheidung.',
       priority: Math.min(65, 40 + Math.round(s.entscheidung.gewicht / 4)),
       icon: 'macher',
       actionLabel: 'Entscheiden',

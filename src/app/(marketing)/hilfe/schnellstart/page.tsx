@@ -18,7 +18,7 @@ export default function SchnellstartPage() {
       <PageHero
         eyebrow="Schnellstart"
         title="Mit einer Frage startklar."
-        intro="Zum Start beantwortest du eine Frage. Alles Weitere machst du, wenn du so weit bist – Macher erinnert dich."
+        intro="Zum Start beantwortest du eine Frage. Alles Weitere machst du, wenn du so weit bist – Lotte erinnert dich."
         breadcrumbs={[{ label: "Hilfe", href: "/hilfe" }, { label: "Schnellstart" }]}
         actions={
           <>
@@ -85,7 +85,7 @@ export default function SchnellstartPage() {
           <SectionHeading
             eyebrow="Geschafft"
             title="Und jetzt? Einfach arbeiten."
-            intro="Ab hier lernst du Handwerk OS im Alltag kennen. Macher erinnert dich an offene Aufgaben und schlägt dir vor, was als Nächstes sinnvoll ist."
+            intro="Ab hier lernst du Handwerk OS im Alltag kennen. Lotte erinnert dich an offene Aufgaben und schlägt dir vor, was als Nächstes sinnvoll ist."
           />
           <div className="grid gap-3 sm:grid-cols-2">
             <ArrowLink href="/hilfe/daten-uebernehmen">Bestehende Daten übernehmen</ArrowLink>

@@ -95,7 +95,7 @@ export function MahnungenListe() {
   return (
     <Seite
       titel="Mahnungen"
-      untertitel="Macher prüft jeden Tag die Fälligkeiten und bereitet die Schreiben vor. Raus geht nur, was du freigibst."
+      untertitel="Lotte prüft jeden Tag die Fälligkeiten und bereitet die Schreiben vor. Raus geht nur, was du freigibst."
       aktion={
         <Button variante="sekundaer" icon="einstellungen" onClick={() => setRegelnOffen(true)}>
           Regeln einstellen
@@ -226,7 +226,7 @@ export function MahnungDetail() {
                 </Button>
                 {offen && (
                   <>
-                    <Button variante="sekundaer" onClick={() => (warten(m.id), toast('Macher fragt in 7 Tagen wieder.'))}>
+                    <Button variante="sekundaer" onClick={() => (warten(m.id), toast('Lotte fragt in 7 Tagen wieder.'))}>
                       Noch warten (7 Tage)
                     </Button>
                     <Button variante="tertiaer" icon="x" onClick={() => (verwerfen(m.id), toast('Schreiben verworfen.'), navigate('/betrieb/mahnungen'))}>

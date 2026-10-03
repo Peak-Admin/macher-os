@@ -34,7 +34,7 @@ export function Uebersicht() {
   return (
     <Seite
       titel="Automatisch erledigen"
-      untertitel="Diese Regeln erledigt Macher für dich. Du entscheidest, was läuft."
+      untertitel="Diese Regeln erledigt Lotte für dich. Du entscheidest, was läuft."
       aktion={
         <Button
           variante="sekundaer"
@@ -53,7 +53,7 @@ export function Uebersicht() {
         <Kennzahl label="Ausgeführt" wert={gesamt.length} zeitraum={`letzte ${TAGE} Tage`} />
         <Kennzahl label="Gesparte Zeit" wert={zeitText(minuten)} zeitraum={`letzte ${TAGE} Tage`} hinweis="Schätzung" />
       </Raster>
-      <Meta>{zuletzt ? `Zuletzt alles geprüft ${relativ(zuletzt)} um ${uhrzeit(zuletzt)} Uhr.` : 'Macher prüft beim Start und alle 30 Minuten, solange die App offen ist.'}</Meta>
+      <Meta>{zuletzt ? `Zuletzt alles geprüft ${relativ(zuletzt)} um ${uhrzeit(zuletzt)} Uhr.` : 'Lotte prüft beim Start und alle 30 Minuten, solange die App offen ist.'}</Meta>
       {!admin && <Meldung>Du kannst die Regeln ansehen. Zum Ein- und Ausschalten brauchst du die Freigabe „Einstellungen“.</Meldung>}
 
       {!regeln.length && <Leer skizze icon="wiederholen" titel="Noch keine Regeln" text="Sobald Module Regeln mitbringen, erscheinen sie hier und laufen automatisch." />}

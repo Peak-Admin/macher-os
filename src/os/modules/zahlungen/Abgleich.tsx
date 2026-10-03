@@ -16,7 +16,7 @@ const rechnungLabel = (id: ID | undefined) => {
   return r ? `${r.nummer} · ${db.kunden.get(r.kundeId)?.name ?? ''} · offen ${euro(offenerBetrag(r))}` : '';
 };
 
-/** Zahlungen zuordnen, die Macher nicht eindeutig zuordnen konnte */
+/** Zahlungen zuordnen, die Lotte nicht eindeutig zuordnen konnte */
 export function Abgleich() {
   useDatenstand();
   const darf = useDarf('geld');
@@ -45,7 +45,7 @@ export function Abgleich() {
   };
 
   return (
-    <Seite titel="Zahlungen zuordnen" untertitel="Eingänge, die Macher nicht sicher einer Rechnung zuordnen konnte." zurueck={{ to: '/betrieb/zahlungen', label: 'Zahlungen' }}>
+    <Seite titel="Zahlungen zuordnen" untertitel="Eingänge, die Lotte nicht sicher einer Rechnung zuordnen konnte." zurueck={{ to: '/betrieb/zahlungen', label: 'Zahlungen' }}>
       <Stapel abstand={24}>
         {offen.length ? (
           <Liste>
@@ -93,7 +93,7 @@ export function Abgleich() {
         )}
 
         {automatisch.length > 0 && (
-          <Abschnitt titel="Von Macher zugeordnet" hinweis="Falsch zugeordnet? Mit „Lösen“ ist die Rechnung wieder offen und die Zahlung wartet hier.">
+          <Abschnitt titel="Von Lotte zugeordnet" hinweis="Falsch zugeordnet? Mit „Lösen“ ist die Rechnung wieder offen und die Zahlung wartet hier.">
             <Liste>
               {automatisch.slice(0, 3).map((u) => {
                 const z = db.zahlungen.get(u.zahlungIds?.[0]);

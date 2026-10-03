@@ -53,7 +53,7 @@ export function SyncStand({ nachSpeichern }: { nachSpeichern?: boolean }) {
   else if (s.zustand === 'sendet' || (s.wartend > 0 && s.zustand !== 'fehler')) {
     text = 'Wird gesendet …';
     icon = 'wiederholen';
-  } else if (s.zustand === 'fehler' && s.wartend > 0) text = 'Auf dem Handy gespeichert. Senden klappt gerade nicht – Macher versucht es weiter.';
+  } else if (s.zustand === 'fehler' && s.wartend > 0) text = 'Auf dem Handy gespeichert. Senden klappt gerade nicht – Lotte versucht es weiter.';
   else if (nachSpeichern && s.zustand === 'bereit') {
     text = 'Ist im Büro angekommen.';
     icon = 'check';
@@ -303,7 +303,7 @@ export function ProblemDialog({ terminId, offen, onSchliessen }: { terminId: ID;
             <Button variante="sekundaer" icon={diktat.hoert ? 'stop' : 'mikro'} onClick={diktat.hoert ? diktat.stopp : diktat.start}>
               {diktat.hoert ? 'Fertig gesprochen' : 'Sprechen'}
             </Button>
-            {diktat.hoert && <MacherArbeitet zustand="hoert" text="Macher hört zu …" />}
+            {diktat.hoert && <MacherArbeitet zustand="hoert" text="Lotte hört zu …" />}
           </div>
         )}
         {diktat.fehler && <Meldung ton="achtung">{diktat.fehler}</Meldung>}

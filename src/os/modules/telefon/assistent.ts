@@ -71,7 +71,7 @@ export interface Vorschau {
   auftrag?: Auftrag;
 }
 
-/** Was würde Macher aus diesem Gespräch machen? Ändert nichts (Probeanruf). */
+/** Was würde Lotte aus diesem Gespräch machen? Ändert nichts (Probeanruf). */
 export function vorschau(e: AnrufErgebnis, k: AssistentKonfig = assistentKonfig()): Vorschau {
   const kunde = anruferKunde(e);
   const offen = offeneAuftraegeVon(kunde?.id);

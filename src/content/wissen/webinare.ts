@@ -166,7 +166,7 @@ export const webinare: Webinar[] = [
     agenda: [
       { titel: "Was KI kann – und was nicht", text: "Telefon, Texte, Angebote, Planung, Dokumentation." },
       { titel: "Datenschutz und Pflichten", text: "DSGVO, Auftragsverarbeitung, KI-Kompetenz im Team." },
-      { titel: "Live gezeigt", text: "Was Macher automatisch erledigt." },
+      { titel: "Live gezeigt", text: "Was Lotte automatisch erledigt." },
       { titel: "Fragen und Antworten", text: "Eure Fragen und Bedenken." },
     ],
     themen: ["digital-arbeiten", "betrieb-fuehren"],

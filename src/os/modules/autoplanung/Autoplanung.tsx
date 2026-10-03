@@ -46,7 +46,7 @@ export function Autoplanung() {
   return (
     <Seite
       titel="Automatische Planung"
-      untertitel="Macher plant alle offenen Aufträge vor. Du prüfst und übernimmst."
+      untertitel="Lotte plant alle offenen Aufträge vor. Du prüfst und übernimmst."
       aktion={
         mitVorschlag.length ? (
           <Button icon="check" onClick={uebernehmen} laedt={laeuft} laedtText="Wird eingeplant …" disabled={!gewaehlt.length}>

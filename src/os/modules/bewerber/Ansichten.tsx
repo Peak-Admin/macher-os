@@ -197,7 +197,7 @@ export function BewerberDetail() {
     toast(`${art} steht im Kalender.`);
   };
   const einstellen = async () => {
-    if (!(await fragen(`${b.vorname} einstellen?`, `Macher legt ${name} als Mitarbeiter an und erstellt den Einarbeitungsplan. Vertragsdaten (Stunden, Urlaub) prüfst du danach.`, 'Mitarbeiter anlegen'))) return;
+    if (!(await fragen(`${b.vorname} einstellen?`, `Lotte legt ${name} als Mitarbeiter an und erstellt den Einarbeitungsplan. Vertragsdaten (Stunden, Urlaub) prüfst du danach.`, 'Mitarbeiter anlegen'))) return;
     // Vertragswerte vom Team übernehmen (gleiche Rolle zuerst) – werden danach im Formular geprüft
     const vorbild = db.mitarbeiter.where((x) => x.aktiv && x.rolle === b.stelle)[0] ?? db.mitarbeiter.where((x) => x.aktiv && x.rolle !== 'chef')[0];
     const m = db.mitarbeiter.create({

@@ -370,7 +370,7 @@ export interface WochenbilanzInhalt {
   umsatz: { netto: number; anzahl: number };
   offen: { summe: number; anzahl: number; ueberfaellig: number; anzahlUeberfaellig: number };
   auftraege: { neu: number; abgeschlossen: number; laufend: number };
-  /** „Macher hat erledigt“ – Minuten sind eine Schätzung je Regel */
+  /** „Lotte hat erledigt“ – Minuten sind eine Schätzung je Regel */
   erledigt: { anzahl: number; minuten: number };
 }
 

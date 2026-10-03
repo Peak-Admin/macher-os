@@ -19,7 +19,7 @@ export const AUFTRAG_AKTIONEN: AktionDef<{ auftragId: ID }>[] = [
       return undefined;
     },
     fuehreAus: (d) => {
-      setzePhase(d.auftragId, 'abnahme', { grund: 'Arbeiten fertig (über Macher)' });
+      setzePhase(d.auftragId, 'abnahme', { grund: 'Arbeiten fertig (über Lotte)' });
       return { bezug: { typ: 'auftraege', id: d.auftragId } };
     },
   },

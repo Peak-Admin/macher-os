@@ -27,7 +27,7 @@ function planer(): ID[] {
 }
 
 /**
- * Angebot angenommen → Schritt „Vorbereitung“. Macher erinnert an den Materialbedarf (Hinweis am Schritt)
+ * Angebot angenommen → Schritt „Vorbereitung“. Lotte erinnert an den Materialbedarf (Hinweis am Schritt)
  * und sagt der Planung Bescheid.
  */
 export function beiZusage(auftragId: ID | undefined): boolean {
@@ -42,7 +42,7 @@ export function beiZusage(auftragId: ID | undefined): boolean {
   return true;
 }
 
-/** Abnahme unterschrieben → Schritt „Rechnung“. Gibt es noch keine Rechnung, schlägt Macher sie vor (Hinweis). */
+/** Abnahme unterschrieben → Schritt „Rechnung“. Gibt es noch keine Rechnung, schlägt Lotte sie vor (Hinweis). */
 export function beiAbnahme(auftragId: ID | undefined): boolean {
   const a = db.auftraege.get(auftragId);
   if (!a || a.phase === 'erledigt' || a.phase === 'verloren') return false;

@@ -62,7 +62,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   laedt?: boolean;
   /** Text während des Ladens, z. B. „Wird gespeichert …“ */
   laedtText?: string;
-  /** KI-Aktion: beim Laden Macher-Orb + Leuchtrand statt Spinner (Zustand siehe `orb-zustand.ts`) */
+  /** KI-Aktion: beim Laden Lotte-Orb + Leuchtrand statt Spinner (Zustand siehe `orb-zustand.ts`) */
   ki?: OrbZustand;
   breit?: boolean;
   klein?: boolean;

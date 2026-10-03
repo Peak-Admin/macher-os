@@ -1,5 +1,5 @@
 /**
- * Macher-Orb: zeigt, dass die KI gerade arbeitet – statt eines Spinners. Eigene, schlanke CSS-Komponente
+ * Lotte-Orb: zeigt, dass die KI gerade arbeitet – statt eines Spinners. Eigene, schlanke CSS-Komponente
  * (keine Abhängigkeit). Zustände und Zuordnung zu Absichten: `orb-zustand.ts`.
  *
  * Regeln: Neben dem Orb steht immer ein Statustext (`MacherArbeitet`), nie nur die Animation. Der Leuchtrand
@@ -28,7 +28,7 @@ export function MacherOrb({ zustand = 'arbeitet', groesse = 20, aufDunkel, class
   );
 }
 
-/** Orb + Statustext („Macher sucht …“) – als Ladezustand überall dort, wo die KI arbeitet. */
+/** Orb + Statustext („Lotte sucht …“) – als Ladezustand überall dort, wo die KI arbeitet. */
 export function MacherArbeitet({ zustand = 'arbeitet', text, groesse = 20, className }: { zustand?: OrbZustand; text?: string; groesse?: 20 | 64 | number; className?: string }) {
   return (
     <div className={`mm-ki-status${groesse >= 48 ? ' mm-ki-status--gross' : ''}${className ? ` ${className}` : ''}`} role="status" aria-live="polite">
@@ -43,7 +43,7 @@ export function kiGlow(an: boolean | undefined): string | undefined {
   return an ? 'mm-ki-glow' : undefined;
 }
 
-/** Die KI-Kugel (Pink → Orange) als ruhiges Zeichen für Macher, die KI – ohne Animation. */
+/** Die KI-Kugel (Pink → Orange) als ruhiges Zeichen für Lotte, die KI – ohne Animation. */
 export function KiKugel({ groesse = 24, className }: { groesse?: number; className?: string }) {
   return <span className={`mm-ki-kugel${className ? ` ${className}` : ''}`} style={{ '--kugel': `${groesse}px` } as CSSProperties} aria-hidden="true" />;
 }

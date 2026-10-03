@@ -1,6 +1,6 @@
 /**
  * „Deine Arbeit“: alles, was für dich zur Bearbeitung bereitliegt – in einer Liste statt in vielen Kacheln.
- * Quellen: deine Aufgaben, Aufgaben von Kollegen im Urlaub (Vertretung), von Macher vorbereitete Freigaben
+ * Quellen: deine Aufgaben, Aufgaben von Kollegen im Urlaub (Vertretung), von Lotte vorbereitete Freigaben
  * und Entscheidungen, Angebotsentwürfe. Reine Regeln, ohne Datenbank testbar.
  */
 import type { Abwesenheit, Angebot, Aufgabe, Auftrag, Bezug, ID, Mitarbeiter } from '@core/objects';
@@ -65,7 +65,7 @@ export function arbeitsposten(s: ArbeitStand): WorkItem[] {
     });
   }
 
-  // Von Macher vorbereitet: Freigaben und Entscheidungen
+  // Von Lotte vorbereitet: Freigaben und Entscheidungen
   for (const h of s.hinweise) {
     if (h.art !== 'freigabe' && h.art !== 'entscheidung') continue;
     if (h.bezug && ohne.has(`${h.bezug.typ}:${h.bezug.id}`)) continue;
@@ -74,7 +74,7 @@ export function arbeitsposten(s: ArbeitStand): WorkItem[] {
       id: `hinweis:${h.schluessel}`,
       type: h.art === 'freigabe' ? 'freigabe' : 'entscheidung',
       title: h.titel,
-      description: h.text ?? (h.art === 'freigabe' ? 'Macher hat das für dich vorbereitet. Prüfen und freigeben.' : 'Braucht deine Entscheidung.'),
+      description: h.text ?? (h.art === 'freigabe' ? 'Lotte hat das für dich vorbereitet. Prüfen und freigeben.' : 'Braucht deine Entscheidung.'),
       status,
       gruppe: h.art === 'freigabe' ? 'bestaetigen' : 'entscheiden',
       priority: 40 + Math.round(h.gewicht / 2),

@@ -63,7 +63,7 @@ export function ErledigtWidget() {
   const s = zusammenfassen(liste);
   return (
     <Abschnitt
-      titel="Macher hat erledigt"
+      titel="Lotte hat erledigt"
       aktion={
         <Button variante="tertiaer" klein to="/heute/erledigt" icon="pfeilRechts">
           Woche ansehen
@@ -83,7 +83,7 @@ export function ErledigtWidget() {
           </Liste>
         </>
       ) : (
-        <Meta>Heute hat Macher noch nichts für dich erledigt. Alles, was automatisch passiert, steht hier – mit Rückgängig, wo es geht.</Meta>
+        <Meta>Heute hat Lotte noch nichts für dich erledigt. Alles, was automatisch passiert, steht hier – mit Rückgängig, wo es geht.</Meta>
       )}
     </Abschnitt>
   );
@@ -97,7 +97,7 @@ export function ErledigtSeite() {
   const liste = erledigungenIm(z, ich);
   const s = zusammenfassen(liste);
   return (
-    <Seite titel="Erledigt" untertitel="Was Macher für dich erledigt hat. Prüfen, öffnen, rückgängig machen.">
+    <Seite titel="Erledigt" untertitel="Was Lotte für dich erledigt hat. Prüfen, öffnen, rückgängig machen.">
       <Filter
         label="Zeitraum"
         wert={z}
@@ -118,7 +118,7 @@ export function ErledigtSeite() {
           <Leer skizze
             icon="macher"
             titel={z === 'heute' ? 'Heute noch nichts erledigt' : 'In diesem Zeitraum nichts erledigt'}
-            text="Sobald Macher etwas automatisch erledigt, steht es hier. Welche Automationen laufen, stellst du unter „Automatisch erledigen“ ein."
+            text="Sobald Lotte etwas automatisch erledigt, steht es hier. Welche Automationen laufen, stellst du unter „Automatisch erledigen“ ein."
             aktion={z === 'heute' ? <Button variante="sekundaer" onClick={() => setZ('woche')}>Diese Woche ansehen</Button> : undefined}
           />
         }

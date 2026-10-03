@@ -185,7 +185,7 @@ export function AbwesendWidget({ groesse }: WidgetProps) {
 export function EntscheidungenWidget({ groesse, ich }: WidgetProps) {
   useDatenstand();
   const liste = offeneHinweise({ rolle: ich.rolle, mitarbeiterId: ich.id });
-  if (!liste.length) return <Meta>Nichts brennt. Macher meldet sich hier, sobald etwas deine Entscheidung braucht.</Meta>;
+  if (!liste.length) return <Meta>Nichts brennt. Lotte meldet sich hier, sobald etwas deine Entscheidung braucht.</Meta>;
   // Akute Sicherheitswarnungen („nicht verwenden“) zählen nie gegen das Mengenlimit und stehen oben
   const zeigen = [...liste.filter((h) => h.sicherheit), ...liste.filter((h) => !h.sicherheit).slice(0, anzahl(groesse))];
   return (
@@ -378,7 +378,7 @@ export function ErledigtWidget({ groesse, ich }: WidgetProps) {
   useDatenstand();
   const liste = erledigungenIm('woche', ich);
   const s = zusammenfassen(liste);
-  if (!liste.length) return <Meta>Diese Woche hat Macher noch nichts für dich erledigt. Alles, was automatisch passiert, steht hier.</Meta>;
+  if (!liste.length) return <Meta>Diese Woche hat Lotte noch nichts für dich erledigt. Alles, was automatisch passiert, steht hier.</Meta>;
   return (
     <>
       <Meta>

@@ -5,7 +5,7 @@ export const teil3 = {
 
   wartung: {
     icon: "wrench",
-    kurz: "Fällige Wartungen im Blick. Macher legt die Aufträge rechtzeitig an – mit Prüfpunkten und Nachricht an den Kunden.",
+    kurz: "Fällige Wartungen im Blick. Lotte legt die Aufträge rechtzeitig an – mit Prüfpunkten und Nachricht an den Kunden.",
     enthalten: ["Fällige Wartungen", "Wartungsaufträge", "Prüfpunkte je Anlage", "Nächste Wartung eintragen"],
     meta: {
       title: "Wartungsplanung für Handwerker – keine Wartung mehr vergessen",
@@ -39,7 +39,7 @@ export const teil3 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat erledigt:",
+        titel: "Lotte hat erledigt:",
         text: "4 Wartungsaufträge angelegt, Prüfpunkte als Aufgaben gesetzt.",
       },
     },
@@ -64,7 +64,7 @@ export const teil3 = {
     ],
     loesung: {
       titel: "Jede Anlage weiß, wann sie dran ist.",
-      text: "An jeder Anlage steht, wann die letzte Wartung war und wann die nächste fällig ist. Macher legt rechtzeitig vorher den Wartungsauftrag an, fasst Anlagen am selben Ort zusammen und setzt die passenden Prüfpunkte als Aufgaben. Ist die Wartung fertig, rechnet Macher die nächste aus.",
+      text: "An jeder Anlage steht, wann die letzte Wartung war und wann die nächste fällig ist. Lotte legt rechtzeitig vorher den Wartungsauftrag an, fasst Anlagen am selben Ort zusammen und setzt die passenden Prüfpunkte als Aufgaben. Ist die Wartung fertig, rechnet Lotte die nächste aus.",
       punkte: [
         "Übersicht: überfällig, diese Woche, diesen Monat",
         "Wartungsauftrag Wochen vorher – den Vorlauf stellst du ein",
@@ -84,7 +84,7 @@ export const teil3 = {
         { label: "Termin", wert: "Mo, 27.10. · 8:00 Uhr · Mehmet" },
         { label: "Nächster Schritt", wert: "Kunde informieren", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat die Nachricht an Familie Wendt vorbereitet. Du gibst sie nur noch frei." },
+      fuss: { icon: "spark", text: "Lotte hat die Nachricht an Familie Wendt vorbereitet. Du gibst sie nur noch frei." },
     },
     schritte: [
       {
@@ -92,7 +92,7 @@ export const teil3 = {
         text: "Typ, Ort und Wartungsintervall eintragen. Dazu, wann zuletzt gewartet wurde. Mehr braucht es nicht.",
       },
       {
-        titel: "Macher legt den Auftrag an",
+        titel: "Lotte legt den Auftrag an",
         text: "Ein paar Wochen vor dem Termin steht der Wartungsauftrag bereit. Anlagen am selben Ort landen im selben Auftrag.",
       },
       {
@@ -101,7 +101,7 @@ export const teil3 = {
       },
       {
         titel: "Abhaken und abschließen",
-        text: "Der Monteur hakt die Prüfpunkte am Handy ab. Ist der Auftrag fertig, trägt Macher die nächste Wartung ein.",
+        text: "Der Monteur hakt die Prüfpunkte am Handy ab. Ist der Auftrag fertig, trägt Lotte die nächste Wartung ein.",
       },
     ],
     automatisch: [
@@ -151,19 +151,19 @@ export const teil3 = {
     werkzeug: "fahrtkosten-rechner",
     faq: [
       {
-        frage: "Wie weit im Voraus legt Macher den Wartungsauftrag an?",
+        frage: "Wie weit im Voraus legt Lotte den Wartungsauftrag an?",
         antwort:
           "Das stellst du ein – in Wochen vor der Fälligkeit. Am Anfang sind es vier Wochen. Wer im Herbst viel zu tun hat, stellt den Vorlauf länger.",
       },
       {
         frage: "Was passiert, wenn bei einer Anlage kein Datum eingetragen ist?",
         antwort:
-          "Ohne Fälligkeit kann Macher nichts anlegen. Trag Intervall und letzte Wartung an der Anlage nach – dann rechnet Macher die nächste aus.",
+          "Ohne Fälligkeit kann Lotte nichts anlegen. Trag Intervall und letzte Wartung an der Anlage nach – dann rechnet Lotte die nächste aus.",
       },
       {
         frage: "Bekommt der Kunde automatisch eine Nachricht?",
         antwort:
-          "Nein, nicht ohne dich. Macher bereitet die Nachricht mit dem Termin vor. Du prüfst sie und gibst sie frei. Dann geht sie per Mail oder SMS raus.",
+          "Nein, nicht ohne dich. Lotte bereitet die Nachricht mit dem Termin vor. Du prüfst sie und gibst sie frei. Dann geht sie per Mail oder SMS raus.",
       },
       {
         frage: "Muss ich für die Prüfpunkte eigene Listen anlegen?",
@@ -178,7 +178,7 @@ export const teil3 = {
 
   servicevertraege: {
     icon: "signature",
-    kurz: "Wartungsverträge mit Laufzeit, Preis und Kündigungsfrist – die Abrechnung bereitet Macher von selbst vor.",
+    kurz: "Wartungsverträge mit Laufzeit, Preis und Kündigungsfrist – die Abrechnung bereitet Lotte von selbst vor.",
     enthalten: ["Verträge mit Laufzeit", "Automatische Abrechnung", "Kündigungsfristen", "Verlängern"],
     meta: {
       title: "Wartungsverträge verwalten – Abrechnung und Fristen im Griff",
@@ -212,7 +212,7 @@ export const teil3 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat erledigt:",
+        titel: "Lotte hat erledigt:",
         text: "Rechnungsentwurf für SV-0012 erstellt. Bitte prüfen und versenden.",
       },
     },
@@ -237,7 +237,7 @@ export const teil3 = {
     ],
     loesung: {
       titel: "Ein Vertrag, alle Bezüge.",
-      text: "Du legst den Vertrag einmal an: Kunde, Orte, Anlagen, Leistungen, Preis pro Jahr, Abrechnungsrhythmus, Laufzeit und Kündigungsfrist. Macher kümmert sich um die Abrechnung, weist auf Fristen hin und sorgt dafür, dass Vertragswartungen nicht noch einmal berechnet werden.",
+      text: "Du legst den Vertrag einmal an: Kunde, Orte, Anlagen, Leistungen, Preis pro Jahr, Abrechnungsrhythmus, Laufzeit und Kündigungsfrist. Lotte kümmert sich um die Abrechnung, weist auf Fristen hin und sorgt dafür, dass Vertragswartungen nicht noch einmal berechnet werden.",
       punkte: [
         "Abrechnung monatlich, vierteljährlich, halbjährlich oder jährlich",
         "Mehrere Orte und Anlagen in einem Vertrag",
@@ -257,7 +257,7 @@ export const teil3 = {
         { label: "Kündigungsfrist", wert: "3 Monate" },
         { label: "Nächste Abrechnung", wert: "Oktober · 40 € netto", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat den Rechnungsentwurf mit Leistungszeitraum angelegt. Du prüfst und versendest." },
+      fuss: { icon: "spark", text: "Lotte hat den Rechnungsentwurf mit Leistungszeitraum angelegt. Du prüfst und versendest." },
     },
     schritte: [
       {
@@ -274,7 +274,7 @@ export const teil3 = {
       },
       {
         titel: "Fristen im Blick",
-        text: "Vor der Kündigungsfrist fragt Macher: Preis anpassen oder weiterlaufen lassen? Läuft ein Vertrag aus, kannst du ihn mit einem Klick verlängern.",
+        text: "Vor der Kündigungsfrist fragt Lotte: Preis anpassen oder weiterlaufen lassen? Läuft ein Vertrag aus, kannst du ihn mit einem Klick verlängern.",
       },
     ],
     automatisch: [
@@ -325,7 +325,7 @@ export const teil3 = {
       {
         frage: "Wird die Rechnung automatisch an den Kunden geschickt?",
         antwort:
-          "Nein. Macher erstellt einen Rechnungsentwurf mit Leistungszeitraum. Du prüfst ihn und schickst ihn selbst ab.",
+          "Nein. Lotte erstellt einen Rechnungsentwurf mit Leistungszeitraum. Du prüfst ihn und schickst ihn selbst ab.",
       },
       {
         frage: "Kann ich mehrere Gebäude in einen Vertrag packen?",
@@ -335,7 +335,7 @@ export const teil3 = {
       {
         frage: "Was passiert, wenn der Vertrag sich nicht automatisch verlängert?",
         antwort:
-          "Dann meldet Macher 60 Tage vor dem Ende, dass er ausläuft. Du kannst ihn mit einem Klick verlängern oder auslaufen lassen.",
+          "Dann meldet Lotte 60 Tage vor dem Ende, dass er ausläuft. Du kannst ihn mit einem Klick verlängern oder auslaufen lassen.",
       },
       {
         frage: "Sehen meine Monteure die Vertragspreise?",
@@ -409,7 +409,7 @@ export const teil3 = {
     ],
     loesung: {
       titel: "Vom Anruf bis zur erledigten Nacharbeit.",
-      text: "Jeder Mangel bekommt einen Eintrag – mit Kunde, ursprünglichem Auftrag, Anlage und Fotos. Macher prüft die Gewährleistung, schlägt eine Frist vor und legt die Nacharbeit als Auftrag an. Der Stand der Reklamation folgt der Nacharbeit von selbst.",
+      text: "Jeder Mangel bekommt einen Eintrag – mit Kunde, ursprünglichem Auftrag, Anlage und Fotos. Lotte prüft die Gewährleistung, schlägt eine Frist vor und legt die Nacharbeit als Auftrag an. Der Stand der Reklamation folgt der Nacharbeit von selbst.",
       punkte: [
         "Mangel melden am Handy, mit Foto",
         "Gewährleistung nach BGB oder VOB/B ausgerechnet",
@@ -429,7 +429,7 @@ export const teil3 = {
         { label: "Fotos", wert: "2 vom Monteur" },
         { label: "Frist zur Beseitigung", wert: "Do, 16.10.", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat den Nacharbeitsauftrag angelegt. Er wird ohne Rechnung abgeschlossen." },
+      fuss: { icon: "spark", text: "Lotte hat den Nacharbeitsauftrag angelegt. Er wird ohne Rechnung abgeschlossen." },
     },
     schritte: [
       {
@@ -437,8 +437,8 @@ export const teil3 = {
         text: "Im Büro oder direkt vor Ort am Handy. Kurz beschreiben, Foto machen, Kunde und Auftrag wählen.",
       },
       {
-        titel: "Macher prüft die Gewährleistung",
-        text: "Aus Abnahme- oder Abschlussdatum und Grundlage rechnet Macher aus, ob noch Gewährleistung besteht.",
+        titel: "Lotte prüft die Gewährleistung",
+        text: "Aus Abnahme- oder Abschlussdatum und Grundlage rechnet Lotte aus, ob noch Gewährleistung besteht.",
       },
       {
         titel: "Du entscheidest",
@@ -486,7 +486,7 @@ export const teil3 = {
     },
     gewerke: [
       { slug: "tischler", text: "Klemmende Tür, lose Blende: Mit Foto aufgenommen, die Nacharbeit steht im Plan." },
-      { slug: "fliesenleger", text: "Gerissene Fuge nach dem Einzug – Macher weiß sofort, wann abgenommen wurde." },
+      { slug: "fliesenleger", text: "Gerissene Fuge nach dem Einzug – Lotte weiß sofort, wann abgenommen wurde." },
       { slug: "shk", text: "Wiederkehrende Störung an einer alten Anlage? Ist die Gewährleistung vorbei, geht ein Angebot raus." },
     ],
     kunde: {
@@ -495,19 +495,19 @@ export const teil3 = {
     },
     faq: [
       {
-        frage: "Woher weiß Macher, ob noch Gewährleistung besteht?",
+        frage: "Woher weiß Lotte, ob noch Gewährleistung besteht?",
         antwort:
-          "Aus dem Abnahme- oder Abschlussdatum des Auftrags und der Grundlage: BGB oder VOB/B, Bauwerk oder sonstige Arbeiten. Steht an der Anlage ein eigenes Gewährleistungsdatum, zählt das. Fehlt ein Datum, sagt dir Macher, was du nachtragen musst.",
+          "Aus dem Abnahme- oder Abschlussdatum des Auftrags und der Grundlage: BGB oder VOB/B, Bauwerk oder sonstige Arbeiten. Steht an der Anlage ein eigenes Gewährleistungsdatum, zählt das. Fehlt ein Datum, sagt dir Lotte, was du nachtragen musst.",
       },
       {
         frage: "Ist das eine Rechtsberatung?",
         antwort:
-          "Nein. Macher rechnet die üblichen Fristen aus und zeigt dir, worauf er sich stützt. Die Entscheidung triffst du. Bei Streit hilft dir ein Anwalt oder deine Innung.",
+          "Nein. Lotte rechnet die üblichen Fristen aus und zeigt dir, worauf sie sich stützt. Die Entscheidung triffst du. Bei Streit hilft dir ein Anwalt oder deine Innung.",
       },
       {
         frage: "Was passiert bei einer kostenpflichtigen Nacharbeit?",
         antwort:
-          "Macher legt den Auftrag an und erinnert dich, dem Kunden ein Angebot zu schicken. Du kannst dich auch für Kulanz entscheiden – dann gibt es keine Rechnung.",
+          "Lotte legt den Auftrag an und erinnert dich, dem Kunden ein Angebot zu schicken. Du kannst dich auch für Kulanz entscheiden – dann gibt es keine Rechnung.",
       },
       {
         frage: "Können Monteure einen Mangel melden?",
@@ -534,7 +534,7 @@ export const teil3 = {
       problem:
         "Die Arbeit war gut, der Kunde war zufrieden. Nach einer Bewertung fragt trotzdem keiner. Im Netz findet man deshalb eher die Konkurrenz.",
       loesung:
-        "Ist ein Auftrag erledigt, bereitet Macher die Bewertungsanfrage vor – mit deinem Google-Link. Kunden mit Reklamation oder schlechter Rückmeldung lässt er aus. Du gibst nur frei.",
+        "Ist ein Auftrag erledigt, bereitet Lotte die Bewertungsanfrage vor – mit deinem Google-Link. Kunden mit Reklamation oder schlechter Rückmeldung lässt sie aus. Du gibst nur frei.",
     },
     visual: {
       bereich: "Aufträge",
@@ -581,7 +581,7 @@ export const teil3 = {
     ],
     loesung: {
       titel: "Die Anfrage kommt zur richtigen Zeit.",
-      text: "Geht ein Auftrag auf „erledigt“, bereitet Macher die Anfrage vor. Er hält sich an klare Regeln: keine Reklamationen, keine doppelten Anfragen, jeder Kunde höchstens alle 180 Tage, niemand, der zuletzt unzufrieden war. Gesendet wird erst, wenn du freigibst.",
+      text: "Geht ein Auftrag auf „erledigt“, bereitet Lotte die Anfrage vor. Sie hält sich an klare Regeln: keine Reklamationen, keine doppelten Anfragen, jeder Kunde höchstens alle 180 Tage, niemand, der zuletzt unzufrieden war. Gesendet wird erst, wenn du freigibst.",
       punkte: [
         "Dein Google-Bewertungslink einmal hinterlegt",
         "Anfrage per Mail, sonst per SMS",
@@ -601,16 +601,16 @@ export const teil3 = {
         { label: "Reklamation", wert: "keine" },
         { label: "Nächster Schritt", wert: "Anfrage senden", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat die Anfrage vorbereitet. Wer nicht gefragt werden soll, lässt du mit einem Klick aus." },
+      fuss: { icon: "spark", text: "Lotte hat die Anfrage vorbereitet. Wer nicht gefragt werden soll, lässt du mit einem Klick aus." },
     },
     schritte: [
       {
         titel: "Link hinterlegen",
-        text: "Einmal deinen Google-Bewertungslink eintragen. Macher setzt ihn in jede Anfrage ein.",
+        text: "Einmal deinen Google-Bewertungslink eintragen. Lotte setzt ihn in jede Anfrage ein.",
       },
       {
         titel: "Auftrag ist erledigt",
-        text: "Macher prüft die Regeln und bereitet die Anfrage vor. Du siehst sie in deiner Liste zur Freigabe.",
+        text: "Lotte prüft die Regeln und bereitet die Anfrage vor. Du siehst sie in deiner Liste zur Freigabe.",
       },
       {
         titel: "Freigeben oder auslassen",
@@ -667,24 +667,24 @@ export const teil3 = {
     },
     faq: [
       {
-        frage: "Schickt Macher die Anfragen ohne mich ab?",
+        frage: "Schickt Lotte die Anfragen ohne mich ab?",
         antwort:
-          "Nein. Macher bereitet nur vor. Gesendet wird erst, wenn du freigibst – eine gesendete Anfrage lässt sich nicht zurückholen.",
+          "Nein. Lotte bereitet nur vor. Gesendet wird erst, wenn du freigibst – eine gesendete Anfrage lässt sich nicht zurückholen.",
       },
       {
-        frage: "Liest Macher meine Google-Bewertungen aus?",
+        frage: "Liest Lotte meine Google-Bewertungen aus?",
         antwort:
-          "Nein. Macher merkt sich nur, wen du gefragt hast und was der Kunde dir selbst gesagt hat. Bewertungen werden weder abgerufen noch erzeugt.",
+          "Nein. Lotte merkt sich nur, wen du gefragt hast und was der Kunde dir selbst gesagt hat. Bewertungen werden weder abgerufen noch erzeugt.",
       },
       {
         frage: "Was ist, wenn ein Kunde keine Mail-Adresse hat?",
         antwort:
-          "Dann geht die Anfrage per SMS. Fehlt beides, sagt dir Macher Bescheid und bringt dich zum Kunden, um die Nummer nachzutragen.",
+          "Dann geht die Anfrage per SMS. Fehlt beides, sagt dir Lotte Bescheid und bringt dich zum Kunden, um die Nummer nachzutragen.",
       },
       {
         frage: "Wie siehst du, wer dich empfohlen hat?",
         antwort:
-          "Beim Anlegen eines Kunden mit Quelle „Empfehlung“ trägst du den Empfehler ein. Fehlt er, fragt Macher nach. Danach siehst du, wer dich am häufigsten empfiehlt, und hakst ab, wenn du dich bedankt hast.",
+          "Beim Anlegen eines Kunden mit Quelle „Empfehlung“ trägst du den Empfehler ein. Fehlt er, fragt Lotte nach. Danach siehst du, wer dich am häufigsten empfiehlt, und hakst ab, wenn du dich bedankt hast.",
       },
     ],
     verwandt: ["kunden", "abnahme", "reklamationen"],
@@ -706,7 +706,7 @@ export const teil3 = {
       problem:
         "Jede Terminabsprache sind zwei, drei Anrufe. Der Chef steht auf der Baustelle, das Büro ist halbtags besetzt. Wer niemanden erreicht, ruft den nächsten Betrieb an.",
       loesung:
-        "Du schickst deinen Buchungslink. Der Kunde sieht nur Zeiten, die wirklich frei sind, und bucht selbst. Kunde, Anfrage und Termin legt Macher an.",
+        "Du schickst deinen Buchungslink. Der Kunde sieht nur Zeiten, die wirklich frei sind, und bucht selbst. Kunde, Anfrage und Termin legt Lotte an.",
     },
     visual: {
       bereich: "Planen",
@@ -773,7 +773,7 @@ export const teil3 = {
         { label: "Kunde", wert: "neu angelegt" },
         { label: "Nächster Schritt", wert: "Termin bestätigen", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat Jana eingeteilt – sie ist diese Woche am wenigsten verplant." },
+      fuss: { icon: "spark", text: "Lotte hat Jana eingeteilt – sie ist diese Woche am wenigsten verplant." },
     },
     schritte: [
       {
@@ -841,17 +841,17 @@ export const teil3 = {
       {
         frage: "Kann ein Kunde einen Termin buchen, an dem schon etwas geplant ist?",
         antwort:
-          "Nein. Der Kunde sieht nur Zeiten, an denen jemand frei ist – Termine, Abwesenheiten und Puffer sind schon abgezogen. Ist die Zeit kurz vor dem Buchen doch weg, legt Macher eine Anfrage mit dem Wunschtermin an und meldet sich bei dir.",
+          "Nein. Der Kunde sieht nur Zeiten, an denen jemand frei ist – Termine, Abwesenheiten und Puffer sind schon abgezogen. Ist die Zeit kurz vor dem Buchen doch weg, legt Lotte eine Anfrage mit dem Wunschtermin an und meldet sich bei dir.",
       },
       {
         frage: "Muss ich jede Buchung bestätigen?",
         antwort:
-          "Am Anfang ja. Wenn du willst, schaltest du die automatische Bestätigung ein: Passt alles ohne Konflikt, bestätigt Macher sofort. Das kannst du jederzeit zurücknehmen.",
+          "Am Anfang ja. Wenn du willst, schaltest du die automatische Bestätigung ein: Passt alles ohne Konflikt, bestätigt Lotte sofort. Das kannst du jederzeit zurücknehmen.",
       },
       {
         frage: "Kann ich festlegen, wer die gebuchten Termine übernimmt?",
         antwort:
-          "Ja. Je Terminart wählst du die Mitarbeiter. Lässt du das offen, kommen alle Monteure und der Chef infrage. Macher teilt den ein, der in der Woche am wenigsten verplant ist.",
+          "Ja. Je Terminart wählst du die Mitarbeiter. Lässt du das offen, kommen alle Monteure und der Chef infrage. Lotte teilt den ein, der in der Woche am wenigsten verplant ist.",
       },
       {
         frage: "Kann der Kunde den Termin selbst verschieben oder absagen?",
@@ -866,7 +866,7 @@ export const teil3 = {
 
   "wiederkehrende-termine": {
     icon: "clock",
-    kurz: "Regelmäßige Einsätze einmal als Serie anlegen – die Termine trägt Macher immer drei Monate im Voraus ein.",
+    kurz: "Regelmäßige Einsätze einmal als Serie anlegen – die Termine trägt Lotte immer drei Monate im Voraus ein.",
     enthalten: ["Serien anlegen", "Einzelne Termine verschieben", "Auslassen", "Serie beenden"],
     meta: {
       title: "Wiederkehrende Termine planen – Wartung und Pflege als Serie",
@@ -878,7 +878,7 @@ export const teil3 = {
       problem:
         "Die Grünpflege jeden Dienstag, die Sichtprüfung jeden Monat, die Wartung alle sechs Monate. Alles wird von Hand eingetragen – oder steht nur im Kopf.",
       loesung:
-        "Du legst eine Serie an. Macher trägt die Termine immer drei Monate im Voraus in den Kalender ein und meldet sich, wenn ein eingeteilter Mitarbeiter fehlt.",
+        "Du legst eine Serie an. Lotte trägt die Termine immer drei Monate im Voraus in den Kalender ein und meldet sich, wenn ein eingeteilter Mitarbeiter fehlt.",
     },
     visual: {
       bereich: "Planen",
@@ -945,7 +945,7 @@ export const teil3 = {
         { label: "Notiz", wert: "Erst ab 13 Uhr – vorher läuft der Ofen" },
         { label: "Nächster Termin", wert: "Mo, 3. November", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat drei Termine bis Januar eingetragen. Der 1. November fiel auf einen Samstag – er liegt jetzt am Montag." },
+      fuss: { icon: "spark", text: "Lotte hat drei Termine bis Januar eingetragen. Der 1. November fiel auf einen Samstag – er liegt jetzt am Montag." },
     },
     schritte: [
       {
@@ -954,7 +954,7 @@ export const teil3 = {
       },
       {
         titel: "Termine stehen im Kalender",
-        text: "Macher trägt die Termine drei Monate im Voraus ein und füllt laufend nach. Jeder Termin nur einmal.",
+        text: "Lotte trägt die Termine drei Monate im Voraus ein und füllt laufend nach. Jeder Termin nur einmal.",
       },
       {
         titel: "Ausnahmen regeln",
@@ -1011,14 +1011,14 @@ export const teil3 = {
     },
     faq: [
       {
-        frage: "Warum trägt Macher nur drei Monate im Voraus ein?",
+        frage: "Warum trägt Lotte nur drei Monate im Voraus ein?",
         antwort:
-          "Damit der Kalender übersichtlich bleibt. Macher füllt laufend nach. So stehen nie Jahre an Terminen im Plan, und Änderungen an der Serie greifen schnell.",
+          "Damit der Kalender übersichtlich bleibt. Lotte füllt laufend nach. So stehen nie Jahre an Terminen im Plan, und Änderungen an der Serie greifen schnell.",
       },
       {
         frage: "Was passiert, wenn ich einen Serientermin lösche?",
         antwort:
-          "Er kommt nicht wieder. Macher merkt sich, welche Termine schon angelegt wurden. Willst du ihn doch, nimmst du ihn in der Serie wieder auf.",
+          "Er kommt nicht wieder. Lotte merkt sich, welche Termine schon angelegt wurden. Willst du ihn doch, nimmst du ihn in der Serie wieder auf.",
       },
       {
         frage: "Geht auch „jeder zweite Dienstag im Monat“?",
@@ -1034,27 +1034,27 @@ export const teil3 = {
     verwandt: ["kalender", "wartung", "servicevertraege"],
   },
 
-  /* ───────────────────────── Macher fragen ───────────────────────── */
+  /* ───────────────────────── Frag Lotte ───────────────────────── */
 
   "macher-fragen": {
     icon: "spark",
-    kurz: "Frag Macher wie deine Bürokraft – er antwortet aus deinen Daten und bereitet Aufgaben vor.",
+    kurz: "Frag Lotte wie deine Bürokraft – sie antwortet aus deinen Daten und bereitet Aufgaben vor.",
     enthalten: ["Fragen stellen", "Infos finden", "Aktionen vorbereiten", "Erst nach deinem Okay"],
     meta: {
-      title: "KI-Bürokraft für Handwerker – Macher beantwortet Fragen aus deinen Daten",
+      title: "KI-Bürokraft für Handwerker – Lotte beantwortet Fragen aus deinen Daten",
       description:
-        "„Was steht morgen an?“ – „Welche Rechnungen sind offen?“ Macher antwortet aus deinen Daten in Handwerk OS, mit Quelle. Aufgaben und Nachrichten bereitet er vor. Ausgeführt wird erst, wenn du bestätigst.",
+        "„Was steht morgen an?“ – „Welche Rechnungen sind offen?“ Lotte antwortet aus deinen Daten in Handwerk OS, mit Quelle. Aufgaben und Nachrichten bereitet sie vor. Ausgeführt wird erst, wenn du bestätigst.",
     },
     hero: {
       titel: "Frag einfach. Wie deine beste Bürokraft.",
       problem:
         "Was steht morgen an? Wer hat nächste Woche Zeit? Welche Rechnungen sind offen? Für jede Antwort klickst du dich durch drei Listen – oder rufst im Büro an.",
       loesung:
-        "Du stellst die Frage in deinen Worten. Macher antwortet kurz aus deinen Daten, mit Links zu den Quellen. Aufgaben und Nachrichten bereitet er vor – ausgeführt wird erst, wenn du bestätigst.",
+        "Du stellst die Frage in deinen Worten. Lotte antwortet kurz aus deinen Daten, mit Links zu den Quellen. Aufgaben und Nachrichten bereitet sie vor – ausgeführt wird erst, wenn du bestätigst.",
     },
     visual: {
       bereich: "Heute",
-      titel: "Macher fragen",
+      titel: "Frag Lotte",
       untertitel: "„Welche Rechnungen sind offen?“",
       kennzahlen: [
         ["4", "offene Rechnungen"],
@@ -1073,7 +1073,7 @@ export const teil3 = {
         icon: "shield",
         ton: "moss",
         titel: "Du entscheidest:",
-        text: "Soll Macher Familie Wendt erinnern? Die Erinnerung ist vorbereitet – gesendet wird erst nach deinem Okay.",
+        text: "Soll Lotte Familie Wendt erinnern? Die Erinnerung ist vorbereitet – gesendet wird erst nach deinem Okay.",
       },
     },
     problemTitel: "Die Info ist da. Nur nicht da, wo du gerade bist.",
@@ -1097,16 +1097,16 @@ export const teil3 = {
     ],
     loesung: {
       titel: "Antworten mit Quelle. Aktionen erst nach deinem Okay.",
-      text: "Macher kennt deinen Betrieb: Termine, Aufträge, Kunden, Rechnungen, dein Team. Er antwortet kurz und zeigt, worauf die Antwort beruht. Soll etwas passieren, legt er einen Vorschlag an, den du ändern kannst. Erst wenn du bestätigst, wird er ausgeführt – und lässt sich bei Bedarf zurücknehmen.",
+      text: "Lotte kennt deinen Betrieb: Termine, Aufträge, Kunden, Rechnungen, dein Team. Sie antwortet kurz und zeigt, worauf die Antwort beruht. Soll etwas passieren, legt sie einen Vorschlag an, den du ändern kannst. Erst wenn du bestätigst, wird er ausgeführt – und lässt sich bei Bedarf zurücknehmen.",
       punkte: [
         "Fragen in deinen Worten: Termine, Rechnungen, Angebote, Anfragen, Team",
         "Jede Antwort mit Links zu den Quellen und Stand der Daten",
         "Aufgaben, Erinnerungen und Nachrichten als Entwurf zum Prüfen",
-        "Gleiche Rechte wie du – Macher sieht nicht mehr als du",
+        "Gleiche Rechte wie du – Lotte sieht nicht mehr als du",
       ],
     },
     detail: {
-      kopf: "Macher fragen · Vorschlag",
+      kopf: "Frag Lotte · Vorschlag",
       titel: "Aufgabe für Jonas: Leiter prüfen",
       sub: "aus „Leg eine Aufgabe für Jonas an: Leiter prüfen bis Freitag“",
       status: { text: "Entwurf", ton: "sand" },
@@ -1117,7 +1117,7 @@ export const teil3 = {
         { label: "Ausgeführt", wert: "noch nicht" },
         { label: "Nächster Schritt", wert: "Aufgabe anlegen", hervor: true },
       ],
-      fuss: { icon: "shield", text: "Macher hat „bis Freitag“ als Datum eingetragen. Angelegt wird erst, wenn du bestätigst." },
+      fuss: { icon: "shield", text: "Lotte hat „bis Freitag“ als Datum eingetragen. Angelegt wird erst, wenn du bestätigst." },
     },
     schritte: [
       {
@@ -1125,12 +1125,12 @@ export const teil3 = {
         text: "Über „Suchen oder fragen“ oben in Handwerk OS. Zum Beispiel: „Wer hat nächste Woche Zeit?“",
       },
       {
-        titel: "Macher antwortet",
+        titel: "Lotte antwortet",
         text: "Kurz und klar, mit einer Liste und Links zu Kunde, Auftrag oder Rechnung. Darunter steht, worauf die Antwort beruht.",
       },
       {
         titel: "Vorschlag prüfen",
-        text: "Soll etwas passieren – Aufgabe, Erinnerung, Nachricht –, legt Macher einen Entwurf an. Du kannst ihn ändern.",
+        text: "Soll etwas passieren – Aufgabe, Erinnerung, Nachricht –, legt Lotte einen Entwurf an. Du kannst ihn ändern.",
       },
       {
         titel: "Du bestätigst",
@@ -1141,7 +1141,7 @@ export const teil3 = {
       "versteht Zeitangaben wie „bis Freitag“ oder „nächste Woche“",
       "findet Kunden auch bei ähnlicher Schreibweise, etwa Müller und Mueller",
       "schätzt freie Zeit im Team aus Wochenstunden, Terminen und Urlaub",
-      "gibt eine Frage ohne Treffer in der Suche direkt an Macher weiter",
+      "gibt eine Frage ohne Treffer in der Suche direkt an Lotte weiter",
       "fragt vor jeder kritischen Aktion nach deiner Bestätigung",
       "schreibt jede ausgeführte Aktion in den Verlauf des Auftrags oder Kunden",
     ],
@@ -1157,7 +1157,7 @@ export const teil3 = {
         "Pläne mit mehreren Schritten prüfen und bestätigen",
       ],
       handyVisual: {
-        kopf: "Macher fragen",
+        kopf: "Frag Lotte",
         titel: "„Wo ist Familie Hoffmann?“",
         sub: "Antwort aus deinen Daten · Stand 7:42 Uhr",
         tags: [
@@ -1179,28 +1179,28 @@ export const teil3 = {
     ],
     kunde: {
       slug: "elektro-brandt",
-      text: "Beispiel: Wie ein Elektrobetrieb Fragen zum Tag an Macher stellt, statt das Büro anzurufen.",
+      text: "Beispiel: Wie ein Elektrobetrieb Fragen zum Tag an Lotte stellt, statt das Büro anzurufen.",
     },
     faq: [
       {
-        frage: "Macht Macher Dinge, ohne zu fragen?",
+        frage: "Macht Lotte Dinge, ohne zu fragen?",
         antwort:
-          "Nein. Fragen beantwortet er sofort. Alles, was etwas ändert, legt er als Vorschlag an. Was nach außen geht – Nachricht, Rechnung, Angebot – oder Geld und Personal betrifft, braucht immer deine Bestätigung.",
+          "Nein. Fragen beantwortet sie sofort. Alles, was etwas ändert, legt sie als Vorschlag an. Was nach außen geht – Nachricht, Rechnung, Angebot – oder Geld und Personal betrifft, braucht immer deine Bestätigung.",
       },
       {
-        frage: "Sieht Macher mehr als ich?",
+        frage: "Sieht Lotte mehr als ich?",
         antwort:
-          "Nein. Macher hat dieselben Rechte wie die Person, die fragt. Ein Monteur ohne Recht für Geld bekommt auch von Macher keine Preise oder offenen Beträge.",
+          "Nein. Lotte hat dieselben Rechte wie die Person, die fragt. Ein Monteur ohne Recht für Geld bekommt auch von Lotte keine Preise oder offenen Beträge.",
       },
       {
         frage: "Woher kommen die Antworten?",
         antwort:
-          "Aus deinen Daten in Handwerk OS. Jede Antwort zeigt Links zu den Quellen und den Stand der Daten. Findet Macher nichts, sagt er das – und erfindet keine Antwort.",
+          "Aus deinen Daten in Handwerk OS. Jede Antwort zeigt Links zu den Quellen und den Stand der Daten. Findet Lotte nichts, sagt sie das – und erfindet keine Antwort.",
       },
       {
         frage: "Was passiert mit meinen Daten, wenn ein KI-Modell hilft?",
         antwort:
-          "Die meisten Fragen beantwortet Macher mit festen Regeln, ganz ohne Modell. Hilft ein Modell, bekommt es nur das, was für die eine Aufgabe nötig ist. Jede Frage und jede Aktion wird protokolliert.",
+          "Die meisten Fragen beantwortet Lotte mit festen Regeln, ganz ohne Modell. Hilft ein Modell, bekommt es nur das, was für die eine Aufgabe nötig ist. Jede Frage und jede Aktion wird protokolliert.",
       },
     ],
     verwandt: ["automatisch-erledigen", "mein-tag", "aufgaben"],

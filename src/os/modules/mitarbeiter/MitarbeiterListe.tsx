@@ -47,7 +47,7 @@ export function MitarbeiterListe() {
           ) : (
             <Leer
               titel="Noch niemand im Team"
-              text="Lege deine Mitarbeiter an. Macher erstellt dazu automatisch einen Einarbeitungsplan."
+              text="Lege deine Mitarbeiter an. Lotte erstellt dazu automatisch einen Einarbeitungsplan."
               icon="team"
               aktion={kannAnlegen ? <Button to="/betrieb/mitarbeiter/neu">Mitarbeiter anlegen</Button> : undefined}
             />

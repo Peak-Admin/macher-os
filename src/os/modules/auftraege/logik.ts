@@ -220,7 +220,7 @@ export function naechsterSchritt(a: Auftrag, k: SchrittKontext): Schritt | undef
           };
         return {
           label: 'Rechnung ansehen',
-          text: 'Die Rechnung ist raus. Sobald sie bezahlt ist, schließt Macher den Auftrag automatisch.',
+          text: 'Die Rechnung ist raus. Sobald sie bezahlt ist, schließt Lotte den Auftrag automatisch.',
           icon: 'euro',
           pfad: p,
           phase: p ? undefined : 'erledigt',

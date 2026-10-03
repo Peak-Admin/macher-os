@@ -107,7 +107,7 @@ export function RechnungenListe() {
           ) : (
             <Leer
               titel="Keine offenen Rechnungen"
-              text="Schreib eine Rechnung direkt aus dem Auftrag – Positionen, Material und Zeiten übernimmt Macher."
+              text="Schreib eine Rechnung direkt aus dem Auftrag – Positionen, Material und Zeiten übernimmt Lotte."
               aktion={<Button to="/betrieb/rechnungen/neu">Rechnung schreiben</Button>}
               icon="euro"
             />

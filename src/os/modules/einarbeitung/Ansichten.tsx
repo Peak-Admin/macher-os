@@ -60,7 +60,7 @@ export function EinarbeitungenSeite() {
         leer={
           <Leer
             titel={filter === 'laufend' ? 'Gerade wird niemand eingearbeitet' : 'Noch keine abgeschlossen'}
-            text="Legst du einen neuen Mitarbeiter an, erstellt Macher den Einarbeitungsplan automatisch."
+            text="Legst du einen neuen Mitarbeiter an, erstellt Lotte den Einarbeitungsplan automatisch."
             icon="team"
             aktion={buero ? <Button to="/betrieb/mitarbeiter/neu">Mitarbeiter anlegen</Button> : undefined}
           />
@@ -215,7 +215,7 @@ export function EinarbeitungDetail() {
         seite={
           <Karte titel={m ? <Person m={m} groesse={32} /> : 'Mitarbeiter'} kompakt>
             <Stapel abstand={8}>
-              <Meta>Unterweisungs-Schritte hakt Macher selbst ab, sobald {m?.vorname ?? 'der Mitarbeiter'} am Handy bestätigt.</Meta>
+              <Meta>Unterweisungs-Schritte hakt Lotte selbst ab, sobald {m?.vorname ?? 'der Mitarbeiter'} am Handy bestätigt.</Meta>
               {m && (
                 <Button klein variante="tertiaer" to={`/betrieb/mitarbeiter/${m.id}`}>
                   Zum Mitarbeiter

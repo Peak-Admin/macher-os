@@ -145,7 +145,7 @@ export function BetriebsdatenDialog({ offen, onSchliessen }: { offen: boolean; o
           </FormRaster>
           <Schalter
             label="Kleinunternehmer (§ 19 UStG)"
-            beschreibung="Dann weist Macher keine Umsatzsteuer aus und setzt den Pflichthinweis."
+            beschreibung="Dann weist Lotte keine Umsatzsteuer aus und setzt den Pflichthinweis."
             checked={f.kleinunternehmer}
             onChange={(v) => setF({ ...f, kleinunternehmer: v })}
           />

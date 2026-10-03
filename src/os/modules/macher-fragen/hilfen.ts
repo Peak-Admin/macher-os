@@ -1,5 +1,5 @@
 /**
- * Gemeinsame Hilfen von „Macher fragen“: Namen, Kunden und Aufträge im Satz finden, Pläne bauen.
+ * Gemeinsame Hilfen von „Frag Lotte“: Namen, Kunden und Aufträge im Satz finden, Pläne bauen.
  * Eigene Datei, damit `assistent.ts` und `aktionen.ts` sie ohne Ringabhängigkeit nutzen.
  */
 import { db } from '@core/db';
@@ -84,7 +84,7 @@ export function schritte(liste: Omit<PlanSchritt, 'id'>[]): PlanSchritt[] {
 }
 
 export function planAntwort(absicht: string, text: string, plan: Plan, grundlage: string): Antwort {
-  if (!plan.schritte.length) return { absicht: 'aktion-fehlt', text: 'Das kann Macher in deinem Betrieb noch nicht ausführen.' };
+  if (!plan.schritte.length) return { absicht: 'aktion-fehlt', text: 'Das kann Lotte in deinem Betrieb noch nicht ausführen.' };
   return {
     absicht,
     text,

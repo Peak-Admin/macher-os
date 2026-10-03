@@ -132,7 +132,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
         { zeit: "13:30", titel: "DGUV V3 Prüfung Büro", detail: "Ali · 48 Geräte", farbe: "moss" },
       ],
       hinweis: {
-        titel: "Macher hat gesehen:",
+        titel: "Lotte hat gesehen:",
         text: "Bei 12 Kunden ist der E-Check im November fällig. Erinnerungen sind vorbereitet.",
       },
     },
@@ -183,7 +183,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { funktion: "telefon", text: "Störungsanrufe werden aufgenommen – mit Adresse, Fehlerbild und Dringlichkeit." },
       { funktion: "einsatzplanung", text: "Kundendienst passt in die Lücken zwischen den Baustellen." },
       { funktion: "dokumentation", text: "Messwerte, Fotos vom Verteiler und Unterschrift direkt im Auftrag." },
-      { funktion: "qualifikationen", text: "Macher plant nur Leute ein, die die Arbeit auch machen dürfen." },
+      { funktion: "qualifikationen", text: "Lotte plant nur Leute ein, die die Arbeit auch machen dürfen." },
       { funktion: "material", text: "Stückliste aus dem Angebot, abgeglichen mit Lager und Fahrzeug." },
       { funktion: "rechnungen", text: "Aus Regiebericht und Material wird die Rechnung – am selben Tag." },
     ],
@@ -221,8 +221,8 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     planung: {
       intro: "Baustelle, Kundendienst und Prüfungen laufen gleichzeitig. Handwerk OS hält die Fäden zusammen.",
-      mitarbeiter: "Wer ist Elektrofachkraft, wer Azubi, wer darf prüfen? Macher plant nach Qualifikation und Urlaub.",
-      material: "Leitungen, Schutzschalter, Zählerplätze: Macher prüft vor dem Termin, ob alles im Lager oder im Wagen ist.",
+      mitarbeiter: "Wer ist Elektrofachkraft, wer Azubi, wer darf prüfen? Lotte plant nach Qualifikation und Urlaub.",
+      material: "Leitungen, Schutzschalter, Zählerplätze: Lotte prüft vor dem Termin, ob alles im Lager oder im Wagen ist.",
       termine: "Netzbetreiber-Termine, Prüffristen und Kundendienst stehen in einem Kalender – nicht in drei.",
       vorschlag: "Störung bei Bäckerei Krüger → Tom, heute 10:00. Er ist 8 Minuten entfernt und hat FI-Schalter im Wagen.",
     },
@@ -273,12 +273,12 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Berücksichtigt die Planung, wer welche Arbeiten machen darf?",
         antwort:
-          "Ja. Du hinterlegst Qualifikationen wie Elektrofachkraft oder befähigte Person. Macher plant dann nur passende Mitarbeiter ein und warnt, wenn eine Unterweisung abläuft.",
+          "Ja. Du hinterlegst Qualifikationen wie Elektrofachkraft oder befähigte Person. Lotte plant dann nur passende Mitarbeiter ein und warnt, wenn eine Unterweisung abläuft.",
       },
       {
         frage: "Passt Handwerk OS zu Kundendienst und Baustelle gleichzeitig?",
         antwort:
-          "Genau dafür ist es gemacht. Lange Baustellen stehen im Plan, Störungen kommen dazwischen. Macher zeigt dir, wer in der Nähe ist und das Material dabei hat.",
+          "Genau dafür ist es gemacht. Lange Baustellen stehen im Plan, Störungen kommen dazwischen. Lotte zeigt dir, wer in der Nähe ist und das Material dabei hat.",
       },
       {
         frage: "Können meine Monteure ohne Netz im Keller arbeiten?",
@@ -320,7 +320,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
         { zeit: "13:00", titel: "Badsanierung Vorwandmontage", detail: "Lena, Jonas · Fam. Yıldız", farbe: "sky" },
       ],
       hinweis: {
-        titel: "Macher hat gesehen:",
+        titel: "Lotte hat gesehen:",
         text: "38 Wartungen sind im Oktober fällig. Terminvorschläge nach Region sind fertig.",
       },
     },
@@ -370,8 +370,8 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     hilfe: [
       { funktion: "telefon", text: "Notdienst-Anrufe werden aufgenommen und an die Bereitschaft weitergegeben." },
       { funktion: "kalender", text: "Fällige Wartungen bekommen automatisch Terminvorschläge – nach Region sortiert." },
-      { funktion: "einsatzplanung", text: "Notdienst, Wartung und Baustelle in einem Plan. Macher findet den nächsten freien Monteur." },
-      { funktion: "lager", text: "Ersatzteile im Lager und im Fahrzeug – Macher prüft vor dem Termin, ob das Teil da ist." },
+      { funktion: "einsatzplanung", text: "Notdienst, Wartung und Baustelle in einem Plan. Lotte findet den nächsten freien Monteur." },
+      { funktion: "lager", text: "Ersatzteile im Lager und im Fahrzeug – Lotte prüft vor dem Termin, ob das Teil da ist." },
       { funktion: "dokumentation", text: "Wartungsprotokoll, Druckprobe und Fotos direkt im Auftrag." },
       { funktion: "rechnungen", text: "Wartungspauschale, Material und Anfahrt landen ohne Abtippen auf der Rechnung." },
     ],
@@ -409,8 +409,8 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     planung: {
       intro: "Herbst ist Wartungszeit, Winter ist Notdienstzeit. Handwerk OS sorgt dafür, dass beides gleichzeitig klappt.",
-      mitarbeiter: "Bereitschaft, Urlaub, Kältemittel-Sachkunde: Macher plant nur ein, wer frei ist und die Arbeit machen darf.",
-      material: "Ersatzteile, Thermen, Sanitärobjekte mit Lieferzeit: Macher meldet sich, bevor etwas fehlt.",
+      mitarbeiter: "Bereitschaft, Urlaub, Kältemittel-Sachkunde: Lotte plant nur ein, wer frei ist und die Arbeit machen darf.",
+      material: "Ersatzteile, Thermen, Sanitärobjekte mit Lieferzeit: Lotte meldet sich, bevor etwas fehlt.",
       termine: "Wartungen kommen als Vorschlag nach Region. Du bestätigst – der Kunde bekommt den Termin.",
       vorschlag: "Wartungen Südstadt → Kevin, Dienstag 7:30 bis 15:00. Fünf Kunden, kurze Wege, alle Teile im Lager.",
     },
@@ -471,7 +471,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Weiß Handwerk OS, wer an Wärmepumpen arbeiten darf?",
         antwort:
-          "Du hinterlegst Qualifikationen wie die Kältemittel-Sachkunde. Macher plant passende Monteure ein und erinnert dich, bevor ein Nachweis abläuft.",
+          "Du hinterlegst Qualifikationen wie die Kältemittel-Sachkunde. Lotte plant passende Monteure ein und erinnert dich, bevor ein Nachweis abläuft.",
       },
     ],
   },
@@ -504,7 +504,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
         { zeit: "15:00", titel: "Aufmaß Treppenhaus", detail: "Chef · Lindenallee 8", farbe: "signal" },
       ],
       hinweis: {
-        titel: "Macher hat gesehen:",
+        titel: "Lotte hat gesehen:",
         text: "Donnerstag ist Regen gemeldet. Vorschlag: Kolonne Jan zieht die Innenarbeiten bei Fam. Wolf vor.",
       },
     },
@@ -556,7 +556,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       { funktion: "angebote", text: "Aus dem Aufmaß wird das Angebot. Oft noch am selben Tag." },
       { funktion: "einsatzplanung", text: "Kolonnen nach Baustelle und Wetter planen – mit Vorschlag zum Umplanen." },
       { funktion: "dokumentation", text: "Vorher-nachher-Fotos, Farbtöne und Mängel direkt am Auftrag." },
-      { funktion: "material", text: "Farbe, Spachtel, Abdeckmaterial: Macher rechnet den Bedarf aus der Fläche." },
+      { funktion: "material", text: "Farbe, Spachtel, Abdeckmaterial: Lotte rechnet den Bedarf aus der Fläche." },
       { funktion: "rechnungen", text: "Rechnung nach Abnahme – mit Fotos für die Hausverwaltung." },
     ],
     eingerichtet: {
@@ -593,8 +593,8 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     planung: {
       intro: "Mehrere Kolonnen, viele Baustellen, wechselndes Wetter. Handwerk OS behält den Überblick.",
-      mitarbeiter: "Wer ist mit wem unterwegs? Wer darf auf die Hubarbeitsbühne? Macher plant Kolonnen nach Können und Urlaub.",
-      material: "Macher rechnet aus der Fläche, wie viel Farbe gebraucht wird, und erinnert an die Bestellung.",
+      mitarbeiter: "Wer ist mit wem unterwegs? Wer darf auf die Hubarbeitsbühne? Lotte plant Kolonnen nach Können und Urlaub.",
+      material: "Lotte rechnet aus der Fläche, wie viel Farbe gebraucht wird, und erinnert an die Bestellung.",
       termine: "Fassaden nach Wetter, Wohnungen nach Frist der Verwaltung, Aufmaße dazwischen.",
       vorschlag: "Regen am Donnerstag → Kolonne Jan zieht Innenarbeiten bei Fam. Wolf vor. Fassade rutscht auf Montag.",
     },
@@ -640,7 +640,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Wie hilft Handwerk OS bei der Wetterplanung?",
         antwort:
-          "Außenarbeiten markierst du als wetterabhängig. Ist Regen oder Frost gemeldet, schlägt Macher vor, welche Innenarbeiten die Kolonne vorziehen kann.",
+          "Außenarbeiten markierst du als wetterabhängig. Ist Regen oder Frost gemeldet, schlägt Lotte vor, welche Innenarbeiten die Kolonne vorziehen kann.",
       },
       {
         frage: "Kann ich Hausverwaltungen Fotos und Nachweise schicken?",
@@ -681,7 +681,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
         { zeit: "14:00", titel: "Silikonfugen erneuern", detail: "Dennis · Fr. Lehmann", farbe: "signal" },
       ],
       hinweis: {
-        titel: "Macher hat gesehen:",
+        titel: "Lotte hat gesehen:",
         text: "Die Großformat-Fliesen für Bad Yıldız kommen erst Freitag. Vorschlag: Abdichtung Mittwoch, Verlegen Montag.",
       },
     },
@@ -731,7 +731,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     hilfe: [
       { funktion: "aufmass", text: "Wand- und Bodenflächen mit Nischen und Laibungen erfassen – Verschnitt inklusive." },
       { funktion: "kalkulation", text: "Fliese, Kleber, Abdichtung, Fugenmasse und Arbeitszeit sauber kalkulieren." },
-      { funktion: "einkauf", text: "Bestellungen mit Liefertermin. Macher meldet sich, wenn es knapp wird." },
+      { funktion: "einkauf", text: "Bestellungen mit Liefertermin. Lotte meldet sich, wenn es knapp wird." },
       { funktion: "einsatzplanung", text: "Termine hängen an den Vorarbeiten. Verschiebt sich etwas, siehst du die Folgen sofort." },
       { funktion: "dokumentation", text: "Abdichtung, Dichtband und Untergrund mit Fotos – bevor alles zu ist." },
       { funktion: "rechnungen", text: "Abschläge im Neubau, schnelle Rechnungen bei kleinen Aufträgen." },
@@ -770,8 +770,8 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     planung: {
       intro: "Fliesenleger kommen selten zuerst. Handwerk OS zeigt dir, wann du wirklich loslegen kannst.",
-      mitarbeiter: "Wer kann Großformat, wer Naturstein? Macher plant nach Können – und Großformat immer zu zweit.",
-      material: "Fliesen, Kleber, Abdichtung: Macher prüft Liefertermine gegen den Baustellenstart.",
+      mitarbeiter: "Wer kann Großformat, wer Naturstein? Lotte plant nach Können – und Großformat immer zu zweit.",
+      material: "Fliesen, Kleber, Abdichtung: Lotte prüft Liefertermine gegen den Baustellenstart.",
       termine: "Vorarbeiten von Installateur und Estrich stehen im Plan. Verschiebt sich etwas, rutscht deine Planung mit.",
       vorschlag: "Fliesen für Bad Yıldız kommen Freitag → Abdichtung Mittwoch, Verlegen ab Montag mit Marco und Dennis.",
     },
@@ -812,7 +812,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Rechnet Handwerk OS den Verschnitt mit ein?",
         antwort:
-          "Ja. Du legst pro Fliese und Verlegeart einen Zuschlag fest. Macher rechnet ihn aus dem Aufmaß mit in Menge und Angebot.",
+          "Ja. Du legst pro Fliese und Verlegeart einen Zuschlag fest. Lotte rechnet ihn aus dem Aufmaß mit in Menge und Angebot.",
       },
       {
         frage: "Wie dokumentiere ich die Abdichtung?",
@@ -861,7 +861,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
         { zeit: "14:00", titel: "Aufmaß Innentüren", detail: "Chef · Altbau Bergstr.", farbe: "moss" },
       ],
       hinweis: {
-        titel: "Macher hat gesehen:",
+        titel: "Lotte hat gesehen:",
         text: "Die Scharniere für Auftrag Krause sind noch nicht bestellt. Montage ist in 9 Tagen.",
       },
     },
@@ -950,9 +950,9 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     planung: {
       intro: "Bei dir gibt es zwei Pläne: Werkstatt und Montage. Handwerk OS macht einen daraus.",
-      mitarbeiter: "Wer kann an die CNC, wer montiert Fenster? Macher plant nach Können und Urlaub.",
-      material: "Platten, Kanten, Beschläge: Macher prüft Liefertermine gegen den Fertigungs- und Montagetag.",
-      termine: "Montage erst, wenn die Baustelle bereit ist. Macher fragt vorher beim Kunden nach.",
+      mitarbeiter: "Wer kann an die CNC, wer montiert Fenster? Lotte plant nach Können und Urlaub.",
+      material: "Platten, Kanten, Beschläge: Lotte prüft Liefertermine gegen den Fertigungs- und Montagetag.",
+      termine: "Montage erst, wenn die Baustelle bereit ist. Lotte fragt vorher beim Kunden nach.",
       vorschlag: "Zuschnitt Krause Montag, Fertigung Di–Mi, Montage Freitag mit Paul und Erik. Scharniere jetzt bestellen.",
     },
     mobil: {
@@ -1006,7 +1006,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Kann ich Maschinen wie die CNC einplanen?",
         antwort:
-          "Ja. Maschinen legst du wie Werkzeuge an und planst sie mit ein. Macher warnt, wenn zwei Aufträge die gleiche Maschine zur gleichen Zeit brauchen.",
+          "Ja. Maschinen legst du wie Werkzeuge an und planst sie mit ein. Lotte warnt, wenn zwei Aufträge die gleiche Maschine zur gleichen Zeit brauchen.",
       },
     ],
   },
@@ -1038,7 +1038,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
         { zeit: "13:00", titel: "Flachdach-Wartung", detail: "Ole · Gewerbehalle Nord", farbe: "moss" },
       ],
       hinweis: {
-        titel: "Macher hat gesehen:",
+        titel: "Lotte hat gesehen:",
         text: "Für Donnerstag ist Sturm gemeldet. Vorschlag: Neueindeckung sichern, Kolonne in die Halle zum Vorbereiten.",
       },
     },
@@ -1127,8 +1127,8 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     planung: {
       intro: "Auf dem Dach zählt, wer sicher arbeiten darf – und ob das Wetter mitspielt.",
-      mitarbeiter: "Unterweisung abgelaufen? Dann plant Macher den Kollegen nicht aufs Dach und sagt dir Bescheid.",
-      material: "Ziegel, Bahnen, Dämmung: Macher stimmt Lieferung, Kran und Gerüst auf den Baustart ab.",
+      mitarbeiter: "Unterweisung abgelaufen? Dann plant Lotte den Kollegen nicht aufs Dach und sagt dir Bescheid.",
+      material: "Ziegel, Bahnen, Dämmung: Lotte stimmt Lieferung, Kran und Gerüst auf den Baustart ab.",
       termine: "Außenarbeiten sind wetterabhängig markiert. Bei Sturm kommt ein Vorschlag zum Umplanen.",
       vorschlag: "Sturm am Donnerstag → Neueindeckung Mittwoch sichern, Donnerstag Halle: Material für Schulz vorbereiten.",
     },
@@ -1170,7 +1170,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Wie hilft Handwerk OS bei Wetter und Sturm?",
         antwort:
-          "Außenarbeiten markierst du als wetterabhängig. Ist Regen, Sturm oder Frost gemeldet, schlägt Macher vor, welche Arbeiten sich vorziehen lassen. Du entscheidest.",
+          "Außenarbeiten markierst du als wetterabhängig. Ist Regen, Sturm oder Frost gemeldet, schlägt Lotte vor, welche Arbeiten sich vorziehen lassen. Du entscheidest.",
       },
       {
         frage: "Kann ich Schäden für die Versicherung dokumentieren?",
@@ -1180,7 +1180,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Behält Handwerk OS die Unterweisungen im Blick?",
         antwort:
-          "Ja. Du hinterlegst Unterweisungen und Prüfungen mit Datum. Macher erinnert rechtzeitig und plant niemanden ein, dessen Nachweis abgelaufen ist.",
+          "Ja. Du hinterlegst Unterweisungen und Prüfungen mit Datum. Lotte erinnert rechtzeitig und plant niemanden ein, dessen Nachweis abgelaufen ist.",
       },
       {
         frage: "Was passiert, wenn nach einem Sturm viele Anrufe kommen?",
@@ -1218,7 +1218,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
         { zeit: "14:00", titel: "Wanddurchbruch Altbau", detail: "Kolonne Piotr · mit Abstützung", farbe: "moss" },
       ],
       hinweis: {
-        titel: "Macher hat gesehen:",
+        titel: "Lotte hat gesehen:",
         text: "Das Erdgeschoss bei Schmidt ist fertig. Die zweite Abschlagsrechnung kann raus.",
       },
     },
@@ -1307,8 +1307,8 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     planung: {
       intro: "Mehrere Baustellen, Kolonnen, Geräte und Lieferungen: Handwerk OS zeigt, was wo gebraucht wird.",
-      mitarbeiter: "Wer fährt den Kran, wer den Bagger? Macher plant Kolonnen nach Können und Urlaub.",
-      material: "Beton, Steine, Stahl: Macher erinnert an Bestellungen und bestätigt Liefertermine.",
+      mitarbeiter: "Wer fährt den Kran, wer den Bagger? Lotte plant Kolonnen nach Können und Urlaub.",
+      material: "Beton, Steine, Stahl: Lotte erinnert an Bestellungen und bestätigt Liefertermine.",
       termine: "Bauabschnitte nacheinander geplant. Verschiebt sich einer, rutschen die anderen mit.",
       vorschlag: "Decke EG Schmidt Mittwoch betonieren → Pumpe und 12 m³ bestellen, Frost erst ab nächster Woche gemeldet.",
     },
@@ -1364,7 +1364,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Verwaltet Handwerk OS auch Geräte und Maschinen?",
         antwort:
-          "Ja. Bagger, Rüttelplatte oder Kran bekommen Standort und Prüffristen. Macher erinnert rechtzeitig und zeigt, wo welches Gerät gerade ist.",
+          "Ja. Bagger, Rüttelplatte oder Kran bekommen Standort und Prüffristen. Lotte erinnert rechtzeitig und zeigt, wo welches Gerät gerade ist.",
       },
     ],
   },
@@ -1397,7 +1397,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
         { zeit: "15:30", titel: "Pflanzen anliefern", detail: "Baumschule · 40 Stück", farbe: "signal" },
       ],
       hinweis: {
-        titel: "Macher hat gesehen:",
+        titel: "Lotte hat gesehen:",
         text: "Der Minibagger muss nach 500 Stunden zur Wartung. Nächste freie Lücke: Freitag.",
       },
     },
@@ -1486,9 +1486,9 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
     ],
     planung: {
       intro: "Saisonbetrieb heißt: im Frühjahr alles auf einmal. Handwerk OS verteilt die Arbeit, bevor sie dich erschlägt.",
-      mitarbeiter: "Wer darf mit der Motorsäge arbeiten, wer Pflanzenschutz ausbringen? Macher plant nach Nachweis.",
+      mitarbeiter: "Wer darf mit der Motorsäge arbeiten, wer Pflanzenschutz ausbringen? Lotte plant nach Nachweis.",
       material: "Pflanzen, Splitt, Pflaster: Lieferungen werden auf den Tag der Pflanzung oder des Einbaus gelegt.",
-      termine: "Pflegegänge stehen nach Vertrag im Plan. Bei Regen schlägt Macher Ausweichtermine vor.",
+      termine: "Pflegegänge stehen nach Vertrag im Plan. Bei Regen schlägt Lotte Ausweichtermine vor.",
       vorschlag: "Pflegegänge Nordstadt Dienstag → Jana und Max, 6 Objekte, Anhänger mit Mäher. Rasen Krämer erst nach dem Regen.",
     },
     mobil: {
@@ -1528,7 +1528,7 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Kann ich Pflegeverträge in Handwerk OS abbilden?",
         antwort:
-          "Ja. Du legst Leistungen und Intervalle fest – zum Beispiel Rasen alle zwei Wochen, Hecke zweimal im Jahr. Macher plant die Pflegegänge ein und stellt die Rechnung.",
+          "Ja. Du legst Leistungen und Intervalle fest – zum Beispiel Rasen alle zwei Wochen, Hecke zweimal im Jahr. Lotte plant die Pflegegänge ein und stellt die Rechnung.",
       },
       {
         frage: "Wie dokumentiere ich den Winterdienst?",
@@ -1538,12 +1538,12 @@ export const topGewerkInhalte: Record<TopGewerkSlug, TopGewerkInhalt> = {
       {
         frage: "Behält Handwerk OS die Wartung meiner Maschinen im Blick?",
         antwort:
-          "Ja. Du trägst Betriebsstunden oder Wartungsintervalle ein. Macher erinnert dich rechtzeitig und plant die Wartung in eine ruhige Lücke.",
+          "Ja. Du trägst Betriebsstunden oder Wartungsintervalle ein. Lotte erinnert dich rechtzeitig und plant die Wartung in eine ruhige Lücke.",
       },
       {
         frage: "Was passiert, wenn es regnet?",
         antwort:
-          "Arbeiten, die vom Wetter abhängen, sind markiert. Bei Regen schlägt Macher vor, was sich verschieben lässt und was die Kolonne stattdessen machen kann.",
+          "Arbeiten, die vom Wetter abhängen, sind markiert. Bei Regen schlägt Lotte vor, was sich verschieben lässt und was die Kolonne stattdessen machen kann.",
       },
     ],
   },
@@ -1585,7 +1585,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       { titel: "Anlagen statt nur Kunden", text: "PV-Anlage, Speicher, Netzwerk oder Blitzschutz bekommen eigene Einträge mit Daten und Verlauf." },
       { titel: "Prüfungen mit Frist", text: "Wiederkehrende Prüfungen und Wartungen erinnern sich selbst." },
       { titel: "Netzbetreiber-Schritte", text: "Anmeldung, Zählersetzung und Inbetriebnahme als feste Schritte im Auftrag." },
-      { titel: "Qualifikationen", text: "Elektrofachkraft, Arbeiten auf dem Dach, Prüfberechtigungen – Macher plant passend." },
+      { titel: "Qualifikationen", text: "Elektrofachkraft, Arbeiten auf dem Dach, Prüfberechtigungen – Lotte plant passend." },
       { titel: "Protokolle", text: "Inbetriebnahme- und Prüfprotokolle nach deiner Vorlage, direkt vom Handy." },
     ],
     funktionen: ["auftraege", "einsatzplanung", "qualifikationen", "dokumentation", "material", "rechnungen"],
@@ -1643,7 +1643,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     einrichtung: [
       { titel: "Anlagen mit Verlauf", text: "Jede Anlage mit Typ, Kältemittel, Füllmenge und allen Wartungen." },
-      { titel: "Wartungsverträge", text: "Intervalle hinterlegen – Macher schlägt Termine vor und rechnet ab." },
+      { titel: "Wartungsverträge", text: "Intervalle hinterlegen – Lotte schlägt Termine vor und rechnet ab." },
       { titel: "Dichtheitsprüfungen", text: "Prüfintervalle für Kälteanlagen als Frist mit Erinnerung." },
       { titel: "Qualifikationen", text: "Kältemittel-Sachkunde, Löt- und Schweißnachweise, Herstellerschulungen." },
       { titel: "Protokolle", text: "Wartungs-, Dichtheits- und Inbetriebnahmeprotokolle vom Handy." },
@@ -1842,7 +1842,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Wie hilft Handwerk OS bei der Sicherheit in der Höhe?",
         antwort:
-          "Unterweisungen und Prüfungen bekommen ein Ablaufdatum. Macher erinnert rechtzeitig und plant niemanden für Arbeiten in der Höhe ein, dessen Nachweis abgelaufen ist.",
+          "Unterweisungen und Prüfungen bekommen ein Ablaufdatum. Lotte erinnert rechtzeitig und plant niemanden für Arbeiten in der Höhe ein, dessen Nachweis abgelaufen ist.",
       },
       {
         frage: "Gibt es eine eigene Seite für Dachdecker?",
@@ -1897,7 +1897,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Kann ich schwere Geräte mit einplanen?",
         antwort:
-          "Ja. Bagger, Walzen oder Bohrgeräte planst du wie Mitarbeiter ein. Macher zeigt, wo jedes Gerät steht und wann die nächste Prüfung fällig ist.",
+          "Ja. Bagger, Walzen oder Bohrgeräte planst du wie Mitarbeiter ein. Lotte zeigt, wo jedes Gerät steht und wann die nächste Prüfung fällig ist.",
       },
       {
         frage: "Passt Handwerk OS auch für Steinmetze?",
@@ -1957,7 +1957,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Behält Handwerk OS Schweißerprüfungen im Blick?",
         antwort:
-          "Ja. Du hinterlegst Prüfungen mit Ablaufdatum. Macher erinnert rechtzeitig und plant nur Mitarbeiter mit gültigem Nachweis für die Arbeit ein.",
+          "Ja. Du hinterlegst Prüfungen mit Ablaufdatum. Lotte erinnert rechtzeitig und plant nur Mitarbeiter mit gültigem Nachweis für die Arbeit ein.",
       },
       {
         frage: "Kann ich Tor- und Türwartungen planen?",
@@ -2020,7 +2020,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       },
       {
         frage: "Können Kunden selbst Termine buchen?",
-        antwort: "Ja. Du gibst Zeiten für Inspektion oder Reifenwechsel frei. Kunden buchen online, Macher plant Bühne und Mechaniker ein.",
+        antwort: "Ja. Du gibst Zeiten für Inspektion oder Reifenwechsel frei. Kunden buchen online, Lotte plant Bühne und Mechaniker ein.",
       },
       {
         frage: "Passt Handwerk OS auch für Landmaschinen-Werkstätten?",
@@ -2054,7 +2054,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       { art: "Baustelle", text: "Zäune, Teiche, Pools und Spielplätze über mehrere Tage gebaut." },
     ],
     einrichtung: [
-      { titel: "Pflegeverträge", text: "Leistungen und Intervalle hinterlegen – Macher plant und rechnet ab." },
+      { titel: "Pflegeverträge", text: "Leistungen und Intervalle hinterlegen – Lotte plant und rechnet ab." },
       { titel: "Saisonplanung", text: "Frühjahr, Sommer, Herbst, Winter: Arbeiten nach Saison und Wetter." },
       { titel: "Maschinen", text: "Häcksler, Hubsteiger, Mäher mit Betriebsstunden und Wartung." },
       { titel: "Qualifikationen", text: "Motorsäge, Seilklettertechnik, Pflanzenschutz, Hubarbeitsbühne." },
@@ -2071,7 +2071,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     faq: [
       {
         frage: "Kann ich Grabpflege und andere wiederkehrende Pflege abbilden?",
-        antwort: "Ja. Jede Pflege bekommt Leistungen und Intervalle. Macher plant die Termine ein, sammelt Fotos und stellt die Rechnung.",
+        antwort: "Ja. Jede Pflege bekommt Leistungen und Intervalle. Lotte plant die Termine ein, sammelt Fotos und stellt die Rechnung.",
       },
       {
         frage: "Wie plane ich Arbeiten, die vom Wetter abhängen?",
@@ -2166,7 +2166,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
     ],
     einrichtung: [
       { titel: "Aufmaß pro Öffnung", text: "Breite, Höhe, Anschlag und Fotos für jedes Fenster und jede Öffnung." },
-      { titel: "Bestellung mit Lieferzeit", text: "Macher plant die Montage erst, wenn der Liefertermin steht." },
+      { titel: "Bestellung mit Lieferzeit", text: "Lotte plant die Montage erst, wenn der Liefertermin steht." },
       { titel: "Notdienst Glasbruch", text: "Anruf aufnehmen, Notverglasung einplanen, endgültige Scheibe bestellen." },
       { titel: "Wartung", text: "Wiederkehrende Wartung für Markisen und Antriebe." },
       { titel: "Montageprotokoll", text: "Abnahme, Einweisung und Fotos vom Handy." },
@@ -2248,7 +2248,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Ist Handwerk OS nicht eigentlich für Baustellen?",
         antwort:
-          "Handwerk OS kommt vom Bau. Termine, Team, Schulungen und Büro brauchen aber alle Handwerksbetriebe. Die Arbeitsweise kommt aus der Vorlage deines Gewerks, und Macher zeigt nur, was du brauchst.",
+          "Handwerk OS kommt vom Bau. Termine, Team, Schulungen und Büro brauchen aber alle Handwerksbetriebe. Die Arbeitsweise kommt aus der Vorlage deines Gewerks, und Lotte zeigt nur, was du brauchst.",
       },
     ],
   },
@@ -2303,7 +2303,7 @@ export const clusterInhalte: Record<GewerkClusterSlug, ClusterInhalt> = {
       {
         frage: "Kann ich Hygieneschulungen im Blick behalten?",
         antwort:
-          "Ja. Belehrungen und Schulungen bekommen ein Datum. Macher erinnert rechtzeitig an die Wiederholung und zeigt, wer noch fehlt.",
+          "Ja. Belehrungen und Schulungen bekommen ein Datum. Lotte erinnert rechtzeitig an die Wiederholung und zeigt, wer noch fehlt.",
       },
       {
         frage: "Kann ich Checklisten für Temperatur und Reinigung nutzen?",
@@ -2568,7 +2568,7 @@ export const anpassungen: Anpassung[] = [
   {
     bereich: "Automationen",
     icon: "spark",
-    text: "Macher erledigt, was in deinem Gewerk immer wiederkommt.",
+    text: "Lotte erledigt, was in deinem Gewerk immer wiederkommt.",
     gewerk: "GaLaBau",
     vorher: "Pflegetermine von Hand eintragen",
     nachher: "Pflegegänge nach Vertrag eingeplant, Monatsrechnung vorbereitet",

@@ -73,7 +73,7 @@ export function KontoauszugImport() {
       <Karte>
         <Stapel>
           <p>
-            Exportiere die Umsätze aus deinem Online-Banking als CAMT.053 (XML) oder CSV und lade die Datei hier hoch. Macher erkennt Rechnungsnummer, Betrag und Kunde – auch wenn
+            Exportiere die Umsätze aus deinem Online-Banking als CAMT.053 (XML) oder CSV und lade die Datei hier hoch. Lotte erkennt Rechnungsnummer, Betrag und Kunde – auch wenn
             die Nummer verstümmelt ist.
           </p>
           <Zeile>
@@ -113,7 +113,7 @@ export function KontoauszugImport() {
       )}
 
       {stand && (
-        <Karte titel="Das hat Macher gefunden" icon="liste">
+        <Karte titel="Das hat Lotte gefunden" icon="liste">
           <Stapel>
             <Meta>
               {n('eindeutig')} eindeutig · {n('vorschlag')} zum Prüfen · {n('keine')} ohne passende Rechnung{n('doppelt') ? ` · ${n('doppelt')} schon importiert` : ''}
@@ -140,12 +140,12 @@ export function KontoauszugImport() {
                 Verwerfen
               </Button>
             </Zeile>
-            {n('vorschlag') + n('keine') > 0 && <Meta>Was nicht eindeutig ist, bucht Macher nicht selbst – du ordnest es danach mit einem Klick zu.</Meta>}
+            {n('vorschlag') + n('keine') > 0 && <Meta>Was nicht eindeutig ist, bucht Lotte nicht selbst – du ordnest es danach mit einem Klick zu.</Meta>}
           </Stapel>
         </Karte>
       )}
 
-      {!stand && !ergebnis && !offenePosten().length && <Leer titel="Keine offenen Rechnungen" text="Es gibt gerade nichts zuzuordnen. Du kannst trotzdem importieren – Macher meldet, was nicht passt." icon="check" />}
+      {!stand && !ergebnis && !offenePosten().length && <Leer titel="Keine offenen Rechnungen" text="Es gibt gerade nichts zuzuordnen. Du kannst trotzdem importieren – Lotte meldet, was nicht passt." icon="check" />}
     </Seite>
   );
 }

@@ -1,6 +1,6 @@
 /**
  * Automation „Terminstatus nachziehen“: Vergangene Termine, zu denen Zeiten erfasst sind,
- * die aber nie auf „erledigt“ gesetzt wurden, schließt Macher selbst – rückgängig machbar.
+ * die aber nie auf „erledigt“ gesetzt wurden, schließt Lotte selbst – rückgängig machbar.
  */
 import { db } from '@core/db';
 import { erledigt } from '@core/macher';
@@ -45,7 +45,7 @@ export function terminstatusNachziehen(jetzt = new Date()): number {
 export const terminstatusAutomation: Automation = {
   id: STATUS_ID,
   titel: 'Vergangene Termine abschließen',
-  beschreibung: 'Termine von gestern und früher mit erfassten Zeiten setzt Macher auf „erledigt“.',
+  beschreibung: 'Termine von gestern und früher mit erfassten Zeiten setzt Lotte auf „erledigt“.',
   standardAn: true,
   minuten: STATUS_MINUTEN,
   start: () => {

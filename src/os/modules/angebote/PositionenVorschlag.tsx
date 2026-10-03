@@ -9,7 +9,7 @@ import { Button, Meta, Stapel, Status } from '@ui/index';
 export type VorschlagQuelle = 'ki' | 'demo' | 'katalog';
 
 const HERKUNFT: Record<VorschlagQuelle, string> = {
-  ki: 'Macher hat deinen Satz mit KI gelesen. Preise aus deinem Katalog oder deinem Satz.',
+  ki: 'Lotte hat deinen Satz mit KI gelesen. Preise aus deinem Katalog oder deinem Satz.',
   demo: 'Aus deinem Satz und deinem Katalog erkannt (KI-Demo).',
   katalog: 'Aus deinem Satz und deinem Katalog erkannt.',
 };
@@ -24,7 +24,7 @@ export function PositionenVorschlag({ positionen, quelle, onUebernehmen, onVerwe
   const summe = positionen.reduce((s, p) => s + positionSumme(p), 0);
   const ohnePreis = positionen.filter((p) => !p.einzelpreis).length;
   return (
-    <div className="mm-karte mm-karte--kompakt" style={{ padding: 12 }} aria-label="Vorschlag von Macher">
+    <div className="mm-karte mm-karte--kompakt" style={{ padding: 12 }} aria-label="Vorschlag von Lotte">
       <Stapel abstand={12}>
         <div className="mm-zeile" style={{ gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
           <Status ton="neutral" icon={false}>

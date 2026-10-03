@@ -118,7 +118,7 @@ export default defineModul({
     {
       id: 'arbeitszeiten.vergessen',
       titel: 'Vergessenes Stoppen zum Terminende',
-      beschreibung: 'Läuft eine Zeit auf einem Termin über Nacht weiter, beendet Macher sie zum geplanten Terminende und markiert sie zur Prüfung.',
+      beschreibung: 'Läuft eine Zeit auf einem Termin über Nacht weiter, beendet Lotte sie zum geplanten Terminende und markiert sie zur Prüfung.',
       standardAn: true,
       minuten: 3,
       start: () => () => {},

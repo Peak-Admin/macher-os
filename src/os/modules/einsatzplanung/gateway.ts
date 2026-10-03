@@ -19,7 +19,7 @@ export const PLAN_AKTIONEN: AktionDef<{ auftragId: ID }>[] = [
     pruefe: (d, k) => (offeneEinsaetze(d.auftragId, k.jetzt).length ? undefined : 'Für diesen Auftrag sind keine weiteren Einsätze geplant.'),
     fuehreAus: (d, k) => {
       const liste = offeneEinsaetze(d.auftragId, k.jetzt);
-      for (const t of liste) db.termine.update(t.id, { status: 'abgesagt' }, { text: 'Abgesagt: Auftrag fertig (über Macher)' });
+      for (const t of liste) db.termine.update(t.id, { status: 'abgesagt' }, { text: 'Abgesagt: Auftrag fertig (über Lotte)' });
       return { bezug: { typ: 'auftraege', id: d.auftragId }, text: liste.length === 1 ? '1 Einsatz abgesagt' : `${liste.length} Einsätze abgesagt` };
     },
   },

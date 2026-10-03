@@ -5,19 +5,19 @@ export const teil8 = {
 
   "ki-buerokraft": {
     icon: "spark",
-    kurz: "Macher arbeitet im Programm mit wie eine Bürokraft: erledigt Wiederkehrendes und fragt dich nur, wenn du entscheiden musst.",
+    kurz: "Lotte arbeitet im Programm mit wie eine Bürokraft: erledigt Wiederkehrendes und fragt dich nur, wenn du entscheiden musst.",
     enthalten: ["Braucht dich", "Erledigt", "Freigaben", "Rückgängig"],
     meta: {
-      title: "KI-Bürokraft im Handwerk – Macher arbeitet mit, du entscheidest",
+      title: "KI-Bürokraft im Handwerk – Lotte arbeitet mit, du entscheidest",
       description:
-        "Macher arbeitet in Handwerk OS mit wie eine Bürokraft: erledigt Wiederkehrendes, legt Entscheidungen vorbereitet hin und fragt bei Geld, Versand an Kunden und Löschen immer nach. Gekennzeichnet und mit Rückgängig.",
+        "Lotte arbeitet in Handwerk OS mit wie eine Bürokraft: erledigt Wiederkehrendes, legt Entscheidungen vorbereitet hin und fragt bei Geld, Versand an Kunden und Löschen immer nach. Gekennzeichnet und mit Rückgängig.",
     },
     hero: {
       titel: "Deine Bürokraft sitzt schon im Programm.",
       problem:
         "Belege zuordnen, an Angebote denken, Zahlungen abhaken: Das Büro bleibt bis abends liegen. Für eine eigene Bürokraft reicht die Arbeit aber noch nicht.",
       loesung:
-        "Macher arbeitet in Handwerk OS mit. Wiederkehrendes erledigt er selbst, Entscheidungen legt er dir fertig vorbereitet hin. Geld, Versand an Kunden und Löschen gibt es nur mit deinem Okay.",
+        "Lotte arbeitet in Handwerk OS mit. Wiederkehrendes erledigt sie selbst, Entscheidungen legt sie dir fertig vorbereitet hin. Geld, Versand an Kunden und Löschen gibt es nur mit deinem Okay.",
     },
     visual: {
       bereich: "Heute",
@@ -25,7 +25,7 @@ export const teil8 = {
       untertitel: "Mittwoch, 15. Oktober",
       kennzahlen: [
         ["3", "brauchen dich"],
-        ["9", "von Macher erledigt"],
+        ["9", "von Lotte erledigt"],
         ["1", "rückgängig gemacht"],
       ],
       liste: {
@@ -39,7 +39,7 @@ export const teil8 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat erledigt:",
+        titel: "Lotte hat erledigt:",
         text: "Zahlung von Hr. Öztürk erkannt und die Rechnung auf „bezahlt“ gesetzt. Rückgängig geht mit einem Tipp.",
       },
     },
@@ -63,10 +63,10 @@ export const teil8 = {
       },
     ],
     loesung: {
-      titel: "Macher arbeitet mit. Du behältst das Sagen.",
-      text: "Macher prüft beim Öffnen und alle 30 Minuten, solange Handwerk OS offen ist, was ansteht. Kleinkram erledigt er nach festen Regeln, die du an- und abschaltest. Was eine Entscheidung braucht, landet unter „Braucht dich“ – mit fertigem Vorschlag und dem passenden Knopf. Alles, was Macher tut, steht im Verlauf mit dem Vermerk „durch Macher“.",
+      titel: "Lotte arbeitet mit. Du behältst das Sagen.",
+      text: "Lotte prüft beim Öffnen und alle 30 Minuten, solange Handwerk OS offen ist, was ansteht. Kleinkram erledigt sie nach festen Regeln, die du an- und abschaltest. Was eine Entscheidung braucht, landet unter „Braucht dich“ – mit fertigem Vorschlag und dem passenden Knopf. Alles, was Lotte tut, steht im Verlauf mit dem Vermerk „durch Lotte“.",
       punkte: [
-        "Wiederkehrendes erledigt Macher selbst: zuordnen, erinnern, Status setzen",
+        "Wiederkehrendes erledigt Lotte selbst: zuordnen, erinnern, Status setzen",
         "Entscheidungen gesammelt unter „Braucht dich“, das Wichtigste zuerst",
         "Geld, Versand an Kunden und Löschen nur nach deiner Freigabe",
         "Gekennzeichnet im Verlauf – und vieles lässt sich zurücknehmen",
@@ -78,7 +78,7 @@ export const teil8 = {
       sub: "Badsanierung · nach der Abnahme vorbereitet",
       status: { text: "wartet auf dich", ton: "signal" },
       zeilen: [
-        { label: "Vorbereitet von", wert: "Macher" },
+        { label: "Vorbereitet von", wert: "Lotte" },
         { label: "Summe", wert: "4.870,00 €" },
         { label: "Pflichtangaben", wert: "geprüft" },
         { label: "Versand", wert: "per E-Mail an den Kunden" },
@@ -86,20 +86,20 @@ export const teil8 = {
       ],
       fuss: {
         icon: "shield",
-        text: "Ohne deinen Klick geht nichts raus. Eine gesendete Rechnung lässt sich nicht zurückholen – darum fragt Macher vorher.",
+        text: "Ohne deinen Klick geht nichts raus. Eine gesendete Rechnung lässt sich nicht zurückholen – darum fragt Lotte vorher.",
       },
     },
     schritte: [
       {
-        titel: "Macher schaut nach",
-        text: "Beim Öffnen und alle 30 Minuten prüft er Fristen, Zahlungen, Angebote und Einsätze.",
+        titel: "Lotte schaut nach",
+        text: "Beim Öffnen und alle 30 Minuten prüft sie Fristen, Zahlungen, Angebote und Einsätze.",
       },
       {
-        titel: "Kleinkram erledigt er",
+        titel: "Kleinkram erledigt sie",
         text: "Anfrage zuweisen, Beleg zum Auftrag legen, Nachfassen anlegen. Du siehst es unter „Erledigt“.",
       },
       {
-        titel: "Entscheidungen legt er hin",
+        titel: "Entscheidungen legt sie hin",
         text: "Unter „Braucht dich“, das Wichtigste oben. Mit fertigem Vorschlag – oder auf morgen schieben.",
       },
       {
@@ -124,7 +124,7 @@ export const teil8 = {
       computer: [
         "Alle Regeln mit Schalter an einer Stelle",
         "Erledigt von heute, dieser Woche und 30 Tagen",
-        "Im Verlauf sehen, was Macher wann getan hat",
+        "Im Verlauf sehen, was Lotte wann getan hat",
       ],
       handyVisual: {
         kopf: "Braucht dich · 3 offen",
@@ -143,9 +143,9 @@ export const teil8 = {
       },
     },
     gewerke: [
-      { slug: "maler", text: "Viele kleine Aufträge, viele Belege: Macher legt sie zum richtigen Auftrag und denkt ans Nachfassen." },
+      { slug: "maler", text: "Viele kleine Aufträge, viele Belege: Lotte legt sie zum richtigen Auftrag und denkt ans Nachfassen." },
       { slug: "shk", text: "Wartung, Notdienst, Rechnungen: Was entschieden werden muss, steht oben – der Rest läuft mit." },
-      { slug: "gebaeude-service", text: "Viele Objekte, viele Zahlungen: Macher hakt Eingänge ab und meldet nur, was hängt." },
+      { slug: "gebaeude-service", text: "Viele Objekte, viele Zahlungen: Lotte hakt Eingänge ab und meldet nur, was hängt." },
     ],
     kunde: {
       slug: "malerei-koch",
@@ -153,24 +153,24 @@ export const teil8 = {
     },
     faq: [
       {
-        frage: "Was ist der Unterschied zu „Macher fragen“ und „Macher erledigt automatisch“?",
+        frage: "Was ist der Unterschied zu „Frag Lotte“ und „Lotte erledigt automatisch“?",
         antwort:
-          "Bei „Macher fragen“ stellst du eine Frage und Macher antwortet. „Macher erledigt automatisch“ zeigt, welche Aufgaben er übernimmt. Die KI-Bürokraft ist das Zusammenspiel im Alltag: Macher arbeitet mit, sammelt deine Entscheidungen unter „Braucht dich“ und zeigt unter „Erledigt“, was er getan hat.",
+          "Bei „Frag Lotte“ stellst du eine Frage und Lotte antwortet. „Lotte erledigt automatisch“ zeigt, welche Aufgaben sie übernimmt. Die KI-Bürokraft ist das Zusammenspiel im Alltag: Lotte arbeitet mit, sammelt deine Entscheidungen unter „Braucht dich“ und zeigt unter „Erledigt“, was sie getan hat.",
       },
       {
-        frage: "Kann Macher ohne mich Geld bewegen oder etwas an Kunden schicken?",
+        frage: "Kann Lotte ohne mich Geld bewegen oder etwas an Kunden schicken?",
         antwort:
-          "Nein. Rechnung senden, Mahnung, Nachricht an Kunden, Termin beim Kunden verschieben, bestellen und löschen brauchen immer deinen Klick. Auch einfache Einträge wie eine Aufgabe zeigt Macher dir standardmäßig erst als Vorschlag.",
+          "Nein. Rechnung senden, Mahnung, Nachricht an Kunden, Termin beim Kunden verschieben, bestellen und löschen brauchen immer deinen Klick. Auch einfache Einträge wie eine Aufgabe zeigt Lotte dir standardmäßig erst als Vorschlag.",
       },
       {
-        frage: "Sieht Macher mehr als meine Leute?",
+        frage: "Sieht Lotte mehr als meine Leute?",
         antwort:
-          "Nein. Macher hat dieselben Rechte wie die Person, die ihn gerade nutzt. Fragt ein Monteur, sieht Macher keine Preise und keine Rechnungen – genau wie der Monteur selbst.",
+          "Nein. Lotte hat dieselben Rechte wie die Person, die sie gerade nutzt. Fragt ein Monteur, sieht Lotte keine Preise und keine Rechnungen – genau wie der Monteur selbst.",
       },
       {
         frage: "Wohin gehen meine Daten, wenn KI im Spiel ist?",
         antwort:
-          "Vieles erledigt Macher mit festen Regeln, ganz ohne KI-Modell. Hilft ein Sprachmodell – etwa beim Verstehen eines Satzes oder beim Formulieren einer Nachricht –, bekommt es nur die Angaben, die es dafür braucht. Welcher Anbieter dahintersteht, steht in der Datenschutzerklärung. Vorschläge von Macher sind gekennzeichnet.",
+          "Vieles erledigt Lotte mit festen Regeln, ganz ohne KI-Modell. Hilft ein Sprachmodell – etwa beim Verstehen eines Satzes oder beim Formulieren einer Nachricht –, bekommt es nur die Angaben, die es dafür braucht. Welcher Anbieter dahintersteht, steht in der Datenschutzerklärung. Vorschläge von Lotte sind gekennzeichnet.",
       },
     ],
     verwandt: ["automatisch-erledigen", "macher-fragen", "rollen-rechte"],
@@ -180,12 +180,12 @@ export const teil8 = {
 
   "telefon-ki": {
     icon: "phone",
-    kurz: "Macher nimmt Anrufe an, fragt das Wichtige ab und trägt sie als Anfrage oder Rückruf ein. Auf Anfrage für deinen Betrieb eingerichtet.",
+    kurz: "Lotte nimmt Anrufe an, fragt das Wichtige ab und trägt sie als Anfrage oder Rückruf ein. Auf Anfrage für deinen Betrieb eingerichtet.",
     enthalten: ["Anrufe annehmen", "Anliegen abfragen", "Notfälle weitergeben"],
     meta: {
       title: "Telefonassistent mit KI für Handwerker – Anrufe annehmen lassen",
       description:
-        "Macher nimmt Anrufe an, wenn du auf der Baustelle bist: Er fragt Anliegen, Adresse und Dringlichkeit ab und legt eine Anfrage oder einen Rückruf an. Wir richten den Telefonassistenten auf Anfrage für deinen Betrieb ein.",
+        "Lotte nimmt Anrufe an, wenn du auf der Baustelle bist: Sie fragt Anliegen, Adresse und Dringlichkeit ab und legt eine Anfrage oder einen Rückruf an. Wir richten den Telefonassistenten auf Anfrage für deinen Betrieb ein.",
     },
     aufAnfrage: {
       aktion: "Telefonassistent anfragen",
@@ -198,7 +198,7 @@ export const teil8 = {
       ],
     },
     hero: {
-      titel: "Du bist auf dem Dach. Macher geht ans Telefon.",
+      titel: "Du bist auf dem Dach. Lotte geht ans Telefon.",
       problem:
         "Während du arbeitest, klingelt das Handy ins Leere. Viele Anrufer legen auf, ohne etwas zu sagen – und rufen den nächsten Betrieb an.",
       loesung:
@@ -209,12 +209,12 @@ export const teil8 = {
       titel: "Telefon & Empfang",
       untertitel: "Dienstag, 14. Oktober",
       kennzahlen: [
-        ["3", "von Macher angenommen"],
+        ["3", "von Lotte angenommen"],
         ["1", "Notfall weitergegeben"],
         ["2", "Rückrufe offen"],
       ],
       liste: {
-        ueberschrift: "Von Macher angenommen",
+        ueberschrift: "Von Lotte angenommen",
         zeilen: [
           { titel: "Rohrbruch im Keller", sub: "Fr. Sommer · 07:58 · an Bereitschaft", tag: "Notfall", ton: "signal" },
           { titel: "Dachfenster undicht", sub: "Hr. Kaya · 12:14 · Neukunde", tag: "Anfrage angelegt", ton: "moss" },
@@ -249,16 +249,16 @@ export const teil8 = {
     ],
     loesung: {
       titel: "Ein Assistent am Telefon, der direkt ins Programm schreibt.",
-      text: "Geht keiner ran, nimmt Macher den Anruf an. Er sagt gleich, dass er ein digitaler Assistent ist, und fragt Anliegen, Adresse, Dringlichkeit und Rückrufnummer ab. Das Ergebnis landet in Telefon & Empfang – als Anfrage, Rückruf oder Notiz. Genau so, wie wenn du den Anruf heute von Hand notierst. Nur ohne Abtippen.",
+      text: "Geht keiner ran, nimmt Lotte den Anruf an. Sie sagt gleich, dass sie eine digitale Assistentin ist, und fragt Anliegen, Adresse, Dringlichkeit und Rückrufnummer ab. Das Ergebnis landet in Telefon & Empfang – als Anfrage, Rückruf oder Notiz. Genau so, wie wenn du den Anruf heute von Hand notierst. Nur ohne Abtippen.",
       punkte: [
         "Anrufe annehmen, wenn du nicht rangehen kannst",
-        "Sagt offen, dass er ein digitaler Assistent ist",
+        "Sagt offen, dass sie eine digitale Assistentin ist",
         "Anfrage oder Rückruf direkt im Programm – mit Kunde und Auftrag",
         "Notfälle an deine Bereitschaft, alles andere in den Eingang",
       ],
     },
     detail: {
-      kopf: "Anruf · von Macher angenommen",
+      kopf: "Anruf · von Lotte angenommen",
       titel: "Rohrbruch im Keller",
       sub: "Eva Sommer · Ahornweg 5",
       status: { text: "Notfall", ton: "signal" },
@@ -274,11 +274,11 @@ export const teil8 = {
     schritte: [
       {
         titel: "Du legst die Regeln fest",
-        text: "Wann Macher rangeht und was bei dir als Notfall gilt, bestimmst du.",
+        text: "Wann Lotte rangeht und was bei dir als Notfall gilt, bestimmst du.",
       },
       {
-        titel: "Macher fragt nach",
-        text: "Anliegen, Adresse, Dringlichkeit, Rückrufnummer. Bekannte Anrufer erkennt er an der Nummer.",
+        titel: "Lotte fragt nach",
+        text: "Anliegen, Adresse, Dringlichkeit, Rückrufnummer. Bekannte Anrufer erkennt sie an der Nummer.",
       },
       {
         titel: "Eintrag statt Mailbox",
@@ -309,7 +309,7 @@ export const teil8 = {
         "Jeden Anruf am Kunden und Auftrag nachlesen",
       ],
       handyVisual: {
-        kopf: "Von Macher angenommen · 12:14",
+        kopf: "Von Lotte angenommen · 12:14",
         titel: "Dachfenster undicht",
         sub: "Hr. Kaya · Lindenstr. 12",
         tags: [
@@ -345,9 +345,9 @@ export const teil8 = {
           "Telefon & Empfang ist der Ort, an dem alle Anrufe landen. Ohne Assistent trägst du sie dort selbst ein. Der Telefonassistent übernimmt das, wenn keiner rangehen kann. Die Einträge sehen gleich aus.",
       },
       {
-        frage: "Was darf Macher am Telefon – und was nicht?",
+        frage: "Was darf Lotte am Telefon – und was nicht?",
         antwort:
-          "Er sagt zu Beginn, dass er ein digitaler Assistent ist, fragt nach und schreibt auf. Preise und feste Termine sagt er nicht zu. Das entscheidest du beim Rückruf.",
+          "Sie sagt zu Beginn, dass sie eine digitale Assistentin ist, fragt nach und schreibt auf. Preise und feste Termine sagt sie nicht zu. Das entscheidest du beim Rückruf.",
       },
       {
         frage: "Brauche ich dafür eine neue Telefonanlage?",
@@ -420,8 +420,8 @@ export const teil8 = {
       },
     ],
     loesung: {
-      titel: "Ein Tipp pro Schritt. Den Rest macht Macher.",
-      text: "Am Einsatz tippst du auf „Unterwegs“, „Vor Ort“, „Erledigt“ – die Zeit läuft mit. Fotos und Notizen landen beim Auftrag, an dem du gerade eingeplant bist. Material und Zusatzarbeiten erfasst du mit einem Tipp, der Kunde gibt sie per Unterschrift frei. Zum Schluss sprichst du deinen Bericht ein. Macher verteilt ihn auf Zeit, Material, Zusatzarbeit und Bericht – du bestätigst.",
+      titel: "Ein Tipp pro Schritt. Den Rest macht Lotte.",
+      text: "Am Einsatz tippst du auf „Unterwegs“, „Vor Ort“, „Erledigt“ – die Zeit läuft mit. Fotos und Notizen landen beim Auftrag, an dem du gerade eingeplant bist. Material und Zusatzarbeiten erfasst du mit einem Tipp, der Kunde gibt sie per Unterschrift frei. Zum Schluss sprichst du deinen Bericht ein. Lotte verteilt ihn auf Zeit, Material, Zusatzarbeit und Bericht – du bestätigst.",
       punkte: [
         "Zeiten über den Einsatz: Unterwegs, Vor Ort, Erledigt",
         "Fotos, Sprachnotizen und Notizen automatisch am richtigen Auftrag",
@@ -443,7 +443,7 @@ export const teil8 = {
       ],
       fuss: {
         icon: "mic",
-        text: "Aus einem gesprochenen Bericht. Macher hat ihn ohne Netz in Zeit, Material und Zusatzarbeit zerlegt.",
+        text: "Aus einem gesprochenen Bericht. Lotte hat ihn ohne Netz in Zeit, Material und Zusatzarbeit zerlegt.",
       },
     },
     schritte: [
@@ -770,7 +770,7 @@ export const teil8 = {
     ],
     loesung: {
       titel: "Eine Unterschrift für alles, was vor Ort bestätigt wird.",
-      text: "Überall, wo der Kunde etwas bestätigen soll, gibt es dasselbe Unterschriftsfeld: bei der Abnahme, bei Arbeitsberichten, Rapporten und Prüfprotokollen, bei der Freigabe von Zusatzarbeiten und auf dem Lieferschein. Was der Kunde bestätigt, steht direkt darüber. Er unterschreibt mit dem Finger und schreibt seinen Namen dazu. Macher hält Ort und Uhrzeit fest und hängt die Unterschrift an den Auftrag.",
+      text: "Überall, wo der Kunde etwas bestätigen soll, gibt es dasselbe Unterschriftsfeld: bei der Abnahme, bei Arbeitsberichten, Rapporten und Prüfprotokollen, bei der Freigabe von Zusatzarbeiten und auf dem Lieferschein. Was der Kunde bestätigt, steht direkt darüber. Er unterschreibt mit dem Finger und schreibt seinen Namen dazu. Lotte hält Ort und Uhrzeit fest und hängt die Unterschrift an den Auftrag.",
       punkte: [
         "Abnahme, Bericht, Nachtrag und Lieferschein unterschreiben",
         "Name in Druckbuchstaben, Ort und Uhrzeit dabei",

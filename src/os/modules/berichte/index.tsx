@@ -63,7 +63,7 @@ export default defineModul({
     {
       id: 'berichte.vorbereiten',
       titel: 'Bericht nach dem Einsatz vorbereiten',
-      beschreibung: 'Ist ein Einsatz beendet, legt Macher den Bericht an – mit Zeiten, Material, Fotos, erledigten Aufgaben und deinen Notizen des Tages.',
+      beschreibung: 'Ist ein Einsatz beendet, legt Lotte den Bericht an – mit Zeiten, Material, Fotos, erledigten Aufgaben und deinen Notizen des Tages.',
       standardAn: true,
       minuten: 10,
       start: () => {
@@ -92,7 +92,7 @@ export default defineModul({
       .slice(0, 5)
       .map((b) => ({ typ: artLabel(b.art), titel: `${artLabel(b.art)} vom ${datum(b.datum)}`, untertitel: [b.nummer, db.auftraege.get(b.auftragId)?.titel].filter(Boolean).join(' · '), pfad: `/auftraege/berichte/${b.id}`, relevanz: 35 })),
   seed: () => {
-    // Der gestrige Einsatz in Haus 24 ist beendet – Macher hat den Bericht schon vorbereitet.
+    // Der gestrige Einsatz in Haus 24 ist beendet – Lotte hat den Bericht schon vorbereitet.
     const gestern = plusTage(heute(), -1);
     const t = db.termine.all().find((x) => x.beispiel && x.status === 'erledigt' && x.auftragId && datumVon(x.start) === gestern && x.art === 'einsatz');
     if (!t?.auftragId) return;

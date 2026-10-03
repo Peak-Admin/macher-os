@@ -9,7 +9,7 @@ const momente: Moment[] = [
   {
     titel: "Anfrage",
     icon: "phone",
-    text: "Der Kunde ruft an. Macher legt die Anfrage an und schlägt einen Termin vor.",
+    text: "Der Kunde ruft an. Lotte legt die Anfrage an und schlägt einen Termin vor.",
     href: "/funktionen/anfragen",
     ort: "Eingang",
     app: <AnfrageMini />,

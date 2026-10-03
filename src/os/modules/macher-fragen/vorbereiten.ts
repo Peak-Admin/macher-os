@@ -1,5 +1,5 @@
 /**
- * „Mit Macher vorbereiten“ – kontextuelle Einstiege in denselben Macher-Assistenten wie Strg+K und Seitenleiste.
+ * „Mit Lotte vorbereiten“ – kontextuelle Einstiege in denselben Lotte-Assistenten wie Strg+K und Seitenleiste.
  *
  * Am Angebot, an der Rechnung, an der Anfrage und in der Einsatzplanung weiß die Oberfläche schon, worum es geht.
  * Statt zu raten, übergibt sie Objekt (Typ + ID) und Absicht an den Gateway (`frage(…, vorgabe)`). Die Absichten hier
@@ -33,7 +33,7 @@ export type VorbereitenAbsicht =
 
 export interface Vorbereitung {
   absicht: VorbereitenAbsicht;
-  /** steht im Verlauf als Frage – so sieht man, was Macher vorbereiten soll */
+  /** steht im Verlauf als Frage – so sieht man, was Lotte vorbereiten soll */
   frage: string;
   bezug: Bezug;
 }
@@ -79,7 +79,7 @@ export function macherStart(v: Vorbereitung): MacherStart {
 
 const OHNE_KONTEXT: Antwort = {
   absicht: 'kontext-fehlt',
-  text: 'Dafür brauche ich das Objekt. Öffne das Angebot, die Rechnung oder die Anfrage und tipp dort auf „Mit Macher vorbereiten“.',
+  text: 'Dafür brauche ich das Objekt. Öffne das Angebot, die Rechnung oder die Anfrage und tipp dort auf „Mit Lotte vorbereiten“.',
 };
 
 const bezugAus = (werte: Record<string, unknown> | undefined, typ: string): ID | undefined => {
@@ -204,7 +204,7 @@ function rechnungErinnern(k: Kontext, rechnungId: ID | undefined): Antwort {
     schritte: schritte([{ aktion: 'invoice.remind', absicht: 'invoice.prepare_reminder', daten: { rechnungId: r.id }, label: `Nächste Erinnerung zu ${r.nummer} freigeben` }]),
   };
   return {
-    ...planAntwort('rechnung-erinnern', `Rechnung ${r.nummer} ist seit ${datumKurz(r.faelligAm)} fällig. Macher bereitet die nächste Stufe nach deinen Mahnregeln vor.`, plan, `Offene Posten und Mahnregeln · ${stand(k)}`),
+    ...planAntwort('rechnung-erinnern', `Rechnung ${r.nummer} ist seit ${datumKurz(r.faelligAm)} fällig. Lotte bereitet die nächste Stufe nach deinen Mahnregeln vor.`, plan, `Offene Posten und Mahnregeln · ${stand(k)}`),
     eintraege: [{ titel: `${euro(offenerBetrag(r))} offen`, untertitel: kunde?.name, status: { ton: 'gefahr', text: 'Überfällig' } }],
   };
 }
@@ -233,7 +233,7 @@ function einsatzVorbereiten(k: Kontext, auftragId: ID | undefined): Antwort {
 
 type Def = AbsichtDef<Antwort>;
 
-/** Nur über „Mit Macher vorbereiten“ erreichbar (Vorgabe mit Objekt) – keine Texterkennung */
+/** Nur über „Mit Lotte vorbereiten“ erreichbar (Vorgabe mit Objekt) – keine Texterkennung */
 export const VORBEREITEN_ABSICHTEN: Def[] = [
   { id: 'offer.prepare_from_request', titel: 'Angebot aus Anfrage vorbereiten', risiko: 'schreiben', rechte: ['schreiben', 'geld'], beantworte: (_t, e, k) => angebotAusAnfrage(k, bezugAus(e.werte, 'auftraege')) },
   { id: 'offer.prepare_send', titel: 'Angebot zum Senden vorbereiten', risiko: 'kritisch', rechte: ['veroeffentlichen'], beantworte: (_t, e, k) => angebotSenden(k, bezugAus(e.werte, 'angebote')) },
@@ -246,7 +246,7 @@ export const VORBEREITEN_ABSICHTEN: Def[] = [
 // ------------------------------------------------------------------ Öffnen
 
 /**
- * Öffnet den Macher-Assistenten (dasselbe Overlay wie Strg+K) mit Absicht und Objekt. `false`, wenn es für dieses
+ * Öffnet den Lotte-Assistenten (dasselbe Overlay wie Strg+K) mit Absicht und Objekt. `false`, wenn es für dieses
  * Objekt gerade nichts vorzubereiten gibt.
  */
 export function mitMacherOeffnen(bezug: Bezug, heute: Datum, zweck?: 'einplanen'): boolean {

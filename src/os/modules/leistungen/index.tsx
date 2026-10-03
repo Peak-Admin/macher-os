@@ -105,7 +105,7 @@ export default defineModul({
     {
       id: LOHN_AUTOMATION,
       titel: 'Stundenpreise mit dem Stundensatz mitziehen',
-      beschreibung: 'Änderst du den Stundensatz, passt Macher alle Stundenleistungen an, die bisher genau den alten Satz hatten.',
+      beschreibung: 'Änderst du den Stundensatz, passt Lotte alle Stundenleistungen an, die bisher genau den alten Satz hatten.',
       standardAn: true,
       minuten: 2,
       start: () =>

@@ -168,8 +168,8 @@ export function ReklamationNeu() {
               onChange={(v) => set('bewertung', v)}
               optionen={(['gewaehrleistung', 'kostenpflichtig', 'kulanz', 'offen'] as Bewertung[]).map((b) => ({ wert: b, label: BEWERTUNG_TEXT[b] }))}
             />
-            <Eingabe label="Frist zur Beseitigung bis" type="date" optional value={f.fristBis} onChange={(e) => set('fristBis', e.target.value)} hilfe="Macher erinnert dich, bevor die Frist abläuft." />
-            <Meta>Keine Rechtsberatung: Macher rechnet die gesetzlichen Fristen nach Abnahmedatum. Bei Sonderfällen (Arglist, abweichende Vereinbarung) entscheidest du.</Meta>
+            <Eingabe label="Frist zur Beseitigung bis" type="date" optional value={f.fristBis} onChange={(e) => set('fristBis', e.target.value)} hilfe="Lotte erinnert dich, bevor die Frist abläuft." />
+            <Meta>Keine Rechtsberatung: Lotte rechnet die gesetzlichen Fristen nach Abnahmedatum. Bei Sonderfällen (Arglist, abweichende Vereinbarung) entscheidest du.</Meta>
           </Stapel>
         </Karte>
         <div>

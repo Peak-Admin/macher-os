@@ -83,7 +83,7 @@ export default defineModul({
     {
       id: 'kalender.verloren-absagen',
       titel: 'Termine absagen, wenn ein Auftrag platzt',
-      beschreibung: 'Wird ein Auftrag auf „Nicht zustande gekommen“ gesetzt, sagt Macher seine künftigen Termine ab und gibt die Leute wieder frei.',
+      beschreibung: 'Wird ein Auftrag auf „Nicht zustande gekommen“ gesetzt, sagt Lotte seine künftigen Termine ab und gibt die Leute wieder frei.',
       standardAn: true,
       minuten: 5,
       start: () =>

@@ -112,9 +112,9 @@ export const buerosoftware: Landing = {
     karten: [
       { titel: "Anfragen", text: "Anrufe, E-Mails und Formulare landen an einem Ort.", icon: "inbox" },
       { titel: "Angebote", text: "Mit Vorlagen für dein Gewerk, Kalkulation und Aufmaß.", icon: "file" },
-      { titel: "Rechnungen & Mahnungen", text: "Aus dem Angebot mit einem Klick, XRechnung eingebaut. Macher erinnert an Offenes.", icon: "euro" },
+      { titel: "Rechnungen & Mahnungen", text: "Aus dem Angebot mit einem Klick, XRechnung eingebaut. Lotte erinnert an Offenes.", icon: "euro" },
       { titel: "Termine & Planung", text: "Kalender und Plantafel für dein ganzes Team.", icon: "calendar" },
-      { titel: "Zahlungen", text: "Kontoauszug einlesen – Macher ordnet die Zahlungen den Rechnungen zu.", icon: "check" },
+      { titel: "Zahlungen", text: "Kontoauszug einlesen – Lotte ordnet die Zahlungen den Rechnungen zu.", icon: "check" },
       { titel: "Steuerberater", text: "Rechnungen und Belege im DATEV-Format übergeben.", icon: "calculator" },
     ],
   },
@@ -145,7 +145,7 @@ export const buerosoftware: Landing = {
   ],
   weiter: {
     links: [
-      { label: "Macher erledigt automatisch", href: "/funktionen/automatisch-erledigen", text: "Büroarbeit, die von selbst passiert." },
+      { label: "Lotte erledigt automatisch", href: "/funktionen/automatisch-erledigen", text: "Büroarbeit, die von selbst passiert." },
       { label: "Handwerk OS vs. Word & Excel", href: "/vergleich/word-excel", text: "Raus aus den Vorlagen." },
       { label: "Schnittstellen", href: "/schnittstellen", text: "DATEV, GAEB, Datanorm und mehr." },
     ],
@@ -235,7 +235,7 @@ export const schnittstellen: Landing = {
       { titel: "GAEB", text: "Leistungsverzeichnis aus einer Ausschreibung einlesen – die Positionen landen im Angebot.", icon: "file" },
       { titel: "Datanorm", text: "Artikel und Preise deines Großhändlers einlesen. Vorhandene Artikel werden aktualisiert.", icon: "warehouse" },
       { titel: "XRechnung", text: "E-Rechnungen nach XRechnung 3.0 für öffentliche und private Auftraggeber.", icon: "euro" },
-      { titel: "Kontoauszug", text: "Umsätze als CAMT.053 oder CSV einlesen – Macher ordnet die Zahlungen zu.", icon: "check" },
+      { titel: "Kontoauszug", text: "Umsätze als CAMT.053 oder CSV einlesen – Lotte ordnet die Zahlungen zu.", icon: "check" },
       { titel: "Kalenderdatei", text: "Termine für Outlook, Google Kalender oder das iPhone herunterladen.", icon: "calendar" },
       { titel: "Excel & CSV", text: "Kunden, Artikel und Mitarbeiter per Datei übernehmen.", icon: "layers" },
       { titel: "Datenexport & Webhooks", text: "Alle Daten als JSON, Ereignisse für eigene Programme.", icon: "link" },

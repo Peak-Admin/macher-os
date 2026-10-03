@@ -117,7 +117,7 @@ export function GaebImport() {
                   {u.positionen === 1 ? '1 Position ins Angebot übernehmen' : `${u.positionen} Positionen ins Angebot übernehmen`}
                 </Button>
               </div>
-              {auftrag && <Meta>Kommt in den Angebotsentwurf zu {auftrag.nummer} · {auftrag.titel}. Gibt es keinen Entwurf, legt Macher einen an.</Meta>}
+              {auftrag && <Meta>Kommt in den Angebotsentwurf zu {auftrag.nummer} · {auftrag.titel}. Gibt es keinen Entwurf, legt Lotte einen an.</Meta>}
             </Stapel>
           </Karte>
         )}

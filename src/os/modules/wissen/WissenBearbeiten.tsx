@@ -157,7 +157,7 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
           </Stapel>
         </Karte>
 
-        <Karte titel="Verknüpfen" icon="link" oberzeile="Damit Macher die Anleitung am passenden Auftrag vorschlägt">
+        <Karte titel="Verknüpfen" icon="link" oberzeile="Damit Lotte die Anleitung am passenden Auftrag vorschlägt">
           <Stapel abstand={24}>
             <Auswahl
               label="Gewerk"

@@ -1,9 +1,9 @@
 /**
  * Wer handelt gerade? – Akteur-Kontext für Audit, Ereignisse und Rechte.
  *
- * Standard ist der angemeldete Mensch (`quelle: 'user'`, `setAktuellerNutzer`). Automationen, Macher (KI),
+ * Standard ist der angemeldete Mensch (`quelle: 'user'`, `setAktuellerNutzer`). Automationen, Lotte (KI),
  * Importe und der Abgleich setzen ihren Kontext mit `alsAkteur`, damit der Verlauf am Objekt in Klartext zeigt,
- * wer etwas geändert hat („Rechnung erstellt durch Macher“).
+ * wer etwas geändert hat („Rechnung erstellt durch Lotte“).
  *
  * Der Kontext gilt synchron für die Dauer von `fn`. Was ein Handler später (setTimeout, await) tut, läuft
  * wieder als Mensch – dafür dort erneut `alsAkteur` aufrufen.
@@ -63,7 +63,7 @@ export function registrierAkteur(): Akteur | undefined {
 
 const sammler: Set<ID>[] = [];
 
-/** Sammelt die IDs aller Verlaufseinträge, die während `fn` entstehen (z. B. für „Rückgängig“ einer Macher-Aktion). */
+/** Sammelt die IDs aller Verlaufseinträge, die während `fn` entstehen (z. B. für „Rückgängig“ einer Lotte-Aktion). */
 export function mitschneiden<T>(fn: () => T): { ergebnis: T; eintraege: ID[] } {
   const s = new Set<ID>();
   sammler.push(s);

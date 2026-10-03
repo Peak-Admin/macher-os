@@ -132,7 +132,7 @@ export function zeitenHinweise(t = heuteDatum()): HinweisVorschlag[] {
       });
   }
 
-  // 3. ArbZG der letzten 14 Tage (nicht freigegebene Tage). Fehlende Pausen zieht Macher automatisch ab –
+  // 3. ArbZG der letzten 14 Tage (nicht freigegebene Tage). Fehlende Pausen zieht Lotte automatisch ab –
   //    dann bleibt ein leichterer Hinweis, damit das Büro mit dem Mitarbeiter sprechen kann.
   const autoPause = autoPauseAn();
   const zeiten = db.zeiten.where((z) => z.datum >= plusTage(t, -15) && z.datum < t);

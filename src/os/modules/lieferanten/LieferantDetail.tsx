@@ -93,7 +93,7 @@ export function LieferantDetail() {
                     {adresseText(l.adresse)}
                   </a>
                 )}
-                {!l.telefon && !l.email && !l.adresse && <Meta>Noch keine Kontaktdaten. Ohne E-Mail kann Macher keine Bestellung vorbereiten.</Meta>}
+                {!l.telefon && !l.email && !l.adresse && <Meta>Noch keine Kontaktdaten. Ohne E-Mail kann Lotte keine Bestellung vorbereiten.</Meta>}
               </Stapel>
             </Karte>
             <Karte titel="Konditionen" icon="euro" kompakt aktion={<Button klein variante="tertiaer" icon="stift" to={`/betrieb/lieferanten/${l.id}/bearbeiten`}>Bearbeiten</Button>}>

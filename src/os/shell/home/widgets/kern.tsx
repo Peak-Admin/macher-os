@@ -121,8 +121,8 @@ export function NaechsterSchrittWidget({ groesse, ich }: WidgetProps) {
 /** Kurze visuelle Erklärung je Einrichtungsschritt (`startHaken` im Modul start) – eine Fenster-Skizze, ein Satz. */
 const SCHRITT_ERKLAERUNG: Record<string, { icon: GlasIconName; text: string }> = {
   betrieb: { icon: 'haus', text: 'Name, Anschrift und Logo – damit deine Angebote und Rechnungen gleich richtig aussehen.' },
-  gewerk: { icon: 'werkzeug', text: 'Dein Gewerk bestimmt, welche Leistungen, Vorlagen und Prüfungen Macher dir vorschlägt.' },
-  kunden: { icon: 'import', text: 'Übernimm Kunden und Preise aus Excel oder deinem alten Programm. Macher erkennt die Spalten selbst.' },
+  gewerk: { icon: 'werkzeug', text: 'Dein Gewerk bestimmt, welche Leistungen, Vorlagen und Prüfungen Lotte dir vorschlägt.' },
+  kunden: { icon: 'import', text: 'Übernimm Kunden und Preise aus Excel oder deinem alten Programm. Lotte erkennt die Spalten selbst.' },
   team: { icon: 'mitarbeiter', text: 'Leg dein Team an. Dann verteilst du Einsätze und jeder sieht seine Termine.' },
 };
 

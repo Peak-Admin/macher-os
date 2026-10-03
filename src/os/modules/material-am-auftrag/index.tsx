@@ -90,7 +90,7 @@ export default defineModul({
     {
       id: 'material.aus-angebot',
       titel: 'Material aus dem Angebot planen',
-      beschreibung: 'Nimmt der Kunde das Angebot an, plant Macher das Material aus den Positionen am Auftrag – fertig zum Bestellen.',
+      beschreibung: 'Nimmt der Kunde das Angebot an, plant Lotte das Material aus den Positionen am Auftrag – fertig zum Bestellen.',
       standardAn: true,
       minuten: 5,
       start: () => {
@@ -105,7 +105,7 @@ export default defineModul({
     {
       id: 'material.abgerechnet',
       titel: 'Abgerechnetes Material markieren',
-      beschreibung: 'Geht eine Rechnung raus, markiert Macher das verbaute Material darauf als abgerechnet – so wird nichts doppelt oder gar nicht berechnet.',
+      beschreibung: 'Geht eine Rechnung raus, markiert Lotte das verbaute Material darauf als abgerechnet – so wird nichts doppelt oder gar nicht berechnet.',
       standardAn: true,
       minuten: 3,
       start: () =>

@@ -34,7 +34,7 @@ export const neuigkeiten: { monat: string; eintraege: Neuigkeit[] }[] = [
       },
       {
         titel: "Zahlungen automatisch zuordnen",
-        text: "Kontoauszug als CAMT.053 oder CSV einlesen – Macher ordnet die Zahlungen den offenen Rechnungen zu.",
+        text: "Kontoauszug als CAMT.053 oder CSV einlesen – Lotte ordnet die Zahlungen den offenen Rechnungen zu.",
         icon: "euro",
         bereich: "Geld",
         link: { label: "Zahlungen verfolgen", href: "/hilfe-center/zahlungen-verfolgen" },
@@ -62,7 +62,7 @@ export const neuigkeiten: { monat: string; eintraege: Neuigkeit[] }[] = [
       },
       {
         titel: "Arbeitszeiten mit Regeln",
-        text: "Pausen, Überstunden und Ruhezeiten nach deinen Regeln – Macher weist auf Lücken und Verstöße hin.",
+        text: "Pausen, Überstunden und Ruhezeiten nach deinen Regeln – Lotte weist auf Lücken und Verstöße hin.",
         icon: "clock",
         bereich: "Team",
         link: { label: "Zeiterfassung", href: "/funktionen/zeiterfassung" },

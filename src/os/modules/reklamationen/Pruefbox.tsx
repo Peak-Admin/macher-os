@@ -7,7 +7,7 @@ export function Pruefbox({ p }: { p: Pruefung }) {
   if (p.ergebnis === 'unklar')
     return (
       <Meldung ton="achtung" titel="Gewährleistung unklar">
-        {p.quelle}. Trag das Abnahme- oder Abschlussdatum ein, dann prüft Macher automatisch.
+        {p.quelle}. Trag das Abnahme- oder Abschlussdatum ein, dann prüft Lotte automatisch.
       </Meldung>
     );
   if (p.ergebnis === 'gewaehrleistung')

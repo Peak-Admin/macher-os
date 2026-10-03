@@ -85,7 +85,7 @@ export type FunktionInhalt = Basis & {
   geraete: { handy: string[]; computer: string[]; handyVisual: HandyVisual };
 };
 
-/** Eine Aufgabe, die Macher übernimmt – mit Vorher/Nachher. */
+/** Eine Aufgabe, die Lotte übernimmt – mit Vorher/Nachher. */
 export type MacherAufgabe = {
   titel: string;
   icon: IconName;
@@ -161,7 +161,7 @@ export const funktionInhalte: Inhalte = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat erledigt:",
+        titel: "Lotte hat erledigt:",
         text: "3 Kunden angelegt, 2 fehlende Fotos beim Kunden nachgefragt.",
       },
     },
@@ -186,7 +186,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Ein Eingang für alle Anfragen.",
-      text: "Egal, ob die Anfrage per Telefon, Mail oder über das Formular auf deiner Webseite kommt: Sie landet im selben Eingang. Macher legt den Kunden an, ordnet die Anfrage ein und fragt fehlende Angaben direkt beim Kunden nach.",
+      text: "Egal, ob die Anfrage per Telefon, Mail oder über das Formular auf deiner Webseite kommt: Sie landet im selben Eingang. Lotte legt den Kunden an, ordnet die Anfrage ein und fragt fehlende Angaben direkt beim Kunden nach.",
       punkte: [
         "Telefon, Mail und Webformular in einem Eingang",
         "Fehlende Adresse, Fotos oder Wunschtermin werden nachgefragt",
@@ -206,7 +206,7 @@ export const funktionInhalte: Inhalte = {
         { label: "Zuständig", wert: "Jana (Büro)" },
         { label: "Nächster Schritt", wert: "Besichtigung anbieten", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat zwei Fotos vom Bestand nachgefragt. Der Kunde hat sie um 9:10 Uhr geschickt." },
+      fuss: { icon: "spark", text: "Lotte hat zwei Fotos vom Bestand nachgefragt. Der Kunde hat sie um 9:10 Uhr geschickt." },
     },
     schritte: [
       {
@@ -215,7 +215,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Angaben werden ergänzt",
-        text: "Fehlt die Adresse oder ein Foto vom Bestand, fragt Macher beim Kunden nach.",
+        text: "Fehlt die Adresse oder ein Foto vom Bestand, fragt Lotte beim Kunden nach.",
       },
       {
         titel: "Du entscheidest",
@@ -296,12 +296,12 @@ export const funktionInhalte: Inhalte = {
 
   telefon: {
     icon: "phone",
-    kurz: "Macher geht ans Telefon, wenn keiner frei ist, und legt dir eine fertige Notiz an.",
+    kurz: "Lotte geht ans Telefon, wenn keiner frei ist, und legt dir eine fertige Notiz an.",
     enthalten: ["Anrufe annehmen", "Rückrufe", "Notdienst weiterleiten"],
     meta: {
       title: "Telefonassistent für Handwerker – kein Anruf geht verloren",
       description:
-        "Macher nimmt Anrufe an, wenn im Betrieb keiner frei ist, fragt das Anliegen ab und legt eine Notiz oder Anfrage an. Notfälle gehen direkt an den Bereitschaftsdienst.",
+        "Lotte nimmt Anrufe an, wenn im Betrieb keiner frei ist, fragt das Anliegen ab und legt eine Notiz oder Anfrage an. Notfälle gehen direkt an den Bereitschaftsdienst.",
     },
     aufAnfrage: {
       aktion: "Telefonassistent anfragen",
@@ -318,7 +318,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Wer auf der Baustelle arbeitet, kann nicht ans Telefon. Die Mailbox hört keiner ab, Rückrufe gehen unter.",
       loesung:
-        "Macher nimmt Anrufe an, wenn keiner frei ist, fragt das Wichtige ab und legt dir eine fertige Notiz mit Rückrufwunsch an.",
+        "Lotte nimmt Anrufe an, wenn keiner frei ist, fragt das Wichtige ab und legt dir eine fertige Notiz mit Rückrufwunsch an.",
     },
     visual: {
       bereich: "Heute",
@@ -326,11 +326,11 @@ export const funktionInhalte: Inhalte = {
       untertitel: "heute",
       kennzahlen: [
         ["11", "Anrufe"],
-        ["4", "von Macher angenommen"],
+        ["4", "von Lotte angenommen"],
         ["1", "Rückruf offen"],
       ],
       liste: {
-        ueberschrift: "Von Macher angenommen",
+        ueberschrift: "Von Lotte angenommen",
         zeilen: [
           { titel: "Heizung ausgefallen", sub: "K. Wendt · 10:24 · an Bereitschaft", tag: "dringend", ton: "gefahr" },
           { titel: "Frage zum Angebot Dachfenster", sub: "Fr. Lindner · 11:02", tag: "Rückruf", ton: "sky" },
@@ -365,7 +365,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Ein Empfang, der nie Pause macht.",
-      text: "Ist im Büro keiner frei, geht Macher ans Telefon. Er meldet sich mit deinem Firmennamen, sagt offen, dass er der digitale Assistent ist, und fragt das Wichtige ab: Wer ruft an, worum geht es, wie dringend ist es? Daraus wird eine Notiz – oder direkt eine Anfrage.",
+      text: "Ist im Büro keiner frei, geht Lotte ans Telefon. Sie meldet sich mit deinem Firmennamen, sagt offen, dass sie die digitale Assistentin ist, und fragt das Wichtige ab: Wer ruft an, worum geht es, wie dringend ist es? Daraus wird eine Notiz – oder direkt eine Anfrage.",
       punkte: [
         "Anrufe annehmen, wenn alle beschäftigt sind",
         "Anliegen, Adresse und Rückrufnummer abfragen",
@@ -389,11 +389,11 @@ export const funktionInhalte: Inhalte = {
     schritte: [
       {
         titel: "Anruf kommt rein",
-        text: "Ist jemand im Büro frei, klingelt es dort wie gewohnt. Sonst übernimmt Macher nach ein paar Klingeltönen.",
+        text: "Ist jemand im Büro frei, klingelt es dort wie gewohnt. Sonst übernimmt Lotte nach ein paar Klingeltönen.",
       },
       {
-        titel: "Macher fragt nach",
-        text: "Name, Adresse, Anliegen, Dringlichkeit. Bekannte Kunden erkennt Macher an der Nummer.",
+        titel: "Lotte fragt nach",
+        text: "Name, Adresse, Anliegen, Dringlichkeit. Bekannte Kunden erkennt Lotte an der Nummer.",
       },
       {
         titel: "Notiz statt Mailbox",
@@ -442,7 +442,7 @@ export const funktionInhalte: Inhalte = {
     gewerke: [
       { slug: "shk", text: "Heizungsausfall und Rohrbruch gehen sofort an den Notdienst." },
       { slug: "elektriker", text: "Störungsmeldungen von Hausverwaltungen landen beim richtigen Objekt." },
-      { slug: "gebaeude-service", text: "Viele kleine Aufträge, viele Anrufe – Macher hält den Empfang frei." },
+      { slug: "gebaeude-service", text: "Viele kleine Aufträge, viele Anrufe – Lotte hält den Empfang frei." },
     ],
     kunde: {
       slug: "elektro-brandt",
@@ -452,7 +452,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Merken Anrufer, dass sie mit einem digitalen Assistenten sprechen?",
         antwort:
-          "Ja. Macher sagt das gleich zu Beginn. Das ist ehrlich und fair. Wer lieber mit einem Menschen sprechen will, bekommt einen Rückruf.",
+          "Ja. Lotte sagt das gleich zu Beginn. Das ist ehrlich und fair. Wer lieber mit einem Menschen sprechen will, bekommt einen Rückruf.",
       },
       {
         frage: "Muss ich meine Telefonnummer ändern?",
@@ -460,7 +460,7 @@ export const funktionInhalte: Inhalte = {
           "Nein. Du leitest Anrufe von deiner bestehenden Nummer weiter – zum Beispiel, wenn nach 20 Sekunden keiner abnimmt oder außerhalb der Bürozeiten.",
       },
       {
-        frage: "Kann ich festlegen, was Macher am Telefon sagt?",
+        frage: "Kann ich festlegen, was Lotte am Telefon sagt?",
         antwort:
           "Ja. Begrüßung, Fragen und Antworten auf häufige Fragen wie Öffnungszeiten oder Einzugsgebiet stellst du selbst ein.",
       },
@@ -726,7 +726,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Einplanen",
-        text: "Macher schlägt Termine und passende Leute vor und prüft, ob das Material da ist.",
+        text: "Lotte schlägt Termine und passende Leute vor und prüft, ob das Material da ist.",
       },
       {
         titel: "Arbeiten",
@@ -1148,7 +1148,7 @@ export const funktionInhalte: Inhalte = {
 
   angebote: {
     icon: "file",
-    kurz: "Macher bereitet Angebote aus Anfrage und Aufmaß vor. Du prüfst, der Kunde unterschreibt online.",
+    kurz: "Lotte bereitet Angebote aus Anfrage und Aufmaß vor. Du prüfst, der Kunde unterschreibt online.",
     enthalten: ["Leistungsvorlagen", "Varianten", "Annahme mit Unterschrift"],
     meta: {
       title: "Angebote schreiben im Handwerk – schneller beim Kunden",
@@ -1160,7 +1160,7 @@ export const funktionInhalte: Inhalte = {
       problem:
         "Abends Positionen tippen, Preise suchen, Texte formulieren. Bis das Angebot raus ist, hat der Kunde vielleicht schon woanders unterschrieben.",
       loesung:
-        "Macher bereitet das Angebot aus Anfrage, Aufmaß und deinen Vorlagen vor. Du prüfst und schickst es ab – der Kunde nimmt es online mit Unterschrift an.",
+        "Lotte bereitet das Angebot aus Anfrage, Aufmaß und deinen Vorlagen vor. Du prüfst und schickst es ab – der Kunde nimmt es online mit Unterschrift an.",
     },
     visual: {
       bereich: "Aufträge",
@@ -1206,8 +1206,8 @@ export const funktionInhalte: Inhalte = {
       },
     ],
     loesung: {
-      titel: "Vorbereitet von Macher. Geprüft von dir.",
-      text: "Aus Anfrage und Aufmaß stellt Macher ein Angebot zusammen: mit deinen Leistungsvorlagen, aktuellen Preisen und passenden Texten. Du änderst, was du anders willst, und schickst es ab. Der Kunde öffnet es auf dem Handy, wählt eine Variante und unterschreibt.",
+      titel: "Vorbereitet von Lotte. Geprüft von dir.",
+      text: "Aus Anfrage und Aufmaß stellt Lotte ein Angebot zusammen: mit deinen Leistungsvorlagen, aktuellen Preisen und passenden Texten. Du änderst, was du anders willst, und schickst es ab. Der Kunde öffnet es auf dem Handy, wählt eine Variante und unterschreibt.",
       punkte: [
         "Leistungsvorlagen für dein Gewerk",
         "Varianten und Wahlpositionen in einem Angebot",
@@ -1233,10 +1233,10 @@ export const funktionInhalte: Inhalte = {
     schritte: [
       {
         titel: "Grundlage liegt bereit",
-        text: "Anfrage, Fotos und Aufmaß sind schon da. Macher nimmt sie als Grundlage.",
+        text: "Anfrage, Fotos und Aufmaß sind schon da. Lotte nimmt sie als Grundlage.",
       },
       {
-        titel: "Macher bereitet vor",
+        titel: "Lotte bereitet vor",
         text: "Positionen, Mengen, Preise und Texte aus deinen Vorlagen. Fertig zum Prüfen.",
       },
       {
@@ -1542,7 +1542,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Die Rechnung schreibt sich aus dem Auftrag.",
-      text: "Alles, was im Auftrag passiert ist, steht schon da: angebotene Leistungen, erfasste Stunden, verbrauchtes Material, Zusatzarbeiten mit Foto. Macher bereitet die Rechnung daraus vor. Abschläge werden in der Schlussrechnung automatisch abgezogen.",
+      text: "Alles, was im Auftrag passiert ist, steht schon da: angebotene Leistungen, erfasste Stunden, verbrauchtes Material, Zusatzarbeiten mit Foto. Lotte bereitet die Rechnung daraus vor. Abschläge werden in der Schlussrechnung automatisch abgezogen.",
       punkte: [
         "Rechnung aus Angebot, Stunden und Material",
         "Zusatzarbeiten werden nicht mehr vergessen",
@@ -1571,7 +1571,7 @@ export const funktionInhalte: Inhalte = {
         text: "Abnahme unterschrieben, alle Zeiten und Materialien sind erfasst.",
       },
       {
-        titel: "Macher bereitet vor",
+        titel: "Lotte bereitet vor",
         text: "Die Rechnung liegt als Entwurf bereit – mit allen Positionen und Abzügen.",
       },
       {
@@ -1580,7 +1580,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Zahlung verfolgen",
-        text: "Macher behält den Zahlungseingang im Blick und erinnert, wenn nötig.",
+        text: "Lotte behält den Zahlungseingang im Blick und erinnert, wenn nötig.",
       },
     ],
     automatisch: [
@@ -1657,11 +1657,11 @@ export const funktionInhalte: Inhalte = {
         "Handwerk OS ordnet Zahlungseingänge deinen Rechnungen zu, erkennt Teilzahlungen und Skonto und erinnert Kunden freundlich. Mahnungen gehen nur mit deiner Freigabe raus.",
     },
     hero: {
-      titel: "Offene Rechnungen? Macher bleibt dran.",
+      titel: "Offene Rechnungen? Lotte bleibt dran.",
       problem:
         "Rechnungen gehen raus, aber wer hat schon bezahlt? Kontoauszüge abgleichen und Mahnungen schreiben macht keiner gern.",
       loesung:
-        "Macher gleicht Zahlungseingänge mit deinen Rechnungen ab, erinnert Kunden freundlich und zeigt dir jeden Morgen, was offen ist.",
+        "Lotte gleicht Zahlungseingänge mit deinen Rechnungen ab, erinnert Kunden freundlich und zeigt dir jeden Morgen, was offen ist.",
     },
     visual: {
       bereich: "Betrieb",
@@ -1736,7 +1736,7 @@ export const funktionInhalte: Inhalte = {
         text: "Mit Zahlungsziel und Bankverbindung – wie immer.",
       },
       {
-        titel: "Macher gleicht ab",
+        titel: "Lotte gleicht ab",
         text: "Zahlungseingänge werden täglich mit den offenen Rechnungen verglichen.",
       },
       {
@@ -1780,7 +1780,7 @@ export const funktionInhalte: Inhalte = {
       },
     },
     gewerke: [
-      { slug: "galabau", text: "Viele kleine Pflegerechnungen – Macher behält alle im Blick." },
+      { slug: "galabau", text: "Viele kleine Pflegerechnungen – Lotte behält alle im Blick." },
       { slug: "bau", text: "Abschläge und Einbehalte sauber verfolgen." },
       { slug: "shk", text: "Wartungsrechnungen an viele Kunden, ohne selbst nachzuhaken." },
     ],
@@ -1822,14 +1822,14 @@ export const funktionInhalte: Inhalte = {
     meta: {
       title: "Kalender und Terminbuchung für Handwerker",
       description:
-        "Ein gemeinsamer Kalender für Büro und Baustelle. Kunden buchen Besichtigungen selbst, Macher bestätigt und erinnert am Vortag. Wartungen planen sich wiederkehrend ein.",
+        "Ein gemeinsamer Kalender für Büro und Baustelle. Kunden buchen Besichtigungen selbst, Lotte bestätigt und erinnert am Vortag. Wartungen planen sich wiederkehrend ein.",
     },
     hero: {
       titel: "Termine finden, ohne fünfmal hin und her zu telefonieren.",
       problem:
         "„Passt Ihnen Dienstag?“ – „Da kann ich nicht.“ – „Mittwoch?“ Jeder Termin kostet drei Anrufe. Und am Ende steht er doch doppelt im Kalender.",
       loesung:
-        "Handwerk OS zeigt dem Kunden freie Zeiten, die zu deinem Plan und zur Route passen. Der Kunde bucht selbst, Macher bestätigt und erinnert am Vortag.",
+        "Handwerk OS zeigt dem Kunden freie Zeiten, die zu deinem Plan und zur Route passen. Der Kunde bucht selbst, Lotte bestätigt und erinnert am Vortag.",
     },
     visual: {
       bereich: "Planen",
@@ -1961,7 +1961,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Können Kunden einfach irgendwann buchen?",
         antwort:
-          "Nein. Du legst fest, welche Termine buchbar sind, wie lange sie dauern und wie viel Puffer dazwischen liegt. Macher zeigt nur Zeiten, die zu deinem Plan passen.",
+          "Nein. Du legst fest, welche Termine buchbar sind, wie lange sie dauern und wie viel Puffer dazwischen liegt. Lotte zeigt nur Zeiten, die zu deinem Plan passen.",
       },
       {
         frage: "Wie funktionieren wiederkehrende Termine?",
@@ -1979,19 +1979,19 @@ export const funktionInhalte: Inhalte = {
 
   einsatzplanung: {
     icon: "route",
-    kurz: "Macher schlägt passende Leute für jeden Einsatz vor – mit Blick auf Können, Urlaub, Fahrtzeit und Material.",
+    kurz: "Lotte schlägt passende Leute für jeden Einsatz vor – mit Blick auf Können, Urlaub, Fahrtzeit und Material.",
     enthalten: ["Mitarbeiterplanung", "Plantafel", "Auslastung", "Automatische Planung"],
     meta: {
-      title: "Einsatzplanung für Handwerker – Macher plant mit",
+      title: "Einsatzplanung für Handwerker – Lotte plant mit",
       description:
-        "Plantafel für dein Team: Macher schlägt für jeden Einsatz die passenden Mitarbeiter vor – mit Blick auf Qualifikation, Urlaub, Fahrtzeit, Material und Fahrzeug.",
+        "Plantafel für dein Team: Lotte schlägt für jeden Einsatz die passenden Mitarbeiter vor – mit Blick auf Qualifikation, Urlaub, Fahrtzeit, Material und Fahrzeug.",
     },
     hero: {
-      titel: "Wer fährt morgen wohin? Macher plant mit.",
+      titel: "Wer fährt morgen wohin? Lotte plant mit.",
       problem:
         "Jeden Abend das gleiche Puzzle: Wer ist frei, wer kann das, wo ist das Material, wer hat den Transporter? Und morgens ist dann einer krank.",
       loesung:
-        "Macher schlägt dir für jeden Einsatz die passenden Leute vor – mit Blick auf Qualifikation, Urlaub, Fahrtzeit, Material und Fahrzeug. Du bestätigst oder schiebst um.",
+        "Lotte schlägt dir für jeden Einsatz die passenden Leute vor – mit Blick auf Qualifikation, Urlaub, Fahrtzeit, Material und Fahrzeug. Du bestätigst oder schiebst um.",
     },
     visual: {
       bereich: "Planen",
@@ -2013,7 +2013,7 @@ export const funktionInhalte: Inhalte = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher-Vorschlag:",
+        titel: "Vorschlag von Lotte:",
         text: "Kundendienst Fr. Weber → Ali, 15:00 Uhr. Darf das, 8 Min. entfernt, Material im Wagen.",
       },
     },
@@ -2038,7 +2038,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Planen mit Vorschlägen statt mit Bauchgefühl.",
-      text: "Auf der Plantafel siehst du alle Mitarbeiter und Einsätze der Woche. Macher kennt Qualifikationen, Urlaub, Fahrtzeiten, Material und Fahrzeuge. Für jeden neuen Einsatz bekommst du einen Vorschlag mit Begründung. Fällt jemand aus, zeigt Macher, wer einspringen kann.",
+      text: "Auf der Plantafel siehst du alle Mitarbeiter und Einsätze der Woche. Lotte kennt Qualifikationen, Urlaub, Fahrtzeiten, Material und Fahrzeuge. Für jeden neuen Einsatz bekommst du einen Vorschlag mit Begründung. Fällt jemand aus, zeigt Lotte, wer einspringen kann.",
       punkte: [
         "Plantafel für Tag, Woche und Monat",
         "Vorschläge nach Qualifikation, Fahrtzeit und Auslastung",
@@ -2067,7 +2067,7 @@ export const funktionInhalte: Inhalte = {
         text: "Aus Auftrag, Wartung oder Kundendienst – mit Dauer, Ort und Anforderungen.",
       },
       {
-        titel: "Macher schlägt vor",
+        titel: "Lotte schlägt vor",
         text: "Wer passt, wer ist frei, wer ist in der Nähe – mit Begründung.",
       },
       {
@@ -2125,12 +2125,12 @@ export const funktionInhalte: Inhalte = {
     },
     faq: [
       {
-        frage: "Plant Macher ohne mich?",
+        frage: "Plant Lotte ohne mich?",
         antwort:
-          "Nein. Macher schlägt vor, du entscheidest. Wenn du willst, lässt du einfache Fälle wie Wartungen automatisch einplanen.",
+          "Nein. Lotte schlägt vor, du entscheidest. Wenn du willst, lässt du einfache Fälle wie Wartungen automatisch einplanen.",
       },
       {
-        frage: "Woher weiß Macher, wer was kann?",
+        frage: "Woher weiß Lotte, wer was kann?",
         antwort:
           "Aus den Qualifikationen deiner Mitarbeiter. Du hinterlegst einmal, wer zum Beispiel Elektrofachkraft ist oder einen Staplerschein hat.",
       },
@@ -2141,7 +2141,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Was passiert bei einer Krankmeldung?",
         antwort:
-          "Macher zeigt sofort, welche Einsätze betroffen sind, und schlägt Ersatz vor. Kunden können auf Wunsch automatisch informiert werden.",
+          "Lotte zeigt sofort, welche Einsätze betroffen sind, und schlägt Ersatz vor. Kunden können auf Wunsch automatisch informiert werden.",
       },
     ],
     verwandt: ["kalender", "mitarbeiter", "qualifikationen"],
@@ -2479,7 +2479,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Was ist, wenn jemand vergisst zu stempeln?",
         antwort:
-          "Macher erinnert, wenn jemand laut Plan auf der Baustelle sein müsste, aber keine Zeit läuft. Nachträge sind möglich – mit Begründung, damit alles nachvollziehbar bleibt.",
+          "Lotte erinnert, wenn jemand laut Plan auf der Baustelle sein müsste, aber keine Zeit läuft. Nachträge sind möglich – mit Begründung, damit alles nachvollziehbar bleibt.",
       },
     ],
     verwandt: ["mitarbeiter", "auswertung", "einsatzplanung"],
@@ -2546,7 +2546,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Wer was kann – und wie lange noch.",
-      text: "Für jeden Mitarbeiter hinterlegst du Qualifikationen mit Nachweis und Ablaufdatum: Elektrofachkraft, Ersthelfer, Staplerschein, Hubarbeitsbühne, Schweißnachweis. Macher warnt rechtzeitig vor dem Ablauf. In der Einsatzplanung werden nur Leute vorgeschlagen, die die nötigen Qualifikationen haben.",
+      text: "Für jeden Mitarbeiter hinterlegst du Qualifikationen mit Nachweis und Ablaufdatum: Elektrofachkraft, Ersthelfer, Staplerschein, Hubarbeitsbühne, Schweißnachweis. Lotte warnt rechtzeitig vor dem Ablauf. In der Einsatzplanung werden nur Leute vorgeschlagen, die die nötigen Qualifikationen haben.",
       punkte: [
         "Qualifikationen mit Nachweis und Ablaufdatum",
         "Warnung Wochen vor dem Ablauf",
@@ -2635,7 +2635,7 @@ export const funktionInhalte: Inhalte = {
       {
         frage: "Was passiert, wenn eine Qualifikation abläuft?",
         antwort:
-          "Du und der Mitarbeiter werden vorher erinnert. Ist sie abgelaufen, schlägt Macher den Mitarbeiter für passende Einsätze nicht mehr vor. Eine bewusste Ausnahme kannst du trotzdem machen.",
+          "Du und der Mitarbeiter werden vorher erinnert. Ist sie abgelaufen, schlägt Lotte den Mitarbeiter für passende Einsätze nicht mehr vor. Eine bewusste Ausnahme kannst du trotzdem machen.",
       },
       {
         frage: "Wie hängen Qualifikationen und Schulungen zusammen?",
@@ -2748,7 +2748,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Nächste Frist läuft",
-        text: "Macher behält im Blick, wann es wieder dran ist, und erinnert rechtzeitig.",
+        text: "Lotte behält im Blick, wann es wieder dran ist, und erinnert rechtzeitig.",
       },
     ],
     automatisch: [
@@ -2819,7 +2819,7 @@ export const funktionInhalte: Inhalte = {
 
   material: {
     icon: "box",
-    kurz: "Jeder Auftrag weiß, welches Material er braucht. Macher meldet vor dem Start, was fehlt.",
+    kurz: "Jeder Auftrag weiß, welches Material er braucht. Lotte meldet vor dem Start, was fehlt.",
     enthalten: ["Material bereit?", "Materialliste pro Auftrag", "Verbrauch erfassen"],
     meta: {
       title: "Material planen im Handwerk – alles da, bevor es losgeht",
@@ -2912,7 +2912,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Prüfung vor dem Start",
-        text: "Drei Tage vorher meldet Macher: alles bereit – oder was noch fehlt.",
+        text: "Drei Tage vorher meldet Lotte: alles bereit – oder was noch fehlt.",
       },
       {
         titel: "Verbrauch erfassen",
@@ -3080,7 +3080,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Nachfüllen",
-        text: "Fällt ein Artikel unter den Mindestbestand, setzt Macher ihn auf die Bestellliste.",
+        text: "Fällt ein Artikel unter den Mindestbestand, setzt Lotte ihn auf die Bestellliste.",
       },
       {
         titel: "Inventur",
@@ -3243,7 +3243,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Bestellen",
-        text: "Macher schlägt Lieferant und Menge vor. Ein Klick, und die Bestellung geht raus.",
+        text: "Lotte schlägt Lieferant und Menge vor. Ein Klick, und die Bestellung geht raus.",
       },
       {
         titel: "Ware annehmen",
@@ -3381,7 +3381,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Jedes Gerät mit Ort, Besitzer und Prüftermin.",
-      text: "Teure Maschinen und Geräte legst du einmal an – mit Foto, Seriennummer und Prüftermin. Ausgabe und Rückgabe laufen per App über einen Aufkleber mit Code. In der Einsatzplanung siehst du, ob das nötige Gerät frei ist. Vor Prüf- und Wartungsterminen erinnert Macher rechtzeitig.",
+      text: "Teure Maschinen und Geräte legst du einmal an – mit Foto, Seriennummer und Prüftermin. Ausgabe und Rückgabe laufen per App über einen Aufkleber mit Code. In der Einsatzplanung siehst du, ob das nötige Gerät frei ist. Vor Prüf- und Wartungsterminen erinnert Lotte rechtzeitig.",
       punkte: [
         "Wo ist was – und wer hat es gerade?",
         "Ausgabe und Rückgabe per App mit Code",
@@ -3419,7 +3419,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Prüfen und warten",
-        text: "Macher erinnert an Prüftermine und speichert das Protokoll beim Gerät.",
+        text: "Lotte erinnert an Prüftermine und speichert das Protokoll beim Gerät.",
       },
     ],
     automatisch: [
@@ -3475,12 +3475,12 @@ export const funktionInhalte: Inhalte = {
       },
       {
         frage: "Kann ich Prüfprotokolle für Elektrogeräte speichern?",
-        antwort: "Ja. Prüfdatum, Ergebnis und Protokoll liegen beim Gerät. Macher erinnert vor dem nächsten Termin.",
+        antwort: "Ja. Prüfdatum, Ergebnis und Protokoll liegen beim Gerät. Lotte erinnert vor dem nächsten Termin.",
       },
       {
         frage: "Kann ich auch Mietgeräte erfassen?",
         antwort:
-          "Ja. Mietgeräte bekommen ein Rückgabedatum. Macher erinnert rechtzeitig, damit keine unnötigen Miettage entstehen.",
+          "Ja. Mietgeräte bekommen ein Rückgabedatum. Lotte erinnert rechtzeitig, damit keine unnötigen Miettage entstehen.",
       },
     ],
     verwandt: ["fahrzeuge", "einsatzplanung", "lager"],
@@ -3547,7 +3547,7 @@ export const funktionInhalte: Inhalte = {
     ],
     loesung: {
       titel: "Fahrzeuge planen wie Mitarbeiter.",
-      text: "Jedes Fahrzeug hat ein Profil mit Kennzeichen, Fristen und Ausstattung. In der Einsatzplanung wird es mit eingeplant – der große Wagen für die Küchenmontage, die Pritsche für den Aushub. Macher erinnert an Hauptuntersuchung, Wartung und Reifenwechsel. Schäden meldet das Team mit Foto per App.",
+      text: "Jedes Fahrzeug hat ein Profil mit Kennzeichen, Fristen und Ausstattung. In der Einsatzplanung wird es mit eingeplant – der große Wagen für die Küchenmontage, die Pritsche für den Aushub. Lotte erinnert an Hauptuntersuchung, Wartung und Reifenwechsel. Schäden meldet das Team mit Foto per App.",
       punkte: [
         "Fahrzeuge mit den Einsätzen einplanen",
         "Fristen: Hauptuntersuchung, Wartung, Reifen",
@@ -3581,7 +3581,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Fristen im Blick",
-        text: "Macher erinnert rechtzeitig und schlägt einen Werkstatttag vor, an dem der Wagen fehlen kann.",
+        text: "Lotte erinnert rechtzeitig und schlägt einen Werkstatttag vor, an dem der Wagen fehlen kann.",
       },
       {
         titel: "Kosten sammeln",
@@ -3751,7 +3751,7 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Besser kalkulieren",
-        text: "Macher schlägt vor, Zeitansätze anzupassen, wo es immer wieder hakt.",
+        text: "Lotte schlägt vor, Zeitansätze anzupassen, wo es immer wieder hakt.",
       },
     ],
     automatisch: [
@@ -3819,22 +3819,22 @@ export const funktionInhalte: Inhalte = {
     verwandt: ["kalkulation", "zeiterfassung", "zahlungen"],
   },
 
-  /* ───────────────────────── Macher erledigt ───────────────────────── */
+  /* ───────────────────────── Lotte erledigt ───────────────────────── */
 
   "automatisch-erledigen": {
     icon: "spark",
-    kurz: "Anrufe, Termine, Angebote, Rechnungen, Erinnerungen: Was sich wiederholt, übernimmt Macher.",
+    kurz: "Anrufe, Termine, Angebote, Rechnungen, Erinnerungen: Was sich wiederholt, übernimmt Lotte.",
     meta: {
-      title: "Macher erledigt automatisch – Büroarbeit, die sich selbst macht",
+      title: "Lotte erledigt automatisch – Büroarbeit, die sich selbst macht",
       description:
-        "Macher nimmt Anrufe an, erfasst Anfragen, stimmt Termine ab, bereitet Angebote und Rechnungen vor, erkennt fehlendes Material und bleibt an offenen Zahlungen dran. Du gibst frei.",
+        "Lotte nimmt Anrufe an, erfasst Anfragen, stimmt Termine ab, bereitet Angebote und Rechnungen vor, erkennt fehlendes Material und bleibt an offenen Zahlungen dran. Du gibst frei.",
     },
     hero: {
-      titel: "Macher erledigt die Büroarbeit. Du machst das Handwerk.",
+      titel: "Lotte erledigt die Büroarbeit. Du machst das Handwerk.",
       problem:
         "Anrufe, Termine, Angebote, Rechnungen, Erinnerungen – die Büroarbeit läuft neben der Baustelle her und bleibt abends liegen.",
       loesung:
-        "Macher übernimmt, was sich wiederholt: nimmt Anrufe an, stimmt Termine ab, bereitet Angebote und Rechnungen vor und bleibt an offenen Zahlungen dran. Was wichtig ist, gibst du frei.",
+        "Lotte übernimmt, was sich wiederholt: nimmt Anrufe an, stimmt Termine ab, bereitet Angebote und Rechnungen vor und bleibt an offenen Zahlungen dran. Was wichtig ist, gibst du frei.",
     },
     visual: {
       bereich: "Heute",
@@ -3846,7 +3846,7 @@ export const funktionInhalte: Inhalte = {
         ["2", "neue Anfragen"],
       ],
       liste: {
-        ueberschrift: "Macher hat erledigt",
+        ueberschrift: "Lotte hat erledigt",
         zeilen: [
           { titel: "Anruf von Fam. Krüger aufgenommen", sub: "Notiz mit Rückrufwunsch · 07:12", tag: "erledigt", ton: "moss" },
           { titel: "Angebot „Bad sanieren“ vorbereitet", sub: "aus dem Aufmaß · wartet auf dich", tag: "zur Freigabe", ton: "signal" },
@@ -3866,8 +3866,8 @@ export const funktionInhalte: Inhalte = {
         icon: "phone",
         funktion: "telefon-ki",
         vorher: "Anruf verpasst, auf der Mailbox ein halber Satz. Abends wartet ein Stapel Rückrufe.",
-        nachher: "Macher geht ran, fragt das Anliegen ab und legt dir eine Notiz mit Rückrufwunsch an. Den Telefonassistenten richten wir auf Anfrage für deinen Betrieb ein.",
-        duEntscheidest: "wann Macher rangeht und was er fragt",
+        nachher: "Lotte geht ran, fragt das Anliegen ab und legt dir eine Notiz mit Rückrufwunsch an. Den Telefonassistenten richten wir auf Anfrage für deinen Betrieb ein.",
+        duEntscheidest: "wann Lotte rangeht und was sie fragt",
       },
       {
         titel: "Anfragen erfassen",
@@ -3944,7 +3944,7 @@ export const funktionInhalte: Inhalte = {
     ],
     prinzipien: [
       {
-        titel: "Macher schlägt vor. Du entscheidest.",
+        titel: "Lotte schlägt vor. Du entscheidest.",
         text: "Alles, was Geld kostet oder nach außen geht, gibst du frei – so lange du willst.",
         skizze: "freigabe",
       },
@@ -3955,38 +3955,43 @@ export const funktionInhalte: Inhalte = {
       },
       {
         titel: "Alles nachvollziehbar.",
-        text: "Jede Aktion von Macher steht im Verlauf: was, wann und warum.",
+        text: "Jede Aktion von Lotte steht im Verlauf: was, wann und warum.",
         skizze: "verlauf",
       },
       {
         titel: "Ehrlich zu deinen Kunden.",
-        text: "Am Telefon und in Nachrichten sagt Macher offen, dass er der digitale Assistent deines Betriebs ist.",
+        text: "Am Telefon und in Nachrichten sagt Lotte offen, dass sie die digitale Assistentin deines Betriebs ist.",
         skizze: "ehrlich",
       },
     ],
     tagesablauf: [
-      { zeit: "06:40", text: "Tom meldet sich krank. Macher zeigt drei betroffene Einsätze und schlägt Ersatz vor." },
+      { zeit: "06:40", text: "Tom meldet sich krank. Lotte zeigt drei betroffene Einsätze und schlägt Ersatz vor." },
       { zeit: "07:15", text: "Du bestätigst vom Handy. Kunden mit geändertem Team bekommen eine Nachricht." },
-      { zeit: "09:30", text: "Zwei Anrufe, während das Büro telefoniert. Macher nimmt beide an und legt Notizen an." },
-      { zeit: "12:05", text: "Neue Anfrage übers Webformular. Fotos fehlen – Macher fragt beim Kunden nach." },
+      { zeit: "09:30", text: "Zwei Anrufe, während das Büro telefoniert. Lotte nimmt beide an und legt Notizen an." },
+      { zeit: "12:05", text: "Neue Anfrage übers Webformular. Fotos fehlen – Lotte fragt beim Kunden nach." },
       { zeit: "15:46", text: "Fr. Lindner unterschreibt die Abnahme. Die Rechnung liegt als Entwurf bereit." },
       { zeit: "17:00", text: "Für Montag fehlt die Duschrinne. Die Bestellung ist vorbereitet, du gibst sie frei." },
       { zeit: "19:30", text: "Du bist zu Hause. Der Küchentisch bleibt frei." },
     ],
     gewerke: [
-      { slug: "elektriker", text: "Viele Kleinaufträge, viele Anrufe – Macher hält dir den Rücken frei." },
+      { slug: "elektriker", text: "Viele Kleinaufträge, viele Anrufe – Lotte hält dir den Rücken frei." },
       { slug: "shk", text: "Wartung, Notdienst und Kundendienst laufen fast von selbst." },
       { slug: "maler", text: "Angebote aus dem Aufmaß, Termine ohne Telefon-Pingpong." },
     ],
     kunde: {
       slug: "elektro-brandt",
-      text: "Wie ein Elektrobetrieb die Büroarbeit Schritt für Schritt an Macher abgibt.",
+      text: "Wie ein Elektrobetrieb die Büroarbeit Schritt für Schritt an Lotte abgibt.",
     },
     faq: [
       {
-        frage: "Macht Macher auch Fehler?",
+        frage: "Wer steckt hinter Lotte?",
         antwort:
-          "Macher kann sich irren – wie jeder. Deshalb gibst du alles frei, was nach außen geht oder Geld betrifft. Alles, was Macher getan hat, kannst du im Verlauf nachlesen.",
+          "Lotte ist der KI-Agent Hey Lotte (heylotte.ai), entwickelt von Max Längsfeld und Matthias Aumann. Handwerk OS ergänzt Lotte um alles, was ein Handwerksbetrieb braucht: Kunden, Aufträge, Termine, Rechnungen. Lotte sieht dabei nur, was du auch siehst.",
+      },
+      {
+        frage: "Macht Lotte auch Fehler?",
+        antwort:
+          "Lotte kann sich irren – wie jeder. Deshalb gibst du alles frei, was nach außen geht oder Geld betrifft. Alles, was Lotte getan hat, kannst du im Verlauf nachlesen.",
       },
       {
         frage: "Muss ich alles automatisch erledigen lassen?",
@@ -3994,14 +3999,14 @@ export const funktionInhalte: Inhalte = {
           "Nein. Für jede Aufgabe entscheidest du: aus, nur vorschlagen oder selbst erledigen. Viele starten mit Vorschlägen und geben später mehr ab.",
       },
       {
-        frage: "Ist Macher eine künstliche Intelligenz?",
+        frage: "Ist Lotte eine künstliche Intelligenz?",
         antwort:
-          "Macher nutzt moderne Sprach- und Planungstechnik, damit er Anrufe versteht, Texte schreibt und Pläne vorschlägt. Für dich zählt: Er erledigt Büroarbeit – und du behältst die Kontrolle.",
+          "Lotte nutzt moderne Sprach- und Planungstechnik, damit sie Anrufe versteht, Texte schreibt und Pläne vorschlägt. Für dich zählt: Sie erledigt Büroarbeit – und du behältst die Kontrolle.",
       },
       {
-        frage: "Wie lernt Macher meinen Betrieb kennen?",
+        frage: "Wie lernt Lotte meinen Betrieb kennen?",
         antwort:
-          "Beim Start sagst du, welcher Betrieb du bist. Macher liest Gewerk und Leistungen von deiner Website oder nimmt die Vorlage deines Gewerks. Dazu kommen deine Vorlagen, Preise und Regeln. Daraus weiß Macher, wie bei dir gearbeitet wird.",
+          "Beim Start sagst du, welcher Betrieb du bist. Lotte liest Gewerk und Leistungen von deiner Website oder nimmt die Vorlage deines Gewerks. Dazu kommen deine Vorlagen, Preise und Regeln. Daraus weiß Lotte, wie bei dir gearbeitet wird.",
       },
     ],
     verwandt: ["telefon", "einsatzplanung", "rechnungen"],

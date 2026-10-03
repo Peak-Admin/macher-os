@@ -93,7 +93,7 @@ describe('Deine Arbeit – Gruppen', () => {
       basis({
         aufgaben: [aufgabe('t1', { zustaendigId: 'chef', faellig: '2026-09-30' })],
         hinweise: [
-          { schluessel: 'f1', art: 'freigabe', titel: 'Rechnungsentwurf von Macher', gewicht: 90 },
+          { schluessel: 'f1', art: 'freigabe', titel: 'Rechnungsentwurf von Lotte', gewicht: 90 },
           { schluessel: 'e1', art: 'entscheidung', titel: 'Urlaub genehmigen?', gewicht: 40 },
         ],
         angebote: [{ id: 'an1', titel: 'Bad', status: 'entwurf', kundeId: 'k1', geaendertAm: '2026-10-01T08:00:00Z', auftragId: 'au1' }],

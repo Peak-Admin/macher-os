@@ -60,7 +60,7 @@ export const allesDrin = [
   "App fürs Handy auf der Baustelle",
   "Zeiterfassung, Material & Lager",
   "Kundenbereich & Online-Terminbuchung",
-  "Macher erledigt Büroarbeit automatisch",
+  "Lotte erledigt Büroarbeit automatisch",
   "Auswertungen & Steuerberater-Export",
   "Rechte und Rollen für dein Team",
 ];

@@ -39,7 +39,7 @@ export const teil5 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat erledigt:",
+        titel: "Lotte hat erledigt:",
         text: "Einarbeitungsplan für Marco Weiß angelegt – 14 Schritte, inklusive Pflicht-Unterweisungen.",
       },
     },
@@ -64,7 +64,7 @@ export const teil5 = {
     ],
     loesung: {
       titel: "Ein Plan je Rolle – automatisch beim Anlegen.",
-      text: "Legst du einen Monteur, Azubi oder eine Bürokraft an, erstellt Macher den passenden Einarbeitungsplan. Jeder Schritt hat ein Fälligkeitsdatum ab dem Eintritt: erster Tag, erste Woche, erster Monat, Probezeit. Pflicht-Unterweisungen der Rolle sind schon drin.",
+      text: "Legst du einen Monteur, Azubi oder eine Bürokraft an, erstellt Lotte den passenden Einarbeitungsplan. Jeder Schritt hat ein Fälligkeitsdatum ab dem Eintritt: erster Tag, erste Woche, erster Monat, Probezeit. Pflicht-Unterweisungen der Rolle sind schon drin.",
       punkte: [
         "Unterlagen, Ausstattung, Zugänge, Praxis und Gespräche in einem Plan",
         "Eigener Plan für Monteure, Azubis und Büro",
@@ -89,7 +89,7 @@ export const teil5 = {
     schritte: [
       {
         titel: "Mitarbeiter anlegen",
-        text: "Name, Rolle, Eintrittsdatum. Mehr braucht Macher nicht, um den Plan zu erstellen.",
+        text: "Name, Rolle, Eintrittsdatum. Mehr braucht Lotte nicht, um den Plan zu erstellen.",
       },
       {
         titel: "Plan steht sofort",
@@ -265,7 +265,7 @@ export const teil5 = {
       },
       {
         titel: "Antworten",
-        text: "Vorlage wählen, im Mailprogramm öffnen oder Text kopieren. Den passenden Stand schlägt Macher gleich vor.",
+        text: "Vorlage wählen, im Mailprogramm öffnen oder Text kopieren. Den passenden Stand schlägt Lotte gleich vor.",
       },
       {
         titel: "Kennenlernen",
@@ -330,12 +330,12 @@ export const teil5 = {
       {
         frage: "Werden die Antworten automatisch verschickt?",
         antwort:
-          "Nein. Macher bereitet die Antwort vor, du schickst sie selbst ab. So bleibt jede Nachricht in deiner Hand.",
+          "Nein. Lotte bereitet die Antwort vor, du schickst sie selbst ab. So bleibt jede Nachricht in deiner Hand.",
       },
       {
         frage: "Was passiert mit Bewerberdaten nach einer Absage?",
         antwort:
-          "Du löschst die Bewerbung mit einem Klick. Sie kommt erst in den Papierkorb und lässt sich zurückholen. Macher erinnert dich daran, Bewerberdaten nicht länger als nötig aufzubewahren.",
+          "Du löschst die Bewerbung mit einem Klick. Sie kommt erst in den Papierkorb und lässt sich zurückholen. Lotte erinnert dich daran, Bewerberdaten nicht länger als nötig aufzubewahren.",
       },
     ],
     verwandt: ["einarbeitung", "mitarbeiter", "kalender"],
@@ -441,7 +441,7 @@ export const teil5 = {
       },
       {
         titel: "Rechtzeitig nachfordern",
-        text: "Läuft ein Nachweis ab, meldet sich Macher – 30 Tage vorher und noch einmal, wenn ein Einsatz offen ist.",
+        text: "Läuft ein Nachweis ab, meldet sich Lotte – 30 Tage vorher und noch einmal, wenn ein Einsatz offen ist.",
       },
     ],
     automatisch: [
@@ -491,9 +491,9 @@ export const teil5 = {
     werkzeug: "deckungsbeitrags-rechner",
     faq: [
       {
-        frage: "Prüft Macher die Freistellungsbescheinigung beim Finanzamt?",
+        frage: "Prüft Lotte die Freistellungsbescheinigung beim Finanzamt?",
         antwort:
-          "Nein. Du trägst den Nachweis mit Ablaufdatum ein. Macher erinnert dich, bevor er abläuft, und warnt, wenn bei einem offenen Einsatz keiner gilt.",
+          "Nein. Du trägst den Nachweis mit Ablaufdatum ein. Lotte erinnert dich, bevor er abläuft, und warnt, wenn bei einem offenen Einsatz keiner gilt.",
       },
       {
         frage: "Muss ich die Firma doppelt anlegen – als Lieferant und als Subunternehmer?",
@@ -518,7 +518,7 @@ export const teil5 = {
 
   materialbedarf: {
     icon: "cart",
-    kurz: "Macher rechnet aus, welches Material für die nächsten Aufträge fehlt – und legt die Bestellung je Lieferant an.",
+    kurz: "Lotte rechnet aus, welches Material für die nächsten Aufträge fehlt – und legt die Bestellung je Lieferant an.",
     enthalten: ["Fehlmengen je Auftrag", "Mindestbestand", "Bestellvorschlag je Lieferant"],
     meta: {
       title: "Materialbedarf im Handwerk – wissen, was für die nächsten Aufträge fehlt",
@@ -577,7 +577,7 @@ export const teil5 = {
     ],
     loesung: {
       titel: "Eine Liste: Was fehlt, für wen, ab wann.",
-      text: "Macher nimmt das geplante Material aller anstehenden Aufträge und zieht ab, was im Lager liegt und was schon bestellt ist. Bereits beiseitegelegtes Material wird nicht doppelt gezählt. Übrig bleibt die Fehlmenge – sortiert nach dem frühesten Termin und gruppiert nach Lieferant.",
+      text: "Lotte nimmt das geplante Material aller anstehenden Aufträge und zieht ab, was im Lager liegt und was schon bestellt ist. Bereits beiseitegelegtes Material wird nicht doppelt gezählt. Übrig bleibt die Fehlmenge – sortiert nach dem frühesten Termin und gruppiert nach Lieferant.",
       punkte: [
         "Fehlmenge je Artikel mit betroffenen Aufträgen",
         "Lager, beiseitegelegtes Material und offene Bestellungen sind abgezogen",
@@ -597,7 +597,7 @@ export const teil5 = {
         { label: "Frühester Termin", wert: "Montag, Neubau Fam. Sommer" },
         { label: "Fehlt", wert: "150 m", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat den Bedarf neu berechnet, nachdem der Termin bei Fam. Sommer vorgezogen wurde." },
+      fuss: { icon: "spark", text: "Lotte hat den Bedarf neu berechnet, nachdem der Termin bei Fam. Sommer vorgezogen wurde." },
     },
     schritte: [
       {
@@ -605,7 +605,7 @@ export const teil5 = {
         text: "Wie gewohnt: Material aus Angebot oder Kalkulation steht am Auftrag. Sonderteile gehen auch als Freitext.",
       },
       {
-        titel: "Macher rechnet",
+        titel: "Lotte rechnet",
         text: "Jeden Tag und bei jeder Änderung: geplantes Material minus Lager minus offene Bestellungen.",
       },
       {
@@ -663,9 +663,9 @@ export const teil5 = {
     },
     faq: [
       {
-        frage: "Bestellt Macher selbst beim Lieferanten?",
+        frage: "Bestellt Lotte selbst beim Lieferanten?",
         antwort:
-          "Nein. Macher legt Bestellentwürfe an. Bestellt ist erst, was du prüfst und abschickst.",
+          "Nein. Lotte legt Bestellentwürfe an. Bestellt ist erst, was du prüfst und abschickst.",
       },
       {
         frage: "Zählen auch Angebote, die noch nicht zugesagt sind?",
@@ -680,7 +680,7 @@ export const teil5 = {
       {
         frage: "Wie kommt der richtige Lieferant in die Bestellung?",
         antwort:
-          "Hinterlege beim Artikel einen Lieferanten. Dann bündelt Macher alles, was du bei ihm brauchst, in einer Bestellung.",
+          "Hinterlege beim Artikel einen Lieferanten. Dann bündelt Lotte alles, was du bei ihm brauchst, in einer Bestellung.",
       },
     ],
     verwandt: ["material", "einkauf", "lager"],
@@ -749,10 +749,10 @@ export const teil5 = {
     ],
     loesung: {
       titel: "Foto, drei Angaben, fertig.",
-      text: "Der Monteur fotografiert den Beleg direkt an der Kasse. Lieferant, Datum und Bruttobetrag reichen – Netto und Umsatzsteuer rechnet Macher. Das Büro prüft, ordnet zu, und Macher erinnert an Skonto und Zahlungsziel.",
+      text: "Der Monteur fotografiert den Beleg direkt an der Kasse. Lieferant, Datum und Bruttobetrag reichen – Netto und Umsatzsteuer rechnet Lotte. Das Büro prüft, ordnet zu, und Lotte erinnert an Skonto und Zahlungsziel.",
       punkte: [
         "Beleg fotografieren oder PDF hochladen – das Foto wird verkleinert",
-        "Lieferant, Datum, Brutto und Steuersatz – Netto und USt rechnet Macher",
+        "Lieferant, Datum, Brutto und Steuersatz – Netto und USt rechnet Lotte",
         "Vorschlag für den passenden Auftrag mit Begründung",
         "Stand neu, geprüft, bezahlt – mit Skonto- und Zahlungsfrist",
       ],
@@ -769,7 +769,7 @@ export const teil5 = {
         { label: "Zahlen bis", wert: "2. November" },
         { label: "Skonto 3 % bis", wert: "Freitag, 13. Oktober", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat Skonto und Zahlungsziel aus den Konditionen des Lieferanten eingetragen." },
+      fuss: { icon: "spark", text: "Lotte hat Skonto und Zahlungsziel aus den Konditionen des Lieferanten eingetragen." },
     },
     schritte: [
       {
@@ -778,7 +778,7 @@ export const teil5 = {
       },
       {
         titel: "Zuordnen",
-        text: "Passt der Beleg eindeutig zu einem Auftrag, ordnet Macher ihn zu. Sonst siehst du Vorschläge mit Begründung.",
+        text: "Passt der Beleg eindeutig zu einem Auftrag, ordnet Lotte ihn zu. Sonst siehst du Vorschläge mit Begründung.",
       },
       {
         titel: "Prüfen",
@@ -786,7 +786,7 @@ export const teil5 = {
       },
       {
         titel: "Bezahlen",
-        text: "Vor Ablauf von Skonto oder Zahlungsziel meldet sich Macher. Bezahlt? Ein Klick.",
+        text: "Vor Ablauf von Skonto oder Zahlungsziel meldet sich Lotte. Bezahlt? Ein Klick.",
       },
     ],
     automatisch: [
@@ -832,14 +832,14 @@ export const teil5 = {
     },
     faq: [
       {
-        frage: "Liest Macher Betrag und Lieferant vom Foto ab?",
+        frage: "Liest Lotte Betrag und Lieferant vom Foto ab?",
         antwort:
-          "Noch nicht. Du trägst Lieferant, Datum und Bruttobetrag ein. Netto, Umsatzsteuer, Fristen und den passenden Auftrag ergänzt Macher.",
+          "Noch nicht. Du trägst Lieferant, Datum und Bruttobetrag ein. Netto, Umsatzsteuer, Fristen und den passenden Auftrag ergänzt Lotte.",
       },
       {
-        frage: "Woher kennt Macher Skonto und Zahlungsziel?",
+        frage: "Woher kennt Lotte Skonto und Zahlungsziel?",
         antwort:
-          "Aus den Konditionen beim Lieferanten, zum Beispiel „3 % Skonto 10 Tage, 30 Tage netto“. Daraus rechnet Macher die Fristen für jeden Beleg aus.",
+          "Aus den Konditionen beim Lieferanten, zum Beispiel „3 % Skonto 10 Tage, 30 Tage netto“. Daraus rechnet Lotte die Fristen für jeden Beleg aus.",
       },
       {
         frage: "Sehen Monteure die Einkaufspreise?",
@@ -1018,7 +1018,7 @@ export const teil5 = {
       {
         frage: "Wo landen die Prüfprotokolle?",
         antwort:
-          "Beim Gerät. Du dokumentierst die Prüfung mit Ergebnis, Prüfer und Protokoll als PDF oder Foto. Die nächste Frist rechnet Macher aus.",
+          "Beim Gerät. Du dokumentierst die Prüfung mit Ergebnis, Prüfer und Protokoll als PDF oder Foto. Die nächste Frist rechnet Lotte aus.",
       },
     ],
     verwandt: ["werkzeuge", "pruefungen", "fahrzeuge"],
@@ -1087,7 +1087,7 @@ export const teil5 = {
     ],
     loesung: {
       titel: "Alle Fristen in einer Liste, früheste zuerst.",
-      text: "Für jedes Werkzeug, jede Maschine, jede Leiter und jedes Fahrzeug trägst du Prüfart und nächste Prüfung ein. Macher zeigt, was in den nächsten 30 Tagen fällig ist, was überfällig ist und wo das Gerät gerade steht. Nach der Prüfung rechnet Macher die nächste Frist selbst aus.",
+      text: "Für jedes Werkzeug, jede Maschine, jede Leiter und jedes Fahrzeug trägst du Prüfart und nächste Prüfung ein. Lotte zeigt, was in den nächsten 30 Tagen fällig ist, was überfällig ist und wo das Gerät gerade steht. Nach der Prüfung rechnet Lotte die nächste Frist selbst aus.",
       punkte: [
         "DGUV V3, TÜV/HU, UVV, Leiterprüfung, Kalibrierung und Wartung",
         "Erinnerung 30 und 14 Tage vorher",
@@ -1107,7 +1107,7 @@ export const teil5 = {
         { label: "Protokoll", wert: "PDF gespeichert" },
         { label: "Nächste Prüfung", wert: "2. Oktober nächstes Jahr", hervor: true },
       ],
-      fuss: { icon: "spark", text: "Macher hat die nächste Frist nach 12 Monaten ausgerechnet und die Erinnerung gesetzt." },
+      fuss: { icon: "spark", text: "Lotte hat die nächste Frist nach 12 Monaten ausgerechnet und die Erinnerung gesetzt." },
     },
     schritte: [
       {
@@ -1116,7 +1116,7 @@ export const teil5 = {
       },
       {
         titel: "Erinnert werden",
-        text: "30 und 14 Tage vorher meldet sich Macher. Genug Zeit für einen Termin beim Prüfer.",
+        text: "30 und 14 Tage vorher meldet sich Lotte. Genug Zeit für einen Termin beim Prüfer.",
       },
       {
         titel: "Prüfung dokumentieren",
@@ -1124,7 +1124,7 @@ export const teil5 = {
       },
       {
         titel: "Nächste Frist steht",
-        text: "Macher rechnet die nächste Prüfung nach dem Intervall aus. Die Historie bleibt beim Gerät.",
+        text: "Lotte rechnet die nächste Prüfung nach dem Intervall aus. Die Historie bleibt beim Gerät.",
       },
     ],
     automatisch: [
@@ -1147,7 +1147,7 @@ export const teil5 = {
         "Prüfhistorie und Protokolle je Gerät",
       ],
       handyVisual: {
-        kopf: "Wichtig · Nachricht von Macher",
+        kopf: "Wichtig · Nachricht von Lotte",
         titel: "Nicht verwenden: Anlegeleiter",
         sub: "Leiterprüfung war am 28. September fällig",
         tags: [{ text: "überfällig", ton: "signal" }],
@@ -1187,7 +1187,7 @@ export const teil5 = {
       {
         frage: "Kann ich alte Prüfprotokolle nachtragen?",
         antwort:
-          "Ja. Du dokumentierst eine Prüfung mit dem tatsächlichen Datum und hängst das Protokoll an. Die nächste Frist rechnet Macher ab diesem Datum.",
+          "Ja. Du dokumentierst eine Prüfung mit dem tatsächlichen Datum und hängst das Protokoll an. Die nächste Frist rechnet Lotte ab diesem Datum.",
       },
     ],
     verwandt: ["maschinen", "werkzeuge", "fahrzeuge"],

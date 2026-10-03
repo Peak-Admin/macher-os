@@ -187,7 +187,7 @@ function ArbeitstageDialog({ offen, onSchliessen }: { offen: boolean; onSchliess
   const toast = useToast();
   return (
     <Dialog offen={offen} onSchliessen={onSchliessen} titel="Arbeitstage & Feiertage" icon="kalender" aktionen={<Button onClick={onSchliessen}>Fertig</Button>}>
-      <Meta>An diesen Tagen plant Macher Einsätze und bietet Kunden Termine an. Gesetzliche Feiertage sind automatisch frei. Die Uhrzeiten stellst du in den Betriebs-Einstellungen ein.</Meta>
+      <Meta>An diesen Tagen plant Lotte Einsätze und bietet Kunden Termine an. Gesetzliche Feiertage sind automatisch frei. Die Uhrzeiten stellst du in den Betriebs-Einstellungen ein.</Meta>
       <Auswahl
         label="Bundesland"
         hilfe="Für die Feiertage deines Landes, z. B. Fronleichnam oder Reformationstag."

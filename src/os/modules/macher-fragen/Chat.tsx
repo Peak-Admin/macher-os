@@ -16,14 +16,14 @@ import { ausgehend } from '@/lib/link/ausgehend';
 
 /**
  * Der Chat – im Overlay und auf der Seite `/macher/macher-fragen` gleich.
- * `start`: aus der Suche („Macher fragen: …“) oder aus „Mit Macher vorbereiten“ (mit Absicht und Objekt vorbelegt).
+ * `start`: aus der Suche („Frag Lotte: …“) oder aus „Mit Lotte vorbereiten“ (mit Absicht und Objekt vorbelegt).
  */
 export function MacherChat({ onNavigiert, start }: { onNavigiert?: () => void; start?: MacherStart }) {
   const ich = useIch();
   const verlauf = chat.use((c) => c.mitarbeiterId === ich?.id, [ich?.id]).sort((a, b) => a.erstelltAm.localeCompare(b.erstelltAm));
   const [frage, setFrage] = useState('');
   const [laedt, setLaedt] = useState(false);
-  // Orb-Zustand, solange Macher arbeitet – aus der (vermuteten) Absicht
+  // Orb-Zustand, solange Lotte arbeitet – aus der (vermuteten) Absicht
   const [orb, setOrb] = useState<OrbZustand>('denkt');
   const ende = useRef<HTMLDivElement>(null);
   const formular = useRef<HTMLFormElement>(null);
@@ -52,7 +52,7 @@ export function MacherChat({ onNavigiert, start }: { onNavigiert?: () => void; s
     }
   };
 
-  // aus der Suche („Macher fragen: …“) oder „Mit Macher vorbereiten“ übergeben – jeder Klick fragt einmal
+  // aus der Suche („Frag Lotte: …“) oder „Mit Lotte vorbereiten“ übergeben – jeder Klick fragt einmal
   const gestellt = useRef<MacherStart | undefined>(undefined);
   useEffect(() => {
     if (start?.frage && gestellt.current !== start) {
@@ -106,7 +106,7 @@ export function MacherChat({ onNavigiert, start }: { onNavigiert?: () => void; s
       </form>
       {verlauf.length > 0 && (
         <Zeile zwischen>
-          <Meta>Antworten kommen aus deinen Daten. Aktionen führt Macher erst nach deiner Bestätigung aus.</Meta>
+          <Meta>Antworten kommen aus deinen Daten. Aktionen führt Lotte erst nach deiner Bestätigung aus.</Meta>
           <Button variante="tertiaer" klein icon="muell" onClick={leeren}>
             Verlauf leeren
           </Button>
@@ -286,7 +286,7 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
   if (v.status === 'zurueckgenommen')
     return (
       <Karte kompakt oberzeile="Rückgängig gemacht" titel={v.plan.titel}>
-        <Meta>Macher hat die Änderungen zurückgenommen.</Meta>
+        <Meta>Lotte hat die Änderungen zurückgenommen.</Meta>
       </Karte>
     );
 
@@ -318,7 +318,7 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
 
   const ausfuehren = async () => {
     // Kritisch (geht nach außen, Geld, Personal): ausdrücklich freigeben – ein zweiter Blick, bevor etwas rausgeht
-    if (kritisch && !(await bestaetigen(v.plan.titel, [...endgueltig, 'Erst mit deiner Freigabe führt Macher das aus.'].join(' '), knopf))) return;
+    if (kritisch && !(await bestaetigen(v.plan.titel, [...endgueltig, 'Erst mit deiner Freigabe führt Lotte das aus.'].join(' '), knopf))) return;
     setLaeuft(true);
     try {
       const r = await fuehrePlanAus(plan, kontextFuer(ich), { bestaetigt: true, auswahl: gewaehlt });
@@ -383,7 +383,7 @@ function PlanVorschlag({ eintrag, v, onNavigiert }: { eintrag: ChatEintrag; v: E
           <Meta key={t}>{t}</Meta>
         ))}
         <Zeile>
-          <Button icon="check" onClick={ausfuehren} laedt={laeuft} ki={orbFuer(plan.schritte.find((s) => gewaehlt.includes(s.id))?.aktion)} laedtText="Macher führt aus …" disabled={!gewaehlt.length}>
+          <Button icon="check" onClick={ausfuehren} laedt={laeuft} ki={orbFuer(plan.schritte.find((s) => gewaehlt.includes(s.id))?.aktion)} laedtText="Lotte führt aus …" disabled={!gewaehlt.length}>
             {knopf}
           </Button>
           <Button variante="tertiaer" onClick={() => setzeStatus({ status: 'verworfen' })} disabled={laeuft}>

@@ -5,7 +5,7 @@ export const teil4 = {
 
   "automatische-planung": {
     icon: "spark",
-    kurz: "Macher schlägt Termin und Team für jeden offenen Auftrag vor – mit Begründung. Du prüfst und übernimmst.",
+    kurz: "Lotte schlägt Termin und Team für jeden offenen Auftrag vor – mit Begründung. Du prüfst und übernimmst.",
     enthalten: ["Planvorschläge", "Alle offenen vorplanen", "Einsatz-Check", "Dringendes zuerst"],
     meta: {
       title: "Automatische Planung für Handwerker – Termin und Team per Vorschlag",
@@ -17,7 +17,7 @@ export const teil4 = {
       problem:
         "Wochenplanung ist ein Puzzle im Kopf vom Chef. Wer ist frei, wer darf das, wer ist am nächsten dran? Das dauert Stunden – und fällt der Chef aus, steht alles.",
       loesung:
-        "Macher plant alle offenen Aufträge vor und sagt dir zu jedem Vorschlag, warum. Du prüfst, änderst, wenn nötig, und übernimmst mit einem Klick.",
+        "Lotte plant alle offenen Aufträge vor und sagt dir zu jedem Vorschlag, warum. Du prüfst, änderst, wenn nötig, und übernimmst mit einem Klick.",
     },
     visual: {
       bereich: "Planen",
@@ -64,7 +64,7 @@ export const teil4 = {
     ],
     loesung: {
       titel: "Vorschläge, die du nachvollziehen kannst.",
-      text: "Macher schaut sich jeden Auftrag ohne Termin an und sucht das passende Team und die passende Zeit. Dabei zählen Verfügbarkeit, Qualifikation, Fahrweg vom Vortermin, Auslastung der Woche, Kundenwunsch und Dringlichkeit. Zu jedem Vorschlag steht in Klartext, warum er passt. Nichts wird eingetragen, bevor du zustimmst.",
+      text: "Lotte schaut sich jeden Auftrag ohne Termin an und sucht das passende Team und die passende Zeit. Dabei zählen Verfügbarkeit, Qualifikation, Fahrweg vom Vortermin, Auslastung der Woche, Kundenwunsch und Dringlichkeit. Zu jedem Vorschlag steht in Klartext, warum er passt. Nichts wird eingetragen, bevor du zustimmst.",
       punkte: [
         "Alle offenen Aufträge auf einmal vorplanen – mit Vorschau",
         "Begründung zu jedem Vorschlag: frei, darf das, kurzer Weg",
@@ -92,7 +92,7 @@ export const teil4 = {
         text: "Jeder beauftragte Auftrag ohne Termin erscheint in der Liste. Dringende stehen oben.",
       },
       {
-        titel: "Macher schlägt vor",
+        titel: "Lotte schlägt vor",
         text: "Team, Tag und Uhrzeit – mit Punktzahl und einer Begründung, die du in zwei Sekunden liest.",
       },
       {
@@ -101,7 +101,7 @@ export const teil4 = {
       },
       {
         titel: "Übernehmen",
-        text: "Ein Klick legt alle Termine an. Hat sich inzwischen etwas geändert, rechnet Macher neu.",
+        text: "Ein Klick legt alle Termine an. Hat sich inzwischen etwas geändert, rechnet Lotte neu.",
       },
     ],
     automatisch: [
@@ -140,9 +140,9 @@ export const teil4 = {
       },
     },
     gewerke: [
-      { slug: "shk", text: "Gasarbeiten, Notdienst, Wartungen: Macher plant nur Leute ein, die die Arbeit machen dürfen." },
-      { slug: "elektriker", text: "Für Arbeiten mit Elektrofachkraft prüft Macher, ob eine im Team ist – am Einsatztag gültig." },
-      { slug: "bau", text: "Große Gewerke über mehrere Tage: Macher verteilt die Stunden und plant zu zweit, wenn es geht." },
+      { slug: "shk", text: "Gasarbeiten, Notdienst, Wartungen: Lotte plant nur Leute ein, die die Arbeit machen dürfen." },
+      { slug: "elektriker", text: "Für Arbeiten mit Elektrofachkraft prüft Lotte, ob eine im Team ist – am Einsatztag gültig." },
+      { slug: "bau", text: "Große Gewerke über mehrere Tage: Lotte verteilt die Stunden und plant zu zweit, wenn es geht." },
     ],
     kunde: {
       slug: "haustechnik-yilmaz",
@@ -150,14 +150,14 @@ export const teil4 = {
     },
     faq: [
       {
-        frage: "Plant Macher einfach ohne mich?",
+        frage: "Plant Lotte einfach ohne mich?",
         antwort:
-          "Nein. Macher macht Vorschläge. Termine entstehen erst, wenn du auf „Übernehmen“ tippst. Bei dringenden Aufträgen liegt der Vorschlag als Freigabe für dich bereit.",
+          "Nein. Lotte macht Vorschläge. Termine entstehen erst, wenn du auf „Übernehmen“ tippst. Bei dringenden Aufträgen liegt der Vorschlag als Freigabe für dich bereit.",
       },
       {
-        frage: "Woher weiß Macher, wie lange ein Auftrag dauert?",
+        frage: "Woher weiß Lotte, wie lange ein Auftrag dauert?",
         antwort:
-          "Aus den geschätzten Stunden am Auftrag. Fehlen sie, sagt Macher dir das, statt zu raten. Was schon in Terminen steht, wird abgezogen.",
+          "Aus den geschätzten Stunden am Auftrag. Fehlen sie, sagt Lotte dir das, statt zu raten. Was schon in Terminen steht, wird abgezogen.",
       },
       {
         frage: "Was, wenn ich mit einem Vorschlag nicht einverstanden bin?",
@@ -165,7 +165,7 @@ export const teil4 = {
           "Du siehst zu jedem Auftrag mehrere Alternativen und kannst jederzeit von Hand planen. Einen übernommenen Vorschlag machst du mit einem Tipp rückgängig.",
       },
       {
-        frage: "Berücksichtigt Macher Material und Werkzeug?",
+        frage: "Berücksichtigt Lotte Material und Werkzeug?",
         antwort:
           "Ja, als Prüfung. Fehlt Material oder ist ein Gerät nicht geprüft, siehst du es am Termin und am Auftrag. Einen Termin verhindert das nicht – du entscheidest.",
       },
@@ -236,7 +236,7 @@ export const teil4 = {
     ],
     loesung: {
       titel: "Stunden, die stimmen. Pro Kopf und Woche.",
-      text: "Für jeden Mitarbeiter und jede der nächsten Wochen stellt Macher geplante und verfügbare Stunden gegenüber. Verfügbar heißt: Wochenstunden minus genehmigter Urlaub, Krankheit, Berufsschule und Feiertage. Dazu siehst du, welche Aufträge und Besichtigungen noch keinen Termin haben – das Dringendste zuerst.",
+      text: "Für jeden Mitarbeiter und jede der nächsten Wochen stellt Lotte geplante und verfügbare Stunden gegenüber. Verfügbar heißt: Wochenstunden minus genehmigter Urlaub, Krankheit, Berufsschule und Feiertage. Dazu siehst du, welche Aufträge und Besichtigungen noch keinen Termin haben – das Dringendste zuerst.",
       punkte: [
         "Geplant und verfügbar je Person – für die nächsten vier Wochen",
         "Klarer Text statt Farbe: „Überlast“, „Voll“, „Freiraum“, „Nicht da“",
@@ -361,7 +361,7 @@ export const teil4 = {
       problem:
         "Zwei Einsätze, 40 Minuten auseinander, aber nur 15 Minuten Lücke im Plan. Der Monteur kommt zu spät, der Kunde ist verärgert.",
       loesung:
-        "Macher prüft jede Lücke zwischen zwei Einsätzen, schlägt eine passende Uhrzeit vor und schickt deinen Leuten morgens die Route mit Google-Maps-Link aufs Handy.",
+        "Lotte prüft jede Lücke zwischen zwei Einsätzen, schlägt eine passende Uhrzeit vor und schickt deinen Leuten morgens die Route mit Google-Maps-Link aufs Handy.",
     },
     visual: {
       bereich: "Planen",
@@ -408,7 +408,7 @@ export const teil4 = {
     ],
     loesung: {
       titel: "Jeder Tag als Route. Mit Puffer.",
-      text: "Macher legt alle Einsätze eines Mitarbeiters in Fahrtreihenfolge und schätzt die Fahrzeit dazwischen. Reicht die Lücke nicht, siehst du das sofort – mit einer konkreten Uhrzeit als Lösung. Die ganze Tour öffnet sich mit einem Tipp in Google Maps, alle Stopps sind schon drin.",
+      text: "Lotte legt alle Einsätze eines Mitarbeiters in Fahrtreihenfolge und schätzt die Fahrzeit dazwischen. Reicht die Lücke nicht, siehst du das sofort – mit einer konkreten Uhrzeit als Lösung. Die ganze Tour öffnet sich mit einem Tipp in Google Maps, alle Stopps sind schon drin.",
       punkte: [
         "Fahrzeit und Puffer zwischen allen Einsätzen geprüft",
         "Konkreter Vorschlag: „Auf 10:40 Uhr schieben“",
@@ -436,8 +436,8 @@ export const teil4 = {
         text: "Wie gewohnt in Plantafel oder Kalender. Die Adressen kommen vom Kunden oder Einsatzort.",
       },
       {
-        titel: "Macher prüft die Lücken",
-        text: "Zwischen zwei Einsätzen muss die Fahrzeit plus Puffer passen. Sonst meldet sich Macher.",
+        titel: "Lotte prüft die Lücken",
+        text: "Zwischen zwei Einsätzen muss die Fahrzeit plus Puffer passen. Sonst meldet sich Lotte.",
       },
       {
         titel: "Mit einem Tipp lösen",
@@ -497,7 +497,7 @@ export const teil4 = {
       {
         frage: "Wie genau sind die Fahrzeiten?",
         antwort:
-          "Macher schätzt sie aus der Entfernung zwischen den Adressen. Live-Verkehr und Baustellen auf der Straße kennt Macher nicht. Ist eine Adresse nur grob bekannt, steht „grob geschätzt“ dabei.",
+          "Lotte schätzt sie aus der Entfernung zwischen den Adressen. Live-Verkehr und Baustellen auf der Straße kennt Lotte nicht. Ist eine Adresse nur grob bekannt, steht „grob geschätzt“ dabei.",
       },
       {
         frage: "Brauche ich eine eigene Navi-App?",
@@ -512,7 +512,7 @@ export const teil4 = {
       {
         frage: "Werden meine Leute per GPS verfolgt?",
         antwort:
-          "Nein. Macher rechnet nur mit den Adressen der Einsätze. Es gibt keine Standortverfolgung.",
+          "Nein. Lotte rechnet nur mit den Adressen der Einsätze. Es gibt keine Standortverfolgung.",
       },
     ],
     verwandt: ["einsatzplanung", "mein-tag", "fahrzeuge"],
@@ -773,7 +773,7 @@ export const teil4 = {
         { label: "Info an", wert: "Chef und Büro" },
         { label: "Nächster Schritt", wert: "Termine umplanen", hervor: true },
       ],
-      fuss: { icon: "bell", text: "Macher hat Chef und Büro um 06:40 Uhr Bescheid gegeben – mit beiden Terminen." },
+      fuss: { icon: "bell", text: "Lotte hat Chef und Büro um 06:40 Uhr Bescheid gegeben – mit beiden Terminen." },
     },
     schritte: [
       {
@@ -781,7 +781,7 @@ export const teil4 = {
         text: "Am Handy: Urlaub beantragen oder krank melden. Halbe Tage gehen auch.",
       },
       {
-        titel: "Macher prüft",
+        titel: "Lotte prüft",
         text: "Arbeitstage, Feiertage, Resturlaub, betroffene Termine und wer gleichzeitig weg ist.",
       },
       {
@@ -871,7 +871,7 @@ export const teil4 = {
     meta: {
       title: "Rollen und Rechte im Handwerksbetrieb – wer sieht was?",
       description:
-        "Chef, Büro, Monteur, Azubi: Leg fest, wer Preise sieht, wer plant und wer an Kunden sendet. Mit Vorschau, was jede Rolle sieht. Macher hält sich an dieselben Rechte.",
+        "Chef, Büro, Monteur, Azubi: Leg fest, wer Preise sieht, wer plant und wer an Kunden sendet. Mit Vorschau, was jede Rolle sieht. Lotte hält sich an dieselben Rechte.",
     },
     hero: {
       titel: "Jeder sieht, was er braucht. Nicht mehr.",
@@ -901,7 +901,7 @@ export const teil4 = {
         icon: "shield",
         ton: "sky",
         titel: "Gut zu wissen:",
-        text: "Macher hält sich an dieselben Rechte wie der Mensch, für den es arbeitet.",
+        text: "Lotte hält sich an dieselben Rechte wie der Mensch, für den es arbeitet.",
       },
     },
     problemTitel: "Alle sehen alles – oder keiner sieht genug.",
@@ -968,7 +968,7 @@ export const teil4 = {
     automatisch: [
       "blendet Preise, Kosten und Ertrag ohne das Recht „Preise & Geld“ aus",
       "zeigt jedem nur die Bereiche, die er nutzen darf",
-      "lässt Macher nur tun, was der jeweilige Mensch auch darf",
+      "lässt Lotte nur tun, was der jeweilige Mensch auch darf",
       "schaltet „Ansehen“ mit an, wenn ein anderes Recht dazukommt",
       "hält dem Chef immer alle Rechte frei",
       "repariert kaputte Einstellungen von selbst",
@@ -1021,9 +1021,9 @@ export const teil4 = {
           "Rechte gelten je Rolle. Braucht jemand mehr, gibst du ihm eine andere Rolle – zum Beispiel Büro statt Monteur.",
       },
       {
-        frage: "Was darf Macher, wenn es für mich arbeitet?",
+        frage: "Was darf Lotte, wenn es für mich arbeitet?",
         antwort:
-          "Genau das, was du auch darfst. Darf ein Monteur keine Rechnungen senden, kann Macher es in seinem Namen auch nicht.",
+          "Genau das, was du auch darfst. Darf ein Monteur keine Rechnungen senden, kann Lotte es in seinem Namen auch nicht.",
       },
       {
         frage: "Kann ich mich aussperren?",
@@ -1050,7 +1050,7 @@ export const teil4 = {
       problem:
         "Einmal im Jahr alle in die Werkstatt holen, Zettel vorlesen, Unterschriften sammeln. Zwei fehlen immer. Und der Ordner ist bei der Kontrolle nicht auffindbar.",
       loesung:
-        "Jeder liest die Unterweisung als kurze Punkte am Handy und bestätigt mit einem Tipp. Du siehst in einer Liste, wer auf dem Stand ist – und Macher erinnert, bevor etwas abläuft.",
+        "Jeder liest die Unterweisung als kurze Punkte am Handy und bestätigt mit einem Tipp. Du siehst in einer Liste, wer auf dem Stand ist – und Lotte erinnert, bevor etwas abläuft.",
     },
     visual: {
       bereich: "Betrieb",
@@ -1072,7 +1072,7 @@ export const teil4 = {
       hinweis: {
         icon: "bell",
         ton: "sky",
-        titel: "Macher hat erinnert:",
+        titel: "Lotte hat erinnert:",
         text: "Kevin und Tom haben eine Nachricht bekommen, „Arbeitsschutz allgemein“ zu bestätigen.",
       },
     },
@@ -1122,7 +1122,7 @@ export const teil4 = {
     schritte: [
       {
         titel: "Vorlage wählen",
-        text: "Macher legt passende Pflichtthemen für dein Gewerk an. Du änderst Text, Rollen und Intervall.",
+        text: "Lotte legt passende Pflichtthemen für dein Gewerk an. Du änderst Text, Rollen und Intervall.",
       },
       {
         titel: "Team bekommt Bescheid",

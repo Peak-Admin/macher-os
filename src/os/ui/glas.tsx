@@ -284,7 +284,7 @@ const formen = {
     linien: 'M8 26h9M31 26h9',
     flaechen: <rect x="19" y="22.5" width="10" height="7" rx="2" />,
   },
-  // Funken (Macher, KI)
+  // Funken (Lotte, KI)
   macher: {
     hinten: (
       <>

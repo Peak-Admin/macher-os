@@ -112,7 +112,7 @@ export function unterwegsAusloesen(terminId: ID, fuer?: ID): 'gesendet' | 'vorsc
 export const unterwegsAutomation: Automation = {
   id: UNTERWEGS_ID,
   titel: '„Wir sind unterwegs“ an den Kunden',
-  beschreibung: 'Fährt jemand zum Einsatz los, bekommt der Kunde eine kurze SMS (sonst E-Mail). Ohne verbundenen Versand schlägt Macher sie nur vor.',
+  beschreibung: 'Fährt jemand zum Einsatz los, bekommt der Kunde eine kurze SMS (sonst E-Mail). Ohne verbundenen Versand schlägt Lotte sie nur vor.',
   standardAn: true,
   minuten: 2,
   start: () => {

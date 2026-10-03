@@ -2,7 +2,7 @@
  * /heute/naechster-einsatz/:id/abschliessen – Einsatz per Sprache abschließen.
  *
  * 1. Sprechen (oder tippen bzw. über die Tastatur diktieren): was gemacht, was zusätzlich, wie lange, welches Material, fertig?
- * 2. „Passt das so?“ – Macher zeigt, was es verstanden hat. [Übernehmen] [Ändern]
+ * 2. „Passt das so?“ – Lotte zeigt, was es verstanden hat. [Übernehmen] [Ändern]
  * 3. Übernehmen schreibt einmal: Zeit, Material, Nachtrag, Bericht, Baustellendoku, Zeitstrahl – und beendet den Einsatz.
  */
 import { useMemo, useState, type ReactNode } from 'react';
@@ -119,7 +119,7 @@ function Abschluss({ t }: { t: Termin }) {
           ) : (
             <Meldung titel="Tipp aufs Mikrofon deiner Tastatur">Dein Browser kann hier nicht selbst zuhören. Tipp ins Feld und dann auf das Mikrofon der Tastatur – so diktierst du, auch ohne Netz.</Meldung>
           )}
-          {diktat.hoert && <MacherArbeitet zustand="hoert" text="Macher hört zu – sprich ganz normal." />}
+          {diktat.hoert && <MacherArbeitet zustand="hoert" text="Lotte hört zu – sprich ganz normal." />}
           {diktat.fehler && <Meldung ton="achtung">{diktat.fehler}</Meldung>}
           <Textfeld
             label="Dein Bericht"
@@ -227,7 +227,7 @@ function Abschluss({ t }: { t: Termin }) {
                 onChange={setStatus}
                 optionen={(['abgeschlossen', 'offen', 'problem'] as BerichtStatus[]).map((s) => ({ wert: s, label: STATUS_LABEL[s] }))}
               />
-              {plan.status === 'offen' && <Meta>Macher legt eine Aufgabe „Restarbeiten“ am Auftrag an.</Meta>}
+              {plan.status === 'offen' && <Meta>Lotte legt eine Aufgabe „Restarbeiten“ am Auftrag an.</Meta>}
               {plan.status === 'problem' && <Meta>Chef und Büro bekommen das Problem sofort gemeldet{b.statusText ? `: „${b.statusText}“` : '.'}</Meta>}
             </Zeile>
             <Zeile label="Doku">

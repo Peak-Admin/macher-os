@@ -1178,7 +1178,7 @@ export function Plantafel() {
               }
             >
               {rest != null ? (rest > 0 ? `Noch ${zahl(rest)} h einzuplanen. ` : 'Die geschätzten Stunden sind verplant. ') : ''}
-              Tipp bei Mitarbeiter und Tag auf „+“ – Macher schlägt die erste freie Zeit vor.
+              Tipp bei Mitarbeiter und Tag auf „+“ – Lotte schlägt die erste freie Zeit vor.
             </Meldung>
           )}
           {sortieren && (

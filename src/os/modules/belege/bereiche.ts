@@ -33,7 +33,7 @@ export function bereicheSpeichern(liste: string[]) {
 export interface BereichVorschlag {
   bereich: string;
   grund: string;
-  /** eindeutig genug, dass Macher selbst zuordnet (sonst nur Vorschlag zum Übernehmen) */
+  /** eindeutig genug, dass Lotte selbst zuordnet (sonst nur Vorschlag zum Übernehmen) */
   sicher: boolean;
 }
 

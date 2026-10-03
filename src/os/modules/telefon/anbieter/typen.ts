@@ -6,7 +6,7 @@
  *           in die Agent-Konfiguration des Anbieters (`einrichten`),
  *  - zurück: die Webhooks des Anbieters in normalisierte `TelefonEreignis`se (`eingangLesen`).
  *
- * Alles hinter dem Adapter (Kunde erkennen, Anfrage/Rückruf anlegen, Notfall an die Bereitschaft) ist Macher-Logik
+ * Alles hinter dem Adapter (Kunde erkennen, Anfrage/Rückruf anlegen, Notfall an die Bereitschaft) ist Lotte-Logik
  * und für jeden Anbieter gleich. Doku: `docs/os/KI-TELEFONIE.md`.
  *
  * Diese Datei enthält nur Typen – sie darf auch vom Server (Route `/api/telefon/eingang`) importiert werden.
@@ -18,7 +18,7 @@ export type FrageId = 'anliegen' | 'name' | 'adresse' | 'dringlichkeit' | 'rueck
 
 export type TranskriptZeile = NonNullable<AnrufDetails['transkript']>[number];
 
-/** Wann Macher rangeht */
+/** Wann Lotte rangeht */
 export type Annahme = 'immer' | 'keiner' | 'ausserhalb' | 'ausserhalb_keiner';
 
 /** Werkzeuge, die der Assistent während des Gesprächs aufrufen darf */
@@ -46,7 +46,7 @@ export interface WerkzeugDef {
   aktion: string;
 }
 
-/** Was Macher dem Anbieter übergibt – anbieterneutral, vollständig aus Konfiguration + Betriebsdaten erzeugt */
+/** Was Lotte dem Anbieter übergibt – anbieterneutral, vollständig aus Konfiguration + Betriebsdaten erzeugt */
 export interface AgentDefinition {
   version: 1;
   sprache: 'de-DE';
@@ -72,7 +72,7 @@ export interface AgentDefinition {
  * Pflicht: `anrufId`, `anbieter`, `von`, `beginn`, `felder`. Alles andere, soweit der Anbieter es kann.
  */
 export interface AnrufErgebnis {
-  /** Gesprächs-ID beim Anbieter – Macher erkennt damit doppelte Zustellungen */
+  /** Gesprächs-ID beim Anbieter – Lotte erkennt damit doppelte Zustellungen */
   anrufId: string;
   anbieter: string;
   /** Nummer des Anrufers; leer, wenn unterdrückt */
@@ -85,7 +85,7 @@ export interface AnrufErgebnis {
   /** abgefragte Felder laut `AgentDefinition.zielSchema` */
   felder: Partial<Record<FrageId, string>>;
   zusammenfassung?: string;
-  /** Einschätzung des Assistenten – ergänzend; Macher prüft Notfälle zuerst selbst über die Stichworte */
+  /** Einschätzung des Assistenten – ergänzend; Lotte prüft Notfälle zuerst selbst über die Stichworte */
   dringlichkeit?: AnrufDringlichkeit;
   /** Vorschlag des Assistenten für den nächsten Schritt */
   ergebnis?: 'anfrage' | 'rueckruf' | 'notiz';

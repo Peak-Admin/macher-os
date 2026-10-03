@@ -451,7 +451,7 @@ export function zuordnungVorschlagen(art: ImportArt, t: Tabelle): SpaltenVorschl
     if (z?.grund === 'name') satz = `Diese Spalte sieht nach ${label} aus`;
     else if (z?.grund === 'werte') satz = `${MUSTER_SATZ[muster[i]!]} – passt zu ${label}`;
     else if (!beispiel) satz = 'Diese Spalte ist leer und wird nicht übernommen';
-    else satz = 'Macher weiß nicht, wohin diese Spalte gehört – sie wird nicht übernommen';
+    else satz = 'Lotte weiß nicht, wohin diese Spalte gehört – sie wird nicht übernommen';
     return { spalte: i, kopf: kopf || `Spalte ${i + 1}`, feld: z?.feld, grund: z?.grund ?? 'keine', muster: muster[i], beispiel, satz };
   });
 }

@@ -40,8 +40,8 @@ export function RegelnDialog({ offen, onSchliessen }: { offen: boolean; onSchlie
           onChange={setAutoPause}
         />
         <FormRaster>
-          <ZahlEingabe label="Melden ab Plusstunden" wert={plus / 60} onWert={(n) => n != null && n > 0 && setPlus(Math.round(n * 60))} hilfe="Dann schlägt Macher freie Tage zum Abbau vor." beimVerlassen />
-          <ZahlEingabe label="Melden ab Minusstunden" wert={minus / 60} onWert={(n) => n != null && n > 0 && setMinus(Math.round(n * 60))} hilfe="Dann bittet Macher dich, die Zeiten zu prüfen." beimVerlassen />
+          <ZahlEingabe label="Melden ab Plusstunden" wert={plus / 60} onWert={(n) => n != null && n > 0 && setPlus(Math.round(n * 60))} hilfe="Dann schlägt Lotte freie Tage zum Abbau vor." beimVerlassen />
+          <ZahlEingabe label="Melden ab Minusstunden" wert={minus / 60} onWert={(n) => n != null && n > 0 && setMinus(Math.round(n * 60))} hilfe="Dann bittet Lotte dich, die Zeiten zu prüfen." beimVerlassen />
         </FormRaster>
         <Meta>Feiertage kommen aus deinem Bundesland (Plan-Einstellungen). Urlaub, Krankheit und Berufsschule zählen als erfüllte Soll-Zeit.</Meta>
       </Stapel>
@@ -84,7 +84,7 @@ export function ModellDialog({ maId, offen, onSchliessen }: { maId: ID; offen: b
       }
     >
       <Stapel abstand={16}>
-        <Meta>Stunden je Wochentag. Daraus rechnet Macher Soll, Überstunden und das Stundenkonto.</Meta>
+        <Meta>Stunden je Wochentag. Daraus rechnet Lotte Soll, Überstunden und das Stundenkonto.</Meta>
         <FormRaster spalten={3}>
           {WOCHENTAGE.map((t, i) => (
             <ZahlEingabe
@@ -151,7 +151,7 @@ export function BuchungDialog({ offen, onSchliessen, maId }: { offen: boolean; o
         )}
         <FormRaster>
           <ZahlEingabe label="Stunden" wert={f.std} onWert={(n) => setF({ ...f, std: n })} />
-          <Eingabe label={f.art === 'startsaldo' ? 'Stand am' : 'Datum'} type="date" value={f.datum} onChange={(e) => setF({ ...f, datum: e.target.value })} hilfe={f.art === 'startsaldo' ? 'Ab diesem Tag rechnet Macher weiter.' : undefined} />
+          <Eingabe label={f.art === 'startsaldo' ? 'Stand am' : 'Datum'} type="date" value={f.datum} onChange={(e) => setF({ ...f, datum: e.target.value })} hilfe={f.art === 'startsaldo' ? 'Ab diesem Tag rechnet Lotte weiter.' : undefined} />
         </FormRaster>
         <Textfeld label="Grund" value={f.grund} onChange={(e) => setF({ ...f, grund: e.target.value })} placeholder={f.art === 'auszahlung' ? 'Zum Beispiel: mit dem Oktober-Lohn ausgezahlt' : 'Zum Beispiel: Stand laut alter Stundenliste'} />
         {f.art === 'auszahlung' && <Meta>Ausgezahlte Stunden werden vom Konto abgezogen.</Meta>}

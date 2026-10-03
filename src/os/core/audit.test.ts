@@ -28,7 +28,7 @@ describe('Audit', () => {
 
   it('schreibt Klartext mit Status und Quelle', () => {
     expect(verlaufText('updated', { felder: { status: { vorher: 'entwurf', nachher: 'versendet' } } })).toBe('Geändert: Status (Entwurf → Versendet)');
-    expect(verlaufText('created', { akteur: { quelle: 'automation', id: 'x' } })).toBe('Angelegt – durch Macher');
+    expect(verlaufText('created', { akteur: { quelle: 'automation', id: 'x' } })).toBe('Angelegt – durch Lotte');
     expect(verlaufText('created', { akteur: { quelle: 'import' } })).toBe('Angelegt – durch Import');
     expect(felderText({ a: {}, b: {} })).toBe('weitere Angaben');
     expect(felderText({ titel: {}, notiz: {}, datum: {}, ende: {}, xyz: {} })).toBe('Titel, Notiz, Datum und 1 weitere');
@@ -61,7 +61,7 @@ describe('Audit', () => {
     expect(geaendert.quelle).toBe('automation');
     expect(geaendert.akteurId).toBe('test.notiz');
     expect(geaendert.vonMitarbeiterId).toBeUndefined();
-    expect(geaendert.text).toBe('Geändert: Notiz – durch Macher');
+    expect(geaendert.text).toBe('Geändert: Notiz – durch Lotte');
     setzeAutomation('test.notiz', false);
     registriereModule([]);
   });

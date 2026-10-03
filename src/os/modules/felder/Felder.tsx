@@ -114,7 +114,7 @@ export function Felder() {
   return (
     <Seite
       titel="Eigene Felder"
-      untertitel="Angaben, die Macher noch nicht kennt – z. B. die Zählernummer am Ort oder die Dachneigung beim Aufmaß."
+      untertitel="Angaben, die Lotte noch nicht kennt – z. B. die Zählernummer am Ort oder die Dachneigung beim Aufmaß."
       zurueck={{ to: '/betrieb/einstellungen', label: 'Einstellungen' }}
       aktion={
         <Button icon="plus" onClick={() => setFeldDialog({})}>
@@ -144,7 +144,7 @@ export function Felder() {
           <Leer
             icon="liste"
             titel="Noch keine eigenen Felder"
-            text="Du brauchst eine Angabe, die es in Macher nicht gibt? Leg sie als eigenes Feld an. Sie erscheint dann an jedem Kunden, Ort, Auftrag oder Termin – je nachdem, wo du sie brauchst."
+            text="Du brauchst eine Angabe, die es in Lotte nicht gibt? Leg sie als eigenes Feld an. Sie erscheint dann an jedem Kunden, Ort, Auftrag oder Termin – je nachdem, wo du sie brauchst."
             aktion={<Button onClick={() => setFeldDialog({})}>Eigenes Feld hinzufügen</Button>}
           />
         ) : (

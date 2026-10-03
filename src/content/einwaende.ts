@@ -13,7 +13,7 @@ export const kernaengste: Kernangst[] = [
   {
     angst: "Das kostet mich Zeit.",
     antwort: "In wenigen Minuten startklar.",
-    text: "Eine Frage: Welcher Betrieb bist du? Website angeben oder Gewerk antippen – den Rest richtet Macher ein.",
+    text: "Eine Frage: Welcher Betrieb bist du? Website angeben oder Gewerk antippen – den Rest richtet Lotte ein.",
     icon: "clock",
     staerke: 100,
   },

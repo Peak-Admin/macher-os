@@ -31,7 +31,7 @@ export function MitarbeiterDetail() {
     db.mitarbeiter.update(m.id, { austritt, aktiv: sofort ? false : m.aktiv }, { text: `Austritt zum ${datum(austritt)}` });
     vermerken({ typ: 'mitarbeiter', id: m.id }, 'mitarbeiter.austritt', `Austritt zum ${datum(austritt)} eingetragen`);
     setAustrittOffen(false);
-    toast(sofort ? `${m.vorname} ist ausgetreten.` : `Austritt zum ${datum(austritt)} eingetragen. Macher stellt ${m.vorname} dann automatisch auf ausgetreten.`, {
+    toast(sofort ? `${m.vorname} ist ausgetreten.` : `Austritt zum ${datum(austritt)} eingetragen. Lotte stellt ${m.vorname} dann automatisch auf ausgetreten.`, {
       aktion: { label: 'Rückgängig', onClick: () => db.mitarbeiter.update(m.id, { austritt: undefined, aktiv: true }) },
     });
   };
@@ -126,7 +126,7 @@ export function MitarbeiterDetail() {
         }
       >
         <Eingabe label="Letzter Arbeitstag" type="date" value={austritt} onChange={(e) => setAustritt(e.target.value)} />
-        <Meldung>Daten, Zeiten und Nachweise bleiben erhalten. Geplante Termine ab dem Austritt zeigt dir Macher unter „Braucht dich“ zum Umplanen.</Meldung>
+        <Meldung>Daten, Zeiten und Nachweise bleiben erhalten. Geplante Termine ab dem Austritt zeigt dir Lotte unter „Braucht dich“ zum Umplanen.</Meldung>
       </Dialog>
     </Seite>
   );

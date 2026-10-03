@@ -1,6 +1,6 @@
 /**
- * „Mit Macher vorbereiten“ – die eine gemeinsame Sekundäraktion an Angebot, Rechnung, Anfrage und Einsatzplanung.
- * Kein eigener Chat: Sie öffnet den Macher-Assistenten (wie Strg+K und Seitenleiste) mit Objekt und Absicht.
+ * „Mit Lotte vorbereiten“ – die eine gemeinsame Sekundäraktion an Angebot, Rechnung, Anfrage und Einsatzplanung.
+ * Kein eigener Chat: Sie öffnet den Lotte-Assistenten (wie Strg+K und Seitenleiste) mit Objekt und Absicht.
  * Erscheint nur, wenn es am Objekt gerade etwas vorzubereiten gibt und deine Rolle es darf.
  */
 import { useDatenstand } from '@core/db';
@@ -20,8 +20,8 @@ export function MitMacherVorbereiten({ bezug, zweck, breit, klein, nachOeffnen }
   const def = v && alleAbsichten().find((a) => a.id === v.absicht);
   if (!v || !def || (def.rechte ?? []).some((r) => !darf(r, ich))) return null;
   return (
-    <Button variante="sekundaer" icon="macher" breit={breit} klein={klein} onClick={() => mitMacherOeffnen(bezug, tag, zweck) && nachOeffnen?.()} aria-label={`Mit Macher vorbereiten: ${def.titel}`}>
-      Mit Macher vorbereiten
+    <Button variante="sekundaer" icon="macher" breit={breit} klein={klein} onClick={() => mitMacherOeffnen(bezug, tag, zweck) && nachOeffnen?.()} aria-label={`Mit Lotte vorbereiten: ${def.titel}`}>
+      Mit Lotte vorbereiten
     </Button>
   );
 }

@@ -92,7 +92,7 @@ export default defineModul({
     {
       id: 'aufgaben.auftrag-abgeschlossen',
       titel: 'Automatische Aufgaben mit dem Auftrag schließen',
-      beschreibung: 'Ist ein Auftrag erledigt oder verloren, schließt Macher die Aufgaben, die er selbst angelegt hat. Deine eigenen bleiben stehen.',
+      beschreibung: 'Ist ein Auftrag erledigt oder verloren, schließt Lotte die Aufgaben, die sie selbst angelegt hat. Deine eigenen bleiben stehen.',
       standardAn: true,
       minuten: 1,
       start: () =>

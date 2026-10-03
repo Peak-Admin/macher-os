@@ -158,7 +158,7 @@ export const mainNav: NavItem[] = [
       abschluss: [
         { label: "Alle Funktionen ansehen", href: "/funktionen" },
         { label: "Integrationen", href: "/integrationen" },
-        { label: "So arbeitet Macher automatisch", href: f("automatisch-erledigen") },
+        { label: "So arbeitet Lotte automatisch", href: f("automatisch-erledigen") },
       ],
     },
   },

@@ -138,7 +138,7 @@ export default defineModul({
       id: 'belege.zuordnen',
       titel: 'Belege dem richtigen Auftrag oder Betriebsbereich zuordnen',
       beschreibung:
-        'Passt ein Beleg eindeutig zu einem Auftrag (gleicher Lieferant, Einsatz am selben Tag), ordnet Macher ihn zu. Sonst nimmt Macher den Betriebsbereich, wenn er klar ist (Tankbeleg → Fahrzeuge, Lieferant wie beim letzten Mal). Du kannst es rückgängig machen.',
+        'Passt ein Beleg eindeutig zu einem Auftrag (gleicher Lieferant, Einsatz am selben Tag), ordnet Lotte ihn zu. Sonst nimmt Lotte den Betriebsbereich, wenn er klar ist (Tankbeleg → Fahrzeuge, Lieferant wie beim letzten Mal). Du kannst es rückgängig machen.',
       standardAn: true,
       minuten: 2,
       start: () =>
@@ -149,7 +149,7 @@ export default defineModul({
           if (!v) {
             const bv = bereichVorschlag(b);
             if (!bv?.sicher) return;
-            belegAendern(b.id, { bereich: bv.bereich, zuordnungGrund: bv.grund }, { text: `Macher hat den Bereich ${bv.bereich} zugeordnet` });
+            belegAendern(b.id, { bereich: bv.bereich, zuordnungGrund: bv.grund }, { text: `Lotte hat den Bereich ${bv.bereich} zugeordnet` });
             erledigt('belege.zuordnen', `Beleg von ${lieferantName(b)} dem Bereich ${bv.bereich} zugeordnet`, {
               text: bv.grund,
               bezug: { typ: 'belege', id: b.id },
@@ -159,7 +159,7 @@ export default defineModul({
           }
           const a = db.auftraege.get(v.auftragId);
           const grund = v.gruende.join(' · ');
-          belegAendern(b.id, { auftragId: v.auftragId, zuordnungGrund: grund }, { text: `Macher hat ${a?.nummer} zugeordnet` });
+          belegAendern(b.id, { auftragId: v.auftragId, zuordnungGrund: grund }, { text: `Lotte hat ${a?.nummer} zugeordnet` });
           erledigt('belege.zuordnen', `Beleg von ${lieferantName(b)} zu ${a?.nummer} zugeordnet`, {
             text: grund,
             bezug: { typ: 'belege', id: b.id },
@@ -184,7 +184,7 @@ export default defineModul({
     {
       id: 'belege.fristen',
       titel: 'Zahlungsziel und Skonto aus den Lieferanten-Konditionen',
-      beschreibung: 'Steht beim Lieferanten z. B. „3 % Skonto 10 Tage, 30 Tage netto“, trägt Macher die Fristen am Beleg ein.',
+      beschreibung: 'Steht beim Lieferanten z. B. „3 % Skonto 10 Tage, 30 Tage netto“, trägt Lotte die Fristen am Beleg ein.',
       standardAn: true,
       minuten: 1,
       start: () =>

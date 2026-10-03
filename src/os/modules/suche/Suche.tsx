@@ -11,7 +11,7 @@ import { erfassen } from '@ui/objekt';
 import { ALLE, artFilter, artLabel, bezugAus, gruppieren, merkeGeoeffnet, merkeSuche, ohneDoppelte, schnellaktion, sortieren, trefferZeit, type Geoeffnet, type Sortierung } from './daten';
 import { funktionsTreffer } from '../../shell/struktur';
 
-/** Klingt die Eingabe nach einer Frage? Dann steht „Macher fragen“ ganz oben statt am Ende. */
+/** Klingt die Eingabe nach einer Frage? Dann steht „Frag Lotte“ ganz oben statt am Ende. */
 export function istFrage(q: string) {
   const t = q.trim().toLowerCase();
   return t.endsWith('?') || /^(wer|wie|was|wann|wo|wieso|warum|welche[rsmn]?|gibt|zeig|erstell|leg|plan|schreib)\b/.test(t) || t.split(/\s+/).length >= 5;
@@ -19,7 +19,7 @@ export function istFrage(q: string) {
 
 /**
  * Suchen oder fragen: Suchfeld, Filter nach Art, gruppierte Treffer mit je einer Nebenaktion,
- * dazu immer eine Zeile „Macher fragen“. Pfeiltasten/Enter wählen, Tab erreicht die Nebenaktionen.
+ * dazu immer eine Zeile „Frag Lotte“. Pfeiltasten/Enter wählen, Tab erreicht die Nebenaktionen.
  * Ohne Suchbegriff: häufige Aktionen, zuletzt geöffnet, zuletzt gesucht. Im Overlay und auf der Seite gleich.
  */
 export function SuchKern({ onFertig }: { onFertig?: () => void }) {
@@ -115,14 +115,14 @@ export function SuchKern({ onFertig }: { onFertig?: () => void }) {
 
   const frageZeile = frage && (
     <Liste>
-      <ListenZeile titel={`Macher fragen: „${frage}“`} untertitel="Antwort aus deinen Daten" links={<KiKugel groesse={24} />} aktiv={aktiv === frageIndex} onClick={fragen} />
+      <ListenZeile titel={`Frag Lotte: „${frage}“`} untertitel="Antwort aus deinen Daten" links={<KiKugel groesse={24} />} aktiv={aktiv === frageIndex} onClick={fragen} />
     </Liste>
   );
 
   let i = versatz - 1;
   return (
     <div className="mm-stapel" style={{ gap: 16 }} onKeyDown={taste}>
-      <Suchfeld ki wert={q} onChange={setQ} platzhalter="Frag Macher oder such etwas …" autoFocus />
+      <Suchfeld ki wert={q} onChange={setQ} platzhalter="Frag Lotte oder such etwas …" autoFocus />
       {!frage ? (
         <OhneSuchbegriff
           rechte={rechte}
@@ -162,7 +162,7 @@ export function SuchKern({ onFertig }: { onFertig?: () => void }) {
               </Liste>
             </div>
           ))}
-          {!flach.length && !istFrage(frage) && <Meta>Zu „{frage}“ gibt es keine Treffer in deinen Daten. Prüfe die Schreibweise oder frag Macher.</Meta>}
+          {!flach.length && !istFrage(frage) && <Meta>Zu „{frage}“ gibt es keine Treffer in deinen Daten. Prüfe die Schreibweise oder frag Lotte.</Meta>}
           {!frageOben && frageZeile}
           <Meta>↑ ↓ zum Wählen · Enter zum Öffnen · Tab zu den Aktionen · Esc zum Schließen</Meta>
         </div>
@@ -251,7 +251,7 @@ function OhneSuchbegriff({
           skizze
           icon="suche"
           titel="Was suchst du?"
-          text="Tippe einen Namen, eine Auftrags- oder Rechnungsnummer, einen Ort oder ein Stichwort. Oder stell Macher eine Frage, zum Beispiel „Welche Rechnungen sind offen?“."
+          text="Tippe einen Namen, eine Auftrags- oder Rechnungsnummer, einen Ort oder ein Stichwort. Oder stell Lotte eine Frage, zum Beispiel „Welche Rechnungen sind offen?“."
         />
       )}
     </Stapel>

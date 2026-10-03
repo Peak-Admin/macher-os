@@ -124,7 +124,7 @@ export function NachweisDialog({ offen, onSchliessen, subId }: { offen: boolean;
   const speichern = () => {
     const sub = subunternehmer.get(subId);
     if (!sub) return;
-    if (art !== 'sonstiges' && !gueltigBis) return setFehler('Trag ein, bis wann der Nachweis gilt – dann erinnert Macher dich rechtzeitig.');
+    if (art !== 'sonstiges' && !gueltigBis) return setFehler('Trag ein, bis wann der Nachweis gilt – dann erinnert Lotte dich rechtzeitig.');
     const doc = dokument
       ? db.dokumente.create({ art: dokument.mime === 'application/pdf' ? 'pdf' : 'foto', titel: `${info?.label} – ${subName(sub)}`, url: dokument.url, mime: dokument.mime, groesse: Math.round((dokument.url.length * 3) / 4), tags: ['nachweis', 'subunternehmer'] })
       : undefined;

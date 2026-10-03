@@ -87,7 +87,7 @@ export interface DokumentArt {
   pfad: (id: ID) => string;
   /** Am Auftrag erzeugen – gibt den Pfad des (neuen oder vorhandenen) Entwurfs zurück. Ohne: nicht am Auftrag erzeugbar. */
   erzeugen?: (auftragId: ID) => string | undefined;
-  /** In diesen Phasen schlägt Macher die Art beim Erstellen vor */
+  /** In diesen Phasen schlägt Lotte die Art beim Erstellen vor */
   phasen?: Phase[];
 }
 
@@ -120,7 +120,7 @@ export const DOKUMENT_ARTEN: DokumentArt[] = [
   { id: 'baustellenbericht', label: 'Baustellenbericht', text: 'Was heute auf der Baustelle passiert ist.', gruppe: 'ausfuehrung', quelle: 'berichte', druck: berichtDruck, pfad: berichtPfad, erzeugen: bericht('tagesbericht'), phasen: ['in_arbeit'] },
   { id: 'pruefprotokoll', label: 'Prüfprotokoll', text: 'Prüfpunkte mit Ergebnis und Messwerten.', gruppe: 'ausfuehrung', quelle: 'berichte', unterschrift: true, druck: berichtDruck, pfad: berichtPfad, erzeugen: bericht('pruefprotokoll'), phasen: ['in_arbeit', 'abnahme'] },
   { id: 'abnahme', label: 'Abnahme', text: 'Fertigstellung, Mängel und Unterschrift.', gruppe: 'ausfuehrung', quelle: 'abnahmen', unterschrift: true, druck: (id) => `/druck/abnahme/${id}`, pfad: (id) => `/auftraege/abnahme/${id}`, erzeugen: (a) => `/auftraege/abnahme/${abnahmeStarten(a).id}`, phasen: ['in_arbeit', 'abnahme'] },
-  { id: 'rechnung', label: 'Rechnung', text: 'Macher wählt Rechnung oder Schlussrechnung passend.', gruppe: 'abrechnung', quelle: 'rechnungen', geld: true, eRechnung: true, druck: rechnungDruck, pfad: rechnungPfad, erzeugen: (a) => rechnung(passendeArt(a))(a), phasen: ['abnahme', 'abrechnung'] },
+  { id: 'rechnung', label: 'Rechnung', text: 'Lotte wählt Rechnung oder Schlussrechnung passend.', gruppe: 'abrechnung', quelle: 'rechnungen', geld: true, eRechnung: true, druck: rechnungDruck, pfad: rechnungPfad, erzeugen: (a) => rechnung(passendeArt(a))(a), phasen: ['abnahme', 'abrechnung'] },
   { id: 'abschlagsrechnung', label: 'Abschlagsrechnung', text: 'Teil des Angebots vorab.', gruppe: 'abrechnung', quelle: 'rechnungen', geld: true, eRechnung: true, druck: rechnungDruck, pfad: rechnungPfad, erzeugen: rechnung('abschlag'), phasen: ['beauftragt', 'in_arbeit'] },
   { id: 'teilrechnung', label: 'Teilrechnung', text: 'Fertiger Teil der Leistung.', gruppe: 'abrechnung', quelle: 'rechnungen', geld: true, eRechnung: true, druck: rechnungDruck, pfad: rechnungPfad, erzeugen: rechnung('teil') },
   { id: 'schlussrechnung', label: 'Schlussrechnung', text: 'Alles, abzüglich gezahlter Abschläge.', gruppe: 'abrechnung', quelle: 'rechnungen', geld: true, eRechnung: true, druck: rechnungDruck, pfad: rechnungPfad, erzeugen: rechnung('schluss') },
@@ -225,7 +225,7 @@ export function dokumenteZumAuftrag(auftragId: ID, geld = true): DokumentEintrag
   return liste.sort((a, b) => b.datum.localeCompare(a.datum));
 }
 
-/** Was Macher am Auftrag zum Erstellen vorschlägt: passend zur Phase zuerst, Preis-Dokumente nur mit Geld-Recht */
+/** Was Lotte am Auftrag zum Erstellen vorschlägt: passend zur Phase zuerst, Preis-Dokumente nur mit Geld-Recht */
 export function erstellbareArten(a: Auftrag, geld = true): { art: DokumentArt; vorschlag: boolean }[] {
   return DOKUMENT_ARTEN.filter((x) => x.erzeugen && (geld || !x.geld))
     .filter((x) => x.id !== 'teilrechnung' && x.id !== 'schlussrechnung' && x.id !== 'gutschrift') // stehen hinter „Rechnung“ → Weitere Optionen

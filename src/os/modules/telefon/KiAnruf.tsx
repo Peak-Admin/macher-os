@@ -44,7 +44,7 @@ export function Transkript({ zeilen }: { zeilen: AnrufDetails['transkript'] }) {
     <ol className="tel-transkript">
       {zeilen.map((z, i) => (
         <li key={i}>
-          <strong>{z.wer === 'assistent' ? 'Macher' : 'Anrufer'}:</strong> {z.text}
+          <strong>{z.wer === 'assistent' ? 'Lotte' : 'Anrufer'}:</strong> {z.text}
         </li>
       ))}
     </ol>
@@ -70,7 +70,7 @@ export function KiAnrufZeile({ n }: { n: Nachricht }) {
           <span className="mm-meta">{[wer, `${relativ(d.beginn || n.erstelltAm)}, ${uhrzeit(d.beginn || n.erstelltAm)}`, ergebnis, a ? `${a.nummer} · ${a.titel}` : null].filter(Boolean).join(' · ')}</span>
         </span>
         <span className="mm-listenzeile-rechts">
-          <Status icon={false}>Von Macher angenommen</Status>
+          <Status icon={false}>Von Lotte angenommen</Status>
           <DringlichkeitStatus d={d.dringlichkeit} />
           {d.status === 'fehler' && <Status ton="achtung">Nicht eingetragen</Status>}
         </span>

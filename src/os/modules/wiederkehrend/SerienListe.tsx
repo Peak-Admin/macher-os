@@ -20,7 +20,7 @@ export function SerienListe() {
   return (
     <Seite
       titel="Wiederkehrende Termine"
-      untertitel="Einmal festlegen – Macher trägt die Termine für die nächsten Monate automatisch ein."
+      untertitel="Einmal festlegen – Lotte trägt die Termine für die nächsten Monate automatisch ein."
       aktion={<Button icon="plus" to="/plan/wiederkehrend/neu">Serie anlegen</Button>}
     >
       {konflikte.length > 0 && (

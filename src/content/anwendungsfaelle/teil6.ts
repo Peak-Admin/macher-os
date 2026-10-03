@@ -64,7 +64,7 @@ export const teil6 = {
     ],
     loesung: {
       titel: "Soll und Ist an einer Stelle – ohne Zusammensuchen.",
-      text: "Das Soll kommt aus deiner Kalkulation, dem angenommenen Angebot oder den geplanten Stunden am Auftrag. Das Ist kommt aus der Zeiterfassung, dem verbrauchten Material und den Belegen am Auftrag. Macher rechnet beides gegeneinander und sagt dir in Worten, wo es gehakt hat.",
+      text: "Das Soll kommt aus deiner Kalkulation, dem angenommenen Angebot oder den geplanten Stunden am Auftrag. Das Ist kommt aus der Zeiterfassung, dem verbrauchten Material und den Belegen am Auftrag. Lotte rechnet beides gegeneinander und sagt dir in Worten, wo es gehakt hat.",
       punkte: [
         "Stunden, Material und Gesamtkosten im Vergleich",
         "Erklärung in ganzen Sätzen statt nur Prozentzahlen",
@@ -101,7 +101,7 @@ export const teil6 = {
       },
       {
         titel: "Nächstes Angebot stimmt besser",
-        text: "Weicht eine Leistung bei mehreren Aufträgen deutlich ab, schlägt Macher eine neue Zeit vor. Ein Klick, und sie gilt.",
+        text: "Weicht eine Leistung bei mehreren Aufträgen deutlich ab, schlägt Lotte eine neue Zeit vor. Ein Klick, und sie gilt.",
       },
     ],
     automatisch: [
@@ -153,7 +153,7 @@ export const teil6 = {
       {
         frage: "Woher kommen die geplanten Werte?",
         antwort:
-          "Aus deiner Kalkulation, wenn es eine gibt. Sonst aus den geplanten Stunden am Auftrag oder aus dem angenommenen Angebot. Macher zeigt dir immer, welche Quelle gilt.",
+          "Aus deiner Kalkulation, wenn es eine gibt. Sonst aus den geplanten Stunden am Auftrag oder aus dem angenommenen Angebot. Lotte zeigt dir immer, welche Quelle gilt.",
       },
       {
         frage: "Ist der Deckungsbeitrag mein Gewinn?",
@@ -168,7 +168,7 @@ export const teil6 = {
       {
         frage: "Was passiert, wenn Zeiten fehlen?",
         antwort:
-          "Macher sagt es dir dazu – zum Beispiel, wenn eine Zeit kein Ende hat oder bei einem Mitarbeiter der Kostensatz fehlt. So weißt du, ob du der Zahl trauen kannst.",
+          "Lotte sagt es dir dazu – zum Beispiel, wenn eine Zeit kein Ende hat oder bei einem Mitarbeiter der Kostensatz fehlt. So weißt du, ob du der Zahl trauen kannst.",
       },
     ],
     verwandt: ["kalkulation", "zeiterfassung", "auswertung"],
@@ -212,7 +212,7 @@ export const teil6 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat weitergeschaltet:",
+        titel: "Lotte hat weitergeschaltet:",
         text: "2 Aufträge auf „Warten auf Kunde“, weil die Angebote verschickt sind.",
       },
     },
@@ -237,7 +237,7 @@ export const teil6 = {
     ],
     loesung: {
       titel: "Feste Schritte, klare Zuständige, Erinnerung zur rechten Zeit.",
-      text: "Du startest mit Abläufen aus der Vorlage für dein Gewerk: für Projekte mit Angebot, für Kundendienst, Wartung und Reklamation. Jeder Schritt sagt, wer sich kümmert und bis wann. Macher erkennt an den Daten, wann ein Schritt erledigt ist – zum Beispiel, wenn das Angebot verschickt oder der Termin eingeplant ist.",
+      text: "Du startest mit Abläufen aus der Vorlage für dein Gewerk: für Projekte mit Angebot, für Kundendienst, Wartung und Reklamation. Jeder Schritt sagt, wer sich kümmert und bis wann. Lotte erkennt an den Daten, wann ein Schritt erledigt ist – zum Beispiel, wenn das Angebot verschickt oder der Termin eingeplant ist.",
       punkte: [
         "Abläufe je Auftragsart, passend zu deinem Gewerk",
         "Zuständiger und Frist für jeden Schritt",
@@ -269,7 +269,7 @@ export const teil6 = {
         text: "Je nach Auftragsart gilt der passende Ablauf. Am Auftrag siehst du, wo er steht und was als Nächstes kommt.",
       },
       {
-        titel: "Macher geht mit",
+        titel: "Lotte geht mit",
         text: "Angebot verschickt, Termin eingeplant, Rechnung raus: Der Schritt wechselt von selbst. Den Rest hakst du mit „Erledigt“ ab.",
       },
       {
@@ -384,7 +384,7 @@ export const teil6 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat erledigt:",
+        titel: "Lotte hat erledigt:",
         text: "Anleitung „Ablauf Wartung Gas-Brennwert“ bei 3 Wartungsaufträgen vermerkt.",
       },
     },
@@ -442,7 +442,7 @@ export const teil6 = {
       },
       {
         titel: "Verknüpfen",
-        text: "Gewerk, Anlagentyp oder Leistung auswählen. Daran erkennt Macher, wann die Anleitung gebraucht wird.",
+        text: "Gewerk, Anlagentyp oder Leistung auswählen. Daran erkennt Lotte, wann die Anleitung gebraucht wird.",
       },
       {
         titel: "Vor Ort griffbereit",
@@ -580,7 +580,7 @@ export const teil6 = {
     ],
     loesung: {
       titel: "Ein Export, eine Checkliste, ein fester Ablauf.",
-      text: "Du wählst den Monat, Handwerk OS zeigt Rechnungen und Belege mit Buchungen. Konten, Debitoren- und Kreditorennummern vergibt Macher selbst. Du lädst den Buchungsstapel herunter und schickst ihn deinem Steuerberater oder lädst ihn in DATEV hoch.",
+      text: "Du wählst den Monat, Handwerk OS zeigt Rechnungen und Belege mit Buchungen. Konten, Debitoren- und Kreditorennummern vergibt Lotte selbst. Du lädst den Buchungsstapel herunter und schickst ihn deinem Steuerberater oder lädst ihn in DATEV hoch.",
       punkte: [
         "Buchungsstapel im DATEV-Format, SKR03 oder SKR04",
         "Schon exportierte Belege werden erkannt und nicht doppelt übergeben",
@@ -617,7 +617,7 @@ export const teil6 = {
       },
       {
         titel: "An den Steuerberater",
-        text: "Datei per E-Mail schicken oder in DATEV hochladen. Macher merkt sich, was übergeben ist.",
+        text: "Datei per E-Mail schicken oder in DATEV hochladen. Lotte merkt sich, was übergeben ist.",
       },
     ],
     automatisch: [
@@ -656,7 +656,7 @@ export const teil6 = {
       },
     },
     gewerke: [
-      { slug: "bau", text: "Viele Eingangsrechnungen von Lieferanten und Subunternehmern – mit Kreditorennummern, die Macher selbst vergibt." },
+      { slug: "bau", text: "Viele Eingangsrechnungen von Lieferanten und Subunternehmern – mit Kreditorennummern, die Lotte selbst vergibt." },
       { slug: "galabau", text: "Baumarkt-Bons und Tankquittungen aus der Saison landen vollständig beim Steuerberater." },
       { slug: "maler", text: "Kleiner Betrieb, kein eigenes Büro: Die Checkliste sagt dir, was am Monatsende noch fehlt." },
     ],
@@ -683,7 +683,7 @@ export const teil6 = {
       {
         frage: "Was, wenn die Datei verloren geht?",
         antwort:
-          "Du erstellst den Export einfach noch einmal. Macher warnt, dass die Belege schon exportiert sind, und lässt dich den Export bewusst wiederholen.",
+          "Du erstellst den Export einfach noch einmal. Lotte warnt, dass die Belege schon exportiert sind, und lässt dich den Export bewusst wiederholen.",
       },
     ],
     verwandt: ["belege", "rechnungen", "schnittstellen"],
@@ -721,7 +721,7 @@ export const teil6 = {
         zeilen: [
           { titel: "DATANORM", sub: "Zuletzt am 29.09.: 1.204 Artikel eingelesen", tag: "Verbunden", ton: "moss" },
           { titel: "Kontoauszug", sub: "Zuletzt eingelesen am 01.10.", tag: "Verbunden", ton: "moss" },
-          { titel: "IDS Connect", sub: "Bis dahin Bestellungen in Macher anlegen", tag: "Geplant", ton: "ink" },
+          { titel: "IDS Connect", sub: "Bis dahin Bestellungen in Lotte anlegen", tag: "Geplant", ton: "ink" },
         ],
       },
       hinweis: {
@@ -785,7 +785,7 @@ export const teil6 = {
       },
       {
         titel: "Prüfen und übernehmen",
-        text: "Macher zeigt, was neu ist und was sich ändert. Vorhandenes wird aktualisiert, nicht verdoppelt.",
+        text: "Lotte zeigt, was neu ist und was sich ändert. Vorhandenes wird aktualisiert, nicht verdoppelt.",
       },
       {
         titel: "Weitergeben",
@@ -899,7 +899,7 @@ export const teil6 = {
       hinweis: {
         icon: "spark",
         ton: "moss",
-        titel: "Macher hat erkannt:",
+        titel: "Lotte hat erkannt:",
         text: "Die Datei enthält Kunden. 9 Spalten sind zugeordnet – „Kd-Nr.“ als Kundennummer.",
       },
     },
@@ -935,7 +935,7 @@ export const teil6 = {
     detail: {
       kopf: "Import · Offene Rechnungen",
       titel: "offene-posten.xlsx",
-      sub: "Macher hat „Offene Rechnungen“ erkannt",
+      sub: "Lotte hat „Offene Rechnungen“ erkannt",
       status: { text: "Vorschau", ton: "sky" },
       zeilen: [
         { label: "Neu", wert: "23 Rechnungen" },
@@ -952,8 +952,8 @@ export const teil6 = {
         text: "Excel oder CSV aus deinem alten Programm. Die erste Zeile braucht Überschriften – mehr nicht.",
       },
       {
-        titel: "Macher erkennt den Inhalt",
-        text: "Kunden, Artikel oder Rechnungen? Macher schaut auf Spaltennamen und Werte und schlägt die Zuordnung vor.",
+        titel: "Lotte erkennt den Inhalt",
+        text: "Kunden, Artikel oder Rechnungen? Lotte schaut auf Spaltennamen und Werte und schlägt die Zuordnung vor.",
       },
       {
         titel: "Vorschau prüfen",
@@ -1017,7 +1017,7 @@ export const teil6 = {
       {
         frage: "Was passiert mit Kunden, die schon drin sind?",
         antwort:
-          "Macher erkennt doppelte Einträge – im Bestand und in der Datei – und lässt sie weg. In der Vorschau siehst du genau, welche Zeilen das sind.",
+          "Lotte erkennt doppelte Einträge – im Bestand und in der Datei – und lässt sie weg. In der Vorschau siehst du genau, welche Zeilen das sind.",
       },
       {
         frage: "Kann ich einen Import zurücknehmen?",

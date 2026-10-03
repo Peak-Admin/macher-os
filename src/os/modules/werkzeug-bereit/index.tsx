@@ -62,7 +62,7 @@ export default defineModul({
     {
       id: AUTOMATION,
       titel: 'Werkzeug & Fahrzeug beim Einplanen prüfen',
-      beschreibung: 'Wird ein Einsatz geplant oder geändert, prüft Macher Zustand, Prüffrist und Doppelbelegung der Betriebsmittel.',
+      beschreibung: 'Wird ein Einsatz geplant oder geändert, prüft Lotte Zustand, Prüffrist und Doppelbelegung der Betriebsmittel.',
       standardAn: true,
       minuten: 3,
       start: () => {

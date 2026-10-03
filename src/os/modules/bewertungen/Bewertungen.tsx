@@ -38,11 +38,11 @@ export function BewertungenSeite() {
   const ohneEmpfehler = kunden.filter((k) => k.quelle === 'empfehlung' && !alle.some((b) => b.art === 'empfehlung' && b.kundeId === k.id));
 
   return (
-    <Seite titel="Bewertungen & Empfehlungen" untertitel="Nach erledigter Arbeit fragt Macher für dich nach einer Bewertung. Du gibst nur frei.">
+    <Seite titel="Bewertungen & Empfehlungen" untertitel="Nach erledigter Arbeit fragt Lotte für dich nach einer Bewertung. Du gibst nur frei.">
       <Stapel abstand={24}>
         {!link && tab !== 'einstellung' && (
           <Meldung ton="achtung" titel="Google-Bewertungslink fehlt" aktion={<Button klein variante="sekundaer" onClick={() => setParams({ tab: 'einstellung' })}>Eintragen</Button>}>
-            Ohne Link kann Macher keine Anfragen verschicken.
+            Ohne Link kann Lotte keine Anfragen verschicken.
           </Meldung>
         )}
         <Tabs
@@ -101,8 +101,8 @@ function Anfragen({ liste }: { liste: Bewertung[] }) {
   return (
     <Stapel abstand={24}>
 
-      <Abschnitt titel="Freigeben" hinweis="Vorbereitet nach erledigten Aufträgen. Reklamationen und unzufriedene Kunden lässt Macher aus.">
-        <Liste leer={<Leer titel="Nichts freizugeben" text="Sobald ein Auftrag erledigt ist, bereitet Macher die Bewertungsanfrage hier vor." icon="check" />}>
+      <Abschnitt titel="Freigeben" hinweis="Vorbereitet nach erledigten Aufträgen. Reklamationen und unzufriedene Kunden lässt Lotte aus.">
+        <Liste leer={<Leer titel="Nichts freizugeben" text="Sobald ein Auftrag erledigt ist, bereitet Lotte die Bewertungsanfrage hier vor." icon="check" />}>
           {vorbereitet.map((b) =>
             zeile(
               b,
@@ -326,7 +326,7 @@ function Einstellung() {
       <Karte titel="So sieht die Anfrage aus" icon="mail">
         <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', margin: 0 }}>{anfrageText({ name: 'Familie Muster', art: 'privat', ansprechpartner: [] }, betrieb, link || '[dein Google-Link]')}</pre>
       </Karte>
-      <Meldung titel="Keine erfundenen Bewertungen">Macher fragt nur echte Kunden nach echter Arbeit. Bewertungen werden nie automatisch geschrieben oder geschönt.</Meldung>
+      <Meldung titel="Keine erfundenen Bewertungen">Lotte fragt nur echte Kunden nach echter Arbeit. Bewertungen werden nie automatisch geschrieben oder geschönt.</Meldung>
     </Stapel>
   );
 }

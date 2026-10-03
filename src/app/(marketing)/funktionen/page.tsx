@@ -11,6 +11,7 @@ import {
   FaqJsonLd,
   Icon,
   IconTile,
+  Lotte,
   Section,
   SectionHeading,
   type FaqItem,
@@ -59,7 +60,7 @@ const ablauf: { gruppe: FunktionGruppe; titel: string; text: string; icon: IconN
   },
   {
     gruppe: "macher",
-    titel: "Macher",
+    titel: "Lotte",
     text: "Arbeit, die automatisch erledigt wird.",
     icon: "spark",
     kette: ["Anrufe", "Termine", "Erinnerungen"],
@@ -103,9 +104,9 @@ const faq: FaqItem[] = [
       "Nein. Alles steckt in Handwerk OS und greift ineinander. Ein Auftrag kennt seinen Kunden, seine Termine, sein Material und seine Stunden.",
   },
   {
-    frage: "Was heißt „Macher erledigt“?",
+    frage: "Was heißt „Lotte erledigt“?",
     antwort:
-      "Macher übernimmt wiederkehrende Büroarbeit: Anrufe annehmen, Termine abstimmen, Angebote und Rechnungen vorbereiten, an Zahlungen erinnern. Was nach außen geht oder Geld kostet, gibst du frei.",
+      "Lotte übernimmt wiederkehrende Büroarbeit: Anrufe annehmen, Termine abstimmen, Angebote und Rechnungen vorbereiten, an Zahlungen erinnern. Was nach außen geht oder Geld kostet, gibst du frei.",
   },
   {
     frage: "Passt Handwerk OS zu meinem Gewerk?",
@@ -167,7 +168,9 @@ export default function FunktionenPage() {
                 }`}
               >
                 {b.gruppe === "macher" ? (
-                  <IconTile name={b.icon} tone="signal" />
+                  <span className="-mx-2 -mt-2 flex aspect-[4/3] items-end justify-center overflow-hidden rounded-xl bg-white/5">
+                    <Lotte pose="erklaert" dekorativ className="w-3/4 translate-y-[18%]" sizes="240px" />
+                  </span>
                 ) : (
                   <Objekt objekt={{ auftraege: "klemmbrett", planen: "zollstock", betrieb: "handschuhe" }[b.gruppe as "auftraege" | "planen" | "betrieb"] as ObjektSchluessel} className="-mx-2 -mt-2" />
                 )}
@@ -218,7 +221,7 @@ export default function FunktionenPage() {
         </div>
       </Section>
 
-      {/* Macher erledigt */}
+      {/* Lotte erledigt */}
       <Section tone="ink" id="macher" className="scroll-mt-16">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
           <div>
@@ -233,7 +236,7 @@ export default function FunktionenPage() {
               href={funktionHref("automatisch-erledigen")}
               className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
             >
-              Was Macher automatisch erledigt <Icon name="arrow-right" className="size-4" />
+              Was Lotte automatisch erledigt <Icon name="arrow-right" className="size-4" />
             </Link>
             {funktionen
               .filter((f) => f.gruppe === "macher" && f.slug !== "automatisch-erledigen")

@@ -21,7 +21,7 @@ export function StartSeite() {
   };
 
   return (
-    <Seite titel="Was möchtest du als Erstes erledigen?" untertitel="Such dir eins aus. Den Rest fragt Macher, wenn du ihn brauchst.">
+    <Seite titel="Was möchtest du als Erstes erledigen?" untertitel="Such dir eins aus. Den Rest fragt Lotte, wenn du ihn brauchst.">
       {frisch && b && (
         <p className="mm-start-fertig" role="status">
           <span className="mm-start-fertig-haken" aria-hidden>

@@ -122,7 +122,7 @@ export default defineModul({
     {
       id: 'auftrag.termine-erledigt',
       titel: 'Alle Einsätze erledigt → Abnahme',
-      beschreibung: 'Sind alle Einsätze erledigt und keine Aufgaben mehr offen, steht der Auftrag auf „Abnahme“. Sonst fragt Macher nach.',
+      beschreibung: 'Sind alle Einsätze erledigt und keine Aufgaben mehr offen, steht der Auftrag auf „Abnahme“. Sonst fragt Lotte nach.',
       standardAn: true,
       minuten: 2,
       start: () => {
@@ -143,7 +143,7 @@ export default defineModul({
     {
       id: 'auftrag.bezahlt',
       titel: 'Rechnung bezahlt → Erledigt',
-      beschreibung: 'Ist die Schluss- oder Einzelrechnung bezahlt und nichts mehr offen, schließt Macher den Auftrag ab.',
+      beschreibung: 'Ist die Schluss- oder Einzelrechnung bezahlt und nichts mehr offen, schließt Lotte den Auftrag ab.',
       standardAn: true,
       minuten: 3,
       start: () => {

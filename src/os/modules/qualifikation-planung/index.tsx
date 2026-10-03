@@ -64,7 +64,7 @@ export default defineModul({
     {
       id: AUTOMATION,
       titel: 'Qualifikation beim Einplanen prüfen',
-      beschreibung: 'Wird ein Einsatz geplant oder geändert, prüft Macher die Nachweise des Teams und meldet sich sofort, wenn etwas fehlt.',
+      beschreibung: 'Wird ein Einsatz geplant oder geändert, prüft Lotte die Nachweise des Teams und meldet sich sofort, wenn etwas fehlt.',
       standardAn: true,
       minuten: 3,
       start: () => {

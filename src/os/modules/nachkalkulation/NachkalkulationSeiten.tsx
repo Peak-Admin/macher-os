@@ -85,7 +85,7 @@ function Lernen({ liste }: { liste: Lerneffekt[] }) {
   if (!liste.length) {
     return (
       <Meldung titel="Daraus lernen">
-        Sobald mindestens zwei abgeschlossene Aufträge mit derselben Leistung vorliegen, zeigt Macher hier, welche Leistungen regelmäßig länger oder kürzer dauern als kalkuliert.
+        Sobald mindestens zwei abgeschlossene Aufträge mit derselben Leistung vorliegen, zeigt Lotte hier, welche Leistungen regelmäßig länger oder kürzer dauern als kalkuliert.
       </Meldung>
     );
   }

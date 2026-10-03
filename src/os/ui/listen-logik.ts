@@ -33,10 +33,10 @@ export function letzteBearbeitungen(ereignisse: readonly Ereignis[], typ: string
   return m;
 }
 
-/** Wer hat es getan? Name des Menschen, sonst „Macher“ (Automation/KI) bzw. „Import“. */
+/** Wer hat es getan? Name des Menschen, sonst „Lotte“ (Automation/KI) bzw. „Import“. */
 export function bearbeiterName(b: LetzteBearbeitung, vorname: string | undefined): string | undefined {
   if (vorname) return vorname;
-  if (b.quelle === 'automation' || b.quelle === 'ai') return 'Macher';
+  if (b.quelle === 'automation' || b.quelle === 'ai') return 'Lotte';
   if (b.quelle === 'import') return 'Import';
   return undefined;
 }

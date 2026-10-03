@@ -35,6 +35,8 @@ import {
   Icon,
   IconTile,
   Karte3D,
+  Lotte,
+  LotteHerkunft,
   Section,
   SectionHeading,
   UiEbeneAktiv,
@@ -265,7 +267,7 @@ const faq: FaqItem[] = [
   {
     frage: "Wie funktioniert die automatische Planung?",
     antwort:
-      "Macher schaut auf Termine, freie Mitarbeiter, Qualifikationen, Urlaub, Fahrtzeiten und Material und schlägt dir den passenden Einsatz vor. Du bestätigst nur noch – oder änderst, was du anders willst.",
+      "Lotte schaut auf Termine, freie Mitarbeiter, Qualifikationen, Urlaub, Fahrtzeiten und Material und schlägt dir den passenden Einsatz vor. Du bestätigst nur noch – oder änderst, was du anders willst.",
   },
 ];
 
@@ -409,31 +411,35 @@ export default function HomePage() {
             ))}
           </ul>
           <ArrowLink href="/funktionen/automatisch-erledigen" className="mt-8">
-            So arbeitet Macher
+            So arbeitet Lotte
           </ArrowLink>
         </Section>
       </Zone>
 
-      {/* 8. Macher erledigt */}
+      {/* 8. Das ist Lotte */}
       <Zone ton="dunkel">
         <Section tone="transparent">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
             <div>
-              <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Macher erledigt</p>
+              <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Das ist Lotte</p>
               <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
-                Weniger organisieren. Mehr machen.
+                Du machst das Handwerk. Lotte macht das Büro.
               </h2>
               <p className="mt-5 max-w-md text-lg text-white/70">
-                Handwerk OS übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
+                Lotte ist die KI in Handwerk OS. Sie übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
+                Was nach außen geht oder Geld kostet, gibst du frei.
               </p>
               <Link
                 href="/funktionen/automatisch-erledigen"
                 className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
               >
-                So arbeitet Macher <Icon name="arrow-right" className="size-4" />
+                So arbeitet Lotte <Icon name="arrow-right" className="size-4" />
               </Link>
+              <LotteHerkunft dunkel className="mt-8 max-w-md border-t border-white/15 pt-5" />
             </div>
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <Lotte pose="mit-dir" className="mx-auto w-full max-w-md lg:max-w-lg" sizes="(min-width: 1024px) 512px, 90vw" />
+          </div>
+          <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {machtMacher.map((m) => (
                 <li key={m.text}>
                   <Karte3D innen="flex items-center gap-3 karte-dunkel p-4" stark={8}>
@@ -442,8 +448,7 @@ export default function HomePage() {
                   </Karte3D>
                 </li>
               ))}
-            </ul>
-          </div>
+          </ul>
         </Section>
       </Zone>
 
@@ -454,8 +459,8 @@ export default function HomePage() {
             <div>
               <SectionHeading
                 eyebrow="Planung"
-                title="Macher plant mit."
-                intro="Macher schlägt dir vor, wer wann wohin fährt – und denkt dabei an alles, was du sonst im Kopf haben musst."
+                title="Lotte plant mit."
+                intro="Lotte schlägt dir vor, wer wann wohin fährt – und denkt dabei an alles, was du sonst im Kopf haben musst."
               />
               <ul className="mt-8 flex flex-wrap gap-2">
                 {planung.map((p) => (
@@ -534,7 +539,7 @@ export default function HomePage() {
               />
               <ul className="mt-8 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
                 {[
-                  { titel: "Website angeben", text: "Macher liest Name, Logo, Gewerk und Leistungen aus.", icon: "link" as const },
+                  { titel: "Website angeben", text: "Lotte liest Name, Logo, Gewerk und Leistungen aus.", icon: "link" as const },
                   { titel: "Keine Website?", text: "Dann tippst du einfach dein Gewerk an.", icon: "wrench" as const },
                 ].map((w) => (
                   <li key={w.titel} className="flex items-start gap-3 rounded-xl bg-white p-4 ring-1 ring-line">
@@ -546,7 +551,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-4 text-muted">Briefkopf, Kunden, Preise und Team fragt Macher erst, wenn du sie brauchst.</p>
+              <p className="mt-4 text-muted">Briefkopf, Kunden, Preise und Team fragt Lotte erst, wenn du sie brauchst.</p>
             </div>
             <div className="min-w-0 rounded-2xl bg-ink p-6 text-white sm:p-8">
               <p className="font-display text-xl font-bold">Handwerk OS richtet automatisch ein:</p>

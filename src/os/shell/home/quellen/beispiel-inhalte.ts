@@ -39,7 +39,7 @@ export const BEISPIEL_NEUIGKEITEN: NewsItem[] = [
     id: 'angebot-per-sprache',
     type: 'product_update',
     title: 'Neu: Angebote per Sprache vorbereiten',
-    description: 'Sag, was du machen willst – Macher schreibt die Positionen.',
+    description: 'Sag, was du machen willst – Lotte schreibt die Positionen.',
     publishedAt: '2026-09-15',
     targetAudience: ['chef', 'buero'],
     actionLabel: 'Ausprobieren',

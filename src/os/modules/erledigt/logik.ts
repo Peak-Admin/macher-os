@@ -1,5 +1,5 @@
 /**
- * Erledigt: was Macher selbst erledigt hat – Zeiträume, Zusammenfassung, Rückgängig.
+ * Erledigt: was Lotte selbst erledigt hat – Zeiträume, Zusammenfassung, Rückgängig.
  */
 import { aufloesen, db } from '@core/db';
 import { einstellung, setzeEinstellung } from '@core/einstellungen';

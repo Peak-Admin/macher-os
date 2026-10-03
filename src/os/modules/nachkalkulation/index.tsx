@@ -62,7 +62,7 @@ export default defineModul({
     {
       id: AUTOMATION_ERLEDIGT,
       titel: 'Nachkalkulation bei erledigten Aufträgen',
-      beschreibung: 'Sobald ein Auftrag erledigt ist, vergleicht Macher Soll und Ist und legt dir das Ergebnis in „Braucht dich“.',
+      beschreibung: 'Sobald ein Auftrag erledigt ist, vergleicht Lotte Soll und Ist und legt dir das Ergebnis in „Braucht dich“.',
       standardAn: true,
       minuten: 15,
       start: starteNachkalkulationsAutomation,

@@ -153,7 +153,7 @@ export default defineModul({
     {
       id: 'angebote.nachfassen',
       titel: 'Ans Nachfassen erinnern',
-      beschreibung: 'Bleibt ein Angebot ohne Antwort, legt Macher nach der eingestellten Zahl an Tagen eine Aufgabe „Nachfassen“ an.',
+      beschreibung: 'Bleibt ein Angebot ohne Antwort, legt Lotte nach der eingestellten Zahl an Tagen eine Aufgabe „Nachfassen“ an.',
       standardAn: true,
       minuten: 3,
       start: regelmaessig(nachfassenPruefen),
@@ -162,7 +162,7 @@ export default defineModul({
     {
       id: 'angebote.ablauf',
       titel: 'Abgelaufene Angebote markieren',
-      beschreibung: 'Ist die Gültigkeit vorbei, setzt Macher das Angebot auf „Abgelaufen“.',
+      beschreibung: 'Ist die Gültigkeit vorbei, setzt Lotte das Angebot auf „Abgelaufen“.',
       standardAn: true,
       minuten: 1,
       start: regelmaessig(ablaufPruefen),

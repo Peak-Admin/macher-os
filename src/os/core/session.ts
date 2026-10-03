@@ -1,7 +1,7 @@
 /**
  * Wer arbeitet gerade, und was darf er?
  * Rechte sind nach Fähigkeiten getrennt (lesen, schreiben, geld, veröffentlichen, löschen, admin).
- * Macher (KI/Automation) hält sich an dieselben Rechte wie der Mensch, für den es arbeitet.
+ * Lotte (KI/Automation) hält sich an dieselben Rechte wie der Mensch, für den es arbeitet.
  */
 import { db, setAktuellerNutzer } from './db';
 import { betriebsSchluessel } from './betriebe';

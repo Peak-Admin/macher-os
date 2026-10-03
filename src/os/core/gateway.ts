@@ -10,8 +10,8 @@
  * Lanes: 0 = Regeln/Datenbank (kein Modell), 1 = Jev (Klassifikation), 2 = Luna (Standard-KI),
  * 3 = stärkeres Modell. Immer von unten nach oben. Ohne angeschlossenes Modell läuft alles in Lane 0.
  *
- * Ausgeführt wird immer im Namen von Macher (`alsAkteur({ quelle: 'ai', id: 'macher' })`): Der Verlauf am Objekt zeigt
- * „durch Macher“, und alles, was eine Aktion geändert hat, lässt sich über das Audit des Kerns zurücknehmen
+ * Ausgeführt wird immer im Namen von Lotte (`alsAkteur({ quelle: 'ai', id: 'macher' })`): Der Verlauf am Objekt zeigt
+ * „durch Lotte“, und alles, was eine Aktion geändert hat, lässt sich über das Audit des Kerns zurücknehmen
  * (`nimmZurueck`). Es gibt keinen zweiten Weg für KI-Aktionen.
  *
  * Strategie: `docs/os/KI-GATEWAY.md`.
@@ -358,7 +358,7 @@ async function verstehe(text: string, absichten: AbsichtDef[], k: GatewayKontext
 }
 
 /**
- * Vorbelegte Absicht aus einer kontextuellen Aktion („Mit Macher vorbereiten“ am Angebot, an der Rechnung …) oder aus
+ * Vorbelegte Absicht aus einer kontextuellen Aktion („Mit Lotte vorbereiten“ am Angebot, an der Rechnung …) oder aus
  * einem Formular (`direkt`-Absichten wie „Positionen vorschlagen“): Die Oberfläche weiß schon, was gemeint ist und um
  * welches Objekt es geht – kein Raten aus dem Text. Rechte, Lane-Wahl, Protokoll und Bestätigung laufen genauso wie bei
  * einer getippten Frage.
@@ -470,12 +470,12 @@ export async function fuehreAus<D>(a: Aktion<D>, k: GatewayKontext, opt: { besta
   if (brauchtBestaetigung(risikoVon(def.risiko, def.rechte)) && !opt.bestaetigt) return nein('bestaetigung', 'Bitte bestätige die Aktion zuerst.');
 
   try {
-    // Als Macher im Auftrag des Menschen: Audit zeigt „durch Macher“, die Verlaufseinträge werden für „Rückgängig“
+    // Als Lotte im Auftrag des Menschen: Audit zeigt „durch Lotte“, die Verlaufseinträge werden für „Rückgängig“
     // mitgeschnitten. Der Akteur gilt synchron – Aktionen, die nach einem `await` schreiben (Senden), sind `endgueltig`.
     const lauf = alsAkteur({ quelle: 'ai', id: 'macher', mitarbeiterId: k.ich?.id, name: def.titel }, () => mitschneiden(() => def.fuehreAus(a.daten, k)));
     const r = (await lauf.ergebnis) || {};
     const p = protokolliere({ ...basis, bezug: r.bezug, ergebnis: 'ausgefuehrt' }, { aenderungen: lauf.eintraege.length });
-    if (r.bezug) vermerken(r.bezug, 'ki.aktion', `${def.titel} – über Macher${opt.bestaetigt ? ', bestätigt' : ''}`, { protokollId: p.id });
+    if (r.bezug) vermerken(r.bezug, 'ki.aktion', `${def.titel} – über Lotte${opt.bestaetigt ? ', bestätigt' : ''}`, { protokollId: p.id });
     return { ok: true, bezug: r.bezug, text: r.text, protokollId: p.id, eintraege: lauf.eintraege, oeffnen: r.oeffnen, endgueltig: def.endgueltig };
   } catch (err) {
     if (err instanceof AktionsFehler) return nein('fehler', err.message);

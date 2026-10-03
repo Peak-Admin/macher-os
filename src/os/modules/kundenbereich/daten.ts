@@ -72,7 +72,7 @@ export function zugangVerlaengern(id: ID, tage = STANDARD_TAGE) {
   portalzugaenge.update(id, { gueltigBis: plusTage(heute(), tage) });
 }
 
-/** Link zum Kundenbereich; mit `angebotId` weiß Macher beim Öffnen, welches Angebot der Kunde ansieht */
+/** Link zum Kundenbereich; mit `angebotId` weiß Lotte beim Öffnen, welches Angebot der Kunde ansieht */
 export function portalLink(token: string, basis = globalThis.location?.origin ?? '', angebotId?: string): string {
   return `${basis}${appPfad(`/k/${token}`)}${angebotId ? `?angebot=${encodeURIComponent(angebotId)}` : ''}`;
 }

@@ -65,7 +65,7 @@ export default defineModul({
     {
       id: REGEL_NACHARBEIT,
       titel: 'Nacharbeit anlegen',
-      beschreibung: 'Ist bei einer Reklamation entschieden, ob Gewährleistung oder kostenpflichtig, legt Macher den Nacharbeitsauftrag mit Frist an.',
+      beschreibung: 'Ist bei einer Reklamation entschieden, ob Gewährleistung oder kostenpflichtig, legt Lotte den Nacharbeitsauftrag mit Frist an.',
       standardAn: true,
       minuten: 8,
       start: () => {
@@ -129,7 +129,7 @@ export default defineModul({
           schluessel: `reklamation-klaeren:${r.id}`,
           art: 'entscheidung',
           titel: `Gewährleistung klären: ${r.titel} (${kunde})`,
-          text: pruefen(r).ergebnis === 'unklar' ? 'Abnahme- oder Abschlussdatum fehlt. Trag es ein, dann prüft Macher.' : 'Entscheide: Gewährleistung, kostenpflichtig oder Kulanz.',
+          text: pruefen(r).ergebnis === 'unklar' ? 'Abnahme- oder Abschlussdatum fehlt. Trag es ein, dann prüft Lotte.' : 'Entscheide: Gewährleistung, kostenpflichtig oder Kulanz.',
           gewicht: 62,
           bezug: { typ: 'kunden', id: r.kundeId },
           fuerRollen: ['chef', 'buero'],

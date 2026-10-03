@@ -7,13 +7,13 @@ import { MacherChat } from './Chat';
 import type { MacherStart } from './vorbereiten';
 
 /**
- * Overlay „Macher fragen“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`) oder aus
- * „Mit Macher vorbereiten“ am Objekt (`oeffne('macher', { frage, absicht, bezug })`, siehe `vorbereiten.ts`).
+ * Overlay „Frag Lotte“ – geöffnet aus „Suchen oder fragen“ (`oeffne('macher', { frage })`) oder aus
+ * „Mit Lotte vorbereiten“ am Objekt (`oeffne('macher', { frage, absicht, bezug })`, siehe `vorbereiten.ts`).
  */
 function MacherOverlay() {
   const { offen, schliessen, payload } = useOverlay('macher');
   return (
-    <Dialog offen={offen} onSchliessen={schliessen} titel="Macher fragen" breit>
+    <Dialog offen={offen} onSchliessen={schliessen} titel="Frag Lotte" breit>
       <MacherChat onNavigiert={schliessen} start={payload as MacherStart | undefined} />
     </Dialog>
   );
@@ -21,7 +21,7 @@ function MacherOverlay() {
 
 function MacherSeite() {
   return (
-    <Seite titel="Macher fragen" untertitel="Antworten aus deinen Daten – Aufgaben legt Macher erst an, wenn du bestätigst.">
+    <Seite titel="Frag Lotte" untertitel="Antworten aus deinen Daten – Aufgaben legt Lotte erst an, wenn du bestätigst.">
       <MacherChat />
     </Seite>
   );
@@ -29,7 +29,7 @@ function MacherSeite() {
 
 export default defineModul({
   id: 'macher-fragen',
-  titel: 'Macher fragen',
+  titel: 'Frag Lotte',
   bereich: 'macher',
   beschreibung: 'Findet Informationen, beantwortet Fragen und bereitet Aktionen vor.',
   icon: 'macher',

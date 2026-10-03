@@ -46,7 +46,7 @@ export interface Bericht extends Basis {
   bemerkung?: string;
   status: 'entwurf' | 'fertig' | 'unterschrieben';
   unterschriftKunde?: UnterschriftDaten;
-  /** von Macher vorbereitet */
+  /** von Lotte vorbereitet */
   automatisch?: boolean;
 }
 
@@ -150,7 +150,7 @@ export function berichtErstellen(opts: { auftragId: ID; terminId?: ID; art?: Ber
     automatisch: opts.automatisch,
     beispiel: opts.beispiel,
   });
-  vermerken({ typ: 'auftraege', id: opts.auftragId }, 'bericht.erstellt', `${artLabel(art)} ${b.nummer} ${opts.automatisch ? 'von Macher vorbereitet' : 'angelegt'}`);
+  vermerken({ typ: 'auftraege', id: opts.auftragId }, 'bericht.erstellt', `${artLabel(art)} ${b.nummer} ${opts.automatisch ? 'von Lotte vorbereitet' : 'angelegt'}`);
   return b;
 }
 
@@ -177,7 +177,7 @@ export function berichtHinweise(termine: Termin[], liste: Bericht[], tag: Datum)
           schluessel: `bericht-entwurf:${entwurf.id}`,
           art: 'freigabe',
           titel: `Bericht prüfen und abschließen: ${termin.titel}`,
-          text: `Macher hat den ${artLabel(entwurf.art)} vom ${datumVon(termin.start).split('-').reverse().join('.')} vorbereitet. Kurz prüfen, dann abschließen oder unterschreiben lassen.`,
+          text: `Lotte hat den ${artLabel(entwurf.art)} vom ${datumVon(termin.start).split('-').reverse().join('.')} vorbereitet. Kurz prüfen, dann abschließen oder unterschreiben lassen.`,
           bezug: { typ: 'auftraege', id: termin.auftragId! },
           gewicht: 48,
           pfad: `/auftraege/berichte/${entwurf.id}`,

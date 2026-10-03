@@ -28,7 +28,7 @@ export function BestellungenListe() {
         )}
         {fehlt > 0 && (
           <Meldung ton="neutral" titel={`Im Bedarf fehlen ${fehlt} Artikel`} aktion={<Button klein variante="sekundaer" to="/betrieb/bedarf">Bedarf ansehen</Button>}>
-            Macher kann daraus die Bestellungen vorschlagen.
+            Lotte kann daraus die Bestellungen vorschlagen.
           </Meldung>
         )}
         <Filter
@@ -49,7 +49,7 @@ export function BestellungenListe() {
             alle.length ? (
               <Leer titel="Hier ist gerade nichts" text="In diesem Filter gibt es keine Bestellungen." icon="paket" aktion={<Button variante="sekundaer" onClick={() => setF('alle')}>Alle zeigen</Button>} />
             ) : (
-              <Leer titel="Noch keine Bestellungen" text="Lass Macher die Bestellung aus dem Bedarf deiner Aufträge vorschlagen – oder leg selbst eine an." icon="paket" aktion={<Zeile><Button to="/betrieb/bedarf">Bedarf ansehen</Button><Button variante="sekundaer" to="/betrieb/bestellungen/neu">Bestellung anlegen</Button></Zeile>} />
+              <Leer titel="Noch keine Bestellungen" text="Lass Lotte die Bestellung aus dem Bedarf deiner Aufträge vorschlagen – oder leg selbst eine an." icon="paket" aktion={<Zeile><Button to="/betrieb/bedarf">Bedarf ansehen</Button><Button variante="sekundaer" to="/betrieb/bestellungen/neu">Bestellung anlegen</Button></Zeile>} />
             )
           }
         >

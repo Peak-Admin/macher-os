@@ -114,7 +114,7 @@ describe('Was möchtest du als Erstes erledigen?', () => {
   });
 });
 
-describe('Macher fertig machen', () => {
+describe('Handwerk OS einrichten', () => {
   const betrieb = { onboardingFertig: true, gewerk: 'maler' as const };
   it('nach dem Magic Setup: 2 von 4 erledigt, jeder offene Haken mit konkretem Schritt', () => {
     const h = startHaken({ betrieb, kunden: [], mitarbeiter: [{ aktiv: true }] });

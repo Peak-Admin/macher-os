@@ -25,7 +25,7 @@ export const funktionGruppen: Record<
     beschreibung: "Alles, was der Betrieb dauerhaft braucht.",
   },
   macher: {
-    titel: "Macher erledigt",
+    titel: "Lotte erledigt",
     beschreibung: "Büroarbeit, die Handwerk OS möglichst automatisch übernimmt.",
   },
 };
@@ -104,10 +104,10 @@ export const funktionen = [
   { slug: "daten-uebernehmen", titel: "Daten übernehmen", gruppe: "betrieb" },
   {
     slug: "automatisch-erledigen",
-    titel: "Macher erledigt automatisch",
+    titel: "Lotte erledigt automatisch",
     gruppe: "macher",
   },
-  { slug: "macher-fragen", titel: "Macher fragen", gruppe: "macher" },
+  { slug: "macher-fragen", titel: "Frag Lotte", gruppe: "macher" },
   { slug: "ki-buerokraft", titel: "KI-Bürokraft", gruppe: "macher" },
   { slug: "telefon-ki", titel: "Telefonassistent mit KI", gruppe: "macher" },
 ] as const satisfies readonly {

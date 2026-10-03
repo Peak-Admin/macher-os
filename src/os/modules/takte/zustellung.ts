@@ -86,7 +86,7 @@ export function nachrichtAus(i: TaktInhalt, mitarbeiterId: ID): TaktNachricht {
         `Umsatz ${euro(i.umsatz.netto)} netto`,
         `offen ${euro(i.offen.summe)}`,
         `${mehrzahl(i.auftraege.abgeschlossen, 'Auftrag', 'Aufträge')} fertig`,
-        `Macher hat ${i.erledigt.anzahl} erledigt`,
+        `Lotte hat ${i.erledigt.anzahl} erledigt`,
       ];
       return { titel: 'Deine Wochenbilanz', text: teile.join(' · '), pfad, aktionen: [], leer: false };
     }

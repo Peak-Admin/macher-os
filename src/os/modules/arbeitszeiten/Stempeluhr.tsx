@@ -51,7 +51,7 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
     .where((x) => x.mitarbeiterIds.includes(ich.id) && datumVon(x.start) === t && x.status !== 'abgesagt' && x.status !== 'erledigt' && x.art !== 'intern')
     .sort((a, b) => a.start.localeCompare(b.start));
   const fuerAuftrag = auftragId ? db.auftraege.get(auftragId) : undefined;
-  // Der Monteur sieht nur seinen Stand – alle Regeln (Soll, Feiertage, Urlaub, Pausen) rechnet Macher
+  // Der Monteur sieht nur seinen Stand – alle Regeln (Soll, Feiertage, Urlaub, Pausen) rechnet Lotte
   const stand = wochenStand(ich);
   const heuteTag = tagAuswerten(db.zeiten.where((z) => z.mitarbeiterId === ich.id && z.datum === t), { jetzt });
   const pauseFaellig = heuteTag.netto > 360 && heuteTag.pauseErfasst < pflichtPause(heuteTag.netto);
@@ -120,7 +120,7 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
           </Meta>
           {pauseFaellig && !pause && (
             <Meldung ton="achtung" titel="Zeit für eine Pause">
-              Du arbeitest heute schon über {heuteTag.netto > 540 ? 9 : 6} Stunden. Mach {pflichtPause(heuteTag.netto)} Minuten Pause – sonst zieht Macher sie zum Feierabend automatisch ab.
+              Du arbeitest heute schon über {heuteTag.netto > 540 ? 9 : 6} Stunden. Mach {pflichtPause(heuteTag.netto)} Minuten Pause – sonst zieht Lotte sie zum Feierabend automatisch ab.
             </Meldung>
           )}
           <Zeile>

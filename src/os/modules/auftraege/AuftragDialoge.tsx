@@ -121,7 +121,7 @@ export function PhaseDialog({ a, offen, onSchliessen }: { a: Auftrag; offen: boo
         </>
       }
     >
-      <p>Normalerweise schiebt Macher den Auftrag selbst weiter – etwa wenn das Angebot angenommen oder die Rechnung bezahlt ist. Hier kannst du die Phase von Hand setzen.</p>
+      <p>Normalerweise schiebt Lotte den Auftrag selbst weiter – etwa wenn das Angebot angenommen oder die Rechnung bezahlt ist. Hier kannst du die Phase von Hand setzen.</p>
       <Auswahl label="Neue Phase" value={phase} onChange={(e) => setPhase(e.target.value as Phase)} optionen={phaseOptionen(PHASEN.filter((p) => p.id !== 'verloren').map((p) => p.id))} />
     </Dialog>
   );

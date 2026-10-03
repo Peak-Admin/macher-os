@@ -59,7 +59,7 @@ export default defineModul({
     {
       id: VORSCHLAG_AUTOMATION,
       titel: 'Passende Anleitung am Auftrag vermerken',
-      beschreibung: 'Bekommt ein Auftrag eine Anlage oder Leistung, für die es eine Anleitung gibt, vermerkt Macher sie im Verlauf des Auftrags.',
+      beschreibung: 'Bekommt ein Auftrag eine Anlage oder Leistung, für die es eine Anleitung gibt, vermerkt Lotte sie im Verlauf des Auftrags.',
       standardAn: true,
       minuten: 3,
       start: () => {

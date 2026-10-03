@@ -55,7 +55,7 @@ export function ReklamationListe() {
           ) : (
             <Leer
               titel="Keine Reklamationen"
-              text="Meldet ein Kunde einen Mangel, nimm ihn hier auf. Macher prüft die Gewährleistung und legt die Nacharbeit an."
+              text="Meldet ein Kunde einen Mangel, nimm ihn hier auf. Lotte prüft die Gewährleistung und legt die Nacharbeit an."
               aktion={<Button to="/auftraege/reklamationen/neu">Mangel melden</Button>}
               icon="schild"
             />

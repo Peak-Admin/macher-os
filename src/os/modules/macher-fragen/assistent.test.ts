@@ -39,7 +39,7 @@ describe('Zeitangaben', () => {
   });
 });
 
-describe('Macher fragen', () => {
+describe('Frag Lotte', () => {
   beforeEach(() => basis());
 
   it('macht aus einem Satz einen Aufgaben-Entwurf', () => {
@@ -126,7 +126,7 @@ describe('Erinnerung per Satz', () => {
   });
 });
 
-describe('Macher fragen über den Gateway', () => {
+describe('Frag Lotte über den Gateway', () => {
   let aus: () => void;
   beforeEach(() => {
     basis();

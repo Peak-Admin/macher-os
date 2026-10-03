@@ -16,7 +16,7 @@ export default defineModul({
   id: 'material-bereit',
   titel: 'Material bereit?',
   bereich: 'plan',
-  beschreibung: 'Prüft vor jedem Einsatz, ob das Material da ist – sonst sagt Macher rechtzeitig Bescheid.',
+  beschreibung: 'Prüft vor jedem Einsatz, ob das Material da ist – sonst sagt Lotte rechtzeitig Bescheid.',
   icon: 'paket',
   gewicht: 68,
   navigation: 'hub',

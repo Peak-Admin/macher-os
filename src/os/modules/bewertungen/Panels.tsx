@@ -26,7 +26,7 @@ export function BewertungPanelAuftrag({ id }: { id: ID }) {
       <Stapel abstand={8}>
         {!b || b.status === 'vorbereitet' ? (
           <>
-            <Meta>{b ? 'Macher hat eine Bewertungsanfrage vorbereitet.' : 'Der Auftrag ist erledigt. Frag den Kunden nach einer Bewertung.'}</Meta>
+            <Meta>{b ? 'Lotte hat eine Bewertungsanfrage vorbereitet.' : 'Der Auftrag ist erledigt. Frag den Kunden nach einer Bewertung.'}</Meta>
             <Zeile abstand={4}>
               <Button klein icon="stern" disabled={!darf} onClick={senden}>
                 Anfrage senden

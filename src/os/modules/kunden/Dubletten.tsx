@@ -10,7 +10,7 @@ export function Dubletten() {
   const v = useDatenstand();
   const liste = useMemo(() => aktuelleDubletten(), [v]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <Seite titel="Doppelte Kunden" untertitel="Macher prüft Name, Telefon, E-Mail und Adresse. Du entscheidest, welcher Kunde bleibt." zurueck={{ to: '/auftraege/kunden', label: 'Kunden' }}>
+    <Seite titel="Doppelte Kunden" untertitel="Lotte prüft Name, Telefon, E-Mail und Adresse. Du entscheidest, welcher Kunde bleibt." zurueck={{ to: '/auftraege/kunden', label: 'Kunden' }}>
       {liste.length ? (
         <Stapel abstand={16}>
           {liste.map((d) => (
@@ -18,7 +18,7 @@ export function Dubletten() {
           ))}
         </Stapel>
       ) : (
-        <Leer titel="Keine doppelten Kunden" text="Alles sauber. Macher prüft weiter, sobald neue Kunden dazukommen." icon="check" aktion={<Button variante="sekundaer" to="/auftraege/kunden">Zu den Kunden</Button>} />
+        <Leer titel="Keine doppelten Kunden" text="Alles sauber. Lotte prüft weiter, sobald neue Kunden dazukommen." icon="check" aktion={<Button variante="sekundaer" to="/auftraege/kunden">Zu den Kunden</Button>} />
       )}
     </Seite>
   );
@@ -89,7 +89,7 @@ function DublettenKarte({ d }: { d: Dublette }) {
             variante="tertiaer"
             onClick={() => {
               keineDublette(d.a.id, d.b.id);
-              toast('Verstanden. Macher fragt bei diesen beiden nicht mehr.');
+              toast('Verstanden. Lotte fragt bei diesen beiden nicht mehr.');
             }}
           >
             Sind verschiedene Kunden

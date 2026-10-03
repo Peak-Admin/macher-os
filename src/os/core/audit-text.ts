@@ -1,5 +1,5 @@
 /**
- * Klartext für den Verlauf am Objekt („Geändert: Status (Entwurf → Versendet) – durch Macher“).
+ * Klartext für den Verlauf am Objekt („Geändert: Status (Entwurf → Versendet) – durch Lotte“).
  * Rein und ohne Datenzugriff, damit die Datenschicht ihn beim Protokollieren nutzen kann.
  */
 import type { Akteur } from './akteur';
@@ -119,7 +119,7 @@ export function felderText(felder: Record<string, FeldAenderung> | undefined): s
 /** Zusatz für den Verlauf: wer hat es getan, wenn nicht der Mensch selbst? */
 export function akteurZusatz(a: Akteur | undefined): string {
   if (!a || a.quelle === 'user') return '';
-  if (a.quelle === 'automation' || a.quelle === 'ai') return ' – durch Macher';
+  if (a.quelle === 'automation' || a.quelle === 'ai') return ' – durch Lotte';
   if (a.quelle === 'import') return ' – durch Import';
   if (a.quelle === 'sync') return ' – beim Abgleich';
   return '';

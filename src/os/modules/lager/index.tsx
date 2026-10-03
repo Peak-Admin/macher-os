@@ -46,7 +46,7 @@ export default defineModul({
     {
       id: VERBRAUCH,
       titel: 'Verbrauch vom Lager abbuchen',
-      beschreibung: 'Wird Material am Auftrag als verbraucht gebucht, zieht Macher es vom Fahrzeuglager des Monteurs oder vom Hauptlager ab.',
+      beschreibung: 'Wird Material am Auftrag als verbraucht gebucht, zieht Lotte es vom Fahrzeuglager des Monteurs oder vom Hauptlager ab.',
       standardAn: true,
       minuten: 1,
       start: () => {

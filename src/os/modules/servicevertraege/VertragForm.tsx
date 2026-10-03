@@ -83,7 +83,7 @@ export function VertragForm() {
     };
     const neu = v ? servicevertraege.update(v.id, daten)! : servicevertraege.create({ ...daten, nummer: naechsteVertragsnummer(), status: 'aktiv', abrechnungen: [] });
     anlagenAbstimmen(neu);
-    toast(v ? 'Vertrag gespeichert.' : 'Vertrag angelegt. Macher kümmert sich um Wartung und Abrechnung.');
+    toast(v ? 'Vertrag gespeichert.' : 'Vertrag angelegt. Lotte kümmert sich um Wartung und Abrechnung.');
     navigate(`/auftraege/servicevertraege/${neu.id}`, { replace: true });
   };
 
@@ -149,7 +149,7 @@ export function VertragForm() {
               placeholder={'Jährliche Wartung\nAnfahrt\nKleinmaterial bis 20 €'}
               rows={4}
             />
-            <Auswahl label="Wartung" value={f.intervall} onChange={(e) => set('intervall', e.target.value)} optionen={INTERVALLE} hilfe="Macher legt die Wartungsaufträge in diesem Abstand an." />
+            <Auswahl label="Wartung" value={f.intervall} onChange={(e) => set('intervall', e.target.value)} optionen={INTERVALLE} hilfe="Lotte legt die Wartungsaufträge in diesem Abstand an." />
           </Stapel>
         </Karte>
 
@@ -173,7 +173,7 @@ export function VertragForm() {
               <Eingabe label="Laufzeit (Monate)" type="number" min={1} inputMode="numeric" value={f.laufzeit} onChange={(e) => set('laufzeit', e.target.value)} fehler={fehler.laufzeit} />
               <Eingabe label="Kündigungsfrist (Monate zum Laufzeitende)" type="number" min={0} inputMode="numeric" value={f.frist} onChange={(e) => set('frist', e.target.value)} fehler={fehler.frist} />
             </FormRaster>
-            <Schalter label="Verlängert sich automatisch" beschreibung="Ohne Kündigung läuft der Vertrag weiter. Macher erinnert dich rechtzeitig vor der Frist." checked={f.auto} onChange={(x) => set('auto', x)} />
+            <Schalter label="Verlängert sich automatisch" beschreibung="Ohne Kündigung läuft der Vertrag weiter. Lotte erinnert dich rechtzeitig vor der Frist." checked={f.auto} onChange={(x) => set('auto', x)} />
             {f.auto && (
               <Eingabe label="Verlängerung um (Monate)" type="number" min={1} inputMode="numeric" value={f.verlaengerung} onChange={(e) => set('verlaengerung', e.target.value)} />
             )}

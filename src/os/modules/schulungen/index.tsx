@@ -77,7 +77,7 @@ export default defineModul({
     {
       id: 'schulungen.nachweise',
       titel: 'Nachweis nach der Schulung',
-      beschreibung: 'Schließt du eine Schulung ab, trägt Macher für alle Teilnehmer den Nachweis mit dem richtigen Ablaufdatum ein.',
+      beschreibung: 'Schließt du eine Schulung ab, trägt Lotte für alle Teilnehmer den Nachweis mit dem richtigen Ablaufdatum ein.',
       standardAn: true,
       minuten: 3,
       start: () =>
