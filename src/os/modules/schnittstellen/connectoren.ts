@@ -27,6 +27,7 @@ import { bankumsaetze } from '@modules/zahlungen/daten';
 import { schnittstellen } from './daten';
 import { webhookQuelle, zustellungText } from './webhooks';
 import { anfrage } from './anfragen';
+import { hubStatus } from './heylotte';
 import { integrationen, type Integration } from '@/content/integrationen';
 
 export type Kategorie = 'buchhaltung' | 'grosshandel' | 'ausschreibung' | 'kommunikation' | 'kalender' | 'banking' | 'ablage' | 'vertrieb' | 'daten' | 'plattform';
@@ -419,6 +420,20 @@ function eigene(): Connector[] {
         const n = abos.filter((a) => a.aktiv).length;
         return { zustand: webhookQuelle().zustellungAktiv() ? 'verbunden' : 'nicht_verbunden', text: `${n === 1 ? '1 Webhook' : `${n} Webhooks`} aktiv – ${zustellungText()}` };
       },
+    },
+    {
+      id: 'heylotte',
+      titel: 'HeyLotte',
+      kategorie: 'plattform',
+      text: 'HeyLotte versteht, Handwerk OS entscheidet und führt aus. Lotte arbeitet mit den Rechten des zugeordneten Mitarbeiters.',
+      art: 'schluessel',
+      faehigkeiten: ['Kunden finden', 'Kunden anlegen', 'Aufgaben anlegen', 'Bei Ereignissen benachrichtigen'],
+      verfuegbar: true,
+      pfad: '/betrieb/schnittstellen/heylotte',
+      aktion: 'HeyLotte verbinden',
+      recht: 'admin',
+      technik: ['Action API: POST /v1/actions/<aktion> mit API-Schlüssel (siehe docs/os/PARTNER-API.md)', 'Webhooks signiert mit eigenem Geheimnis'],
+      status: hubStatus,
     },
     {
       id: 'api',

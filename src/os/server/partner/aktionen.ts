@@ -11,114 +11,36 @@
  *
  * Feldnamen nach außen sind englisch in snake_case (wie im Architektur-Papier), Texte für Menschen deutsch.
  */
-import type { Recht } from '@core/rechte';
-import type { Aufgabe, Basis, Bezug, ID, Kunde, Mitarbeiter } from '@core/objects';
+import type { Angebot, Aufgabe, Auftrag, Betrieb, Einheit, ID, Kunde, Mitarbeiter, Position } from '@core/objects';
+import { summen } from '@core/format';
+import { naechsteNummerFuer, projektNummerFuer } from '@core/projektnummer';
 import { aehnlicheKunden, kundennummerNach, normName, normTelefon } from '@modules/kunden/dubletten';
+import {
+  aktiv,
+  EINHEITEN,
+  Eingabefehler,
+  euro,
+  ISO_DATUM,
+  istEmail,
+  MAX_EURO,
+  nameVon,
+  nichtGefunden,
+  ohneLeere,
+  plusTage,
+  pruefeMit,
+  text,
+  zahl,
+  type Ergebnis,
+  type ObjektZeile,
+  type PartnerAktion,
+  type PartnerEreignis,
+} from './grundlagen';
 
-export type Risiko = 'lesen' | 'schreiben' | 'kritisch';
+import { angebotSenden } from './aktionen-senden';
+import { terminAnlegen, termineSuchen, terminVerschieben } from './aktionen-termine';
+import { rechnungAnlegen, rechnungenSuchen } from './aktionen-rechnungen';
 
-/** Eine Zeile in `objekte` */
-export interface ObjektZeile {
-  sammlung: string;
-  id: ID;
-  daten: Record<string, unknown> & Partial<Basis>;
-}
-
-/** Wer handelt – der zugeordnete Mitarbeiter, für den der Partner spricht */
-export interface Handelnder {
-  mitarbeiter: Pick<Mitarbeiter, 'id' | 'vorname' | 'nachname' | 'rolle'>;
-  rechte: Recht[];
-}
-
-export interface AktionsKontext {
-  handelnder: Handelnder;
-  jetzt: Date;
-  neueId: (praefix?: string) => string;
-  /** Kurzname des Partners für Texte im Verlauf („HeyLotte“) */
-  partnerName: string;
-}
-
-/** Geladene Objekte je Sammlung – inklusive Papierkorb (`geloeschtAm`), damit Nummern nie doppelt vergeben werden */
-export type Bestand = Record<string, ObjektZeile['daten'][]>;
-
-/** Ein Ereignis, das an den Partner zurückgeht (API-Name aus dem Ereigniskatalog, z. B. `customer.created`) */
-export interface PartnerEreignis {
-  typ: string;
-  objekt: Bezug;
-  daten: Record<string, unknown>;
-}
-
-export type Ergebnis =
-  | { art: 'antwort'; status: number; antwort: Record<string, unknown> }
-  | {
-      art: 'geaendert';
-      status: number;
-      antwort: Record<string, unknown>;
-      zeilen: ObjektZeile[];
-      bezug: Bezug;
-      /** Klartext für den Verlauf am Objekt („Kunde angelegt – über HeyLotte für Jonas Weber“) */
-      verlauf: string;
-      ereignisse: PartnerEreignis[];
-    };
-
-export interface FeldBeschreibung {
-  typ: 'string' | 'number' | 'boolean' | 'object';
-  pflicht?: boolean;
-  beschreibung: string;
-  werte?: string[];
-}
-
-export interface PartnerAktion<E = unknown> {
-  /** Name in der Adresse: `POST /v1/actions/<name>` */
-  name: string;
-  /** dieselbe ID wie im Macher-Gateway der App */
-  gateway: string;
-  beschreibung: string;
-  risiko: Risiko;
-  rechte: Recht[];
-  /** Sammlungen, die die Aktion lesen muss */
-  liest: string[];
-  eingabe: Record<string, FeldBeschreibung>;
-  /** Eingabe prüfen und in die interne Form bringen – Fehlertext für den Menschen */
-  pruefe(roh: Record<string, unknown>): { daten: E } | { fehler: string; feld?: string };
-  fuehreAus(daten: E, k: AktionsKontext, bestand: Bestand): Ergebnis;
-}
-
-// ------------------------------------------------------------------ Eingaben prüfen
-
-const text = (roh: Record<string, unknown>, feld: string, max = 200): string | undefined => {
-  const v = roh[feld];
-  if (v === undefined || v === null) return undefined;
-  if (typeof v !== 'string') throw new Eingabefehler(`„${feld}“ muss Text sein.`, feld);
-  const t = v.trim();
-  if (t.length > max) throw new Eingabefehler(`„${feld}“ ist zu lang (höchstens ${max} Zeichen).`, feld);
-  return t || undefined;
-};
-
-class Eingabefehler extends Error {
-  constructor(
-    message: string,
-    readonly feld?: string,
-  ) {
-    super(message);
-  }
-}
-
-function pruefeMit<E>(fn: (roh: Record<string, unknown>) => E): PartnerAktion<E>['pruefe'] {
-  return (roh) => {
-    try {
-      return { daten: fn(roh) };
-    } catch (e) {
-      if (e instanceof Eingabefehler) return { fehler: e.message, feld: e.feld };
-      throw e;
-    }
-  };
-}
-
-const ISO_DATUM = /^\d{4}-\d{2}-\d{2}$/;
-const istEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
-const aktiv = <T extends Partial<Basis>>(liste: T[] | undefined) => (liste ?? []).filter((x) => !x.geloeschtAm);
-const nameVon = (m: Handelnder['mitarbeiter']) => [m.vorname, m.nachname].filter(Boolean).join(' ') || 'Mitarbeiter';
+export * from './grundlagen';
 
 // ------------------------------------------------------------------ Kunden
 
@@ -363,18 +285,205 @@ const aufgabeAnlegen: PartnerAktion<AufgabeAnlegen> = {
   },
 };
 
-function nichtGefunden(feld: string, message: string): Ergebnis {
-  return { art: 'antwort', status: 422, antwort: { status: 'error', error: { code: 'not_found', message, field: feld } } };
+// ------------------------------------------------------------------ Angebote
+
+interface PositionEingabe {
+  text: string;
+  menge: number;
+  einheit: Einheit;
+  einzelpreis: number;
 }
 
-/** undefined-Felder entfernen – so steht das Objekt genauso in `objekte` wie aus der App */
-function ohneLeere<T extends object>(o: T): ObjektZeile['daten'] {
-  return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as ObjektZeile['daten'];
+interface AngebotAnlegen {
+  kundeId: ID;
+  auftragId?: ID;
+  titel?: string;
+  /** Netto in Cent (aus amount umgerechnet) oder einzelne Positionen */
+  betragNetto?: number;
+  betragBrutto?: number;
+  positionen?: PositionEingabe[];
+  wunschtermin?: string;
+  einleitung?: string;
 }
+
+
+/** Phasen vor dem Angebot – dorthin schaltet ein neues Angebot den Auftrag weiter (wie in der App) */
+const VOR_ANGEBOT = new Set(['anfrage', 'besichtigung']);
+
+const angebotAnlegen: PartnerAktion<AngebotAnlegen> = {
+  name: 'create-quote',
+  gateway: 'offer.create_draft',
+  beschreibung:
+    'Angebotsentwurf anlegen – mit einem Gesamtbetrag (eine Pauschalposition) oder einzelnen Positionen. Nummer, Steuer, Gültigkeit und Vorlage kommen aus Handwerk OS. Wird nie versendet.',
+  risiko: 'schreiben',
+  rechte: ['schreiben', 'geld'],
+  liest: ['kunden', 'auftraege', 'angebote', 'betrieb'],
+  eingabe: {
+    customer_id: { typ: 'string', pflicht: true, beschreibung: 'Kunde (aus find-customer oder create-customer)' },
+    job_id: { typ: 'string', beschreibung: 'Auftrag, zu dem das Angebot gehört. Ohne: Handwerk OS legt einen Auftrag mit „title“ an.' },
+    title: { typ: 'string', beschreibung: 'Worum es geht, z. B. „Badrenovierung“ (Pflicht ohne job_id)' },
+    amount: { typ: 'number', beschreibung: 'Gesamtbetrag in Euro, z. B. 8500 (alternativ zu items)' },
+    amount_is_gross: { typ: 'boolean', beschreibung: 'true = amount ist brutto (inkl. USt). Standard: netto' },
+    items: { typ: 'object', beschreibung: 'Liste [{ text, quantity, unit, unit_price }] – unit_price netto in Euro, unit z. B. Stk, m, h, Psch' },
+    requested_period: { typ: 'string', beschreibung: 'Wunschtermin des Kunden als Text, z. B. „nächste Woche“' },
+    intro: { typ: 'string', beschreibung: 'Einleitungstext (Standard: Vorlage des Betriebs)' },
+  },
+  pruefe: pruefeMit((roh) => {
+    const kundeId = text(roh, 'customer_id', 100);
+    if (!kundeId) throw new Eingabefehler('Für welchen Kunden? „customer_id“ fehlt.', 'customer_id');
+    const auftragId = text(roh, 'job_id', 100);
+    const titel = text(roh, 'title', 200);
+    if (!auftragId && (!titel || titel.length < 2)) throw new Eingabefehler('Worum geht es? „title“ fehlt (oder „job_id“ angeben).', 'title');
+    const betrag = zahl(roh, 'amount');
+    if (roh.amount_is_gross !== undefined && typeof roh.amount_is_gross !== 'boolean') throw new Eingabefehler('„amount_is_gross“ ist true oder false.', 'amount_is_gross');
+    let positionen: PositionEingabe[] | undefined;
+    if (roh.items !== undefined && roh.items !== null) {
+      if (!Array.isArray(roh.items) || !roh.items.length || roh.items.length > 100) throw new Eingabefehler('„items“ ist eine Liste mit 1 bis 100 Positionen.', 'items');
+      positionen = roh.items.map((x, i) => {
+        if (!x || typeof x !== 'object' || Array.isArray(x)) throw new Eingabefehler(`Position ${i + 1} ist kein Objekt.`, 'items');
+        const p = x as Record<string, unknown>;
+        const t = text(p, 'text', 500);
+        if (!t) throw new Eingabefehler(`Position ${i + 1}: Text fehlt.`, 'items');
+        const menge = zahl(p, 'quantity') ?? 1;
+        const preis = zahl(p, 'unit_price');
+        if (preis === undefined) throw new Eingabefehler(`Position ${i + 1}: „unit_price“ fehlt.`, 'items');
+        const einheit = (text(p, 'unit', 5) ?? 'Stk') as Einheit;
+        if (!EINHEITEN.includes(einheit)) throw new Eingabefehler(`Position ${i + 1}: Einheit ist eins von ${EINHEITEN.join(', ')}.`, 'items');
+        if (menge <= 0 || menge > 1_000_000 || preis < 0 || preis > MAX_EURO) throw new Eingabefehler(`Position ${i + 1}: Menge oder Preis passt nicht.`, 'items');
+        return { text: t, menge, einheit, einzelpreis: Math.round(preis * 100) };
+      });
+    }
+    if (betrag === undefined && !positionen) throw new Eingabefehler('Wie viel? „amount“ oder „items“ angeben.', 'amount');
+    if (betrag !== undefined && positionen) throw new Eingabefehler('Entweder „amount“ oder „items“ – nicht beides.', 'amount');
+    if (betrag !== undefined && (betrag <= 0 || betrag > MAX_EURO)) throw new Eingabefehler('„amount“ muss größer als 0 sein.', 'amount');
+    const cent = betrag === undefined ? undefined : Math.round(betrag * 100);
+    return {
+      kundeId,
+      auftragId,
+      titel,
+      betragNetto: roh.amount_is_gross === true ? undefined : cent,
+      betragBrutto: roh.amount_is_gross === true ? cent : undefined,
+      positionen,
+      wunschtermin: text(roh, 'requested_period', 200),
+      einleitung: text(roh, 'intro', 2000),
+    };
+  }),
+  fuehreAus(d, k, bestand) {
+    const kunde = aktiv(bestand.kunden as unknown as Kunde[]).find((x) => x.id === d.kundeId);
+    if (!kunde) return nichtGefunden('customer_id', 'Diesen Kunden gibt es nicht (mehr).');
+    const alleAuftraege = (bestand.auftraege ?? []) as unknown as Auftrag[];
+    let auftrag = d.auftragId ? aktiv(alleAuftraege).find((x) => x.id === d.auftragId) : undefined;
+    if (d.auftragId && !auftrag) return nichtGefunden('job_id', 'Diesen Auftrag gibt es nicht (mehr).');
+    if (auftrag && auftrag.kundeId !== kunde.id) return nichtGefunden('job_id', 'Der Auftrag gehört zu einem anderen Kunden.');
+    if (auftrag?.phase === 'verloren') return nichtGefunden('job_id', 'Dieser Auftrag ist abgesagt.');
+
+    const betrieb = aktiv(bestand.betrieb as unknown as Betrieb[])[0];
+    const ust = betrieb?.kleinunternehmer ? 0 : (betrieb?.ustSatz ?? 19);
+    const zeit = k.jetzt.toISOString();
+    const heute = zeit.slice(0, 10);
+    const zeilen: ObjektZeile[] = [];
+    const weitere: NonNullable<Extract<Ergebnis, { art: 'geaendert' }>['weitereVerlaeufe']> = [];
+    const ereignisse: PartnerEreignis[] = [];
+    const wer = nameVon(k.handelnder.mitarbeiter);
+
+    if (!auftrag) {
+      auftrag = {
+        id: k.neueId(),
+        erstelltAm: zeit,
+        geaendertAm: zeit,
+        erstelltVon: k.handelnder.mitarbeiter.id,
+        nummer: projektNummerFuer(alleAuftraege.map((x) => x.nummer), k.jetzt),
+        titel: d.titel!,
+        art: 'projekt',
+        phase: 'angebot',
+        kundeId: kunde.id,
+        wunschtermin: d.wunschtermin,
+        verantwortlichId: k.handelnder.mitarbeiter.id,
+      };
+      zeilen.push({ sammlung: 'auftraege', id: auftrag.id, daten: ohneLeere(auftrag) });
+      weitere.push({ bezug: { typ: 'auftraege', id: auftrag.id }, text: `Auftrag angelegt – über ${k.partnerName} für ${wer}`, aenderung: 'created' });
+      ereignisse.push({ typ: 'job.created', objekt: { typ: 'auftraege', id: auftrag.id }, daten: { job_id: auftrag.id, number: auftrag.nummer, title: auftrag.titel, customer_id: kunde.id } });
+    } else if (VOR_ANGEBOT.has(auftrag.phase)) {
+      const weiter: Auftrag = { ...auftrag, phase: 'angebot', geaendertAm: zeit, wunschtermin: auftrag.wunschtermin ?? d.wunschtermin };
+      zeilen.push({ sammlung: 'auftraege', id: weiter.id, daten: ohneLeere(weiter) });
+      weitere.push({ bezug: { typ: 'auftraege', id: weiter.id }, text: `Angebot in Arbeit – über ${k.partnerName} für ${wer}`, aenderung: 'updated' });
+      auftrag = weiter;
+    }
+
+    const netto = d.betragNetto ?? (d.betragBrutto !== undefined ? Math.round((d.betragBrutto * 100) / (100 + ust)) : undefined);
+    const positionen: Position[] = d.positionen
+      ? d.positionen.map((p) => ({ id: k.neueId('p'), art: p.einheit === 'h' ? 'lohn' : p.einheit === 'Psch' ? 'pauschal' : 'leistung', text: p.text, menge: p.menge, einheit: p.einheit, einzelpreis: p.einzelpreis }))
+      : [{ id: k.neueId('p'), art: 'pauschal', text: auftrag.titel, menge: 1, einheit: 'Psch', einzelpreis: netto! }];
+    const s = summen(positionen, ust);
+    const gueltigZeile = (bestand.einstellungen ?? []).find((e) => e.id === 'angebote.gueltigTage') as { wert?: unknown } | undefined;
+    const gueltigTage = typeof gueltigZeile?.wert === 'number' && gueltigZeile.wert > 0 ? gueltigZeile.wert : 30;
+    const alleAngebote = (bestand.angebote ?? []) as unknown as Angebot[];
+    const angebot: Angebot = {
+      id: k.neueId(),
+      erstelltAm: zeit,
+      geaendertAm: zeit,
+      erstelltVon: k.handelnder.mitarbeiter.id,
+      nummer: naechsteNummerFuer('AN', alleAngebote.map((x) => x.nummer), { jahr: k.jetzt.getUTCFullYear() }),
+      auftragId: auftrag.id,
+      kundeId: kunde.id,
+      titel: auftrag.titel,
+      einleitung: d.einleitung ?? `Vielen Dank für die Anfrage „${auftrag.titel}“. Gerne bieten wir folgende Leistungen an:`,
+      positionen,
+      status: 'entwurf',
+      datum: heute,
+      gueltigBis: plusTage(heute, gueltigTage),
+      version: 1,
+    };
+    zeilen.unshift({ sammlung: 'angebote', id: angebot.id, daten: ohneLeere(angebot) });
+    ereignisse.unshift({
+      typ: 'quote.created',
+      objekt: { typ: 'angebote', id: angebot.id },
+      daten: { quote_id: angebot.id, number: angebot.nummer, job_id: auftrag.id, customer_id: kunde.id, net: euro(s.netto), tax: euro(s.ust), total: euro(s.brutto), currency: 'EUR' },
+    });
+    return {
+      art: 'geaendert',
+      status: 201,
+      antwort: {
+        status: 'draft_created',
+        quote_id: angebot.id,
+        number: angebot.nummer,
+        job_id: auftrag.id,
+        job_number: auftrag.nummer,
+        customer_id: kunde.id,
+        net: euro(s.netto),
+        tax: euro(s.ust),
+        tax_rate: ust,
+        total: euro(s.brutto),
+        currency: 'EUR',
+        valid_until: angebot.gueltigBis,
+        // Versendet wird nur nach Prüfung durch den Menschen (Angebot öffnen → senden)
+        requires_confirmation: true,
+      },
+      zeilen,
+      bezug: { typ: 'angebote', id: angebot.id },
+      verlauf: `Angebotsentwurf angelegt – über ${k.partnerName} für ${wer}`,
+      weitereVerlaeufe: weitere,
+      ereignisse,
+    };
+  },
+};
+
+
 
 // ------------------------------------------------------------------ Katalog
 
-export const PARTNER_AKTIONEN: PartnerAktion[] = [kundeSuchen, kundeAnlegen, aufgabeAnlegen] as PartnerAktion[];
+export const PARTNER_AKTIONEN: PartnerAktion[] = [
+  kundeSuchen,
+  kundeAnlegen,
+  aufgabeAnlegen,
+  angebotAnlegen,
+  angebotSenden,
+  termineSuchen,
+  terminAnlegen,
+  terminVerschieben,
+  rechnungenSuchen,
+  rechnungAnlegen,
+] as PartnerAktion[];
 
 export function partnerAktion(name: string): PartnerAktion | undefined {
   return PARTNER_AKTIONEN.find((a) => a.name === name);
