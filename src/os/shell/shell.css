@@ -7,7 +7,7 @@
 /* Sidebar */
 /* Schwebende Leiste nach Peak One: Abstand zum Fensterrand, runde Ecken, viel Luft – aber deckend, ohne Glas */
 .mm-sidebar {
-  position: sticky; top: 16px; align-self: flex-start; height: calc(100vh - 32px); height: calc(100dvh - 32px); width: var(--mm-sidebar-width); flex-shrink: 0;
+  position: sticky; z-index: 20; top: 16px; align-self: flex-start; height: calc(100vh - 32px); height: calc(100dvh - 32px); width: var(--mm-sidebar-width); flex-shrink: 0;
   display: flex; flex-direction: column; gap: 16px; margin: 16px 0 16px 16px; padding: 20px 14px 14px;
   background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-leiste);
   box-shadow: var(--mm-shadow-lift); overflow-y: auto; scrollbar-width: thin;
@@ -138,20 +138,9 @@
   color: var(--mm-text); font: inherit; cursor: pointer; text-align: left; transition: border-color var(--mm-motion-fast) ease-out;
 }
 .mm-leiste-suche:hover { border-color: var(--mm-brand); }
-.mm-leiste-suchzeile { display: flex; gap: 8px; align-items: stretch; }
-.mm-leiste-suchzeile .mm-leiste-suche { flex: 1; min-width: 0; border-color: var(--mm-border); box-shadow: var(--mm-shadow-lift); }
-.mm-leiste-suche-text { flex: 1; }
+.mm-leiste-werkzeuge .mm-leiste-suche { border-color: var(--mm-border); box-shadow: var(--mm-shadow-lift); }
 .mm-leiste-kbd { padding: 2px 6px; border: 1px solid var(--mm-border); border-radius: 6px; background: var(--mm-surface-subtle); color: var(--mm-text-secondary); font: 600 12px/16px var(--mm-font); }
-.mm-leiste-ki {
-  display: grid; place-items: center; flex-shrink: 0; width: 48px; min-height: 48px; padding: 0; border: 1px solid var(--mm-border);
-  border-radius: var(--mm-radius-control); background: var(--mm-surface); box-shadow: var(--mm-shadow-lift); cursor: pointer;
-  transition: transform var(--mm-motion-fast) ease-out, box-shadow var(--mm-motion-fast) ease-out;
-}
-.mm-leiste-ki:hover { box-shadow: var(--mm-shadow-lift-hover); }
-@media (prefers-reduced-motion: no-preference) { .mm-leiste-ki:hover .mm-ki-kugel { transform: scale(1.06); } .mm-ki-kugel { transition: transform var(--mm-motion-panel) ease-out; } }
-.mm-leiste-ki:focus-visible, .mm-leiste-suche:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }
-.mm-app--eingeklappt .mm-leiste-suchzeile { flex-direction: column; }
-.mm-app--eingeklappt .mm-leiste-ki { width: 100%; }
+.mm-leiste-suche:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }
 .mm-leiste-suche-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-leiste-zeile {
   display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 12px; border: 0;
@@ -353,3 +342,29 @@
 .mm-menue > .mm-menue-titel:first-child { border-top: 0; margin-top: 0; }
 .mm-menue .mm-menue-upgrade { width: calc(100% - 8px); margin: 4px 4px 0; border-radius: var(--mm-radius-control); background: var(--mm-brand-soft); color: var(--mm-brand-ink); font-weight: 600; }
 .mm-menue .mm-menue-upgrade:hover { background: var(--mm-success-border); }
+
+/* Favoriten zuklappbar: der Titel ist der Knopf */
+.mm-leiste-gruppe-knopf {
+  display: inline-flex; align-items: center; gap: 4px; min-height: 32px; margin-left: -6px; padding: 0 6px; border: 0; border-radius: var(--mm-radius-control);
+  background: none; color: inherit; font: inherit; cursor: pointer;
+}
+.mm-leiste-gruppe-knopf:hover { background: var(--mm-hover); color: var(--mm-text); }
+.mm-leiste-gruppe-knopf:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px; }
+/* Inhalt eines Ordners: sichtbar eingerückt, mit feiner Führungslinie */
+.mm-leiste-baum [role='group'] { margin: 2px 0 4px 22px; padding-left: 8px; border-left: 1px solid var(--mm-border); }
+.mm-leiste-ordner-leer--eingerueckt { margin-left: 22px; padding-left: 20px; border-left: 1px solid var(--mm-border); }
+
+/* Breite der Seitenleiste ziehen (200–400 px) – Klick klappt ein und aus, Pfeiltasten ±16 px */
+.mm-leiste-griff {
+  position: sticky; top: 16px; z-index: 5; flex-shrink: 0; width: 12px; height: calc(100dvh - 32px); margin: 16px -10px 0 -2px;
+  cursor: col-resize; touch-action: none; background: none; border: 0; padding: 0;
+}
+.mm-leiste-griff::after {
+  content: ''; position: absolute; top: 24px; bottom: 24px; left: 5px; width: 2px; border-radius: 1px; background: transparent;
+  transition: background-color var(--mm-motion-fast) ease-out;
+}
+.mm-leiste-griff:hover::after, .mm-leiste-griff:focus-visible::after, .mm-leiste-griff[data-zieht]::after { background: var(--mm-brand); }
+.mm-leiste-griff:focus-visible { outline: none; }
+.mm-app[data-zieht] { cursor: col-resize; user-select: none; }
+.mm-app[data-zieht] .mm-sidebar { transition: none; }
+@media (max-width: 1023px) { .mm-leiste-griff { display: none; } }

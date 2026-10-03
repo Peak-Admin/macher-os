@@ -43,9 +43,9 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
   (Heute: „Dein nächster Schritt“) ist grün mit weißer Schrift und weißem Hauptknopf; Begleiter warm beige (`#f4efe6`),
   Neuigkeiten hellgrün, Arbeitslisten weiß. Überfälliges färbt die ganze Kennzahl-Karte (Warnfläche).
 - **KI:** Macher (die KI) hat ein eigenes Zeichen – die Kugel Pink → Orange (`KiKugel`, Tokens `--mm-ki-*`). Nur für KI:
-  Suchen-und-Fragen-Leiste, Orb, „Macher fragen“. Nie für Aktionen, Status oder Daten. In der Seitenleiste: links
-  „Suchen“ mit Lupe und Kürzel, rechts die Kugel; beide öffnen die KI-Leiste.
-- **Raster:** 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 px. App: Sidebar 264 px (schwebend, 16 px Abstand zum Rand, Radius 20 px), Topbar 64 px, Inhalt max. 1280 px, Formulare max. 800 px.
+  Suchen-und-Fragen-Leiste, Orb, „Macher fragen“. Nie für Aktionen, Status oder Daten. In der Seitenleiste nur eine Fläche
+  „Suchen“ mit Lupe und Kürzel (keine Kugel in der Navigation); sie öffnet die KI-Leiste, erst dort steht die Kugel.
+- **Raster:** 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 px. App: Sidebar 264 px (schwebend, 16 px Abstand zum Rand, Radius 20 px; Rand ziehen = Breite 200–400 px je Mitarbeiter, Klick klappt ein; Favoriten zuklappbar, Ordnerinhalt eingerückt mit Führungslinie), Topbar 64 px, Inhalt max. 1280 px, Formulare max. 800 px.
 - **Controls:** Buttons und Felder 48 px hoch, Label oberhalb, sichtbarer 3-px-Fokusring. Primärbutton: Weiß auf `#0d6b45`, 16 px halbfett.
   Genau eine gefüllte grüne Hauptaktion je Aufgabe; häufige Nebenaktionen sichtbar.
 - **Steuerelemente:** Bereichsnavigation als unterstrichene Reihe, untergeordnete Ansichten als heller Umschalter –

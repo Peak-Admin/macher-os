@@ -10,6 +10,15 @@
   --font-display: var(--font-barlow), sans-serif;
   --font-tagline: var(--font-poppins), Arial, sans-serif;
 
+  /* Software-Look in den Produktansichten der Website (src/os/ui/tokens.css): beiges Canvas, ruhige Fläche, Linien */
+  --color-app-canvas: #fbf9f5;
+  --color-app-ruhig: #f5f2ec;
+  --color-app-linie: #e8e3da;
+  /* KI-Zeichen (Kugel Pink → Orange) – nur für Macher, die KI */
+  --color-ki-pink: #ff3d8b;
+  --color-ki-rosa: #ff7aa8;
+  --color-ki-orange: #ffb36b;
+
   /* Ab hier passt die Desktop-Navigation (Logo, fünf Punkte, drei Aktionen) ohne Quetschen – darunter Menü-Dialog */
   --breakpoint-nav: 75rem;
 
@@ -505,6 +514,39 @@ details > summary::-webkit-details-marker {
     opacity: 0.2;
     mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* KI-Kugel und KI-Leiste wie in der Software (src/os/ui/orb.css) – nur in Produktansichten */
+  .ki-kugel {
+    display: inline-block;
+    flex: none;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 72% 80%, rgb(255 205 140 / 0.95) 0 14%, transparent 58%),
+      radial-gradient(circle at 30% 24%, rgb(255 214 230 / 0.9) 0 8%, transparent 40%),
+      radial-gradient(circle at 50% 50%, var(--color-ki-rosa) 0%, var(--color-ki-pink) 58%, #f0457f 100%);
+    box-shadow: inset 0 -1px 4px rgb(200 30 90 / 0.35), 0 3px 8px rgb(255 61 139 / 0.28);
+  }
+  .ki-leiste {
+    border-radius: 12px;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--color-ki-pink), var(--color-ki-orange));
+    box-shadow: 0 10px 24px -14px rgb(255 61 139 / 0.5);
+  }
+  /* Aufgelegte Fläche wie in der Software (--mm-shadow-lift) */
+  .app-lift {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      0 1px 2px rgb(16 44 33 / 0.06),
+      0 10px 28px -14px rgb(16 44 33 / 0.22);
+  }
+  /* „Probier's aus“: kurzes Aufleuchten, wenn eine Ansicht auf einen Klick reagiert */
+  .mini-ein {
+    animation: ablauf-ein 180ms ease-out both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mini-ein {
+      animation: none;
+    }
   }
   .vorschau-fenster {
     border-radius: 16px;
