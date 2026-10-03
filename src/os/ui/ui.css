@@ -489,3 +489,11 @@
 .mm-typicon { display: inline-grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: var(--mm-surface-subtle); color: var(--mm-brand-ink); box-shadow: inset 0 0 0 1px var(--mm-border); }
 .mm-kundenbild { display: inline-grid; place-items: center; flex-shrink: 0; border-radius: 50%; overflow: hidden; color: #fff; font-weight: 700; letter-spacing: 0.02em; box-shadow: inset 0 0 0 1px rgb(16 44 33 / 10%); }
 .mm-kundenbild img { display: block; object-fit: contain; }
+
+/* Karte im „Wo“-Kasten (src/os/ui/ortskarte.tsx) – lädt erst nach Klick */
+.mm-ortskarte { border-radius: var(--mm-radius-control); overflow: hidden; }
+.mm-ortskarte--zu {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px;
+  background: var(--mm-surface-subtle); border: 1px solid var(--mm-border); overflow: visible;
+}
+.mm-ortskarte-rahmen { display: block; width: 100%; height: 200px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); }
