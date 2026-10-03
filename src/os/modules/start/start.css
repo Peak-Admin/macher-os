@@ -11,7 +11,7 @@
 }
 .mm-start-karte:hover { border-color: var(--mm-brand); }
 .mm-start-karte:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 2px; }
-.mm-start-karte strong { font: 700 22px/28px var(--mm-font); color: var(--mm-black); }
+.mm-start-karte strong { font: 600 22px/28px var(--mm-font-titel); color: var(--mm-black); }
 .mm-start-karte .mm-start-fenster { align-self: stretch; }
 .mm-start-karte-weiter { display: inline-flex; align-items: center; gap: 4px; margin-top: auto; font-weight: 600; color: var(--mm-link); }
 .mm-start-karte--erste { border: 2px solid var(--mm-brand); padding: calc(var(--mm-space-6) - 1px); }
@@ -22,7 +22,7 @@
   display: grid; place-items: center; width: 28px; height: 28px; flex-shrink: 0; border-radius: var(--mm-radius-control);
   background: var(--mm-brand-deep); color: var(--mm-on-action); font: 700 15px/1 var(--mm-font);
 }
-.mm-schritt-kopf h2 { margin: 0; font: 700 20px/26px var(--mm-font); color: var(--mm-black); }
+.mm-schritt-kopf h2 { margin: 0; font: 600 20px/26px var(--mm-font-titel); color: var(--mm-black); }
 .mm-schritt-kopf .mm-status { margin-left: auto; }
 
 /* Positionen kompakt */

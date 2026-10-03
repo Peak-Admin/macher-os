@@ -25,7 +25,7 @@ export function dokumentHtml(m: DokumentMail): string {
   const b = m.betrieb;
   const zelle = 'padding:8px 6px;border-bottom:1px solid ' + FARBE.linie;
   const absender = [b?.adresse?.strasse ? adresseText(b.adresse) : '', b?.telefon ? `Tel. ${b.telefon}` : '', b?.email ?? ''].filter(Boolean).map(esc).join(' · ');
-  return `<!doctype html><html lang="de"><body style="margin:0;padding:0;background:${FARBE.flaeche};font-family:Barlow,Arial,Helvetica,sans-serif;color:${FARBE.text};font-size:15px;line-height:1.5">
+  return `<!doctype html><html lang="de"><body style="margin:0;padding:0;background:${FARBE.flaeche};font-family:Inter,Arial,Helvetica,sans-serif;color:${FARBE.text};font-size:15px;line-height:1.5">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${FARBE.flaeche}"><tr><td align="center" style="padding:24px 12px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#FFFFFF;border:1px solid ${FARBE.linie};border-radius:8px">
 <tr><td style="padding:24px 24px 12px;border-bottom:2px solid ${FARBE.gruen}">

@@ -6,9 +6,11 @@
  * (Software: --mm-* in src/os/ui/tokens.css). Komponenten nutzen nur diese Namen – keine festen HEX-Werte.
  */
 @theme {
-  --font-sans: var(--font-barlow), sans-serif;
-  --font-display: var(--font-barlow), sans-serif;
-  --font-tagline: var(--font-poppins), Arial, sans-serif;
+  /* Inter für alles Lesbare; EB Garamond (font-titel) für Titel – h1–h3 bekommen sie automatisch (unten) */
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-display: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-tagline: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-titel: var(--font-garamond), "EB Garamond", Georgia, serif;
 
   /* Software-Look in den Produktansichten der Website (src/os/ui/tokens.css): beiges Canvas, ruhige Fläche, Linien */
   --color-app-canvas: #fbf9f5;
@@ -282,6 +284,17 @@ h3 {
   overflow-wrap: break-word;
   hyphens: manual;
   text-wrap: balance;
+}
+
+/* Titel in EB Garamond: bewusst ohne Layer, damit es auch über font-display/font-bold an der Überschrift greift.
+   Garamond wirkt halbfett am ruhigsten – schwerere Gewichte würden nur synthetisch verdickt. Kleine Versalien-Titel
+   (font-tagline) bleiben in Inter. */
+h1:not(.font-tagline),
+h2:not(.font-tagline),
+h3:not(.font-tagline) {
+  font-family: var(--font-titel);
+  font-weight: 600;
+  letter-spacing: -0.005em;
 }
 
 ::selection {

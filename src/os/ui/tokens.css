@@ -38,8 +38,10 @@
   --mm-control-border: var(--mm-border-dark);
   --mm-campaign-orange: #e69433;
 
-  --mm-font: 'Barlow', sans-serif;
-  --mm-font-eyebrow: 'Poppins', Arial, sans-serif;
+  /* Inter für alles Lesbare, EB Garamond nur für Titel (h1–h3) – geladen über next/font (src/lib/schriften.ts) */
+  --mm-font: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --mm-font-titel: var(--font-garamond), 'EB Garamond', Georgia, serif;
+  --mm-font-eyebrow: var(--mm-font);
 
   /* Primärbutton: Weiß auf #0d6b45 hat 6,55:1 – reicht auch für 16 px */
   --mm-action: var(--mm-brand);

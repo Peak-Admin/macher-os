@@ -28,7 +28,9 @@ Reihenfolge bei Zielkonflikten: 1. Aufgabe verstehen und erledigen · 2. Orienti
 
 Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die Software, `src/app/globals.css` für die Website):
 
-- **Schrift:** Barlow für alles; Poppins 600 nur für kurze Marketing-Überzeilen in Versalien. Kein Fontwechsel.
+- **Schrift (seit Oktober 2026):** Inter für alles Lesbare (Text, Felder, Knöpfe, Zahlen, Überzeilen); **EB Garamond 600 nur
+  für Titel** (h1–h3, Karten- und Widget-Titel; Website-Token `font-titel`, Software `--mm-font-titel`). Geladen über
+  `next/font` (`src/lib/schriften.ts`), selbst gehostet. Zahlen und Werte bleiben in Inter.
   App-Text 16 px, Feldbeschriftungen 16 px, 14 px nur für Metadaten und Hilfetexte. Abschnittstitel in normaler Schreibweise,
   keine automatische Silbentrennung in Überschriften und Navigation.
 - **Farben:** ein Grün für alle Hauptaktionen: `#0d6b45` (Hover `#095436`, aktiv `#073f29`), helle Grünfläche `#e8f2ec`,
@@ -136,7 +138,7 @@ Es gibt kein eigenes App-Projekt mehr (früher `os/` bzw. `macher-os-app`).
 - Farben/Fonts nur über die Tokens in `src/app/globals.css` – sie bilden die UX-Spezifikation ab
   (`primary`/`brand` = Aktionsgrün `#0d6b45`, `signal`/`signal-dark` = dunkles Grün `#164c34` für Text und Badges,
   `signal-soft` = helle Grünfläche, `accent` = Akzentgrün nur auf dunklen Flächen, `ink` = Waldgrün `#102c21`,
-  `paper` = Canvas, `line`, `muted` = Sekundärtext, `logo` = Logogrün; `font-display` = Barlow, `font-tagline` = Poppins).
+  `paper` = Canvas, `line`, `muted` = Sekundärtext, `logo` = Logogrün; `font-sans`/`font-display`/`font-tagline` = Inter, `font-titel` = EB Garamond).
   Keine festen HEX-Werte in Komponenten.
 - Primäraktion: `btn-primaer` (bzw. `ButtonLink` Variante `primary`), mind. 48 px hoch. Auf dunklen Flächen Akzente mit `text-accent`.
 - Website-Navigation: Daten in `mainNav` (`src/lib/site.ts`), Kopf in `src/components/layout/Header.tsx`.

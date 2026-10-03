@@ -20,7 +20,7 @@
   overflow: hidden;
   background: var(--a-dunkel);
   color: var(--a-weiss);
-  font-family: var(--font-barlow), "Barlow", system-ui, sans-serif;
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition:
     opacity 700ms ease-out,
@@ -85,7 +85,7 @@ html[data-auftakt="an"] .mm-auftakt {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: var(--font-poppins), "Poppins", var(--font-barlow), sans-serif;
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -139,7 +139,7 @@ html[data-auftakt="an"] .mm-auftakt {
 .mm-auftakt-oberzeile {
   margin: 0 0 32px;
   max-width: none;
-  font-family: var(--font-poppins), "Poppins", var(--font-barlow), sans-serif;
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.25em;

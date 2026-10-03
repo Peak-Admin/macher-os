@@ -12,7 +12,7 @@
   background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-leiste);
   box-shadow: var(--mm-shadow-lift); overflow-y: auto; scrollbar-width: thin;
 }
-.mm-logo { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 8px; color: var(--mm-black); text-decoration: none; font: 500 20px/1 var(--mm-font); }
+.mm-logo { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px; color: var(--mm-black); text-decoration: none; font: 500 17px/1 var(--mm-font); letter-spacing: -0.01em; }
 .mm-logo strong { font-weight: 900; }
 .mm-logo-zeichen { display: block; flex-shrink: 0; width: 32px; height: 32px; }
 .mm-nav { display: flex; flex-direction: column; gap: 4px; flex: 0 0 auto; }
@@ -175,7 +175,7 @@
     position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 8px;
     height: var(--mm-topbar-height); padding: 0 16px; background: var(--mm-surface); border-bottom: 1px solid var(--mm-border);
   }
-  .mm-kopf-mobil-titel { flex: 1; min-width: 0; font: 700 20px/24px var(--mm-font); color: var(--mm-black); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mm-kopf-mobil-titel { flex: 1; min-width: 0; font: 600 20px/24px var(--mm-font-titel); color: var(--mm-black); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   /* Platz unten: Leiste (72 px) + sicherer Bereich + Luft – der letzte Eintrag bleibt erreichbar */
   .mm-inhalt { padding: 24px 16px calc(72px + env(safe-area-inset-bottom, 0px) + 24px); }
   .mm-bottomnav {
@@ -251,7 +251,7 @@
 .mm-tuer:hover { border-color: var(--mm-brand); }
 .mm-tuer:hover .mm-modulzeile-pfeil { color: var(--mm-brand-text); transform: translateX(2px); }
 .mm-tuer-text { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; flex: 1; min-width: 0; }
-.mm-tuer-text strong { font: 700 22px/28px var(--mm-font); color: var(--mm-black); }
+.mm-tuer-text strong { font: 600 22px/28px var(--mm-font-titel); color: var(--mm-black); }
 .mm-tuer .mm-modulzeile-pfeil { align-self: center; flex-shrink: 0; }
 
 /* ---------- Betrieb: Verzeichnis aller Module */
@@ -272,10 +272,10 @@
 
 /* ---------- Heute: eine Zeile Begrüßung, höchstens drei Blöcke */
 .mm-heute { gap: 32px; }
-.mm-heute-gruss { font: 700 24px/32px var(--mm-font); color: var(--mm-black); }
+.mm-heute-gruss { font: 600 24px/32px var(--mm-font-titel); color: var(--mm-black); }
 .mm-heute-gruss span { font-weight: 500; font-size: 18px; color: var(--mm-text-secondary); }
 .mm-heute-block { display: flex; flex-direction: column; gap: 12px; }
-.mm-heute-blocktitel { font: 600 20px/26px var(--mm-font); color: var(--mm-black); }
+.mm-heute-blocktitel { font: 600 20px/26px var(--mm-font-titel); color: var(--mm-black); }
 .mm-einsatz { display: flex; flex-direction: column; gap: 8px; padding: 24px; background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); }
 .mm-einsatz-kunde { font: 700 22px/1.3 var(--mm-font); color: var(--mm-black); }
 .mm-einsatz-aufgabe { font-size: 18px; line-height: 26px; color: var(--mm-text); }
