@@ -282,6 +282,39 @@ export default function HomePage() {
       {/* 2. Dein Alltag – 3D-Karten mit Blick in die App */}
       <Alltag nachUeberhang />
 
+      {/* 2b. Das ist Lotte – der KI-Agent von Hey Lotte, gleich unter dem Hero */}
+      <Zone ton="weiss" id="lotte" label="lotte-titel" className="scroll-mt-24">
+        <Section tone="transparent">
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
+            <div>
+              <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-signal-dark">
+                Das ist Lotte · KI-Agent von Hey Lotte
+              </p>
+              <h2 id="lotte-titel" className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-ink sm:text-5xl">
+                Du machst das Handwerk. Lotte macht das Büro.
+              </h2>
+              <p className="mt-5 max-w-md text-lg text-muted">
+                Lotte ist kein Chatfenster, sondern ein KI-Agent: Sie arbeitet selbst mit – nimmt Anfragen auf, bereitet Angebote
+                und Rechnungen vor und bleibt an offenen Zahlungen dran. Was nach außen geht oder Geld kostet, gibst du frei.
+              </p>
+              <ArrowLink href="/funktionen/automatisch-erledigen" className="mt-8">
+                So arbeitet Lotte
+              </ArrowLink>
+              <LotteHerkunft className="mt-8 max-w-md border-t border-line pt-5" />
+            </div>
+            <Lotte pose="mit-dir" className="mx-auto w-full max-w-md lg:max-w-lg" sizes="(min-width: 1024px) 512px, 90vw" />
+          </div>
+          <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {machtMacher.map((m) => (
+              <li key={m.text} className="flex items-center gap-3 rounded-xl bg-paper p-4 ring-1 ring-line">
+                <IconTile name={m.icon} className="size-10" />
+                <span className="font-semibold leading-snug text-ink">Lotte {m.text}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      </Zone>
+
       {/* 3. Ablauf – vier klickbare Schritte */}
       <Ablauf />
 
@@ -413,42 +446,6 @@ export default function HomePage() {
           <ArrowLink href="/funktionen/automatisch-erledigen" className="mt-8">
             So arbeitet Lotte
           </ArrowLink>
-        </Section>
-      </Zone>
-
-      {/* 8. Das ist Lotte */}
-      <Zone ton="dunkel">
-        <Section tone="transparent">
-          <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
-            <div>
-              <p className="mb-3 text-sm font-semibold font-tagline uppercase tracking-[0.06em] text-accent">Das ist Lotte</p>
-              <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl">
-                Du machst das Handwerk. Lotte macht das Büro.
-              </h2>
-              <p className="mt-5 max-w-md text-lg text-white/70">
-                Lotte ist die KI in Handwerk OS. Sie übernimmt die Büroarbeit, die sonst abends am Küchentisch liegen bleibt.
-                Was nach außen geht oder Geld kostet, gibst du frei.
-              </p>
-              <Link
-                href="/funktionen/automatisch-erledigen"
-                className="mt-8 inline-flex items-center gap-1.5 font-bold text-accent underline decoration-2 underline-offset-4 hover:text-white"
-              >
-                So arbeitet Lotte <Icon name="arrow-right" className="size-4" />
-              </Link>
-              <LotteHerkunft dunkel className="mt-8 max-w-md border-t border-white/15 pt-5" />
-            </div>
-            <Lotte pose="mit-dir" className="mx-auto w-full max-w-md lg:max-w-lg" sizes="(min-width: 1024px) 512px, 90vw" />
-          </div>
-          <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {machtMacher.map((m) => (
-                <li key={m.text}>
-                  <Karte3D innen="flex items-center gap-3 karte-dunkel p-4" stark={8}>
-                    <IconTile name={m.icon} className="karte-3d-tief size-10" />
-                    <span className="font-semibold leading-snug">{m.text}</span>
-                  </Karte3D>
-                </li>
-              ))}
-          </ul>
         </Section>
       </Zone>
 
