@@ -172,6 +172,10 @@ Visuelle Sprache: Für macher-os gelten das Brand Playbook und die Festlegungen 
 [`docs/os/KI-GATEWAY.md`](docs/os/KI-GATEWAY.md)). Kein Modul spricht direkt mit einem Modell; Module melden Absichten
 und Aktionen über `defineModul({ gateway })` an. Regeln vor Jev vor Luna vor stärkerem Modell; kritische Aktionen immer bestätigen.
 
+**HeyLotte (Partner-Schnittstelle):** HeyLotte versteht, Handwerk OS entscheidet und führt aus. HeyLotte spricht nur über die
+Action API `/v1/actions/<aktion>` (`src/os/server/partner/`, Doku [`docs/os/PARTNER-API.md`](docs/os/PARTNER-API.md)), nie direkt
+mit Supabase. Rechte, Validierung, Verlauf und Ereignisse bleiben in Handwerk OS.
+
 **Integrationen:** vier Säulen – Macher Connect (Pipedream), Macher Format Engine, Macher Universal Connectors,
 Macher Handwerk Connect. Bauplan, Priorität (Score) und Logo-Regeln: [`docs/os/INTEGRATIONEN.md`](docs/os/INTEGRATIONEN.md).
 Website-Daten `src/content/integrationen.ts`. Keine „Kommt“-Phase: intern prüfen, dann direkt bauen – auf der Website ohne Status-Abzeichen.

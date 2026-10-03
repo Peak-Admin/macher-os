@@ -5,6 +5,7 @@
  */
 import { timingSafeEqual } from 'node:crypto';
 import { env, fehler, nichtVerbunden, rest, type SupabaseKonfig } from './lib';
+import { faelligeZustellen } from '@/os/server/partner/supabase';
 
 export function cronErlaubt(req: Request): Response | undefined {
   const geheimnis = env('CRON_SECRET');
@@ -49,5 +50,11 @@ export const AUFGABEN: CronAufgabe[] = [
       return 'erledigt';
     },
   },
+  {
+    id: 'partner-ereignisse',
+    beschreibung: 'Ereignisse an Partner (HeyLotte), deren Zustellung gescheitert ist, erneut senden',
+    async laufen(k, jetzt) {
+      return `${await faelligeZustellen(k, { jetzt, max: 200 })} versucht`;
+    },
+  },
 ];
-

@@ -384,10 +384,10 @@ describe('Cron', () => {
     vi.stubEnv('CRON_SECRET', 'geheim');
     const falsch = await cron(new Request('https://app.macher-os.de/api/cron/taeglich', { headers: { authorization: 'Bearer falsch' } }));
     expect(falsch.status).toBe(401);
-    const aufrufe = fetchAttrappe([['DELETE /rest/v1/', undefined, 204]]);
+    const aufrufe = fetchAttrappe([['DELETE /rest/v1/', undefined, 204], ['GET /rest/v1/partner_auslieferungen', []]]);
     const r = await cron(new Request('https://app.macher-os.de/api/cron/taeglich', { headers: { authorization: 'Bearer geheim' } }));
     expect(r.status).toBe(200);
-    expect(await r.json()).toMatchObject({ ergebnis: { 'einladungen-aufraeumen': 'erledigt', 'links-aufraeumen': 'erledigt', 'messpunkte-aufraeumen': 'erledigt' } });
-    expect(aufrufe.map((a) => a.url.pathname)).toEqual(['/rest/v1/einladungen', '/rest/v1/oeffentliche_links', '/rest/v1/messpunkte']);
+    expect(await r.json()).toMatchObject({ ergebnis: { 'einladungen-aufraeumen': 'erledigt', 'links-aufraeumen': 'erledigt', 'messpunkte-aufraeumen': 'erledigt', 'partner-ereignisse': '0 versucht' } });
+    expect(aufrufe.map((a) => a.url.pathname)).toEqual(['/rest/v1/einladungen', '/rest/v1/oeffentliche_links', '/rest/v1/messpunkte', '/rest/v1/partner_auslieferungen']);
   });
 });
