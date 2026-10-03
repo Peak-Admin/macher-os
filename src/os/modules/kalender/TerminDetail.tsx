@@ -25,6 +25,7 @@ import {
   useToast,
 } from '@ui/index';
 import { Person, Personenbild } from '@ui/person';
+import { OrtsKarte } from '@ui/ortskarte';
 import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import { kontextAusDb, terminKonflikte } from '../verfuegbarkeit/daten';
 import { icsDateiname, terminAlsIcs, TERMINART_LABEL, TERMINSTATUS, verschoben } from './daten';
@@ -190,6 +191,12 @@ export function TerminDetail() {
                   )}
                   {ort?.hinweise && <Meta>{ort.hinweise}</Meta>}
                   {(ort?.telefonVorOrt || kunde?.telefon) && <a href={telLink(ort?.telefonVorOrt ?? kunde?.telefon)}>Anrufen: {ort?.telefonVorOrt ?? kunde?.telefon}</a>}
+                  {(ort || kunde?.adresse) && (
+                    <OrtsKarte
+                      ziel={ort ? { adresse: ort.adresse, lat: ort.lat, lng: ort.lng } : { adresse: kunde?.adresse }}
+                      titel={ort?.bezeichnung ?? kunde?.name ?? 'Einsatzort'}
+                    />
+                  )}
                 </Stapel>
               </Karte>
             )}
