@@ -111,6 +111,12 @@ export const AKTION_LABEL: Record<string, string> = {
   'create-customer': 'Kunden anlegen',
   'create-task': 'Aufgabe anlegen',
   'create-quote': 'Angebotsentwurf anlegen',
+  'send-quote': 'Angebot senden',
+  'find-appointments': 'Termine ansehen',
+  'create-appointment': 'Termin eintragen',
+  'reschedule-appointment': 'Termin verschieben',
+  'find-invoices': 'Rechnungen ansehen',
+  'create-invoice': 'Rechnungsentwurf anlegen',
 };
 
 export const aktionLabel = (name: string) => AKTION_LABEL[name] ?? name;
@@ -121,7 +127,10 @@ export const EREIGNISSE: { typ: string; titel: string }[] = [
   { typ: 'job.created', titel: 'Auftrag angelegt' },
   { typ: 'appointment.created', titel: 'Termin angelegt' },
   { typ: 'quote.created', titel: 'Angebot erstellt' },
+  { typ: 'quote.sent', titel: 'Angebot versendet' },
   { typ: 'quote.accepted', titel: 'Angebot angenommen' },
+  { typ: 'appointment.rescheduled', titel: 'Termin verschoben' },
+  { typ: 'invoice.created', titel: 'Rechnungsentwurf angelegt' },
   { typ: 'invoice.paid', titel: 'Rechnung bezahlt' },
   { typ: 'invoice.overdue', titel: 'Rechnung überfällig' },
   { typ: 'task.created', titel: 'Aufgabe angelegt' },
@@ -146,6 +155,9 @@ const CODE_TEXT: Record<string, string> = {
   not_found: 'Nicht gefunden',
   duplicate: 'Rückfrage: Kunde gibt es vielleicht schon',
   possible_duplicate: 'Rückfrage: Kunde gibt es vielleicht schon',
+  conflict: 'Rückfrage: Termin überschneidet sich',
+  channel_unavailable: 'Abgelehnt: Versandweg nicht eingerichtet',
+  delivery_failed: 'Fehler beim Versand',
   idempotency_conflict: 'Abgelehnt: doppelter Aufruf',
   in_progress: 'Läuft noch',
   rate_limited: 'Abgelehnt: zu viele Aufrufe',

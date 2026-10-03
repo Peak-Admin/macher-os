@@ -6,7 +6,7 @@
  * Doku: `docs/os/PARTNER-API.md`. Ohne Supabase-Schlüssel: 501 { fehler: "nicht verbunden" }.
  */
 import { after } from 'next/server';
-import { body, env, json, nichtVerbunden, supabaseKonfig } from '@/server/cloud/lib';
+import { appUrl, body, env, json, nichtVerbunden, supabaseKonfig } from '@/server/cloud/lib';
 import { bearbeite } from '@/os/server/partner/dienst';
 import { faelligeZustellen, sofortZustellen, supabaseSpeicher } from '@/os/server/partner/supabase';
 import { tokenGeheimnis } from '@/os/server/partner/token';
@@ -20,8 +20,8 @@ export async function POST(req: Request, ctx: RouteContext<'/api/v1/actions/[akt
   try {
     const a = await bearbeite(
       { aktion, autorisierung: req.headers.get('authorization'), idempotenz: req.headers.get('idempotency-key'), body: await body(req) },
-      supabaseSpeicher(k),
-      { tokenGeheimnis: await tokenGeheimnis(k.serviceKey, env('PARTNER_TOKEN_GEHEIMNIS')) },
+      supabaseSpeicher(k, { appUrl: appUrl(req) }),
+      { tokenGeheimnis: await tokenGeheimnis(k.serviceKey, env('PARTNER_TOKEN_GEHEIMNIS')), appUrl: appUrl(req) },
     );
     const zugang = a.zugang;
     if (zugang) {

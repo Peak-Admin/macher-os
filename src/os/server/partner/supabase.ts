@@ -3,7 +3,8 @@
  * Tabellen: `partner_zugaenge`, `partner_nutzer`, `api_aufrufe`, `partner_auslieferungen` (Migration 20261003120000)
  * und `objekte` für die Geschäftsdaten.
  */
-import { rest, type SupabaseKonfig } from '@/server/cloud/lib';
+import { istEmail, neueId, objektLesen, rest, type SupabaseKonfig } from '@/server/cloud/lib';
+import { emailSenden, emailVerbunden, smsSenden, smsVerbunden, whatsappSenden, whatsappVerbunden } from '@/server/cloud/versand';
 import type { ObjektZeile } from './aktionen';
 import type { Aufruf, PartnerSpeicher, Zugang } from './dienst';
 import { zustellen, type Auslieferung, type Senden } from './webhook';
@@ -11,7 +12,7 @@ import { zustellen, type Auslieferung, type Senden } from './webhook';
 const q = encodeURIComponent;
 const ZUGANG_FELDER = 'id,betrieb_id,partner,name,partner_workspace_id,webhook_url,webhook_geheimnis,ereignisse,widerrufen_am';
 
-export function supabaseSpeicher(k: SupabaseKonfig): PartnerSpeicher {
+export function supabaseSpeicher(k: SupabaseKonfig, opts: { appUrl?: string } = {}): PartnerSpeicher {
   return {
     async zugangNachHash(hash) {
       const z = await rest<Zugang[]>(k, `partner_zugaenge?schluessel_hash=eq.${q(hash)}&select=${ZUGANG_FELDER}&limit=1`);
@@ -75,6 +76,35 @@ export function supabaseSpeicher(k: SupabaseKonfig): PartnerSpeicher {
     async auslieferungenAnlegen(liste) {
       if (!liste.length) return;
       await rest(k, 'partner_auslieferungen', { method: 'POST', body: liste, prefer: 'return=minimal' });
+    },
+    // wie `/api/cloud/senden`: vermerken (Tabelle `versand`), Link durch Öffnen-Link ersetzen, senden, Status nachtragen
+    async versenden(betriebId, v) {
+      const verbunden = v.kanal === 'email' ? emailVerbunden() : v.kanal === 'sms' ? smsVerbunden() : whatsappVerbunden();
+      if (!verbunden) {
+        const was = v.kanal === 'email' ? 'E-Mail' : v.kanal === 'sms' ? 'SMS' : 'WhatsApp';
+        return { ok: false, code: 'channel_unavailable', fehler: `${was} ist in Handwerk OS noch nicht eingerichtet. Bitte in der App versenden.` };
+      }
+      const betrieb = await objektLesen<{ name?: string; email?: string }>(k, betriebId, 'betrieb', 'betrieb');
+      const id = neueId('v');
+      const link = v.link && opts.appUrl ? `${opts.appUrl.replace(/\/$/, '')}/api/cloud/oeffnen?v=${encodeURIComponent(id)}` : v.link;
+      await rest(k, 'versand', {
+        method: 'POST',
+        prefer: 'return=minimal',
+        body: [{ id, betrieb_id: betriebId, kanal: v.kanal, an: v.an, bezug: v.bezug, ziel_link: v.link ?? null, status: 'wird_gesendet' }],
+      });
+      try {
+        const r =
+          v.kanal === 'email'
+            ? await emailSenden({ an: v.an, betreff: v.betreff, text: v.text, link, linkText: v.bezug.typ === 'angebote' ? 'Angebot ansehen' : undefined, absenderName: betrieb?.name ?? 'Handwerk OS', antwortAn: betrieb?.email && istEmail(betrieb.email) ? betrieb.email : undefined })
+            : v.kanal === 'whatsapp'
+              ? await whatsappSenden(v.an, [v.text, link].filter(Boolean).join('\n'))
+              : await smsSenden(v.an, [v.text, link].filter(Boolean).join('\n'));
+        await rest(k, `versand?id=eq.${q(id)}`, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'gesendet', anbieter_id: r.id ?? null } }).catch(() => undefined);
+        return { ok: true, id };
+      } catch (e) {
+        await rest(k, `versand?id=eq.${q(id)}`, { method: 'PATCH', prefer: 'return=minimal', body: { status: 'fehler' } }).catch(() => undefined);
+        return { ok: false, code: 'delivery_failed', fehler: `Die Nachricht ging nicht raus: ${e instanceof Error ? e.message.slice(0, 200) : 'unbekannter Fehler'}` };
+      }
     },
   };
 }

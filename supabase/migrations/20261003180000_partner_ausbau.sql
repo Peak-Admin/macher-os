@@ -113,8 +113,7 @@ begin
   return null;
 end $$;
 
-drop trigger if exists partner_ereignis_aus_app on public.objekte;
-create trigger partner_ereignis_aus_app after insert on public.objekte
+create or replace trigger partner_ereignis_aus_app after insert on public.objekte
   for each row when (new.sammlung = 'ereignisprotokoll')
   execute function public.partner_ereignis_aus_app();
 

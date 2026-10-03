@@ -9,7 +9,7 @@
  */
 import { RECHTE, rolleDarf, STANDARD_RECHTE, type Recht } from '@core/rechte';
 import type { Mitarbeiter, Rolle } from '@core/objects';
-import { partnerAktion, type Bestand, type ObjektZeile, type PartnerAktion } from './aktionen';
+import { partnerAktion, type Bestand, type ObjektZeile, type PartnerAktion, type VersandAuftrag } from './aktionen';
 import { tokenPruefen, TOKEN_PRAEFIX } from './token';
 import { auslieferungenFuer, type Auslieferung } from './webhook';
 
@@ -66,6 +66,8 @@ export interface PartnerSpeicher {
   aufrufSchreiben(a: Aufruf): Promise<void>;
   objekteSchreiben(betriebId: string, zeilen: ObjektZeile[]): Promise<void>;
   auslieferungenAnlegen(a: Auslieferung[]): Promise<void>;
+  /** Nachricht an einen Kunden des Betriebs schicken (E-Mail, SMS, WhatsApp) – wie `/api/cloud/senden` */
+  versenden(betriebId: string, v: VersandAuftrag): Promise<{ ok: true; id: string } | { ok: false; code: 'channel_unavailable' | 'delivery_failed'; fehler: string }>;
 }
 
 export interface Anfrage {
@@ -94,6 +96,9 @@ export interface DienstOptionen {
   /** Geheimnis der kurzlebigen Token – ohne werden `hot_…` abgelehnt */
   tokenGeheimnis?: string;
   grenzeProMinute?: number;
+  /** Öffentliche Adresse der App für Links an Kunden */
+  appUrl?: string;
+  neuesToken?: () => string;
 }
 
 /** Felder, die zum Aufruf gehören und nicht zur Eingabe der Aktion */
@@ -102,6 +107,13 @@ const META = new Set(['organization_id', 'user_id', 'source', 'confirmed', 'idem
 export async function sha256Hex(text: string): Promise<string> {
   const buf = await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/** 24 Zeichen, URL-sicher, nicht erratbar (wie `neuesToken` des Kundenbereichs) */
+function zufallsToken(): string {
+  const b = new Uint8Array(18);
+  globalThis.crypto.getRandomValues(b);
+  return btoa(String.fromCharCode(...b)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 const fehlerBody = (code: string, message: string, extra: Record<string, unknown> = {}) => ({ status: 'error', error: { code, message, ...extra } });
@@ -208,12 +220,24 @@ export async function bearbeite(anfrage: Anfrage, s: PartnerSpeicher, opts: Dien
     // 8. Ausführen
     const ergebnis = (aktion as PartnerAktion<unknown>).fuehreAus(
       geprueft.daten,
-      { handelnder: { mitarbeiter: m, rechte }, jetzt, neueId, partnerName: zugang.name },
+      { handelnder: { mitarbeiter: m, rechte }, jetzt, neueId, partnerName: zugang.name, appUrl: opts.appUrl ?? 'https://macher-os.de', neuesToken: opts.neuesToken ?? zufallsToken },
       bestand,
     );
     if (ergebnis.art === 'antwort') return antworte(ergebnis.status, ergebnis.antwort);
 
+    // Erst senden, dann schreiben: Geht die Nachricht nicht raus, bleibt alles, wie es war
+    let versandId: string | undefined;
+    if (ergebnis.versand) {
+      const v = await s.versenden(zugang.betrieb_id, ergebnis.versand);
+      if (!v.ok) {
+        // Schlüssel freigeben – der Partner darf es nach einer Korrektur erneut versuchen
+        return antworte(v.code === 'channel_unavailable' ? 424 : 502, fehlerBody(v.code, v.fehler), { idempotenz_schluessel: null });
+      }
+      versandId = v.id;
+    }
+
     // 9. Schreiben + Verlauf am Objekt (Quelle KI, Akteur = Partner, für den Mitarbeiter)
+    const aenderung = ergebnis.aenderung ?? 'created';
     const verlauf: ObjektZeile = {
       sammlung: 'ereignisse',
       id: neueId('e'),
@@ -222,14 +246,14 @@ export async function bearbeite(anfrage: Anfrage, s: PartnerSpeicher, opts: Dien
         erstelltAm: zeit,
         geaendertAm: zeit,
         erstelltVon: m.id,
-        typ: `${ergebnis.bezug.typ}.created`,
+        typ: `${ergebnis.bezug.typ}.${aenderung}`,
         bezug: ergebnis.bezug,
         text: ergebnis.verlauf,
         quelle: 'ai',
         akteurId: zugang.partner,
         vonMitarbeiterId: m.id,
-        aenderung: 'created',
-        daten: { partner: zugang.partner, aktion: aktion.name, requestId: aufrufId },
+        aenderung,
+        daten: { partner: zugang.partner, aktion: aktion.name, requestId: aufrufId, ...(versandId ? { versandId } : {}) },
       },
     };
     verlauf.daten.id = verlauf.id;

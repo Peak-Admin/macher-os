@@ -11,118 +11,36 @@
  *
  * Feldnamen nach außen sind englisch in snake_case (wie im Architektur-Papier), Texte für Menschen deutsch.
  */
-import type { Recht } from '@core/rechte';
-import type { Angebot, Aufgabe, Auftrag, Basis, Betrieb, Bezug, Einheit, ID, Kunde, Mitarbeiter, Position } from '@core/objects';
+import type { Angebot, Aufgabe, Auftrag, Betrieb, Einheit, ID, Kunde, Mitarbeiter, Position } from '@core/objects';
 import { summen } from '@core/format';
 import { naechsteNummerFuer, projektNummerFuer } from '@core/projektnummer';
 import { aehnlicheKunden, kundennummerNach, normName, normTelefon } from '@modules/kunden/dubletten';
+import {
+  aktiv,
+  EINHEITEN,
+  Eingabefehler,
+  euro,
+  ISO_DATUM,
+  istEmail,
+  MAX_EURO,
+  nameVon,
+  nichtGefunden,
+  ohneLeere,
+  plusTage,
+  pruefeMit,
+  text,
+  zahl,
+  type Ergebnis,
+  type ObjektZeile,
+  type PartnerAktion,
+  type PartnerEreignis,
+} from './grundlagen';
 
-export type Risiko = 'lesen' | 'schreiben' | 'kritisch';
+import { angebotSenden } from './aktionen-senden';
+import { terminAnlegen, termineSuchen, terminVerschieben } from './aktionen-termine';
+import { rechnungAnlegen, rechnungenSuchen } from './aktionen-rechnungen';
 
-/** Eine Zeile in `objekte` */
-export interface ObjektZeile {
-  sammlung: string;
-  id: ID;
-  daten: Record<string, unknown> & Partial<Basis>;
-}
-
-/** Wer handelt – der zugeordnete Mitarbeiter, für den der Partner spricht */
-export interface Handelnder {
-  mitarbeiter: Pick<Mitarbeiter, 'id' | 'vorname' | 'nachname' | 'rolle'>;
-  rechte: Recht[];
-}
-
-export interface AktionsKontext {
-  handelnder: Handelnder;
-  jetzt: Date;
-  neueId: (praefix?: string) => string;
-  /** Kurzname des Partners für Texte im Verlauf („HeyLotte“) */
-  partnerName: string;
-}
-
-/** Geladene Objekte je Sammlung – inklusive Papierkorb (`geloeschtAm`), damit Nummern nie doppelt vergeben werden */
-export type Bestand = Record<string, ObjektZeile['daten'][]>;
-
-/** Ein Ereignis, das an den Partner zurückgeht (API-Name aus dem Ereigniskatalog, z. B. `customer.created`) */
-export interface PartnerEreignis {
-  typ: string;
-  objekt: Bezug;
-  daten: Record<string, unknown>;
-}
-
-export type Ergebnis =
-  | { art: 'antwort'; status: number; antwort: Record<string, unknown> }
-  | {
-      art: 'geaendert';
-      status: number;
-      antwort: Record<string, unknown>;
-      zeilen: ObjektZeile[];
-      bezug: Bezug;
-      /** Klartext für den Verlauf am Objekt („Kunde angelegt – über HeyLotte für Jonas Weber“) */
-      verlauf: string;
-      /** weitere Einträge im Verlauf, z. B. am Auftrag, der für ein Angebot angelegt oder weitergeschaltet wurde */
-      weitereVerlaeufe?: { bezug: Bezug; text: string; aenderung: 'created' | 'updated' }[];
-      ereignisse: PartnerEreignis[];
-    };
-
-export interface FeldBeschreibung {
-  typ: 'string' | 'number' | 'boolean' | 'object';
-  pflicht?: boolean;
-  beschreibung: string;
-  werte?: string[];
-}
-
-export interface PartnerAktion<E = unknown> {
-  /** Name in der Adresse: `POST /v1/actions/<name>` */
-  name: string;
-  /** dieselbe ID wie im Macher-Gateway der App */
-  gateway: string;
-  beschreibung: string;
-  risiko: Risiko;
-  rechte: Recht[];
-  /** Sammlungen, die die Aktion lesen muss */
-  liest: string[];
-  eingabe: Record<string, FeldBeschreibung>;
-  /** Eingabe prüfen und in die interne Form bringen – Fehlertext für den Menschen */
-  pruefe(roh: Record<string, unknown>): { daten: E } | { fehler: string; feld?: string };
-  fuehreAus(daten: E, k: AktionsKontext, bestand: Bestand): Ergebnis;
-}
-
-// ------------------------------------------------------------------ Eingaben prüfen
-
-const text = (roh: Record<string, unknown>, feld: string, max = 200): string | undefined => {
-  const v = roh[feld];
-  if (v === undefined || v === null) return undefined;
-  if (typeof v !== 'string') throw new Eingabefehler(`„${feld}“ muss Text sein.`, feld);
-  const t = v.trim();
-  if (t.length > max) throw new Eingabefehler(`„${feld}“ ist zu lang (höchstens ${max} Zeichen).`, feld);
-  return t || undefined;
-};
-
-class Eingabefehler extends Error {
-  constructor(
-    message: string,
-    readonly feld?: string,
-  ) {
-    super(message);
-  }
-}
-
-function pruefeMit<E>(fn: (roh: Record<string, unknown>) => E): PartnerAktion<E>['pruefe'] {
-  return (roh) => {
-    try {
-      return { daten: fn(roh) };
-    } catch (e) {
-      if (e instanceof Eingabefehler) return { fehler: e.message, feld: e.feld };
-      throw e;
-    }
-  };
-}
-
-const ISO_DATUM = /^\d{4}-\d{2}-\d{2}$/;
-const istEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
-const aktiv = <T extends Partial<Basis>>(liste: T[] | undefined) => (liste ?? []).filter((x) => !x.geloeschtAm);
-const nameVon = (m: Handelnder['mitarbeiter']) => [m.vorname, m.nachname].filter(Boolean).join(' ') || 'Mitarbeiter';
+export * from './grundlagen';
 
 // ------------------------------------------------------------------ Kunden
 
@@ -388,17 +306,7 @@ interface AngebotAnlegen {
   einleitung?: string;
 }
 
-const EINHEITEN: Einheit[] = ['Stk', 'm', 'm²', 'm³', 'h', 'Psch', 'kg', 'l', 'Pkt', 'km'];
-const MAX_EURO = 10_000_000;
 
-const zahl = (roh: Record<string, unknown>, feld: string): number | undefined => {
-  const v = roh[feld];
-  if (v === undefined || v === null) return undefined;
-  if (typeof v !== 'number' || !Number.isFinite(v)) throw new Eingabefehler(`„${feld}“ muss eine Zahl sein.`, feld);
-  return v;
-};
-const euro = (cent: number) => Math.round(cent) / 100;
-const plusTage = (datum: string, tage: number) => new Date(Date.parse(`${datum}T12:00:00Z`) + tage * 86_400_000).toISOString().slice(0, 10);
 /** Phasen vor dem Angebot – dorthin schaltet ein neues Angebot den Auftrag weiter (wie in der App) */
 const VOR_ANGEBOT = new Set(['anfrage', 'besichtigung']);
 
@@ -560,18 +468,22 @@ const angebotAnlegen: PartnerAktion<AngebotAnlegen> = {
   },
 };
 
-function nichtGefunden(feld: string, message: string): Ergebnis {
-  return { art: 'antwort', status: 422, antwort: { status: 'error', error: { code: 'not_found', message, field: feld } } };
-}
 
-/** undefined-Felder entfernen – so steht das Objekt genauso in `objekte` wie aus der App */
-function ohneLeere<T extends object>(o: T): ObjektZeile['daten'] {
-  return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as ObjektZeile['daten'];
-}
 
 // ------------------------------------------------------------------ Katalog
 
-export const PARTNER_AKTIONEN: PartnerAktion[] = [kundeSuchen, kundeAnlegen, aufgabeAnlegen, angebotAnlegen] as PartnerAktion[];
+export const PARTNER_AKTIONEN: PartnerAktion[] = [
+  kundeSuchen,
+  kundeAnlegen,
+  aufgabeAnlegen,
+  angebotAnlegen,
+  angebotSenden,
+  termineSuchen,
+  terminAnlegen,
+  terminVerschieben,
+  rechnungenSuchen,
+  rechnungAnlegen,
+] as PartnerAktion[];
 
 export function partnerAktion(name: string): PartnerAktion | undefined {
   return PARTNER_AKTIONEN.find((a) => a.name === name);
