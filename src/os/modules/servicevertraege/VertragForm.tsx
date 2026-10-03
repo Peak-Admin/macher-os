@@ -99,7 +99,7 @@ export function VertragForm() {
         className="mm-stapel"
         style={{ gap: 24 }}
       >
-        <Karte titel="Kunde und Umfang">
+        <Karte titel="Kunde und Umfang" icon="person">
           <Stapel abstand={24}>
             <FormRaster>
               <div>
@@ -153,7 +153,7 @@ export function VertragForm() {
           </Stapel>
         </Karte>
 
-        <Karte titel="Preis und Laufzeit">
+        <Karte titel="Preis und Laufzeit" icon="euro">
           <Stapel abstand={24}>
             <FormRaster>
               {geld ? (

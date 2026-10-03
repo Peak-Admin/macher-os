@@ -4,7 +4,7 @@ import { batch, db } from '@core/db';
 import { centAlsEingabe, centAus } from '@core/format';
 import { GEWERKE } from '@core/gewerke';
 import { useDarf } from '@core/session';
-import { Button, Eingabe, FormRaster, Karte, Leer, Schalter, Seite, Stapel, Textfeld, useToast } from '@ui/index';
+import { Button, Eingabe, FormAbschnitt, FormRaster, Karte, Leer, Schalter, Seite, Stapel, Textfeld, useToast } from '@ui/index';
 import { istBetrag } from '@modules/leistungen/daten';
 import { subunternehmer, type Subunternehmer } from './daten';
 
@@ -91,17 +91,27 @@ function Formular({ sub }: { sub?: Subunternehmer }) {
             speichern();
           }}
         >
-          <FormRaster>
-            <Eingabe label="Firma" value={f.firma} onChange={set('firma')} fehler={fehler.firma} autoFocus={!sub} autoComplete="organization" />
-            <Eingabe label="Gewerk / Leistung" value={f.gewerk} onChange={set('gewerk')} fehler={fehler.gewerk} list="sub-gewerke" placeholder="z. B. Gerüstbau" />
-            <Eingabe label="Ansprechpartner" optional value={f.ansprechpartner} onChange={set('ansprechpartner')} />
-            <Eingabe label="Telefon" optional type="tel" value={f.telefon} onChange={set('telefon')} />
-            <Eingabe label="E-Mail" optional type="email" value={f.email} onChange={set('email')} />
-            {geld && <Eingabe label="Stundensatz netto (€)" optional inputMode="decimal" value={f.stundensatz} onChange={set('stundensatz')} fehler={fehler.stundensatz} />}
-            <Eingabe label="Straße und Hausnummer" optional value={f.strasse} onChange={set('strasse')} />
-            <Eingabe label="PLZ" optional inputMode="numeric" value={f.plz} onChange={set('plz')} />
-            <Eingabe label="Ort" optional value={f.ort} onChange={set('ort')} />
-          </FormRaster>
+          <FormAbschnitt titel="Firma" icon="betrieb">
+            <FormRaster>
+              <Eingabe label="Firma" value={f.firma} onChange={set('firma')} fehler={fehler.firma} autoFocus={!sub} autoComplete="organization" />
+              <Eingabe label="Gewerk / Leistung" value={f.gewerk} onChange={set('gewerk')} fehler={fehler.gewerk} list="sub-gewerke" placeholder="z. B. Gerüstbau" />
+              {geld && <Eingabe label="Stundensatz netto (€)" optional inputMode="decimal" value={f.stundensatz} onChange={set('stundensatz')} fehler={fehler.stundensatz} />}
+            </FormRaster>
+          </FormAbschnitt>
+          <FormAbschnitt titel="Kontakt" icon="telefon">
+            <FormRaster>
+              <Eingabe label="Ansprechpartner" optional value={f.ansprechpartner} onChange={set('ansprechpartner')} />
+              <Eingabe label="Telefon" optional type="tel" value={f.telefon} onChange={set('telefon')} />
+              <Eingabe label="E-Mail" optional type="email" value={f.email} onChange={set('email')} />
+            </FormRaster>
+          </FormAbschnitt>
+          <FormAbschnitt titel="Adresse" icon="ort">
+            <FormRaster>
+              <Eingabe label="Straße und Hausnummer" optional value={f.strasse} onChange={set('strasse')} />
+              <Eingabe label="PLZ" optional inputMode="numeric" value={f.plz} onChange={set('plz')} />
+              <Eingabe label="Ort" optional value={f.ort} onChange={set('ort')} />
+            </FormRaster>
+          </FormAbschnitt>
           <datalist id="sub-gewerke">
             {['Gerüstbau', 'Trockenbau', 'Estrich', 'Abbruch', 'Erdarbeiten', 'Kernbohrung', ...GEWERKE.map((g) => g.label)].map((g) => (
               <option key={g} value={g} />

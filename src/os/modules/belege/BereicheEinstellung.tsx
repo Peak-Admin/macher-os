@@ -17,7 +17,7 @@ export function BereicheEinstellung() {
     toast('Betriebsbereiche gespeichert.');
   };
   return (
-    <Karte titel="Betriebsbereiche für Belege">
+    <Karte titel="Betriebsbereiche für Belege" icon="betrieb">
       <Stapel abstand={12}>
         <Textfeld
           label="Ein Bereich pro Zeile"

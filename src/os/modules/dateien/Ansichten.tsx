@@ -24,24 +24,22 @@ import {
   Textfeld,
   ZweiSpalten,
   useBestaetigen,
+  TypIcon,
   useToast,
-  type IconName,
 } from '@ui/index';
 import { AuftragAuswahl, Zeitstrahl } from '@ui/objekt';
 import { Person } from '@ui/person';
 import { groesseText } from '@modules/fotos/daten';
-import { ART_LABEL, dataUrlZuBlob, istDatei, vorschauArt } from './daten';
+import { ART_ICON, ART_LABEL, ART_TON, dataUrlZuBlob, istDatei, vorschauArt } from './daten';
 import { Hochladen } from './Hochladen';
 import { DokumenteAmAuftrag } from '@modules/dokumente/AmAuftrag';
-
-const ICON: Partial<Record<Dokument['art'], IconName>> = { pdf: 'dokument', plan: 'ordner', datei: 'dokument', foto: 'kamera', sprache: 'mikro', notiz: 'notiz', unterschrift: 'unterschrift', bericht: 'notiz' };
 
 function DateiZeile({ d, mitAuftrag = true }: { d: Dokument; mitAuftrag?: boolean }) {
   const a = mitAuftrag ? db.auftraege.get(d.auftragId) : undefined;
   return (
     <ListenZeile
       to={`/auftraege/dateien/${d.id}`}
-      links={<Icon name={ICON[d.art] ?? 'dokument'} />}
+      links={<TypIcon name={ART_ICON[d.art] ?? 'dokument'} label={ART_LABEL[d.art] ?? 'Datei'} ton={ART_TON[d.art]} />}
       titel={
         <>
           {d.titel} <BeispielMarke zeigen={d.beispiel} />
@@ -93,7 +91,7 @@ export function DateienListe() {
           ))}
         </Liste>
       </Stapel>
-      <Dialog offen={hoch} onSchliessen={() => setHoch(false)} titel="Dateien hochladen">
+      <Dialog offen={hoch} onSchliessen={() => setHoch(false)} titel="Dateien hochladen" icon="upload">
         {hoch && <Hochladen fertig={() => setHoch(false)} />}
       </Dialog>
     </Seite>
@@ -173,24 +171,24 @@ export function DateiDetail() {
           <Stapel abstand={24}>
             <Vorschau d={d} />
             {textBearbeitbar ? (
-              <Karte titel={d.art === 'sprache' ? 'Text zur Sprachnotiz' : 'Notiz'}>
+              <Karte titel={d.art === 'sprache' ? 'Text zur Sprachnotiz' : 'Notiz'} icon={d.art === 'sprache' ? 'mikro' : 'notiz'}>
                 <Textfeld label="Text" rows={5} value={d.text ?? ''} onChange={(e) => db.dokumente.update(d.id, { text: e.target.value, tags: (d.tags ?? []).filter((t) => t !== 'Ohne Transkript') }, { leise: true })} />
               </Karte>
             ) : (
               d.text && (
-                <Karte titel={d.art === 'unterschrift' ? 'Unterschrieben von' : 'Notiz'}>
+                <Karte titel={d.art === 'unterschrift' ? 'Unterschrieben von' : 'Notiz'} icon={d.art === 'unterschrift' ? 'unterschrift' : 'notiz'}>
                   <p>{d.text}</p>
                 </Karte>
               )
             )}
-            <Karte titel="Verlauf">
+            <Karte titel="Verlauf" icon="uhr">
               <Zeitstrahl bezug={{ typ: 'dokumente', id: d.id }} />
             </Karte>
           </Stapel>
         }
         seite={
           <>
-            <Karte titel="Angaben" kompakt>
+            <Karte titel="Angaben" icon="info" kompakt>
               <Stapel abstand={16}>
                 <Eingabe label="Titel" value={d.titel} onChange={(e) => db.dokumente.update(d.id, { titel: e.target.value }, { leise: true })} />
                 <AuftragAuswahl label="Auftrag" optional nurOffene={false} wert={d.auftragId} onChange={(aid) => db.dokumente.update(d.id, { auftragId: aid || undefined }, { text: aid ? `Auftrag ${db.auftraege.get(aid)?.nummer ?? ''} zugeordnet` : 'Vom Auftrag gelöst' })} />
@@ -253,7 +251,7 @@ export function DateienTab({ id }: { id: ID }) {
             ))}
         </Liste>
       </Abschnitt>
-      <Dialog offen={hoch} onSchliessen={() => setHoch(false)} titel="Dateien hochladen">
+      <Dialog offen={hoch} onSchliessen={() => setHoch(false)} titel="Dateien hochladen" icon="upload">
         {hoch && <Hochladen auftragId={id} fertig={() => setHoch(false)} />}
       </Dialog>
     </Stapel>

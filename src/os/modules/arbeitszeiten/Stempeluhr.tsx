@@ -5,7 +5,8 @@ import { aktionAusfuehren } from '@core/modul';
 import { datum, datumVon, heute, uhrzeit } from '@core/format';
 import type { ID, Zeiteintrag } from '@core/objects';
 import { useIch } from '@core/session';
-import { Button, Eingabe, Karte, Meldung, Meta, Stapel, Status, Zeile, useToast } from '@ui/index';
+import { ZEITART_EMOJI } from '@core/zeichen';
+import { Button, Emoji, Eingabe, Karte, Meldung, Meta, Stapel, Status, Zeile, mitEmoji, useToast } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
 import { ART_LABEL, dauer, jetztUhr, laufende, pauseBeenden, pauseSeit, pauseStarten, pflichtPause, starten, stoppen, stunden, tagAuswerten } from './daten';
 import { wochenStand } from './regelwerk';
@@ -23,7 +24,8 @@ export function zeitTitel(z: Pick<Zeiteintrag, 'art' | 'auftragId' | 'terminId'>
   const a = db.auftraege.get(z.auftragId);
   const t = db.termine.get(z.terminId);
   const was = a ? `${a.nummer} · ${a.titel}` : t?.titel;
-  return was ? `${ART_LABEL[z.art]} · ${was}` : ART_LABEL[z.art];
+  const art = mitEmoji(ZEITART_EMOJI[z.art], ART_LABEL[z.art]);
+  return was ? `${art} · ${was}` : art;
 }
 
 /**
@@ -147,6 +149,7 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
                 .filter((a) => a !== lauf.art || lauf.auftragId)
                 .map((a) => (
                   <Button key={a} klein variante="tertiaer" onClick={() => artStarten(a)}>
+                    <Emoji zeichen={ZEITART_EMOJI[a]} />
                     {ART_LABEL[a]}
                   </Button>
                 ))}
@@ -158,7 +161,7 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
   }
 
   return (
-    <Karte oberzeile="Stempeluhr" titel="Arbeit starten">
+    <Karte oberzeile="Stempeluhr" titel="Arbeit starten" icon="uhr">
       <Stapel abstand={16}>
         <Meta>
           {heuteMin > 0 ? `Heute bisher: ${stunden(heuteMin)} · ` : ''}
@@ -183,6 +186,7 @@ export function Stempeluhr({ auftragId, fertig }: { auftragId?: ID; fertig?: () 
           <Zeile>
             {(['fahrt', 'werkstatt', 'buero'] as const).map((a) => (
               <Button key={a} variante="sekundaer" onClick={() => artStarten(a)}>
+                <Emoji zeichen={ZEITART_EMOJI[a]} />
                 {ART_LABEL[a]}
               </Button>
             ))}

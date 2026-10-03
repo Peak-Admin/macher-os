@@ -70,13 +70,13 @@ function BerichtSeite({ b }: { b: Bericht }) {
   const { summeMin, material, fotos } = useBerichtInhalt(b);
   return (
     <>
-      <Karte titel="Auftrag" kompakt>
+      <Karte titel="Auftrag" icon="auftraege" kompakt>
         <Stapel abstand={8}>
           <ObjektLink bezug={{ typ: 'auftraege', id: b.auftragId }}>{db.auftraege.get(b.auftragId)?.titel ?? 'Auftrag'}</ObjektLink>
           <AuftragKurz id={b.auftragId} />
         </Stapel>
       </Karte>
-      <Karte titel="Auf einen Blick" kompakt>
+      <Karte titel="Auf einen Blick" icon="info" kompakt>
         <Stapel abstand={4}>
           <Meta>Stunden: {stundenText(summeMin)}</Meta>
           <Meta>Material: {material.length} {material.length === 1 ? 'Position' : 'Positionen'}</Meta>
@@ -162,7 +162,7 @@ function BerichtInhaltBearbeiten({ b }: { b: Bericht }) {
           Zeiten, Material, Fotos und erledigte Aufgaben des Tages sind schon drin. Ergänze, was gemacht wurde, und schließ den Bericht ab.
         </Meldung>
       )}
-      <Karte titel="Was wurde gemacht?">
+      <Karte titel="Was wurde gemacht?" icon="werkzeug">
         {gesperrt ? (
           <p style={{ whiteSpace: 'pre-wrap' }}>{b.taetigkeiten || 'Keine Angaben.'}</p>
         ) : (
@@ -170,7 +170,7 @@ function BerichtInhaltBearbeiten({ b }: { b: Bericht }) {
         )}
       </Karte>
       {b.art === 'pruefprotokoll' && (
-        <Karte titel="Prüfpunkte" aktion={offenePunkte ? <Status ton="aktiv">{offenePunkte} offen</Status> : <Status ton="erfolg">Alle geprüft</Status>}>
+        <Karte titel="Prüfpunkte" icon="liste" aktion={offenePunkte ? <Status ton="aktiv">{offenePunkte} offen</Status> : <Status ton="erfolg">Alle geprüft</Status>}>
           <PruefpunkteBearbeiten b={b} gesperrt={gesperrt} />
         </Karte>
       )}
@@ -194,17 +194,17 @@ function BerichtInhaltBearbeiten({ b }: { b: Bericht }) {
       >
         <ZeitenTabelle b={b} bilder />
       </Karte>
-      <Karte titel="Material">
+      <Karte titel="Material" icon="paket">
         <MaterialTabelle b={b} />
       </Karte>
-      <Karte titel="Erledigte Aufgaben">
+      <Karte titel="Erledigte Aufgaben" icon="check">
         <AufgabenListe b={b} />
       </Karte>
-      <Karte titel="Fotos">{fotos.length ? <Galerie fotos={fotos} /> : <Meta>Keine Fotos von diesem Tag.</Meta>}</Karte>
-      <Karte titel="Bemerkung">
+      <Karte titel="Fotos" icon="kamera">{fotos.length ? <Galerie fotos={fotos} /> : <Meta>Keine Fotos von diesem Tag.</Meta>}</Karte>
+      <Karte titel="Bemerkung" icon="notiz">
         {gesperrt ? <p>{b.bemerkung || 'Keine.'}</p> : <Textfeld label="Bemerkung für den Kunden" optional value={b.bemerkung ?? ''} onChange={(e) => berichte.update(b.id, { bemerkung: e.target.value }, { leise: true })} />}
       </Karte>
-      <Karte titel="Abschließen">
+      <Karte titel="Abschließen" icon="unterschrift">
         {b.unterschriftKunde ? (
           <UnterschriftAnzeige daten={b.unterschriftKunde} rolle="Kunde" />
         ) : unterschreiben ? (

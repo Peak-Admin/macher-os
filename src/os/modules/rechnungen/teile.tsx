@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { db } from '@core/db';
 import { euro } from '@core/format';
 import type { ID } from '@core/objects';
-import { Button, Dialog, Eingabe, FormRaster, Meldung, Meta, Schalter, Stapel, Status, Zeile, useToast } from '@ui/index';
+import { Button, Dialog, Eingabe, FormAbschnitt, FormRaster, Meldung, Meta, Schalter, Stapel, Status, Zeile, useToast } from '@ui/index';
 import { statusText, summenZeilen, type Mangel, type RechnungsSummen } from './logik';
 import type { RechnungX } from './typen';
 
@@ -114,6 +114,7 @@ export function BetriebsdatenDialog({ offen, onSchliessen }: { offen: boolean; o
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Betriebsdaten für Rechnungen"
+      icon="betrieb"
       breit
       aktionen={
         <>
@@ -125,24 +126,30 @@ export function BetriebsdatenDialog({ offen, onSchliessen }: { offen: boolean; o
       }
     >
       <Stapel>
-        <FormRaster>
-          <Eingabe label="Name des Betriebs" value={f.name} onChange={set('name')} />
-          <Eingabe label="Straße und Hausnummer" value={f.strasse} onChange={set('strasse')} />
-          <Eingabe label="PLZ" value={f.plz} onChange={set('plz')} inputMode="numeric" />
-          <Eingabe label="Ort" value={f.ort} onChange={set('ort')} />
-          <Eingabe label="Telefon" type="tel" value={f.telefon} onChange={set('telefon')} />
-          <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} />
-          <Eingabe label="Steuernummer" value={f.steuernummer} onChange={set('steuernummer')} hilfe="Steuernummer oder USt-IdNr. ist Pflicht." />
-          <Eingabe label="USt-IdNr." value={f.ustId} onChange={set('ustId')} optional />
-          <Eingabe label="IBAN" value={f.iban} onChange={set('iban')} />
-          <Eingabe label="Zahlungsziel in Tagen" type="number" min={0} value={f.zahlungszielTage} onChange={set('zahlungszielTage')} />
-        </FormRaster>
-        <Schalter
-          label="Kleinunternehmer (§ 19 UStG)"
-          beschreibung="Dann weist Macher keine Umsatzsteuer aus und setzt den Pflichthinweis."
-          checked={f.kleinunternehmer}
-          onChange={(v) => setF({ ...f, kleinunternehmer: v })}
-        />
+        <FormAbschnitt titel="Betrieb und Kontakt" icon="betrieb">
+          <FormRaster>
+            <Eingabe label="Name des Betriebs" value={f.name} onChange={set('name')} />
+            <Eingabe label="Straße und Hausnummer" value={f.strasse} onChange={set('strasse')} />
+            <Eingabe label="PLZ" value={f.plz} onChange={set('plz')} inputMode="numeric" />
+            <Eingabe label="Ort" value={f.ort} onChange={set('ort')} />
+            <Eingabe label="Telefon" type="tel" value={f.telefon} onChange={set('telefon')} />
+            <Eingabe label="E-Mail" type="email" value={f.email} onChange={set('email')} />
+          </FormRaster>
+        </FormAbschnitt>
+        <FormAbschnitt titel="Steuer und Zahlung" icon="euro">
+          <FormRaster>
+            <Eingabe label="Steuernummer" value={f.steuernummer} onChange={set('steuernummer')} hilfe="Steuernummer oder USt-IdNr. ist Pflicht." />
+            <Eingabe label="USt-IdNr." value={f.ustId} onChange={set('ustId')} optional />
+            <Eingabe label="IBAN" value={f.iban} onChange={set('iban')} />
+            <Eingabe label="Zahlungsziel in Tagen" type="number" min={0} value={f.zahlungszielTage} onChange={set('zahlungszielTage')} />
+          </FormRaster>
+          <Schalter
+            label="Kleinunternehmer (§ 19 UStG)"
+            beschreibung="Dann weist Macher keine Umsatzsteuer aus und setzt den Pflichthinweis."
+            checked={f.kleinunternehmer}
+            onChange={(v) => setF({ ...f, kleinunternehmer: v })}
+          />
+        </FormAbschnitt>
       </Stapel>
     </Dialog>
   );
@@ -163,6 +170,7 @@ export function KundendatenDialog({ kundeId, offen, onSchliessen }: { kundeId: I
       offen={offen}
       onSchliessen={onSchliessen}
       titel={`Kundendaten: ${k.name}`}
+      icon="person"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

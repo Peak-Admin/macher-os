@@ -66,6 +66,7 @@ function NeuDialog({ offen, onSchliessen }: { offen: boolean; onSchliessen: () =
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Aufmaß anlegen"
+      icon="liste"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

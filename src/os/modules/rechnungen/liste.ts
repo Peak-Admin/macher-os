@@ -3,6 +3,8 @@
  */
 import { db } from '@core/db';
 import type { Cent } from '@core/objects';
+import type { TypTon } from '@core/zeichen';
+import type { IconName } from '@ui/icons';
 import { ART_LABEL, offenerBetrag, rechnungsSummen, statusText } from './logik';
 import type { RechnungX } from './typen';
 
@@ -10,6 +12,25 @@ import type { RechnungX } from './typen';
 export type ListenArt = RechnungX['art'] | 'storno';
 
 export const LISTEN_ART_LABEL: Record<ListenArt, string> = { ...ART_LABEL, storno: 'Storno' };
+
+/** Rechnungsart: Strich-Icon und Farbton der Typ-Kachel in Listen (Art, kein Status) */
+export const LISTEN_ART_ICON: Record<ListenArt, IconName> = {
+  rechnung: 'dokument',
+  abschlag: 'prozent',
+  teil: 'liste',
+  schluss: 'check',
+  gutschrift: 'zurueck',
+  storno: 'x',
+};
+
+export const LISTEN_ART_TON: Record<ListenArt, TypTon> = {
+  rechnung: 'gruen',
+  abschlag: 'blau',
+  teil: 'petrol',
+  schluss: 'lila',
+  gutschrift: 'sand',
+  storno: 'rose',
+};
 
 export const listenArt = (r: Pick<RechnungX, 'art' | 'stornoFuerId'>): ListenArt => (r.stornoFuerId ? 'storno' : r.art);
 

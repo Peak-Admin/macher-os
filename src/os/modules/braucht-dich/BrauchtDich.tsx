@@ -5,9 +5,9 @@ import { hinweisAusblenden, hinweisErledigen, offeneHinweise, type OffenerHinwei
 import { aktionAusfuehren, pfadZu, type Ton } from '@core/modul';
 import { relativ } from '@core/format';
 import { istBuero, useIch } from '@core/session';
-import { Abschnitt, Button, Filter, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, useToast } from '@ui/index';
+import { Abschnitt, Button, Filter, Leer, Liste, Meldung, Meta, Seite, Stapel, Status, TypIcon, Zeile, useToast } from '@ui/index';
 import { aktionVorhanden } from '@core/modul';
-import { ART_LABEL, type HinweisArt, nachArt, sichtbareAktionen } from './logik';
+import { ART_LABEL, HINWEISART_ICON, HINWEISART_TON, type HinweisArt, nachArt, sichtbareAktionen } from './logik';
 
 const ART_TON: Record<HinweisArt, Ton> = { problem: 'achtung', entscheidung: 'aktiv', freigabe: 'aktiv', info: 'neutral' };
 const WIDGET_MAX = 5;
@@ -43,10 +43,13 @@ export function HinweisZeile({ h, kompakt }: { h: OffenerHinweis; kompakt?: bool
   return (
     <li className={`mm-hinweis mm-hinweis--${h.sicherheit ? 'gefahr' : ART_TON[h.art]}`}>
       <div className="mm-hinweis-kopf">
-        <div className="mm-hinweis-text">
-          <span className="mm-hinweis-titel">{h.titel}</span>
-          {(h.text || faellig) && <span className="mm-meta">{[h.text, faellig].filter(Boolean).join(' · ')}</span>}
-        </div>
+        <Zeile abstand={12} umbruch={false}>
+          <TypIcon name={HINWEISART_ICON[h.art]} label={ART_LABEL[h.art]} ton={HINWEISART_TON[h.art]} />
+          <div className="mm-hinweis-text">
+            <span className="mm-hinweis-titel">{h.titel}</span>
+            {(h.text || faellig) && <span className="mm-meta">{[h.text, faellig].filter(Boolean).join(' · ')}</span>}
+          </div>
+        </Zeile>
         {h.sicherheit ? <Status ton="gefahr">Nicht verwenden</Status> : <Status ton={ART_TON[h.art]}>{ART_LABEL[h.art]}</Status>}
       </div>
       {weitere.length > 0 && !kompakt && <Weitere liste={weitere} />}

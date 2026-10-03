@@ -9,7 +9,8 @@ import { db, useDatenstand } from '@core/db';
 import { datumKurz, heute, kalenderwoche, personName, plusTage, tage, uhrzeit, wochenStart, zahl } from '@core/format';
 import type { Abwesenheit, Auftrag, Datum, ID, Mitarbeiter, Termin } from '@core/objects';
 import { useDarf } from '@core/session';
-import { Button, Icon, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, useToast } from '@ui/index';
+import { ABWESENHEIT_EMOJI } from '@core/zeichen';
+import { Button, Emoji, Icon, IconButton, Karte, Leer, Meldung, Meta, Seite, Stapel, Status, mitEmoji, useToast } from '@ui/index';
 import { TerminFormular, type TerminVorgabe } from '../kalender/TerminFormular';
 import { terminAmTag, termineIm, TERMINSTATUS, verschoben as zeitVerschoben } from '../kalender/daten';
 import { useSchmal } from '../kalender/hooks';
@@ -946,6 +947,7 @@ export function Plantafel() {
             if (e.art === 'abw') {
               const a = e.a;
               const text = abwesenheitText(a, m);
+              const zeichen = darfTeamDaten(m.id) ? ABWESENHEIT_EMOJI[a.art] : undefined;
               return (
                 <Balken
                   key={`a${j}`}
@@ -963,7 +965,10 @@ export function Plantafel() {
                       <div className="pt2-info-kopf">
                         <Personenbild m={m} groesse={28} />
                         <div>
-                          <strong>{text}</strong>
+                          <strong>
+                            <Emoji zeichen={zeichen} />
+                            {text}
+                          </strong>
                           <p className="pt2-info-meta">{personName(m)}</p>
                         </div>
                       </div>
@@ -980,7 +985,10 @@ export function Plantafel() {
                     </>
                   ))}
                 >
-                  <span className="pt2-balken-text">{text}</span>
+                  <span className="pt2-balken-text">
+                    <Emoji zeichen={zeichen} />
+                    {text}
+                  </span>
                 </Balken>
               );
             }
@@ -1131,7 +1139,7 @@ export function Plantafel() {
                       {personName(m)}
                     </span>
                   }
-                  aktion={a.status === 'da' ? <Status ton="erfolg">Da</Status> : <Status ton={a.status === 'abwesend' ? 'achtung' : 'neutral'}>{a.text}</Status>}
+                  aktion={a.status === 'da' ? <Status ton="erfolg">Da</Status> : <Status ton={a.status === 'abwesend' ? 'achtung' : 'neutral'}>{mitEmoji(a.abwesenheit && ABWESENHEIT_EMOJI[a.abwesenheit.art], a.text)}</Status>}
                 >
                   <Stapel abstand={8}>
                     {liste.map((t) => (

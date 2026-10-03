@@ -66,7 +66,7 @@ function Abgemeldet() {
   return (
     <Seite titel="Daten sichern & Team einladen" untertitel="Leg dein Konto an – ohne Passwort. Danach sind deine Daten sicher und dein Team arbeitet auf seinen Handys mit.">
       <Stapel abstand={24}>
-        <Karte titel="Konto anlegen oder anmelden">
+        <Karte titel="Konto anlegen oder anmelden" icon="person">
           <AnmeldeFormular />
         </Karte>
         <Karte titel="Das passiert dabei">
@@ -174,6 +174,7 @@ function Angemeldet() {
         {pushFehler && <Meldung ton="achtung">{pushFehler}</Meldung>}
         <Karte
           titel="Dein Konto"
+          icon="person"
           aktion={
             <Button
               variante="sekundaer"
@@ -195,7 +196,7 @@ function Angemeldet() {
           {s.uebernahme && <Fortschritt wert={s.uebernahme.fertig} max={Math.max(1, s.uebernahme.gesamt)} label="Übernahme deiner Daten" />}
         </Karte>
 
-        <Karte titel="Geräte mit Benachrichtigungen">
+        <Karte titel="Geräte mit Benachrichtigungen" icon="glocke">
           {geraeteFehler ? (
             <Meldung>{geraeteFehler}</Meldung>
           ) : !geraete ? (

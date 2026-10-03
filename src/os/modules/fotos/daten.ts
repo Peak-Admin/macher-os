@@ -3,9 +3,18 @@
  * Fotos, Sprachnotizen und Notizen sind `dokumente` am Auftrag (Kernobjekt, keine eigene Sammlung).
  */
 import type { Dokument, ID, Termin, Zeitpunkt } from '@core/objects';
+import type { IconName } from '@ui/index';
 
 export const FOTO_TAGS = ['Vorher', 'Nachher', 'Mangel'] as const;
 export type FotoTag = (typeof FOTO_TAGS)[number];
+
+/** Strich-Icon je Fotoart im Umschalter (leer = „Ohne“) */
+export const FOTO_TAG_ICON: Record<FotoTag | '', IconName> = {
+  '': 'kamera',
+  Vorher: 'zurueck',
+  Nachher: 'weiter',
+  Mangel: 'achtung',
+};
 
 /** Längste Bildkante nach dem Verkleinern (Speichergrenze im Browser) */
 /** Sprachnotizen: höchstens 2 Minuten, sonst wird der Speicher knapp */

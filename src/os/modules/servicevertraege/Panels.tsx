@@ -10,7 +10,7 @@ export function KundeVertraegePanel({ id }: { id: ID }) {
   const liste = servicevertraege.use((v) => v.kundeId === id, [id]);
   if (!liste.length) return null;
   return (
-    <Karte titel="Serviceverträge" kompakt>
+    <Karte titel="Serviceverträge" icon="dokument" kompakt>
       <Stapel abstand={8}>
         {liste.map((v) => {
           const z = ZUSTAND_TEXT[zustand(v)];
@@ -33,7 +33,7 @@ export function AnlageVertragPanel({ id }: { id: ID }) {
   servicevertraege.use();
   const v = vertragFuerAnlage(id);
   return (
-    <Karte titel="Servicevertrag" kompakt>
+    <Karte titel="Servicevertrag" icon="dokument" kompakt>
       {v ? (
         <Stapel abstand={8}>
           <Link to={`/auftraege/servicevertraege/${v.id}`}>

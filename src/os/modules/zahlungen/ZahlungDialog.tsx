@@ -46,6 +46,7 @@ export function ZahlungDialog({ rechnungId, offen, onSchliessen }: { rechnungId:
       offen={offen}
       onSchliessen={onSchliessen}
       titel={`Zahlung erfassen – ${r.nummer}`}
+      icon="euro"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

@@ -185,7 +185,7 @@ export function AngebotSchnell() {
         </Karte>
       </Stapel>
 
-      <Dialog offen={vorschau} onSchliessen={() => setVorschau(false)} titel="So sieht dein Kunde das Angebot" breit aktionen={<Button onClick={() => setVorschau(false)}>Zurück zum Angebot</Button>}>
+      <Dialog offen={vorschau} onSchliessen={() => setVorschau(false)} titel="So sieht dein Kunde das Angebot" icon="dokument" breit aktionen={<Button onClick={() => setVorschau(false)}>Zurück zum Angebot</Button>}>
         <div className="mm-vorschau">
           <AngebotBrief
             a={{

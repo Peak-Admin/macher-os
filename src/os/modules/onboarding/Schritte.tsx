@@ -146,8 +146,8 @@ export function SchrittKonto({
         label="Anmelden mit"
         wert={weg}
         optionen={[
-          { wert: 'email', label: 'E-Mail' },
-          { wert: 'telefon', label: 'Handynummer' },
+          { wert: 'email', label: 'E-Mail', icon: 'mail' },
+          { wert: 'telefon', label: 'Handynummer', icon: 'telefon' },
         ]}
         onChange={(w) => (setWeg(w), setZiel(''), setFehler(undefined))}
       />

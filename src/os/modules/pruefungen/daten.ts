@@ -8,6 +8,7 @@ import { batch, db, vermerken, zeitstrahl } from '@core/db';
 import { heute, tageZwischen, plusMonate } from '@core/format';
 import type { Ton } from '@core/modul';
 import type { Betriebsmittel, Datum, ID } from '@core/objects';
+import type { IconName } from '@ui/index';
 import { bmx, type BetriebsmittelX } from '../werkzeuge/daten';
 
 export const PRUEFARTEN: { art: string; monate: number; beschreibung: string }[] = [
@@ -60,6 +61,13 @@ export const ERGEBNIS_LABEL: Record<Ergebnis, string> = {
   bestanden: 'Bestanden',
   maengel: 'Bestanden mit Mängeln',
   nicht_bestanden: 'Nicht bestanden',
+};
+
+/** Strich-Icon je Ergebnis (wie bei `Status`: Text plus Icon, kein Emoji) */
+export const ERGEBNIS_ICON: Record<Ergebnis, IconName> = {
+  bestanden: 'check',
+  maengel: 'achtung',
+  nicht_bestanden: 'x',
 };
 
 export interface PruefungEingabe {

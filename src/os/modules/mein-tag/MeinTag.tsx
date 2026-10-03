@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useDatenstand } from '@core/db';
 import { datum, datumVon, heute, plusTage, relativ } from '@core/format';
 import { istBuero, useIch } from '@core/session';
-import { Abschnitt, Button, Kennzahl, Leer, Liste, Meldung, Raster, Seite, Segmente, Stapel } from '@ui/index';
+import { ABWESENHEIT_EMOJI, TERMINART_EMOJI } from '@core/zeichen';
+import { Abschnitt, Button, Kennzahl, Leer, Liste, Meldung, Raster, Seite, Segmente, Stapel, mitEmoji } from '@ui/index';
 import { ABWESENHEIT_LABEL, abwesenheitAm, aufgabenFuer, betriebHeute, termineAm } from './logik';
 import { AufgabeZeile, LageZeile, TerminZeile } from './teile';
 import { EinsatzKurz } from '@modules/naechster-einsatz/Einsatz';
@@ -31,7 +32,7 @@ export function MeinTagWidget() {
         </Button>
       }
     >
-      {ab && <Meldung titel={`Heute: ${ABWESENHEIT_LABEL[ab.art]}`}>Du bist bis {relativ(ab.bis)} eingetragen. Hier steht trotzdem, was für dich anliegt.</Meldung>}
+      {ab && <Meldung titel={`Heute: ${mitEmoji(ABWESENHEIT_EMOJI[ab.art], ABWESENHEIT_LABEL[ab.art])}`}>Du bist bis {relativ(ab.bis)} eingetragen. Hier steht trotzdem, was für dich anliegt.</Meldung>}
       <Raster min={320}>
         <Stapel abstand={8}>
           <h3 className="mm-karte-titel">Termine heute</h3>
@@ -106,11 +107,11 @@ export function MeinTagSeite() {
           { wert: 'morgen', label: 'Morgen' },
         ]}
       />
-      {ab && <Meldung titel={`${ABWESENHEIT_LABEL[ab.art]} bis ${relativ(ab.bis)}`}>{ab.notiz ?? 'Du bist an diesem Tag abwesend eingetragen.'}</Meldung>}
+      {ab && <Meldung titel={mitEmoji(ABWESENHEIT_EMOJI[ab.art], `${ABWESENHEIT_LABEL[ab.art]} bis ${relativ(ab.bis)}`)}>{ab.notiz ?? 'Du bist an diesem Tag abwesend eingetragen.'}</Meldung>}
       {/* Monteur: der Einsatz, um den es jetzt geht, steht oben – mit Navigation und Start */}
       {einsatz && <EinsatzKurz t={einsatz} />}
       {schulungen.length > 0 && (
-        <Meldung ton="aktiv" titel={schulungen.length === 1 ? 'Schulung' : `${schulungen.length} Schulungen`}>
+        <Meldung ton="aktiv" titel={mitEmoji(TERMINART_EMOJI.schulung, schulungen.length === 1 ? 'Schulung' : `${schulungen.length} Schulungen`)}>
           {schulungen.map((s) => s.titel).join(', ')}
         </Meldung>
       )}

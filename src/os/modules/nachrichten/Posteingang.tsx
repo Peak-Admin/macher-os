@@ -5,9 +5,9 @@ import { pfadZu } from '@core/modul';
 import { relativ, uhrzeit } from '@core/format';
 import type { ID } from '@core/objects';
 import { useIch } from '@core/session';
-import { Button, Filter, Karte, Leer, Liste, ListenZeile, Seite, Stapel, Status } from '@ui/index';
+import { Button, Filter, Karte, Leer, Liste, ListenZeile, Seite, Stapel, Status, TypIcon } from '@ui/index';
 import { AuftragKurz } from '@ui/objekt';
-import { KANAL_LABEL, istKundenNachricht, threads, type Thread } from './daten';
+import { KANAL_ICON, KANAL_LABEL, KANAL_TON, istKundenNachricht, threads, type Thread } from './daten';
 import { Verlauf } from './Verlauf';
 
 export function threadTitel(t: Thread): { titel: string; untertitel?: string } {
@@ -26,6 +26,7 @@ export function ThreadZeile({ t }: { t: Thread }) {
   return (
     <ListenZeile
       to={t.pfad}
+      links={<TypIcon name={KANAL_ICON[l.kanal]} label={KANAL_LABEL[l.kanal]} ton={KANAL_TON[l.kanal]} />}
       titel={titel}
       untertitel={
         <>
@@ -155,7 +156,7 @@ export function NachrichtenWidget() {
   const offen = threads(alle, ich?.id).filter((t) => t.ungelesen > 0);
   if (!offen.length) return null;
   return (
-    <Karte titel="Neue Nachrichten" aktion={<Button variante="tertiaer" klein to="/auftraege/nachrichten">Alle ansehen</Button>}>
+    <Karte titel="Neue Nachrichten" icon="chat" aktion={<Button variante="tertiaer" klein to="/auftraege/nachrichten">Alle ansehen</Button>}>
       <Liste>
         {offen.slice(0, 3).map((t) => (
           <ThreadZeile key={t.schluessel} t={t} />

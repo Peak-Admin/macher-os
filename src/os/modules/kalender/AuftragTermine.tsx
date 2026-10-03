@@ -5,7 +5,8 @@ import { db } from '@core/db';
 import { aktionAusfuehren } from '@core/modul';
 import { datumKurz, uhrzeit } from '@core/format';
 import { useDarf } from '@core/session';
-import { Abschnitt, Button, Leer, Liste, ListenZeile, Stapel, Status, Zeile } from '@ui/index';
+import { TERMINART_ICON, TERMINART_TON } from '@core/zeichen';
+import { Abschnitt, Button, Leer, Liste, ListenZeile, Stapel, Status, TypIcon, Zeile, type IconName } from '@ui/index';
 import { Personen } from '@ui/person';
 import { kontextAusDb, terminKonflikte } from '../verfuegbarkeit/daten';
 import { TERMINART_LABEL, TERMINSTATUS } from './daten';
@@ -29,6 +30,7 @@ export function AuftragTermine({ id }: { id: string }) {
       <ListenZeile
         key={t.id}
         to={terminPfad(t.id)}
+        links={<TypIcon name={TERMINART_ICON[t.art] as IconName} label={TERMINART_LABEL[t.art]} ton={TERMINART_TON[t.art]} />}
         titel={`${datumKurz(t.start)}, ${t.ganztags ? 'ganztägig' : `${uhrzeit(t.start)}–${uhrzeit(t.ende)}`}`}
         untertitel={
           <>

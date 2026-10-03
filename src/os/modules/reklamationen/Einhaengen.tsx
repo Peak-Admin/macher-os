@@ -37,7 +37,7 @@ export function KundeReklamationenPanel({ id }: { id: ID }) {
   const liste = reklamationen.use((r) => r.kundeId === id && offen(r), [id]);
   if (!liste.length) return null;
   return (
-    <Karte titel="Offene Reklamationen" kompakt>
+    <Karte titel="Offene Reklamationen" icon="schild" kompakt>
       <Stapel abstand={8}>
         {liste.map((r) => (
           <div key={r.id}>
@@ -57,7 +57,7 @@ export function AnlageGewaehrleistungPanel({ id }: { id: ID }) {
   if (!a) return null;
   const laeuft = a.gewaehrleistungBis && a.gewaehrleistungBis >= heute();
   return (
-    <Karte titel="Gewährleistung" kompakt>
+    <Karte titel="Gewährleistung" icon="schild" kompakt>
       <Stapel abstand={8}>
         <Meta>{a.gewaehrleistungBis ? `${laeuft ? 'Läuft bis' : 'Abgelaufen am'} ${datum(a.gewaehrleistungBis)}` : 'Kein Gewährleistungsende eingetragen.'}</Meta>
         {liste.length > 0 && <Meta>{liste.filter(offen).length} offen, {liste.length} insgesamt</Meta>}

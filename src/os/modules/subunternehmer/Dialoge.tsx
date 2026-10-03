@@ -55,6 +55,7 @@ export function EinsatzDialog({ offen, onSchliessen, subId, auftragId, einsatz }
       offen={offen}
       onSchliessen={onSchliessen}
       titel={einsatz ? 'Einsatz bearbeiten' : 'Subunternehmer einsetzen'}
+      icon="team"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>
@@ -139,6 +140,7 @@ export function NachweisDialog({ offen, onSchliessen, subId }: { offen: boolean;
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Nachweis erfassen"
+      icon="schild"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

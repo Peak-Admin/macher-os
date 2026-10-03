@@ -60,7 +60,7 @@ export function PreiseAnpassen() {
             <Segmente label="Runden" wert={rundung} onChange={setRundung} optionen={RUNDUNGEN} />
           </Stapel>
         </Karte>
-        <Karte titel="Vorschau" aktion={vorschau.length ? <Button onClick={anwenden}>{`${vorschau.length} Preise anpassen`}</Button> : undefined}>
+        <Karte titel="Vorschau" icon="liste" aktion={vorschau.length ? <Button onClick={anwenden}>{`${vorschau.length} Preise anpassen`}</Button> : undefined}>
           {!auswahl.length ? (
             <Leer titel="Keine Leistungen in dieser Auswahl" icon="liste" />
           ) : !vorschau.length ? (

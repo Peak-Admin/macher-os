@@ -126,13 +126,13 @@ export function AnlageDetail() {
         }
         seite={
           <>
-            <Karte titel="Gewährleistung" kompakt>
+            <Karte titel="Gewährleistung" icon="schild" kompakt>
               <Stapel abstand={8}>
                 <Status ton={GEWAEHRLEISTUNG_TEXT[g].ton}>{GEWAEHRLEISTUNG_TEXT[g].text}</Status>
                 <Meta>{a.gewaehrleistungBis ? `bis ${datum(a.gewaehrleistungBis)}` : 'Kein Datum hinterlegt.'}</Meta>
               </Stapel>
             </Karte>
-            <Karte titel="Steht bei" kompakt>
+            <Karte titel="Steht bei" icon="ort" kompakt>
               <Stapel abstand={8}>
                 {kunde && <ObjektLink bezug={{ typ: 'kunden', id: kunde.id }}>{kunde.name}</ObjektLink>}
                 {ort && <ObjektLink bezug={{ typ: 'orte', id: ort.id }}>{`${ort.bezeichnung}, ${ort.adresse.strasse}`}</ObjektLink>}

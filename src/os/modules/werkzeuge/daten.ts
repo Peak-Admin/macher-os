@@ -6,6 +6,8 @@ import { db, vermerken } from '@core/db';
 import { personName } from '@core/format';
 import type { Ton } from '@core/modul';
 import type { Betriebsmittel, BetriebsmittelArt, ID } from '@core/objects';
+import type { TypTon } from '@core/zeichen';
+import type { IconName } from '@ui/index';
 
 /**
  * Felder, die der Kern (noch) nicht kennt. Sie werden am selben Objekt gespeichert
@@ -26,6 +28,20 @@ export const ART_LABEL: Record<BetriebsmittelArt, string> = {
   werkzeug: 'Werkzeug',
   maschine: 'Maschine',
   fahrzeug: 'Fahrzeug',
+};
+
+/** Strich-Icon je Art (Umschalter im Formular, Typ-Kachel in Listen) */
+export const ART_ICON: Record<BetriebsmittelArt, IconName> = {
+  werkzeug: 'werkzeug',
+  maschine: 'einstellungen',
+  fahrzeug: 'auto',
+};
+
+/** Farbton der Typ-Kachel je Art – unterscheidet Arten, kein Status */
+export const ART_TON: Record<BetriebsmittelArt, TypTon> = {
+  werkzeug: 'blau',
+  maschine: 'petrol',
+  fahrzeug: 'sand',
 };
 
 export const ART_MODUL: Record<BetriebsmittelArt, string> = {

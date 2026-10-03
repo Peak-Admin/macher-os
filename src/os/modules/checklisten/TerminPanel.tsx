@@ -14,7 +14,7 @@ export function ChecklistenTerminPanel({ id }: { id: ID }) {
   const passend = a ? passendeVorlagen(vorlagen, db.betrieb.get('betrieb')?.gewerk, a.art) : [];
   if (!liste.length && !passend.length) return null;
   return (
-    <Karte titel="Checklisten" kompakt>
+    <Karte titel="Checklisten" icon="liste" kompakt>
       <Stapel abstand={8}>
         {liste.length ? (
           <Liste>

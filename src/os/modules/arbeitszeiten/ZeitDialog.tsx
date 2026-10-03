@@ -3,6 +3,7 @@ import { db, vermerken, zeitstrahl } from '@core/db';
 import { datum as datumFmt, heute, minutenAus, personName, uhrzeit } from '@core/format';
 import type { Datum, ID, Zeiteintrag } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
+import { ZEITART_EMOJI } from '@core/zeichen';
 import { Button, Eingabe, FormRaster, Meldung, Meta, Segmente, Stapel, Textfeld, Dialog, useBestaetigen, useToast } from '@ui/index';
 import { AuftragAuswahl, MitarbeiterAuswahl } from '@ui/objekt';
 import { ART_LABEL, pruefeTag, spanne } from './daten';
@@ -99,6 +100,7 @@ export function ZeitDialog({
         offen={offen}
         onSchliessen={onSchliessen}
         titel={eintrag ? 'Zeit korrigieren' : 'Zeit nachtragen'}
+        icon="uhr"
         aktionen={
           <>
             {eintrag && !gesperrt && (
@@ -116,7 +118,7 @@ export function ZeitDialog({
         <Stapel abstand={16}>
           {gesperrt && <Meldung>Diese Zeit ist schon freigegeben. Änderungen macht das Büro.</Meldung>}
           {buero && !eintrag && <MitarbeiterAuswahl label="Für" wert={f.mitarbeiterId} onChange={(v) => setF({ ...f, mitarbeiterId: v })} />}
-          <Segmente label="Art" wert={f.art} onChange={(v) => setF({ ...f, art: v })} optionen={(Object.keys(ART_LABEL) as Zeiteintrag['art'][]).map((a) => ({ wert: a, label: ART_LABEL[a] }))} />
+          <Segmente label="Art" wert={f.art} onChange={(v) => setF({ ...f, art: v })} optionen={(Object.keys(ART_LABEL) as Zeiteintrag['art'][]).map((a) => ({ wert: a, label: ART_LABEL[a], emoji: ZEITART_EMOJI[a] }))} />
           <FormRaster spalten={2}>
             <Eingabe label="Datum" type="date" max={heute()} value={f.datum} onChange={(e) => setF({ ...f, datum: e.target.value })} />
             <Eingabe label="Pause (Minuten)" inputMode="numeric" value={f.pause} onChange={(e) => setF({ ...f, pause: e.target.value.replace(/\D/g, '') })} />

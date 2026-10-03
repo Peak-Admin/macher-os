@@ -5,14 +5,14 @@ import { useIch } from '@core/session';
 import type { ID } from '@core/objects';
 import { Auswahl, Button, Dialog, Eingabe, FormRaster, Meta, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
-import { ART_LABEL, bestandAm, buchen, HAUPTLAGER, lagerorte, lagerortName, pruefeBuchung, type Lagerbewegung, type LagerortId } from './daten';
+import { ART_ICON, ART_LABEL, bestandAm, buchen, HAUPTLAGER, lagerorte, lagerortName, pruefeBuchung, type Lagerbewegung, type LagerortId } from './daten';
 
 type Art = Exclude<Lagerbewegung['art'], 'inventur'>;
 
 /** Zugang, Entnahme oder Umbuchung buchen */
 export function BuchenDialog({ offen, onSchliessen, artikelId, ort }: { offen: boolean; onSchliessen: () => void; artikelId?: ID; ort?: LagerortId }) {
   return (
-    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Material buchen">
+    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Material buchen" icon="lager">
       {offen && <BuchenFormular artikelId={artikelId} ort={ort} fertig={onSchliessen} />}
     </Dialog>
   );
@@ -71,7 +71,7 @@ function BuchenFormular({ artikelId, ort, fertig }: { artikelId?: ID; ort?: Lage
       }}
     >
       <Stapel>
-        <Segmente label="Was passiert?" wert={art} onChange={setArt} optionen={(['entnahme', 'zugang', 'umbuchung'] as Art[]).map((x) => ({ wert: x, label: ART_LABEL[x] }))} />
+        <Segmente label="Was passiert?" wert={art} onChange={setArt} optionen={(['entnahme', 'zugang', 'umbuchung'] as Art[]).map((x) => ({ wert: x, label: ART_LABEL[x], icon: ART_ICON[x] }))} />
         {!artikelId ? (
           <Auswahl label="Artikel" value={aid} leer="Artikel wählen" onChange={(e) => setAid(e.target.value)} optionen={[...artikel].sort((x, y) => x.name.localeCompare(y.name, 'de')).map((x) => ({ wert: x.id, label: `${x.name}${x.nummer ? ` (${x.nummer})` : ''}` }))} />
         ) : (

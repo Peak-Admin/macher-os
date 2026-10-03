@@ -100,7 +100,7 @@ export function VertragDetail() {
                 {euro(faellig.betrag)} netto. Macher legt einen Abrechnungsauftrag und einen Rechnungsentwurf an – du prüfst und versendest.
               </Meldung>
             )}
-            <Karte titel="Enthaltene Leistungen">
+            <Karte titel="Enthaltene Leistungen" icon="liste">
               {v.leistungen.length ? (
                 <ul style={{ margin: 0, paddingLeft: 20 }}>
                   {v.leistungen.map((l) => (
@@ -111,7 +111,7 @@ export function VertragDetail() {
                 <Meta>Keine Leistungen eingetragen. Ergänze sie unter „Bearbeiten“ – sie erscheinen auf der Rechnung.</Meta>
               )}
             </Karte>
-            <Karte titel="Anlagen und Orte">
+            <Karte titel="Anlagen und Orte" icon="ort">
               <Liste leer={<Meta>Keine Anlagen oder Orte gewählt.</Meta>}>
                 {v.anlageIds.map((aid) => {
                   const a = db.anlagen.get(aid);
@@ -133,7 +133,7 @@ export function VertragDetail() {
                   })}
               </Liste>
             </Karte>
-            <Karte titel="Wartungsaufträge" aktion={<Meta>im Vertrag enthalten, ohne Berechnung</Meta>}>
+            <Karte titel="Wartungsaufträge" icon="wiederholen" aktion={<Meta>im Vertrag enthalten, ohne Berechnung</Meta>}>
               <Liste leer={<Meta>Noch keine. Macher legt sie automatisch vor der nächsten fälligen Wartung an.</Meta>}>
                 {wartungen.slice(0, 8).map((a) => (
                   <ListenZeile
@@ -147,7 +147,7 @@ export function VertragDetail() {
               </Liste>
             </Karte>
             {geld && (
-              <Karte titel="Abrechnungen">
+              <Karte titel="Abrechnungen" icon="euro">
                 <Liste leer={<Meta>Noch nichts abgerechnet.</Meta>}>
                   {[...v.abrechnungen].reverse().map((a) => {
                     const r = db.rechnungen.get(a.rechnungId);
@@ -164,14 +164,14 @@ export function VertragDetail() {
                 </Liste>
               </Karte>
             )}
-            <Karte titel="Verlauf">
+            <Karte titel="Verlauf" icon="uhr">
               <Zeitstrahl bezug={{ typ: 'servicevertraege', id: v.id }} max={8} />
             </Karte>
           </>
         }
         seite={
           <>
-            <Karte titel="Konditionen" kompakt>
+            <Karte titel="Konditionen" icon="euro" kompakt>
               <Stapel abstand={8}>
                 {geld && (
                   <Meta>
@@ -188,7 +188,7 @@ export function VertragDetail() {
                 {v.notiz && <Meta>Notiz: {v.notiz}</Meta>}
               </Stapel>
             </Karte>
-            <Karte titel="Wartungstermine" kompakt>
+            <Karte titel="Wartungstermine" icon="kalender" kompakt>
               <Stapel abstand={8}>
                 {laufendeSerie ? (
                   <Meta>

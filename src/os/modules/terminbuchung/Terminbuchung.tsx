@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { datumKurz, uhrzeit } from '@core/format';
 import type { TerminArt } from '@core/objects';
+import { TERMINART_EMOJI, TERMINART_ICON, TERMINART_TON } from '@core/zeichen';
 import { useDarf } from '@core/session';
 import {
   Abschnitt,
@@ -12,6 +13,7 @@ import {
   Dialog,
   Eingabe,
   FensterSkizze,
+  FormAbschnitt,
   FormRaster,
   Karte,
   Leer,
@@ -23,9 +25,11 @@ import {
   Stapel,
   Status,
   Textfeld,
+  TypIcon,
   Zeile,
   useBestaetigen,
   useToast,
+  type IconName,
 } from '@ui/index';
 import { Person, Personen } from '@ui/person';
 import { TERMINART_LABEL } from '../kalender/daten';
@@ -104,7 +108,7 @@ export function Terminbuchung() {
         )}
       </Abschnitt>
 
-      <Karte titel="Dein Buchungslink" oberzeile="Für Website, E-Mail-Signatur und WhatsApp">
+      <Karte titel="Dein Buchungslink" icon="link" oberzeile="Für Website, E-Mail-Signatur und WhatsApp">
         <Stapel abstand={12}>
           <span className="mm-fenster" aria-hidden>
             <FensterSkizze icon="kalender" rahmen="handy" />
@@ -140,6 +144,7 @@ export function Terminbuchung() {
               <ListenZeile
                 key={f.id}
                 onClick={darfPlanen ? () => setBearbeiten(f) : undefined}
+                links={<TypIcon name={TERMINART_ICON[f.art] as IconName} label={TERMINART_LABEL[f.art]} ton={TERMINART_TON[f.art]} />}
                 titel={f.name}
                 untertitel={[
                   `${f.dauerMinuten} min`,
@@ -155,7 +160,7 @@ export function Terminbuchung() {
         </Liste>
       </Abschnitt>
 
-      <Dialog offen={!!bearbeiten} onSchliessen={() => setBearbeiten(undefined)} titel={bearbeiten === 'neu' ? 'Terminart anlegen' : 'Terminart bearbeiten'} breit>
+      <Dialog offen={!!bearbeiten} onSchliessen={() => setBearbeiten(undefined)} titel={bearbeiten === 'neu' ? 'Terminart anlegen' : 'Terminart bearbeiten'} icon="kalender" breit>
         <FensterFormular fenster={bearbeiten === 'neu' ? undefined : bearbeiten} onFertig={() => setBearbeiten(undefined)} />
       </Dialog>
     </Seite>
@@ -210,38 +215,44 @@ function FensterFormular({ fenster, onFertig }: { fenster?: Buchungsfenster; onF
         speichern();
       }}
     >
-      <FormRaster>
-        <Eingabe label="Name für Kunden" value={f.name} onChange={(e) => set('name', e.target.value)} fehler={fehler.name} placeholder="z. B. Besichtigung vor Ort" />
-        <Auswahl label="Art im Kalender" value={f.art} onChange={(e) => set('art', e.target.value as TerminArt)} optionen={(['besichtigung', 'einsatz', 'wartung'] as TerminArt[]).map((a) => ({ wert: a, label: TERMINART_LABEL[a] }))} />
-      </FormRaster>
-      <Textfeld label="Kurze Beschreibung" optional value={f.beschreibung} onChange={(e) => set('beschreibung', e.target.value)} />
-      <FormRaster>
-        {zahlAuswahl('Dauer', 'dauerMinuten', [[30, '30 Minuten'], [60, '1 Stunde'], [90, '1,5 Stunden'], [120, '2 Stunden'], [180, '3 Stunden']])}
-        {zahlAuswahl('Puffer für Fahrt', 'pufferMinuten', [[0, 'Kein Puffer'], [15, '15 Minuten'], [30, '30 Minuten'], [60, '1 Stunde']], 'Abstand zu anderen Terminen')}
-      </FormRaster>
-      <div className="mm-feld">
-        <span className="mm-label">Buchbare Tage</span>
-        <Zeile>
-          {WOCHENTAGE.map((w, i) => (
-            <Checkbox key={w} label={w} checked={f.wochentage.includes(i + 1)} onChange={(an) => set('wochentage', an ? [...f.wochentage, i + 1].sort() : f.wochentage.filter((x) => x !== i + 1))} />
+      <FormAbschnitt titel="Terminart" icon="kalender">
+        <FormRaster>
+          <Eingabe label="Name für Kunden" value={f.name} onChange={(e) => set('name', e.target.value)} fehler={fehler.name} placeholder="z. B. Besichtigung vor Ort" />
+          <Auswahl label="Art im Kalender" value={f.art} onChange={(e) => set('art', e.target.value as TerminArt)} optionen={(['besichtigung', 'einsatz', 'wartung'] as TerminArt[]).map((a) => ({ wert: a, label: TERMINART_LABEL[a], emoji: TERMINART_EMOJI[a] }))} />
+        </FormRaster>
+        <Textfeld label="Kurze Beschreibung" optional value={f.beschreibung} onChange={(e) => set('beschreibung', e.target.value)} />
+        <FormRaster>
+          {zahlAuswahl('Dauer', 'dauerMinuten', [[30, '30 Minuten'], [60, '1 Stunde'], [90, '1,5 Stunden'], [120, '2 Stunden'], [180, '3 Stunden']])}
+          {zahlAuswahl('Puffer für Fahrt', 'pufferMinuten', [[0, 'Kein Puffer'], [15, '15 Minuten'], [30, '30 Minuten'], [60, '1 Stunde']], 'Abstand zu anderen Terminen')}
+        </FormRaster>
+      </FormAbschnitt>
+      <FormAbschnitt titel="Buchbare Zeiten" icon="uhr">
+        <div className="mm-feld">
+          <span className="mm-label">Buchbare Tage</span>
+          <Zeile>
+            {WOCHENTAGE.map((w, i) => (
+              <Checkbox key={w} label={w} checked={f.wochentage.includes(i + 1)} onChange={(an) => set('wochentage', an ? [...f.wochentage, i + 1].sort() : f.wochentage.filter((x) => x !== i + 1))} />
+            ))}
+          </Zeile>
+          {fehler.tage && <p className="mm-fehlertext">{fehler.tage}</p>}
+        </div>
+        <FormRaster>
+          <Eingabe label="Von" type="time" step={900} value={f.von} onChange={(e) => set('von', e.target.value)} fehler={fehler.zeit} />
+          <Eingabe label="Bis" type="time" step={900} value={f.bis} onChange={(e) => set('bis', e.target.value)} hilfe="Innerhalb deiner Betriebsarbeitszeit" />
+          {zahlAuswahl('Frühestens', 'vorlaufStunden', [[2, '2 Stunden vorher'], [24, '1 Tag vorher'], [48, '2 Tage vorher'], [72, '3 Tage vorher']])}
+          {zahlAuswahl('Höchstens', 'horizontTage', [[7, '1 Woche im Voraus'], [14, '2 Wochen im Voraus'], [21, '3 Wochen im Voraus'], [28, '4 Wochen im Voraus'], [56, '8 Wochen im Voraus']])}
+        </FormRaster>
+      </FormAbschnitt>
+      <FormAbschnitt titel="Team und Freigabe" icon="team">
+        <div className="mm-feld">
+          <span className="mm-label">Wer übernimmt diese Termine?</span>
+          <Meta>Nichts gewählt = alle Monteure und der Chef. Macher nimmt, wer in der Woche am wenigsten verplant ist.</Meta>
+          {mitarbeiter.map((m) => (
+            <Checkbox key={m.id} label={<Person m={m} />} checked={f.mitarbeiterIds.includes(m.id)} onChange={(an) => set('mitarbeiterIds', an ? [...f.mitarbeiterIds, m.id] : f.mitarbeiterIds.filter((x) => x !== m.id))} />
           ))}
-        </Zeile>
-        {fehler.tage && <p className="mm-fehlertext">{fehler.tage}</p>}
-      </div>
-      <FormRaster>
-        <Eingabe label="Von" type="time" step={900} value={f.von} onChange={(e) => set('von', e.target.value)} fehler={fehler.zeit} />
-        <Eingabe label="Bis" type="time" step={900} value={f.bis} onChange={(e) => set('bis', e.target.value)} hilfe="Innerhalb deiner Betriebsarbeitszeit" />
-        {zahlAuswahl('Frühestens', 'vorlaufStunden', [[2, '2 Stunden vorher'], [24, '1 Tag vorher'], [48, '2 Tage vorher'], [72, '3 Tage vorher']])}
-        {zahlAuswahl('Höchstens', 'horizontTage', [[7, '1 Woche im Voraus'], [14, '2 Wochen im Voraus'], [21, '3 Wochen im Voraus'], [28, '4 Wochen im Voraus'], [56, '8 Wochen im Voraus']])}
-      </FormRaster>
-      <div className="mm-feld">
-        <span className="mm-label">Wer übernimmt diese Termine?</span>
-        <Meta>Nichts gewählt = alle Monteure und der Chef. Macher nimmt, wer in der Woche am wenigsten verplant ist.</Meta>
-        {mitarbeiter.map((m) => (
-          <Checkbox key={m.id} label={<Person m={m} />} checked={f.mitarbeiterIds.includes(m.id)} onChange={(an) => set('mitarbeiterIds', an ? [...f.mitarbeiterIds, m.id] : f.mitarbeiterIds.filter((x) => x !== m.id))} />
-        ))}
-      </div>
-      <Schalter label="Online buchbar" beschreibung="Aus = Terminart pausiert, der Link zeigt sie nicht an." checked={f.aktiv} onChange={(v) => set('aktiv', v)} />
+        </div>
+        <Schalter label="Online buchbar" beschreibung="Aus = Terminart pausiert, der Link zeigt sie nicht an." checked={f.aktiv} onChange={(v) => set('aktiv', v)} />
+      </FormAbschnitt>
       <Zeile zwischen>
         {fenster ? (
           <Button
@@ -277,7 +288,7 @@ export function KundenBuchungPanel({ id }: { id: string }) {
   const aktiv = buchungsfenster.use((f) => f.aktiv).length > 0;
   if (!aktiv) return null;
   return (
-    <Karte titel="Online-Termin" kompakt>
+    <Karte titel="Online-Termin" icon="kalender" kompakt>
       <Stapel abstand={8}>
         <Meta>Schick dem Kunden seinen Link – er sieht freie Termine und bucht selbst.</Meta>
         <div>

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { datum, zahl } from '@core/format';
-import { Filter, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status } from '@ui/index';
+import { Filter, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, TypIcon } from '@ui/index';
 import { Person } from '@ui/person';
-import { ART_LABEL, lagerbewegungen, lagerortName, summenWirkung, type Lagerbewegung } from './daten';
+import { ART_ICON, ART_LABEL, ART_TON, lagerbewegungen, lagerortName, summenWirkung, type Lagerbewegung } from './daten';
 
 type F = 'alle' | Lagerbewegung['art'];
 
@@ -26,6 +26,7 @@ export function Bewegungen() {
               <ListenZeile
                 key={b.id}
                 to={a ? `/betrieb/katalog/material/${a.id}` : undefined}
+                links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} />}
                 titel={`${ART_LABEL[b.art]}: ${a?.name ?? 'Unbekannter Artikel'}`}
                 untertitel={
                   <>

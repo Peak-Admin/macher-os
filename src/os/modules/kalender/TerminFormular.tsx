@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { db, vermerken } from '@core/db';
 import { datumKurz, heute, isoDatum, minutenAus, plusTage, uhrAus, uhrzeit, zeitpunkt } from '@core/format';
 import type { Datum, ID, Termin, TerminArt } from '@core/objects';
+import { TERMINART_EMOJI } from '@core/zeichen';
 import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Meta, Stapel, Status, Textfeld, useToast } from '@ui/index';
 import { AuftragAuswahl } from '@ui/objekt';
 import { Person } from '@ui/person';
@@ -56,7 +57,7 @@ export function TerminFormular({
   titel?: string;
 }) {
   return (
-    <Dialog offen={offen} onSchliessen={onSchliessen} titel={titel ?? (termin ? 'Termin bearbeiten' : 'Termin planen')} breit>
+    <Dialog offen={offen} onSchliessen={onSchliessen} titel={titel ?? (termin ? 'Termin bearbeiten' : 'Termin planen')} icon="kalender" breit>
       <Formular
         termin={termin}
         vorgabe={vorgabe}
@@ -189,7 +190,7 @@ function Formular({ termin, vorgabe = {}, onFertig }: { termin?: Termin; vorgabe
     >
       <FormRaster>
         <AuftragAuswahl wert={f.auftragId} onChange={auftragWaehlen} optional nurOffene={!termin} />
-        <Auswahl label="Art" value={f.art} onChange={(e) => set('art', e.target.value as TerminArt)} optionen={Object.entries(TERMINART_LABEL).map(([wert, label]) => ({ wert, label }))} />
+        <Auswahl label="Art" value={f.art} onChange={(e) => set('art', e.target.value as TerminArt)} optionen={Object.entries(TERMINART_LABEL).map(([wert, label]) => ({ wert, label, emoji: TERMINART_EMOJI[wert as TerminArt] }))} />
       </FormRaster>
       <Eingabe label="Titel" value={f.titel} onChange={(e) => set('titel', e.target.value)} fehler={fehler.titel} placeholder="z. B. Wartung Heizung" />
       <FormRaster spalten={3}>

@@ -6,7 +6,8 @@ import { relativ } from '@core/format';
 import { hinweisAusblenden, hinweisErledigen, offeneHinweise, type OffenerHinweis } from '@core/macher';
 import { aktionAusfuehren, aktionVorhanden } from '@core/modul';
 import { istBuero, useIch } from '@core/session';
-import { Abschnitt, Button, Filter, Karte, Leer, Liste, ListenZeile, Meta, Segmente, Seite, Stapel, Status, Zeile, useToast } from '@ui/index';
+import { Abschnitt, Button, Filter, Karte, Leer, Liste, ListenZeile, Meta, Segmente, Seite, Stapel, Status, TypIcon, Zeile, useToast } from '@ui/index';
+import { HINWEISART_ICON, HINWEISART_TON } from '@modules/braucht-dich/logik';
 import { ARTEN, artInfo, erledigteSeit, filtern, zaehlen, zielPfad, type ArtFilter } from './daten';
 
 export function HinweiseAnsicht() {
@@ -23,7 +24,7 @@ export function HinweiseAnsicht() {
   return (
     <Seite titel="Hinweise & Freigaben" untertitel="Hier holt Macher dich dazu – nur wenn eine Entscheidung, Freigabe oder ein Problem ansteht.">
       <Stapel abstand={12}>
-        {buero && <Segmente label="Zeigen" wert={wer} onChange={setWer} optionen={[{ wert: 'mich', label: 'Für mich' }, { wert: 'alle', label: 'Alle im Betrieb' }]} />}
+        {buero && <Segmente label="Zeigen" wert={wer} onChange={setWer} optionen={[{ wert: 'mich', label: 'Für mich', icon: 'person' }, { wert: 'alle', label: 'Alle im Betrieb', icon: 'team' }]} />}
         <Filter label="Art" wert={art} onChange={setArt} optionen={[{ wert: 'alle' as ArtFilter, label: 'Alle', zaehler: z.alle }, ...ARTEN.map((a) => ({ wert: a.wert as ArtFilter, label: a.label, zaehler: z[a.wert] }))]} />
       </Stapel>
 
@@ -98,10 +99,13 @@ function HinweisKarte({ h }: { h: OffenerHinweis }) {
           <Status ton={info.ton}>{info.label}</Status>
           {h.faellig && <Meta>fällig {relativ(h.faellig)}</Meta>}
         </Zeile>
-        <div>
-          <strong>{h.titel}</strong>
-          {h.text && <Meta>{h.text}</Meta>}
-        </div>
+        <Zeile abstand={12} umbruch={false}>
+          <TypIcon name={HINWEISART_ICON[h.art]} label={info.label} ton={HINWEISART_TON[h.art]} />
+          <div>
+            <strong>{h.titel}</strong>
+            {h.text && <Meta>{h.text}</Meta>}
+          </div>
+        </Zeile>
         <Zeile>
           {aktionen.map((a, i) => (
             <Button key={a.aktion + i} variante={i === 0 ? 'primaer' : 'sekundaer'} klein onClick={() => ausfuehren(a.aktion, a.payload, a.label)}>

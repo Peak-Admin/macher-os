@@ -172,6 +172,7 @@ function ZuordnenDialog({ umsatz, onSchliessen }: { umsatz: Bankumsatz | undefin
       offen={!!umsatz}
       onSchliessen={onSchliessen}
       titel={`Zahlung ${euro(umsatz.betrag)} zuordnen`}
+      icon="link"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={keineRechnung}>

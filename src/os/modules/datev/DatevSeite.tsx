@@ -117,7 +117,7 @@ function Export({ monatVorschlag, zuEinstellungen }: { monatVorschlag?: string; 
           Ohne diese Nummern kann DATEV den Buchungsstapel nicht zuordnen. Du findest sie in jeder Mail oder Rechnung deines Steuerberaters.
         </Meldung>
       )}
-      <Karte titel="Zeitraum">
+      <Karte titel="Zeitraum" icon="kalender">
         <Stapel abstand={16}>
           <Zeile>
             {letzteMonate(4).map((m) => {
@@ -146,10 +146,10 @@ function Export({ monatVorschlag, zuEinstellungen }: { monatVorschlag?: string; 
       {vorschau && (
         <>
           <Raster min={180}>
-            <Karte kompakt titel={`${vorschau.rechnungIds.length} ${vorschau.rechnungIds.length === 1 ? 'Rechnung' : 'Rechnungen'}`}>
+            <Karte kompakt icon="dokument" titel={`${vorschau.rechnungIds.length} ${vorschau.rechnungIds.length === 1 ? 'Rechnung' : 'Rechnungen'}`}>
               <span className="mm-meta">Ausgangsrechnungen brutto: {euro(summe)}</span>
             </Karte>
-            <Karte kompakt titel={`${vorschau.belegIds.length} ${vorschau.belegIds.length === 1 ? 'Beleg' : 'Belege'}`}>
+            <Karte kompakt icon="ordner" titel={`${vorschau.belegIds.length} ${vorschau.belegIds.length === 1 ? 'Beleg' : 'Belege'}`}>
               <span className="mm-meta">Eingangsbelege brutto: {euro(ausgaben)}</span>
             </Karte>
           </Raster>
@@ -307,7 +307,7 @@ function SteuerberaterForm() {
 
   return (
     <Stapel abstand={24}>
-      <Karte titel="Dein Steuerberater">
+      <Karte titel="Dein Steuerberater" icon="person">
         <Stapel abstand={16}>
           <FormRaster>
             <Eingabe label="Ansprechpartner" value={s.name} onChange={(x) => setSForm({ ...s, name: x.target.value })} optional autoComplete="name" />
@@ -335,7 +335,7 @@ function SteuerberaterForm() {
           )}
         </Stapel>
       </Karte>
-      <Karte titel="DATEV-Daten">
+      <Karte titel="DATEV-Daten" icon="einstellungen">
         <Stapel abstand={16}>
           <Segmente<Kontenrahmen>
             label="Kontenrahmen"

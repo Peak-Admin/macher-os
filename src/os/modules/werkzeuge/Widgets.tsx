@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { db } from '@core/db';
 import { passt } from '@core/format';
 import type { ID } from '@core/objects';
-import { Auswahl, Button, Karte, Liste, ListenZeile, Meta, Stapel, Status, Suchfeld, Textfeld, useToast } from '@ui/index';
-import { ART_LABEL, defektMelden, fahrzeugText, woIst } from './daten';
+import { Auswahl, Button, Karte, Liste, ListenZeile, Meta, Stapel, Status, Suchfeld, Textfeld, TypIcon, useToast } from '@ui/index';
+import { ART_ICON, ART_LABEL, ART_TON, defektMelden, fahrzeugText, woIst } from './daten';
 
 /** Hub-Widget: „Wer hat den Bohrhammer?“ in drei Sekunden */
 export function WerHatWasWidget() {
@@ -13,14 +13,14 @@ export function WerHatWasWidget() {
   if (!alle.length) return null;
   const treffer = q ? alle.filter((b) => passt(q, b.name, b.inventarnummer, b.hersteller, woIst(b).text)).slice(0, 5) : [];
   return (
-    <Karte titel="Wer hat was?" oberzeile="Werkzeug & Geräte">
+    <Karte titel="Wer hat was?" icon="suche" oberzeile="Werkzeug & Geräte">
       <Stapel abstand={12}>
         <Suchfeld wert={q} onChange={setQ} platzhalter="Gerät suchen, z. B. Bohrhammer" />
         {q && (
           <Liste leer={<Meta>Nichts gefunden. Prüf die Schreibweise.</Meta>}>
             {treffer.map((b) => {
               const wo = woIst(b);
-              return <ListenZeile key={b.id} to={`/betrieb/werkzeuge/${b.id}`} titel={b.name} untertitel={ART_LABEL[b.art]} rechts={<Status ton={wo.ton}>{wo.text}</Status>} />;
+              return <ListenZeile key={b.id} to={`/betrieb/werkzeuge/${b.id}`} links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} klein />} titel={b.name} untertitel={ART_LABEL[b.art]} rechts={<Status ton={wo.ton}>{wo.text}</Status>} />;
             })}
           </Liste>
         )}
@@ -36,13 +36,13 @@ export function MitarbeiterGeraete({ id }: { id: ID }) {
   const geraete = liste.filter((b) => b.art !== 'fahrzeug');
   const fz = liste.filter((b) => b.art === 'fahrzeug');
   return (
-    <Karte titel="Werkzeug & Fahrzeug" kompakt>
+    <Karte titel="Werkzeug & Fahrzeug" icon="werkzeug" kompakt>
       <Liste>
         {fz.map((b) => (
-          <ListenZeile key={b.id} to={`/betrieb/werkzeuge/${b.id}`} titel={fahrzeugText(b)} untertitel="Fahrer" />
+          <ListenZeile key={b.id} to={`/betrieb/werkzeuge/${b.id}`} links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} klein />} titel={fahrzeugText(b)} untertitel="Fahrer" />
         ))}
         {geraete.map((b) => (
-          <ListenZeile key={b.id} to={`/betrieb/werkzeuge/${b.id}`} titel={b.name} untertitel={b.inventarnummer} />
+          <ListenZeile key={b.id} to={`/betrieb/werkzeuge/${b.id}`} links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} klein />} titel={b.name} untertitel={b.inventarnummer} />
         ))}
       </Liste>
     </Karte>

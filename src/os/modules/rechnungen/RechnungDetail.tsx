@@ -162,7 +162,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
         seite={
           <>
             <MitMacherVorbereiten bezug={{ typ: 'rechnungen', id: r.id }} breit />
-            <Karte titel="Betrag" kompakt>
+            <Karte titel="Betrag" icon="euro" kompakt>
               <Stapel abstand={8}>
                 <SummenListe s={s} kleinunternehmer={b?.kleinunternehmer} />
                 {!entwurf && r.art !== 'gutschrift' && r.status !== 'storniert' && (
@@ -174,7 +174,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
                 {!entwurf && r.art !== 'gutschrift' && <Meta>Fällig {relativ(r.faelligAm)}</Meta>}
               </Stapel>
             </Karte>
-            <Karte titel="Kunde & Auftrag" kompakt>
+            <Karte titel="Kunde & Auftrag" icon="person" kompakt>
               <Stapel abstand={8}>
                 <ObjektLink bezug={{ typ: 'kunden', id: r.kundeId }}>{k?.name ?? 'Kunde fehlt'}</ObjektLink>
                 {r.auftragId && <ObjektLink bezug={{ typ: 'auftraege', id: r.auftragId }}>{db.auftraege.get(r.auftragId)?.nummer} · {db.auftraege.get(r.auftragId)?.titel}</ObjektLink>}
@@ -182,7 +182,7 @@ function RechnungAnsicht({ r }: { r: RechnungX }) {
               </Stapel>
             </Karte>
             {entwurf && pruefung.empfehlung.length > 0 && <MaengelListe maengel={pruefung.empfehlung} kundeId={r.kundeId} ton="neutral" />}
-            <Karte titel="Dokumente" kompakt>
+            <Karte titel="Dokumente" icon="dokument" kompakt>
               <Stapel abstand={8}>
                 <Button variante="sekundaer" icon="dokument" onClick={druck}>
                   {entwurf ? 'Vorschau ansehen' : 'Drucken / PDF'}

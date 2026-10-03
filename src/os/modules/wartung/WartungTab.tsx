@@ -44,7 +44,7 @@ export function WartungTab({ id }: { id: ID }) {
         </Meldung>
       )}
 
-      <Karte titel="Anlagen">
+      <Karte titel="Anlagen" icon="werkzeug">
         <Liste leer={<Meta>Keine Anlage am Auftrag. Wartungsaufträge entstehen normalerweise aus einer Anlage.</Meta>}>
           {anlagen.map((x) => (
             <ListenZeile
@@ -57,7 +57,7 @@ export function WartungTab({ id }: { id: ID }) {
         </Liste>
       </Karte>
 
-      <Karte titel="Prüfpunkte" aktion={punkte.length ? <Meta>{`${erledigtN} von ${punkte.length}`}</Meta> : undefined}>
+      <Karte titel="Prüfpunkte" icon="liste" aktion={punkte.length ? <Meta>{`${erledigtN} von ${punkte.length}`}</Meta> : undefined}>
         {punkte.length ? (
           <Stapel abstand={12}>
             <Fortschritt wert={erledigtN} max={punkte.length} label="Erledigt" />
@@ -77,7 +77,7 @@ export function WartungTab({ id }: { id: ID }) {
       </Karte>
 
       {!fertig && (
-        <Karte titel="Termin und Kunde">
+        <Karte titel="Termin und Kunde" icon="kalender">
           <Stapel>
             {termin ? (
               <Meta>
@@ -162,7 +162,7 @@ export function AnlageWartungPanel({ id }: { id: ID }) {
   const auftrag = offenerWartungsauftrag(a.id);
   const ueber = !!a.naechsteWartung && a.naechsteWartung < heute();
   return (
-    <Karte titel="Wartung" kompakt>
+    <Karte titel="Wartung" icon="wiederholen" kompakt>
       <Stapel abstand={8}>
         <Meta>Intervall: {intervallText(a.wartungMonate)}</Meta>
         <Meta>Letzte Wartung: {datum(a.letzteWartung)}</Meta>

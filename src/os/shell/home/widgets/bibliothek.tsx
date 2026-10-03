@@ -10,7 +10,8 @@ import { offeneHinweise } from '@core/macher';
 import { modul, modulPfad, pfadZu } from '@core/modul';
 import type { ID } from '@core/objects';
 import { darf, istBuero } from '@core/session';
-import { Button, Icon, Liste, ListenZeile, Meta, Status, Textfeld } from '@ui/index';
+import { ABWESENHEIT_EMOJI } from '@core/zeichen';
+import { Button, Icon, Liste, ListenZeile, Meta, Status, Textfeld, mitEmoji } from '@ui/index';
 import { ErfassenKnopf } from '@ui/objekt';
 import { Personenbild } from '@ui/person';
 import { HinweisZeile } from '@modules/braucht-dich/BrauchtDich';
@@ -171,7 +172,7 @@ export function AbwesendWidget({ groesse }: WidgetProps) {
             links={<Personenbild m={m} />}
             titel={personName(m)}
             untertitel={a.bis === tag ? 'zurück morgen' : `bis ${datumKurz(a.bis)}`}
-            rechts={<Status>{ABWESENHEIT_LABEL[a.art]}</Status>}
+            rechts={<Status>{mitEmoji(ABWESENHEIT_EMOJI[a.art], ABWESENHEIT_LABEL[a.art])}</Status>}
           />
         );
       })}

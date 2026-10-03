@@ -127,7 +127,7 @@ export function TerminDetail() {
                 titel: 'Überblick',
                 inhalt: (
                   <Stapel>
-                    <Karte titel="Wer" kompakt>
+                    <Karte titel="Wer" icon="team" kompakt>
                       <Liste leer={<Meta>Noch niemand eingeplant.</Meta>}>
                         {ma.map((m) => (
                           <ListenZeile key={m.id} to={pfadZu({ typ: 'mitarbeiter', id: m.id })} links={<Personenbild m={m} groesse={40} />} titel={personName(m)} untertitel={m.telefon} />
@@ -135,7 +135,7 @@ export function TerminDetail() {
                       </Liste>
                     </Karte>
                     {t.notiz && (
-                      <Karte titel="Notiz" kompakt>
+                      <Karte titel="Notiz" icon="notiz" kompakt>
                         <p style={{ whiteSpace: 'pre-wrap', margin: 0 }}>{t.notiz}</p>
                       </Karte>
                     )}
@@ -176,7 +176,7 @@ export function TerminDetail() {
         seite={
           <>
             {(kunde || ort) && (
-              <Karte titel="Wo" kompakt>
+              <Karte titel="Wo" icon="ort" kompakt>
                 <Stapel abstand={8}>
                   {kunde && <ObjektLink bezug={{ typ: 'kunden', id: kunde.id }}>{kunde.name}</ObjektLink>}
                   {ort && (
@@ -201,7 +201,7 @@ export function TerminDetail() {
               </Karte>
             )}
             {auftrag && (
-              <Karte titel="Auftrag" kompakt>
+              <Karte titel="Auftrag" icon="auftraege" kompakt>
                 <Stapel abstand={4}>
                   <ObjektLink bezug={{ typ: 'auftraege', id: auftrag.id }}>
                     {auftrag.nummer} · {auftrag.titel}
@@ -233,7 +233,7 @@ export function terminVerschieben(t: NonNullable<ReturnType<typeof db.termine.ge
 function VerschiebenDialog({ offen, onSchliessen, terminId }: { offen: boolean; onSchliessen: () => void; terminId: string }) {
   const t = db.termine.get(terminId)!;
   return (
-    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Termin verschieben">
+    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Termin verschieben" icon="kalender">
       <VerschiebenInhalt t={t} onFertig={onSchliessen} />
     </Dialog>
   );

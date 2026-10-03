@@ -3,18 +3,19 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { batch, db } from '@core/db';
 import { heute, plusTage } from '@core/format';
 import type { ID, Kanal } from '@core/objects';
+import { KANAL_EMOJI } from '@modules/anfragen/daten';
 import { Auswahl, Button, Eingabe, FormRaster, Karte, Meta, Seite, Segmente, Stapel, Textfeld, useToast, DateiFeld, bildVerkleinern } from '@ui/index';
 import { KundeAuswahl } from '@ui/objekt';
 import { BEWERTUNG_TEXT, fotoTag, fristTage, GRUNDLAGEN, grundlageVorschlag, naechsteReklamationsnummer, pruefen, reklamationen, type Bewertung, type Grundlage } from './daten';
 import { Pruefbox } from './Pruefbox';
 
-const KANAELE: { wert: Kanal; label: string }[] = [
-  { wert: 'telefon', label: 'Telefon' },
-  { wert: 'email', label: 'E-Mail' },
-  { wert: 'whatsapp', label: 'WhatsApp' },
-  { wert: 'vor_ort', label: 'Vor Ort' },
-  { wert: 'portal', label: 'Kundenbereich' },
-  { wert: 'sonstiges', label: 'Sonstiges' },
+const KANAELE: { wert: Kanal; label: string; emoji: string }[] = [
+  { wert: 'telefon', label: 'Telefon', emoji: KANAL_EMOJI.telefon },
+  { wert: 'email', label: 'E-Mail', emoji: KANAL_EMOJI.email },
+  { wert: 'whatsapp', label: 'WhatsApp', emoji: KANAL_EMOJI.whatsapp },
+  { wert: 'vor_ort', label: 'Vor Ort', emoji: KANAL_EMOJI.vor_ort },
+  { wert: 'portal', label: 'Kundenbereich', emoji: KANAL_EMOJI.portal },
+  { wert: 'sonstiges', label: 'Sonstiges', emoji: KANAL_EMOJI.sonstiges },
 ];
 
 /** Fotos als Dokumente speichern, mit Tag der Reklamation */
@@ -115,7 +116,7 @@ export function ReklamationNeu() {
         className="mm-stapel"
         style={{ gap: 24 }}
       >
-        <Karte titel="Was ist los?">
+        <Karte titel="Was ist los?" icon="notiz">
           <Stapel abstand={24}>
             <FormRaster>
               <div>
@@ -147,7 +148,7 @@ export function ReklamationNeu() {
           </Stapel>
         </Karte>
 
-        <Karte titel="Gewährleistung">
+        <Karte titel="Gewährleistung" icon="schild">
           <Stapel abstand={24}>
             <Pruefbox p={pruefung} />
             <FormRaster>

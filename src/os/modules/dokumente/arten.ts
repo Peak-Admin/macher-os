@@ -8,6 +8,8 @@
 import { db } from '@core/db';
 import { datum } from '@core/format';
 import type { Auftrag, Bezug, Datum, ID, Phase, SammlungsName } from '@core/objects';
+import type { TypTon } from '@core/zeichen';
+import type { IconName } from '@ui/index';
 import { abnahmeStarten, abnahmen, ERGEBNIS_TEXT, ergebnis, type Abnahme } from '@modules/abnahme/daten';
 import { entwurfFuer, STATUS_TEXT as ANGEBOT_STATUS, STATUS_TON as ANGEBOT_TON } from '@modules/angebote/daten';
 import { berichtErstellen, berichte, type Bericht, type BerichtArt } from '@modules/berichte/daten';
@@ -36,6 +38,34 @@ export type DokumentArtId =
   | 'mahnung';
 
 export type DokumentGruppe = 'verkauf' | 'ausfuehrung' | 'abrechnung' | 'forderung';
+
+/** Strich-Icon je Dokumentart (Auswahlkarten, Typ-Kachel in Listen) */
+export const DOKUMENTART_ICON: Record<DokumentArtId, IconName> = {
+  angebot: 'dokument',
+  auftragsbestaetigung: 'check',
+  lieferschein: 'paket',
+  rapport: 'notiz',
+  arbeitsbericht: 'notiz',
+  baustellenbericht: 'notiz',
+  pruefprotokoll: 'check',
+  abnahme: 'unterschrift',
+  rechnung: 'euro',
+  abschlagsrechnung: 'euro',
+  teilrechnung: 'euro',
+  schlussrechnung: 'euro',
+  gutschrift: 'euro',
+  storno: 'x',
+  zahlungserinnerung: 'glocke',
+  mahnung: 'glocke',
+};
+
+/** Farbton der Typ-Kachel je Gruppe – unterscheidet Arten, kein Status */
+export const DOKUMENTGRUPPE_TON: Record<DokumentGruppe, TypTon> = {
+  verkauf: 'blau',
+  ausfuehrung: 'petrol',
+  abrechnung: 'gruen',
+  forderung: 'gelb',
+};
 
 export interface DokumentArt {
   id: DokumentArtId;

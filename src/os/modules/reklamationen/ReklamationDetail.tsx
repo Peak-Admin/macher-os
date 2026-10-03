@@ -86,7 +86,7 @@ export function ReklamationDetail() {
       <ZweiSpalten
         haupt={
           <>
-            <Karte titel="Gewährleistung">
+            <Karte titel="Gewährleistung" icon="schild">
               <Stapel abstand={16}>
                 <Pruefbox p={p} />
                 <Segmente
@@ -109,7 +109,7 @@ export function ReklamationDetail() {
               </Stapel>
             </Karte>
 
-            <Karte titel="Nacharbeit">
+            <Karte titel="Nacharbeit" icon="werkzeug">
               {nacharbeit ? (
                 <Stapel abstand={12}>
                   <Zeile zwischen>
@@ -160,7 +160,7 @@ export function ReklamationDetail() {
               )}
             </Karte>
 
-            <Karte titel="Fotos" aktion={<Meta>{fotos.length ? `${fotos.length}` : ''}</Meta>}>
+            <Karte titel="Fotos" icon="kamera" aktion={<Meta>{fotos.length ? `${fotos.length}` : ''}</Meta>}>
               <Stapel abstand={12}>
                 {fotos.length ? (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 8 }}>
@@ -182,19 +182,19 @@ export function ReklamationDetail() {
             </Karte>
 
             {r.beschreibung && (
-              <Karte titel="Beschreibung">
+              <Karte titel="Beschreibung" icon="notiz">
                 <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{r.beschreibung}</p>
               </Karte>
             )}
 
-            <Karte titel="Verlauf">
+            <Karte titel="Verlauf" icon="uhr">
               <Zeitstrahl bezug={{ typ: 'reklamationen', id: r.id }} max={10} />
             </Karte>
           </>
         }
         seite={
           <>
-            <Karte titel="Bezug" kompakt>
+            <Karte titel="Bezug" icon="link" kompakt>
               <Stapel abstand={8}>
                 <Meta>Gemeldet: {datum(r.gemeldetAm)}</Meta>
                 {r.fristBis && <Meta>Frist: {relativ(r.fristBis) === datum(r.fristBis) ? datum(r.fristBis) : `${datum(r.fristBis)} (${relativ(r.fristBis)})`}</Meta>}
@@ -224,6 +224,7 @@ export function ReklamationDetail() {
         offen={ablehnen}
         onSchliessen={() => setAblehnen(false)}
         titel="Reklamation ablehnen"
+        icon="x"
         aktionen={
           <>
             <Button variante="tertiaer" onClick={() => setAblehnen(false)}>Abbrechen</Button>

@@ -9,6 +9,8 @@ import type { Cent, Datum, ID } from '@core/objects';
 import { ichId } from '@core/session';
 import { belegAendern, type BelegX } from '../rechnungen/typen';
 import { dateiLesen } from '@ui/index';
+import type { IconName } from '@ui/icons';
+import type { TypTon } from '@core/zeichen';
 import { betragCsv, csvText } from '../rechnungen/liste';
 import { belegePostfachAdresse } from '@/os/server/belege-postfach';
 
@@ -20,6 +22,21 @@ export const ART_LABEL: Record<BelegX['art'], string> = {
   quittung: 'Quittung',
   tankbeleg: 'Tankbeleg',
   sonstiges: 'Sonstiges',
+};
+
+/** Belegart: Strich-Icon (Umschalter, Typ-Kachel) und Farbton der Typ-Kachel in Listen */
+export const ART_ICON: Record<BelegX['art'], IconName> = {
+  eingangsrechnung: 'dokument',
+  quittung: 'euro',
+  tankbeleg: 'auto',
+  sonstiges: 'ordner',
+};
+
+export const ART_TON: Record<BelegX['art'], TypTon> = {
+  eingangsrechnung: 'blau',
+  quittung: 'sand',
+  tankbeleg: 'petrol',
+  sonstiges: 'neutral',
 };
 
 export const KATEGORIEN = ['Material', 'Fahrzeug', 'Werkzeug', 'Subunternehmer', 'Büro', 'Sonstiges'];

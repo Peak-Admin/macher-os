@@ -79,7 +79,7 @@ export function LieferantDetail() {
         }
         seite={
           <>
-            <Karte titel="Kontakt" kompakt>
+            <Karte titel="Kontakt" icon="telefon" kompakt>
               <Stapel abstand={8}>
                 {l.telefon && <a href={telLink(l.telefon)}>{l.telefon}</a>}
                 {l.email && <a href={`mailto:${l.email}`}>{l.email}</a>}
@@ -96,7 +96,7 @@ export function LieferantDetail() {
                 {!l.telefon && !l.email && !l.adresse && <Meta>Noch keine Kontaktdaten. Ohne E-Mail kann Macher keine Bestellung vorbereiten.</Meta>}
               </Stapel>
             </Karte>
-            <Karte titel="Konditionen" kompakt aktion={<Button klein variante="tertiaer" icon="stift" to={`/betrieb/lieferanten/${l.id}/bearbeiten`}>Bearbeiten</Button>}>
+            <Karte titel="Konditionen" icon="euro" kompakt aktion={<Button klein variante="tertiaer" icon="stift" to={`/betrieb/lieferanten/${l.id}/bearbeiten`}>Bearbeiten</Button>}>
               <Stapel abstand={8}>
                 <Meta>{lieferzeitText(l)}</Meta>
                 <Meta>{l.konditionen ?? 'Keine Konditionen hinterlegt.'}</Meta>
@@ -104,7 +104,7 @@ export function LieferantDetail() {
               </Stapel>
             </Karte>
             {ansprechpartner.length > 0 && (
-              <Karte titel="Ansprechpartner" kompakt>
+              <Karte titel="Ansprechpartner" icon="person" kompakt>
                 <Liste>
                   {ansprechpartner.map((a) => (
                     <ListenZeile key={a.id} titel={a.name} untertitel={[a.funktion, a.telefon, a.email].filter(Boolean).join(' · ')} rechts={a.telefon ? <a href={telLink(a.telefon)}>Anrufen</a> : undefined} />

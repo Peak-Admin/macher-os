@@ -110,7 +110,7 @@ export function ZusatzListe() {
           ))}
         </Liste>
       </Stapel>
-      <Dialog offen={neu} onSchliessen={() => setNeu(false)} titel="Nachtrag erfassen">
+      <Dialog offen={neu} onSchliessen={() => setNeu(false)} titel="Nachtrag erfassen" icon="plus">
         {neu && <ZusatzErfassen fertig={() => setNeu(false)} auftragId={auftragId || undefined} />}
       </Dialog>
     </Seite>
@@ -145,7 +145,7 @@ export function ZusatzDetail() {
       <ZweiSpalten
         haupt={
           <Stapel abstand={24}>
-            <Karte titel="Leistung">
+            <Karte titel="Leistung" icon="liste">
               <div className="mm-tabelle-rahmen">
                 <table className="mm-tabelle">
                   <tbody>
@@ -175,11 +175,11 @@ export function ZusatzDetail() {
               {z.notiz && <p style={{ marginTop: 12 }}>{z.notiz}</p>}
             </Karte>
             {fotos.length > 0 && (
-              <Karte titel="Fotos">
+              <Karte titel="Fotos" icon="kamera">
                 <Galerie fotos={fotos} />
               </Karte>
             )}
-            <Karte titel="Freigabe durch den Kunden">
+            <Karte titel="Freigabe durch den Kunden" icon="unterschrift">
               {z.status === 'offen' ? (
                 <Stapel abstand={16}>
                   <UnterschriftFeld
@@ -216,13 +216,13 @@ export function ZusatzDetail() {
         }
         seite={
           <>
-            <Karte titel="Auftrag" kompakt>
+            <Karte titel="Auftrag" icon="auftraege" kompakt>
               <Stapel abstand={8}>
                 <ObjektLink bezug={{ typ: 'auftraege', id: z.auftragId }}>{db.auftraege.get(z.auftragId)?.titel ?? 'Auftrag'}</ObjektLink>
                 <AuftragKurz id={z.auftragId} />
               </Stapel>
             </Karte>
-            <Karte titel="Abrechnung" kompakt>
+            <Karte titel="Abrechnung" icon="euro" kompakt>
               {rechnung ? (
                 <Meta>
                   In Rechnung <ObjektLink bezug={{ typ: 'rechnungen', id: rechnung.id }}>{rechnung.nummer}</ObjektLink> vom {datum(rechnung.datum)}.
@@ -255,6 +255,7 @@ export function ZusatzDetail() {
         offen={!!anders}
         onSchliessen={() => setAnders(null)}
         titel={anders === 'freigabe' ? 'Zustimmung festhalten' : 'Ablehnung festhalten'}
+        icon="unterschrift"
         aktionen={
           <>
             <Button variante="tertiaer" onClick={() => setAnders(null)}>
@@ -314,7 +315,7 @@ export function ZusatzTab({ id }: { id: ID }) {
             <ZusatzZeile key={z.id} z={z} mitAuftrag={false} geld={geld} />
           ))}
       </Liste>
-      <Dialog offen={neu} onSchliessen={() => setNeu(false)} titel="Nachtrag erfassen">
+      <Dialog offen={neu} onSchliessen={() => setNeu(false)} titel="Nachtrag erfassen" icon="plus">
         {neu && <ZusatzErfassen fertig={() => setNeu(false)} auftragId={id} />}
       </Dialog>
     </Stapel>

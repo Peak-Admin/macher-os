@@ -5,7 +5,7 @@ import { pfadZu } from '@core/modul';
 import type { ID, Kanal } from '@core/objects';
 import { Auswahl, Button, Checkbox, Eingabe, FormRaster, Karte, Meldung, Seite, Stapel, Textfeld, useToast } from '@ui/index';
 import { OrtAuswahl } from '@ui/objekt';
-import { KANAL_TEXT, anfrageAnlegen } from './daten';
+import { KANAL_EMOJI, KANAL_TEXT, anfrageAnlegen } from './daten';
 import { KundenVorschlaege } from './KundenVorschlaege';
 import { QualiAuswahl } from './Qualifizieren';
 
@@ -83,7 +83,7 @@ export function AnfrageNeu() {
         }}
       >
         <Stapel abstand={24}>
-          <Karte titel="Wer fragt an?">
+          <Karte titel="Wer fragt an?" icon="person">
             <Stapel>
               {!kundeId && (
                 <FormRaster>
@@ -104,11 +104,11 @@ export function AnfrageNeu() {
               )}
             </Stapel>
           </Karte>
-          <Karte titel="Worum geht's?">
+          <Karte titel="Worum geht's?" icon="notiz">
             <Stapel>
               <FormRaster>
                 <Eingabe label="Anliegen in Kürze" value={f.titel} onChange={set('titel')} fehler={fehler.titel} placeholder="z. B. Steckdosen im Keller nachrüsten" />
-                <Auswahl label="Kanal" value={quelle} onChange={(e) => setQuelle(e.target.value as Kanal)} optionen={QUELLEN.map((q) => ({ wert: q, label: KANAL_TEXT[q] }))} />
+                <Auswahl label="Kanal" value={quelle} onChange={(e) => setQuelle(e.target.value as Kanal)} optionen={QUELLEN.map((q) => ({ wert: q, label: KANAL_TEXT[q], emoji: KANAL_EMOJI[q] }))} />
               </FormRaster>
               <Textfeld label="Details" value={f.beschreibung} onChange={set('beschreibung')} optional placeholder="Was genau, seit wann, was hat der Kunde schon versucht?" />
               <FormRaster>

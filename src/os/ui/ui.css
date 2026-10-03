@@ -487,6 +487,20 @@
 
 /* Typ-Icon in Listen (Auftragsart u. a.): einfaches Strich-Icon auf ruhiger Kachel */
 .mm-typicon { display: inline-grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: var(--mm-surface-subtle); color: var(--mm-brand-ink); box-shadow: inset 0 0 0 1px var(--mm-border); }
+.mm-typicon--klein { width: 28px; height: 28px; border-radius: 8px; }
+/* Typ-Töne: heller Grund, dunklere Linie im selben Ton */
+.mm-ton--gruen { background: var(--mm-ton-gruen-flaeche); color: var(--mm-ton-gruen-linie); box-shadow: inset 0 0 0 1px var(--mm-ton-gruen-rand); }
+.mm-ton--blau { background: var(--mm-ton-blau-flaeche); color: var(--mm-ton-blau-linie); box-shadow: inset 0 0 0 1px var(--mm-ton-blau-rand); }
+.mm-ton--petrol { background: var(--mm-ton-petrol-flaeche); color: var(--mm-ton-petrol-linie); box-shadow: inset 0 0 0 1px var(--mm-ton-petrol-rand); }
+.mm-ton--gelb { background: var(--mm-ton-gelb-flaeche); color: var(--mm-ton-gelb-linie); box-shadow: inset 0 0 0 1px var(--mm-ton-gelb-rand); }
+.mm-ton--lila { background: var(--mm-ton-lila-flaeche); color: var(--mm-ton-lila-linie); box-shadow: inset 0 0 0 1px var(--mm-ton-lila-rand); }
+.mm-ton--sand { background: var(--mm-ton-sand-flaeche); color: var(--mm-ton-sand-linie); box-shadow: inset 0 0 0 1px var(--mm-ton-sand-rand); }
+.mm-ton--rose { background: var(--mm-ton-rose-flaeche); color: var(--mm-ton-rose-linie); box-shadow: inset 0 0 0 1px var(--mm-ton-rose-rand); }
+/* Emoji vor einem Wert: gleiche Zeilenhöhe, kein Fontwechsel im Text daneben */
+.mm-emoji { display: inline-block; margin-right: 0.4em; font-size: 1.05em; line-height: 1; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; }
+.mm-segment .mm-emoji { margin-right: 0; }
+/* Kleines Strich-Icon vor Karten- und Dialogtiteln */
+.mm-mit-titelicon { display: flex; align-items: center; gap: 8px; }
 .mm-kundenbild { display: inline-grid; place-items: center; flex-shrink: 0; border-radius: 50%; overflow: hidden; color: #fff; font-weight: 700; letter-spacing: 0.02em; box-shadow: inset 0 0 0 1px rgb(16 44 33 / 10%); }
 .mm-kundenbild img { display: block; object-fit: contain; }
 

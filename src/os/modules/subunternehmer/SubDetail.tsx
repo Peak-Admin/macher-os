@@ -76,7 +76,7 @@ export function SubDetail() {
                 <Kennzahl label="Eingangsrechnungen" wert={belege.length ? euro(belege.reduce((x, b) => x + b.netto, 0)) : '–'} hinweis={belege.length ? `${belege.length} netto` : 'noch keine'} />
               </Raster>
             )}
-            <Karte titel="Einsätze">
+            <Karte titel="Einsätze" icon="auftraege">
               <Liste leer={<Leer titel="Noch keine Einsätze" text="Leg fest, an welchem Auftrag die Firma was macht." icon="auftraege" />}>
                 {einsaetze.map((e) => {
                   const a = db.auftraege.get(e.auftragId);
@@ -97,7 +97,7 @@ export function SubDetail() {
                 })}
               </Liste>
             </Karte>
-            <Karte titel="Nachweise" aktion={<Button variante="sekundaer" klein icon="plus" onClick={() => setNachweisOffen(true)}>Nachweis erfassen</Button>}>
+            <Karte titel="Nachweise" icon="schild" aktion={<Button variante="sekundaer" klein icon="plus" onClick={() => setNachweisOffen(true)}>Nachweis erfassen</Button>}>
               <Liste leer={<Leer skizze titel="Noch keine Nachweise" text="Erfasse mindestens die Freistellungsbescheinigung nach § 48b EStG – mit Ablaufdatum." icon="schild" />}>
                 {nachweise.map((n) => {
                   const st = nachweisStatus(n, t);
@@ -130,14 +130,14 @@ export function SubDetail() {
                 })}
               </Liste>
             </Karte>
-            <Karte titel="Verlauf">
+            <Karte titel="Verlauf" icon="uhr">
               <Zeitstrahl bezug={{ typ: 'subunternehmer', id: s.id }} max={10} />
             </Karte>
           </Stapel>
         }
         seite={
           <>
-            <Karte titel="Kontakt" kompakt aktion={<Button variante="tertiaer" klein icon="stift" to={`/betrieb/subunternehmer/${s.id}/bearbeiten`}>Bearbeiten</Button>}>
+            <Karte titel="Kontakt" icon="telefon" kompakt aktion={<Button variante="tertiaer" klein icon="stift" to={`/betrieb/subunternehmer/${s.id}/bearbeiten`}>Bearbeiten</Button>}>
               <Stapel abstand={8}>
                 {s.ansprechpartner && <Meta>{s.ansprechpartner}</Meta>}
                 {l?.telefon && <a href={telLink(l.telefon)}>{l.telefon}</a>}
@@ -147,7 +147,7 @@ export function SubDetail() {
               </Stapel>
             </Karte>
             {s.notiz && (
-              <Karte titel="Notiz" kompakt>
+              <Karte titel="Notiz" icon="notiz" kompakt>
                 <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{s.notiz}</p>
               </Karte>
             )}

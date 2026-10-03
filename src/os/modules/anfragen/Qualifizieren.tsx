@@ -77,7 +77,7 @@ export function QualiDialog({ auftragId, onSchliessen }: { auftragId?: ID; onSch
   const a = db.auftraege.useOne(auftragId);
   const k = db.kunden.useOne(a?.kundeId);
   return (
-    <Dialog offen={!!auftragId} onSchliessen={onSchliessen} titel={a ? `Wie geht's weiter mit „${a.titel}“?` : 'Nächster Schritt'} breit>
+    <Dialog offen={!!auftragId} onSchliessen={onSchliessen} titel={a ? `Wie geht's weiter mit „${a.titel}“?` : 'Nächster Schritt'} icon="pfeil" breit>
       {a && (
         <Stapel abstand={16}>
           <p className="mm-meta">
@@ -96,7 +96,7 @@ export function QualiPanel({ id }: { id: ID }) {
   const a = db.auftraege.useOne(id);
   if (!a || a.phase !== 'anfrage') return null;
   return (
-    <Karte titel="Anfrage: nächster Schritt" kompakt>
+    <Karte titel="Anfrage: nächster Schritt" icon="pfeil" kompakt>
       <QualiAuswahl auftragId={a.id} />
     </Karte>
   );

@@ -90,6 +90,7 @@ export function EinarbeitungenSeite() {
         offen={starten}
         onSchliessen={() => setStarten(false)}
         titel="Einarbeitung starten"
+        icon="team"
         aktionen={
           <>
             <Button variante="tertiaer" onClick={() => setStarten(false)}>

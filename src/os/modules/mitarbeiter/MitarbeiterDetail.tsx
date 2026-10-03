@@ -63,7 +63,7 @@ export function MitarbeiterDetail() {
         haupt={<ObjektTabs objekt="mitarbeiter" id={m.id} />}
         seite={
           <>
-            <Karte titel="Kontakt" kompakt aktion={<Personenbild m={m} groesse={48} />}>
+            <Karte titel="Kontakt" icon="telefon" kompakt aktion={<Personenbild m={m} groesse={48} />}>
               <Stapel abstand={8}>
                 {m.telefon && <a href={telLink(m.telefon)}>{m.telefon}</a>}
                 {m.email && <a href={`mailto:${m.email}`}>{m.email}</a>}
@@ -77,6 +77,7 @@ export function MitarbeiterDetail() {
             </Karte>
             <Karte
               titel="Beschäftigung"
+              icon="betrieb"
               kompakt
               aktion={darfAendern ? <Button klein variante="tertiaer" icon="stift" to={`/betrieb/mitarbeiter/${m.id}/bearbeiten`}>Bearbeiten</Button> : undefined}
             >
@@ -104,7 +105,7 @@ export function MitarbeiterDetail() {
               )}
             </Karte>
             <ObjektPanels objekt="mitarbeiter" id={m.id} />
-            <Karte titel="Verlauf" kompakt>
+            <Karte titel="Verlauf" icon="uhr" kompakt>
               <Zeitstrahl bezug={{ typ: 'mitarbeiter', id: m.id }} max={8} />
             </Karte>
           </>
@@ -114,6 +115,7 @@ export function MitarbeiterDetail() {
         offen={austrittOffen}
         onSchliessen={() => setAustrittOffen(false)}
         titel={`Austritt von ${m.vorname} eintragen`}
+        icon="kalender"
         aktionen={
           <>
             <Button variante="tertiaer" onClick={() => setAustrittOffen(false)}>

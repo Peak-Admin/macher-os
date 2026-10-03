@@ -4,8 +4,9 @@ import { nummerAnzeige } from '@core/nummern';
 import { useIch } from '@core/session';
 import { datumKurz, heute, passt } from '@core/format';
 import type { Auftrag, Auftragsart, ID, Phase } from '@core/objects';
-import { Abschnitt, BeispielMarke, Button, Filter, Karte, Leer, Liste, ListenZeile, Stapel, Status, Suchfeld, Zeile } from '@ui/index';
-import { AKTIVE_PHASEN, ART_LABEL, STILLSTAND_TAGE, istOffen, kommendeEinsaetze, phaseLabel, phaseTon, tageOhneBewegung } from './logik';
+import { Abschnitt, BeispielMarke, Button, Filter, Karte, Leer, Liste, ListenZeile, Stapel, Status, Suchfeld, TypIcon, Zeile } from '@ui/index';
+import { AUFTRAGSART_TON } from '@core/zeichen';
+import { AKTIVE_PHASEN, ART_ICON, ART_LABEL, STILLSTAND_TAGE, istOffen, kommendeEinsaetze, phaseLabel, phaseTon, tageOhneBewegung } from './logik';
 import { auftragPfad, letzteBewegungen } from './daten';
 import { useAbBreite } from './hooks';
 import { schrittLabel } from '@modules/ablauf/daten';
@@ -147,6 +148,7 @@ export function Pipeline({ imHub }: { imHub?: boolean }) {
                   <ListenZeile
                     key={z.a.id}
                     to={auftragPfad(z.a.id)}
+                    links={<ArtKachel a={z.a} />}
                     titel={
                       <>
                         {z.a.titel} <BeispielMarke zeigen={z.a.beispiel} />
@@ -180,9 +182,12 @@ function AuftragKarte({ z }: { z: PZeile }) {
   return (
     <Karte kompakt to={auftragPfad(z.a.id)}>
       <Stapel abstand={4}>
-        <span className="akte-karte-titel">
-          {z.a.titel} <BeispielMarke zeigen={z.a.beispiel} />
-        </span>
+        <Zeile abstand={8} umbruch={false}>
+          <ArtKachel a={z.a} klein />
+          <span className="akte-karte-titel">
+            {z.a.titel} <BeispielMarke zeigen={z.a.beispiel} />
+          </span>
+        </Zeile>
         <span className="mm-meta">{[z.kunde, z.ort].filter(Boolean).join(' · ')}</span>
         <span className="mm-meta">{z.schritt ? `${nummerAnzeige(z.a.nummer)} · ${z.schritt}` : nummerAnzeige(z.a.nummer)}</span>
         <Zeile abstand={4}>
@@ -191,6 +196,11 @@ function AuftragKarte({ z }: { z: PZeile }) {
       </Stapel>
     </Karte>
   );
+}
+
+/** Typ-Kachel der Auftragsart – wie in der Auftragsliste */
+function ArtKachel({ a, klein }: { a: Auftrag; klein?: boolean }) {
+  return <TypIcon klein={klein} name={ART_ICON[a.art] ?? 'auftraege'} label={ART_LABEL[a.art] ?? 'Auftrag'} ton={AUFTRAGSART_TON[a.art]} />;
 }
 
 function Merkmale({ z }: { z: PZeile }) {
@@ -242,6 +252,7 @@ export function Archiv() {
           <ListenZeile
             key={a.id}
             to={auftragPfad(a.id)}
+            links={<ArtKachel a={a} />}
             titel={
               <>
                 {a.titel} <BeispielMarke zeigen={a.beispiel} />

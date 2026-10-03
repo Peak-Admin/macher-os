@@ -118,7 +118,7 @@ export function AuswertungWidget() {
   const k = useKennzahlen('monat');
   if (!darf) return null;
   return (
-    <Karte titel="Zahlen auf einen Blick" oberzeile={k.zeitraum.label} aktion={<Button variante="tertiaer" klein icon="weiter" to="/betrieb/auswertung">Auswertung</Button>}>
+    <Karte titel="Zahlen auf einen Blick" icon="diagramm" oberzeile={k.zeitraum.label} aktion={<Button variante="tertiaer" klein icon="weiter" to="/betrieb/auswertung">Auswertung</Button>}>
       <Raster min={200}>
         <Kennzahl label="Umsatz netto" wert={k.umsatz.anzahl || k.umsatzVor.anzahl ? euro(k.umsatz.netto) : LEER} hinweis={k.umsatz.anzahl || k.umsatzVor.anzahl ? vergleich(k, k.umsatz.netto, k.umsatzVor.netto) : 'Noch keine Daten – keine Rechnung im Monat'} />
         <Kennzahl label="Offene Posten" wert={euro(k.offen.summe)} ton={k.offen.ueberfaellig ? 'gefahr' : undefined} hinweis={k.offen.ueberfaellig ? `${euro(k.offen.ueberfaellig)} überfällig` : 'nichts überfällig'} to="/betrieb/zahlungen" />

@@ -22,7 +22,7 @@ export function BewertungPanelAuftrag({ id }: { id: ID }) {
     toast(r.ok ? 'Bewertungsanfrage ist raus.' : FEHLER_TEXT[r.grund], { ton: r.ok ? 'erfolg' : 'achtung' });
   };
   return (
-    <Karte titel="Bewertung" kompakt>
+    <Karte titel="Bewertung" icon="stern" kompakt>
       <Stapel abstand={8}>
         {!b || b.status === 'vorbereitet' ? (
           <>
@@ -68,7 +68,7 @@ export function EmpfehlungPanelKunde({ id }: { id: ID }) {
   const letzte = alle.filter((b) => b.kundeId === id && b.zufriedenheit).sort((a, b) => b.geaendertAm.localeCompare(a.geaendertAm))[0];
   if (!von && !hat && !letzte && kunde.quelle !== 'empfehlung') return null;
   return (
-    <Karte titel="Empfehlung & Zufriedenheit" kompakt>
+    <Karte titel="Empfehlung & Zufriedenheit" icon="stern" kompakt>
       <Stapel abstand={8}>
         {von?.empfohlenVonKundeId ? (
           <Meta>

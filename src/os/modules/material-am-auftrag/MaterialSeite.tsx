@@ -49,7 +49,7 @@ export function MaterialSeite() {
           <MaterialZeile key={b.id} b={b} mitAuftrag />
         ))}
       </Liste>
-      <Dialog offen={neu} onSchliessen={() => setNeu(false)} titel="Material buchen">
+      <Dialog offen={neu} onSchliessen={() => setNeu(false)} titel="Material buchen" icon="paket">
         <MaterialFormular onFertig={() => setNeu(false)} />
       </Dialog>
     </Seite>
