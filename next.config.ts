@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
       // frühere Registrierung und Anmeldung – alte Links führen direkt in die App
       { source: "/signup", destination: "/os/willkommen", permanent: false },
       { source: "/login", destination: "/os/heute", permanent: false },
+      // Markenauftakt erneut abspielen (z. B. für Videoaufnahmen), danach normal weiter auf der Startseite
+      { source: "/preloader", destination: "/?auftakt", permanent: false },
       { source: "/hilfe-center/passwort-vergessen", destination: "/hilfe-center/daten-sichern", permanent: true },
     ];
   },
