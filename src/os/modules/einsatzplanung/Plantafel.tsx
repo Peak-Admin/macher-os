@@ -28,6 +28,7 @@ import { MitMacherVorbereiten } from '@modules/macher-fragen/MitMacher';
 import { laeufe, spuren, zusammenfassen, ZOOM, ZOOM_STANDARD, type Spanne } from './zeitleiste';
 import '../kalender/plan.css';
 import './plantafel.css';
+import { ziehBild } from '@ui/ziehen';
 
 const WOCHENTAGE = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 const terminPfad = (id: string) => `/plan/kalender/termin/${id}`;
@@ -144,6 +145,7 @@ function Balken({
       {...extra}
       onDragStart={(e) => {
         extra?.onDragStart?.(e);
+        if (ziehen) ziehBild(e, label);
         ziehen?.(e);
       }}
     >
@@ -736,6 +738,7 @@ export function Plantafel() {
               draggable={darfPlanen}
               {...info.ausloeser(`offen-${a.id}`, () => projektInfo(a, [], darfPlanen ? 'Ziehen oder antippen zum Einplanen.' : ''))}
               onDragStart={(ev) => {
+                ziehBild(ev);
                 ev.dataTransfer.setData('text/x-auftrag', a.id);
                 ev.dataTransfer.effectAllowed = 'copy';
                 setZug({ auftragId: a.id });
@@ -870,6 +873,7 @@ export function Plantafel() {
           tabIndex={-1}
           draggable={darfOrdnen}
           onDragStart={(e) => {
+            ziehBild(e, personName(m));
             e.dataTransfer.setData('text/x-reihe', m.id);
             e.dataTransfer.effectAllowed = 'move';
             setReiheZug(m.id);

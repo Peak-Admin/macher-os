@@ -122,7 +122,7 @@ function AlleModule({ suche }: { suche: string }) {
                         aria-pressed={an}
                         aria-disabled={gesperrt}
                         aria-label={an ? `${m.titel} aus deiner Seitenleiste nehmen` : `${m.titel} in deine Seitenleiste legen`}
-                        title={an ? 'Aus der Seitenleiste nehmen' : gesperrt ? 'Deine Seitenleiste ist voll. Entferne zuerst einen Eintrag.' : 'In die Seitenleiste legen'}
+                        data-tipp={an ? 'Aus der Seitenleiste nehmen' : gesperrt ? 'Deine Seitenleiste ist voll. Entferne zuerst einen Eintrag.' : 'In die Seitenleiste legen'}
                         onClick={() => !gesperrt && favoriten.umschalten(m.id)}
                       >
                         <Icon name="stern" />

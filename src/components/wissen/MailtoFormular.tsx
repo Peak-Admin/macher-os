@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { Icon } from "@/components/ui";
+import { Auswahl, FeldFehler, Icon } from "@/components/ui";
 
 /**
  * Formular ohne Backend: Beim Absenden öffnet sich das E-Mail-Programm mit
@@ -22,11 +22,21 @@ export function MailtoFormular({
   gewerke: { slug: string; titel: string }[];
 }) {
   const [geoeffnet, setGeoeffnet] = useState(false);
+  const [gewerk, setGewerk] = useState("");
+  const [nameFehler, setNameFehler] = useState<string>();
   const id = useId();
 
   function absenden(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
+    // Eigene Prüfung statt Browser-Blase
+    if (!String(data.get("name") ?? "").trim()) {
+      setNameFehler("Bitte gib deinen Namen ein.");
+      setGeoeffnet(false);
+      (e.currentTarget.elements.namedItem("name") as HTMLElement | null)?.focus();
+      return;
+    }
+    setNameFehler(undefined);
     const zeilen = [
       einleitung,
       "",
@@ -45,13 +55,23 @@ export function MailtoFormular({
     "feld";
 
   return (
-    <form onSubmit={absenden} className="grid gap-4">
+    <form onSubmit={absenden} noValidate className="grid gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor={`${id}-name`} className="feld-label">
             Dein Name
           </label>
-          <input id={`${id}-name`} name="name" required autoComplete="name" className={feld} />
+          <input
+            id={`${id}-name`}
+            name="name"
+            required
+            autoComplete="name"
+            aria-invalid={nameFehler ? true : undefined}
+            aria-describedby={nameFehler ? `${id}-name-fehler` : undefined}
+            onChange={() => nameFehler && setNameFehler(undefined)}
+            className={feld}
+          />
+          <FeldFehler id={`${id}-name-fehler`}>{nameFehler}</FeldFehler>
         </div>
         <div>
           <label htmlFor={`${id}-betrieb`} className="feld-label">
@@ -60,20 +80,23 @@ export function MailtoFormular({
           <input id={`${id}-betrieb`} name="betrieb" autoComplete="organization" className={feld} />
         </div>
       </div>
-      <div>
-        <label htmlFor={`${id}-gewerk`} className="feld-label">
-          Gewerk <span className="font-normal text-muted">(optional)</span>
-        </label>
-        <select id={`${id}-gewerk`} name="gewerk" className={feld} defaultValue="">
-          <option value="">Bitte wählen</option>
-          {gewerke.map((g) => (
-            <option key={g.slug} value={g.titel}>
-              {g.titel}
-            </option>
-          ))}
-          <option value="Anderes Gewerk">Anderes Gewerk</option>
-        </select>
-      </div>
+      <Auswahl
+        id={`${id}-gewerk`}
+        name="gewerk"
+        label={
+          <>
+            Gewerk <span className="font-normal text-muted">(optional)</span>
+          </>
+        }
+        wert={gewerk}
+        onChange={setGewerk}
+        knopfKlasse="font-normal"
+        optionen={[
+          { wert: "", label: "Bitte wählen" },
+          ...gewerke.map((g) => ({ wert: g.titel, label: g.titel })),
+          { wert: "Anderes Gewerk", label: "Anderes Gewerk" },
+        ]}
+      />
       <div>
         <label htmlFor={`${id}-nachricht`} className="feld-label">
           Frage oder Wunsch <span className="font-normal text-muted">(optional)</span>

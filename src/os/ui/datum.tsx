@@ -304,11 +304,17 @@ export function DatumEingabe({ label, hilfe, fehler, optional, icon, value, defa
                       <thead>
                         <tr>
                           <th scope="col" className="mm-datum-kw">
-                            <abbr title="Kalenderwoche">KW</abbr>
+                            <abbr data-tipp="Kalenderwoche">
+                              <span aria-hidden>KW</span>
+                              <span className="sr-only">Kalenderwoche</span>
+                            </abbr>
                           </th>
                           {WOCHENTAGE.map((w) => (
                             <th key={w} scope="col">
-                              <abbr title={w}>{w.slice(0, 2)}</abbr>
+                              <abbr data-tipp={w}>
+                                <span aria-hidden>{w.slice(0, 2)}</span>
+                                <span className="sr-only">{w}</span>
+                              </abbr>
                             </th>
                           ))}
                         </tr>
@@ -329,7 +335,7 @@ export function DatumEingabe({ label, hilfe, fehler, optional, icon, value, defa
                                     disabled={aus}
                                     aria-current={d === heute ? 'date' : undefined}
                                     aria-label={`${datumLang(d)}${d === heute ? ', heute' : ''}${frei ? `, Feiertag: ${frei}` : ''}${aus ? ', nicht wählbar' : ''}`}
-                                    title={frei}
+                                    data-tipp={frei}
                                     className={cx(
                                       'mm-datum-tag',
                                       wochentag(d) > 5 && 'mm-datum-tag--we',

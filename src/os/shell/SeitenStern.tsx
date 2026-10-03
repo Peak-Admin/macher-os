@@ -38,7 +38,7 @@ export function SeitenStern({ titel }: { titel?: string }) {
       aria-pressed={an}
       aria-disabled={gesperrt}
       aria-label={an ? `${name} aus deinen Favoriten nehmen` : `${name} zu deinen Favoriten`}
-      title={an ? 'Aus den Favoriten nehmen' : gesperrt ? 'Deine Favoriten sind voll. Entferne zuerst einen Eintrag.' : 'Zu den Favoriten'}
+      data-tipp={an ? 'Aus den Favoriten nehmen' : gesperrt ? 'Deine Favoriten sind voll. Entferne zuerst einen Eintrag.' : 'Zu den Favoriten'}
       onClick={() => {
         if (gesperrt) return;
         aendern((l) => (m ? modulUmschalten(l, m.id) : seiteUmschalten(l, pathname + search, titel || seitenTitel(pathname))));

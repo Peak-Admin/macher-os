@@ -72,7 +72,7 @@ export function Webhooks() {
             />
           ))}
         </Liste>
-        <details>
+        <details className="mm-aufklapper">
           <summary>So kommen die Nachrichten an</summary>
           <Meta>
             POST mit JSON {'{ id, type, event, created_at, source, actor, object: { type, id, data }, data }'}. Kopfzeilen: x-macher-ereignis (z. B. invoice.paid) und x-macher-signatur: sha256=HMAC-SHA256(Geheimnis, Inhalt). Dein Programm antwortet mit 2xx, damit die Zustellung als erfolgreich gilt. Klappt es nicht, versucht Macher es nach 1, 5, 30, 120 und 720 Minuten erneut.

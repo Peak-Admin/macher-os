@@ -24,11 +24,6 @@
   border-color: var(--mm-brand-text);
   background: var(--mm-soft-green);
 }
-.abo-grund input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--mm-brand-text);
-}
 .abo-grund:has(input:focus-visible) {
   outline: 2px solid var(--mm-focus);
   outline-offset: 2px;

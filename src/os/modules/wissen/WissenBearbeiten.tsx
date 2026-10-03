@@ -119,13 +119,8 @@ function Formular({ artikel }: { artikel?: WissensArtikel }) {
           <Stapel>
             <FormRaster>
               <Eingabe label="Titel" value={f.titel} onChange={(e) => setF({ ...f, titel: e.target.value })} fehler={fehler.titel} placeholder="z. B. Ablauf Wartung Gas-Brennwert" autoFocus={!artikel} />
-              <Eingabe label="Kategorie" value={f.kategorie} onChange={(e) => setF({ ...f, kategorie: e.target.value })} fehler={fehler.kategorie} list="wissen-kategorien" />
+              <Eingabe label="Kategorie" value={f.kategorie} onChange={(e) => setF({ ...f, kategorie: e.target.value })} fehler={fehler.kategorie} vorschlaege={kategorien} />
             </FormRaster>
-            <datalist id="wissen-kategorien">
-              {kategorien.map((k) => (
-                <option key={k} value={k} />
-              ))}
-            </datalist>
             <Textfeld
               label="Text"
               rows={16}

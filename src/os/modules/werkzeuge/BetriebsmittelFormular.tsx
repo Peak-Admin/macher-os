@@ -116,14 +116,7 @@ export function BetriebsmittelFormular() {
                 {art === 'fahrzeug' ? (
                   <Eingabe label="Kilometerstand" inputMode="numeric" value={f.kilometerstand} onChange={set('kilometerstand')} optional />
                 ) : (
-                  <>
-                    <Eingabe label="Standort" list="mm-bm-standorte" value={f.standort} onChange={set('standort')} optional hilfe="Lager, Werkstatt oder Kennzeichen eines Fahrzeugs" />
-                    <datalist id="mm-bm-standorte">
-                      {orte.map((o) => (
-                        <option key={o} value={o} />
-                      ))}
-                    </datalist>
-                  </>
+                  <Eingabe label="Standort" vorschlaege={orte} value={f.standort} onChange={set('standort')} optional hilfe="Lager, Werkstatt oder Kennzeichen eines Fahrzeugs" />
                 )}
               </FormRaster>
             </FormAbschnitt>

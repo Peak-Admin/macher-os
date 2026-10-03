@@ -3,6 +3,7 @@ import { BASIS } from '@core/basis';
 import { alleModule, modulPfad } from '@core/modul';
 import { db } from '@core/db';
 import { ToastProvider } from '@ui/index';
+import { TippEbene } from '@ui/tipp';
 import { Shell, pwaStarten } from './Shell';
 import { HomeSeite } from './home/HomeSeite';
 import { BetriebSeite, KategorieWeiter } from './Betrieb';
@@ -63,6 +64,7 @@ export function App() {
             }
           />
         </Routes>
+        <TippEbene />
       </ToastProvider>
     </BrowserRouter>
   );

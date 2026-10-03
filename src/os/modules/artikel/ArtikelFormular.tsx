@@ -157,12 +157,7 @@ export function ArtikelFormular() {
               <Eingabe label="Bezeichnung" value={f.name} onChange={set('name')} fehler={ff('name')} autoFocus={!a} placeholder="z. B. NYM-J 3x1,5 mm²" />
               <Eingabe label="Artikelnummer" value={f.nummer} onChange={set('nummer')} fehler={ff('nummer')} optional />
               <Auswahl label="Einheit" value={f.einheit} onChange={set('einheit')} optionen={ALLE_EINHEITEN.map((x) => ({ wert: x, label: x }))} />
-              <Eingabe label="Kategorie" value={f.kategorie} onChange={set('kategorie')} optional list="mm-artikel-kategorien" placeholder="z. B. Kabel" />
-              <datalist id="mm-artikel-kategorien">
-                {kategorien().map((k) => (
-                  <option key={k} value={k} />
-                ))}
-              </datalist>
+              <Eingabe label="Kategorie" value={f.kategorie} onChange={set('kategorie')} optional vorschlaege={kategorien()} placeholder="z. B. Kabel" />
               <Eingabe label="EAN" value={f.ean} onChange={set('ean')} optional inputMode="numeric" />
               <Eingabe label="Hersteller-Nr." value={f.herstellerNummer} onChange={set('herstellerNummer')} optional />
               <Auswahl label="Lieferant" value={f.lieferantId} onChange={set('lieferantId')} leer="Kein fester Lieferant" optional optionen={lieferanten.map((l) => ({ wert: l.id, label: l.name }))} />

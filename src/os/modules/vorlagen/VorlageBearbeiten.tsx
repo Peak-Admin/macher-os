@@ -144,7 +144,7 @@ function Editor({ vorlage }: { vorlage: Vorlage }) {
               <Meta>Tippe, um an der Cursorposition einzufügen.</Meta>
               <Zeile abstand={4}>
                 {PLATZHALTER.map((p) => (
-                  <Button key={p.name} variante="sekundaer" klein onClick={() => einfuegen(p.name)} disabled={!schreiben} title={p.beschreibung}>
+                  <Button key={p.name} variante="sekundaer" klein onClick={() => einfuegen(p.name)} disabled={!schreiben} data-tipp={p.beschreibung}>
                     {`{${p.name}}`}
                   </Button>
                 ))}

@@ -405,7 +405,7 @@
 @media (max-width: 767px) { .mm-leer { padding: 32px 16px; } }
 .mm-tabelle .mm-status { white-space: nowrap; }
 /* Löschen-Kreuz im Suchfeld in Markenform statt Browser-Blau */
-.mm-input[type='search']::-webkit-search-cancel-button {
+input[type='search']::-webkit-search-cancel-button {
   -webkit-appearance: none; appearance: none; width: 20px; height: 20px; cursor: pointer; background: var(--mm-text);
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / 18px no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center / 18px no-repeat;
@@ -511,3 +511,58 @@
   background: var(--mm-surface-subtle); border: 1px solid var(--mm-border); overflow: visible;
 }
 .mm-ortskarte-rahmen { display: block; width: 100%; height: 200px; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); }
+
+/* ---------- Kein Browser-Standard (Oktober 2026): Zahlen, Radios, Aufklapper, Scrollleisten im Macher-Design */
+/* Zahlenfelder ohne Browser-Pfeile; das Mausrad verstellt nichts (siehe Eingabe) */
+input[type='number'] { -moz-appearance: textfield; appearance: textfield; }
+input[type='number']::-webkit-inner-spin-button, input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type='search']::-webkit-search-decoration, input[type='search']::-webkit-search-results-button { -webkit-appearance: none; }
+
+/* Runder Auswahlpunkt statt Browser-Radio: `<input type="radio" className="mm-radio">` */
+.mm-radio {
+  -webkit-appearance: none; appearance: none; flex-shrink: 0; display: grid; place-items: center; width: 20px; height: 20px; margin: 0;
+  border: 2px solid var(--mm-control-border); border-radius: 50%; background: var(--mm-surface); cursor: pointer;
+  transition: border-color var(--mm-motion-fast) ease-out;
+}
+.mm-radio::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: var(--mm-action); transform: scale(0); transition: transform var(--mm-motion-fast) ease-out; }
+.mm-radio:checked { border-color: var(--mm-action); }
+.mm-radio:checked::before { transform: scale(1); }
+.mm-radio:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }
+.mm-radio:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Aufklapper statt Browser-Dreieck: `<details className="mm-aufklapper">` */
+details.mm-aufklapper > summary {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px; list-style: none; cursor: pointer;
+  font-weight: 600; color: var(--mm-brand-ink); border-radius: var(--mm-radius-control);
+}
+details.mm-aufklapper > summary::-webkit-details-marker { display: none; }
+details.mm-aufklapper > summary::before {
+  content: ''; width: 16px; height: 16px; flex-shrink: 0; background: currentColor; transition: transform var(--mm-motion-fast) ease-out;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6-6 6'/%3E%3C/svg%3E") center / 16px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6-6 6'/%3E%3C/svg%3E") center / 16px no-repeat;
+}
+details.mm-aufklapper[open] > summary::before { transform: rotate(90deg); }
+details.mm-aufklapper[open] > summary { margin-bottom: 8px; }
+details.mm-aufklapper > summary:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }
+
+/* Ruhige, schmale Scrollleisten statt der grauen System-Leisten */
+/* Eigenes Root-Layout der Software: gilt nur hier, nicht auf der Website */
+html, html * { scrollbar-width: thin; scrollbar-color: var(--mm-border-dark) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { border: 2px solid transparent; border-radius: 999px; background: var(--mm-border-dark) padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--mm-text-secondary) padding-box; }
+::-webkit-scrollbar-corner { background: transparent; }
+
+/* Kein Browser-Dreieck an Aufklappern, auch in Safari */
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+
+/* Ziehbild (src/os/ui/ziehen.ts): liegt kurz außerhalb des Bildschirms, der Browser nimmt es als Abbild beim Ziehen */
+.mm-ziehbild {
+  position: fixed; top: -200px; left: -400px; display: inline-flex; align-items: center; gap: 8px; max-width: 320px; padding: 8px 14px 8px 10px;
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); color: var(--mm-text);
+  box-shadow: var(--mm-shadow-overlay); font: 600 15px/20px var(--mm-font); white-space: nowrap;
+}
+.mm-ziehbild > span:last-child { overflow: hidden; text-overflow: ellipsis; }
+.mm-ziehbild-punkt { width: 10px; height: 10px; flex-shrink: 0; border-radius: 50%; background: var(--ziehbild-farbe, var(--mm-action)); }

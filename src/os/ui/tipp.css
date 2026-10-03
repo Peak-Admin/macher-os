@@ -1,0 +1,9 @@
+/* ---------- Tooltip im Macher-Design (src/os/ui/tipp.tsx) – ersetzt die System-Tooltips von `title` */
+.mm-tipp {
+  position: fixed; z-index: 1100; max-width: min(280px, calc(100vw - 16px)); padding: 6px 10px; pointer-events: none;
+  border-radius: var(--mm-radius-control); background: var(--mm-forest); color: #fff; box-shadow: var(--mm-shadow-overlay);
+  font: 500 14px/20px var(--mm-font); overflow-wrap: anywhere; animation: mm-tipp-auf var(--mm-motion-fast) ease-out;
+}
+@keyframes mm-tipp-auf { from { opacity: 0; transform: translateY(2px); } }
+.mm-tipp--unten { animation-name: mm-tipp-ab; }
+@keyframes mm-tipp-ab { from { opacity: 0; transform: translateY(-2px); } }

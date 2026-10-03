@@ -126,7 +126,7 @@ export function AussehenDialog({ auftrag, onSchliessen, onEinplanen }: { auftrag
                 role="radio"
                 aria-checked={farbe === f.wert}
                 aria-label={f.name}
-                title={f.name}
+                data-tipp={f.name}
                 className="pt-farbe"
                 style={{ background: f.wert }}
                 onClick={() => setze({ farbe: f.wert })}

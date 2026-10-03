@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import { Icon } from "@/components/ui";
+import { Icon, SucheLeeren } from "@/components/ui";
 import type { WissenEintrag } from "@/content/wissen";
 import { treffer } from "./suche";
 import { WissenKarte } from "./WissenKarte";
@@ -39,8 +39,9 @@ export function WissenSuche({ eintraege }: { eintraege: WissenEintrag[] }) {
           onChange={(ev) => setQuery(ev.target.value)}
           placeholder="Wonach suchst du?"
           autoComplete="off"
-          className="feld h-14 pl-12 text-lg"
+          className="feld h-14 pl-12 pr-14 text-lg"
         />
+        {query && <SucheLeeren feldId={id} onLeeren={() => setQuery("")} />}
       </div>
       {!aktiv && (
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">

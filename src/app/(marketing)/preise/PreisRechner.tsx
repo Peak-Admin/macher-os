@@ -37,12 +37,19 @@ export function PreisRechner() {
             </button>
             <input
               id="leute"
-              type="number"
+              type="text"
               inputMode="numeric"
-              min={1}
-              max={500}
+              autoComplete="off"
+              aria-describedby="leute-hinweis"
               value={leute}
-              onChange={(e) => setLeute(Math.min(500, Math.max(1, Number(e.target.value) || 1)))}
+              onChange={(e) => setLeute(Math.min(500, Math.max(1, Number(e.target.value.replace(/\D/g, "")) || 1)))}
+              onKeyDown={(e) => {
+                // Pfeiltasten zählen wie die Knöpfe – ohne die Pfeile und das Mausrad eines Zahlenfelds
+                if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setLeute((n) => Math.min(500, Math.max(1, n + (e.key === "ArrowUp" ? 1 : -1))));
+                }
+              }}
               className="feld h-12 w-24 text-center font-display text-xl font-bold"
             />
             <button
@@ -54,7 +61,7 @@ export function PreisRechner() {
               +
             </button>
           </div>
-          <p className="mt-2 text-sm text-muted">Chef, Büro, Monteure und Azubis – alle, die mit Macher OS arbeiten.</p>
+          <p id="leute-hinweis" className="mt-2 text-sm text-muted">Chef, Büro, Monteure und Azubis – alle, die mit Macher OS arbeiten.</p>
         </div>
         <fieldset className="flex flex-col gap-2 sm:items-end">
           <legend className="mb-2 block font-display text-lg font-bold sm:text-right">Zahlweise</legend>

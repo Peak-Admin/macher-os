@@ -3,6 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { Icon, IconTile, type IconName } from "@/components/ui/Icon";
+import { Wahl } from "@/components/ui/Wahl";
 import { AppSeitenleiste, type VorschauBereich } from "./AppFenster";
 
 /**
@@ -483,14 +484,13 @@ function Heute({ gehe, z, setZ }: { gehe: (a: Ansicht) => void; z: HeuteZustand;
                         const schluessel = `${t.id}:${m}`;
                         return (
                           <label key={m} className="flex cursor-pointer items-center gap-2 py-0.5">
-                            <input
-                              type="checkbox"
+                            <Wahl
+                              groesse="klein"
                               checked={!!z.abgehakt[schluessel]}
                               onChange={(ev) => {
                                 const wert = ev.target.checked;
                                 setZ((alt) => ({ ...alt, abgehakt: { ...alt.abgehakt, [schluessel]: wert } }));
                               }}
-                              className="size-3.5 accent-primary"
                             />
                             <span className={z.abgehakt[schluessel] ? "text-muted line-through" : "text-ink"}>{m}</span>
                           </label>
@@ -568,7 +568,7 @@ function Auftraege({ start = "Aufträge" }: { start?: (typeof auftragsSicht)[num
             {sicht === "Aufgaben" &&
               ["Material für Haus 24 bestellen", "Rückruf Familie Petersen", "Fotos Wartung hochladen"].map((t) => (
                 <label key={t} className="flex cursor-pointer items-center gap-3 px-3 py-2.5 transition-colors duration-150 hover:bg-hover">
-                  <input type="checkbox" checked={!!aufgaben[t]} onChange={(e) => setAufgaben((x) => ({ ...x, [t]: e.target.checked }))} className="size-4 accent-primary" />
+                  <Wahl groesse="mittel" checked={!!aufgaben[t]} onChange={(e) => setAufgaben((x) => ({ ...x, [t]: e.target.checked }))} />
                   <span className="min-w-0 flex-1">
                     <span className={`block truncate text-[13px] font-semibold ${aufgaben[t] ? "text-muted line-through" : "text-ink"}`}>{t}</span>
                     <span className="block text-[11px] text-muted">Max Macher · diese Woche</span>

@@ -9,15 +9,9 @@ import type { BelegX } from '../rechnungen/typen';
 import { ART_ICON, ART_LABEL, KATEGORIEN, auftragVorschlaege, ausBrutto, dateiAblegen, fristenAusKonditionen } from './logik';
 import { bereichVorschlag, betriebsbereiche } from './bereiche';
 
-export function LieferantenListe() {
-  const l = db.lieferanten.use();
-  return (
-    <datalist id="geld-lieferanten">
-      {l.map((x) => (
-        <option key={x.id} value={x.name} />
-      ))}
-    </datalist>
-  );
+/** Namen der bekannten Lieferanten als Vorschläge für das Lieferantenfeld */
+export function useLieferantenNamen() {
+  return db.lieferanten.use().map((x) => x.name);
 }
 
 /** Name → bekannter Lieferant (ID) oder Freitext */
@@ -161,6 +155,7 @@ export function BelegFormular({
   kompakt?: boolean;
 }) {
   const [laedt, setLaedt] = useState(false);
+  const lieferantenNamen = useLieferantenNamen();
   const [dateiFehler, setDateiFehler] = useState<string>();
   const set = <K extends keyof FormularWerte>(k: K, v: FormularWerte[K]) => setWerte({ ...werte, [k]: v });
   const { netto, ust } = ausBrutto(werte.brutto, Number(werte.satz));
@@ -183,7 +178,6 @@ export function BelegFormular({
 
   return (
     <Stapel>
-      <LieferantenListe />
       <Zeile>
         <DateiKnopf accept="image/*,application/pdf" kamera onDateien={([f]) => hochladen(f)} laedt={laedt} laedtText="Wird verkleinert …">
           {datei ? 'Anderes Foto' : 'Beleg fotografieren'}
@@ -201,7 +195,7 @@ export function BelegFormular({
         />
       )}
       <FormRaster>
-        <Eingabe label="Lieferant" list="geld-lieferanten" value={werte.lieferant} onChange={(e) => set('lieferant', e.target.value)} placeholder="z. B. Großhandel" />
+        <Eingabe label="Lieferant" vorschlaege={lieferantenNamen} value={werte.lieferant} onChange={(e) => set('lieferant', e.target.value)} placeholder="z. B. Großhandel" />
         <GeldEingabe label="Betrag brutto (€)" wert={werte.brutto} onWert={(c) => set('brutto', c)} fehler={fehler} />
         <Eingabe label="Belegdatum" type="date" value={werte.datum} onChange={(e) => set('datum', e.target.value)} />
         <Auswahl

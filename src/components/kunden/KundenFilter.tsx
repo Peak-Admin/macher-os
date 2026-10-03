@@ -1,7 +1,7 @@
 "use client";
 
-import { useId, useMemo, useState, type ReactNode } from "react";
-import { Icon } from "@/components/ui";
+import { useMemo, useState, type ReactNode } from "react";
+import { Auswahl, Icon } from "@/components/ui";
 import type { FunktionSlug, KundeSlug, TopGewerkSlug } from "@/content/registry";
 import type { Groesse } from "@/content/kunden";
 
@@ -117,31 +117,13 @@ function FilterSelect<T extends string>({
   options: Option<T>[];
   alle: string;
 }) {
-  const id = useId();
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-base font-semibold">
-        {label}
-      </label>
-      <div className="relative">
-        <select
-          id={id}
-          value={value}
-          onChange={(e) => onChange(e.target.value as T | "")}
-          className="feld appearance-none pr-9 font-semibold"
-        >
-          <option value="">{alle}</option>
-          {options.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
-          ))}
-        </select>
-        <Icon
-          name="chevron-down"
-          className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted"
-        />
-      </div>
-    </div>
+    <Auswahl<T | "">
+      label={label}
+      labelKlasse="mb-1.5 block text-base font-semibold"
+      wert={value}
+      onChange={onChange}
+      optionen={[{ wert: "", label: alle }, ...options.map((o) => ({ wert: o.value, label: o.label }))]}
+    />
   );
 }

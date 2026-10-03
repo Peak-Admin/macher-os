@@ -1,7 +1,8 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useId, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { Auswahl } from "@/components/ui";
 import type { WissenEintrag } from "@/content/wissen";
 import { WissenKarte } from "./WissenKarte";
 
@@ -29,8 +30,6 @@ export function VorlagenFilter({
 }) {
   const [thema, setThema] = useState(themen.find((t) => t.slug === startThema)?.slug ?? "");
   const [gewerk, setGewerk] = useState(gewerke.find((g) => g.slug === startGewerk)?.slug ?? "");
-  const idThema = useId();
-  const idGewerk = useId();
 
   const gefiltert = useMemo(
     () =>
@@ -43,38 +42,23 @@ export function VorlagenFilter({
     [eintraege, thema, gewerk],
   );
 
-  const select =
-    "feld font-medium";
-
   return (
     <div>
       <div className="grid gap-4 rounded-lg border border-line bg-white p-5 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
-        <div>
-          <label htmlFor={idThema} className="feld-label">
-            Thema
-          </label>
-          <select id={idThema} value={thema} onChange={(e) => setThema(e.target.value)} className={select}>
-            <option value="">Alle Themen</option>
-            {themen.map((t) => (
-              <option key={t.slug} value={t.slug}>
-                {t.titel}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor={idGewerk} className="feld-label">
-            Gewerk
-          </label>
-          <select id={idGewerk} value={gewerk} onChange={(e) => setGewerk(e.target.value)} className={select}>
-            <option value="">Alle Gewerke</option>
-            {gewerke.map((g) => (
-              <option key={g.slug} value={g.slug}>
-                {g.titel}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Auswahl
+          label="Thema"
+          wert={thema}
+          onChange={setThema}
+          knopfKlasse="font-medium"
+          optionen={[{ wert: "", label: "Alle Themen" }, ...themen.map((t) => ({ wert: t.slug, label: t.titel }))]}
+        />
+        <Auswahl
+          label="Gewerk"
+          wert={gewerk}
+          onChange={setGewerk}
+          knopfKlasse="font-medium"
+          optionen={[{ wert: "", label: "Alle Gewerke" }, ...gewerke.map((g) => ({ wert: g.slug, label: g.titel }))]}
+        />
         <button
           type="button"
           onClick={() => {

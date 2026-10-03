@@ -94,7 +94,7 @@ function Formular({ sub }: { sub?: Subunternehmer }) {
           <FormAbschnitt titel="Firma" icon="betrieb">
             <FormRaster>
               <Eingabe label="Firma" value={f.firma} onChange={set('firma')} fehler={fehler.firma} autoFocus={!sub} autoComplete="organization" />
-              <Eingabe label="Gewerk / Leistung" value={f.gewerk} onChange={set('gewerk')} fehler={fehler.gewerk} list="sub-gewerke" placeholder="z. B. Gerüstbau" />
+              <Eingabe label="Gewerk / Leistung" value={f.gewerk} onChange={set('gewerk')} fehler={fehler.gewerk} vorschlaege={['Gerüstbau', 'Trockenbau', 'Estrich', 'Abbruch', 'Erdarbeiten', 'Kernbohrung', ...GEWERKE.map((g) => g.label)]} placeholder="z. B. Gerüstbau" />
               {geld && <Eingabe label="Stundensatz netto (€)" optional inputMode="decimal" value={f.stundensatz} onChange={set('stundensatz')} fehler={fehler.stundensatz} />}
             </FormRaster>
           </FormAbschnitt>
@@ -112,11 +112,6 @@ function Formular({ sub }: { sub?: Subunternehmer }) {
               <Eingabe label="Ort" optional value={f.ort} onChange={set('ort')} />
             </FormRaster>
           </FormAbschnitt>
-          <datalist id="sub-gewerke">
-            {['Gerüstbau', 'Trockenbau', 'Estrich', 'Abbruch', 'Erdarbeiten', 'Kernbohrung', ...GEWERKE.map((g) => g.label)].map((g) => (
-              <option key={g} value={g} />
-            ))}
-          </datalist>
           <Textfeld label="Notiz" optional value={f.notiz} onChange={set('notiz')} hilfe="z. B. Zuverlässigkeit, Vorlaufzeit, Besonderheiten" />
           <Stapel abstand={8}>
             <Schalter label="Aktiv" beschreibung="Inaktive Firmen werden beim Einsetzen nicht mehr angeboten." checked={f.aktiv} onChange={(v) => setF({ ...f, aktiv: v })} />

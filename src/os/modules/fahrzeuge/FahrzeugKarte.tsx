@@ -78,7 +78,7 @@ export function FahrzeugKarte({ f, to, jetzt }: { f: Betriebsmittel; to?: string
         <span className="fz-modell">
           {modellText(f)} <BeispielMarke zeigen={f.beispiel} />
         </span>
-        <span className={`fz-status fz-status--${lage.ampel}`} title={`Ampel ${AMPEL_LABEL[lage.ampel]}`}>
+        <span className={`fz-status fz-status--${lage.ampel}`} data-tipp={`Ampel ${AMPEL_LABEL[lage.ampel]}`}>
           <AmpelLicht ampel={lage.ampel} />
           {lage.text}
         </span>
