@@ -36,6 +36,7 @@ import {
   IconTile,
   Karte3D,
   Lotte,
+  LotteHerkunft,
   Section,
   SectionHeading,
   UiEbeneAktiv,
@@ -434,6 +435,7 @@ export default function HomePage() {
               >
                 So arbeitet Lotte <Icon name="arrow-right" className="size-4" />
               </Link>
+              <LotteHerkunft dunkel className="mt-8 max-w-md border-t border-white/15 pt-5" />
             </div>
             <Lotte pose="mit-dir" className="mx-auto w-full max-w-md lg:max-w-lg" sizes="(min-width: 1024px) 512px, 90vw" />
           </div>

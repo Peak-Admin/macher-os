@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FinalCta, KundenCard, PageHero } from "@/components/sections";
-import { ArrowLink, Faq, FaqJsonLd, Icon, IconTile, Lotte, Section, SectionHeading, Skizze } from "@/components/ui";
+import { ArrowLink, Faq, FaqJsonLd, Icon, IconTile, Lotte, LotteHerkunft, Section, SectionHeading, Skizze } from "@/components/ui";
 import type { LottePose } from "@/content/lotte";
 import { funktionInhalte, funktionTitel, gewerkTitel } from "@/content/funktionen";
 import { funktionHref, gewerkHref } from "@/content/registry";
@@ -38,6 +38,7 @@ export function AutomatischSeite() {
           title="Deine Bürokraft, die nie Feierabend braucht."
           intro="Lotte ist die KI in Handwerk OS. Sie kennt deine Kunden, Aufträge und Termine – und sieht nur, was du auch siehst."
         />
+        <LotteHerkunft className="mt-4 max-w-2xl" />
         <ul className="mt-10 grid gap-6 sm:grid-cols-3">
           {lotteZeigt.map((l) => (
             <li key={l.pose} className="flex flex-col items-center text-center">

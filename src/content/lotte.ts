@@ -44,3 +44,11 @@ const poseJeFunktion: Record<string, LottePose> = {
 export function lottePoseFuer(funktion: string): LottePose {
   return poseJeFunktion[funktion] ?? "laptop";
 }
+
+/** Herkunft von Lotte – einmal formuliert, überall gleich (Website). */
+export const lotteHerkunft = {
+  agent: "Hey Lotte",
+  url: "https://www.heylotte.ai/",
+  entwickler: ["Max Längsfeld", "Matthias Aumann"],
+  text: "Lotte ist der KI-Agent Hey Lotte, entwickelt von Max Längsfeld und Matthias Aumann. In Handwerk OS arbeitet sie mit den Daten deines Betriebs.",
+} as const;

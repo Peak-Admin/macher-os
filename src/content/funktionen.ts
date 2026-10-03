@@ -3984,6 +3984,11 @@ export const funktionInhalte: Inhalte = {
     },
     faq: [
       {
+        frage: "Wer steckt hinter Lotte?",
+        antwort:
+          "Lotte ist der KI-Agent Hey Lotte (heylotte.ai), entwickelt von Max Längsfeld und Matthias Aumann. Handwerk OS ergänzt Lotte um alles, was ein Handwerksbetrieb braucht: Kunden, Aufträge, Termine, Rechnungen. Lotte sieht dabei nur, was du auch siehst.",
+      },
+      {
         frage: "Macht Lotte auch Fehler?",
         antwort:
           "Lotte kann sich irren – wie jeder. Deshalb gibst du alles frei, was nach außen geht oder Geld betrifft. Alles, was Lotte getan hat, kannst du im Verlauf nachlesen.",
