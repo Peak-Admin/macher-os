@@ -76,7 +76,7 @@ export function DatenSicherung() {
     <Seite titel="Einstellungen" untertitel="Deine Daten sichern, aufräumen und neu anfangen.">
       <Stapel abstand={24}>
         <EinstellungenTabs aktiv="daten" papierkorb={papierkorb} />
-        <Karte titel="Datensicherung">
+        <Karte titel="Datensicherung" icon="schild">
           <Stapel>
             <Meta>Deine Daten liegen auf diesem Gerät. Lade regelmäßig eine Sicherung herunter – damit holst du alles zurück, auch auf einem neuen Gerät.</Meta>
             {letzte ? (
@@ -98,7 +98,7 @@ export function DatenSicherung() {
           </Stapel>
         </Karte>
 
-        <Karte titel="Daten übernehmen">
+        <Karte titel="Daten übernehmen" icon="upload">
           <div className="mm-fenster-teaser">
             <span className="mm-fenster" aria-hidden>
               <FensterSkizze icon="import" />
@@ -114,7 +114,7 @@ export function DatenSicherung() {
           </div>
         </Karte>
 
-        <Karte titel="Beispieldaten">
+        <Karte titel="Beispieldaten" icon="liste">
           <Stapel>
             {beispiele ? (
               <>
@@ -131,7 +131,7 @@ export function DatenSicherung() {
           </Stapel>
         </Karte>
 
-        <Karte titel="Einrichtung neu starten">
+        <Karte titel="Einrichtung neu starten" icon="wiederholen">
           <Stapel>
             <Meta>Gewerk falsch gewählt oder nochmal von vorn? Starte die Einrichtung neu. Beim Abschließen werden alle Daten ersetzt.</Meta>
             <div>

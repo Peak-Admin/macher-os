@@ -6,7 +6,7 @@ import { useIch } from '@core/session';
 import type { Adresse, Auftrag, Auftragsart, ID, Phase } from '@core/objects';
 import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Icon, Segmente, Stapel, Textfeld, useToast } from '@ui/index';
 import { KundeAuswahl } from '@ui/objekt';
-import { AKTIVE_PHASEN, ART_LABEL, phaseLabel } from './logik';
+import { AKTIVE_PHASEN, ART_ICON, ART_LABEL, phaseLabel } from './logik';
 import { auftragPfad } from './daten';
 import { MitarbeiterWahl } from './MitarbeiterWahl';
 import './auftraege.css';
@@ -30,6 +30,7 @@ export function AuftragNeuDialog({ offen, onSchliessen, kundeId }: { offen: bool
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Neuer Auftrag"
+      icon="auftraege"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>
@@ -199,8 +200,8 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
               wert={kundeModus}
               onChange={(v) => (setKundeModus(v), setOrtWahl(''), setOrtAendern(false))}
               optionen={[
-                { wert: 'bestehend', label: 'Aus Kontakten' },
-                { wert: 'neu', label: 'Neuer Kunde' },
+                { wert: 'bestehend', label: 'Aus Kontakten', icon: 'person' },
+                { wert: 'neu', label: 'Neuer Kunde', icon: 'plus' },
               ]}
             />
           )}
@@ -257,13 +258,15 @@ function AuftragNeuFormular({ formId, kundeVorwahl }: { formId: string; kundeVor
           </summary>
           <Stapel abstand={16}>
             <Textfeld label="Beschreibung" optional value={beschreibung} onChange={(e) => setBeschreibung(e.target.value)} placeholder="Was der Kunde erzählt hat, Wunschtermin, Besonderheiten …" />
-            <Auswahl
-              label="Art des Auftrags"
-              hilfe="Lässt sich jederzeit ändern."
-              value={art}
-              onChange={(e) => setArt(e.target.value as Auftragsart)}
-              optionen={(Object.keys(ART_LABEL) as Auftragsart[]).map((x) => ({ wert: x, label: ART_LABEL[x] }))}
-            />
+            <div>
+              <Segmente
+                label="Art des Auftrags"
+                wert={art}
+                onChange={setArt}
+                optionen={(Object.keys(ART_LABEL) as Auftragsart[]).map((x) => ({ wert: x, label: ART_LABEL[x], icon: ART_ICON[x] }))}
+              />
+              <p className="mm-meta">Lässt sich jederzeit ändern.</p>
+            </div>
             {neueAdresse && (
               <>
                 <Eingabe label="Zugang" optional value={adresse.zugang} onChange={(e) => setAdresse({ ...adresse, zugang: e.target.value })} placeholder="Schlüssel, Parken, Hund …" />

@@ -8,7 +8,7 @@ import { Auswahl, Button, Eingabe, FormRaster, Meldung, Segmente, Stapel, Textfe
 import { MitarbeiterAuswahl } from '@ui/objekt';
 import { rueckrufFaellig } from '@modules/anfragen/daten';
 import { KundenVorschlaege } from '@modules/anfragen/KundenVorschlaege';
-import { DRINGLICHKEIT, SCHRITT_TEXT, anrufErfassen, erkenneAnrufer, offeneAuftraegeVon, type AnrufSchritt, type Dringlichkeit } from './daten';
+import { DRINGLICHKEIT, SCHRITT_ICON, SCHRITT_TEXT, anrufErfassen, erkenneAnrufer, offeneAuftraegeVon, type AnrufSchritt, type Dringlichkeit } from './daten';
 
 /**
  * Gesprächsnotiz in Sekunden: Nummer → Anrufer erkannt, Anliegen, Dringlichkeit, nächster Schritt.
@@ -106,7 +106,7 @@ export function AnrufFormular({ fertig, auftragId: vorAuftrag, kompakt }: { fert
           label="Nächster Schritt"
           wert={schritt}
           onChange={setSchritt}
-          optionen={(['anfrage', 'rueckruf', 'notiz'] as AnrufSchritt[]).map((s) => ({ wert: s, label: SCHRITT_TEXT[s] }))}
+          optionen={(['anfrage', 'rueckruf', 'notiz'] as AnrufSchritt[]).map((s) => ({ wert: s, label: SCHRITT_TEXT[s], icon: SCHRITT_ICON[s] }))}
         />
         {schritt !== 'anfrage' && auftraege.length > 0 && (
           <Auswahl

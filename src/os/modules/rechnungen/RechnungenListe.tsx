@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { datum, euro, heute, passt, tageZwischen } from '@core/format';
 import { useDarf } from '@core/session';
-import { Auswahl, BeispielMarke, Button, Filter, Kennzahl, Leer, Raster, Seite, Suchfeld, Tabelle, Zeile, useToast } from '@ui/index';
+import { Auswahl, BeispielMarke, Button, Filter, Kennzahl, Leer, Raster, Seite, Suchfeld, Tabelle, TypIcon, Zeile, useToast } from '@ui/index';
 import { istUeberfaellig, listenBetrag, nummerText, offenerBetrag, ENTWURF_TAGE } from './logik';
 import { alleRechnungen, type RechnungX } from './typen';
 import { RechnungStatus } from './teile';
 import { FinanzFilter, ListenSumme, auftragOptionen, useFinanzAnsicht, useZuletztBearbeitet } from '@ui/listen';
 import { summeNach } from '@ui/listen-logik';
-import { LISTEN_ART_LABEL, listenArt, rechnungenCsv, type ListenArt } from './liste';
+import { LISTEN_ART_ICON, LISTEN_ART_LABEL, LISTEN_ART_TON, listenArt, rechnungenCsv, type ListenArt } from './liste';
 import { herunterladen } from './xrechnung';
 
 type F = 'offen' | 'entwurf' | 'ueberfaellig' | 'bezahlt' | 'alle';
@@ -118,7 +118,11 @@ export function RechnungenListe() {
             titel: 'Nummer',
             wert: (r) => (
               <>
-                <strong>{nummerText(r)}</strong> <BeispielMarke zeigen={r.beispiel} />
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <TypIcon klein name={LISTEN_ART_ICON[listenArt(r)]} label={LISTEN_ART_LABEL[listenArt(r)]} ton={LISTEN_ART_TON[listenArt(r)]} />
+                  <strong>{nummerText(r)}</strong>
+                </span>{' '}
+                <BeispielMarke zeigen={r.beispiel} />
               </>
             ),
             sortierWert: (r) => r.nummer,

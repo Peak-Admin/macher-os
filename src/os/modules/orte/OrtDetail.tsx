@@ -59,7 +59,7 @@ export function OrtDetail() {
       <ZweiSpalten
         haupt={
           <Stapel abstand={24}>
-            <Karte titel="Vor Ort wichtig">
+            <Karte titel="Vor Ort wichtig" icon="info">
               <VorOrtInfos ort={o} onBearbeiten={() => setBearbeiten(true)} />
             </Karte>
             <ObjektTabs
@@ -75,7 +75,7 @@ export function OrtDetail() {
         seite={
           <>
             {kunde && (
-              <Karte titel="Kunde" kompakt>
+              <Karte titel="Kunde" icon="person" kompakt>
                 <Stapel abstand={8}>
                   <ObjektLink bezug={{ typ: 'kunden', id: kunde.id }}>{kunde.name}</ObjektLink>
                   {kunde.telefon && <a href={telLink(kunde.telefon)}>{kunde.telefon}</a>}

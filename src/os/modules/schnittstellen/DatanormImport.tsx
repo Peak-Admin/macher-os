@@ -109,7 +109,7 @@ export function DatanormImport() {
         </Karte>
 
         {gelesen && !gelesen.fehler && (
-          <Karte titel={`DATANORM ${gelesen.version}${gelesen.lieferant ? ` von ${gelesen.lieferant}` : ''}`}>
+          <Karte icon="dokument" titel={`DATANORM ${gelesen.version}${gelesen.lieferant ? ` von ${gelesen.lieferant}` : ''}`}>
             <Stapel>
               <Raster min={150}>
                 <Kennzahl label="Neue Artikel" wert={neu} />

@@ -5,11 +5,11 @@ import { aktionAusfuehren } from '@core/modul';
 import { datum, heute, personName } from '@core/format';
 import type { ID, Nachweis, Qualifikation } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
-import { Auswahl, Button, Dialog, Eingabe, Filter, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
+import { Auswahl, Button, Dialog, Eingabe, Filter, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Tabelle, Textfeld, TypIcon, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
 import { Zeitstrahl } from '@ui/objekt';
 import { Person, Personenbild } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
-import { KATEGORIE_LABEL, aktuellerNachweis, nachweisStatus, statusAnzeige } from './daten';
+import { KATEGORIE_ICON, KATEGORIE_LABEL, KATEGORIE_TON, aktuellerNachweis, nachweisStatus, statusAnzeige } from './daten';
 import { NachweisDialog } from './NachweisDialog';
 
 type Ansicht = 'matrix' | 'liste' | 'ablauf';
@@ -93,6 +93,7 @@ export function QualifikationenSeite() {
                 <ListenZeile
                   key={q.id}
                   to={`/betrieb/qualifikationen/${q.id}`}
+                  links={<TypIcon name={KATEGORIE_ICON[q.kategorie]} label={KATEGORIE_LABEL[q.kategorie]} ton={KATEGORIE_TON[q.kategorie]} />}
                   titel={q.name}
                   untertitel={`${KATEGORIE_LABEL[q.kategorie]} · ${q.gueltigMonate ? `gültig ${q.gueltigMonate} Monate` : 'unbefristet'} · ${mit === 1 ? '1 Person' : `${mit} Personen`}`}
                   rechts={warn ? <Status ton="achtung">{warn === 1 ? '1 läuft ab' : `${warn} laufen ab`}</Status> : null}
@@ -178,6 +179,7 @@ export function QualiDialog({ offen, onSchliessen, quali }: { offen: boolean; on
       offen={offen}
       onSchliessen={onSchliessen}
       titel={quali ? 'Qualifikation bearbeiten' : 'Qualifikation anlegen'}
+      icon="schild"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>
@@ -295,6 +297,7 @@ export function QualifikationDetail() {
         seite={
           <Karte
             titel="Details"
+            icon="info"
             kompakt
             aktion={buero ? <Button klein variante="tertiaer" icon="stift" onClick={() => setBearbeiten(true)}>Bearbeiten</Button> : undefined}
           >

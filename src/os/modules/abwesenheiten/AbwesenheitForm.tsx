@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { db } from '@core/db';
+import { ABWESENHEIT_EMOJI } from '@core/zeichen';
 import { heute } from '@core/format';
 import type { AbwesenheitsArt, ID } from '@core/objects';
 import { istBuero, useDarf, useIch } from '@core/session';
@@ -92,11 +93,11 @@ export function AbwesenheitForm({ fertig, vorgabeArt = 'urlaub', vorgabeMa }: { 
           }
         }}
         optionen={[
-          { wert: 'urlaub', label: 'Urlaub' },
-          { wert: 'krank', label: 'Krank' },
-          { wert: 'schule', label: 'Berufsschule' },
-          { wert: 'frei', label: 'Frei' },
-          { wert: 'sonstiges', label: 'Sonstiges' },
+          { wert: 'urlaub', emoji: ABWESENHEIT_EMOJI.urlaub, label: 'Urlaub' },
+          { wert: 'krank', emoji: ABWESENHEIT_EMOJI.krank, label: 'Krank' },
+          { wert: 'schule', emoji: ABWESENHEIT_EMOJI.schule, label: 'Berufsschule' },
+          { wert: 'frei', emoji: ABWESENHEIT_EMOJI.frei, label: 'Frei' },
+          { wert: 'sonstiges', emoji: ABWESENHEIT_EMOJI.sonstiges, label: 'Sonstiges' },
         ]}
       />
       <FormRaster spalten={2}>

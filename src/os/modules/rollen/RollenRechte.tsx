@@ -8,6 +8,7 @@ import { RECHTE, ROLLEN, STANDARD_RECHTE, setzeIch, useDarf, useIch } from '@cor
 import { useEinstellung } from '@core/einstellungen';
 import { Button, Checkbox, Karte, Liste, ListenZeile, Meldung, Meta, Segmente, Seite, Stapel, Status, Zeile, useToast } from '@ui/index';
 import { Icon } from '@ui/index';
+import { ROLLEN_ICON } from '@modules/mitarbeiter/team';
 import { FESTE_ROLLE, RECHT_TEXT, bereinigen, gleich, rechtSetzen, type Matrix } from './daten';
 
 export function RollenRechte() {
@@ -38,6 +39,7 @@ export function RollenRechte() {
         {!admin && <Meldung titel="Nur ansehen">Rechte ändern darf nur, wer das Recht „Einstellungen“ hat.</Meldung>}
         <Karte
           titel="Rechte je Rolle"
+          icon="schloss"
           aktion={
             admin && !standard ? (
               <Button variante="tertiaer" klein icon="wiederholen" onClick={() => (setMatrix(STANDARD_RECHTE), toast('Standardrechte wiederhergestellt.'))}>
@@ -74,9 +76,9 @@ export function RollenRechte() {
           </Stapel>
         </Karte>
 
-        <Karte titel="Was sieht eine Rolle?" oberzeile="Vorschau">
+        <Karte titel="Was sieht eine Rolle?" icon="person" oberzeile="Vorschau">
           <Stapel abstand={24}>
-            <Segmente label="Rolle" wert={vorschau} onChange={setVorschau} optionen={ROLLEN.map((r) => ({ wert: r.id, label: r.label }))} />
+            <Segmente label="Rolle" wert={vorschau} onChange={setVorschau} optionen={ROLLEN.map((r) => ({ wert: r.id, label: r.label, icon: ROLLEN_ICON[r.id] }))} />
             <Stapel abstand={8}>
               {RECHTE.map((r) => {
                 const hat = rechteVorschau.includes(r.id);

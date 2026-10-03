@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import { db, useDatenstand } from '@core/db';
 import { datum, euro, zahl } from '@core/format';
 import { useDarf } from '@core/session';
-import { BeispielMarke, Button, Kennzahl, Karte, Leer, Liste, ListenZeile, Meta, Raster, Seite, Stapel, Status, ZweiSpalten } from '@ui/index';
+import { BeispielMarke, Button, Kennzahl, Karte, Leer, Liste, ListenZeile, Meta, Raster, Seite, Stapel, Status, TypIcon, ZweiSpalten } from '@ui/index';
 import { ObjektLink, ObjektPanels, ObjektTabs, Zeitstrahl } from '@ui/objekt';
 import { BuchenDialog } from '../lager/BuchenDialog';
-import { ART_LABEL, bestandJeOrt, istLagerartikel, lagerbewegungen, lagerortName, summenWirkung, unterMindestbestand } from '../lager/daten';
+import { ART_ICON, ART_LABEL, ART_TON, bestandJeOrt, istLagerartikel, lagerbewegungen, lagerortName, summenWirkung, unterMindestbestand } from '../lager/daten';
 import { bestellungen, istOffen, restMenge, STATUS } from '../bestellungen/daten';
 import { aufschlagProzent, margeProzent } from './daten';
 
@@ -54,7 +54,7 @@ export function ArtikelDetail() {
               {geld && <Kennzahl label={`VK netto je ${a.einheit}`} wert={euro(a.vk)} hinweis={p != null ? `Aufschlag ${String(p).replace('.', ',')} %${m != null ? ` · Marge ${String(m).replace('.', ',')} %` : ''}` : undefined} />}
               <Kennzahl label="Bestand gesamt" wert={istLagerartikel(a) ? `${zahl(a.bestand)} ${a.einheit}` : 'Kein Lagerartikel'} hinweis={a.mindestbestand ? `Mindestbestand ${zahl(a.mindestbestand)}` : undefined} ton={unterMindestbestand(a) ? 'achtung' : undefined} />
             </Raster>
-            <Karte titel="Bestand je Lagerort" aktion={<Button klein variante="sekundaer" onClick={() => setBuchen(true)}>Buchen</Button>}>
+            <Karte titel="Bestand je Lagerort" icon="lager" aktion={<Button klein variante="sekundaer" onClick={() => setBuchen(true)}>Buchen</Button>}>
               <Liste leer={<Meta>{istLagerartikel(a) ? 'Gerade nichts auf Lager.' : 'Dieser Artikel wird nicht auf Lager geführt. Ein Zugang macht ihn zum Lagerartikel.'}</Meta>}>
                 {Object.entries(je).map(([ort, menge]) => (
                   <ListenZeile key={ort} titel={lagerortName(ort)} rechts={<strong className="mm-number">{zahl(menge)} {a.einheit}</strong>} />
@@ -96,6 +96,7 @@ export function ArtikelDetail() {
                         return (
                           <ListenZeile
                             key={b.id}
+                            links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} klein />}
                             titel={`${ART_LABEL[b.art]} · ${b.art === 'umbuchung' ? `${lagerortName(b.von)} → ${lagerortName(b.nach)}` : lagerortName(b.nach ?? b.von)}`}
                             untertitel={[datum(b.datum), b.notiz].filter(Boolean).join(' · ')}
                             rechts={<span className="mm-number">{b.art === 'umbuchung' ? zahl(b.menge) : `${w > 0 ? '+' : '−'}${zahl(Math.abs(w))}`} {a.einheit}</span>}
@@ -112,7 +113,7 @@ export function ArtikelDetail() {
         }
         seite={
           <>
-            <Karte titel="Angaben" kompakt>
+            <Karte titel="Angaben" icon="info" kompakt>
               <Stapel abstand={8}>
                 <Meta>Einheit: {a.einheit}</Meta>
                 {a.ean && <Meta>EAN: {a.ean}</Meta>}
@@ -123,7 +124,7 @@ export function ArtikelDetail() {
               </Stapel>
             </Karte>
             {offeneBest.length > 0 && (
-              <Karte titel="Offene Bestellungen" kompakt>
+              <Karte titel="Offene Bestellungen" icon="paket" kompakt>
                 <Liste>
                   {offeneBest.map((b) => {
                     const rest = b.positionen.filter((x) => x.artikelId === a.id).reduce((s, x) => s + restMenge(x), 0);

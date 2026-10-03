@@ -34,12 +34,13 @@ export function VorlagenListe() {
       <Stapel abstand={24}>
         <Karte
           titel="Briefkopf"
+          icon="dokument"
           oberzeile="Für Angebote und Rechnungen"
           to="/betrieb/vorlagen/briefkopf"
         >
           <Meta>{kopf.logo ? 'Mit Logo' : 'Noch ohne Logo'} · {kopf.fusszeilen.length ? kopf.fusszeilen.slice(0, 2).join(' · ') : 'Betriebsdaten fehlen noch'}</Meta>
         </Karte>
-        <Karte titel="Nummernkreise" oberzeile="Für alle Dokumente" to="/betrieb/vorlagen/nummern">
+        <Karte titel="Nummernkreise" icon="nummer" oberzeile="Für alle Dokumente" to="/betrieb/vorlagen/nummern">
           <Meta>{`Rechnungen ${kuerzelFuer('rechnung')}-…, Angebote ${kuerzelFuer('angebot')}-…, Auftragsbestätigungen ${kuerzelFuer('auftragsbestaetigung')}-…, Lieferscheine ${kuerzelFuer('lieferschein')}-…`}</Meta>
         </Karte>
         <Suchfeld wert={q} onChange={setQ} platzhalter="Vorlage suchen …" />
@@ -69,6 +70,7 @@ export function VorlagenListe() {
         offen={neu}
         onSchliessen={() => setNeu(false)}
         titel="Vorlage anlegen"
+        icon="dokument"
         aktionen={
           <>
             <Button variante="tertiaer" onClick={() => setNeu(false)}>

@@ -127,7 +127,7 @@ export function WartungUebersicht() {
         </>
       )}
 
-      <Karte titel="Laufende Wartungsaufträge">
+      <Karte titel="Laufende Wartungsaufträge" icon="wiederholen">
         <Liste leer={<Leer titel="Keine offenen Wartungsaufträge" text="Sobald eine Wartung fällig wird, steht der Auftrag hier." icon="werkzeug" />}>
           {offeneAuftraege
             .sort((a, b) => a.erstelltAm.localeCompare(b.erstelltAm))

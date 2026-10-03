@@ -5,7 +5,9 @@ import { db, useDatenstand } from '@core/db';
 import { aktionAusfuehren, pfadZu } from '@core/modul';
 import { heute, isoDatum, plusTage, uhrzeit, zahl } from '@core/format';
 import { useDarf } from '@core/session';
-import { Button, Filter, Karte, Leer, Liste, ListenZeile, Meldung, Seite, Stapel, Status, useToast } from '@ui/index';
+import { Button, Filter, Karte, Leer, Liste, ListenZeile, Meldung, Seite, Stapel, Status, TypIcon, Emoji, useToast } from '@ui/index';
+import { AUFTRAGSART_TON, TERMINART_EMOJI } from '@core/zeichen';
+import { ART_ICON, ART_LABEL } from '@modules/auftraege/logik';
 import { TerminFormular, type TerminVorgabe } from '../kalender/TerminFormular';
 import { freieSlots } from '../verfuegbarkeit/daten';
 import { offenEinzuplanen, vorschlagVerfuegbar, type OffenerEintrag } from './daten';
@@ -57,11 +59,15 @@ export function OffenEintraege({ eintraege, max }: { eintraege: OffenerEintrag[]
           return (
             <ListenZeile
               key={a.id}
+              links={<TypIcon name={ART_ICON[a.art] ?? 'auftraege'} label={ART_LABEL[a.art] ?? 'Auftrag'} ton={AUFTRAGSART_TON[a.art]} />}
               titel={
                 <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
                   <Link to={pfadZu({ typ: 'auftraege', id: a.id }) ?? '#'}>{a.titel}</Link>
                   {a.dringend && <Status ton="gefahr">Dringend</Status>}
-                  <Status ton="neutral">{e.grund === 'besichtigung' ? 'Besichtigung' : 'Einsatz'}</Status>
+                  <Status ton="neutral">
+                    <Emoji zeichen={TERMINART_EMOJI[e.grund]} />
+                    {e.grund === 'besichtigung' ? 'Besichtigung' : 'Einsatz'}
+                  </Status>
                 </span>
               }
               untertitel={[
@@ -101,6 +107,7 @@ export function OffenWidget() {
   return (
     <Karte
       titel={eintraege.length ? `Offen einzuplanen (${eintraege.length})` : 'Offen einzuplanen'}
+      icon="kalender"
       aktion={eintraege.length > 5 ? <Button variante="tertiaer" to="/plan/offen">Alle anzeigen</Button> : undefined}
     >
       {eintraege.length ? (

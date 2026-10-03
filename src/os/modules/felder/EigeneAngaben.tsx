@@ -77,7 +77,7 @@ export function EigeneAngaben({ sammlung, id }: { sammlung: SammlungsName; id: I
   const gefuellt = alleFelder.filter((f) => wertVon(f.id, bezug)).length;
 
   return (
-    <Karte titel="Eigene Angaben" kompakt>
+    <Karte titel="Eigene Angaben" icon="liste" kompakt>
       <Stapel abstand={12}>
         {gruppen.map((g) => (
           <Stapel key={g.o.id} abstand={4}>

@@ -113,7 +113,7 @@ export function KontoauszugImport() {
       )}
 
       {stand && (
-        <Karte titel="Das hat Macher gefunden">
+        <Karte titel="Das hat Macher gefunden" icon="liste">
           <Stapel>
             <Meta>
               {n('eindeutig')} eindeutig · {n('vorschlag')} zum Prüfen · {n('keine')} ohne passende Rechnung{n('doppelt') ? ` · ${n('doppelt')} schon importiert` : ''}

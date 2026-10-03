@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { datumKurz, heute, uhrzeit } from '@core/format';
-import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meldung, Seite, Status } from '@ui/index';
+import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meldung, Seite, Status, TypIcon } from '@ui/index';
+import { TERMINART_ICON, TERMINART_TON } from '@core/zeichen';
+import { TERMINART_LABEL } from '@modules/kalender/daten';
 import { regelText } from './regel';
 import { abwesenheitsKonflikte, mitarbeiterNamen, serieAktiv, serien, serienTermine, terminDatum } from './daten';
 
@@ -59,6 +61,7 @@ export function SerienListe() {
             <ListenZeile
               key={s.id}
               to={`/plan/wiederkehrend/${s.id}`}
+              links={<TypIcon name={TERMINART_ICON[s.terminArt]} label={TERMINART_LABEL[s.terminArt]} ton={TERMINART_TON[s.terminArt]} />}
               titel={
                 <>
                   {s.titel} <BeispielMarke zeigen={s.beispiel} />

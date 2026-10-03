@@ -127,7 +127,7 @@ function LetzteAenderungen() {
     .filter((e) => wer === 'alle' || (wer === 'macher' ? e.quelle === 'automation' || e.quelle === 'ai' : !e.quelle || e.quelle === 'user'))
     .slice(0, 30);
   return (
-    <Karte titel="Letzte Änderungen" oberzeile="Verlauf">
+    <Karte titel="Letzte Änderungen" icon="uhr" oberzeile="Verlauf">
       <Stapel abstand={16}>
         <Meta>Was in den letzten Tagen geändert wurde – von dir, deinem Team oder Macher. Einzelne Änderungen kannst du hier zurücknehmen.</Meta>
         <Filter

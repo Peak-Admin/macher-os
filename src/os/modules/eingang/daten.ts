@@ -7,6 +7,7 @@ import { aufloesen, db } from '@core/db';
 import { offeneHinweise } from '@core/macher';
 import { pfadZu } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
+import type { TypTon } from '@core/zeichen';
 import { hatNaechstenSchritt, KANAL_TEXT } from '@modules/anfragen/daten';
 import { istKundenNachricht, KANAL_LABEL, threads } from '@modules/nachrichten/daten';
 import { postfachAdresse } from '@/os/server/postfach';
@@ -28,6 +29,9 @@ export interface EingangsEintrag {
 }
 
 export const ART_LABEL: Record<EingangsArt, string> = { anfrage: 'Anfrage', nachricht: 'Nachricht', freigabe: 'Freigabe' };
+/** Art als Typ-Kachel in der Liste: Strich-Icon und Farbton */
+export const ART_ICON: Record<EingangsArt, string> = { anfrage: 'auftraege', nachricht: 'chat', freigabe: 'unterschrift' };
+export const ART_TON: Record<EingangsArt, TypTon> = { anfrage: 'blau', nachricht: 'petrol', freigabe: 'sand' };
 
 const kurz = (t: string, n = 90) => (t.length > n ? `${t.slice(0, n - 1)}…` : t);
 

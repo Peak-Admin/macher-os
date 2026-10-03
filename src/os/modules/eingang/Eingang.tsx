@@ -10,8 +10,8 @@ import { aktionAusfuehren } from '@core/modul';
 import { relativ } from '@core/format';
 import { useIch } from '@core/session';
 import type { Mitarbeiter } from '@core/objects';
-import { Button, Filter, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, Zeile, useToast } from '@ui/index';
-import { anfragePostfach, ART_LABEL, eingangsEintraege, type EingangsArt, type EingangsEintrag } from './daten';
+import { Button, Filter, Karte, Leer, Liste, ListenZeile, Meta, Seite, Stapel, Status, TypIcon, Zeile, useToast } from '@ui/index';
+import { anfragePostfach, ART_ICON, ART_LABEL, ART_TON, eingangsEintraege, type EingangsArt, type EingangsEintrag } from './daten';
 
 type F = 'alle' | EingangsArt;
 
@@ -76,6 +76,7 @@ function EintragZeile({ e }: { e: EingangsEintrag }) {
   };
   return (
     <ListenZeile
+      links={<TypIcon name={ART_ICON[e.art]} label={ART_LABEL[e.art]} ton={ART_TON[e.art]} />}
       titel={
         <Zeile abstand={8}>
           <span>{e.titel}</span>
@@ -105,7 +106,7 @@ function Postfach() {
     }
   };
   return (
-    <Karte titel="Anfrage-Postfach" kompakt aktion={verbunden ? <Status ton="erfolg">Bereit</Status> : <Status ton="neutral">Nach Verbinden aktiv</Status>}>
+    <Karte titel="Anfrage-Postfach" icon="mail" kompakt aktion={verbunden ? <Status ton="erfolg">Bereit</Status> : <Status ton="neutral">Nach Verbinden aktiv</Status>}>
       <Stapel abstand={8}>
         <input className="mm-input" readOnly value={adresse} aria-label="Weiterleitungsadresse für Anfragen" onFocus={(ev) => ev.target.select()} />
         <Meta>

@@ -107,6 +107,7 @@ export function Inventur() {
         offen={pruefen}
         onSchliessen={() => setPruefen(false)}
         titel="Differenzen buchen?"
+        icon="liste"
         aktionen={
           <>
             <Button variante="tertiaer" onClick={() => setPruefen(false)}>

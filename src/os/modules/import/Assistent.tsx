@@ -162,7 +162,7 @@ export function Assistent() {
 
         {schritt === 'zuordnung' && tabelle && (
           <>
-            <Karte titel={erkannt ? `Macher hat ${def.label} erkannt` : `Die Datei enthält ${def.label}`} oberzeile={dateiname}>
+            <Karte titel={erkannt ? `Macher hat ${def.label} erkannt` : `Die Datei enthält ${def.label}`} icon="dokument" oberzeile={dateiname}>
               <Stapel>
                 <Meta>
                   {zahl(tabelle.zeilen.length)} Zeilen, {zahl(tabelle.kopf.length)} Spalten. Prüf kurz, ob die Spalten richtig verstanden wurden.
@@ -172,6 +172,7 @@ export function Assistent() {
             </Karte>
             <Karte
               titel="So übernimmt Macher die Spalten"
+              icon="liste"
               aktion={
                 <Button klein variante="tertiaer" icon="stift" onClick={() => setKorrigieren(!korrigieren)}>
                   {korrigieren ? 'Fertig' : 'Zuordnung ändern'}
@@ -290,7 +291,7 @@ function VorschauAnsicht({ vorschau, onZurueck, onUebernehmen }: { vorschau: Vor
       </Karte>
 
       {fehler.length > 0 && (
-        <Karte titel={fehler.length === 1 ? '1 Zeile mit Fehler' : `${zahl(fehler.length)} Zeilen mit Fehler`}>
+        <Karte titel={fehler.length === 1 ? '1 Zeile mit Fehler' : `${zahl(fehler.length)} Zeilen mit Fehler`} icon="achtung">
           <Stapel abstand={8}>
             {(alleFehler ? fehler : fehler.slice(0, ZEIGEN)).map((f) => (
               <Meta key={f}>{f}</Meta>
@@ -362,7 +363,7 @@ function Ergebnis({ lauf, vorschau, onNochmal }: { lauf: ImportLauf; vorschau: V
         </Meldung>
       )}
       {fehler.length > 0 && !aktuell.rueckgaengigAm && (
-        <Karte titel="Diese Zeilen fehlen noch">
+        <Karte titel="Diese Zeilen fehlen noch" icon="achtung">
           <Stapel abstand={8}>
             {fehler.slice(0, 20).map((f) => (
               <Meta key={f}>{f}</Meta>
@@ -400,7 +401,7 @@ function LetzteImporte() {
     toast(`Import rückgängig gemacht: ${zahl(r.entfernt + r.zurueck)} Einträge zurückgenommen.`);
   };
   return (
-    <Karte titel="Zuletzt übernommen">
+    <Karte titel="Zuletzt übernommen" icon="uhr">
       <Liste>
         {liste.map((l) => (
           <ListenZeile

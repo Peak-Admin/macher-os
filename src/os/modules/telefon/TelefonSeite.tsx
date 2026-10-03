@@ -71,7 +71,7 @@ export function TelefonSeite() {
       <ZweiSpalten
         haupt={
           <Stapel abstand={24}>
-            <Karte titel="Anruf notieren">
+            <Karte titel="Anruf notieren" icon="telefon">
               <AnrufFormular />
             </Karte>
             <Abschnitt

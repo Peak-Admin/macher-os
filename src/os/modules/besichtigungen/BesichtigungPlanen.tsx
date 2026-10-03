@@ -65,7 +65,7 @@ export function BesichtigungPlanen() {
         }}
       >
         <Stapel abstand={24}>
-          <Karte titel="Wo?">
+          <Karte titel="Wo?" icon="ort">
             <Stapel abstand={12}>
               <AuftragAuswahl wert={auftragId} onChange={(id) => setAuftragId(id || undefined)} label="Auftrag oder Anfrage" />
               {fehler.auftrag && <p className="mm-fehlertext" role="alert">{fehler.auftrag}</p>}
@@ -78,7 +78,7 @@ export function BesichtigungPlanen() {
               )}
             </Stapel>
           </Karte>
-          <Karte titel="Wann und wer?">
+          <Karte titel="Wann und wer?" icon="kalender">
             <Stapel>
               <FormRaster>
                 <Eingabe label="Datum" type="date" value={tag} onChange={(e) => setTag(e.target.value)} fehler={fehler.zeit} />

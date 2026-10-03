@@ -55,6 +55,7 @@ function BriefkopfDialog({ was, luecken, onSchliessen, onWeiter }: { was: Was; l
       offen
       onSchliessen={onSchliessen}
       titel={`Kurz prüfen, bevor wir ${dasDokument} verschicken`}
+      icon="dokument"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

@@ -80,7 +80,7 @@ function PositionDialog({ offen, onSchliessen, onNeu }: { offen: boolean; onSchl
     toast(`„${p.text || 'Freie Position'}“ hinzugefügt.`);
   };
   return (
-    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Position hinzufügen" breit aktionen={<Button onClick={onSchliessen}>Fertig</Button>}>
+    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Position hinzufügen" icon="plus" breit aktionen={<Button onClick={onSchliessen}>Fertig</Button>}>
       <Tabs
         tabs={[
           { id: 'leistung', titel: 'Leistungen' },

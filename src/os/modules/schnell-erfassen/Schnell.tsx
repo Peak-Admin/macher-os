@@ -63,8 +63,8 @@ export function SchnellErfassen() {
               wert={aktionId === 'sprachnotiz' ? 'sprechen' : 'schreiben'}
               onChange={(v) => setAktionId(v === 'sprechen' ? 'sprachnotiz' : 'notiz')}
               optionen={[
-                { wert: 'schreiben', label: 'Schreiben' },
-                { wert: 'sprechen', label: 'Sprechen' },
+                { wert: 'schreiben', label: 'Schreiben', icon: 'stift' },
+                { wert: 'sprechen', label: 'Sprechen', icon: 'mikro' },
               ]}
             />
           )}

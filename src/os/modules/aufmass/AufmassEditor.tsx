@@ -162,7 +162,7 @@ export function AufmassEditor() {
             }}
           />
         ))}
-        <Karte titel="Raum hinzufügen" kompakt>
+        <Karte titel="Raum hinzufügen" icon="plus" kompakt>
           <Stapel abstand={8}>
             <div className="mm-zeile" style={{ gap: 8, flexWrap: 'wrap' }}>
               {RAUM_VORSCHLAEGE.filter((n) => !a.raeume.some((r) => r.name === n)).map((n) => (
@@ -189,7 +189,7 @@ export function AufmassEditor() {
             </form>
           </Stapel>
         </Karte>
-        <Karte titel="Ergebnis">
+        <Karte titel="Ergebnis" icon="liste">
           <Stapel abstand={12}>
             <Liste leer={<Leer titel="Noch keine Mengen" text="Trag Maße ein – die Mengen werden hier automatisch zusammengezählt." icon="liste" />}>
               {summen.map((s) => (

@@ -4,7 +4,7 @@ import { db, useDatenstand, vermerken } from '@core/db';
 import { datum, datumVon, heute, personName, plusTage, uhrzeit, zeitpunkt } from '@core/format';
 import type { ID } from '@core/objects';
 import { istBuero, useIch } from '@core/session';
-import { Auswahl, BeispielMarke, Button, Checkbox, Eingabe, Filter, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
+import { Auswahl, BeispielMarke, Button, Checkbox, Eingabe, Filter, FormAbschnitt, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Textfeld, Zeile, ZweiSpalten, useBestaetigen, useToast } from '@ui/index';
 import { Zeitstrahl } from '@ui/objekt';
 import { Person, Personen, Personenbild } from '@ui/person';
 import { istAktiv, sortiert } from '@modules/mitarbeiter/team';
@@ -64,7 +64,7 @@ export function SchulungenSeite() {
   return (
     <Seite titel="Schulungen" untertitel="Planen, durchführen, Nachweis kommt automatisch." aktion={buero ? <Button icon="plus" to="/betrieb/schulungen/neu">Schulung planen</Button> : undefined}>
       {buero && vs.length > 0 && (
-        <Karte titel="Wer muss als Nächstes?" oberzeile="Vorschlag von Macher">
+        <Karte titel="Wer muss als Nächstes?" icon="team" oberzeile="Vorschlag von Macher">
           <Liste>
             {vs.slice(0, 5).map((v) => (
               <ListenZeile
@@ -171,31 +171,35 @@ export function SchulungNeu() {
             speichern();
           }}
         >
-          <FormRaster>
-            <Auswahl
-              label="Für welche Qualifikation"
-              optional
-              value={f.qualifikationId}
-              leer="Keine – interne Einweisung"
-              onChange={(e) => setF({ ...f, qualifikationId: e.target.value, titel: f.titel || db.qualifikationen.get(e.target.value)?.name || '' })}
-              optionen={qualis.map((q) => ({ wert: q.id, label: q.name }))}
-              hilfe="Nach dem Abschluss trägt Macher den Nachweis automatisch ein."
-            />
-            <Eingabe label="Titel" value={f.titel} onChange={(e) => setF({ ...f, titel: e.target.value })} />
-            <Eingabe label="Datum" type="date" value={f.datum} onChange={(e) => setF({ ...f, datum: e.target.value })} />
-            <FormRaster spalten={2}>
-              <Eingabe label="Von" type="time" value={f.von} onChange={(e) => setF({ ...f, von: e.target.value })} />
-              <Eingabe label="Bis" type="time" value={f.bis} onChange={(e) => setF({ ...f, bis: e.target.value })} />
+          <FormAbschnitt titel="Schulung und Termin" icon="wissen">
+            <FormRaster>
+              <Auswahl
+                label="Für welche Qualifikation"
+                optional
+                value={f.qualifikationId}
+                leer="Keine – interne Einweisung"
+                onChange={(e) => setF({ ...f, qualifikationId: e.target.value, titel: f.titel || db.qualifikationen.get(e.target.value)?.name || '' })}
+                optionen={qualis.map((q) => ({ wert: q.id, label: q.name }))}
+                hilfe="Nach dem Abschluss trägt Macher den Nachweis automatisch ein."
+              />
+              <Eingabe label="Titel" value={f.titel} onChange={(e) => setF({ ...f, titel: e.target.value })} />
+              <Eingabe label="Datum" type="date" value={f.datum} onChange={(e) => setF({ ...f, datum: e.target.value })} />
+              <FormRaster spalten={2}>
+                <Eingabe label="Von" type="time" value={f.von} onChange={(e) => setF({ ...f, von: e.target.value })} />
+                <Eingabe label="Bis" type="time" value={f.bis} onChange={(e) => setF({ ...f, bis: e.target.value })} />
+              </FormRaster>
+              <Eingabe label="Anbieter / Ort" optional value={f.anbieter} onChange={(e) => setF({ ...f, anbieter: e.target.value })} placeholder="z. B. DRK Kreisverband, Hersteller, intern" />
             </FormRaster>
-            <Eingabe label="Anbieter / Ort" optional value={f.anbieter} onChange={(e) => setF({ ...f, anbieter: e.target.value })} placeholder="z. B. DRK Kreisverband, Hersteller, intern" />
-          </FormRaster>
-          <Stapel abstand={8}>
-            <span className="mm-label">Teilnehmer</span>
-            {team.map((m) => (
-              <Checkbox key={m.id} label={<Person m={m} />} checked={teilnehmer.includes(m.id)} onChange={(an) => setTeilnehmer(an ? [...teilnehmer, m.id] : teilnehmer.filter((x) => x !== m.id))} />
-            ))}
-          </Stapel>
-          <Textfeld label="Inhalte" optional rows={4} value={f.inhalte} onChange={(e) => setF({ ...f, inhalte: e.target.value })} placeholder="Was wird geschult? Ein Punkt pro Zeile." />
+          </FormAbschnitt>
+          <FormAbschnitt titel="Teilnehmer und Inhalte" icon="team">
+            <Stapel abstand={8}>
+              <span className="mm-label">Teilnehmer</span>
+              {team.map((m) => (
+                <Checkbox key={m.id} label={<Person m={m} />} checked={teilnehmer.includes(m.id)} onChange={(an) => setTeilnehmer(an ? [...teilnehmer, m.id] : teilnehmer.filter((x) => x !== m.id))} />
+              ))}
+            </Stapel>
+            <Textfeld label="Inhalte" optional rows={4} value={f.inhalte} onChange={(e) => setF({ ...f, inhalte: e.target.value })} placeholder="Was wird geschult? Ein Punkt pro Zeile." />
+          </FormAbschnitt>
           {fehler && (
             <Meldung ton="achtung" titel="Bitte prüfen">
               {fehler}
@@ -306,7 +310,7 @@ export function SchulungDetail() {
         }
         seite={
           <>
-            <Karte titel="Details" kompakt>
+            <Karte titel="Details" icon="info" kompakt>
               <Stapel abstand={4}>
                 <Meta>Qualifikation: {q ? q.name : 'keine (interne Einweisung)'}</Meta>
                 {s.anbieter && <Meta>Anbieter / Ort: {s.anbieter}</Meta>}

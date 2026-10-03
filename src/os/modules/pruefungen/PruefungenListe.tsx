@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { db, useDatenstand } from '@core/db';
 import { datum } from '@core/format';
 import type { ID } from '@core/objects';
-import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meldung, Seite, Stapel, Status, Abschnitt } from '@ui/index';
-import { ART_LABEL, woIst } from '../werkzeuge/daten';
+import { BeispielMarke, Button, Filter, Leer, Liste, ListenZeile, Meldung, Seite, Stapel, Status, TypIcon, Abschnitt } from '@ui/index';
+import { ART_ICON, ART_LABEL, ART_TON, woIst } from '../werkzeuge/daten';
 import { pruefliste, type Stufe } from './daten';
 import { PruefungDialog } from './PruefungDialog';
 
@@ -48,6 +48,7 @@ export function PruefungenListe() {
                 <ListenZeile
                   key={b.id}
                   onClick={() => setOffen(b.id)}
+                  links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} />}
                   titel={
                     <>
                       {b.name} <BeispielMarke zeigen={b.beispiel} />
@@ -62,7 +63,7 @@ export function PruefungenListe() {
               <Abschnitt titel="Ohne Prüffrist" hinweis="Prüfpflichtig? Öffne das Gerät und trag die nächste Prüfung ein.">
                 <Liste>
                   {ohneFrist.map((b) => (
-                    <ListenZeile key={b.id} to={`/betrieb/werkzeuge/${b.id}`} titel={b.name} untertitel={ART_LABEL[b.art]} rechts={<Status>Keine Frist</Status>} />
+                    <ListenZeile key={b.id} to={`/betrieb/werkzeuge/${b.id}`} links={<TypIcon name={ART_ICON[b.art]} label={ART_LABEL[b.art]} ton={ART_TON[b.art]} />} titel={b.name} untertitel={ART_LABEL[b.art]} rechts={<Status>Keine Frist</Status>} />
                   ))}
                 </Liste>
               </Abschnitt>

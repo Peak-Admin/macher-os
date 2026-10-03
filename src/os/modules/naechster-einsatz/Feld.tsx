@@ -240,10 +240,10 @@ export function FeldAktionen({ t }: { t: Termin }) {
 // ------------------------------------------------------------------ Problem melden
 
 const PROBLEM_ARTEN = [
-  { wert: 'material', label: 'Material fehlt' },
-  { wert: 'kunde', label: 'Kunde nicht da' },
-  { wert: 'mehr', label: 'Mehr Arbeit als geplant' },
-  { wert: 'anders', label: 'Etwas anderes' },
+  { wert: 'material', label: 'Material fehlt', icon: 'paket' },
+  { wert: 'kunde', label: 'Kunde nicht da', icon: 'person' },
+  { wert: 'mehr', label: 'Mehr Arbeit als geplant', icon: 'uhr' },
+  { wert: 'anders', label: 'Etwas anderes', icon: 'chat' },
 ] as const;
 type ProblemArt = (typeof PROBLEM_ARTEN)[number]['wert'];
 
@@ -275,6 +275,7 @@ export function ProblemDialog({ terminId, offen, onSchliessen }: { terminId: ID;
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Problem melden"
+      icon="achtung"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>
@@ -287,7 +288,7 @@ export function ProblemDialog({ terminId, offen, onSchliessen }: { terminId: ID;
       }
     >
       <Stapel abstand={16}>
-        <Segmente label="Was ist los?" wert={art} onChange={setArt} optionen={PROBLEM_ARTEN.map((p) => ({ wert: p.wert, label: p.label }))} />
+        <Segmente label="Was ist los?" wert={art} onChange={setArt} optionen={PROBLEM_ARTEN.map((p) => ({ wert: p.wert, label: p.label, icon: p.icon }))} />
         <Textfeld
           label={art === 'anders' ? 'Was ist passiert?' : 'Genauer'}
           optional={art !== 'anders'}

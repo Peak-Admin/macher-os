@@ -35,7 +35,7 @@ export function AbnahmeListe() {
     <Seite titel="Abnahme & Unterschrift" untertitel="Fertig melden, Mängel festhalten, Kunde unterschreibt – direkt vor Ort." aktion={<Button icon="unterschrift" to="/auftraege/abnahme/neu">Abnahme starten</Button>}>
       <Stapel abstand={24}>
         {wartend.length > 0 && (
-          <Karte titel="Warten auf Abnahme">
+          <Karte titel="Warten auf Abnahme" icon="uhr">
             <Liste>
               {wartend.map((x) => (
                 <ListenZeile
@@ -53,7 +53,7 @@ export function AbnahmeListe() {
           </Karte>
         )}
         {offen.length > 0 && (
-          <Karte titel="Läuft gerade">
+          <Karte titel="Läuft gerade" icon="stift">
             <Liste>
               {offen.map((a) => (
                 <AbnahmeZeile key={a.id} a={a} />
@@ -61,7 +61,7 @@ export function AbnahmeListe() {
             </Liste>
           </Karte>
         )}
-        <Karte titel="Abgeschlossen">
+        <Karte titel="Abgeschlossen" icon="check">
           <Liste leer={<Leer skizze titel="Noch keine Abnahmen" text="Starte eine Abnahme, wenn die Arbeit fertig ist. Der Kunde unterschreibt direkt auf deinem Handy." icon="unterschrift" />}>
             {fertig.map((a) => (
               <AbnahmeZeile key={a.id} a={a} />

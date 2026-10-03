@@ -17,11 +17,12 @@ import {
   Segmente,
   Stapel,
   Status,
+  TypIcon,
   Zeile,
   useToast,
 } from '@ui/index';
 import { Person } from '@ui/person';
-import { FOTO_TAGS, fotosGefiltert, istFoto, istNotizOderSprache } from './daten';
+import { FOTO_TAG_ICON, FOTO_TAGS, fotosGefiltert, istFoto, istNotizOderSprache } from './daten';
 import { FotoErfassen, NotizErfassen, SpracheErfassen } from './Erfassen';
 
 export function Vorschaubild({ d, groesse, onClick }: { d: Dokument; groesse?: number; onClick?: () => void }) {
@@ -109,7 +110,7 @@ function Vollbild({ d, position, zurueck, weiter, schliessen, mitAuftrag }: { d:
         <Segmente
           label="Art des Fotos"
           wert={tag}
-          optionen={[{ wert: '', label: 'Ohne' }, ...FOTO_TAGS.map((t) => ({ wert: t, label: t }))]}
+          optionen={[{ wert: '', label: 'Ohne', icon: FOTO_TAG_ICON[''] }, ...FOTO_TAGS.map((t) => ({ wert: t, label: t, icon: FOTO_TAG_ICON[t] }))]}
           onChange={(t) => db.dokumente.update(d.id, { tags: [...(d.tags ?? []).filter((x) => !(FOTO_TAGS as readonly string[]).includes(x)), ...(t ? [t] : [])] })}
         />
         {d.text && <p>{d.text}</p>}
@@ -139,6 +140,7 @@ export function NotizListe({ eintraege, mitAuftrag }: { eintraege: Dokument[]; m
           <ListenZeile
             key={d.id}
             to={pfadZu({ typ: 'dokumente', id: d.id })}
+            links={d.art === 'sprache' ? <TypIcon name="mikro" label="Sprachnotiz" ton="lila" /> : <TypIcon name="notiz" label="Notiz" ton="sand" />}
             titel={
               <>
                 {d.titel} <BeispielMarke zeigen={d.beispiel} />
@@ -190,7 +192,7 @@ export function ErfassenLeiste({ auftragId }: { auftragId?: ID }) {
           Notiz
         </Button>
       </Zeile>
-      <Dialog offen={!!offen} onSchliessen={zu} titel={titel}>
+      <Dialog offen={!!offen} onSchliessen={zu} titel={titel} icon={offen === 'foto' ? 'kamera' : offen === 'sprache' ? 'mikro' : 'notiz'}>
         {offen === 'foto' && <FotoErfassen fertig={zu} auftragId={auftragId} />}
         {offen === 'sprache' && <SpracheErfassen fertig={zu} auftragId={auftragId} />}
         {offen === 'notiz' && <NotizErfassen fertig={zu} auftragId={auftragId} />}

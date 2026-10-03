@@ -156,6 +156,7 @@ export function ZufriedenheitDialog({ b, onSchliessen }: { b: Bewertung; onSchli
     <Dialog
       offen
       titel="Wie zufrieden war der Kunde?"
+      icon="stern"
       onSchliessen={onSchliessen}
       aktionen={
         <>
@@ -245,6 +246,7 @@ export function EmpfehlerDialog({ kundeId, onSchliessen }: { kundeId: ID; onSchl
     <Dialog
       offen
       titel={`Wer hat ${db.kunden.get(kundeId)?.name ?? 'den Kunden'} empfohlen?`}
+      icon="person"
       onSchliessen={onSchliessen}
       aktionen={
         <>
@@ -290,7 +292,7 @@ function Einstellung() {
   const betrieb = db.betrieb.useOne('betrieb');
   return (
     <Stapel abstand={24}>
-      <Karte titel="Google-Bewertungslink">
+      <Karte titel="Google-Bewertungslink" icon="link">
         <form
           className="mm-stapel"
           style={{ gap: 16 }}
@@ -321,7 +323,7 @@ function Einstellung() {
           {!darf && <Meta>Den Link kann nur der Chef ändern.</Meta>}
         </form>
       </Karte>
-      <Karte titel="So sieht die Anfrage aus">
+      <Karte titel="So sieht die Anfrage aus" icon="mail">
         <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', margin: 0 }}>{anfrageText({ name: 'Familie Muster', art: 'privat', ansprechpartner: [] }, betrieb, link || '[dein Google-Link]')}</pre>
       </Karte>
       <Meldung titel="Keine erfundenen Bewertungen">Macher fragt nur echte Kunden nach echter Arbeit. Bewertungen werden nie automatisch geschrieben oder geschönt.</Meldung>

@@ -51,6 +51,7 @@ export function LesemodusMeldung() {
       offen={!!grund}
       onSchliessen={() => setGrund(null)}
       titel="Gerade nur lesen"
+      icon="schloss"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={() => setGrund(null)}>

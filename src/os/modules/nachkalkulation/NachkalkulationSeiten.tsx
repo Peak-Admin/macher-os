@@ -90,7 +90,7 @@ function Lernen({ liste }: { liste: Lerneffekt[] }) {
     );
   }
   return (
-    <Karte titel="Daraus lernen" oberzeile="Aus abgeschlossenen Aufträgen">
+    <Karte titel="Daraus lernen" icon="wissen" oberzeile="Aus abgeschlossenen Aufträgen">
       <Liste>
         {liste.map((l) => (
           <ListenZeile
@@ -147,7 +147,7 @@ export function NachkalkulationDetail() {
           <Leer skizze titel="Noch keine Daten" text="Es fehlen sowohl ein Soll (angenommenes Angebot oder geplante Stunden) als auch gebuchte Zeiten, Material oder Belege." icon="diagramm" />
         ) : (
           <>
-            <Karte titel="Was ist passiert">
+            <Karte titel="Was ist passiert" icon="diagramm">
               <Stapel abstand={8}>
                 {n.saetze.length ? n.saetze.map((t) => <p key={t} style={{ margin: 0 }}>{t}</p>) : <p style={{ margin: 0 }}>Noch keine Ist-Daten. Sobald Zeiten gebucht sind, erscheint hier der Vergleich.</p>}
               </Stapel>

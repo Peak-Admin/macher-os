@@ -1,4 +1,5 @@
 import type { OffenerHinweis } from '@core/macher';
+import type { TypTon } from '@core/zeichen';
 
 export type HinweisArt = OffenerHinweis['art'];
 
@@ -7,6 +8,21 @@ export const ART_LABEL: Record<HinweisArt, string> = {
   entscheidung: 'Entscheidung',
   freigabe: 'Freigabe',
   info: 'Info',
+};
+
+/** Hinweisart als Typ-Kachel: Strich-Icon und Farbton (gelb nur für Probleme) */
+export const HINWEISART_ICON: Record<HinweisArt, string> = {
+  problem: 'achtung',
+  entscheidung: 'auswahl',
+  freigabe: 'unterschrift',
+  info: 'info',
+};
+
+export const HINWEISART_TON: Record<HinweisArt, TypTon> = {
+  problem: 'gelb',
+  entscheidung: 'blau',
+  freigabe: 'sand',
+  info: 'neutral',
 };
 
 /** Hinweise nach Art gruppieren (Reihenfolge innerhalb bleibt nach Gewicht) */

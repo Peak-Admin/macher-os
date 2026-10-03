@@ -69,6 +69,7 @@ export function NachweisDialog({ offen, onSchliessen, mitarbeiterId, qualifikati
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Nachweis eintragen"
+      icon="dokument"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

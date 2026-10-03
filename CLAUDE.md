@@ -60,6 +60,9 @@ Die wichtigsten Festlegungen in Kürze (Tokens: `src/os/ui/tokens.css` für die 
 - **Typ-Icons in Listen:** einfache Strich-Icons auf ruhiger Kachel (`TypIcon`), z. B. je Auftragsart (`ART_ICON`) – keine
   Glas-Icons in Listen, wenige Arten. Kunden zeigen ihr Logo (Favicon ihrer Website bzw. Firmen-E-Mail-Domain) oder Initialen
   (`Kundenbild`).
+  Jede Art hat einen eigenen Farbton (`ton`: heller Grund, dunklere Linie im selben Ton, Tokens `--mm-ton-*`) – Arten,
+  kein Status. Emojis nur vor Werten, die eine Art beschreiben (🏖️ Urlaub, 🔧 Einsatz), immer mit Text, nie für Status,
+  Geld oder Aktionen; eine Quelle: `src/os/core/zeichen.ts`. Karten- und Dialogtitel dürfen ein kleines Strich-Icon tragen (`icon`).
 - **Einstellungen:** Landkarte und Plan in `docs/os/EINSTELLUNGEN.md`; Einstieg über das Profilmenü (Einstellungen, Hilfe,
   „Plan wählen“ nur in der Testphase).
 - **Tonalität:** direkte Du-Ansprache („du“, „dein“ klein), konkrete Verben („Auftrag anlegen“), kurze Sätze, keine erfundenen Zahlen.

@@ -86,7 +86,7 @@ export function BesichtigungVorOrt() {
         haupt={
           <Stapel abstand={24}>
             {(t.notiz || a?.beschreibung) && <Meldung titel="Worum geht's?">{[a?.beschreibung, t.notiz].filter(Boolean).join(' – ')}</Meldung>}
-            <Karte titel={`Fotos${fotos.length ? ` (${fotos.length})` : ''}`}>
+            <Karte titel={`Fotos${fotos.length ? ` (${fotos.length})` : ''}`} icon="kamera">
               <Stapel abstand={12}>
                 {fotos.length > 0 && (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))', gap: 8 }}>
@@ -106,7 +106,7 @@ export function BesichtigungVorOrt() {
                 {!fotos.length && <Meta>Fotos von Zählerschrank, Leitungswegen, Schäden – sie landen automatisch am Auftrag.</Meta>}
               </Stapel>
             </Karte>
-            <Karte titel="Notizen">
+            <Karte titel="Notizen" icon="notiz">
               <Stapel abstand={12}>
                 <Textfeld label="Was ist dir aufgefallen?" value={notiz} onChange={(e) => setNotiz(e.target.value)} placeholder="Zustand, Maße grob, Wünsche des Kunden, Besonderheiten" rows={4} />
                 <div>
@@ -131,7 +131,7 @@ export function BesichtigungVorOrt() {
               </Stapel>
             </Karte>
             {!erledigt && a && !['verloren', 'erledigt'].includes(a.phase) && (
-              <Karte titel="Ergebnis: wie geht's weiter?">
+              <Karte titel="Ergebnis: wie geht's weiter?" icon="weiter">
                 <Stapel abstand={12}>
                   <AuswahlKarten label="Ergebnis" wert={ergebnis ?? ('' as Ergebnis)} onChange={(v) => (setErgebnis(v as Ergebnis), setFehler(undefined))} optionen={ERGEBNISSE} />
                   {ergebnis === 'kein_auftrag' && <Auswahl label="Grund" value={grund} leer="Grund wählen" optional onChange={(e) => setGrund(e.target.value)} optionen={GRUENDE.map((g) => ({ wert: g, label: g }))} />}
@@ -148,7 +148,7 @@ export function BesichtigungVorOrt() {
         }
         seite={
           <>
-            <Karte titel="Kunde & Ort" kompakt>
+            <Karte titel="Kunde & Ort" icon="ort" kompakt>
               <Stapel abstand={8}>
                 {k ? <ObjektLink bezug={{ typ: 'kunden', id: k.id }}>{k.name}</ObjektLink> : <Meta>Kein Kunde</Meta>}
                 {k?.telefon && (
@@ -172,7 +172,7 @@ export function BesichtigungVorOrt() {
                 )}
               </Stapel>
             </Karte>
-            <Karte titel="Termin" kompakt>
+            <Karte titel="Termin" icon="kalender" kompakt>
               <Stapel abstand={8}>
                 <Meta>
                   {datumKurz(t.start)}, {uhrzeit(t.start)}–{uhrzeit(t.ende)} Uhr

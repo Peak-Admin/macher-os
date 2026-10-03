@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { db } from '@core/db';
 import { PHASEN } from '@core/objects';
 import type { Auftrag, Auftragsart, Phase } from '@core/objects';
-import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Textfeld, useToast } from '@ui/index';
+import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Meldung, Segmente, Textfeld, useToast } from '@ui/index';
 import { KundeAuswahl, MitarbeiterAuswahl, OrtAuswahl } from '@ui/objekt';
-import { ART_LABEL, phaseLabel } from './logik';
+import { ART_ICON, ART_LABEL, phaseLabel } from './logik';
 import { setzePhase } from './daten';
 import { auftragsnummerFehler, nummerBereinigt } from '@core/nummern';
 import { MitarbeiterWahl } from './MitarbeiterWahl';
@@ -49,6 +49,7 @@ export function BearbeitenDialog({ a, offen, onSchliessen }: { a: Auftrag; offen
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Auftrag bearbeiten"
+      icon="stift"
       breit
       aktionen={
         <>
@@ -60,10 +61,10 @@ export function BearbeitenDialog({ a, offen, onSchliessen }: { a: Auftrag; offen
       }
     >
       {fehler && <Meldung ton="achtung">{fehler}</Meldung>}
+      <Segmente label="Art" wert={f.art} onChange={(v) => set('art', v)} optionen={(Object.keys(ART_LABEL) as Auftragsart[]).map((x) => ({ wert: x, label: ART_LABEL[x], icon: ART_ICON[x] }))} />
       <FormRaster>
         <Eingabe label="Titel" value={f.titel} onChange={(e) => set('titel', e.target.value)} />
         <Eingabe label="Projektnummer" value={f.nummer} onChange={(e) => set('nummer', e.target.value)} autoComplete="off" spellCheck={false} />
-        <Auswahl label="Art" value={f.art} onChange={(e) => set('art', e.target.value as Auftragsart)} optionen={(Object.keys(ART_LABEL) as Auftragsart[]).map((x) => ({ wert: x, label: ART_LABEL[x] }))} />
         <KundeAuswahl wert={f.kundeId} onChange={(v) => setF((x) => ({ ...x, kundeId: v, ortId: '' }))} />
         <OrtAuswahl kundeId={f.kundeId} wert={f.ortId} onChange={(v) => set('ortId', v)} optional />
         <MitarbeiterAuswahl label="Verantwortlich" wert={f.verantwortlichId} onChange={(v) => set('verantwortlichId', v)} optional />
@@ -101,6 +102,7 @@ export function PhaseDialog({ a, offen, onSchliessen }: { a: Auftrag; offen: boo
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Phase ändern"
+      icon="pfeil"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

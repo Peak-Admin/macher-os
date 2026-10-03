@@ -55,7 +55,7 @@ export function Stundensatz() {
   return (
     <Seite titel="Stundensatz berechnen" untertitel="Was muss eine Stunde kosten, damit am Ende etwas übrig bleibt?" zurueck={zurueck}>
       <Stapel abstand={24}>
-        <Karte titel="Deine Zahlen" oberzeile="Netto, je Jahr oder Stunde">
+        <Karte titel="Deine Zahlen" icon="stift" oberzeile="Netto, je Jahr oder Stunde">
           <Stapel>
             <FormRaster>
               <Eingabe label="Bruttolohn je Stunde (€)" inputMode="decimal" placeholder="z. B. 20,00" value={f.lohn} onChange={set('lohn')} hilfe="Durchschnitt deiner Gesellen" />
@@ -76,7 +76,7 @@ export function Stundensatz() {
           </Stapel>
         </Karte>
 
-        <Karte titel="Ergebnis">
+        <Karte titel="Ergebnis" icon="diagramm">
           {!ergebnis ? (
             <Leer
               titel={ausgefuellt ? 'Die Angaben passen nicht zusammen' : 'Noch nicht alles ausgefüllt'}

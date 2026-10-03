@@ -128,6 +128,7 @@ function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchl
       offen={!!c}
       onSchliessen={onSchliessen}
       titel={c.titel}
+      icon="stecker"
       aktionen={
         c.pfad && c.aktion ? (
           <Button to={c.pfad} onClick={onSchliessen}>
@@ -209,6 +210,7 @@ function AnfrageDialog({ c, onSchliessen }: { c: Connector; onSchliessen: () => 
       offen
       onSchliessen={onSchliessen}
       titel={/verbinden$/i.test(c.titel) ? c.titel : `${c.titel} verbinden`}
+      icon="stecker"
       aktionen={
         <>
           <Button variante="sekundaer" onClick={onSchliessen}>

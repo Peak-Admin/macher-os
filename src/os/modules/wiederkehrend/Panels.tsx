@@ -10,7 +10,7 @@ import { serieAktiv, serien, serienTermine, terminAuslassen, terminDatum } from 
 export function AnlageSerienPanel({ id }: { id: ID }) {
   const liste = serien.use((s) => (s.anlageIds ?? []).includes(id) && serieAktiv(s), [id]);
   return (
-    <Karte titel="Wiederkehrende Termine" kompakt>
+    <Karte titel="Wiederkehrende Termine" icon="wiederholen" kompakt>
       <Stapel abstand={8}>
         {liste.length ? (
           liste.map((s) => {
@@ -46,7 +46,7 @@ export function TerminSeriePanel({ id }: { id: ID }) {
   const [fragen, bestaetigung] = useBestaetigen();
   if (!t || !s) return null;
   return (
-    <Karte titel="Teil einer Serie" kompakt>
+    <Karte titel="Teil einer Serie" icon="wiederholen" kompakt>
       <Stapel abstand={8}>
         <Meta>
           {s.titel}: {regelText(s.start, s.regel)}, {s.uhrzeit} Uhr

@@ -123,7 +123,7 @@ function FreieZeitFinden() {
     );
 
   return (
-    <Karte titel="Freie Zeit finden" oberzeile="Für Rückfragen am Telefon">
+    <Karte titel="Freie Zeit finden" icon="suche" oberzeile="Für Rückfragen am Telefon">
       <Stapel>
         <div className="pl-kopfleiste">
           <Auswahl
@@ -186,7 +186,7 @@ function ArbeitstageDialog({ offen, onSchliessen }: { offen: boolean; onSchliess
   const [bundesland, setBundesland] = useEinstellung<string>('plan.bundesland', '');
   const toast = useToast();
   return (
-    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Arbeitstage & Feiertage" aktionen={<Button onClick={onSchliessen}>Fertig</Button>}>
+    <Dialog offen={offen} onSchliessen={onSchliessen} titel="Arbeitstage & Feiertage" icon="kalender" aktionen={<Button onClick={onSchliessen}>Fertig</Button>}>
       <Meta>An diesen Tagen plant Macher Einsätze und bietet Kunden Termine an. Gesetzliche Feiertage sind automatisch frei. Die Uhrzeiten stellst du in den Betriebs-Einstellungen ein.</Meta>
       <Auswahl
         label="Bundesland"

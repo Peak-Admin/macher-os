@@ -5,7 +5,8 @@ import { db } from '@core/db';
 import { heute, personName, relativ } from '@core/format';
 import { pfadZu } from '@core/modul';
 import type { Aufgabe, Mitarbeiter, Termin } from '@core/objects';
-import { BeispielMarke, Checkbox, ListenZeile, Status, useToast } from '@ui/index';
+import { ABWESENHEIT_EMOJI, TERMINART_EMOJI } from '@core/zeichen';
+import { BeispielMarke, Checkbox, Emoji, ListenZeile, Status, mitEmoji, useToast } from '@ui/index';
 import { Person, Personenbild } from '@ui/person';
 import type { Ton } from '@core/modul';
 import { TERMIN_ART_LABEL, TERMIN_STATUS_LABEL, ortKurz, zeitText, type Lage } from './logik';
@@ -39,6 +40,7 @@ export function TerminZeile({ t, mitNamen }: { t: Termin; mitNamen?: boolean }) 
       }
       untertitel={
         <>
+          <Emoji zeichen={TERMINART_EMOJI[t.art]} />
           {[TERMIN_ART_LABEL[t.art], wo].filter(Boolean).join(' · ')}
           {leute.map((m, i) => (
             <Fragment key={m.id}>
@@ -103,7 +105,7 @@ export function LageZeile({ m, lage }: { m: Mitarbeiter; lage: Lage }) {
     lage.art === 'geplant' && termin
       ? `ab ${zeitText(termin).split('–')[0]} · ${lage.text}${ortKurz(termin) ? ` · ${ortKurz(termin)}` : ''}`
       : lage.art === 'abwesend'
-        ? `${lage.text} bis ${relativ(lage.abwesenheit.bis)}`
+        ? mitEmoji(ABWESENHEIT_EMOJI[lage.abwesenheit.art], `${lage.text} bis ${relativ(lage.abwesenheit.bis)}`)
         : termin
           ? `${lage.text} · ${termin.titel}`
           : lage.text;

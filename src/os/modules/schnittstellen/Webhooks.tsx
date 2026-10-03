@@ -119,6 +119,7 @@ function NeuDialog({ offen, onSchliessen, onAngelegt }: { offen: boolean; onSchl
       offen={offen}
       onSchliessen={onSchliessen}
       titel="Webhook hinzufügen"
+      icon="link"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>

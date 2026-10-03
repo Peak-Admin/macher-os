@@ -5,8 +5,9 @@ import { setzeEinstellung, useEinstellung } from '@core/einstellungen';
 import { FACHRICHTUNGEN, VORLAGE_KEY, gewerkVorlage, type SchrittVorlage, type SchrittZustaendig } from '@core/gewerke';
 import { PHASEN, type Auftragsart, type Phase } from '@core/objects';
 import { useDarf } from '@core/session';
-import { ART_LABEL } from '@modules/auftraege/logik';
-import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, Zeile, useBestaetigen, useToast } from '@ui/index';
+import { AUFTRAGSART_TON } from '@core/zeichen';
+import { ART_ICON, ART_LABEL } from '@modules/auftraege/logik';
+import { Auswahl, Button, Checkbox, Dialog, Eingabe, FormRaster, Karte, Leer, Liste, ListenZeile, Meldung, Meta, Seite, Stapel, Status, TypIcon, Zeile, useBestaetigen, useToast } from '@ui/index';
 import { ABLAUF_PFAD, ablaufMitId, ablaufPfad, ablaufSpeichern, aktiveVorlage, alleAblaeufe, angepasst, aufVorlageZuruecksetzen, schrittstaende } from './daten';
 import { BEDINGUNG_LABEL, ZUSTAENDIG_LABEL, ablaufPruefen, nachPhaseSortiert, phasenLabel } from './logik';
 
@@ -63,10 +64,12 @@ export function AblaeufeSeite() {
         <Liste leer={<Leer titel="Keine Abläufe" text="Setz die Abläufe auf die Vorlage zurück, dann geht es mit den Standardschritten weiter." icon="liste" />}>
           {liste.map((a) => {
             const n = laufend(a.id);
+            const eineArt = a.arten.length === 1 ? a.arten[0] : undefined;
             return (
               <ListenZeile
                 key={a.id}
                 to={ablaufPfad(a.id)}
+                links={eineArt ? <TypIcon name={ART_ICON[eineArt] ?? 'auftraege'} label={ART_LABEL[eineArt]} ton={AUFTRAGSART_TON[eineArt]} /> : <TypIcon name="liste" label="Mehrere Auftragsarten" />}
                 titel={a.name}
                 untertitel={`${a.arten.map((x) => ART_LABEL[x]).join(', ')} · ${a.schritte.length} Schritte`}
                 rechts={n ? <Status ton="aktiv">{n === 1 ? '1 laufender Auftrag' : `${n} laufende Aufträge`}</Status> : undefined}
@@ -272,6 +275,7 @@ function SchrittDialog({
       offen
       onSchliessen={onSchliessen}
       titel={schritt ? 'Schritt bearbeiten' : 'Schritt hinzufügen'}
+      icon="liste"
       aktionen={
         <>
           <Button variante="tertiaer" onClick={onSchliessen}>Abbrechen</Button>

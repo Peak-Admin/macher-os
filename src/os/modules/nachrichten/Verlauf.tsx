@@ -7,7 +7,7 @@ import type { ID, Nachricht } from '@core/objects';
 import { useDarf, useIch } from '@core/session';
 import { Auswahl, BeispielMarke, Button, Leer, Meldung, Meta, Segmente, Stapel, Status, Textfeld, Zeile, useToast } from '@ui/index';
 import { Person } from '@ui/person';
-import { KANAL_LABEL, SCHNELLANTWORTEN_INTERN, SCHNELLANTWORTEN_KUNDE, istUngelesen, verfuegbareKanaele, versandLink, type KundenKanal } from './daten';
+import { KANAL_ICON, KANAL_LABEL, SCHNELLANTWORTEN_INTERN, SCHNELLANTWORTEN_KUNDE, istUngelesen, verfuegbareKanaele, versandLink, type KundenKanal } from './daten';
 
 export interface VerlaufFilter {
   auftragId?: ID;
@@ -109,10 +109,10 @@ export function Verlauf({ filter, kundeId: kundeIdProp }: { filter: VerlaufFilte
   };
 
   const antworten = modus === 'intern' ? SCHNELLANTWORTEN_INTERN : modus === 'kunde' ? SCHNELLANTWORTEN_KUNDE : [];
-  const modi: { wert: Modus; label: string }[] = [
-    ...(kunde && darfSenden ? [{ wert: 'kunde' as const, label: 'An Kunden' }] : []),
-    { wert: 'intern', label: 'Intern' },
-    ...(kunde ? [{ wert: 'eingang' as const, label: 'Kunde hat geschrieben' }] : []),
+  const modi: { wert: Modus; label: string; icon: string }[] = [
+    ...(kunde && darfSenden ? [{ wert: 'kunde' as const, label: 'An Kunden', icon: 'person' }] : []),
+    { wert: 'intern', label: 'Intern', icon: 'team' },
+    ...(kunde ? [{ wert: 'eingang' as const, label: 'Kunde hat geschrieben', icon: 'chat' }] : []),
   ];
 
   return (
@@ -147,7 +147,7 @@ export function Verlauf({ filter, kundeId: kundeIdProp }: { filter: VerlaufFilte
                 label={modus === 'kunde' ? 'Senden über' : 'Kam über'}
                 wert={kanal}
                 onChange={setKanal}
-                optionen={(modus === 'kunde' ? kanaele : (['email', 'whatsapp', 'sms'] as KundenKanal[])).map((k) => ({ wert: k, label: KANAL_LABEL[k] }))}
+                optionen={(modus === 'kunde' ? kanaele : (['email', 'whatsapp', 'sms'] as KundenKanal[])).map((k) => ({ wert: k, label: KANAL_LABEL[k], icon: KANAL_ICON[k] }))}
               />
             )}
           </>

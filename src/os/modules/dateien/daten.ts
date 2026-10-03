@@ -1,5 +1,7 @@
 /** Dateien – Pläne, PDFs, Zeichnungen als `dokumente` am Auftrag. */
 import type { Dokument, DokumentArt } from '@core/objects';
+import type { TypTon } from '@core/zeichen';
+import type { IconName } from '@ui/index';
 import { groesseText } from '@modules/fotos/daten';
 
 export const DATEI_ARTEN: DokumentArt[] = ['datei', 'plan', 'pdf'];
@@ -21,6 +23,12 @@ export const ART_LABEL: Partial<Record<DokumentArt, string>> = {
   bericht: 'Bericht',
   video: 'Video',
 };
+
+/** Strich-Icon der Typ-Kachel je Art */
+export const ART_ICON: Partial<Record<DokumentArt, IconName>> = { pdf: 'dokument', plan: 'ordner', datei: 'dokument', foto: 'kamera', sprache: 'mikro', notiz: 'notiz', unterschrift: 'unterschrift', bericht: 'notiz' };
+
+/** Farbton der Typ-Kachel je Art – unterscheidet Arten, kein Status */
+export const ART_TON: Partial<Record<DokumentArt, TypTon>> = { pdf: 'blau', plan: 'petrol', datei: 'neutral', foto: 'gruen', sprache: 'lila', notiz: 'sand', unterschrift: 'rose', bericht: 'sand', video: 'lila' };
 
 /** Verständliche Meldung, wenn die Datei nicht passt – sonst undefined */
 export function dateiFehler(f: { name: string; size: number; type: string }, max = MAX_DATEI_BYTES): string | undefined {

@@ -84,6 +84,7 @@ export function OrtAnlegen({ kundeId, onSchliessen }: { kundeId?: ID; onSchliess
     <Dialog
       offen
       titel="Ort anlegen"
+      icon="ort"
       onSchliessen={onSchliessen}
       aktionen={
         <>
