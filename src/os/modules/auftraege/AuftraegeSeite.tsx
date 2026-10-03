@@ -26,6 +26,7 @@ import {
   type Zeitraum,
 } from './liste';
 import { schrittLabel } from '@modules/ablauf/daten';
+import { AUFTRAGSART_TON } from '@core/zeichen';
 import './auftraege.css';
 
 const SEITE = 30;
@@ -285,7 +286,7 @@ function AuftragZeile({ a, zuletzt }: { a: Auftrag; zuletzt: string }) {
     <li>
       <Link to={auftragPfad(a.id)} className="ak-zeile">
         <span className="ak-zeile-titel">
-          <TypIcon name={ART_ICON[a.art] ?? 'auftraege'} label={ART_LABEL[a.art] ?? 'Auftrag'} />
+          <TypIcon name={ART_ICON[a.art] ?? 'auftraege'} label={ART_LABEL[a.art] ?? 'Auftrag'} ton={AUFTRAGSART_TON[a.art]} />
           <span className="ak-zeile-titel-text">
             <strong>
               {a.titel} <BeispielMarke zeigen={a.beispiel} />

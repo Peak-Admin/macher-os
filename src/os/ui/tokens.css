@@ -105,6 +105,30 @@
   --mm-success-surface: #e8f2ec;
   --mm-success-border: #c3dacb;
 
+  /* Typ-Töne: Arten unterscheiden (Auftragsart, Terminart …), kein Status.
+     Immer heller Grund + dunklere Linie im selben Ton, Rahmen dazwischen. */
+  --mm-ton-gruen-flaeche: #e8f2ec;
+  --mm-ton-gruen-linie: #1f6040;
+  --mm-ton-gruen-rand: #c3dacb;
+  --mm-ton-blau-flaeche: #e6eef8;
+  --mm-ton-blau-linie: #1f4f86;
+  --mm-ton-blau-rand: #c5d6ec;
+  --mm-ton-petrol-flaeche: #e3f1f1;
+  --mm-ton-petrol-linie: #1d5c5f;
+  --mm-ton-petrol-rand: #bfdcdc;
+  --mm-ton-gelb-flaeche: #fdf3d3;
+  --mm-ton-gelb-linie: #7a5a00;
+  --mm-ton-gelb-rand: #ecd690;
+  --mm-ton-lila-flaeche: #efeaf7;
+  --mm-ton-lila-linie: #57407f;
+  --mm-ton-lila-rand: #d6cbe9;
+  --mm-ton-sand-flaeche: #f4efe6;
+  --mm-ton-sand-linie: #6b5532;
+  --mm-ton-sand-rand: #e3d8c4;
+  --mm-ton-rose-flaeche: #f9e9ec;
+  --mm-ton-rose-linie: #8a3346;
+  --mm-ton-rose-rand: #ecc9d0;
+
   /* Auf dunklen Markenflächen */
   --mm-on-dark: #ffffff;
   --mm-on-dark-muted: #e0e9e3;

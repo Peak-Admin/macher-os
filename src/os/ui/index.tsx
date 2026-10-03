@@ -23,6 +23,7 @@ import { glasFuer, ThemenIcon, type GlasIconName } from './glas';
 import { feldIcon } from './feld-icon';
 import { Icon, type IconName } from './icons';
 import type { Ton } from '@core/modul';
+import type { TypTon } from '@core/zeichen';
 import './ui.css';
 
 export { GlasIcon, ThemenIcon, glasFuer, type GlasIconName } from './glas';
@@ -221,7 +222,8 @@ export function Eingabe({ label, hilfe, fehler, optional, className, icon, ...re
   );
 }
 
-type AuswahlOption = { wert: string; label: string };
+/** `emoji`: kleines Zeichen vor dem Wert (z. B. 🏖️ Urlaub) – nur für Arten, nie für Status oder Geld */
+type AuswahlOption = { wert: string; label: string; emoji?: string };
 
 /** Ab so vielen Einträgen bekommt die Liste ein Suchfeld */
 const AUSWAHL_SUCHE_AB = 9;
@@ -423,7 +425,10 @@ export function Auswahl({
             onKeyDown={tasten}
           >
             {zeichen && <Icon name={zeichen} size={20} className="mm-auswahl-icon" aria-hidden />}
-            <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>{gewaehlt?.label ?? leer ?? 'Bitte wählen'}</span>
+            <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>
+              {gewaehlt?.emoji && <Emoji zeichen={gewaehlt.emoji} />}
+              {gewaehlt?.label ?? leer ?? 'Bitte wählen'}
+            </span>
             <Icon name="runter" size={20} />
           </button>
           {name && <input type="hidden" name={name} value={aktuell} />}
@@ -459,7 +464,10 @@ export function Auswahl({
                     onPointerMove={() => i !== aktiv && setAktiv(i)}
                     onClick={() => waehlen(o)}
                   >
-                    <span>{o.label}</span>
+                    <span>
+                      {o.emoji && <Emoji zeichen={o.emoji} />}
+                      {o.label}
+                    </span>
                     {o.wert === aktuell && <Icon name="check" size={18} />}
                   </li>
                 ))}
@@ -525,7 +533,7 @@ export function Checkbox({ label, checked, onChange, disabled }: { label: ReactN
 }
 
 /** Auswahl als Segmente (2–5 Optionen) */
-export function Segmente<T extends string>({ label, wert, optionen, onChange }: { label: string; wert: T; optionen: { wert: T; label: string; icon?: IconName }[]; onChange: (v: T) => void }) {
+export function Segmente<T extends string>({ label, wert, optionen, onChange }: { label: string; wert: T; optionen: { wert: T; label: string; icon?: IconName; emoji?: string }[]; onChange: (v: T) => void }) {
   return (
     <div className="mm-feld">
       <span className="mm-label">{label}</span>
@@ -540,6 +548,7 @@ export function Segmente<T extends string>({ label, wert, optionen, onChange }: 
             onClick={() => onChange(o.wert)}
           >
             {o.icon && <Icon name={o.icon} size={18} aria-hidden />}
+            {o.emoji && <Emoji zeichen={o.emoji} />}
             {o.label}
           </button>
         ))}
@@ -621,15 +630,44 @@ export function AuswahlKarten<T extends string>({
   );
 }
 
+/** Farbton einer Typ-Kachel: heller Grund, dunklere Linie im selben Ton (Tokens `--mm-ton-*`) */
+export type { TypTon };
+
 /**
  * Typ-Icon in Listen: ein einfaches Strich-Icon auf ruhiger Kachel (36 px). Zeigt die Art eines Objekts
- * (z. B. Auftragsart) – nie Glas-Icons in Listen. `label` wird für Screenreader vorgelesen.
+ * (z. B. Auftragsart) – nie Glas-Icons in Listen. `ton` färbt Kachel und Linie je Art. `label` wird für Screenreader vorgelesen.
  */
-export function TypIcon({ name, label }: { name: IconName; label: string }) {
+export function TypIcon({ name, label, ton = 'neutral', klein }: { name: IconName; label: string; ton?: TypTon; klein?: boolean }) {
   return (
-    <span className="mm-typicon" title={label}>
-      <Icon name={name} size={18} />
+    <span className={cx('mm-typicon', `mm-ton--${ton}`, klein && 'mm-typicon--klein')} title={label}>
+      <Icon name={name} size={klein ? 16 : 18} />
       <span className="sr-only">{label}: </span>
+    </span>
+  );
+}
+
+/**
+ * Emoji vor einem Wert (z. B. 🏖️ Urlaub, 🔧 Einsatz). Nur für Arten von Dingen, immer zusammen mit Text –
+ * nie für Status, Geld oder Aktionen. Für Screenreader ausgeblendet, der Text daneben trägt die Bedeutung.
+ */
+export function Emoji({ zeichen }: { zeichen?: string }) {
+  if (!zeichen) return null;
+  return (
+    <span className="mm-emoji" aria-hidden>
+      {zeichen}
+    </span>
+  );
+}
+
+/** Text mit Emoji davor – für Stellen, die nur einen String annehmen (Meldungstitel, Toasts) */
+export const mitEmoji = (zeichen: string | undefined, text: string) => (zeichen ? `${zeichen} ${text}` : text);
+
+/** Kleines Strich-Icon vor einer Überschrift (Karten, Dialoge) */
+function TitelIcon({ name }: { name?: IconName }) {
+  if (!name) return null;
+  return (
+    <span className="mm-titelicon" aria-hidden>
+      <Icon name={name} size={20} />
     </span>
   );
 }
@@ -761,14 +799,19 @@ export function Abschnitt({ titel, aktion, children, hinweis }: { titel?: ReactN
   );
 }
 
-export function Karte({ titel, oberzeile, aktion, children, className, kompakt, onClick, to }: { titel?: ReactNode; oberzeile?: string; aktion?: ReactNode; children?: ReactNode; className?: string; kompakt?: boolean; onClick?: () => void; to?: string }) {
+export function Karte({ titel, icon, oberzeile, aktion, children, className, kompakt, onClick, to }: { titel?: ReactNode; icon?: IconName; oberzeile?: string; aktion?: ReactNode; children?: ReactNode; className?: string; kompakt?: boolean; onClick?: () => void; to?: string }) {
   const inhalt = (
     <>
       {(titel || aktion || oberzeile) && (
         <div className="mm-karte-kopf">
           <div>
             {oberzeile && <p className={oberzeileKlasse(oberzeile)}>{oberzeile}</p>}
-            {titel && <h3 className="mm-karte-titel">{titel}</h3>}
+            {titel && (
+              <h3 className={cx('mm-karte-titel', icon && 'mm-mit-titelicon')}>
+                <TitelIcon name={icon} />
+                {titel}
+              </h3>
+            )}
           </div>
           {aktion}
         </div>
@@ -1175,7 +1218,7 @@ export function Filter<T extends string>({ optionen, wert, onChange, label }: { 
 
 // ------------------------------------------------------------------ Dialog & Blatt
 
-export function Dialog({ offen, onSchliessen, titel, children, aktionen, breit }: { offen: boolean; onSchliessen: () => void; titel: string; children: ReactNode; aktionen?: ReactNode; breit?: boolean }) {
+export function Dialog({ offen, onSchliessen, titel, icon, children, aktionen, breit }: { offen: boolean; onSchliessen: () => void; titel: string; icon?: IconName; children: ReactNode; aktionen?: ReactNode; breit?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
   const vorher = useRef<Element | null>(null);
   // Inhalt erst nach showModal einhängen: sonst greift autoFocus ins Leere (Dialog noch zu)
@@ -1202,7 +1245,10 @@ export function Dialog({ offen, onSchliessen, titel, children, aktionen, breit }
       {offen && bereit && (
         <>
           <div className="mm-dialog-kopf">
-            <h2>{titel}</h2>
+            <h2 className={cx(icon && 'mm-mit-titelicon')}>
+              <TitelIcon name={icon} />
+              {titel}
+            </h2>
             <IconButton icon="x" label="Schließen" onClick={onSchliessen} />
           </div>
           <div className="mm-dialog-inhalt">{children}</div>
