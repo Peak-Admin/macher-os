@@ -710,6 +710,10 @@ export function FormRaster({ children, spalten = 2 }: { children: ReactNode; spa
 
 // ------------------------------------------------------------------ Layout
 
+/** Stern im Seitenkopf: die Shell legt ihn hinein (Favoriten). Ohne Shell, etwa in Tests, bleibt er weg. */
+const SeitenSternCtx = createContext<((titel?: string) => ReactNode) | null>(null);
+export const SeitenSternProvider = SeitenSternCtx.Provider;
+
 export function Seite({
   titel,
   oberzeile,
@@ -733,6 +737,7 @@ export function Seite({
   /** Formularseite: höchstens 800 px breit */
   formular?: boolean;
 }) {
+  const stern = useContext(SeitenSternCtx);
   return (
     <div className={cx('mm-seite', breit && 'mm-seite--breit', formular && 'mm-seite--formular')}>
       {zurueck && (
@@ -758,6 +763,7 @@ export function Seite({
           <div className="mm-seitenkopf-titel">
             <h1>{titel}</h1>
             {status}
+            {stern && !formular && stern(typeof titel === 'string' ? titel : undefined)}
           </div>
           {untertitel && <p className="mm-untertitel">{untertitel}</p>}
         </div>

@@ -234,6 +234,48 @@ export function modulUmschalten(l: Leiste, modulId: string): Leiste {
   return ids.reduce(entfernen, l);
 }
 
+/** Pfad ohne Abfrage und ohne Schrägstrich am Ende – „/auftraege/a1?tab=x“ und „/auftraege/a1/“ sind dieselbe Seite */
+const seitenPfad = (pfad: string) => pfad.split('?')[0].replace(/(.)\/+$/, '$1');
+
+/** Ist diese Seite schon gemerkt? (Stern im Seitenkopf) */
+export const seiteDrin = (l: Leiste, pfad: string) => flach(l.eintraege).some((e) => e.art === 'seite' && !!e.pfad && seitenPfad(e.pfad) === seitenPfad(pfad));
+
+/** Stern im Seitenkopf: Seite ans Ende der Favoriten legen oder überall herausnehmen */
+export function seiteUmschalten(l: Leiste, pfad: string, titel: string): Leiste {
+  if (!seiteDrin(l, pfad)) {
+    const sicher = sichererPfad(pfad);
+    return sicher ? hinzufuegen(l, { id: neueId(), art: 'seite', titel: text(titel) || 'Seite', pfad: sicher }) : l;
+  }
+  const ids = flach(l.eintraege).filter((e) => e.art === 'seite' && !!e.pfad && seitenPfad(e.pfad) === seitenPfad(pfad)).map((e) => e.id);
+  return ids.reduce(entfernen, l);
+}
+
+/**
+ * Ziehen und Ablegen: Eintrag vor oder hinter einen anderen setzen – auch in dessen Ordner.
+ * Nie in sich selbst, nie tiefer als erlaubt; sonst keine Änderung.
+ */
+export function einordnen(l: Leiste, id: string, zielId: string, wo: 'vor' | 'nach'): Leiste {
+  const e = finden(l.eintraege, id);
+  if (!e || id === zielId || finden(e.kinder ?? [], zielId)) return l;
+  const eltern = elternVon(l.eintraege, zielId);
+  if (eltern === undefined) return l;
+  if (eltern !== null && tiefeVon(l.eintraege, eltern) + 1 + hoehe(e) > LEISTE_TIEFE) return l;
+  const ohne = entfernen(l, id);
+  let erledigt = false;
+  const eintraege = abbilden(ohne.eintraege, (liste, von) => {
+    if (von !== eltern || erledigt) return liste;
+    const i = liste.findIndex((x) => x.id === zielId);
+    if (i < 0) return liste;
+    erledigt = true;
+    const neu = [...liste];
+    neu.splice(wo === 'vor' ? i : i + 1, 0, e);
+    return neu;
+  });
+  if (!erledigt) return l;
+  const vorher = flach(l.eintraege).map((x) => x.id).join();
+  return flach(eintraege).map((x) => x.id).join() === vorher && elternVon(l.eintraege, id) === eltern ? l : { ...l, eintraege };
+}
+
 export const voll = (l: Leiste) => zaehlen(l.eintraege) >= LEISTE_MAX;
 
 /** Breite der Seitenleiste (ziehbar, je Mitarbeiter gespeichert) */
