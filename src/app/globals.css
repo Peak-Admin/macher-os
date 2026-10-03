@@ -551,7 +551,7 @@ input[type="search"]::-ms-clear {
 
   /*
    * Hintergrund des Start-Heros wie im Markenauftakt (`src/components/auftakt/auftakt.css`): nebliger Wald, entsättigt,
-   * unter einem dunklen Schleier, oben rechts ein sanftes grünes Licht. Der Schleier ist in der Mitte am dichtesten,
+   * unter einem dunklen Schleier mit grüner Lasur (Aktionsgrün, oben leicht, unten kräftiger), oben rechts ein sanftes grünes Licht. Der Schleier ist in der Mitte am dichtesten,
    * damit Überschrift und Formular ruhig lesbar bleiben. Beide Ebenen liegen unter dem Inhalt (z-index -1 in der isolierten Box).
    */
   .hero-oberflaeche {
@@ -575,7 +575,8 @@ input[type="search"]::-ms-clear {
   .hero-oberflaeche::after {
     z-index: -1;
     background:
-      radial-gradient(ellipse at 75% 20%, rgb(105 175 68 / 0.14), transparent 48%),
+      radial-gradient(ellipse at 75% 20%, rgb(105 175 68 / 0.18), transparent 48%),
+      linear-gradient(180deg, rgb(13 107 69 / 0.1), rgb(13 107 69 / 0.42)),
       radial-gradient(60% 70% at 50% 45%, rgb(14 19 12 / 0.7), transparent 100%),
       linear-gradient(0deg, rgb(14 19 12) 0%, transparent 44%, rgb(14 19 12 / 0.55) 100%),
       linear-gradient(100deg, rgb(14 19 12 / 0.75) 0%, rgb(14 19 12 / 0.55) 50%, rgb(14 19 12 / 0.3) 100%);
