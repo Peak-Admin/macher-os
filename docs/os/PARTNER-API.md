@@ -10,7 +10,7 @@ Rechte, Geschäftslogik, Verlauf. HeyLotte bekommt **nie** den Supabase-Service-
 
 | Baustein (Architektur-Papier) | Stand | Wo |
 |---|---|---|
-| Action API, versioniert (`/v1/actions/<aktion>`) | ✅ 3 Aktionen | `src/app/api/v1/actions/`, `src/os/server/partner/aktionen.ts` |
+| Action API, versioniert (`/v1/actions/<aktion>`) | ✅ 4 Aktionen | `src/app/api/v1/actions/`, `src/os/server/partner/aktionen.ts` |
 | Service-to-Service-Auth (Schlüssel je Betrieb) | ✅ nur Hash gespeichert, widerrufbar | `partner_zugaenge` |
 | Identitäten verbinden (Workspace ↔ Betrieb, Nutzer ↔ Mitarbeiter) | ✅ | `partner_zugaenge.partner_workspace_id`, `partner_nutzer` |
 | Rechte bleiben in Handwerk OS | ✅ dieselbe Rollen-Matrix wie die App (`rollen.rechte`) | `src/os/core/rechte.ts` |
@@ -18,23 +18,30 @@ Rechte, Geschäftslogik, Verlauf. HeyLotte bekommt **nie** den Supabase-Service-
 | Audit | ✅ jeder Aufruf in `api_aufrufe`, Verlauf am Objekt („– über HeyLotte für …“) | |
 | Bestätigung sensibler Aktionen | ✅ Regel steht (`kritisch` → `confirmed: true`), noch keine kritische Aktion freigegeben | |
 | Events/Webhooks zurück an HeyLotte | ✅ für Änderungen über die API, signiert, mit Wiederholung | `src/os/server/partner/webhook.ts` |
-| Events aus der App (z. B. `invoice.overdue`) an HeyLotte | ⏳ nächster Schritt | |
-| `create-quote` und weitere Aktionen | ⏳ braucht Nummernkreis und Preise auf dem Server | |
-| OAuth 2.0, kurzlebige Tokens, Rate Limits | ⏳ später; bis dahin Schlüssel je Betrieb + Vercel Firewall | |
-| Oberfläche zum Verbinden (Einstellungen → Verbindungen) | ⏳ bis dahin `scripts/partner-zugang.mjs` | |
+| Events aus der App (z. B. `invoice.overdue`) an HeyLotte | ✅ Trigger auf dem Ereignisprotokoll, Zustellung im Minutentakt | Migration `20261003180000_partner_ausbau.sql` |
+| `create-quote` (Angebotsentwurf) | ✅ Versenden bleibt beim Menschen | `aktionen.ts` |
+| OAuth 2.0 (Client Credentials), kurzlebige Tokens | ✅ `hot_…`, 15 Minuten | `src/os/server/partner/oauth.ts`, `token.ts` |
+| Rate Limit | ✅ 120 Aufrufe je Minute und Zugang → `429` | `dienst.ts` |
+| Oberfläche zum Verbinden | ✅ Einstellungen → Schnittstellen → HeyLotte (nur Chef) | `src/os/modules/schnittstellen/HeyLotte.tsx`, `/api/cloud/partner` |
+| `send-quote`, Termine, Rechnungen | ⏳ nächste Aktionen | |
 
 ## Einrichten
 
-1. Migration `supabase/migrations/20261003120000_partner_schnittstelle.sql` im Supabase SQL Editor ausführen.
-2. Zugang erzeugen (gibt SQL und einmalig Schlüssel + Webhook-Geheimnis aus):
+1. Migrationen `20261003120000_partner_schnittstelle.sql` und `20261003180000_partner_ausbau.sql` ausführen.
+2. Für Ereignisse im Minutentakt die Adresse der App in den Vault legen (einmal je Supabase-Projekt):
+   `select vault.create_secret('https://macher-os.de', 'partner_app_url');` – das Token `partner_zustell_token`
+   legt die Migration selbst an. Ohne Adresse stellen der nächste Aufruf des Partners und der tägliche Cron zu.
+3. **In der App:** Einstellungen → Schnittstellen → HeyLotte → „Verbinden“ (nur Chef). Schlüssel und Webhook-Geheimnis
+   erscheinen einmal zum Kopieren; dort auch Lotte-Nutzer zuordnen, Schlüssel erneuern, Test-Ereignis senden, trennen.
+
+Ohne Oberfläche (z. B. für einen Betrieb ohne Chef-Konto) geht es weiter per Skript:
 
    ```sh
    node scripts/partner-zugang.mjs --betrieb <betrieb-uuid> --workspace lotte_workspace_673 \
      --webhook https://<heylotte>/hooks/handwerk --nutzer lotte_user_928=<mitarbeiter-id>
    ```
 
-3. SQL im Supabase SQL Editor ausführen, Schlüssel und Geheimnis sicher an HeyLotte geben.
-4. Schlüssel wechseln: neuen Zugang anlegen, beim alten `widerrufen_am = now()` setzen.
+   SQL im Supabase SQL Editor ausführen, Schlüssel und Geheimnis sicher an HeyLotte geben.
 
 Weitere Nutzer später: `insert into partner_nutzer (zugang_id, partner_nutzer_id, mitarbeiter_id) values (…)`.
 Ein Mitarbeiter braucht dafür **kein** eigenes Konto in der App – auch der Monteur, der nur per WhatsApp mit Lotte spricht,
@@ -60,21 +67,43 @@ Content-Type: application/json
 - `Idempotency-Key` (Kopfzeile oder `idempotency_key`): gleicher Schlüssel → gleiche Antwort, Kopfzeile `idempotent-replayed: true`, nichts doppelt.
 - `confirmed: true`: nur für Aktionen mit Risiko `kritisch`, nachdem der Mensch bei HeyLotte bestätigt hat.
 - Katalog mit allen Eingabefeldern: `GET /v1/actions`.
+- Höchstens 120 Aufrufe je Minute und Zugang, darüber `429 rate_limited` mit `Retry-After: 60`.
+
+### Kurzlebige Token (OAuth 2.0 Client Credentials)
+
+Statt den dauerhaften Schlüssel bei jedem Aufruf zu schicken, kann HeyLotte ihn gegen ein Token tauschen:
+
+```http
+POST https://macher-os.de/v1/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&client_id=<zugang-id>&client_secret=hos_live_…
+```
+
+```json
+{ "access_token": "hot_…", "token_type": "Bearer", "expires_in": 900 }
+```
+
+Auch als JSON oder mit `Authorization: Basic base64(client_id:client_secret)`. Das Token gilt 15 Minuten wie ein
+Schlüssel (`Authorization: Bearer hot_…`); ein getrennter Zugang sperrt auch seine Token sofort. Fehler im OAuth-Format
+(`invalid_client`, `invalid_request`, `unsupported_grant_type`). Signiert mit `PARTNER_TOKEN_GEHEIMNIS`
+(Vercel, optional) – sonst mit einem aus dem Service-Key abgeleiteten Geheimnis.
 
 | Aktion | ID (wie im Macher-Gateway) | Risiko | Recht | Ergebnis |
 |---|---|---|---|---|
 | `find-customer` | `customer.find` | lesen | lesen | `customers[]` mit `customer_id` – Suche ohne Rücksicht auf Umlaute, auch per Telefon oder Kundennummer |
 | `create-customer` | `customer.create` | schreiben | schreiben | `201 created`; mögliche Dublette → `409 possible_duplicate` mit `candidates`, nach Rückfrage `allow_duplicate: true` |
 | `create-task` | `task.create` | schreiben | schreiben | Aufgabe (Standard: für den Nutzer selbst), optional `customer_id`, `job_id`, `assignee_id`, `due_date`, `priority` |
+| `create-quote` | `offer.create_draft` | schreiben | schreiben + Geld | `201 draft_created` mit `quote_id`, `number` (AN-JJJJ-nnnn), `net`, `tax`, `total`, `valid_until`. `customer_id` und `amount` (Euro, netto; `amount_is_gross: true` für brutto) **oder** `items[]` (`text`, `quantity`, `unit`, `unit_price`). Ohne `job_id` entsteht ein Auftrag im Schritt „Angebot“. Steuer aus den Betriebsdaten (Kleinunternehmer 0 %). Versendet wird nur in der App. |
 
 Fehler: `{ "status": "error", "error": { "code", "message", "field"? }, "request_id" }` – `message` ist deutsch und kann
 direkt vorgelesen werden. Codes: `unauthorized` (401), `user_required`/`invalid_body` (400), `wrong_organization`,
 `unknown_user`, `inactive_user`, `forbidden` (403), `unknown_action` (404), `confirmation_required`, `in_progress` (409),
-`invalid_input`, `not_found`, `idempotency_conflict` (422). Ohne Supabase-Schlüssel: `501 { fehler: "nicht verbunden" }`.
+`invalid_input`, `not_found`, `idempotency_conflict` (422), `rate_limited` (429). Ohne Supabase-Schlüssel: `501 { fehler: "nicht verbunden" }`.
 
 ## Ereignisse an HeyLotte
 
-Nach jeder Änderung über die API (jetzt: `customer.created`, `task.created`) geht ein POST an `webhook_url`,
+Nach jeder Änderung über die API (`customer.created`, `task.created`, `quote.created`, `job.created`) geht ein POST an `webhook_url`,
 gefiltert nach `partner_zugaenge.ereignisse` (`*`, `customer.*`, `task.created` …):
 
 ```json
@@ -91,8 +120,30 @@ Kopfzeilen: `x-handwerk-ereignis`, `x-handwerk-id` (zum Entdoppeln), `x-handwerk
 HeyLotte prüft die Signatur und verwirft Lieferungen, die älter als 5 Minuten sind.
 
 Zustellung direkt nach der Antwort (`after()`), Zeitlimit 5 s, keine Weiterleitungen. Scheitert sie, steht sie in
-`partner_auslieferungen` und wird beim nächsten Aufruf des Partners und im täglichen Cron erneut versucht
-(Wartezeiten 1, 5, 30, 120, 720 Minuten, danach `aufgegeben`).
+`partner_auslieferungen` und wird erneut versucht – jede Minute über pg_cron (`/api/partner/zustellen`), beim nächsten
+Aufruf des Partners und im täglichen Cron (Wartezeiten 1, 5, 30, 120, 720 Minuten, danach `aufgegeben`).
+
+### Ereignisse aus der App
+
+Was in der App passiert (Kunde angelegt, Angebot angenommen, Rechnung überfällig …), schreibt die App ins
+Ereignisprotokoll (`ereignisprotokoll`, API-Namen aus `EREIGNISSE` in `src/os/core/ereignisse.ts`). Kommt ein Eintrag
+beim Abgleich in Supabase an, merkt ein Trigger ihn für jeden passenden Zugang vor. Nicht gemeldet werden:
+Beispieldaten, Einträge älter als 1 Stunde (nach langer Offline-Zeit) und Einträge von vor dem Verbinden.
+`invoice.overdue` geht einmal je Rechnung und Fälligkeit, auch wenn mehrere Geräte es melden.
+
+```json
+{
+  "id": "evt_…", "event": "invoice.overdue", "created_at": "…", "organization_id": "<betrieb>", "workspace_id": "…",
+  "source": "handwerk-os", "origin": "automation", "user_id": "lotte_user_928", "employee_id": "…",
+  "object": { "type": "invoice", "id": "…" },
+  "data": { "number": "RE-2026-0012", "title": "…", "status": "versendet", "customer_id": "…", "due_date": "2026-09-30", "fields": { … } },
+  "details": { "faelligAm": "2026-09-30" }
+}
+```
+
+`source: "handwerk-os"` heißt: in der App ausgelöst (nicht über HeyLotte). `user_id` ist der Lotte-Nutzer des handelnden
+Mitarbeiters, falls zugeordnet. `data.fields` ist das Objekt wie in Handwerk OS gespeichert (deutsche Feldnamen, ohne
+Werte über 2000 Zeichen).
 
 ## Neue Aktion hinzufügen
 

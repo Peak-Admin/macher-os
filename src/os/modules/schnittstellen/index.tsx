@@ -6,6 +6,7 @@ import { Export } from './Export';
 import { DatanormImport } from './DatanormImport';
 import { GaebImport } from './GaebImport';
 import { Webhooks } from './Webhooks';
+import { HeyLotte } from './HeyLotte';
 import { connectoren, ZUSTAND_LABEL } from './connectoren';
 import { alteAbosUebernehmen } from './webhooks';
 
@@ -26,6 +27,7 @@ export default defineModul({
     { pfad: 'datanorm', element: DatanormImport },
     { pfad: 'gaeb', element: GaebImport },
     { pfad: 'webhooks', element: Webhooks },
+    { pfad: 'heylotte', element: HeyLotte },
   ],
   kurzinfo: () => {
     const sichtbar = connectoren().filter((c) => !c.recht || darf(c.recht));
@@ -52,7 +54,7 @@ export default defineModul({
       .slice(0, 4)
       .map((c) => ({ typ: 'Schnittstelle', titel: c.titel, untertitel: c.text, pfad: c.verfuegbar && c.pfad ? c.pfad : PFAD, relevanz: 25 }));
     if (treffer.length) return treffer;
-    return /kalender|ics|outlook|google|export|json|datev|datanorm|ids|ugl|oci|gaeb|leistungsverzeichnis|ausschreibung|bank|camt|fints|webhook|api|schnittstelle/i.test(q)
+    return /kalender|ics|outlook|google|export|json|datev|datanorm|ids|ugl|oci|gaeb|leistungsverzeichnis|ausschreibung|bank|camt|fints|webhook|api|heylotte|schnittstelle/i.test(q)
       ? [{ typ: 'Einstellung', titel: 'Schnittstellen', untertitel: 'Bank, DATEV, Großhandel, Ausschreibungen, Kalender, Webhooks', pfad: PFAD, relevanz: 25 }]
       : [];
   },

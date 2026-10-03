@@ -26,7 +26,7 @@ Server-Funktionen: `src/app/api/cloud/*`, `src/app/api/cron/*` und `src/app/api/
    `supabase/migrations/20261002000000_fundament.sql`, `supabase/migrations/20261002100000_aktivierung.sql`
    (eindeutiges Anfrage-Postfach je Betrieb), `supabase/migrations/20261002120000_rechte_und_dateien.sql` und
    `supabase/migrations/20261002180000_haertung.sql` (Härtung nach dem Supabase-Sicherheitscheck) und
-   `supabase/migrations/20261003120000_partner_schnittstelle.sql` (Action API für HeyLotte, `docs/os/PARTNER-API.md`) einfügen → jeweils **Run**. (Alternativ mit der Supabase-CLI: `supabase link --project-ref <ref> && supabase db push`.)
+   `supabase/migrations/20261003120000_partner_schnittstelle.sql`, `supabase/migrations/20261003180000_partner_ausbau.sql` (Action API für HeyLotte, `docs/os/PARTNER-API.md`) einfügen → jeweils **Run**. (Alternativ mit der Supabase-CLI: `supabase link --project-ref <ref> && supabase db push`.)
    Das legt Tabellen, Zugriffsregeln (RLS: nur Mitglieder des eigenen Betriebs), Realtime für `objekte`
    den privaten Speicher `dateien` und die Rechte je Rolle an (Rechnungen, Zahlungen, Belege, Mahnungen und
    `mitarbeiter.kostensatz` lesen nur Chef und Büro – erweiterbar über die Tabellen `sammlung_rechte` und `feld_rechte`).
@@ -211,4 +211,7 @@ Empfehlung: `webhooks`, `webhook_auslieferungen` und `ereignisprotokoll` in `sam
 
 Action API unter `/v1/actions/<aktion>` mit eigenem Schlüssel je Betrieb – HeyLotte bekommt nie den Service-Key.
 Einrichten, Aufruf, Ereignisse und Signatur: [`docs/os/PARTNER-API.md`](PARTNER-API.md). Braucht nur
-`SUPABASE_SERVICE_ROLE_KEY` und die Migration `20261003120000_partner_schnittstelle.sql`; keine weitere Variable.
+`SUPABASE_SERVICE_ROLE_KEY` und die Migrationen `20261003120000_partner_schnittstelle.sql` und
+`20261003180000_partner_ausbau.sql`. Optional: `PARTNER_TOKEN_GEHEIMNIS` (signiert die kurzlebigen Token) und im
+Supabase-Vault `partner_app_url` (Adresse der App, damit pg_cron Ereignisse jede Minute zustellt).
+Verbinden in der App: Einstellungen → Schnittstellen → HeyLotte.

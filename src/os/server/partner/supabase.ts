@@ -17,6 +17,15 @@ export function supabaseSpeicher(k: SupabaseKonfig): PartnerSpeicher {
       const z = await rest<Zugang[]>(k, `partner_zugaenge?schluessel_hash=eq.${q(hash)}&select=${ZUGANG_FELDER}&limit=1`);
       return z[0];
     },
+    async zugangNachId(id) {
+      if (!/^[0-9a-f-]{36}$/i.test(id)) return undefined;
+      const z = await rest<Zugang[]>(k, `partner_zugaenge?id=eq.${q(id)}&select=${ZUGANG_FELDER}&limit=1`);
+      return z[0];
+    },
+    async aufrufeSeit(zugangId, seit) {
+      // Funktion aus Migration 20261003180000 (zählt über den Index api_aufrufe_zugang)
+      return (await rest<number>(k, 'rpc/partner_aufrufe_seit', { method: 'POST', body: { p_zugang: zugangId, p_seit: seit } })) ?? 0;
+    },
     async zugangGenutzt(id, zeit) {
       await rest(k, `partner_zugaenge?id=eq.${q(id)}`, { method: 'PATCH', body: { zuletzt_genutzt_am: zeit }, prefer: 'return=minimal' });
     },

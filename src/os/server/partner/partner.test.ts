@@ -5,6 +5,9 @@ import { POST as aktionRoute } from '@/app/api/v1/actions/[aktion]/route';
 import { GET as katalogRoute } from '@/app/api/v1/actions/route';
 import { aktionsKatalog, type ObjektZeile } from './aktionen';
 import { bearbeite, sha256Hex, type Anfrage, type Aufruf, type PartnerSpeicher, type Zugang } from './dienst';
+import { tokenAnfrage, tokenFelder } from './oauth';
+import { tokenAusstellen, tokenPruefen } from './token';
+import { ereignisseAus, webhookAus, workspaceAus } from './verwaltung';
 import { nachVersuch, zustellen, zustellungBauen, type Auslieferung } from './webhook';
 
 const SCHLUESSEL = 'hos_test_0123456789abcdef';
@@ -19,7 +22,7 @@ const ma = (id: string, rolle: string, extra: Record<string, unknown> = {}) => (
 const kunde = (id: string, name: string, extra: Record<string, unknown> = {}) => ({ sammlung: 'kunden', id, daten: { id, name, art: 'privat', ansprechpartner: [], ...extra } });
 
 /** Speicher im Arbeitsspeicher – verhält sich wie die Supabase-Tabellen */
-async function speicher(opts: { zugang?: Partial<Zugang>; objekte?: ObjektZeile[] } = {}) {
+async function speicher(opts: { zugang?: Partial<Zugang>; objekte?: ObjektZeile[]; grenze?: number } = {}) {
   const zugang: Zugang = {
     id: 'zug1',
     betrieb_id: BETRIEB,
@@ -53,6 +56,8 @@ async function speicher(opts: { zugang?: Partial<Zugang>; objekte?: ObjektZeile[
   ]);
   const s: PartnerSpeicher = {
     zugangNachHash: async (h) => (h === hash ? zugang : undefined),
+    zugangNachId: async (id) => (id === zugang.id ? zugang : undefined),
+    aufrufeSeit: async (_z, seit) => [...st.aufrufe.values()].filter((a) => a.zeit >= seit).length,
     zugangGenutzt: async (_id, zeit) => void st.genutzt.push(zeit),
     nutzerZuordnung: async (_z, n) => zuordnung.get(n),
     objekte: async (_b, sammlungen) => st.objekte.filter((o) => sammlungen.includes(o.sammlung)),
@@ -69,8 +74,13 @@ async function speicher(opts: { zugang?: Partial<Zugang>; objekte?: ObjektZeile[
     auslieferungenAnlegen: async (a) => void st.auslieferungen.push(...a),
   };
   let n = 0;
-  const rufe = (aktion: string, body: unknown, extra: Partial<Anfrage> = {}) =>
-    bearbeite({ aktion, autorisierung: `Bearer ${SCHLUESSEL}`, idempotenz: null, body, ...extra }, s, { jetzt: JETZT, neueId: (p) => `${p ? `${p}_` : ''}id${++n}` });
+  const rufe = (aktion: string, body: unknown, extra: Partial<Anfrage> = {}, jetzt = JETZT) =>
+    bearbeite({ aktion, autorisierung: `Bearer ${SCHLUESSEL}`, idempotenz: null, body, ...extra }, s, {
+      jetzt,
+      neueId: (p) => `${p ? `${p}_` : ''}id${++n}`,
+      tokenGeheimnis: 'token-geheim',
+      grenzeProMinute: opts.grenze,
+    });
   return { s, st, zugang, rufe };
 }
 
@@ -255,6 +265,107 @@ describe('Ereignisse an HeyLotte', () => {
   });
 });
 
+describe('create-quote', () => {
+  const betrieb = (extra: Record<string, unknown> = {}) => ({ sammlung: 'betrieb', id: 'betrieb', daten: { id: 'betrieb', name: 'Weber Elektro', ustSatz: 19, ...extra } });
+
+  test('ohne Auftrag: legt Auftrag und Angebotsentwurf an, Verlauf an beiden, meldet quote.created und job.created', async () => {
+    const { st, rufe } = await speicher({
+      objekte: [betrieb(), { sammlung: 'angebote', id: 'a_alt', daten: { id: 'a_alt', nummer: 'AN-2026-0007', geloeschtAm: '2026-09-01T00:00:00.000Z' } }],
+    });
+    const r = await rufe('create-quote', { user_id: 'lotte_user_chef', customer_id: 'k1', title: 'Bad sanieren', amount: 1000 });
+    expect(r.status).toBe(201);
+    // Nummer zählt das Angebot im Papierkorb mit
+    expect(r.body).toMatchObject({ status: 'draft_created', number: 'AN-2026-0008', customer_id: 'k1', net: 1000, tax: 190, tax_rate: 19, total: 1190, currency: 'EUR', valid_until: '2026-11-02', requires_confirmation: true });
+    const angebot = st.objekte.find((o) => o.sammlung === 'angebote' && o.id === r.body.quote_id)!;
+    expect(angebot.daten).toMatchObject({ status: 'entwurf', kundeId: 'k1', auftragId: r.body.job_id, titel: 'Bad sanieren', positionen: [{ art: 'pauschal', menge: 1, einheit: 'Psch', einzelpreis: 100000 }] });
+    const auftrag = st.objekte.find((o) => o.sammlung === 'auftraege')!;
+    expect(auftrag.daten).toMatchObject({ phase: 'angebot', art: 'projekt', kundeId: 'k1', verantwortlichId: 'm_chef', nummer: r.body.job_number });
+    const verlauf = st.objekte.filter((o) => o.sammlung === 'ereignisse').map((o) => o.daten);
+    expect(verlauf).toMatchObject([
+      { typ: 'angebote.created', bezug: { typ: 'angebote', id: r.body.quote_id }, quelle: 'ai', vonMitarbeiterId: 'm_chef' },
+      { typ: 'auftraege.created', bezug: { typ: 'auftraege', id: r.body.job_id }, text: 'Auftrag angelegt – über HeyLotte für Petra Weber', quelle: 'ai' },
+    ]);
+    expect(st.auslieferungen.map((a) => a.typ)).toEqual(['quote.created', 'job.created']);
+  });
+
+  test('bestehender Auftrag rückt ins Angebot; Brutto wird zu Netto, Positionen werden übernommen', async () => {
+    const { st, rufe } = await speicher({
+      objekte: [betrieb(), { sammlung: 'auftraege', id: 'auf1', daten: { id: 'auf1', nummer: 'P-2026-001', titel: 'Zähler tauschen', art: 'projekt', phase: 'besichtigung', kundeId: 'k1' } }],
+    });
+    const brutto = await rufe('create-quote', { user_id: 'lotte_user_chef', customer_id: 'k1', job_id: 'auf1', amount: 1190, amount_is_gross: true });
+    expect(brutto.body).toMatchObject({ job_id: 'auf1', net: 1000, total: 1190 });
+    expect(st.objekte.find((o) => o.sammlung === 'auftraege')!.daten.phase).toBe('angebot');
+    expect(st.objekte.filter((o) => o.sammlung === 'ereignisse').at(-1)!.daten).toMatchObject({ typ: 'auftraege.updated', aenderung: 'updated' });
+    const pos = await rufe('create-quote', { user_id: 'lotte_user_chef', customer_id: 'k1', job_id: 'auf1', items: [{ text: 'Arbeitszeit', quantity: 2, unit: 'h', unit_price: 60 }, { text: 'Zähler', quantity: 1, unit_price: 80 }] });
+    expect(pos.body).toMatchObject({ number: 'AN-2026-0002', net: 200, total: 238 });
+    expect((await rufe('create-quote', { user_id: 'lotte_user_chef', customer_id: 'k1', job_id: 'auf1', amount: 5, items: [{ text: 'X', unit_price: 1 }] })).body).toMatchObject({ error: { field: 'amount' } });
+    expect((await rufe('create-quote', { user_id: 'lotte_user_chef', customer_id: 'k2', title: 'X Y', amount: 5 })).body).toMatchObject({ error: { code: 'not_found', field: 'customer_id' } });
+  });
+
+  test('Kleinunternehmer ohne Umsatzsteuer; Monteur ohne Recht „Geld“ wird abgelehnt', async () => {
+    const { rufe } = await speicher({ objekte: [betrieb({ kleinunternehmer: true })] });
+    expect((await rufe('create-quote', { user_id: 'lotte_user_chef', customer_id: 'k1', title: 'Steckdose', amount: 80 })).body).toMatchObject({ net: 80, tax: 0, tax_rate: 0, total: 80 });
+    const r = await rufe('create-quote', { user_id: 'lotte_user_monteur', customer_id: 'k1', title: 'Steckdose', amount: 80 });
+    expect(r.status).toBe(403);
+    expect((r.body.error as { missing_permissions: string[] }).missing_permissions).toContain('geld');
+  });
+});
+
+describe('Token und Begrenzung', () => {
+  test('client_credentials tauscht den Schlüssel gegen ein 15-Minuten-Token, das statt des Schlüssels gilt', async () => {
+    const { s, rufe } = await speicher();
+    const felder = tokenFelder(`grant_type=client_credentials&client_id=zug1&client_secret=${SCHLUESSEL}`, 'application/x-www-form-urlencoded', null);
+    const t = await tokenAnfrage(felder, s, 'token-geheim', JETZT);
+    expect(t).toMatchObject({ status: 200, body: { token_type: 'Bearer', expires_in: 900 } });
+    const token = t.body.access_token as string;
+    expect(token.startsWith('hot_zug1.')).toBe(true);
+    expect((await rufe('find-customer', { user_id: 'lotte_user_chef', query: 'Müller' }, { autorisierung: `Bearer ${token}` })).status).toBe(200);
+    // abgelaufen, gefälscht, mit anderem Geheimnis
+    const spaeter = new Date(JETZT.getTime() + 16 * 60_000);
+    expect((await rufe('find-customer', { user_id: 'lotte_user_chef', query: 'Müller' }, { autorisierung: `Bearer ${token}` }, spaeter)).status).toBe(401);
+    expect((await rufe('find-customer', { user_id: 'lotte_user_chef', query: 'Müller' }, { autorisierung: `Bearer ${token.slice(0, -2)}00` })).status).toBe(401);
+    expect(await tokenPruefen(token, 'anderes', JETZT)).toBeUndefined();
+    expect(await tokenPruefen((await tokenAusstellen('zug1', 'token-geheim', JETZT)).token, 'token-geheim', JETZT)).toBe('zug1');
+  });
+
+  test('Token-Anfragen im OAuth-Format: Basic und JSON, falsche Angaben → invalid_client', async () => {
+    const { s } = await speicher();
+    const basic = tokenFelder('grant_type=client_credentials', 'application/x-www-form-urlencoded', `Basic ${btoa(`zug1:${SCHLUESSEL}`)}`);
+    expect((await tokenAnfrage(basic, s, 'g', JETZT)).status).toBe(200);
+    const json = tokenFelder(JSON.stringify({ grant_type: 'client_credentials', client_id: 'zug1', client_secret: SCHLUESSEL }), 'application/json', null);
+    expect((await tokenAnfrage(json, s, 'g', JETZT)).status).toBe(200);
+    expect((await tokenAnfrage({ ...json, client_id: 'zug2' }, s, 'g', JETZT)).body).toMatchObject({ error: 'invalid_client' });
+    expect((await tokenAnfrage({ ...json, client_secret: 'hos_falsch' }, s, 'g', JETZT)).status).toBe(401);
+    expect((await tokenAnfrage({ ...json, grant_type: 'password' }, s, 'g', JETZT)).body).toMatchObject({ error: 'unsupported_grant_type' });
+    expect((await tokenAnfrage({}, s, 'g', JETZT)).body).toMatchObject({ error: 'invalid_request' });
+  });
+
+  test('mehr als die Grenze je Minute → 429 mit Retry-After, eine Minute später wieder frei', async () => {
+    const { st, rufe } = await speicher({ grenze: 2 });
+    const b = { user_id: 'lotte_user_chef', query: 'Müller' };
+    expect((await rufe('find-customer', b)).status).toBe(200);
+    expect((await rufe('find-customer', b)).status).toBe(200);
+    const r = await rufe('find-customer', b);
+    expect(r).toMatchObject({ status: 429, kopf: { 'retry-after': '60' }, body: { error: { code: 'rate_limited' } } });
+    expect(st.aufrufe.size).toBe(2);
+    expect((await rufe('find-customer', b, {}, new Date(JETZT.getTime() + 61_000))).status).toBe(200);
+  });
+});
+
+describe('Verwaltung (Eingaben)', () => {
+  test('Webhook nur https, Workspace ohne Sonderzeichen, Ereignisse als API-Namen', () => {
+    expect(webhookAus('')).toEqual({ url: null });
+    expect(webhookAus('https://api.heylotte.ai/hooks')).toEqual({ url: 'https://api.heylotte.ai/hooks' });
+    expect(webhookAus('http://api.heylotte.ai/hooks')).toHaveProperty('fehler');
+    expect(webhookAus('http://localhost:3000/x')).toHaveProperty('fehler');
+    expect(workspaceAus(' lotte_workspace_673 ')).toEqual({ id: 'lotte_workspace_673' });
+    expect(workspaceAus('a b')).toHaveProperty('fehler');
+    expect(ereignisseAus(['customer.created', 'task.*', '*', 'task.*'])).toEqual(['customer.created', 'task.*', '*']);
+    expect(ereignisseAus([])).toHaveProperty('fehler');
+    expect(ereignisseAus(['DROP TABLE'])).toHaveProperty('fehler');
+  });
+});
+
 describe('Routen', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
@@ -264,7 +375,7 @@ describe('Routen', () => {
     const r = katalogRoute();
     const j = await r.json();
     expect(j.version).toBe('v1');
-    expect(j.actions.map((a: { name: string }) => a.name)).toEqual(['find-customer', 'create-customer', 'create-task']);
+    expect(j.actions.map((a: { name: string }) => a.name)).toEqual(['find-customer', 'create-customer', 'create-task', 'create-quote']);
     expect(aktionsKatalog()[1]).toMatchObject({ path: '/v1/actions/create-customer', id: 'customer.create', risk: 'schreiben', permissions: ['schreiben'], input: { name: { type: 'string', required: true } } });
   });
 

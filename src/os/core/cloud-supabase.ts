@@ -180,6 +180,8 @@ export interface SupabaseCloud extends Cloud {
   pushEinschalten(): Promise<{ ok: boolean; fehler?: string }>;
   geraete(): Promise<{ endpoint: string; geraet: string; seit: string; diesesGeraet: boolean }[]>;
   geraetEntfernen(endpoint: string): Promise<void>;
+  /** Angemeldeter Aufruf einer Server-Funktion `/api/cloud/<pfad>` (Status 0 = keine Verbindung) */
+  serverAnfrage<T>(pfad: string, body: unknown): Promise<{ status: number; daten?: T }>;
 }
 
 export interface Abhaengigkeiten {
@@ -382,6 +384,7 @@ export function erzeugeSupabaseCloud(client: SupabaseClient, konfig: CloudKonfig
   // ---------------------------------------------------------------- Vertrag
 
   const c: SupabaseCloud = {
+    serverAnfrage: serverAufruf,
     // „aktiv“ = Backend ist verbunden (Schlüssel gesetzt). Ob jemand angemeldet ist, sagt `konto()`.
     aktiv: () => true,
     konto: () => (konto ? { nutzerId: konto.nutzerId, email: konto.email, telefon: konto.telefon, betriebId: konto.betriebId } : undefined),
