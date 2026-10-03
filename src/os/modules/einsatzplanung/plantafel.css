@@ -278,13 +278,11 @@ a.pt2-balken:hover, span.pt2-balken:hover { box-shadow: inset 0 0 0 1px color-mi
 .pt2-offen-schmal .pt2-offen { position: static; max-width: none; padding: 8px 0 0; }
 .pt2-offen-schmal .pt2-chip { max-width: 100%; }
 
-/* Navigation in der linken oberen Ecke der Tafel: Pfeil · Datum · Pfeil, darunter „Heute“ */
-.pt2-name--kopf { align-items: center; justify-content: center; padding: 8px 12px; }
-.pt2-navi { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; }
-.pt2-navi-zeile { display: flex; align-items: center; justify-content: space-between; gap: 4px; width: 100%; max-width: 260px; }
+/* Navigation in der Leiste direkt über der Tafel: Pfeil · Datum · Pfeil · „Heute“ */
+.pt2-navi { display: flex; align-items: center; gap: 8px; }
 .pt2-navi-pfeil { width: 40px; height: 40px; flex-shrink: 0; border: 1px solid var(--mm-border); border-radius: var(--mm-radius-control); background: var(--mm-surface); }
 .pt2-navi-pfeil:hover { background: var(--mm-hover); border-color: var(--mm-border-dark); }
-.pt2-navi-datum { flex: 1; min-width: 0; text-align: center; font: 600 15px/20px var(--mm-font); color: var(--mm-black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.pt2-navi-datum { min-width: 0; padding: 0 4px; text-align: center; font: 600 15px/20px var(--mm-font); color: var(--mm-black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
 .pt2-heute { min-height: 32px; padding: 0 14px; border: 1px solid var(--mm-border); border-radius: 16px; background: var(--mm-surface); color: var(--mm-brand-text); font: 600 14px/18px var(--mm-font); cursor: pointer; }
 .pt2-heute:hover { background: var(--mm-brand-soft); border-color: var(--mm-success-border); }
 .pt2-heute:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }

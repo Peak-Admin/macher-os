@@ -613,13 +613,11 @@ export function Plantafel() {
   const datumKurzOhneTag = (d: Datum) => `${d.slice(8, 10)}.${d.slice(5, 7)}.`;
   const navigation = (
     <div className="pt2-navi">
-      <div className="pt2-navi-zeile">
-        <IconButton icon="pfeilLinks" label="Früher" className="pt2-navi-pfeil" onClick={() => setze({ ab: plusTage(ab, -schritt), woche: undefined })} />
-        <span className="pt2-navi-datum" aria-live="polite">
-          {datumKurzOhneTag(von)} – {datumKurzOhneTag(bis)}
-        </span>
-        <IconButton icon="pfeilRechts" label="Später" className="pt2-navi-pfeil" onClick={() => setze({ ab: plusTage(ab, schritt), woche: undefined })} />
-      </div>
+      <IconButton icon="pfeilLinks" label="Früher" className="pt2-navi-pfeil" onClick={() => setze({ ab: plusTage(ab, -schritt), woche: undefined })} />
+      <span className="pt2-navi-datum" aria-live="polite">
+        {datumKurzOhneTag(von)} – {datumKurzOhneTag(bis)}
+      </span>
+      <IconButton icon="pfeilRechts" label="Später" className="pt2-navi-pfeil" onClick={() => setze({ ab: plusTage(ab, schritt), woche: undefined })} />
       <button type="button" className="pt2-heute" onClick={() => setze({ ab: undefined, woche: undefined })}>
         Heute
       </button>
@@ -629,7 +627,6 @@ export function Plantafel() {
   const kopf = (
     <div className="pt2-zeile pt2-zeile--kopf">
       <div className="pt2-name pt2-name--kopf">
-        {navigation}
         <BreitenGriff label="Breite der Namensspalte" wert={nameBreite} min={NAME_MIN} max={NAME_MAX} onWert={setNameBreite} />
       </div>
       <div className="pt2-spur pt2-spur--kopf" style={{ gridTemplateRows: 'auto auto auto' }}>
@@ -1112,10 +1109,7 @@ export function Plantafel() {
         </div>
       ) : (
         <Stapel abstand={12}>
-          <div className="pt2-leiste">
-            {problemZeile}
-            {steuerung}
-          </div>
+          {problemZeile}
           {auftrag && (
             <Meldung
               ton="aktiv"
@@ -1153,6 +1147,10 @@ export function Plantafel() {
               Mit den Pfeilen schieben – oder einen Namen auf einen anderen ziehen. Gilt für dein ganzes Team.
             </Meldung>
           )}
+          <div className="pt2-leiste">
+            {navigation}
+            {steuerung}
+          </div>
           <div className="pt2-rahmen" ref={rahmen}>
             <div
               className={`pt2-tafel ${tagBreite < 40 ? 'pt2-tafel--eng' : ''}`}
