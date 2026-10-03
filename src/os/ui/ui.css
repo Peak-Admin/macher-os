@@ -54,7 +54,8 @@
 .mm-textarea { min-height: 112px; resize: vertical; }
 .mm-feld--fehler .mm-input { border-color: var(--mm-danger); }
 .mm-hilfe { font-size: 14px; line-height: 21px; color: var(--mm-text-secondary); }
-.mm-fehlertext { font-size: 14px; line-height: 20px; color: var(--mm-danger); }
+.mm-fehlertext { display: flex; align-items: flex-start; gap: 6px; font-size: 14px; line-height: 20px; color: var(--mm-danger); }
+.mm-fehlertext > svg { flex-shrink: 0; margin-top: 2px; }
 .mm-formraster { display: grid; gap: 20px 24px; grid-template-columns: 1fr; }
 @media (min-width: 768px) {
   .mm-formraster--2 { grid-template-columns: 1fr 1fr; }
@@ -202,6 +203,10 @@
 @media (prefers-reduced-motion: no-preference) { .mm-karte--klickbar:hover { transform: translateY(-1px); } }
 .mm-karte--klickbar:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 3px; }
 .mm-karte-kopf { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.mm-karte-kopf-start { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.mm-karte-kopf-start > .mm-karten-icon { margin-top: -3px; }
+/* Strich-Icon auf ruhiger Grünfläche vor Karten- und Kennzahl-Titeln (kein Glas-Icon) */
+.mm-karten-icon { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--mm-radius-control); background: var(--mm-brand-soft); color: var(--mm-brand-text); }
 .mm-karte-titel { font: 600 20px/26px var(--mm-font); }
 @media (max-width: 767px) { .mm-karte { padding: 16px; } }
 .mm-raster { display: grid; gap: 16px; }
@@ -227,7 +232,10 @@
 .mm-status--gefahr { background: var(--mm-danger-surface); color: var(--mm-danger); border-color: transparent; }
 .mm-kennzahl { display: flex; flex-direction: column; gap: 4px; min-width: 0; container-type: inline-size; }
 .mm-karte.mm-kennzahl { padding: 20px; }
-.mm-kennzahl-label { font: 600 14px/20px var(--mm-font); color: var(--mm-text); }
+.mm-kennzahl-label { display: flex; align-items: center; gap: 8px; font: 600 14px/20px var(--mm-font); color: var(--mm-text); }
+.mm-kennzahl--achtung .mm-karten-icon { background: var(--mm-surface); color: var(--mm-warning); }
+.mm-kennzahl--gefahr .mm-karten-icon { background: var(--mm-surface); color: var(--mm-danger); }
+.mm-kennzahl--erfolg .mm-karten-icon { background: var(--mm-surface); }
 .mm-kennzahl-wert { font: 700 36px/1.15 var(--mm-font); font-size: clamp(22px, 19cqi, 36px); letter-spacing: -0.5px; color: var(--mm-black); font-variant-numeric: tabular-nums; overflow-wrap: normal; text-wrap: balance; }
 /* Kennzahlen mobil zweispaltig statt langer Kartenstapel */
 @media (max-width: 767px) { .mm-raster:has(> .mm-kennzahl) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 12px; } .mm-karte.mm-kennzahl { padding: 16px; } }
@@ -458,6 +466,18 @@
 .mm-auswahl-option--aktiv { background: var(--mm-hover); }
 .mm-auswahl-option[aria-selected='true'] { color: var(--mm-brand-ink); font-weight: 600; background: var(--mm-brand-soft); }
 .mm-auswahl-option--leer { color: var(--mm-text-secondary); }
+.mm-auswahl-option-inhalt { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mm-auswahl-option-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.mm-auswahl-wert .mm-auswahl-option-inhalt { gap: 8px; }
+.mm-auswahl-option-icon { display: grid; place-items: center; flex-shrink: 0; width: 28px; height: 28px; border-radius: 6px; }
+.mm-auswahl-wert .mm-auswahl-option-icon { width: 24px; height: 24px; }
+.mm-auswahl-option-icon--neutral { background: var(--mm-surface-subtle); color: var(--mm-text-secondary); }
+.mm-auswahl-option-icon--aktiv { background: var(--mm-brand-soft); color: var(--mm-brand-text); }
+.mm-auswahl-option-icon--erfolg { background: var(--mm-success-surface); color: var(--mm-success); }
+.mm-auswahl-option-icon--achtung { background: var(--mm-warning-surface); color: var(--mm-warning); }
+.mm-auswahl-option-icon--gefahr { background: var(--mm-danger-surface); color: var(--mm-danger); }
+.mm-auswahl-gruppe { padding: 12px 12px 4px; font: 600 14px/20px var(--mm-font); color: var(--mm-text-secondary); }
+.mm-auswahl-gruppe:first-child { padding-top: 6px; }
 .mm-auswahl-nichts { padding: 12px; font-size: 14px; color: var(--mm-text-secondary); }
 @media (prefers-reduced-motion: reduce) {
   .mm-auswahl-liste { animation: none; }

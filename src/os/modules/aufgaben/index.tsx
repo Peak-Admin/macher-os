@@ -25,7 +25,7 @@ export default defineModul({
   kurzinfo: () => {
     const t = heute();
     const ueber = db.aufgaben.where((a) => !a.erledigt && !!a.faellig && a.faellig < t).length;
-    return ueber ? { text: `${ueber} überfällig`, ton: 'achtung' } : undefined;
+    return ueber ? { text: `${ueber} überfällig`, ton: 'gefahr' } : undefined;
   },
   tabs: [
     {

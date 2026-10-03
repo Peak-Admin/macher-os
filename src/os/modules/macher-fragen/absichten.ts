@@ -75,7 +75,7 @@ export function wasFehlt(k: Kontext, frage: string): Antwort {
       titel: `Aufgabe: ${x.titel}`,
       untertitel: [x.zustaendigId ? personName(db.mitarbeiter.get(x.zustaendigId)) : 'noch niemand zuständig', x.faellig ? `fällig ${datumKurz(x.faellig)}` : undefined].filter(Boolean).join(' · '),
       pfad: pfadZu({ typ: 'aufgaben', id: x.id }),
-      status: x.faellig && x.faellig < k.heute ? { ton: 'achtung', text: 'Überfällig' } : undefined,
+      status: x.faellig && x.faellig < k.heute ? { ton: 'gefahr', text: 'Überfällig' } : undefined,
     });
   // Checklisten
   for (const c of checklisten.where((x) => x.auftragId === a.id)) {

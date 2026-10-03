@@ -38,7 +38,7 @@ import type { WidgetProps } from '../typen';
 const anzahl = (groesse: WidgetProps['groesse'], klein = 3, gross = 6) => (groesse === 'gross' ? gross : klein);
 
 /** Kleine Zahlenzeilen statt verschachtelter Karten */
-type Wert = { label: string; wert: string; hinweis?: string; ton?: 'achtung' };
+type Wert = { label: string; wert: string; hinweis?: string; ton?: 'achtung' | 'gefahr' };
 
 function Werte({ werte }: { werte: Wert[] }) {
   return (
@@ -292,7 +292,7 @@ export function OffenePostenWidget({ groesse }: WidgetProps) {
       <Werte
         werte={[
           { label: 'Offen', wert: euro(summe), hinweis: posten.length === 1 ? '1 Rechnung' : `${posten.length} Rechnungen` },
-          ...(ueber.length ? [{ label: 'Überfällig', wert: euro(ueber.reduce((s, r) => s + offenerBetrag(r), 0)), hinweis: ueber.length === 1 ? '1 Rechnung' : `${ueber.length} Rechnungen`, ton: 'achtung' as const }] : []),
+          ...(ueber.length ? [{ label: 'Überfällig', wert: euro(ueber.reduce((s, r) => s + offenerBetrag(r), 0)), hinweis: ueber.length === 1 ? '1 Rechnung' : `${ueber.length} Rechnungen`, ton: 'gefahr' as const }] : []),
         ]}
       />
       <Liste>
@@ -305,7 +305,7 @@ export function OffenePostenWidget({ groesse }: WidgetProps) {
             rechts={
               <span className="mm-home-betrag">
                 <span className="mm-number">{euro(offenerBetrag(r))}</span>
-                {istUeberfaellig(r) && <Status ton="achtung">Überfällig</Status>}
+                {istUeberfaellig(r) && <Status ton="gefahr">Überfällig</Status>}
               </span>
             }
           />
@@ -320,7 +320,7 @@ export function ZahlenWidget({ groesse }: WidgetProps) {
   const leer = 'Noch keine Daten';
   const werte: Wert[] = [
     { label: 'Umsatz netto', wert: k.umsatz.anzahl ? euro(k.umsatz.netto) : leer, hinweis: k.zeitraum.label },
-    { label: 'Offene Posten', wert: euro(k.offen.summe), hinweis: k.offen.ueberfaellig ? `${euro(k.offen.ueberfaellig)} überfällig` : 'nichts überfällig', ton: k.offen.ueberfaellig ? 'achtung' : undefined },
+    { label: 'Offene Posten', wert: euro(k.offen.summe), hinweis: k.offen.ueberfaellig ? `${euro(k.offen.ueberfaellig)} überfällig` : 'nichts überfällig', ton: k.offen.ueberfaellig ? 'gefahr' : undefined },
   ];
   if (groesse === 'gross')
     werte.push(
@@ -365,7 +365,7 @@ export function WartungWidget({ groesse }: WidgetProps) {
             to={pfadZu({ typ: 'anlagen', id: a.id })}
             titel={`${a.typ}${a.hersteller ? ` · ${a.hersteller}` : ''}`}
             untertitel={db.kunden.get(a.kundeId)?.name}
-            rechts={<Status ton={z === 'ueberfaellig' ? 'achtung' : 'neutral'}>{z === 'ueberfaellig' ? 'Überfällig' : `fällig ${relativ(a.naechsteWartung)}`}</Status>}
+            rechts={<Status ton={z === 'ueberfaellig' ? 'gefahr' : 'neutral'}>{z === 'ueberfaellig' ? 'Überfällig' : `fällig ${relativ(a.naechsteWartung)}`}</Status>}
           />
         );
       })}

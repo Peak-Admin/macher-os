@@ -81,7 +81,7 @@ export function EinarbeitungenSeite() {
                 </>
               }
               untertitel={`seit ${datum(e.start)} · ${f.fertig} von ${f.gesamt} Schritten`}
-              rechts={e.abgeschlossenAm ? <Status ton="erfolg">Abgeschlossen</Status> : ueber ? <Status ton="achtung">{`${ueber} überfällig`}</Status> : <Status ton="aktiv">{`${Math.round((f.fertig / Math.max(1, f.gesamt)) * 100)} %`}</Status>}
+              rechts={e.abgeschlossenAm ? <Status ton="erfolg">Abgeschlossen</Status> : ueber ? <Status ton="gefahr">{`${ueber} überfällig`}</Status> : <Status ton="aktiv">{`${Math.round((f.fertig / Math.max(1, f.gesamt)) * 100)} %`}</Status>}
             />
           );
         })}
@@ -183,7 +183,7 @@ export function EinarbeitungDetail() {
                               Öffnen
                             </Button>
                           )}
-                          {ueber ? <Status ton="achtung">{`seit ${datum(faellig)}`}</Status> : <Status>{ART_LABEL[s.art]}</Status>}
+                          {ueber ? <Status ton="gefahr">{`seit ${datum(faellig)}`}</Status> : <Status>{ART_LABEL[s.art]}</Status>}
                         </Zeile>
                       </Zeile>
                     );
@@ -220,7 +220,7 @@ export function EinarbeitungDetail() {
                   Zum Mitarbeiter
                 </Button>
               )}
-              {ueberfaellig(e, t).length > 0 && <Meldung ton="achtung">{`${ueberfaellig(e, t).length} Schritte sind überfällig.`}</Meldung>}
+              {ueberfaellig(e, t).length > 0 && <Meldung ton="gefahr">{`${ueberfaellig(e, t).length} Schritte sind überfällig.`}</Meldung>}
             </Stapel>
           </Karte>
         }

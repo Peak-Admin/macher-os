@@ -1,26 +1,22 @@
 import type { Ton } from "@/content/funktionen";
+import type { StatusTon } from "@/components/mocks/AppFenster";
 
-/** Farbiger Balken / Punkt pro Ton. */
-export const tonBalken: Record<Ton, string> = {
-  signal: "bg-signal",
-  moss: "bg-moss",
-  sky: "bg-sky",
-  ink: "bg-ink",
-  sand: "bg-line",
+/**
+ * Ton aus den Inhalten → Status wie in der Software: Neutral als Standard, Grün für Erledigtes,
+ * Gelb für „kümmer dich drum“, Rot nur für echte Gefahr (z. B. „dringend“, „überfällig“).
+ */
+export const tonStatus: Record<Ton, StatusTon> = {
+  signal: "warnung",
+  moss: "erfolg",
+  sky: "neutral",
+  ink: "neutral",
+  sand: "neutral",
+  gefahr: "gefahr",
 };
 
-/** Kleines Etikett pro Ton. */
-export const tonEtikett: Record<Ton, string> = {
-  signal: "bg-signal-soft text-signal-dark",
-  moss: "bg-moss-soft text-moss",
-  sky: "bg-sky-soft text-sky",
-  ink: "bg-ink text-white",
-  sand: "bg-sand text-muted",
-};
-
-/** Hinweisbox pro Ton. */
+/** Hinweisbox pro Ton – ruhige Fläche wie in der Software, kein Rahmen in Akzentfarbe. */
 export const tonHinweis: Record<"signal" | "moss" | "sky", { box: string; titel: string }> = {
-  signal: { box: "border-signal/40 bg-signal-soft", titel: "text-signal-dark" },
-  moss: { box: "border-moss/30 bg-moss-soft", titel: "text-moss" },
-  sky: { box: "border-sky/30 bg-sky-soft", titel: "text-sky" },
+  signal: { box: "bg-signal-soft", titel: "text-signal-dark" },
+  moss: { box: "bg-signal-soft", titel: "text-moss" },
+  sky: { box: "bg-app-ruhig", titel: "text-ink" },
 };

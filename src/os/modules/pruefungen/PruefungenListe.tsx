@@ -25,7 +25,7 @@ export function PruefungenListe() {
       <PruefungDialog id={offen ?? ''} offen={!!offen} onSchliessen={() => setOffen(undefined)} />
       <Stapel>
         {zaehl.ueberfaellig > 0 && (
-          <Meldung ton="achtung" titel={`${zaehl.ueberfaellig} ${zaehl.ueberfaellig === 1 ? 'Gerät' : 'Geräte'} mit überfälliger Prüfung`}>
+          <Meldung ton="gefahr" titel={`${zaehl.ueberfaellig} ${zaehl.ueberfaellig === 1 ? 'Gerät' : 'Geräte'} mit überfälliger Prüfung`}>
             Nicht verwenden, bis die Prüfung gemacht ist. Tippe ein Gerät an, um die Prüfung einzutragen.
           </Meldung>
         )}

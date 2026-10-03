@@ -22,6 +22,7 @@ import { FensterSkizze } from './fenster';
 import { glasFuer, ThemenIcon, type GlasIconName } from './glas';
 import { feldIcon } from './feld-icon';
 import { Icon, type IconName } from './icons';
+import { kartenIcon } from './karten-icon';
 import type { Ton } from '@core/modul';
 import './ui.css';
 
@@ -185,6 +186,7 @@ export function Feld({ label, hilfe, fehler, children, optional }: { label: stri
       )}
       {fehler && (
         <p id={beschrieben} className="mm-fehlertext" role="alert">
+          <Icon name="achtung" size={16} />
           {fehler}
         </p>
       )}
@@ -221,7 +223,21 @@ export function Eingabe({ label, hilfe, fehler, optional, className, icon, ...re
   );
 }
 
-type AuswahlOption = { wert: string; label: string };
+/** `icon` (Strich-Icon) und `ton` färben die Option leicht ein, `gruppe` setzt eine Zwischenüberschrift (Optionen gruppiert übergeben) */
+type AuswahlOption = { wert: string; label: string; icon?: IconName; ton?: Ton; gruppe?: string };
+
+function OptionInhalt({ o }: { o: AuswahlOption }) {
+  return (
+    <span className="mm-auswahl-option-inhalt">
+      {o.icon && (
+        <span className={cx('mm-auswahl-option-icon', `mm-auswahl-option-icon--${o.ton ?? 'aktiv'}`)} aria-hidden>
+          <Icon name={o.icon} size={16} />
+        </span>
+      )}
+      <span className="mm-auswahl-option-text">{o.label}</span>
+    </span>
+  );
+}
 
 /** Ab so vielen Einträgen bekommt die Liste ein Suchfeld */
 const AUSWAHL_SUCHE_AB = 9;
@@ -422,8 +438,9 @@ export function Auswahl({
             onClick={() => (offen ? schliessen() : oeffnen())}
             onKeyDown={tasten}
           >
-            {zeichen && <Icon name={zeichen} size={20} className="mm-auswahl-icon" aria-hidden />}
-            <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>{gewaehlt?.label ?? leer ?? 'Bitte wählen'}</span>
+            {/* Option mit eigenem Icon zeigt dieses statt des Feld-Icons */}
+            {zeichen && !gewaehlt?.icon && <Icon name={zeichen} size={20} className="mm-auswahl-icon" aria-hidden />}
+            <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>{gewaehlt?.icon ? <OptionInhalt o={gewaehlt} /> : (gewaehlt?.label ?? leer ?? 'Bitte wählen')}</span>
             <Icon name="runter" size={20} />
           </button>
           {name && <input type="hidden" name={name} value={aktuell} />}
@@ -449,7 +466,12 @@ export function Auswahl({
                 </div>
               )}
               <ul ref={liste} id={listId} role="listbox" aria-label={label} tabIndex={-1}>
-                {sichtbar.map((o, i) => (
+                {sichtbar.map((o, i) => [
+                  o.gruppe && o.gruppe !== sichtbar[i - 1]?.gruppe && (
+                    <li key={`g-${o.gruppe}`} role="presentation" className="mm-auswahl-gruppe">
+                      {o.gruppe}
+                    </li>
+                  ),
                   <li
                     key={o.wert || '__leer'}
                     id={optionId(i)}
@@ -459,10 +481,10 @@ export function Auswahl({
                     onPointerMove={() => i !== aktiv && setAktiv(i)}
                     onClick={() => waehlen(o)}
                   >
-                    <span>{o.label}</span>
+                    <OptionInhalt o={o} />
                     {o.wert === aktuell && <Icon name="check" size={18} />}
-                  </li>
-                ))}
+                  </li>,
+                ])}
                 {!sichtbar.length && <li className="mm-auswahl-nichts">Nichts gefunden</li>}
               </ul>
             </div>
@@ -761,14 +783,28 @@ export function Abschnitt({ titel, aktion, children, hinweis }: { titel?: ReactN
   );
 }
 
-export function Karte({ titel, oberzeile, aktion, children, className, kompakt, onClick, to }: { titel?: ReactNode; oberzeile?: string; aktion?: ReactNode; children?: ReactNode; className?: string; kompakt?: boolean; onClick?: () => void; to?: string }) {
+/** Kleine Icon-Fläche vor Karten- und Kennzahl-Titeln: Strich-Icon (kein Glas), damit sich Karten unterscheiden */
+function KartenIcon({ name }: { name: IconName }) {
+  return (
+    <span className="mm-karten-icon" aria-hidden>
+      <Icon name={name} size={18} />
+    </span>
+  );
+}
+
+/** `icon` setzt das Strich-Icon vor dem Titel; ohne Angabe wird es aus dem Titel abgeleitet, `false` schaltet es ab. */
+export function Karte({ titel, oberzeile, aktion, children, className, kompakt, onClick, to, icon }: { titel?: ReactNode; oberzeile?: string; aktion?: ReactNode; children?: ReactNode; className?: string; kompakt?: boolean; onClick?: () => void; to?: string; icon?: IconName | false }) {
+  const iconName = titel && icon !== false ? (icon ?? kartenIcon(titel)) : undefined;
   const inhalt = (
     <>
       {(titel || aktion || oberzeile) && (
         <div className="mm-karte-kopf">
-          <div>
-            {oberzeile && <p className={oberzeileKlasse(oberzeile)}>{oberzeile}</p>}
-            {titel && <h3 className="mm-karte-titel">{titel}</h3>}
+          <div className="mm-karte-kopf-start">
+            {iconName && <KartenIcon name={iconName} />}
+            <div>
+              {oberzeile && <p className={oberzeileKlasse(oberzeile)}>{oberzeile}</p>}
+              {titel && <h3 className="mm-karte-titel">{titel}</h3>}
+            </div>
           </div>
           {aktion}
         </div>
@@ -837,10 +873,16 @@ export function Status({ ton = 'neutral', children, icon = true }: { ton?: Ton; 
   );
 }
 
-export function Kennzahl({ wert, label, zeitraum, hinweis, to, ton }: { wert: ReactNode; label: string; zeitraum?: string; hinweis?: ReactNode; to?: string; ton?: Ton }) {
+/** Kennzahl-Karte. Das Strich-Icon (`icon`, sonst aus dem Label abgeleitet, `false` = keins) unterscheidet die Karten;
+ *  mit `ton` „achtung“/„gefahr“ hebt sich die ganze Karte ab (Ausnahmen zuerst). */
+export function Kennzahl({ wert, label, zeitraum, hinweis, to, ton, icon }: { wert: ReactNode; label: string; zeitraum?: string; hinweis?: ReactNode; to?: string; ton?: Ton; icon?: IconName | false }) {
+  const iconName = icon === false ? undefined : (icon ?? kartenIcon(label));
   const inhalt = (
     <>
-      <span className="mm-kennzahl-label">{label}</span>
+      <span className="mm-kennzahl-label">
+        {iconName && <KartenIcon name={iconName} />}
+        {label}
+      </span>
       <span className={cx('mm-kennzahl-wert mm-number', ton && `mm-kennzahl-wert--${ton}`, wert == null && 'mm-kennzahl-wert--leer')}>{wert ?? 'Noch keine Daten'}</span>
       {(zeitraum || hinweis) && (
         <span className="mm-meta">
@@ -1121,8 +1163,8 @@ export function Laden({ text = 'Wird geladen …' }: { text?: string }) {
 
 export function Meldung({ ton = 'neutral', titel, children, aktion }: { ton?: Ton; titel?: string; children?: ReactNode; aktion?: ReactNode }) {
   return (
-    <div className={cx('mm-meldung', `mm-meldung--${ton}`)} role={ton === 'achtung' ? 'alert' : 'status'}>
-      <Icon name={ton === 'achtung' ? 'achtung' : ton === 'erfolg' ? 'check' : 'info'} />
+    <div className={cx('mm-meldung', `mm-meldung--${ton}`)} role={ton === 'achtung' || ton === 'gefahr' ? 'alert' : 'status'}>
+      <Icon name={ton === 'achtung' || ton === 'gefahr' ? 'achtung' : ton === 'erfolg' ? 'check' : 'info'} />
       <div className="mm-meldung-text">
         {titel && <strong>{titel}</strong>}
         {children && <div>{children}</div>}

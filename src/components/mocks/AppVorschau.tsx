@@ -3,28 +3,16 @@
 import { useMemo, useState, type ReactNode } from "react";
 import Image from "next/image";
 import { Icon, IconTile, type IconName } from "@/components/ui/Icon";
+import { AppSeitenleiste, type VorschauBereich } from "./AppFenster";
 
 /**
  * Klickbare Vorschau von Macher OS – nachgebaut nach der echten Oberfläche (Spielwiese, Oktober 2026):
- * Sidebar mit Betrieb, „Suchen oder fragen“, den vier Bereichen und Favoriten; Bereichsnavigation als unterstrichene
+ * Seitenleiste aus `AppFenster` (Betrieb, „Suchen“, Benachrichtigungen, vier Bereiche, Favoriten – mit Glas-Icons); Bereichsnavigation als unterstrichene
  * Reihe, Unteransichten als heller Umschalter. Alle Daten sind Beispieldaten aus der Spielwiese und so gekennzeichnet.
  * Nichts wird gespeichert; jede Aktion ändert nur diese Vorschau.
  */
 
 type Ansicht = "heute" | "auftraege" | "planen" | "betrieb" | "angebote" | "rechnungen" | "auswertung" | "suche";
-
-const bereiche: { id: Ansicht; label: string; icon: IconName; zahl?: string }[] = [
-  { id: "heute", label: "Heute", icon: "spark" },
-  { id: "auftraege", label: "Aufträge", icon: "clipboard", zahl: "9+" },
-  { id: "planen", label: "Planen", icon: "calendar" },
-  { id: "betrieb", label: "Betrieb", icon: "home" },
-];
-
-const favoriten: { id: Ansicht; label: string; icon: IconName }[] = [
-  { id: "angebote", label: "Angebote", icon: "file" },
-  { id: "rechnungen", label: "Rechnungen", icon: "euro" },
-  { id: "auswertung", label: "Auswertung", icon: "chart" },
-];
 
 type Ton = "warnung" | "neutral" | "erfolg" | "gefahr";
 const toene: Record<Ton, string> = {
@@ -439,17 +427,11 @@ function Heute({ gehe, z, setZ }: { gehe: (a: Ansicht) => void; z: HeuteZustand;
     <div className="space-y-4">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-display text-[26px] font-bold leading-tight text-ink">Servus, Max</p>
+          <p className="font-display text-[26px] font-bold leading-tight text-ink">Servus, Max <span aria-hidden>👋</span></p>
           <p className="text-[12px] text-muted">Hier ist das Wichtigste für dich · Freitag, 2. Oktober</p>
         </div>
-        <span className="relative inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-white text-ink">
-          <Icon name="bell" className="size-4" />
-          {offen > 0 && (
-            <span className="absolute -right-1 -top-1 rounded bg-primary px-1.5 text-[10px] font-bold text-white">
-              <span className="sr-only">Offene Entscheidungen: </span>
-              {offen}
-            </span>
-          )}
+        <span className="hidden shrink-0 items-center gap-1.5 pt-2 text-[12px] font-semibold text-signal-dark sm:inline-flex">
+          <Icon name="layers" className="size-3.5" /> Home anpassen
         </span>
       </div>
 
@@ -1018,24 +1000,7 @@ export function AppVorschau({ className = "", start = "heute" }: { className?: s
   const [heute, setHeute] = useState<HeuteZustand>(startHeute);
   const aktivBereich: Ansicht = ansicht === "angebote" ? "auftraege" : ansicht === "rechnungen" ? "betrieb" : ansicht;
 
-  const navKnopf = (b: { id: Ansicht; label: string; icon: IconName; zahl?: string }, klein = false) => {
-    const aktiv = klein ? ansicht === b.id : aktivBereich === b.id;
-    return (
-      <button
-        key={b.id}
-        type="button"
-        onClick={() => setAnsicht(b.id)}
-        aria-current={aktiv ? "page" : undefined}
-        className={`flex w-full shrink-0 items-center gap-2 rounded-lg px-2.5 text-left transition-colors duration-150 ${
-          klein ? "py-1.5 text-[12px]" : "py-2 text-[13px]"
-        } ${aktiv ? "bg-signal-soft font-semibold text-signal-dark" : "font-medium text-ink hover:bg-hover"}`}
-      >
-        <Icon name={b.icon} className="size-4 shrink-0" />
-        <span className="flex-1">{b.label}</span>
-        {b.zahl && <span className="rounded bg-signal-dark px-1.5 text-[10px] font-bold text-white">{b.zahl}</span>}
-      </button>
-    );
-  };
+  const favorit = ansicht === "angebote" || ansicht === "rechnungen" || ansicht === "auswertung" ? ansicht : undefined;
 
   return (
     <section
@@ -1043,46 +1008,14 @@ export function AppVorschau({ className = "", start = "heute" }: { className?: s
       className={`vorschau-fenster overflow-hidden border border-line bg-app-canvas text-ink ${className}`}
     >
       <div className="grid h-full gap-0 sm:grid-cols-[12.5rem_1fr] sm:gap-2 sm:p-2">
-        {/* Seitenleiste wie in der Software: schwebend, runde Ecken, aufgelegt */}
-        <aside className="flex min-w-0 flex-col gap-2 border-b border-app-linie bg-white p-2.5 sm:app-lift sm:rounded-2xl sm:border sm:border-app-linie">
-          <div className="flex items-center gap-2 px-1">
-            <Image src="/marke/zeichen.png" alt="" width={24} height={24} className="size-6 shrink-0" />
-            <span className="font-display text-[15px] text-ink">
-              Macher <b className="font-black">OS</b>
-            </span>
-            <span className="ml-auto rounded-sm border border-dashed border-line-dark px-1 text-[10px] font-semibold text-muted">Beispiel</span>
-          </div>
-          <div className="app-lift hidden items-center gap-2 rounded-lg border border-app-linie bg-white px-2 py-1.5 sm:flex">
-            <span className="inline-flex size-5 items-center justify-center rounded bg-signal-dark text-[10px] font-bold text-white">M</span>
-            <span className="min-w-0 leading-tight">
-              <span className="block text-[12px] font-bold">Musterbetrieb</span>
-              <span className="block truncate text-[10px] text-muted">Spielwiese</span>
-            </span>
-          </div>
-          {/* Eine Fläche: Lupe, „Suchen“, Kürzel – die KI-Kugel erst in der KI-Leiste */}
-          <button
-            type="button"
-            onClick={() => setAnsicht("suche")}
-            className={`app-lift flex items-center gap-2 rounded-lg border bg-white px-2.5 py-1.5 text-[12px] transition-colors duration-150 ${
-              ansicht === "suche" ? "border-primary text-ink" : "border-app-linie text-ink hover:border-primary"
-            }`}
-          >
-            <Icon name="search" className="size-3.5" />
-            <span className="flex-1 text-left">Suchen</span>
-            <kbd className="rounded border border-app-linie bg-app-ruhig px-1 font-sans text-[10px] font-semibold text-muted">⌘K</kbd>
-          </button>
-          <nav aria-label="Bereiche der Vorschau" className="grid grid-cols-2 gap-1 sm:mt-1 sm:grid-cols-1">
-            {bereiche.map((b) => navKnopf(b))}
-          </nav>
-          <div className="hidden border-t border-app-linie pt-2 sm:block">
-            <p className="px-2.5 pb-1 text-[11px] font-semibold text-muted">Favoriten</p>
-            {favoriten.map((f) => navKnopf(f, true))}
-          </div>
-          <div className="mt-auto hidden items-center gap-2 border-t border-app-linie px-1 pt-2 sm:flex">
-            <Image src="/bilder/os/team/max-macher.webp" alt="" width={24} height={24} className="size-6 rounded-full object-cover" />
-            <span className="text-[12px] font-semibold">Max Macher</span>
-          </div>
-        </aside>
+        {/* Seitenleiste wie in der Software: schwebend, runde Ecken, aufgelegt, Glas-Icons */}
+        <AppSeitenleiste
+          aktiv={aktivBereich as VorschauBereich}
+          aktivFavorit={favorit}
+          waehle={setAnsicht}
+          waehleFavorit={(f) => setAnsicht(f as Ansicht)}
+          suche={{ aktiv: ansicht === "suche", oeffnen: () => setAnsicht("suche") }}
+        />
 
         {/* Inhalt auf dem beigen Canvas */}
         <div className="min-h-0 min-w-0 overflow-y-auto p-3 sm:p-4">

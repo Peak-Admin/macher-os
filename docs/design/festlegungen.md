@@ -108,6 +108,8 @@ mit geringer Deckkraft: hell auf der ruhigen Fläche (`sand` / `--mm-surface-sub
   Daten, bleibt der Text linksbündig.
 - Abgrenzung: Die **Skizze** erklärt, was eine Funktion tut (Inhalt angedeutet). Die **Fenster-Skizze** zeigt nur,
   *wo* etwas sitzt bzw. dass es dazukommt (ein Thema, ein Icon). Je Raster nur eine Form.
+- **Integrationen mit Marke** (Google Kalender, Outlook, DATEV …): Statt des grauen Glas-Icons steht das echte Logo in
+  Farbe auf einer weißen Kachel (`FensterSkizze logo=…`, Logos aus `public/logos/integrationen/`). Formate ohne Logo behalten das Icon.
 - Gemeinsame Quelle: `src/os/ui/fenster.tsx` (`FensterSkizze`, Glas-Icon-Name). Website: `Fenster`
   (`src/components/ui/Fenster.tsx`, Strich-Icon-Name, `ton="hell" | "dunkel"`), `Card` mit `fenster`, Landingseiten
   über `vorteile.bild: "fenster"`. Software: `<span className="mm-fenster"><FensterSkizze … /></span>`

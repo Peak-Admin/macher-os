@@ -86,7 +86,7 @@ export function AufgabeZeile({ a, tag = heute() }: { a: Aufgabe; tag?: string })
         </>
       }
       rechts={
-        ueberfaellig ? <Status ton="achtung">Überfällig</Status> : a.prioritaet === 'hoch' ? <Status ton="aktiv" icon={false}>Wichtig</Status> : null
+        ueberfaellig ? <Status ton="gefahr">Überfällig</Status> : a.prioritaet === 'hoch' ? <Status ton="aktiv" icon={false}>Wichtig</Status> : null
       }
     />
   );
