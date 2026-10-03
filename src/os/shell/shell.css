@@ -106,7 +106,11 @@
 .mm-leiste-baum .mm-nav-liste { gap: 2px; }
 .mm-leiste-zeile-eigen { display: flex; align-items: center; gap: 2px; border-radius: var(--mm-radius-card); }
 .mm-leiste-zeile-eigen--ablage { background: var(--mm-brand-soft); box-shadow: inset 0 0 0 2px var(--mm-brand); }
-.mm-leiste-eigene--anpassen .mm-leiste-zeile-eigen[draggable='true'] { cursor: grab; }
+.mm-leiste-zeile-eigen[draggable='true'] { cursor: grab; }
+.mm-leiste-zeile-eigen[draggable='true'] .mm-nav-favorit { cursor: pointer; }
+/* Einfügemarke beim Ziehen: eine Linie zwischen zwei Einträgen, nur solange gezogen wird */
+.mm-leiste-zeile-eigen--vor { box-shadow: 0 -2px 0 0 var(--mm-brand); }
+.mm-leiste-zeile-eigen--nach { box-shadow: 0 2px 0 0 var(--mm-brand); }
 .mm-leiste-pfeil { display: grid; place-items: center; width: 16px; margin-right: -6px; color: var(--mm-text-secondary); }
 /* „…“ je Eintrag: beim Überfahren und mit Tastatur sichtbar, mit „Anpassen“ und auf Touch-Geräten immer */
 .mm-leiste-mehr {
@@ -283,6 +287,8 @@
 .mm-favorit--an { color: var(--mm-brand); }
 .mm-favorit--an svg { fill: currentColor; }
 .mm-favorit[aria-disabled='true'] { opacity: 0.4; cursor: not-allowed; }
+/* Stern im Seitenkopf: neben dem Titel, gleiche Höhe wie die Überschrift */
+.mm-seitenstern { width: 40px; height: 40px; margin-right: 0; }
 
 /* ---------- Heute: eine Zeile Begrüßung, höchstens drei Blöcke */
 .mm-heute { gap: 32px; }

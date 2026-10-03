@@ -8,6 +8,7 @@ import {
   LEISTE_MAX,
   STANDARD_LEISTE,
   bereinigen,
+  einordnen,
   elternVon,
   flach,
   hinzufuegen,
@@ -15,6 +16,8 @@ import {
   modulDrin,
   modulUmschalten,
   schieben,
+  seiteDrin,
+  seiteUmschalten,
   standardLeiste,
   verschieben,
   ziele,
@@ -101,6 +104,41 @@ describe('Seitenleiste', () => {
     expect(modulDrin(l, 'kunden')).toBe(true);
     l = modulUmschalten(l, 'angebote');
     expect(flach(l.eintraege).map((e) => e.modulId)).toEqual(['rechnungen', 'auswertung', 'kunden']);
+  });
+
+  test('Ziehen: vor und hinter einen Eintrag, auch in einen Ordner', () => {
+    let l: Leiste = {
+      version: 1,
+      eintraege: [
+        { id: 'a1', art: 'smart', titel: 'A' },
+        { id: 'o1', art: 'ordner', titel: 'O', kinder: [{ id: 'k1', art: 'smart', titel: 'K' }] },
+        { id: 'b1', art: 'smart', titel: 'B' },
+      ],
+    };
+    l = einordnen(l, 'b1', 'a1', 'vor');
+    expect(l.eintraege.map((e) => e.id)).toEqual(['b1', 'a1', 'o1']);
+    l = einordnen(l, 'b1', 'k1', 'nach');
+    expect(elternVon(l.eintraege, 'b1')).toBe('o1');
+    expect(flach(l.eintraege).map((e) => e.id)).toEqual(['a1', 'o1', 'k1', 'b1']);
+    l = einordnen(l, 'k1', 'a1', 'vor');
+    expect(flach(l.eintraege).map((e) => e.id)).toEqual(['k1', 'a1', 'o1', 'b1']);
+    // nie in sich selbst, nie auf sich selbst
+    expect(einordnen(l, 'o1', 'b1', 'vor')).toBe(l);
+    expect(einordnen(l, 'a1', 'a1', 'nach')).toBe(l);
+    // an derselben Stelle: keine Änderung
+    expect(einordnen(l, 'k1', 'a1', 'vor')).toBe(l);
+  });
+
+  test('Stern im Seitenkopf: Seite mit ihrem Titel merken und wieder herausnehmen', () => {
+    let l = bereinigen(standardLeiste('chef'));
+    l = seiteUmschalten(l, '/auftraege/a-1?tab=arbeit', 'Steckdosen Badezimmer');
+    const e = flach(l.eintraege).find((x) => x.art === 'seite');
+    expect(e).toMatchObject({ titel: 'Steckdosen Badezimmer', pfad: '/auftraege/a-1?tab=arbeit' });
+    expect(seiteDrin(l, '/auftraege/a-1')).toBe(true);
+    expect(seiteDrin(l, '/auftraege/a-2')).toBe(false);
+    l = seiteUmschalten(l, '/auftraege/a-1', 'egal');
+    expect(seiteDrin(l, '/auftraege/a-1')).toBe(false);
+    expect(seiteUmschalten(l, '//fremd.de', 'x')).toBe(l);
   });
 
   test('höchstens LEISTE_MAX Einträge', () => {

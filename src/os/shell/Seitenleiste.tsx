@@ -5,7 +5,7 @@
  * - „+“ öffnet das Menü zum Hinzufügen (Modul · Smart View · Diese Seite merken · Ordner).
  * - Jeder Eintrag hat ein Menü „…“ (Umbenennen, nach oben/unten, in einen Ordner, entfernen). Es erscheint beim
  *   Überfahren und ist mit „Anpassen“ dauerhaft sichtbar – keine Aktion nur per Hover oder Ziehen.
- * - Im Anpassen-Modus lassen sich Einträge zusätzlich auf einen Ordner ziehen.
+ * - Einträge lassen sich jederzeit ziehen: vor oder hinter einen anderen Eintrag oder mitten auf einen Ordner.
  * Eingeklappt bleiben nur die Icons der Einträge.
  */
 import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react';
@@ -16,9 +16,11 @@ import { useIch } from '@core/session';
 import { passt } from '@core/format';
 import { Button, Dialog, Icon, Status, Suchfeld, ThemenIcon, useBestaetigen, type IconName } from '@ui/index';
 import { ansichtVergessen, useLeiste } from './favoriten';
-import { modulVerzeichnis, ortVonPfad } from './struktur';
+import { seitenTitel } from './SeitenStern';
+import { modulVerzeichnis } from './struktur';
 import {
   aendern,
+  einordnen,
   entfernen,
   finden,
   flach,
@@ -155,8 +157,7 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
                 navigate(`/ansicht/${e.id}`);
               }}
               onSeite={() => {
-                const ort = ortVonPfad(pfad);
-                const titel = ort?.ansicht?.titel ?? ort?.ziel?.titel ?? ort?.haupt.titel ?? 'Seite';
+                const titel = seitenTitel(pfad);
                 neu({ id: neueId(), art: 'seite', titel, pfad: pfad + window.location.search }, menue.ordner, true);
               }}
               onOrdner={() => neu({ id: neueId(), art: 'ordner', titel: 'Neuer Ordner', offen: true, kinder: [] }, menue.ordner, true)}
@@ -220,7 +221,7 @@ function Baum(props: BaumProps) {
   return (
     <div
       className={`mm-leiste-baum ${ablage === 'oben' ? 'mm-leiste-baum--ablage' : ''}`}
-      onDragOver={(e) => props.anpassen && zieht(e) && (e.preventDefault(), setAblage('oben'))}
+      onDragOver={(e) => zieht(e) && (e.preventDefault(), setAblage('oben'))}
       onDragLeave={(e) => e.currentTarget === e.target && setAblage(null)}
       onDrop={(e) => {
         const id = e.dataTransfer.getData(ZIEH_TYP);
@@ -244,6 +245,13 @@ function Zweig({ eintraege, tiefe, ablage, setAblage, ...props }: BaumProps & { 
         const offen = e.offen !== false;
         const an = istAktiv(props.pfad, pfad);
         const auf = () => props.aendere((l) => aendern(l, e.id, { offen: !offen }));
+        /** Wohin fällt der Eintrag? Obere Hälfte davor, untere dahinter, bei Ordnern die Mitte hinein */
+        const stelle = (ev: DragEvent<HTMLDivElement>): 'vor' | 'nach' | 'in' => {
+          const r = ev.currentTarget.getBoundingClientRect();
+          const y = (ev.clientY - r.top) / (r.height || 1);
+          if (ordner && y > 0.25 && y < 0.75) return 'in';
+          return y < 0.5 ? 'vor' : 'nach';
+        };
         const inhalt = (
           <>
             {ordner ? (
@@ -258,26 +266,29 @@ function Zweig({ eintraege, tiefe, ablage, setAblage, ...props }: BaumProps & { 
         return (
           <li key={e.id} role="treeitem" aria-expanded={ordner ? offen : undefined} aria-selected={an}>
             <div
-              className={`mm-leiste-zeile-eigen ${ablage === e.id ? 'mm-leiste-zeile-eigen--ablage' : ''}`}
-              draggable={props.anpassen && props.umbenennen !== e.id}
+              className={`mm-leiste-zeile-eigen ${ablage?.endsWith(`:${e.id}`) ? `mm-leiste-zeile-eigen--${ablage.split(':')[0] === 'in' ? 'ablage' : ablage.split(':')[0]}` : ''}`}
+              draggable={props.umbenennen !== e.id}
               onDragStart={(ev) => {
                 ev.stopPropagation();
                 ev.dataTransfer.setData(ZIEH_TYP, e.id);
                 ev.dataTransfer.effectAllowed = 'move';
               }}
               onDragOver={(ev) => {
-                if (!ordner || !ev.dataTransfer.types.includes(ZIEH_TYP)) return;
+                if (!ev.dataTransfer.types.includes(ZIEH_TYP)) return;
                 ev.preventDefault();
                 ev.stopPropagation();
-                setAblage(e.id);
+                ev.dataTransfer.dropEffect = 'move';
+                setAblage(`${stelle(ev)}:${e.id}`);
               }}
+              onDragEnd={() => setAblage(null)}
               onDrop={(ev) => {
                 const id = ev.dataTransfer.getData(ZIEH_TYP);
-                if (!ordner || !id) return;
+                if (!id) return;
                 ev.preventDefault();
                 ev.stopPropagation();
                 setAblage(null);
-                props.aendere((l) => verschieben(l, id, e.id));
+                const wo = stelle(ev);
+                props.aendere((l) => (wo === 'in' ? verschieben(l, id, e.id) : einordnen(l, id, e.id, wo)));
               }}
             >
               {props.umbenennen === e.id ? (
