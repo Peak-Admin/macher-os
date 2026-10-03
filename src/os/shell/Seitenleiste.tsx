@@ -6,7 +6,6 @@
  * - Jeder Eintrag hat ein Menü „…“ (Umbenennen, nach oben/unten, in einen Ordner, entfernen). Es erscheint beim
  *   Überfahren und ist mit „Anpassen“ dauerhaft sichtbar – keine Aktion nur per Hover oder Ziehen.
  * - Einträge lassen sich jederzeit ziehen: vor oder hinter einen anderen Eintrag oder mitten auf einen Ordner.
- * Eingeklappt bleiben nur die Icons der Einträge.
  */
 import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react';
 import { useEinstellung } from '@core/einstellungen';
@@ -50,7 +49,7 @@ export function eintragZiel(e: LeistenEintrag): { titel: string; icon: IconName;
   return { titel: e.titel, icon: 'ordner' };
 }
 
-/** Alle Einträge mit Ziel, flach – für die eingeklappte Leiste und das Profilmenü am Handy */
+/** Alle Einträge mit Ziel, flach – für das Profilmenü am Handy */
 export function useLeistenZiele() {
   const { leiste } = useLeiste();
   return flach(leiste.eintraege)
@@ -63,7 +62,7 @@ const istAktiv = (pfad: string, ziel?: string) => !!ziel && (pfad === ziel.split
 
 type Menue = { anker: DOMRect; art: 'neu'; ordner: string | null } | { anker: DOMRect; art: 'eintrag'; id: string } | null;
 
-export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
+export function DeineLeiste() {
   const { leiste, aendern: aendere, voll } = useLeiste();
   const pfad = useLocation().pathname;
   const navigate = useNavigate();
@@ -72,7 +71,6 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
   const [umbenennen, setUmbenennen] = useState<string | null>(null);
   const [modulDialog, setModulDialog] = useState<{ ordner: string | null } | null>(null);
   const [fragen, bestaetigung] = useBestaetigen();
-  const zieleFlach = useLeistenZiele();
   const ich = useIch();
   const [zu, setZu] = useEinstellung<boolean>(`navigation.favoritenZu.${ich?.id ?? 'alle'}`, false);
 
@@ -83,22 +81,6 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
     if (benennen) setUmbenennen(e.id);
     setMenue(null);
   };
-
-  if (eingeklappt)
-    return (
-      <nav className="mm-leiste-eigene" aria-label="Deine Seitenleiste">
-        <ul className="mm-nav-liste">
-          {zieleFlach.map((z) => (
-            <li key={z.id}>
-              <Link to={z.pfad} className={`mm-nav-favorit ${istAktiv(pfad, z.pfad) ? 'mm-nav-favorit--an' : ''}`} aria-current={istAktiv(pfad, z.pfad) ? 'page' : undefined} data-tipp={z.titel}>
-                <ThemenIcon name={z.icon} size={24} strichGroesse={18} />
-                <span className="sr-only">{z.titel}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    );
 
   return (
     <nav className={`mm-leiste-eigene ${anpassen ? 'mm-leiste-eigene--anpassen' : ''}`} aria-labelledby="mm-leiste-eigene-titel">

@@ -51,8 +51,7 @@
 .mm-nav-leer a { color: var(--mm-link); }
 .mm-menue.mm-menue--oben { top: auto; bottom: calc(100% + 8px); left: 0; right: auto; max-height: calc(100vh - 120px); overflow-y: auto; }
 
-/* Ein- und ausklappbar: eingeklappt bleibt eine schmale Leiste nur mit Icons */
-.mm-sidebar { transition: width var(--mm-motion-fast) ease-out; }
+/* Ein- und ausklappbar: eingeklappt verschwindet die Leiste ganz, nur der Knopf zum Ausklappen bleibt oben links */
 .mm-leiste-kopf { display: flex; align-items: center; gap: 4px; }
 .mm-leiste-kopf .mm-logo { flex: 1; min-width: 0; }
 .mm-leiste-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -61,31 +60,18 @@
   background: none; color: var(--mm-text); cursor: pointer; transition: background-color var(--mm-motion-fast) ease-out;
 }
 .mm-leiste-umschalter:hover { background: var(--mm-hover); }
-.mm-app--eingeklappt .mm-sidebar { width: 72px; padding-left: 8px; padding-right: 8px; overflow-x: hidden; }
-.mm-app--eingeklappt .mm-leiste-text,
-.mm-app--eingeklappt .mm-nav-leer { display: none; }
-.mm-app--eingeklappt .mm-leiste-kopf { flex-direction: column; gap: 8px; }
-.mm-app--eingeklappt .mm-logo { justify-content: center; padding: 0; }
-.mm-app--eingeklappt .mm-leiste-suche { justify-content: center; padding: 8px; }
-.mm-app--eingeklappt .mm-nav-haupt,
-.mm-app--eingeklappt .mm-leiste-zeile,
-.mm-app--eingeklappt .mm-profil-knopf { justify-content: center; padding-left: 0; padding-right: 0; }
-.mm-app--eingeklappt .mm-nav-favorit { justify-content: center; padding: 6px 0; }
-/* Profilmenü neben die schmale Leiste legen, sonst schneidet die Leiste es ab */
-.mm-app--eingeklappt .mm-nav-haupt { position: relative; }
-.mm-app--eingeklappt .mm-nav-zahl { position: absolute; top: 2px; right: 6px; margin: 0; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; font-size: 11px; line-height: 18px; }
-.mm-app--eingeklappt .mm-menue--oben { position: fixed; top: auto; right: auto; left: 104px; bottom: 16px; }
-/* Schmale Leiste: eine ruhige 48-px-Spalte, gleichmäßige Abstände; oben der Ausklapp-Knopf statt Logo */
-.mm-app--eingeklappt .mm-sidebar { gap: 12px; padding-top: 12px; }
-.mm-app--eingeklappt .mm-leiste-kopf .mm-logo { display: none; }
-.mm-app--eingeklappt .mm-leiste-kopf { align-items: center; }
-.mm-app--eingeklappt .mm-leiste-umschalter { width: 48px; height: 48px; }
-.mm-app--eingeklappt .mm-leiste-werkzeuge { align-items: center; gap: 4px; }
-.mm-app--eingeklappt .mm-leiste-suche { width: 48px; min-height: 48px; padding: 0; border-color: transparent; background: none; }
-.mm-app--eingeklappt .mm-leiste-suche:hover { border-color: transparent; background: var(--mm-hover); }
-.mm-app--eingeklappt :is(.mm-nav-haupt, .mm-leiste-zeile, .mm-nav-favorit, .mm-profil-knopf) { width: 48px; min-height: 48px; margin-inline: auto; }
-.mm-app--eingeklappt .mm-nav { align-items: center; }
-.mm-app--eingeklappt .mm-leiste-eigene { padding-top: 12px; }
+.mm-leiste-umschalter:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px; }
+.mm-leiste-ausklappen { display: none; }
+@media (min-width: 1024px) {
+  .mm-app--eingeklappt :is(.mm-sidebar, .mm-leiste-griff) { display: none; }
+  .mm-app--eingeklappt .mm-leiste-ausklappen {
+    position: fixed; z-index: 20; top: 16px; left: 16px; display: grid; width: 48px; height: 48px;
+    background: var(--mm-surface); border: 1px solid var(--mm-border); border-radius: var(--mm-radius-card); box-shadow: var(--mm-shadow-lift);
+  }
+  .mm-app--eingeklappt .mm-leiste-ausklappen:hover { background: var(--mm-hover); }
+  /* Platz für den Knopf, damit er nichts vom Inhalt verdeckt */
+  .mm-app--eingeklappt .mm-hauptbereich { padding-left: 64px; }
+}
 
 /* Deine Seitenleiste: Module, Smart Views, Seiten und Ordner (Seitenleiste.tsx) */
 .mm-leiste-eigene { flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 0; padding-top: 16px; border-top: 1px solid var(--mm-border); }
@@ -134,8 +120,6 @@
 .mm-leiste-menue-text { display: flex; flex-direction: column; min-width: 0; line-height: 20px; }
 .mm-leiste-menue-linie { margin: 4px 0; border: 0; border-top: 1px solid var(--mm-border); }
 @media (prefers-reduced-motion: no-preference) { .mm-leiste-menue { animation: mm-einblenden var(--mm-motion-fast) ease-out; } }
-.mm-app--eingeklappt .mm-leiste-eigene { padding-top: 16px; }
-.mm-app--eingeklappt .mm-leiste-eigene .mm-nav-favorit { justify-content: center; padding: 6px 0; }
 /* Modul hinzufügen */
 .mm-leiste-dialog { display: flex; flex-direction: column; gap: 24px; }
 .mm-leiste-dialog-gruppe { display: flex; flex-direction: column; gap: 8px; }
@@ -162,10 +146,6 @@
 .mm-leiste-werkzeuge .mm-leiste-suche { border-color: var(--mm-border); box-shadow: var(--mm-shadow-lift); }
 .mm-leiste-kbd { padding: 2px 6px; border: 1px solid var(--mm-border); border-radius: 6px; background: var(--mm-surface-subtle); color: var(--mm-text-secondary); font: 600 12px/16px var(--mm-font); }
 .mm-leiste-suche:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 2px; }
-/* schmale Leiste: Suchen wie die übrigen Einträge – 48 px, ohne Rahmen und Schatten */
-.mm-app--eingeklappt .mm-leiste-werkzeuge .mm-leiste-suche { width: 48px; min-height: 48px; padding: 0; justify-content: center; border-color: transparent; background: none; box-shadow: none; }
-.mm-app--eingeklappt .mm-leiste-werkzeuge .mm-leiste-suche:hover { background: var(--mm-hover); }
-.mm-app--eingeklappt .mm-leiste-kbd { display: none; }
 .mm-leiste-suche-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mm-leiste-zeile {
   display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 12px; border: 0;
@@ -362,10 +342,6 @@
 .mm-wechsler-suche input { flex: 1; min-width: 0; min-height: 42px; border: 0; background: none; font: inherit; color: var(--mm-text); outline: none; }
 .mm-wechsler--kompakt { margin: 0; }
 .mm-wechsler--kompakt .mm-wechsler-knopf { gap: 4px; min-height: 44px; padding: 4px 6px; }
-/* Wechsler in der eingeklappten Leiste */
-.mm-app--eingeklappt .mm-sidebar .mm-wechsler-knopf { justify-content: center; width: 48px; min-height: 48px; margin-inline: auto; padding: 0; border-color: transparent; background: none; }
-.mm-app--eingeklappt .mm-sidebar .mm-wechsler-knopf:hover { background: var(--mm-hover); }
-.mm-app--eingeklappt .mm-sidebar .mm-wechsler-pfeil { display: none; }
 
 /* Profilmenü: „Plan wählen“ nur in der Testphase – als helle Grünfläche oben im Menü */
 .mm-menue > .mm-menue-titel:first-child { border-top: 0; margin-top: 0; }
