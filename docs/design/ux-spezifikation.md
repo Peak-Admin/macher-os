@@ -1492,8 +1492,8 @@ Ergänzt und ändert die Abschnitte oben, wo sie widersprechen:
   (Lichtkante oben, Kontakt- und weicher Fallschatten) – wie Karten, die auf den Tisch gelegt wurden. Weiter deckend, kein Glas.
 - **Bento nach Bedeutung:** Boxen sind nicht alle gleichfarbig. Die wichtigste große Box darf grün sein (weiße Schrift,
   weißer Hauptknopf); Begleitboxen warm beige oder hellgrün; Arbeitslisten bleiben weiß.
-- **KI-Zeichen:** Kugel Pink → Orange (`--mm-ki-*`), nur für Macher (KI). Suchen: links Lupe, „Suchen“ und Kürzel,
-  rechts die Kugel; ein Klick öffnet die KI-Leiste (Eingabe mit Verlaufsrand).
+- **KI-Zeichen:** Kugel Pink → Orange (`--mm-ki-*`), nur für Macher (KI). In der Navigation nur eine Fläche:
+  Lupe, „Suchen“ und Kürzel – keine Kugel. Ein Klick öffnet die KI-Leiste (Eingabe mit Verlaufsrand und Kugel).
 - **Dringend ist rot** (Gefahr-Ton), nie gelb. Überfällig ist ebenfalls rot (hellrote Fläche, dunkelrote Schrift) und färbt die ganze Kennzahl-Karte.
 - **Typ-Icons in Listen:** einfache Strich-Icons, keine Glas-Icons; **Kunden** mit Logo von ihrer Website oder Initialen.
 - **Kalender:** links Datum und Blättern, rechts Ansicht und Filter.

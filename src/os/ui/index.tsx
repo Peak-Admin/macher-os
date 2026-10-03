@@ -20,6 +20,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { FensterSkizze } from './fenster';
 import { glasFuer, ThemenIcon, type GlasIconName } from './glas';
+import { feldIcon } from './feld-icon';
 import { Icon, type IconName } from './icons';
 import { kartenIcon } from './karten-icon';
 import type { Ton } from '@core/modul';
@@ -193,12 +194,31 @@ export function Feld({ label, hilfe, fehler, children, optional }: { label: stri
   );
 }
 
-type EingabeProps = InputHTMLAttributes<HTMLInputElement> & { label: string; hilfe?: string; fehler?: string; optional?: boolean };
+/** Icon vorne im Feld: Name, `false` = keins, leer = passend zum Feld (`feldIcon`) */
+export type FeldIconWahl = IconName | false;
 
-export function Eingabe({ label, hilfe, fehler, optional, className, ...rest }: EingabeProps) {
+/** Rahmen um ein Eingabeelement mit Strich-Icon vorne; das Icon wird beim Fokus grün */
+function MitFeldIcon({ icon, oben, children }: { icon?: IconName; oben?: boolean; children: ReactNode }) {
+  if (!icon) return <>{children}</>;
+  return (
+    <div className={cx('mm-feldrahmen', oben && 'mm-feldrahmen--oben')}>
+      <Icon name={icon} size={20} className="mm-feldrahmen-icon" aria-hidden />
+      {children}
+    </div>
+  );
+}
+
+type EingabeProps = InputHTMLAttributes<HTMLInputElement> & { label: string; hilfe?: string; fehler?: string; optional?: boolean; icon?: FeldIconWahl };
+
+export function Eingabe({ label, hilfe, fehler, optional, className, icon, ...rest }: EingabeProps) {
+  const zeichen = icon === false ? undefined : (icon ?? feldIcon({ label, type: rest.type, inputMode: rest.inputMode }));
   return (
     <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>
-      {(id, beschrieben) => <input id={id} className={cx('mm-input', className)} aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest} />}
+      {(id, beschrieben) => (
+        <MitFeldIcon icon={zeichen}>
+          <input id={id} className={cx('mm-input', zeichen && 'mm-input--icon', className)} aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest} />
+        </MitFeldIcon>
+      )}
     </Feld>
   );
 }
@@ -240,8 +260,10 @@ export function Auswahl({
   disabled,
   className,
   name,
+  icon,
 }: Omit<SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> & {
   label: string;
+  icon?: FeldIconWahl;
   hilfe?: string;
   fehler?: string;
   optional?: boolean;
@@ -267,6 +289,7 @@ export function Auswahl({
   const sichtbar = suche ? alle.filter((o) => o.wert !== '' && o.label.toLowerCase().includes(suche.toLowerCase())) : alle;
   const gewaehlt = alle.find((o) => o.wert === aktuell);
   const optionId = (i: number) => `${listId}-o${i}`;
+  const zeichen = icon === false ? undefined : (icon ?? feldIcon({ label, art: 'auswahl' }));
 
   const platzieren = useCallback(() => {
     const r = knopf.current?.getBoundingClientRect();
@@ -415,6 +438,8 @@ export function Auswahl({
             onClick={() => (offen ? schliessen() : oeffnen())}
             onKeyDown={tasten}
           >
+            {/* Option mit eigenem Icon zeigt dieses statt des Feld-Icons */}
+            {zeichen && !gewaehlt?.icon && <Icon name={zeichen} size={20} className="mm-auswahl-icon" aria-hidden />}
             <span className={cx('mm-auswahl-wert', (!gewaehlt || gewaehlt.wert === '') && 'mm-auswahl-wert--leer')}>{gewaehlt?.icon ? <OptionInhalt o={gewaehlt} /> : (gewaehlt?.label ?? leer ?? 'Bitte wählen')}</span>
             <Icon name="runter" size={20} />
           </button>
@@ -470,10 +495,15 @@ export function Auswahl({
   );
 }
 
-export function Textfeld({ label, hilfe, fehler, optional, ...rest }: TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string; hilfe?: string; fehler?: string; optional?: boolean }) {
+export function Textfeld({ label, hilfe, fehler, optional, icon, className, ...rest }: TextareaHTMLAttributes<HTMLTextAreaElement> & { label: string; hilfe?: string; fehler?: string; optional?: boolean; icon?: FeldIconWahl }) {
+  const zeichen = icon === false ? undefined : (icon ?? feldIcon({ label, art: 'text' }));
   return (
     <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>
-      {(id, beschrieben) => <textarea id={id} className="mm-input mm-textarea" rows={3} aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest} />}
+      {(id, beschrieben) => (
+        <MitFeldIcon icon={zeichen} oben>
+          <textarea id={id} className={cx('mm-input mm-textarea', zeichen && 'mm-input--icon', className)} rows={3} aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest} />
+        </MitFeldIcon>
+      )}
     </Feld>
   );
 }
@@ -517,7 +547,7 @@ export function Checkbox({ label, checked, onChange, disabled }: { label: ReactN
 }
 
 /** Auswahl als Segmente (2–5 Optionen) */
-export function Segmente<T extends string>({ label, wert, optionen, onChange }: { label: string; wert: T; optionen: { wert: T; label: string }[]; onChange: (v: T) => void }) {
+export function Segmente<T extends string>({ label, wert, optionen, onChange }: { label: string; wert: T; optionen: { wert: T; label: string; icon?: IconName }[]; onChange: (v: T) => void }) {
   return (
     <div className="mm-feld">
       <span className="mm-label">{label}</span>
@@ -531,6 +561,7 @@ export function Segmente<T extends string>({ label, wert, optionen, onChange }: 
             className={cx('mm-segment', wert === o.wert && 'mm-segment--an')}
             onClick={() => onChange(o.wert)}
           >
+            {o.icon && <Icon name={o.icon} size={18} aria-hidden />}
             {o.label}
           </button>
         ))}
@@ -641,6 +672,35 @@ export function Suchfeld({ wert, onChange, platzhalter = 'Suchen …', autoFocus
       />
     </div>
   );
+}
+
+/**
+ * Abschnitt in einem längeren Formular: Glas-Icon, Titel und ein kurzer Satz, wofür die Felder da sind.
+ * Abschnitte trennt eine feine Linie – so zerfällt ein langes Formular in überschaubare Happen.
+ */
+export function FormAbschnitt({ titel, text, icon, children }: { titel: string; text?: ReactNode; icon: IconName; children: ReactNode }) {
+  const id = useId();
+  return (
+    <section className="mm-formabschnitt" aria-labelledby={id}>
+      <div className="mm-formabschnitt-kopf">
+        <span className="mm-formabschnitt-icon" aria-hidden>
+          <ThemenIcon name={icon} size={40} />
+        </span>
+        <div className="mm-formabschnitt-text">
+          <h2 id={id} className="mm-formabschnitt-titel">
+            {titel}
+          </h2>
+          {text && <p className="mm-meta">{text}</p>}
+        </div>
+      </div>
+      <div className="mm-formabschnitt-inhalt">{children}</div>
+    </section>
+  );
+}
+
+/** Fuß eines Formulars: Linie darüber, Hauptaktion links, Nebenaktionen daneben */
+export function FormFuss({ children }: { children: ReactNode }) {
+  return <div className="mm-formfuss">{children}</div>;
 }
 
 /** Formular-Raster: 1 Spalte mobil, 2 Spalten ab Tablet */

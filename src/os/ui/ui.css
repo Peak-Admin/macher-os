@@ -46,7 +46,10 @@
   width: 100%; min-width: 0; min-height: var(--mm-control-height); padding: 11px 12px; color: var(--mm-text);
   border: 1px solid var(--mm-border-dark); border-radius: var(--mm-radius-control);
   background: var(--mm-surface); font-size: 16px;
+  transition: border-color var(--mm-motion-fast) ease-out, box-shadow var(--mm-motion-fast) ease-out;
 }
+.mm-input:hover:not(:disabled):not(:focus-visible):not([readonly]):not([aria-invalid]) { border-color: var(--mm-text); }
+.mm-input::placeholder { color: var(--mm-text-secondary); }
 .mm-input:focus-visible { outline: 2px solid var(--mm-focus); outline-offset: 1px; border-color: var(--mm-focus); }
 .mm-textarea { min-height: 112px; resize: vertical; }
 .mm-feld--fehler .mm-input { border-color: var(--mm-danger); }
@@ -58,6 +61,31 @@
   .mm-formraster--2 { grid-template-columns: 1fr 1fr; }
   .mm-formraster--3 { grid-template-columns: 1fr 1fr 1fr; }
 }
+/* Strich-Icon vorne im Feld (siehe feld-icon.ts) – grau, beim Fokus grün */
+.mm-feldrahmen { position: relative; min-width: 0; container-type: inline-size; }
+.mm-feldrahmen-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--mm-text-secondary); pointer-events: none; transition: color var(--mm-motion-fast) ease-out; }
+.mm-feldrahmen--oben .mm-feldrahmen-icon { top: 14px; transform: none; }
+.mm-feldrahmen:focus-within .mm-feldrahmen-icon, .mm-auswahl-knopf:focus-visible .mm-auswahl-icon, .mm-auswahl--offen .mm-auswahl-icon { color: var(--mm-brand); }
+.mm-feld--fehler .mm-feldrahmen-icon { color: var(--mm-danger); }
+.mm-input.mm-input--icon { padding-left: 44px; }
+.mm-auswahl-icon { flex-shrink: 0; margin-left: 2px; color: var(--mm-text-secondary); transition: color var(--mm-motion-fast) ease-out; }
+.mm-auswahl-knopf .mm-auswahl-wert { flex: 1 1 auto; }
+.mm-auswahl-knopf:has(> .mm-auswahl-icon) { container-type: inline-size; }
+/* In sehr schmalen Feldern (Zahlen in Rasterzeilen) hat der Wert Vorrang vor dem Icon */
+@container (max-width: 132px) {
+  .mm-feldrahmen-icon, .mm-auswahl-icon { display: none; }
+  .mm-input.mm-input--icon { padding-left: 12px; }
+}
+/* Formular-Abschnitte: Glas-Icon, Titel, kurzer Satz – getrennt durch eine feine Linie */
+.mm-formabschnitt { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.mm-formabschnitt + .mm-formabschnitt { padding-top: 24px; border-top: 1px solid var(--mm-border); }
+.mm-formabschnitt-kopf { display: flex; align-items: center; gap: 12px; }
+.mm-formabschnitt-icon { flex-shrink: 0; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--mm-radius-control); background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); }
+.mm-formabschnitt-icon:has(> [data-glas]) { background: none; }
+.mm-formabschnitt-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mm-formabschnitt-titel { font: 600 18px/24px var(--mm-font); color: var(--mm-black); margin: 0; }
+.mm-formabschnitt-inhalt { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.mm-formfuss { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding-top: 24px; border-top: 1px solid var(--mm-border); }
 .mm-suchfeld { position: relative; display: flex; align-items: center; }
 .mm-suchfeld > svg { position: absolute; left: 12px; color: var(--mm-text); pointer-events: none; }
 .mm-suchfeld .mm-input { padding-left: 40px; }
@@ -94,6 +122,7 @@
 /* Heller Umschalter (Festlegung 10/2026): ruhige graue Spur, aktive Wahl als weiße Fläche mit Rand – nie dunkle Balken */
 .mm-segmente { display: inline-flex; flex-wrap: wrap; gap: 4px; align-self: flex-start; max-width: 100%; padding: 4px; border-radius: var(--mm-radius-card); background: var(--mm-switch-bg); }
 .mm-segment {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   flex: 1 1 auto; min-height: 44px; padding: 8px 16px; border: 1px solid transparent; border-radius: var(--mm-radius-control);
   background: transparent; color: var(--mm-on-switch); cursor: pointer; font-weight: 500;
   transition: background-color var(--mm-motion-fast) ease-out, border-color var(--mm-motion-fast) ease-out;
@@ -416,8 +445,8 @@
 .mm-auswahl-knopf:focus-visible { outline: 3px solid var(--mm-focus); outline-offset: 1px; border-color: var(--mm-focus); }
 .mm-auswahl--offen .mm-auswahl-knopf { border-color: var(--mm-focus); box-shadow: 0 0 0 1px var(--mm-focus); }
 .mm-auswahl-knopf:disabled { cursor: not-allowed; background: var(--mm-surface-subtle); color: var(--mm-text-secondary); }
-.mm-auswahl-knopf > svg { flex-shrink: 0; color: var(--mm-text-secondary); transition: transform var(--mm-motion-fast) ease-out; }
-.mm-auswahl--offen .mm-auswahl-knopf > svg { transform: rotate(180deg); }
+.mm-auswahl-knopf > svg:last-child { flex-shrink: 0; color: var(--mm-text-secondary); transition: transform var(--mm-motion-fast) ease-out; }
+.mm-auswahl--offen .mm-auswahl-knopf > svg:last-child { transform: rotate(180deg); }
 .mm-auswahl-wert { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--mm-text); }
 .mm-auswahl-wert--leer { color: var(--mm-text-secondary); }
 .mm-auswahl-liste {

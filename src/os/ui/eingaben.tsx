@@ -7,7 +7,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { centAlsEingabe, centAus, datum } from '@core/format';
 import type { Cent } from '@core/objects';
-import { Button, Eingabe, Feld, FormRaster, Meldung, Meta, Stapel, Zeile, type ButtonProps } from './index';
+import { Button, Eingabe, Feld, FormRaster, Meldung, Meta, Stapel, Zeile, type ButtonProps, type FeldIconWahl } from './index';
 import type { IconName } from './icons';
 
 // ------------------------------------------------------------------ Zahlen
@@ -39,13 +39,14 @@ export interface ZahlEingabeProps {
   disabled?: boolean;
   platzhalter?: string;
   autoFocus?: boolean;
+  icon?: FeldIconWahl;
 }
 
 /**
  * Zahl eingeben – deutsche Schreibweise, mobil mit Zahlentastatur.
  * Hält den Text lokal, damit „12,“ tippbar ist, und meldet gültige Werte sofort (oder beim Verlassen).
  */
-export function ZahlEingabe({ label, wert, onWert, cent, beimVerlassen, optional, hilfe, fehler, disabled, platzhalter, autoFocus }: ZahlEingabeProps) {
+export function ZahlEingabe({ label, wert, onWert, cent, beimVerlassen, optional, hilfe, fehler, disabled, platzhalter, autoFocus, icon }: ZahlEingabeProps) {
   const format = (w: number | undefined) => (cent ? centAlsEingabe(w) : zahlAlsEingabe(w));
   const lesen = (v: string): number | undefined => (!v.trim() ? undefined : cent ? centAus(v) : zahlAus(v));
   const [text, setText] = useState(format(wert));
@@ -57,6 +58,7 @@ export function ZahlEingabe({ label, wert, onWert, cent, beimVerlassen, optional
   return (
     <Eingabe
       label={label}
+      icon={icon ?? (cent ? 'euro' : undefined)}
       value={text}
       inputMode="decimal"
       optional={optional}

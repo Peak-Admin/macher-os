@@ -15,7 +15,7 @@
  *
  * Außerdem hier: PWA (Service Worker registrieren, Installieren-Hinweis) und Offline-Hinweis.
  */
-import { useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { oeffne } from '@core/overlay';
 import { db, useSpeicherStatus } from '@core/db';
@@ -24,7 +24,7 @@ import { useEinstellung } from '@core/einstellungen';
 import { personName } from '@core/format';
 import { alleModule, modul } from '@core/modul';
 import type { Mitarbeiter } from '@core/objects';
-import { Auswahl, Button, Icon, IconButton, KiKugel, Meldung, ThemenIcon } from '@ui/index';
+import { Auswahl, Button, Icon, IconButton, Meldung, ThemenIcon } from '@ui/index';
 import { Personenbild } from '@ui/person';
 import { useEingangsZahl } from '@modules/eingang/Eingang';
 import { useInboxZahl } from '@modules/benachrichtigungen/Inbox';
@@ -35,6 +35,7 @@ import { STRUKTUR, ortVonPfad } from './struktur';
 import { LokaleNavigation } from './LokaleNavigation';
 import { BetriebWechsler } from './BetriebWechsler';
 import { DeineLeiste, useLeistenZiele } from './Seitenleiste';
+import { BREITE_MAX, BREITE_MIN, BREITE_STANDARD, leisteBreite } from './seitenleiste';
 import './shell.css';
 
 /** Monteur und Azubi bekommen am Handy die schlanke Monteur-App */
@@ -58,6 +59,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const ich = useIch();
   const [eingeklappt, setzeEingeklappt] = useEinstellung<boolean>(`navigation.eingeklappt.${ich?.id ?? 'alle'}`, false);
   const umschalten = () => setzeEingeklappt(!eingeklappt);
+  const [breite, setzeBreite] = useEinstellung<number>(`navigation.breite.${ich?.id ?? 'alle'}`, BREITE_STANDARD);
   const monteur = istMonteurRolle(ich);
   const tab = monteurTab(pfad, aktiv);
   const eingang = useEingangsZahl();
@@ -80,7 +82,7 @@ export function Shell({ children }: { children: ReactNode }) {
   });
 
   return (
-    <div className={`mm-app ${eingeklappt ? 'mm-app--eingeklappt' : ''}`}>
+    <div className={`mm-app ${eingeklappt ? 'mm-app--eingeklappt' : ''}`} style={{ '--mm-sidebar-width': `${leisteBreite(breite)}px` } as CSSProperties}>
       <a href="#inhalt" className="mm-skip">
         Zum Inhalt springen
       </a>
@@ -145,6 +147,7 @@ export function Shell({ children }: { children: ReactNode }) {
         {!monteur && <DeineLeiste eingeklappt={eingeklappt} />}
         <Profil oben />
       </aside>
+      <LeistenGriff breite={leisteBreite(breite)} eingeklappt={eingeklappt} setzeBreite={setzeBreite} umschalten={umschalten} />
 
       <div className="mm-hauptbereich">
         <header className="mm-kopf-mobil">
@@ -189,6 +192,57 @@ export function Shell({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Rand zwischen Seitenleiste und Inhalt (nach Peak One): ziehen ändert die Breite (200–400 px), ein Klick klappt
+ * die Leiste ein oder aus. Tastatur: Pfeiltasten ±16 px, Pos1/Ende Minimum/Maximum, Enter klappt ein/aus.
+ */
+function LeistenGriff({ breite, eingeklappt, setzeBreite, umschalten }: { breite: number; eingeklappt: boolean; setzeBreite: (b: number) => void; umschalten: () => void }) {
+  const start = useRef<{ x: number; b: number; bewegt: boolean } | null>(null);
+  const setzeLive = (b: number) => document.querySelector<HTMLElement>('.mm-app')?.style.setProperty('--mm-sidebar-width', `${leisteBreite(b)}px`);
+  return (
+    <button
+      type="button"
+      className="mm-leiste-griff"
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Breite der Seitenleiste"
+      aria-valuemin={BREITE_MIN}
+      aria-valuemax={BREITE_MAX}
+      aria-valuenow={breite}
+      title="Ziehen zum Anpassen · Klicken zum Einklappen"
+      onPointerDown={(e) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        start.current = { x: e.clientX, b: breite, bewegt: false };
+        e.currentTarget.dataset.zieht = '';
+        document.querySelector<HTMLElement>('.mm-app')?.setAttribute('data-zieht', '');
+      }}
+      onPointerMove={(e) => {
+        const s = start.current;
+        if (!s) return;
+        const dx = e.clientX - s.x;
+        if (Math.abs(dx) > 3) s.bewegt = true;
+        if (s.bewegt && !eingeklappt) setzeLive(s.b + dx);
+      }}
+      onPointerUp={(e) => {
+        const s = start.current;
+        start.current = null;
+        delete e.currentTarget.dataset.zieht;
+        document.querySelector<HTMLElement>('.mm-app')?.removeAttribute('data-zieht');
+        if (!s) return;
+        if (!s.bewegt) umschalten();
+        else if (!eingeklappt) setzeBreite(leisteBreite(s.b + e.clientX - s.x));
+      }}
+      onClick={(e) => e.detail === 0 && umschalten()}
+      onKeyDown={(e) => {
+        const neu = e.key === 'ArrowLeft' ? breite - 16 : e.key === 'ArrowRight' ? breite + 16 : e.key === 'Home' ? BREITE_MIN : e.key === 'End' ? BREITE_MAX : null;
+        if (neu === null || eingeklappt) return;
+        e.preventDefault();
+        setzeBreite(leisteBreite(neu));
+      }}
+    />
+  );
+}
+
 /** Zahl an der Glocke: nur was gerade Aufmerksamkeit braucht (Jetzt + Aktion nötig) – nie „ungelesen“ */
 function useUngelesen() {
   return useInboxZahl();
@@ -197,8 +251,8 @@ function useUngelesen() {
 const istMac = () => typeof navigator !== 'undefined' && /mac|iphone|ipad/i.test(navigator.platform || navigator.userAgent);
 
 /**
- * Ein Einstieg für beides: links „Suchen“ mit Lupe und Tastenkürzel, rechts die KI-Kugel. Beide öffnen dieselbe
- * KI-Leiste (Treffer in deinen Daten oder eine Frage an Macher, Strg K bzw. ⌘K).
+ * Ein Einstieg für beides: eine Fläche mit Lupe, „Suchen“ und Tastenkürzel. Sie öffnet die KI-Leiste
+ * (Treffer in deinen Daten oder eine Frage an Macher, Strg K bzw. ⌘K) – die KI-Kugel steht erst dort, nicht in der Navigation.
  */
 function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
   if (kompakt)
@@ -209,16 +263,11 @@ function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
     );
   const kuerzel = istMac() ? '⌘K' : 'Strg K';
   return (
-    <div className="mm-leiste-suchzeile">
-      <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" title={`Suchen oder Macher fragen (${kuerzel})`}>
-        <Icon name="suche" size={18} />
-        <span className="mm-leiste-suche-text mm-leiste-text">Suchen</span>
-        <kbd className="mm-leiste-kbd mm-leiste-text">{kuerzel}</kbd>
-      </button>
-      <button type="button" className="mm-leiste-ki" onClick={() => oeffne('suche')} aria-label="Macher fragen" title="Macher fragen">
-        <KiKugel groesse={26} />
-      </button>
-    </div>
+    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" title={`Suchen oder Macher fragen (${kuerzel})`}>
+      <Icon name="suche" size={18} />
+      <span className="mm-leiste-suche-text mm-leiste-text">Suchen</span>
+      <kbd className="mm-leiste-kbd mm-leiste-text">{kuerzel}</kbd>
+    </button>
   );
 }
 

@@ -9,6 +9,7 @@
  * Eingeklappt bleiben nur die Icons der Einträge.
  */
 import { useEffect, useRef, useState, type DragEvent, type ReactNode } from 'react';
+import { useEinstellung } from '@core/einstellungen';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { modul, modulPfad } from '@core/modul';
 import { useIch } from '@core/session';
@@ -69,6 +70,8 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
   const [modulDialog, setModulDialog] = useState<{ ordner: string | null } | null>(null);
   const [fragen, bestaetigung] = useBestaetigen();
   const zieleFlach = useLeistenZiele();
+  const ich = useIch();
+  const [zu, setZu] = useEinstellung<boolean>(`navigation.favoritenZu.${ich?.id ?? 'alle'}`, false);
 
   useEffect(() => setMenue(null), [pfad]);
 
@@ -97,8 +100,12 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
   return (
     <nav className={`mm-leiste-eigene ${anpassen ? 'mm-leiste-eigene--anpassen' : ''}`} aria-labelledby="mm-leiste-eigene-titel">
       <div className="mm-leiste-eigene-kopf">
+        {/* Favoriten lassen sich zuklappen – die Wahl bleibt je Mitarbeiter gespeichert */}
         <h2 id="mm-leiste-eigene-titel" className="mm-nav-titel">
-          Favoriten
+          <button type="button" className="mm-leiste-gruppe-knopf" aria-expanded={!zu} onClick={() => setZu(!zu)}>
+            <Icon name={zu ? 'weiter' : 'runter'} size={16} />
+            Favoriten
+          </button>
         </h2>
         <button
           type="button"
@@ -122,6 +129,7 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
         </button>
       </div>
 
+      {!zu && (
       <Baum
         leiste={leiste}
         aendere={aendere}
@@ -131,7 +139,8 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
         setUmbenennen={setUmbenennen}
         setMenue={setMenue}
       />
-      {leiste.eintraege.length === 0 && (
+      )}
+      {!zu && leiste.eintraege.length === 0 && (
         <p className="mm-nav-leer">Leg dir hier ab, was du oft brauchst: Module, eigene Ansichten oder Seiten. Tippe auf das Plus.</p>
       )}
 
@@ -250,7 +259,6 @@ function Zweig({ eintraege, tiefe, ablage, setAblage, ...props }: BaumProps & { 
           <li key={e.id} role="treeitem" aria-expanded={ordner ? offen : undefined} aria-selected={an}>
             <div
               className={`mm-leiste-zeile-eigen ${ablage === e.id ? 'mm-leiste-zeile-eigen--ablage' : ''}`}
-              style={{ paddingLeft: tiefe * 16 }}
               draggable={props.anpassen && props.umbenennen !== e.id}
               onDragStart={(ev) => {
                 ev.stopPropagation();
@@ -304,7 +312,7 @@ function Zweig({ eintraege, tiefe, ablage, setAblage, ...props }: BaumProps & { 
             </div>
             {ordner && offen && (e.kinder?.length ?? 0) > 0 && <Zweig {...props} eintraege={e.kinder!} tiefe={tiefe + 1} ablage={ablage} setAblage={setAblage} />}
             {ordner && offen && !e.kinder?.length && (
-              <p className="mm-leiste-ordner-leer" style={{ paddingLeft: (tiefe + 1) * 16 + 14 }}>
+              <p className="mm-leiste-ordner-leer mm-leiste-ordner-leer--eingerueckt">
                 Noch leer
               </p>
             )}
