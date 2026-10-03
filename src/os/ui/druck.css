@@ -11,7 +11,7 @@
   box-shadow: var(--mm-shadow-overlay); font-size: 14px; line-height: 1.45; font-variant-numeric: tabular-nums;
 }
 .mm-druck > p, .mm-druck > div { margin-bottom: var(--mm-space-2); }
-.mm-druck h1, .mm-druck-titel { margin: var(--mm-space-8) 0 var(--mm-space-2); font: 700 22px/28px var(--mm-font); letter-spacing: -0.25px; color: var(--mm-black); }
+.mm-druck h1, .mm-druck-titel { margin: var(--mm-space-8) 0 var(--mm-space-2); font: 600 22px/28px var(--mm-font-titel); letter-spacing: -0.25px; color: var(--mm-black); }
 .mm-druck h2 { margin: var(--mm-space-6) 0 var(--mm-space-2); font: 600 16px/22px var(--mm-font); color: var(--mm-black); }
 .mm-druck table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; margin: var(--mm-space-2) 0; }
 .mm-druck th, .mm-druck td { text-align: left; padding: 6px var(--mm-space-2); border-bottom: 1px solid var(--mm-border); vertical-align: top; }

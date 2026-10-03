@@ -1,13 +1,6 @@
 'use client';
 /** Einstieg der Software (nur im Browser): Datenbank öffnen, Module laden, App zeigen. */
 import { useEffect, useState } from 'react';
-import '@fontsource/barlow/400.css';
-import '@fontsource/barlow/500.css';
-import '@fontsource/barlow/600.css';
-import '@fontsource/barlow/700.css';
-import '@fontsource/barlow/800.css';
-import '@fontsource/barlow/900.css';
-import '@fontsource/poppins/600.css';
 import './ui/base.css';
 import { ladeModule } from './shell/module';
 import { starteAutomationen } from './core/macher';

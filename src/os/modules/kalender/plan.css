@@ -7,7 +7,7 @@
 .pl-kopfleiste > .mm-feld:has(.mm-segmente), .pl-kopfleiste-rechts > .mm-feld:has(.mm-segmente) { flex: 0 0 auto; min-width: 0; }
 .pl-kopfleiste .mm-segmente { flex-wrap: nowrap; }
 .pl-navi { display: flex; align-items: center; gap: 4px; }
-.pl-zeitraum { font: 700 22px/28px var(--mm-font); color: var(--mm-black); margin: 0 8px 0 12px; white-space: nowrap; }
+.pl-zeitraum { font: 600 22px/28px var(--mm-font-titel); color: var(--mm-black); margin: 0 8px 0 12px; white-space: nowrap; }
 
 /* Woche / Monat: 7 Spalten */
 .pl-woche { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }

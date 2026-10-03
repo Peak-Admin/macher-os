@@ -49,7 +49,7 @@ import type { OrbZustand } from './orb-zustand';
 
 const cx = (...k: (string | false | undefined | null)[]) => k.filter(Boolean).join(' ');
 
-/** Versalien (Poppins) nur für kurze Marken-Oberzeilen; Nummern, Orte und lange Texte in normaler Schreibweise */
+/** Versalien nur für kurze Marken-Oberzeilen; Nummern, Orte und lange Texte in normaler Schreibweise */
 export const oberzeileKlasse = (text: string) => cx('mm-oberzeile', (text.length > 20 || /\d{3,}|\d[.,:/-]\d/.test(text)) && 'mm-oberzeile--daten');
 
 // ------------------------------------------------------------------ Buttons

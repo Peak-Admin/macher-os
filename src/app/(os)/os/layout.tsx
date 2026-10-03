@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Markenauftakt } from "@/components/auftakt/Markenauftakt";
 import { auftaktSkript } from "@/components/auftakt/skript";
-import { barlow, poppins } from "@/lib/schriften";
+import { garamond, inter } from "@/lib/schriften";
 
 /** Root-Layout der Software. Eigenes Root-Layout, damit sich die Stile von Website und Software nicht mischen
  *  (Wechsel zwischen beiden lädt die Seite neu). */
@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 
 export default function OsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${barlow.variable} ${poppins.variable}`} suppressHydrationWarning>
+    <html lang="de" className={`${inter.variable} ${garamond.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: auftaktSkript }} />
       </head>

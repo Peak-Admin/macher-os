@@ -6,7 +6,7 @@
 .ob-marke::after { content: ''; position: absolute; top: 0; bottom: 0; right: -6%; width: 18%; background: var(--mm-brand); transform: skew(-17deg); box-shadow: inset 0 0 0 999px rgb(0 0 0 / 30%); }
 .ob-marke-innen { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 24px 16px 32px; display: flex; flex-direction: column; gap: 24px; }
 .ob-logo { display: flex; align-items: center; gap: 12px; font-size: 20px; color: var(--mm-on-dark); }
-.ob-marke-statement { margin: 0; max-width: 60%; font: 900 44px/46px var(--mm-font); letter-spacing: -1px; text-transform: uppercase; color: var(--mm-on-dark); }
+.ob-marke-statement { margin: 0; max-width: 60%; font: 600 44px/46px var(--mm-font-titel); letter-spacing: -1px; text-transform: uppercase; color: var(--mm-on-dark); }
 .ob-inhalt { max-width: 760px; margin: 0 auto; padding: 0 16px; }
 .ob-ablauf { display: flex; flex-direction: column; gap: 32px; }
 .ob-frage { display: flex; flex-direction: column; gap: 24px; }
@@ -105,7 +105,7 @@
 }
 /* Konto und Blöcke im Setup */
 .ob-block { display: flex; flex-direction: column; gap: 16px; }
-.ob-block-titel { margin: 0; font: 700 20px/28px var(--mm-font); color: var(--mm-black); }
+.ob-block-titel { margin: 0; font: 600 20px/28px var(--mm-font-titel); color: var(--mm-black); }
 .ob-website { display: flex; gap: 8px; align-items: flex-end; min-width: 0; }
 .ob-website > :first-child { flex: 1; min-width: 0; }
 /* Spielwiese: fester Hinweis unten rechts, mobil oberhalb der unteren Navigation */

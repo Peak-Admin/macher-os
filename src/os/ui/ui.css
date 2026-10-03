@@ -207,7 +207,7 @@
 .mm-karte-kopf-start > .mm-karten-icon { margin-top: -3px; }
 /* Strich-Icon auf ruhiger Grünfläche vor Karten- und Kennzahl-Titeln (kein Glas-Icon) */
 .mm-karten-icon { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: var(--mm-radius-control); background: var(--mm-brand-soft); color: var(--mm-brand-text); }
-.mm-karte-titel { font: 600 20px/26px var(--mm-font); }
+.mm-karte-titel { font: 600 20px/26px var(--mm-font-titel); }
 @media (max-width: 767px) { .mm-karte { padding: 16px; } }
 .mm-raster { display: grid; gap: 16px; }
 .mm-zweispalten { display: grid; gap: 24px; grid-template-columns: 1fr; align-items: start; }
@@ -386,7 +386,7 @@
 .mm-kunde { min-height: 100vh; display: flex; flex-direction: column; background: var(--mm-canvas); }
 .mm-kunde-kopf { background: var(--mm-surface); border-bottom: 1px solid var(--mm-border); }
 .mm-kunde-kopf-innen { margin: 0 auto; min-height: 72px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-.mm-kunde-name { font: 800 22px/28px var(--mm-font); letter-spacing: -0.25px; color: var(--mm-black); }
+.mm-kunde-name { font: 600 22px/28px var(--mm-font-titel); letter-spacing: -0.25px; color: var(--mm-black); }
 .mm-kunde-logo { display: block; max-height: 48px; max-width: 200px; object-fit: contain; }
 .mm-kunde-inhalt { width: 100%; margin: 0 auto; padding: 32px 16px 48px; flex: 1; }
 .mm-kunde-fuss { width: 100%; margin: 0 auto; padding: 16px 16px 32px; border-top: 1px solid var(--mm-border); display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13px; line-height: 20px; color: var(--mm-text); }

@@ -45,7 +45,7 @@ export function emailHtml(e: Pick<EmailAuftrag, 'text' | 'link' | 'linkText' | '
   const knopf = e.link
     ? `<p style="margin:24px 0"><a href="${htmlSicher(e.link)}" style="background:#2F9250;color:#ffffff;font-weight:700;font-size:19px;text-decoration:none;padding:12px 24px;border-radius:4px;display:inline-block">${htmlSicher(e.linkText ?? 'Jetzt ansehen')}</a></p>`
     : '';
-  return `<!doctype html><html lang="de"><body style="margin:0;background:#F7FAFB"><div style="max-width:560px;margin:0 auto;padding:32px 24px;font-family:Barlow,Arial,sans-serif;font-size:17px;line-height:1.5;color:#374040;background:#ffffff">${absaetze}${knopf}<p style="margin:32px 0 0;font-size:14px;color:#5b6666">${htmlSicher(e.absenderName)}</p></div></body></html>`;
+  return `<!doctype html><html lang="de"><body style="margin:0;background:#F7FAFB"><div style="max-width:560px;margin:0 auto;padding:32px 24px;font-family:Inter,Arial,sans-serif;font-size:17px;line-height:1.5;color:#374040;background:#ffffff">${absaetze}${knopf}<p style="margin:32px 0 0;font-size:14px;color:#5b6666">${htmlSicher(e.absenderName)}</p></div></body></html>`;
 }
 
 /** Sendet eine E-Mail über Resend. Absender = Name des Betriebs, Antwort an den Betrieb. */

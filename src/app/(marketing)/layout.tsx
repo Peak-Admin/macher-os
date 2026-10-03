@@ -3,7 +3,7 @@ import { Markenauftakt } from "@/components/auftakt/Markenauftakt";
 import { auftaktSkript } from "@/components/auftakt/skript";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { barlow, poppins } from "@/lib/schriften";
+import { garamond, inter } from "@/lib/schriften";
 import { site } from "@/lib/site";
 import "../globals.css";
 
@@ -29,7 +29,7 @@ export const viewport: Viewport = {
 /** Root-Layout der Marketing-Website. Die Software unter `/os` hat ein eigenes Root-Layout (`src/app/(os)`). */
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${barlow.variable} ${poppins.variable} antialiased`} suppressHydrationWarning>
+    <html lang="de" className={`${inter.variable} ${garamond.variable} antialiased`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: auftaktSkript }} />
       </head>
