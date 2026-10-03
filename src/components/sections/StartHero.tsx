@@ -109,7 +109,7 @@ export function StartHero() {
   );
 
   return (
-    <Zone ton="dunkel" label="hero-titel" className="z-10 flow-root overflow-visible">
+    <Zone ton="dunkel" label="hero-titel" className="hero-oberflaeche-bauplan z-10 flow-root overflow-visible">
       <div className="mx-auto max-w-[90rem] px-4 pt-28 sm:px-10 xl:px-14">
         <KernBereiche dunkel ueberhang kopf={kopf} />
       </div>
