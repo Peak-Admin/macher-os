@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Icon } from "@/components/ui";
+import { Icon, Wahl } from "@/components/ui";
 import type { DemoGewerk, Farbe } from "@/content/demo";
 import { AppFenster, AppSeitenleiste, Blatt, VorschauStatus, type NavEintrag, type StatusTon, type VorschauBereich } from "@/components/mocks/AppFenster";
 
@@ -196,12 +196,7 @@ function Auftrag({
           {a.schritte.map((s, i) => (
             <li key={s}>
               <label className="flex cursor-pointer items-center gap-2.5 rounded-md px-1 py-1 text-[13px] hover:bg-hover">
-                <input
-                  type="checkbox"
-                  checked={erledigt[i]}
-                  onChange={() => umschalten(i)}
-                  className="size-4 accent-[var(--color-primary)]"
-                />
+                <Wahl groesse="mittel" checked={erledigt[i]} onChange={() => umschalten(i)} />
                 <span className={erledigt[i] ? "text-muted line-through" : ""}>{s}</span>
               </label>
             </li>

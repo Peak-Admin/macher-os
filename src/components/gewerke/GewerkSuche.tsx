@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useMemo, useState, type FormEvent } from "react";
-import { Icon } from "@/components/ui";
+import { Icon, SucheLeeren } from "@/components/ui";
 import type { Suchbegriff } from "@/content/gewerke";
 
 const FALLBACK = "/gewerke/weitere-gewerke";
@@ -96,8 +96,17 @@ export function GewerkSuche({ begriffe, beispiele }: { begriffe: Suchbegriff[]; 
             }}
             placeholder="Was macht dein Betrieb? z. B. Kälteanlagenbauer"
             aria-describedby={listId}
-            className="feld h-13 pl-12"
+            className="feld h-13 pl-12 pr-14"
           />
+          {eingabe && (
+            <SucheLeeren
+              feldId={inputId}
+              onLeeren={() => {
+                setEingabe("");
+                setAbgeschickt(false);
+              }}
+            />
+          )}
         </div>
         <button
           type="submit"

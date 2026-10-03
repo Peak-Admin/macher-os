@@ -68,7 +68,7 @@ import { betriebsbereiche, zuBereich } from './bereiche';
 import { herunterladen } from '../rechnungen/xrechnung';
 import { Ablage } from './Ablage';
 import './belege.css';
-import { BelegFormular, ZuordnungFelder, LieferantenListe, Vorschau, belegAusWerten, leereWerte, lieferantAus, type FormularWerte } from './Formular';
+import { BelegFormular, ZuordnungFelder, useLieferantenNamen, Vorschau, belegAusWerten, leereWerte, lieferantAus, type FormularWerte } from './Formular';
 
 export function BelegStatus({ b }: { b: BelegX }) {
   const f = naechsteFrist(b);
@@ -311,6 +311,7 @@ export function BelegDetail() {
   const geld = useDarf('geld');
   const [fragen, bestaetigung] = useBestaetigen();
   const [fehler, setFehler] = useState<string>();
+  const lieferantenNamen = useLieferantenNamen();
   const b = belegX(id);
   if (!b || b.geloeschtAm)
     return (
@@ -447,12 +448,11 @@ export function BelegDetail() {
         haupt={
           <Karte>
             <Stapel>
-              <LieferantenListe />
               <FormRaster>
                 <Eingabe
                   key={`l-${b.lieferantId ?? b.lieferantName ?? ''}`}
                   label="Lieferant"
-                  list="geld-lieferanten"
+                  vorschlaege={lieferantenNamen}
                   defaultValue={lieferantName(b) === 'Unbekannter Lieferant' ? '' : lieferantName(b)}
                   onBlur={(e) => set(lieferantAus(e.target.value))}
                 />

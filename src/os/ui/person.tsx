@@ -57,7 +57,7 @@ export function Personenbild({ m, groesse = 32, dekorativ }: { m: PersonArg; gro
       className="mm-avatar mm-avatar--foto"
       src={url}
       alt={dekorativ ? '' : (name ?? '')}
-      title={dekorativ ? undefined : name}
+      data-tipp={dekorativ ? undefined : name}
       width={groesse}
       height={groesse}
       loading="lazy"
@@ -85,7 +85,7 @@ export function Personen({ ids, groesse = 24, max = 4, namen }: { ids: (ID | Mit
   const rest = leute.length - max;
   const text = leute.map(personName).join(', ');
   return (
-    <span className="mm-personen" title={namen ? undefined : text}>
+    <span className="mm-personen" data-tipp={namen ? undefined : text}>
       <span className="mm-personen-bilder" aria-hidden={namen ? true : undefined} role={namen ? undefined : 'img'} aria-label={namen ? undefined : text}>
         {leute.slice(0, max).map((p) => (
           <Personenbild key={p.id} m={p} groesse={groesse} dekorativ />

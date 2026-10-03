@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useId, useMemo, useState, type ReactNode } from "react";
-import { Icon } from "@/components/ui";
+import { Auswahl as AuswahlListe, Icon, Wahl } from "@/components/ui";
 import { eingabeText, leseZahl, zahl } from "@/content/werkzeuge/rechnen";
 
 /* ------------------------------------------------------------------------ */
@@ -246,12 +246,7 @@ export function Schalter({
 }) {
   return (
     <label className="flex min-h-12 cursor-pointer items-start gap-3 py-1">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-        className="mt-0.5 size-5 shrink-0 cursor-pointer rounded accent-[var(--color-signal-dark)]"
-      />
+      <Wahl checked={checked} onChange={(e) => onChange(e.target.checked)} className="mt-0.5" />
       <span>
         <span className="font-semibold">{label}</span>
         {hinweis && <span className="block text-sm text-muted">{hinweis}</span>}
@@ -260,6 +255,7 @@ export function Schalter({
   );
 }
 
+/** Auswahlliste der Rechner – eigene Liste statt nativem <select> (`Auswahl` aus `@/components/ui`). */
 export function Auswahl<T extends string>({
   id,
   label,
@@ -278,22 +274,14 @@ export function Auswahl<T extends string>({
   kompakt?: boolean;
 }) {
   return (
-    <div className="min-w-0">
-      <label htmlFor={id} className={labelVersteckt ? "sr-only" : "feld-label"}>
-        {label}
-      </label>
-      <select
-        id={id}
-        value={wert}
-        onChange={(e) => onChange(e.target.value as T)}
-        className={`feld font-semibold ${kompakt ? "px-2.5" : ""}`}
-      >
-        {optionen.map((o) => (
-          <option key={o.wert} value={o.wert}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-    </div>
+    <AuswahlListe<T>
+      id={id}
+      label={label}
+      wert={wert}
+      optionen={optionen}
+      onChange={onChange}
+      labelVersteckt={labelVersteckt}
+      kompakt={kompakt}
+    />
   );
 }

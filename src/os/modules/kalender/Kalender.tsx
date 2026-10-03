@@ -14,6 +14,7 @@ import { useSchmal } from './hooks';
 import { TerminFormular } from './TerminFormular';
 import { terminVerschieben } from './TerminDetail';
 import './plan.css';
+import { ziehBild } from '@ui/ziehen';
 
 type Ansicht = 'tag' | 'woche' | 'monat';
 
@@ -54,6 +55,7 @@ function useZiehen(darfPlanen: boolean, onAblegen: (t: Termin, tag: Datum) => vo
     zug,
     ziel,
     start: (t) => (e) => {
+      ziehBild(e, t.titel);
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', t.titel);
       setZug(t.id);

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Icon } from "@/components/ui";
+import { Icon, Wahl } from "@/components/ui";
 import { formatPreis, plaene } from "@/content/preise";
 import { wegweiser } from "@/content/preise-vergleich";
 
@@ -22,17 +22,18 @@ export function PlanWegweiser() {
             return (
               <label
                 key={w.id}
-                className={`flex cursor-pointer items-start gap-3 rounded-lg bg-white p-4 ring-1 transition has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-signal ${
+                className={`flex cursor-pointer items-start gap-3 rounded-lg bg-white p-4 ring-1 transition ${
                   aktiv ? "ring-2 ring-ink" : "ring-line hover:ring-ink/40"
                 }`}
               >
-                <input
-                  type="radio"
+                <Wahl
+                  typ="radio"
+                  groesse="gross"
                   name="teamgroesse"
                   value={w.id}
                   checked={aktiv}
                   onChange={() => setAuswahl(w.id)}
-                  className="mt-1 size-4 accent-[var(--color-ink)]"
+                  className="mt-0.5"
                 />
                 <span>
                   <span className="block font-semibold">{w.label}</span>

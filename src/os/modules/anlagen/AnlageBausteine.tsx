@@ -109,12 +109,7 @@ export function AnlageDialog({ anlage, kundeId, ortId, onSchliessen, onGespeiche
     >
       <Stapel abstand={24}>
         <FormRaster>
-          <Eingabe label="Art der Anlage" value={f.typ} onChange={set('typ')} fehler={fehler.typ} list="mm-anlagentypen" />
-          <datalist id="mm-anlagentypen">
-            {typen.map((t) => (
-              <option key={t} value={t} />
-            ))}
-          </datalist>
+          <Eingabe label="Art der Anlage" value={f.typ} onChange={set('typ')} fehler={fehler.typ} vorschlaege={typen} />
           <div>
             <OrtAuswahl kundeId={kunde} wert={ort} onChange={(id) => setOrt(id || undefined)} label="Steht an" />
             {fehler.ort && (

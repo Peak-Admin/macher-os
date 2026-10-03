@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { Icon } from "@/components/ui";
+import { FeldFehler, Icon } from "@/components/ui";
 import type { Anliegen } from "@/content/unternehmen";
 
 /**
@@ -23,6 +23,7 @@ export function AnliegenFormular({
   const id = useId();
   const [auswahlId, setAuswahlId] = useState(anliegen[0]?.id ?? "");
   const [geoeffnet, setGeoeffnet] = useState(false);
+  const [fehler, setFehler] = useState<{ name?: string; nachricht?: string }>({});
   const auswahl = anliegen.find((a) => a.id === auswahlId) ?? anliegen[0];
 
   function absenden(e: FormEvent<HTMLFormElement>) {
@@ -31,6 +32,19 @@ export function AnliegenFormular({
     const name = String(daten.get("name") ?? "").trim();
     const betrieb = String(daten.get("betrieb") ?? "").trim();
     const nachricht = String(daten.get("nachricht") ?? "").trim();
+
+    // Eigene Prüfung statt Browser-Blasen: Meldung unter dem Feld, Fokus aufs erste fehlende Feld
+    const neu = {
+      name: name ? undefined : "Bitte gib deinen Namen ein.",
+      nachricht: nachricht ? undefined : "Bitte schreib kurz, worum es geht.",
+    };
+    setFehler(neu);
+    if (neu.name || neu.nachricht) {
+      setGeoeffnet(false);
+      const erstes = neu.name ? "name" : "nachricht";
+      (e.currentTarget.elements.namedItem(erstes) as HTMLElement | null)?.focus();
+      return;
+    }
 
     const betreff = `${betreffPrefix}: ${auswahl.label}${betrieb ? ` – ${betrieb}` : ""}`;
     const text = [
@@ -48,7 +62,7 @@ export function AnliegenFormular({
   }
 
   return (
-    <form onSubmit={absenden} className="rounded-2xl border border-line bg-white p-6 sm:p-8">
+    <form onSubmit={absenden} noValidate className="rounded-2xl border border-line bg-white p-6 sm:p-8">
       <fieldset>
         <legend className="font-display text-lg font-bold">{frage}</legend>
         <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
@@ -57,7 +71,7 @@ export function AnliegenFormular({
             return (
               <label
                 key={a.id}
-                className={`flex cursor-pointer items-start gap-3 rounded-xl p-3.5 ring-1 transition ${
+                className={`flex cursor-pointer items-start gap-3 rounded-xl p-3.5 ring-1 transition has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-primary ${
                   aktiv ? "bg-signal-soft ring-2 ring-signal" : "ring-line hover:ring-ink/30"
                 }`}
               >
@@ -85,7 +99,17 @@ export function AnliegenFormular({
 
       <div className={`mt-6 grid gap-4 ${mitBetrieb ? "sm:grid-cols-2" : ""}`}>
         <Feld id={`${id}-name`} label="Dein Name">
-          <input id={`${id}-name`} name="name" required autoComplete="name" className={feldKlasse} />
+          <input
+            id={`${id}-name`}
+            name="name"
+            required
+            autoComplete="name"
+            aria-invalid={fehler.name ? true : undefined}
+            aria-describedby={fehler.name ? `${id}-name-fehler` : undefined}
+            onChange={() => fehler.name && setFehler((f) => ({ ...f, name: undefined }))}
+            className={feldKlasse}
+          />
+          <FeldFehler id={`${id}-name-fehler`}>{fehler.name}</FeldFehler>
         </Feld>
         {mitBetrieb && (
           <Feld id={`${id}-betrieb`} label="Betrieb" optional>
@@ -101,8 +125,12 @@ export function AnliegenFormular({
             required
             rows={5}
             placeholder={auswahl.platzhalter}
+            aria-invalid={fehler.nachricht ? true : undefined}
+            aria-describedby={fehler.nachricht ? `${id}-nachricht-fehler` : undefined}
+            onChange={() => fehler.nachricht && setFehler((f) => ({ ...f, nachricht: undefined }))}
             className={`${feldKlasse} h-auto py-3`}
           />
+          <FeldFehler id={`${id}-nachricht-fehler`}>{fehler.nachricht}</FeldFehler>
         </Feld>
       </div>
 

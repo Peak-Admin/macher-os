@@ -92,7 +92,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </a>
       <aside className="mm-sidebar" aria-label="Hauptnavigation">
         <div className="mm-leiste-kopf">
-          <Link to="/heute" className="mm-logo" aria-label="Macher OS, zu Heute" title={eingeklappt ? 'Macher OS' : undefined}>
+          <Link to="/heute" className="mm-logo" aria-label="Macher OS, zu Heute" data-tipp={eingeklappt ? 'Macher OS' : undefined}>
             <img className="mm-logo-zeichen" src="/os/icons/icon-192.png" alt="" width={32} height={32} />
             <span className="mm-leiste-text">
               Macher <strong>OS</strong>
@@ -104,7 +104,7 @@ export function Shell({ children }: { children: ReactNode }) {
             aria-expanded={!eingeklappt}
             aria-keyshortcuts="Control+B"
             aria-label={eingeklappt ? 'Navigation ausklappen' : 'Navigation einklappen'}
-            title={`${eingeklappt ? 'Navigation ausklappen' : 'Navigation einklappen'} (Strg B)`}
+            data-tipp={`${eingeklappt ? 'Navigation ausklappen' : 'Navigation einklappen'} (Strg B)`}
             onClick={umschalten}
           >
             <Icon name="leiste" />
@@ -124,7 +124,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   to={t.pfad}
                   className={`mm-nav-haupt ${tab === t.id ? 'mm-nav-haupt--aktiv' : ''}`}
                   aria-current={tab === t.id ? 'page' : undefined}
-                  title={eingeklappt ? t.titel : undefined}
+                  data-tipp={eingeklappt ? t.titel : undefined}
                 >
                   <span className="mm-nav-haupt-icon">
                     <ThemenIcon name={t.icon} size={28} />
@@ -138,7 +138,7 @@ export function Shell({ children }: { children: ReactNode }) {
                   to={b.pfad}
                   className={`mm-nav-haupt ${aktiv === b.id ? 'mm-nav-haupt--aktiv' : ''}`}
                   aria-current={aktiv === b.id ? 'page' : undefined}
-                  title={eingeklappt ? b.titel : undefined}
+                  data-tipp={eingeklappt ? b.titel : undefined}
                 >
                   <span className="mm-nav-haupt-icon">
                     <ThemenIcon name={b.icon} size={28} />
@@ -213,7 +213,7 @@ function LeistenGriff({ breite, eingeklappt, setzeBreite, umschalten }: { breite
       aria-valuemin={BREITE_MIN}
       aria-valuemax={BREITE_MAX}
       aria-valuenow={breite}
-      title="Ziehen zum Anpassen · Klicken zum Einklappen"
+      data-tipp="Ziehen zum Anpassen · Klicken zum Einklappen"
       onPointerDown={(e) => {
         e.currentTarget.setPointerCapture(e.pointerId);
         start.current = { x: e.clientX, b: breite, bewegt: false };
@@ -267,7 +267,7 @@ function SuchenOderFragen({ kompakt }: { kompakt?: boolean }) {
     );
   const kuerzel = istMac() ? '⌘K' : 'Strg K';
   return (
-    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" title={`Suchen oder Macher fragen (${kuerzel})`}>
+    <button type="button" className="mm-leiste-suche" onClick={() => oeffne('suche')} aria-keyshortcuts="Control+K Meta+K" data-tipp={`Suchen oder Macher fragen (${kuerzel})`}>
       <Icon name="suche" size={18} />
       <span className="mm-leiste-suche-text mm-leiste-text">Suchen</span>
       <kbd className="mm-leiste-kbd mm-leiste-text">{kuerzel}</kbd>
@@ -282,7 +282,7 @@ function Glocke() {
       type="button"
       className="mm-leiste-zeile"
       aria-label={`Benachrichtigungen${ungelesen ? `, ${ungelesen} brauchen dich` : ''}`}
-      title="Benachrichtigungen"
+      data-tipp="Benachrichtigungen"
       onClick={() => oeffne('benachrichtigungen')}
     >
       <span className="mm-nav-haupt-icon mm-glocke">

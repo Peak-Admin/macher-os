@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
-import { Icon } from "@/components/ui";
+import { Icon, SucheLeeren } from "@/components/ui";
 import type { HilfeSuchEintrag } from "@/content/hilfe/artikel";
 
 function normalisieren(s: string) {
@@ -59,8 +59,9 @@ export function HilfeSuche({
           onChange={(e) => setSuche(e.target.value)}
           placeholder="Wobei brauchst du Hilfe? z. B. Rechnung, Urlaub, App"
           autoComplete="off"
-          className="feld h-14 pl-12"
+          className="feld h-14 pl-12 pr-14"
         />
+        {suche && <SucheLeeren feldId={id} onLeeren={() => setSuche("")} />}
       </div>
 
       {vorschlaege.length > 0 && suche === "" && (

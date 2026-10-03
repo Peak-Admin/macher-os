@@ -374,7 +374,7 @@ function Kuendigen({ offen, schliessen, bis, planId, gekuendigt, nichtVerbunden 
           <legend className="mm-label">Was ist der Hauptgrund? (freiwillig – hilft uns, besser zu werden)</legend>
           {KUENDIGUNGS_GRUENDE.map((g) => (
             <label key={g.wert} className="abo-grund">
-              <input type="radio" name="grund" value={g.wert} checked={grund === g.wert} onChange={() => setGrund(g.wert)} />
+              <input type="radio" className="mm-radio" name="grund" value={g.wert} checked={grund === g.wert} onChange={() => setGrund(g.wert)} />
               {g.label}
             </label>
           ))}

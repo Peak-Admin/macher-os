@@ -111,14 +111,7 @@ export function BetriebsmittelFormular() {
               {art === 'fahrzeug' ? (
                 <Eingabe label="Kilometerstand" inputMode="numeric" value={f.kilometerstand} onChange={set('kilometerstand')} optional />
               ) : (
-                <>
-                  <Eingabe label="Standort" list="mm-bm-standorte" value={f.standort} onChange={set('standort')} optional hilfe="Lager, Werkstatt oder Kennzeichen eines Fahrzeugs" />
-                  <datalist id="mm-bm-standorte">
-                    {orte.map((o) => (
-                      <option key={o} value={o} />
-                    ))}
-                  </datalist>
-                </>
+                <Eingabe label="Standort" vorschlaege={orte} value={f.standort} onChange={set('standort')} optional hilfe="Lager, Werkstatt oder Kennzeichen eines Fahrzeugs" />
               )}
               <Eingabe label="Angeschafft am" type="date" value={f.anschaffungAm} onChange={set('anschaffungAm')} optional />
               <Eingabe label="Anschaffungspreis netto (€)" inputMode="decimal" value={f.anschaffungspreis} onChange={set('anschaffungspreis')} optional />

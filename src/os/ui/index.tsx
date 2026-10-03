@@ -11,6 +11,9 @@ import {
   useRef,
   useState,
   type ButtonHTMLAttributes,
+  type FormEvent,
+  type InputEvent,
+  type WheelEvent,
   type InputHTMLAttributes,
   type KeyboardEvent as TastenEreignis,
   type ReactNode,
@@ -35,6 +38,8 @@ export type { IconName } from './icons';
 export * from './eingaben';
 export { DatumEingabe, type DatumEingabeProps } from './datum';
 import { DatumEingabe } from './datum';
+export { UhrzeitEingabe, VorschlagEingabe } from './liste-eingabe';
+import { UhrzeitEingabe, VorschlagEingabe } from './liste-eingabe';
 export * from './druck';
 export * from './kunde';
 export { MacherOrb, MacherArbeitet, KiKugel, kiGlow, orbFuer, orbText, ORB_ZUSTAENDE, type OrbZustand } from './orb';
@@ -162,7 +167,7 @@ export function AktionsMenue({ aktionen, label = 'Weitere Aktionen', klein }: { 
 /** Nur-Icon-Button – immer mit Label für Screenreader */
 export function IconButton({ icon, label, className, ...rest }: { icon: IconName; label: string } & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button type="button" className={cx('mm-iconbtn', className)} aria-label={label} title={label} {...rest}>
+    <button type="button" className={cx('mm-iconbtn', className)} aria-label={label} data-tipp={label} {...rest}>
       <Icon name={icon} />
     </button>
   );
@@ -210,17 +215,64 @@ function MitFeldIcon({ icon, oben, children }: { icon?: IconName; oben?: boolean
   );
 }
 
-type EingabeProps = InputHTMLAttributes<HTMLInputElement> & { label: string; hilfe?: string; fehler?: string; optional?: boolean; icon?: FeldIconWahl };
+type EingabeProps = InputHTMLAttributes<HTMLInputElement> & {
+  label: string;
+  hilfe?: string;
+  fehler?: string;
+  optional?: boolean;
+  icon?: FeldIconWahl;
+  /** Vorschläge unter dem Feld (eigene Liste statt `<datalist>`); freier Text bleibt erlaubt */
+  vorschlaege?: readonly string[];
+};
 
-export function Eingabe({ label, hilfe, fehler, optional, className, icon, ...rest }: EingabeProps) {
-  // Datumsfelder bekommen die Macher-Datumswahl statt des Browser-Kalenders
+/** Eigene Fehlermeldung statt der Sprechblase des Browsers (E-Mail, Adresse, min/max …) */
+export function pruefMeldung(el: HTMLInputElement): string {
+  const v = el.validity;
+  if (v.valueMissing) return 'Bitte ausfüllen.';
+  if (v.typeMismatch && el.type === 'email') return 'Bitte gib eine gültige E-Mail-Adresse ein, z. B. name@firma.de.';
+  if (v.typeMismatch && el.type === 'url') return 'Bitte gib die vollständige Adresse ein, z. B. https://www.beispiel.de.';
+  if (v.badInput) return 'Bitte gib eine Zahl ein.';
+  if (v.rangeUnderflow) return `Mindestens ${el.min.replace('.', ',')}.`;
+  if (v.rangeOverflow) return `Höchstens ${el.max.replace('.', ',')}.`;
+  if (v.stepMismatch) return 'Bitte gib eine ganze Zahl ein.';
+  if (v.tooShort) return `Bitte mindestens ${el.minLength} Zeichen eingeben.`;
+  if (v.tooLong) return `Bitte höchstens ${el.maxLength} Zeichen eingeben.`;
+  if (v.patternMismatch) return el.title || 'Bitte im richtigen Format eingeben.';
+  return 'Bitte prüfe diese Angabe.';
+}
+
+export function Eingabe({ label, hilfe, fehler, optional, className, icon, vorschlaege, onInvalid, onInput, onWheel, ...rest }: EingabeProps) {
+  const [pruefung, setPruefung] = useState<string>();
+  // Datums- und Uhrzeitfelder bekommen die Macher-Wahl statt Browser-Kalender und -Uhr
   if (rest.type === 'date') return <DatumEingabe label={label} hilfe={hilfe} fehler={fehler} optional={optional} className={className} icon={icon} {...rest} />;
+  if (rest.type === 'time') return <UhrzeitEingabe label={label} hilfe={hilfe} fehler={fehler} optional={optional} className={className} icon={icon} {...rest} />;
+  const fehlerText = fehler ?? pruefung;
+  const eigene = {
+    // Browser prüft weiter (E-Mail, min/max), zeigt die Meldung aber bei uns unter dem Feld statt als Sprechblase
+    onInvalid: (e: FormEvent<HTMLInputElement>) => {
+      onInvalid?.(e);
+      e.preventDefault();
+      const el = e.currentTarget;
+      setPruefung(pruefMeldung(el));
+      if (el.form?.querySelector('input:invalid, textarea:invalid, select:invalid') === el) el.focus();
+    },
+    onInput: (e: InputEvent<HTMLInputElement>) => {
+      onInput?.(e);
+      if (pruefung) setPruefung(undefined);
+    },
+    // Mausrad verstellt keine Zahlen beim Scrollen der Seite
+    onWheel: (e: WheelEvent<HTMLInputElement>) => {
+      onWheel?.(e);
+      if (rest.type === 'number' && document.activeElement === e.currentTarget) e.currentTarget.blur();
+    },
+  };
+  if (vorschlaege) return <VorschlagEingabe label={label} hilfe={hilfe} fehler={fehlerText} optional={optional} className={className} icon={icon} vorschlaege={vorschlaege} {...rest} {...eigene} />;
   const zeichen = icon === false ? undefined : (icon ?? feldIcon({ label, type: rest.type, inputMode: rest.inputMode }));
   return (
-    <Feld label={label} hilfe={hilfe} fehler={fehler} optional={optional}>
+    <Feld label={label} hilfe={hilfe} fehler={fehlerText} optional={optional}>
       {(id, beschrieben) => (
         <MitFeldIcon icon={zeichen}>
-          <input id={id} className={cx('mm-input', zeichen && 'mm-input--icon', className)} aria-invalid={!!fehler || undefined} aria-describedby={beschrieben} {...rest} />
+          <input id={id} className={cx('mm-input', zeichen && 'mm-input--icon', className)} aria-invalid={!!fehlerText || undefined} aria-describedby={beschrieben} {...rest} {...eigene} />
         </MitFeldIcon>
       )}
     </Feld>
@@ -653,7 +705,7 @@ export function AuswahlKarten<T extends string>({
  */
 export function TypIcon({ name, label }: { name: IconName; label: string }) {
   return (
-    <span className="mm-typicon" title={label}>
+    <span className="mm-typicon" data-tipp={label}>
       <Icon name={name} size={18} />
       <span className="sr-only">{label}: </span>
     </span>
@@ -945,7 +997,8 @@ export function Avatar({ text, farbe, groesse = 32, titel }: { text: string; far
     <span
       className="mm-avatar"
       style={{ width: groesse, height: groesse, background: farbe ?? 'var(--mm-brand-text)', color: farbe && hell(farbe) ? 'var(--mm-dark)' : '#fff', fontSize: groesse * 0.4 }}
-      title={titel}
+      data-tipp={titel}
+      role={titel ? 'img' : undefined}
       aria-label={titel}
     >
       {text}

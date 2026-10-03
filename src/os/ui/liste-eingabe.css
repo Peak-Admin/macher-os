@@ -1,0 +1,17 @@
+/* ---------- Aufklappliste für Uhrzeit und Vorschläge (src/os/ui/liste-eingabe.tsx) – ersetzt Browser-Uhr und datalist.
+   Feld und Öffner-Knopf teilen sich die Klassen der Datumswahl (datum.css). */
+.mm-liste-pop {
+  position: fixed; z-index: 1000; margin: 0; padding: 4px; list-style: none; overflow-y: auto; overscroll-behavior: contain;
+  border: 1px solid var(--mm-border); border-radius: var(--mm-radius-panel); background: var(--mm-surface); box-shadow: var(--mm-shadow-overlay);
+  animation: mm-datum-auf var(--mm-motion-fast) ease-out;
+}
+.mm-liste-eintrag {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 0 12px;
+  border-radius: var(--mm-radius-control); font-variant-numeric: tabular-nums; color: var(--mm-text); cursor: pointer;
+}
+.mm-liste-eintrag > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-liste-eintrag > svg { flex-shrink: 0; color: var(--mm-brand); }
+.mm-liste-eintrag--aktiv { background: var(--mm-surface-subtle); }
+.mm-liste-eintrag--gewaehlt { background: var(--mm-brand-soft); color: var(--mm-brand-ink); font-weight: 600; }
+.mm-liste-eintrag--aus { color: var(--mm-text-secondary); cursor: not-allowed; opacity: 0.6; }
+.mm-liste-leer { padding: 12px; color: var(--mm-text-secondary); font-size: 14px; }

@@ -125,22 +125,13 @@ export function AuftraegeSeite({ neu }: { neu?: boolean } = {}) {
 
   const zusatzFilter = (
     <div className="ak-filter-zusatz" id="auftrag-filter">
-      <Feld label="Phase">
-        {(id) => (
-          <select id={id} className="mm-input mm-select" value={f.phase ?? ''} onChange={(e) => setze({ phase: e.target.value || undefined })}>
-            <option value="">Alle Phasen</option>
-            {PHASEN_GRUPPEN.map((g) => (
-              <optgroup key={g.label} label={g.label}>
-                {g.phasen.map((p) => (
-                  <option key={p} value={p}>
-                    {phaseLabel(p)}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-        )}
-      </Feld>
+      <Auswahl
+        label="Phase"
+        leer="Alle Phasen"
+        value={f.phase ?? ''}
+        onChange={(e) => setze({ phase: e.target.value || undefined })}
+        optionen={PHASEN_GRUPPEN.flatMap((g) => g.phasen.map((p) => ({ wert: p, label: phaseLabel(p), gruppe: g.label })))}
+      />
       <Auswahl
         label="Mitarbeiter"
         value={f.mitarbeiterId ?? ''}

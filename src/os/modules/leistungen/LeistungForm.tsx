@@ -161,7 +161,7 @@ function Formular({ leistung }: { leistung?: Leistung }) {
           >
             <FormRaster>
               <Eingabe label="Name" value={f.name} onChange={(e) => set('name', e.target.value)} fehler={fehler.name} autoFocus={!leistung} />
-              <Eingabe label="Kategorie" value={f.kategorie} onChange={(e) => set('kategorie', e.target.value)} optional list="leistung-kategorien" hilfe="z. B. Installation, Wartung, Lohn" />
+              <Eingabe label="Kategorie" value={f.kategorie} onChange={(e) => set('kategorie', e.target.value)} optional vorschlaege={kategorienVon(alle).filter((k) => k !== 'Ohne Kategorie')} hilfe="z. B. Installation, Wartung, Lohn" />
               <Auswahl label="Einheit" value={f.einheit} onChange={(e) => set('einheit', e.target.value as Einheit)} optionen={EINHEITEN.map((x) => ({ wert: x, label: x }))} />
               {geld ? (
                 <Eingabe label={`Preis netto je ${f.einheit} (€)`} inputMode="decimal" value={f.preis} onChange={(e) => set('preis', e.target.value)} fehler={fehler.preis} placeholder="0,00" />
@@ -170,11 +170,6 @@ function Formular({ leistung }: { leistung?: Leistung }) {
               )}
               <Eingabe label={`Arbeitszeit je ${f.einheit} (Minuten)`} inputMode="numeric" value={f.minuten} onChange={(e) => set('minuten', e.target.value)} fehler={fehler.minuten} optional hilfe="Grundlage für Planung und Kalkulation" />
             </FormRaster>
-            <datalist id="leistung-kategorien">
-              {kategorienVon(alle).filter((k) => k !== 'Ohne Kategorie').map((k) => (
-                <option key={k} value={k} />
-              ))}
-            </datalist>
             <Textfeld label="Beschreibung" value={f.beschreibung} onChange={(e) => set('beschreibung', e.target.value)} optional hilfe="Erscheint als Langtext in Angeboten." />
 
             <Stapel abstand={8}>

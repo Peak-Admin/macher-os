@@ -68,7 +68,7 @@ export function AngebotDetail() {
   };
 
   const hauptaktion = !aktuell ? undefined : entwurf ? (
-    <Button icon="mail" onClick={() => (a.positionen.length ? setVersandOffen(true) : toast('Füge zuerst Positionen hinzu.', { ton: 'achtung' }))} disabled={!senden} title={senden ? undefined : 'Deine Rolle darf nichts an Kunden senden.'}>
+    <Button icon="mail" onClick={() => (a.positionen.length ? setVersandOffen(true) : toast('Füge zuerst Positionen hinzu.', { ton: 'achtung' }))} disabled={!senden} data-tipp={senden ? undefined : 'Deine Rolle darf nichts an Kunden senden.'}>
       Angebot versenden
     </Button>
   ) : a.status === 'versendet' ? (

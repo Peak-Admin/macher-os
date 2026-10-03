@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Zone } from "@/components/ui";
 import { bildVorhanden } from "@/components/ui/Foto";
 import { app, herausgeber } from "@/lib/site";
+import { HeroEmail } from "./HeroEmail";
 import { KernBereiche } from "./KernBereiche";
 import { TrustRow } from "./TrustRow";
 
@@ -90,32 +91,7 @@ export function StartHero() {
               <span className="h-px flex-1 bg-white/20" />
             </p>
 
-            <form action={app.einrichten()} method="get">
-              <label
-                htmlFor="hero-email"
-                className="mb-2 block text-base font-medium text-white"
-              >
-                Deine E-Mail-Adresse
-              </label>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <input
-                  id="hero-email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  inputMode="email"
-                  placeholder="name@betrieb.de"
-                  className="h-12 w-full min-w-0 rounded-lg border border-white/40 bg-white px-4 text-base text-ink placeholder:text-muted focus:outline-none focus-visible:ring-[3px] focus-visible:ring-accent sm:flex-1"
-                />
-                <button
-                  type="submit"
-                  className="btn-primaer min-h-12 shrink-0 px-6"
-                >
-                  Kostenlos testen
-                </button>
-              </div>
-            </form>
+            <HeroEmail action={app.einrichten()} />
           </div>
 
           <TrustRow dark className="mt-5 justify-center" />

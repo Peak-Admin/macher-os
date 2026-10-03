@@ -163,7 +163,7 @@ function ConnectorDialog({ c, onSchliessen }: { c: Connector | undefined; onSchl
           <Meta>{VERBINDUNGSART[c.art].text}</Meta>
         </Abschnitt>
         {c.technik && c.technik.length > 0 && (
-          <details>
+          <details className="mm-aufklapper">
             <summary>Technische Angaben</summary>
             <ul style={{ margin: '8px 0 0', paddingLeft: 20 }}>
               {c.technik.map((t) => (

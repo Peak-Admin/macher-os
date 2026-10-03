@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useId, useMemo, useState } from "react";
-import { Icon } from "@/components/ui";
+import { Icon, SucheLeeren } from "@/components/ui";
 import { treffer } from "./suche";
 
 export type BlogListenEintrag = {
@@ -70,8 +70,9 @@ export function BlogFilter({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Artikel durchsuchen"
             autoComplete="off"
-            className="feld pl-11"
+            className="feld pl-11 pr-14"
           />
+          {query && <SucheLeeren feldId={id} onLeeren={() => setQuery("")} />}
         </div>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Nach Thema filtern">
           <button type="button" className={chip(thema === null)} aria-pressed={thema === null} onClick={() => setThema(null)}>

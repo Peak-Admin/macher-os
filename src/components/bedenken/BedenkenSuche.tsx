@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
-import { Faq, Icon, type FaqItem } from "@/components/ui";
+import { Faq, Icon, SucheLeeren, type FaqItem } from "@/components/ui";
 
 function normalisieren(s: string) {
   return s
@@ -40,8 +40,9 @@ export function BedenkenSuche({ eintraege, vorschlaege = [] }: { eintraege: FaqI
           onChange={(e) => setSuche(e.target.value)}
           placeholder="z. B. Daten, Kosten, Mitarbeiter"
           autoComplete="off"
-          className="feld h-14 pl-12"
+          className="feld h-14 pl-12 pr-14"
         />
+        {suche && <SucheLeeren feldId={id} onLeeren={() => setSuche("")} />}
       </div>
 
       {vorschlaege.length > 0 && (

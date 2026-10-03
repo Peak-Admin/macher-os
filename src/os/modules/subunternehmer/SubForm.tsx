@@ -93,7 +93,7 @@ function Formular({ sub }: { sub?: Subunternehmer }) {
         >
           <FormRaster>
             <Eingabe label="Firma" value={f.firma} onChange={set('firma')} fehler={fehler.firma} autoFocus={!sub} autoComplete="organization" />
-            <Eingabe label="Gewerk / Leistung" value={f.gewerk} onChange={set('gewerk')} fehler={fehler.gewerk} list="sub-gewerke" placeholder="z. B. Gerüstbau" />
+            <Eingabe label="Gewerk / Leistung" value={f.gewerk} onChange={set('gewerk')} fehler={fehler.gewerk} vorschlaege={['Gerüstbau', 'Trockenbau', 'Estrich', 'Abbruch', 'Erdarbeiten', 'Kernbohrung', ...GEWERKE.map((g) => g.label)]} placeholder="z. B. Gerüstbau" />
             <Eingabe label="Ansprechpartner" optional value={f.ansprechpartner} onChange={set('ansprechpartner')} />
             <Eingabe label="Telefon" optional type="tel" value={f.telefon} onChange={set('telefon')} />
             <Eingabe label="E-Mail" optional type="email" value={f.email} onChange={set('email')} />
@@ -102,11 +102,6 @@ function Formular({ sub }: { sub?: Subunternehmer }) {
             <Eingabe label="PLZ" optional inputMode="numeric" value={f.plz} onChange={set('plz')} />
             <Eingabe label="Ort" optional value={f.ort} onChange={set('ort')} />
           </FormRaster>
-          <datalist id="sub-gewerke">
-            {['Gerüstbau', 'Trockenbau', 'Estrich', 'Abbruch', 'Erdarbeiten', 'Kernbohrung', ...GEWERKE.map((g) => g.label)].map((g) => (
-              <option key={g} value={g} />
-            ))}
-          </datalist>
           <Textfeld label="Notiz" optional value={f.notiz} onChange={set('notiz')} hilfe="z. B. Zuverlässigkeit, Vorlaufzeit, Besonderheiten" />
           <Stapel abstand={8}>
             <Schalter label="Aktiv" beschreibung="Inaktive Firmen werden beim Einsetzen nicht mehr angeboten." checked={f.aktiv} onChange={(v) => setF({ ...f, aktiv: v })} />

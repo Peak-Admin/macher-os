@@ -35,6 +35,7 @@ import {
   type Leiste,
   type LeistenEintrag,
 } from './seitenleiste';
+import { ziehBild } from '@ui/ziehen';
 
 const ZIEH_TYP = 'text/x-macher-leiste';
 
@@ -89,7 +90,7 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
         <ul className="mm-nav-liste">
           {zieleFlach.map((z) => (
             <li key={z.id}>
-              <Link to={z.pfad} className={`mm-nav-favorit ${istAktiv(pfad, z.pfad) ? 'mm-nav-favorit--an' : ''}`} aria-current={istAktiv(pfad, z.pfad) ? 'page' : undefined} title={z.titel}>
+              <Link to={z.pfad} className={`mm-nav-favorit ${istAktiv(pfad, z.pfad) ? 'mm-nav-favorit--an' : ''}`} aria-current={istAktiv(pfad, z.pfad) ? 'page' : undefined} data-tipp={z.titel}>
                 <ThemenIcon name={z.icon} size={24} strichGroesse={18} />
                 <span className="sr-only">{z.titel}</span>
               </Link>
@@ -113,7 +114,7 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
           type="button"
           className="mm-leiste-knopf"
           aria-pressed={anpassen}
-          title={anpassen ? 'Anpassen beenden' : 'Seitenleiste anpassen'}
+          data-tipp={anpassen ? 'Anpassen beenden' : 'Seitenleiste anpassen'}
           onClick={() => (setAnpassen(!anpassen), setUmbenennen(null))}
         >
           {anpassen ? 'Fertig' : 'Anpassen'}
@@ -122,7 +123,7 @@ export function DeineLeiste({ eingeklappt }: { eingeklappt: boolean }) {
           type="button"
           className="mm-leiste-knopf mm-leiste-knopf--icon"
           aria-label="Zur Seitenleiste hinzufügen"
-          title={voll ? 'Deine Seitenleiste ist voll' : 'Zur Seitenleiste hinzufügen'}
+          data-tipp={voll ? 'Deine Seitenleiste ist voll' : 'Zur Seitenleiste hinzufügen'}
           aria-haspopup="menu"
           disabled={voll}
           onClick={(e) => setMenue({ anker: e.currentTarget.getBoundingClientRect(), art: 'neu', ordner: null })}
@@ -270,6 +271,7 @@ function Zweig({ eintraege, tiefe, ablage, setAblage, ...props }: BaumProps & { 
               draggable={props.umbenennen !== e.id}
               onDragStart={(ev) => {
                 ev.stopPropagation();
+                ziehBild(ev);
                 ev.dataTransfer.setData(ZIEH_TYP, e.id);
                 ev.dataTransfer.effectAllowed = 'move';
               }}
@@ -313,7 +315,7 @@ function Zweig({ eintraege, tiefe, ablage, setAblage, ...props }: BaumProps & { 
                   type="button"
                   className="mm-leiste-mehr"
                   aria-label={`${titel} bearbeiten`}
-                  title={`${titel} bearbeiten`}
+                  data-tipp={`${titel} bearbeiten`}
                   aria-haspopup="menu"
                   onClick={(ev) => props.setMenue({ anker: ev.currentTarget.getBoundingClientRect(), art: 'eintrag', id: e.id })}
                 >
