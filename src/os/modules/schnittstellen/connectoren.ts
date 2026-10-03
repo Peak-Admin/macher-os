@@ -94,6 +94,8 @@ export interface Connector {
   recht?: Recht;
   /** Technisches für „Weitere Optionen“ (Formate, Versionen, Adressen) */
   technik?: string[];
+  /** Logo-Datei unter `public/logos/integrationen/` – nur für echte Marken; sonst aus dem Katalog gleicher ID */
+  logo?: string;
   status: () => ConnectorStatus;
 }
 
@@ -152,7 +154,12 @@ function mitAnfrage(c: Connector): Connector {
 // ------------------------------------------------------------------ Verzeichnis
 
 export function connectoren(): Connector[] {
-  return [...eigene(), ...ausKatalog()].map(mitAnfrage);
+  return [...eigene(), ...ausKatalog()].map(mitLogo).map(mitAnfrage);
+}
+
+/** Marken zeigen ihr Logo – aus dem Website-Katalog, damit es nur eine Liste gibt */
+function mitLogo(c: Connector): Connector {
+  return c.logo ? c : { ...c, logo: integrationen.find((i) => i.id === c.id)?.logo };
 }
 
 function eigene(): Connector[] {
@@ -211,6 +218,7 @@ function eigene(): Connector[] {
       pfad: datev ? modulPfad(datev) : undefined,
       aktion: 'Zum Export',
       recht: 'geld',
+      logo: 'datev.svg',
       technik: ['DATEV-Format EXTF 700, Buchungsstapel (Kategorie 21)', 'Kontenrahmen SKR03 oder SKR04'],
       status: () => {
         const letzter = einstellung<ExportProtokoll[]>(DATEV_K.exporte, [])[0];
@@ -504,6 +512,7 @@ export function ausKatalog(): Connector[] {
       art: SAEULE_ART[i.saeule],
       faehigkeiten: [i.hinweis ?? 'Daten austauschen'],
       verfuegbar: false,
+      logo: i.logo,
       status: geplant(),
     }));
 }

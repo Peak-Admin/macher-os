@@ -1,6 +1,7 @@
 /* Inbox: ruhig, klare Hierarchie. Jetzt fällt auf (Fläche + Text „Jetzt“), ohne Alarm; Zur Kenntnis ist leise. */
 .mm-inbox-bereich { display: flex; flex-direction: column; gap: 12px; }
-.mm-inbox-bereich-titel { display: flex; align-items: baseline; gap: 8px; margin: 0; padding-bottom: 8px; border-bottom: 1px solid var(--mm-border); font: 600 16px/24px var(--mm-font); color: var(--mm-text); hyphens: manual; }
+.mm-inbox-bereich-titel { display: flex; align-items: center; gap: 8px; margin: 0; padding-bottom: 8px; border-bottom: 1px solid var(--mm-border); font: 600 16px/24px var(--mm-font); color: var(--mm-text); hyphens: manual; }
+.mm-inbox-bereich-icon { display: grid; place-items: center; width: 28px; height: 28px; border-radius: var(--mm-radius-control); background: var(--mm-icon-tile); color: var(--mm-on-icon-tile); flex-shrink: 0; }
 .mm-inbox-bereich--ruhig .mm-inbox-bereich-titel { font-weight: 500; color: var(--mm-text-secondary); }
 
 .mm-inbox-liste { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
