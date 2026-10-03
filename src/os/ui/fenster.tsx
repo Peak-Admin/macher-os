@@ -7,7 +7,7 @@
  *
  * Linien und Kachel nehmen `currentColor` – die Fläche setzt die Farbe (hell: Textfarbe, dunkel: Weiß).
  * Ohne Farbe: Auch das Glas-Icon ist grau (aus `currentColor` gemischt), damit sich die Zeichnung klar von den grünen
- * Themen- und Navigations-Icons unterscheidet. Regeln: docs/design/festlegungen.md („Fenster-Skizze“).
+ * Themen- und Navigations-Icons unterscheidet. Für Integrationen mit echter Marke steht statt des Icons das Logo (`logo`). Regeln: docs/design/festlegungen.md („Fenster-Skizze“).
  */
 import { useId, type CSSProperties } from 'react';
 import { GlasIcon, glasFuer, type GlasIconName } from './glas';
@@ -21,12 +21,15 @@ const GRAU = {
 
 export function FensterSkizze({
   icon,
+  logo,
   rahmen = 'fenster',
   ausschnitt = 'voll',
   className,
   style,
 }: {
   icon: GlasIconName;
+  /** Adresse eines Markenlogos (z. B. Google Kalender) – ersetzt das Glas-Icon, damit man das Programm sofort erkennt */
+  logo?: string;
   /** Desktop-Fenster mit Seitenspalte oder Handy-Umriss */
   rahmen?: 'fenster' | 'handy';
   /** `nah`: enger Ausschnitt (4:3) um die Kachel – für kleine Kacheln, in denen sonst das Icon zu klein würde */
@@ -92,11 +95,21 @@ export function FensterSkizze({
 
       <g transform={nah ? 'translate(160 86) scale(1.25) translate(-160 -98)' : undefined}>
         <circle cx="160" cy="98" r="68" fill={`url(#${id}-schein)`} />
-        <rect x="128" y="66" width="64" height="64" rx="17" fill={`url(#${id}-kachel)`} stroke="currentColor" strokeOpacity={0.32 * k} strokeWidth={1.2} />
-        <rect x="133.5" y="71.5" width="53" height="53" rx="13" {...linie} strokeOpacity={0.14 * k} />
-        <g transform="translate(140 78)">
-          <GlasIcon name={icon} size={40} />
-        </g>
+        {logo ? (
+          <>
+            {/* Markenlogo auf weißer App-Kachel – in Farbe, damit man das Programm erkennt */}
+            <rect x="128" y="66" width="64" height="64" rx="17" style={{ fill: 'var(--mm-surface)' }} stroke="currentColor" strokeOpacity={0.24 * k} strokeWidth={1.2} />
+            <image href={logo} x="142" y="80" width="36" height="36" preserveAspectRatio="xMidYMid meet" />
+          </>
+        ) : (
+          <>
+            <rect x="128" y="66" width="64" height="64" rx="17" fill={`url(#${id}-kachel)`} stroke="currentColor" strokeOpacity={0.32 * k} strokeWidth={1.2} />
+            <rect x="133.5" y="71.5" width="53" height="53" rx="13" {...linie} strokeOpacity={0.14 * k} />
+            <g transform="translate(140 78)">
+              <GlasIcon name={icon} size={40} />
+            </g>
+          </>
+        )}
       </g>
     </svg>
   );
