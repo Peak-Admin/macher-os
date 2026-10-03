@@ -5,7 +5,7 @@ html, body, #root { height: 100%; }
 body {
   margin: 0;
   color: var(--mm-text);
-  background: var(--mm-canvas);
+  background: var(--mm-grund);
   font: 400 16px/1.5 var(--mm-font);
   -webkit-font-smoothing: antialiased;
 }
